@@ -1,0 +1,31 @@
+
+// Colors.
+$black: rgb(41, 41, 41);
+$white: #f4f4f4;
+$gray: #dedede;
+$green: #bada55;
+$red: orangered;
+
+
+$screen-sm: 768px;
+$screen-md: 992px;
+$screen-lg: 1200px;
+
+$container-padding-xs: 15px;
+$container-padding-sm: 20px;
+$container-padding-md: 30px;
+$container-padding-lg: 40px;
+
+$content-width-constraint-xs: ($screen-lg - ($container-padding-lg * 2)) * (3 / 6);
+$content-width-constraint-sm: ($screen-lg - ($container-padding-lg * 2)) * (4 / 6);
+$content-width-constraint-md: ($screen-lg - ($container-padding-lg * 2)) * (5 / 6);
+$content-width-constraint-lg: ($screen-lg - ($container-padding-lg * 2)) * (6 / 6);
+
+$grid-gutter: 30px;
+
+
+
+.crown-block-general-controls {
+	padding: 16px 20px;
+	background-color: #eee;
+}

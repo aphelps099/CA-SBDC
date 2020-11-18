@@ -1,0 +1,28 @@
+
+
+.wp-block[data-type="crown-blocks/featured-case-study-logos"] {
+	.wp-block-crown-blocks-featured-case-study-logos {
+		a {
+			pointer-events: none;
+		}
+		article {
+			display: none;
+			&:nth-child(1),
+			&:nth-child(2),
+			&:nth-child(3) {
+				display: block;
+			}
+			@media (min-width: 576px) {
+				&:nth-child(4),
+				&:nth-child(5) {
+					display: block;
+				}
+			}
+			@media (min-width: 768px) {
+				&:nth-child(6) {
+					display: block;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,36 @@
+
+
+.wp-block-crown-blocks-call-to-action {
+	margin-bottom: 1rem;
+
+	&.text-color-light {
+		color: fade-out(#fff, .3);
+		h1, h2, h3, h4, h5, h6 {
+			color: #fff;
+		}
+	}
+
+	.cta-contents {
+		text-align: center;
+		padding: 2.5rem 2rem;
+		> .inner {
+			> *:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	// .cta-bg-image {
+	// 	.image {
+	// 		height: 0;
+	// 		padding-top: percentage(2 / 3);
+	// 		background-size: cover;
+	// 		background-position: center;
+	// 		background-repeat: no-repeat;
+	// 		img {
+	// 			display: none;
+	// 		}
+	// 	}
+	// }
+
+}

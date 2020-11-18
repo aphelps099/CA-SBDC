@@ -1,0 +1,36 @@
+
+
+.wp-block-crown-blocks-promo {
+	margin-bottom: 1rem;
+
+	&.text-color-light {
+		color: fade-out(#fff, .3);
+		h1, h2, h3, h4, h5, h6 {
+			color: #fff;
+		}
+	}
+
+	.promo-contents {
+		text-align: center;
+		> .inner {
+			padding: 3rem 1.5rem;
+			> *:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.promo-featured-image {
+		.image {
+			height: 0;
+			padding-top: percentage(2 / 3);
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			img {
+				display: none;
+			}
+		}
+	}
+
+}

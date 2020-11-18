@@ -1,0 +1,13 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-stat {
+	margin-bottom: 1rem;
+	text-align: center;
+	.stat-label {
+		text-transform: uppercase;
+	}
+	.stat-value {
+		font-size: 1.875rem;
+	}
+}

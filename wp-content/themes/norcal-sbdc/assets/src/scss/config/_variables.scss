@@ -1,0 +1,258 @@
+
+
+// Colors
+
+$blue:       #002F87 !default;
+$green:      #A2BF2F !default;
+$sky-blue:   #0099D8 !default;
+$gray:       #7B8D96 !default;
+$onyx:       #3B424E !default;
+$baby-blue:  #BADCED !default;
+$light-blue: #ECF1F4 !default;
+$light-gray: #B8C0C4 !default;
+$ghost:      #F7F7F7 !default;
+$white:      #FFFFFF !default;
+
+
+$colors: () !default;
+$colors: map-merge(
+	(
+		"blue":       $blue,
+		"green":      $green,
+		"sky-blue":   $sky-blue,
+		"gray":       $gray,
+		"onyx":       $onyx,
+		"baby-blue":  $baby-blue,
+		"light-blue": $light-blue,
+		"light-gray": $light-gray,
+		"ghost":      $ghost,
+		"white":      $white
+	),
+	$colors
+);
+
+$primary:       $blue !default;
+$secondary:     $sky-blue !default;
+$light:         $ghost !default;
+$dark:          $onyx !default;
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+	(
+		"blue":       $blue,
+		"green":      $green,
+		"sky-blue":   $sky-blue,
+		"gray":       $gray,
+		"onyx":       $onyx,
+		"baby-blue":  $baby-blue,
+		"light-blue": $light-blue,
+		"light-gray": $light-gray,
+		"ghost":      $ghost,
+		"white":      $white
+	),
+	$theme-colors
+);
+
+$yiq-contrasted-threshold:  168 !default; // acceptable values are between 0 and 255
+$yiq-text-dark:             $onyx !default;
+$yiq-text-light:            $white !default;
+
+$body-bg:                   $white !default;
+$body-color:                $onyx !default;
+
+$link-color:                $sky-blue !default;
+$link-decoration:           none !default;
+$link-hover-color:          darken($link-color, 15%) !default;
+$link-hover-decoration:     none !default;
+
+
+// Spacing
+
+$spacer: 1rem !default;
+
+$paragraph-margin-bottom:   1rem !default;
+
+$grid-breakpoints: (
+	xs: 0,
+	sm: 576px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px
+) !default;
+
+$container-padding-x: (
+	xs: 15px,
+	sm: 15px,
+	md: 20px,
+	lg: 30px,
+	xl: 40px
+) !default;
+
+$container-max-widths: (
+	sm: 1230px + (map-get($container-padding-x, sm) * 2),
+	md: 1240px + (map-get($container-padding-x, md) * 2),
+	lg: 1250px + (map-get($container-padding-x, lg) * 2),
+	xl: 1260px + (map-get($container-padding-x, xl) * 2)
+) !default;
+
+$container-effective-max-width: 1260px;
+
+$mobile-menu-width: 260px;
+
+
+// Components
+
+$border-width:                1px !default;
+
+$border-radius:               .1875rem !default;
+$border-radius-lg:            .25rem !default;
+$border-radius-sm:            .125rem !default;
+
+$component-active-color:      $white !default;
+$component-active-bg:         $blue !default;
+
+
+// Typography
+
+$font-family-sans-serif:      'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif-alt:  'Ubuntu Condensed', #{$font-family-sans-serif} !default;
+
+$font-size-base:              1.125rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                1.375rem !default;
+$font-size-sm:                0.875rem !default;
+
+$font-weight-lighter:         100 !default;
+$font-weight-light:           300 !default;
+$font-weight-normal:          400 !default;
+$font-weight-bold:            700 !default;
+$font-weight-bolder:          bolder !default;
+$font-weight-base:            $font-weight-normal !default;
+
+$line-height-base:            1.4 !default;
+$line-height-lg:              1.6 !default;
+$line-height-sm:              1.2 !default;
+
+$h1-font-size:                2.875rem !default;
+$h2-font-size:                1.875rem !default;
+$h3-font-size:                1.5rem !default;
+$h4-font-size:                1.25rem !default;
+$h5-font-size:                1.125rem !default;
+$h6-font-size:                1rem !default;
+
+$headings-margin-bottom:      0.875rem !default;
+$headings-font-family:        $font-family-sans-serif !default;
+$headings-font-weight:        $font-weight-bold !default;
+$headings-line-height:        1.2 !default;
+$headings-color:              null !default;
+
+$display1-weight:             $font-weight-bolder !default;
+$display2-weight:             $font-weight-bolder !default;
+$display3-weight:             $font-weight-bolder !default;
+$display4-weight:             $font-weight-bolder !default;
+
+$lead-font-size:              $font-size-lg !default;
+$lead-font-weight:            $font-weight-base !default;
+
+
+// Buttons + Forms
+
+$input-btn-padding-y:         .75rem !default;
+$input-btn-padding-x:         1rem !default;
+$input-btn-font-family:       $font-family-sans-serif !default;
+$input-btn-font-size:         $font-size-base !default;
+$input-btn-line-height:       $line-height-sm !default;
+
+$input-btn-padding-y-sm:      .5rem !default;
+$input-btn-padding-x-sm:      .75rem !default;
+$input-btn-font-size-sm:      $font-size-sm !default;
+$input-btn-line-height-sm:    $line-height-sm !default;
+
+$input-btn-padding-y-lg:      1rem !default;
+$input-btn-padding-x-lg:      1.25rem !default;
+$input-btn-font-size-lg:      $font-size-lg !default;
+$input-btn-line-height-lg:    $line-height-sm !default;
+
+$input-btn-border-width:      $border-width !default;
+
+
+// Buttons
+
+$btn-padding-y:               .93rem !default;
+$btn-padding-x:               1.5rem !default;
+$btn-font-family:             $font-family-sans-serif !default;
+$btn-font-size:               0.875rem !default;
+$btn-line-height:             $input-btn-line-height !default;
+
+$btn-padding-y-sm:            .56rem !default;
+$btn-padding-x-sm:            1rem !default;
+$btn-font-size-sm:            0.75rem !default;
+$btn-line-height-sm:          $input-btn-line-height-sm !default;
+
+$btn-padding-y-lg:            1.06rem !default;
+$btn-padding-x-lg:            1.75rem !default;
+$btn-font-size-lg:            1.25rem !default;
+$btn-line-height-lg:          $input-btn-line-height-lg !default;
+
+$btn-font-weight:             $font-weight-bold !default;
+$btn-letter-spacing:          0.1em !default;
+
+$btn-border-radius:           100rem !default;
+$btn-border-radius-lg:        100rem !default;
+$btn-border-radius-sm:        100rem !default;
+
+
+// Forms
+
+$form-control-selectors: (
+	'input[type="text"]',
+	'input[type="password"]',
+	'input[type="datetime"]',
+	'input[type="datetime-local"]',
+	'input[type="date"]',
+	'input[type="month"]',
+	'input[type="time"]',
+	'input[type="week"]',
+	'input[type="number"]',
+	'input[type="email"]',
+	'input[type="url"]',
+	'input[type="search"]',
+	'input[type="tel"]',
+	'input[type="color"]',
+	'select',
+	'textarea'
+) !default;
+
+$input-bg:                              #fff !default;
+$input-disabled-bg:                     #e9e9e9 !default;
+
+$input-color:                           $dark !default;
+$input-border-color:                    #C7CDD0 !default;
+$input-border-width:                    $input-btn-border-width !default;
+$input-box-shadow:                      inset 0 1px 1px rgba(#000, .075) !default;
+
+$input-border-radius:                   0.25rem !default;
+$input-border-radius-lg:                0.25rem !default;
+$input-border-radius-sm:                0.25rem !default;
+
+$input-focus-border-color:              lighten($component-active-bg, 15%) !default;
+
+$input-placeholder-color:               #969696 !default;
+
+
+// Z-Index
+
+$zindex-dropdown:                   1000 !default;
+$zindex-sticky:                     1020 !default;
+$zindex-fixed:                      1030 !default;
+$zindex-modal-backdrop:             100000 !default;
+$zindex-modal:                      100050 !default;
+$zindex-popover:                    100060 !default;
+$zindex-tooltip:                    100070 !default;
+
+
+// Modals
+
+$modal-content-color:               $body-color !default;
+$modal-content-border-radius:       0 !default;
+
+$modal-title-line-height:           $headings-line-height !default;

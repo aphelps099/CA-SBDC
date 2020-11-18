@@ -1,0 +1,13 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-grid-cell {
+	display: flex;
+	> .inner {
+		flex: 0 0 100%;
+		display: flex;
+	}
+	.grid-cell-contents {
+		flex: 0 0 100%;
+	}
+}

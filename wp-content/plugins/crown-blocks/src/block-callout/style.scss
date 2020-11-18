@@ -1,0 +1,64 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-callout {
+	margin-bottom: 1rem;
+
+	&.configuration-icon {
+		> .inner {
+			display: flex;
+		}
+		.callout-icon {
+			flex: 0 0 60px;
+			margin-right: 24px;
+			@media (min-width: 992px) {
+				flex: 0 0 80px;
+			}
+			.icon-placeholder {
+				height: 0;
+				padding-top: 100%;
+				background-color: fade-out(#65A5F4, .5);
+				border-radius: 100%;
+			}
+		}
+		.callout-contents {
+			flex: 1 1 auto;
+		}
+	}
+
+	&.configuration-stat {
+		@for $i from 0 through 20 {
+			&.stat-min-width-#{$i} .callout-stat { flex: 0 0 ($spacer * $i) !important; }
+		}
+		> .inner {
+			display: flex;
+			align-items: center;
+		}
+		.callout-stat {
+			line-height: 1.2;
+			font-size: 2rem;
+			white-space: nowrap;
+			font-weight: 700;
+			margin-right: 24px;
+			flex: 0 0 auto;
+			@media (min-width: 992px) {
+				font-size: 3.75rem;
+			}
+		}
+		.callout-contents {
+			flex: 1 1 auto;
+			font-size: 1.25rem;
+			line-height: 1.2;
+			*:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	.callout-contents {
+		h1, h2, h3, h4, h5, h6 {
+			margin-bottom: .5rem;
+		}
+	}
+
+}

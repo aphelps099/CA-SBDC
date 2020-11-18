@@ -1,0 +1,14 @@
+
+
+.wp-block[data-type="crown-blocks/expandable-content"] {
+	.btn {
+		user-select: auto;
+	}
+	.btn-label {
+		display: inline-block;
+	}
+	.expandable-content-contents {
+		height: auto;
+		overflow: visible;
+	}
+}

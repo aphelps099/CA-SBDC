@@ -1,0 +1,128 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-container {
+	margin-bottom: 1rem;
+	position: relative;
+
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: #222;
+	}
+
+	&.contents-mw-1 > .inner > .container-contents > .inner { max-width: 360px !important; }
+	&.contents-mw-2 > .inner > .container-contents > .inner { max-width: 540px !important; }
+	&.contents-mw-3 > .inner > .container-contents > .inner { max-width: 720px !important; }
+	&.contents-mw-4 > .inner > .container-contents > .inner { max-width: 900px !important; }
+	&.contents-mw-5 > .inner > .container-contents > .inner { max-width: 1080px !important; }
+	&.contents-mw-6 > .inner > .container-contents > .inner { max-width: 1260px !important; }
+
+	@for $i from 0 through 20 {
+		&.contents-pt-#{$i} > .inner > .container-contents { padding-top: $spacer * $i !important; }
+		&.contents-pb-#{$i} > .inner > .container-contents { padding-bottom: $spacer * $i !important; }
+		&.contents-px-#{$i} > .inner > .container-contents { padding-left: $spacer * $i !important; padding-right: $spacer * $i !important; }
+		&.contents-ox-#{$i} { margin-left: -$spacer * $i !important; margin-right: -$spacer * $i !important; }
+	}
+	@media (min-width: 576px) {
+		@for $i from 0 through 20 {
+			&.contents-pt-sm-#{$i} > .inner > .container-contents { padding-top: $spacer * $i !important; }
+			&.contents-pb-sm-#{$i} > .inner > .container-contents { padding-bottom: $spacer * $i !important; }
+			&.contents-px-sm-#{$i} > .inner > .container-contents { padding-left: $spacer * $i !important; padding-right: $spacer * $i !important; }
+			&.contents-ox-sm-#{$i} { margin-left: -$spacer * $i !important; margin-right: -$spacer * $i !important; }
+		}
+	}
+	@media (min-width: 768px) {
+		@for $i from 0 through 20 {
+			&.contents-pt-md-#{$i} > .inner > .container-contents { padding-top: $spacer * $i !important; }
+			&.contents-pb-md-#{$i} > .inner > .container-contents { padding-bottom: $spacer * $i !important; }
+			&.contents-px-md-#{$i} > .inner > .container-contents { padding-left: $spacer * $i !important; padding-right: $spacer * $i !important; }
+			&.contents-ox-md-#{$i} { margin-left: -$spacer * $i !important; margin-right: -$spacer * $i !important; }
+		}
+	}
+	@media (min-width: 992px) {
+		@for $i from 0 through 20 {
+			&.contents-pt-lg-#{$i} > .inner > .container-contents { padding-top: $spacer * $i !important; }
+			&.contents-pb-lg-#{$i} > .inner > .container-contents { padding-bottom: $spacer * $i !important; }
+			&.contents-px-lg-#{$i} > .inner > .container-contents { padding-left: $spacer * $i !important; padding-right: $spacer * $i !important; }
+			&.contents-ox-lg-#{$i} { margin-left: -$spacer * $i !important; margin-right: -$spacer * $i !important; }
+		}
+	}
+	@media (min-width: 1200px) {
+		@for $i from 0 through 20 {
+			&.contents-pt-xl-#{$i} > .inner > .container-contents { padding-top: $spacer * $i !important; }
+			&.contents-pb-xl-#{$i} > .inner > .container-contents { padding-bottom: $spacer * $i !important; }
+			&.contents-px-xl-#{$i} > .inner > .container-contents { padding-left: $spacer * $i !important; padding-right: $spacer * $i !important; }
+			&.contents-ox-xl-#{$i} { margin-left: -$spacer * $i !important; margin-right: -$spacer * $i !important; }
+		}
+	}
+
+	> .container-bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+		.bg-image {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+		}
+		.wave-top,
+		.wave-bottom {
+			position: absolute;
+			left: 0;
+			width: 100%;
+			height: auto;
+			display: none;
+		}
+		.wave-top {
+			top: -.5px;
+		}
+		.wave-bottom {
+			bottom: -.5px;
+		}
+	}
+
+	&.has-drop-shadow {
+		box-shadow: 0 2px 10px rgba(0, 0, 0, .1);
+	}
+
+	&.bg-wave-top {
+		> .container-bg .wave-top { display: block; }
+		> .inner { padding-top: percentage(130 / 1440); }
+	}
+	&.bg-wave-bottom {
+		> .container-bg .wave-bottom { display: block; }
+		> .inner { padding-bottom: percentage(130 / 1440); }
+	}
+
+	> .inner {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		z-index: 1;
+	}
+
+	> .inner > .container-contents {
+		padding: 2 * $spacer;
+		flex: 1 1 100%;
+		max-width: 100%;
+		> .inner {
+			max-width: 100%;
+			margin: 0 auto;
+			> *:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+}

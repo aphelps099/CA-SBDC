@@ -1,0 +1,38 @@
+
+.wp-block-crown-blocks-layout-two-column {
+	
+	> .inner {
+		margin-left: -$grid-gutter / 2;
+		margin-right: -$grid-gutter / 2;
+		justify-content: space-between;
+		> .column {
+			padding-left: $grid-gutter / 2;
+			padding-right: $grid-gutter / 2;
+			flex: 1 1 100%;
+		}
+	}
+
+	&.stacking-breakpoint-none > .inner { display: flex; }
+	&.stacking-breakpoint-phone > .inner { @media (min-width: $screen-sm) { display: flex; } }
+	&.stacking-breakpoint-tablet > .inner { @media (min-width: $screen-md) { display: flex; } }
+	&.stacking-breakpoint-desktop > .inner { @media (min-width: $screen-lg) { display: flex; } }
+
+	@for $i from 1 through 11 {
+		@for $j from 1 through 12 - $i {
+			$k: 12 - ($i + $j);
+			// @for $k from 0 through 12 - ($i + $j) {
+				&.column-distribution-#{$i}-#{$k}-#{$j} {
+					> .inner {
+						> .column:nth-child(1) {
+							max-width: percentage($i / 12);
+						}
+						> .column:nth-child(2) {
+							max-width: percentage($j / 12);
+						}
+					}
+				}
+			// }
+		}
+	}
+
+}

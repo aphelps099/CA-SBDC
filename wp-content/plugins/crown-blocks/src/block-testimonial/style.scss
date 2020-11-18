@@ -1,0 +1,47 @@
+
+
+.wp-block-crown-blocks-testimonial {
+	max-width: 800px;
+	margin: 0 auto;
+	margin-bottom: 1rem;
+
+	> .inner {
+		padding: 2.25rem 2rem;
+	}
+
+	.testimonial-featured-image {
+		max-width: 70px;
+		margin-bottom: .5rem;
+		.image {
+			height: 0;
+			padding-top: 100%;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			border-radius: 100%;
+			img {
+				display: none;
+			}
+		}
+	}
+
+	.testimonial-contents {
+		text-align: left;
+	}
+	.testimonial-quote {
+		> .inner {
+			p {
+				margin-bottom: .75rem;
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+	.testimonial-source {
+		margin-bottom: 0;
+		margin-top: .75rem;
+		font-weight: 700;
+	}
+
+}

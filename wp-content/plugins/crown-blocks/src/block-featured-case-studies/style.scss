@@ -1,0 +1,83 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-featured-case-studies {
+	margin-bottom: $spacer;
+	.post-feed {
+		> .inner {
+			@media (min-width: 768px) {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				grid-gap: 30px;
+			}
+		}
+	}
+	article {
+		background-color: #fff;
+		padding: 20px;
+		text-align: left;
+		@media (min-width: 992px) {
+			padding: 30px;
+		}
+		+ article {
+			margin-top: 30px;
+			@media (min-width: 768px) {
+				margin-top: 0;
+			}
+		}
+		&.has-photos {
+			.entry-photos {
+				display: flex;
+			}
+		}
+		.entry-photos {
+			display: none;
+			overflow: hidden;
+			margin: -20px -20px 20px;
+			background-color: #333;
+			@media (min-width: 768px) {
+				display: flex;
+			}
+			@media (min-width: 992px) {
+				margin: -30px -30px 30px;
+			}
+			&:before {
+				content: '';
+				width: 0;
+				height: 0;
+				padding-top: 50%;
+			}
+			> .inner {
+				position: relative;
+				flex: 0 0 100%;
+			}
+			.slider {
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				> .image {
+					display: none;
+					&:first-child {
+						display: block;
+					}
+				}
+			}
+			.image {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background-position: center;
+				background-size: cover;
+				background-repeat: no-repeat;
+				img,
+				.caption {
+					display: none;
+				}
+			}
+		}
+	}
+}

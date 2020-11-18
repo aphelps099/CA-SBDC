@@ -1,0 +1,12 @@
+
+.wp-block-crown-blocks-layout-content-area {
+	
+	margin-left: auto;
+	margin-right: auto;
+
+	&.width-constraint-xs { max-width: $content-width-constraint-xs; }
+	&.width-constraint-sm { max-width: $content-width-constraint-sm; }
+	&.width-constraint-md { max-width: $content-width-constraint-md; }
+	&.width-constraint-lg { max-width: $content-width-constraint-lg; }
+
+}

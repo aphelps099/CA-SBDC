@@ -1,0 +1,13 @@
+
+
+.wp-block[data-type="crown-blocks/team-member-index"] {
+	.wp-block-crown-blocks-team-member-index {
+		form.filters,
+		a {
+			pointer-events: none;
+		}
+		article {
+			display: flex;
+		}
+	}
+}

@@ -1,0 +1,12 @@
+
+
+.wp-block[data-type="crown-blocks/recent-posts"] {
+	.wp-block-crown-blocks-recent-posts {
+		.post-feed {
+			a {
+				pointer-events: none;
+				color: teal;
+			}
+		}
+	}
+}

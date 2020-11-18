@@ -1,0 +1,18 @@
+
+
+.wp-block-crown-blocks-expandable-content {
+	margin-bottom: 1rem;
+	&.toggle-align-left > .inner > .expandable-content-toggle {
+		text-align: left;
+	}
+	&.toggle-align-center > .inner > .expandable-content-toggle {
+		text-align: center;
+	}
+	&.toggle-align-right > .inner > .expandable-content-toggle {
+		text-align: right;
+	}
+	.expandable-content-contents {
+		height: 0;
+		overflow: hidden;
+	}
+}

@@ -1,0 +1,8 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-button {
+	&.text-alignment-left { text-align: left; }
+	&.text-alignment-center { text-align: center; }
+	&.text-alignment-right { text-align: right; }
+}

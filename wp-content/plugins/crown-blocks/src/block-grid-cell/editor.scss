@@ -1,0 +1,22 @@
+
+
+.editor-styles-wrapper .wp-block[data-type="crown-blocks/grid-cell"] {
+	max-width: none;
+	margin-top: 0;
+	margin-bottom: 0;
+	display: flex;
+	> .crown-block-editor-container {
+		width: 100%;
+		display: flex;
+	}
+	> .crown-block-editor-container > .wp-block-crown-blocks-grid-cell {
+		width: 100%;
+		&.is-empty {
+			> .inner > .grid-cell-contents {
+				> .inner {
+					min-height: 20px;
+				}
+			}
+		}
+	}
+}
