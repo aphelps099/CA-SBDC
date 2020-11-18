@@ -33,7 +33,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 			// 	}
 			// }
 			
-			remove_menu_page( 'edit.php' );
+			// remove_menu_page( 'edit.php' );
 			remove_menu_page( 'edit-comments.php' );
 			// self::add_admin_menu_separator( 25 );
 
@@ -74,7 +74,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 
 		public static function cleanup_admin_bar( $adminBar ) {
 			// $adminBar->remove_node( 'customize' );
-			$adminBar->remove_node( 'new-post' );
+			// $adminBar->remove_node( 'new-post' );
 			$adminBar->remove_node( 'comments' );
 		}
 
