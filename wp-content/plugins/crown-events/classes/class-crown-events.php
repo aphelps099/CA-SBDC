@@ -91,7 +91,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 		public static function register_event_post_type() {
 
-			// print_r(DateTimeZone::listIdentifiers(DateTimeZone::ALL)); die;
 			$timezone_options = array();
 			$option_group = null;
 			$other_options = array();

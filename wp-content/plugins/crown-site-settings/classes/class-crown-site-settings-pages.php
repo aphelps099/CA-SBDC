@@ -21,7 +21,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Pages' ) ) {
 
 		public static $init = false;
 
-		public static $postTypes = array();
+		public static $post_types = array();
 
 
 		public static function init() {
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Pages' ) ) {
 
 		public static function register_page_fields() {
 
-			$postTypes['page'] = new PostType( array(
+			self::$post_types['page'] = new PostType( array(
 				'name' => 'page',
 				'metaBoxes' => array(
 					new MetaBox( array(
