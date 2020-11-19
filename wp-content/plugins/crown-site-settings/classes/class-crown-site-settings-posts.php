@@ -95,14 +95,15 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 
 			self::$post_topic_taxonomy = new Taxonomy( array(
 				'name' => 'post_topic',
-				'singularLabel' => 'Post Topic',
-				'pluralLabel' => 'Post Topics',
-				'postTypes' => array( 'post' ),
+				'singularLabel' => 'Topic',
+				'pluralLabel' => 'Topics',
+				'postTypes' => array( 'post', 'event', 'resource' ),
 				'settings' => array(
 					'hierarchical' => true,
-					'rewrite' => array( 'slug' => 'post-topics', 'with_front' => false ),
+					'rewrite' => array( 'slug' => 'topics', 'with_front' => false ),
 					'show_in_nav_menus' => false,
 					'show_admin_column' => true,
+					'publicly_queryable' => false,
 					'show_in_rest' => true,
 					'labels' => array(
 						'menu_name' => 'Topics',

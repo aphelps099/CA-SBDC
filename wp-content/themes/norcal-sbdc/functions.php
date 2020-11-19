@@ -12,6 +12,8 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'load' ), 0 );
 			add_action( 'after_setup_theme', array( __CLASS__, 'configure' ), 1);
 
+			add_filter( 'crown_theme_colors', array( __CLASS__, 'filter_crown_theme_colors' ), 10, 2 );
+
 			add_filter( 'body_class', array( __CLASS__, 'filter_body_class' ) );
 			add_filter( 'excerpt_length', array( __CLASS__, 'filter_excerpt_length' ) );
 			add_filter( 'excerpt_more', array( __CLASS__, 'filter_excerpt_more' ) );
@@ -335,6 +337,14 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 			}
 			usort( $grid_breakpoints, function( $a, $b ) { return $a->width - $b->width; } );
 			return $grid_breakpoints;
+		}
+
+
+		public static function filter_crown_theme_colors( $colors, $context = '' ) {
+			$color_palette = self::get_config( 'color_palette' );
+			if ( empty( $color_palette ) ) return $colors;
+			$colors = array_map( function( $n ) { return $n->color; }, $color_palette );
+			return $colors;
 		}
 
 

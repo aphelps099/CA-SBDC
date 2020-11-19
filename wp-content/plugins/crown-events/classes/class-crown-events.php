@@ -29,7 +29,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		public static $init = false;
 
 		public static $event_post_type = null;
-		public static $event_topic_taxonomy = null;
 
 
 		public static function init() {
@@ -41,7 +40,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'detactivate' ));
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_post_type' ) );
-			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_topic_taxonomy' ) );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
@@ -59,14 +57,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						$role->add_cap( $cap . '_events' );
 					}
 				}
-				foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
-					if ( $role->has_cap( 'manage_categories' ) ) {
-						$role->add_cap( $cap . '_event_topics' );
-					}
-				}
-				if ( $role->has_cap( 'edit_posts' ) ) {
-					$role->add_cap( 'assign_event_topics' );
-				}
+				// foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
+				// 	if ( $role->has_cap( 'manage_categories' ) ) {
+				// 		$role->add_cap( $cap . '_event_topics' );
+				// 	}
+				// }
+				// if ( $role->has_cap( 'edit_posts' ) ) {
+				// 	$role->add_cap( 'assign_event_topics' );
+				// }
 			}
 
 			flush_rewrite_rules();
@@ -80,9 +78,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				foreach ( array( 'publish', 'delete', 'delete_others', 'delete_private', 'delete_published', 'edit', 'edit_others', 'edit_private', 'edit_published', 'read_private' ) as $cap ) {
 					$role->remove_cap( $cap . '_events' );
 				}
-				foreach ( array( 'manage', 'edit', 'delete', 'assign' ) as $cap ) {
-					$role->remove_cap ( $cap . '_event_topics' );
-				}
+				// foreach ( array( 'manage', 'edit', 'delete', 'assign' ) as $cap ) {
+				// 	$role->remove_cap ( $cap . '_event_topics' );
+				// }
 			}
 			
 			flush_rewrite_rules();
@@ -172,22 +170,22 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						'key' => 'event-date',
 						'title' => 'Event Date',
 						'position' => 2,
-						'outputCb' => function( $postId, $args ) {
+						'outputCb' => function( $post_id, $args ) {
 							$output = array();
-							$start = strtotime( get_post_meta( $postId, 'event_start_timestamp', true ) );
-							$end = strtotime( get_post_meta( $postId, 'event_end_timestamp', true ) );
-							$tz = get_post_meta( $postId, 'event_timezone', true );
+							$start = strtotime( get_post_meta( $post_id, 'event_start_timestamp', true ) );
+							$end = strtotime( get_post_meta( $post_id, 'event_end_timestamp', true ) );
+							$tz = get_post_meta( $post_id, 'event_timezone', true );
 							if ( $start === false || $end === false ) return;
-							$start = new DateTime( get_post_meta( $postId, 'event_start_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
-							$end = new DateTime( get_post_meta( $postId, 'event_end_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
+							$start = new DateTime( get_post_meta( $post_id, 'event_start_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
+							$end = new DateTime( get_post_meta( $post_id, 'event_end_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
 							$output[] = '<strong>' . $start->format( 'D, M j, Y' ) . '</strong>';
 							$output[] = $start->format( 'g:ia' ) . ' - ' . $end->format( 'g:ia' ) . ' (' . $start->format( 'T' ) . ')';
-							echo implode('<br>', $output);
+							echo implode( '<br>', $output );
 						},
-						'sortCb' => function($queryVars) {
-							$queryVars['meta_key'] = 'event_start_timestamp_utc';
-							$queryVars['orderby'] = 'meta_key';
-							return $queryVars;
+						'sortCb' => function( $query_vars ) {
+							$query_vars['meta_key'] = 'event_start_timestamp_utc';
+							$query_vars['orderby'] = 'meta_key';
+							return $query_vars;
 						}
 					) )
 				)
@@ -233,35 +231,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			}
 			update_post_meta( $post->ID, 'event_start_timestamp_utc', $utc_start_timestamp );
 			update_post_meta( $post->ID, 'event_end_timestamp_utc', $utc_end_timestamp );
-
-		}
-
-
-		public static function register_event_topic_taxonomy() {
-
-			self::$event_topic_taxonomy = new Taxonomy( array(
-				'name' => 'event_topic',
-				'singularLabel' => 'Event Topic',
-				'pluralLabel' => 'Event Topics',
-				'postTypes' => array( 'event' ),
-				'settings' => array(
-					'hierarchical' => true,
-					'rewrite' => array( 'slug' => 'event-topics', 'with_front' => false ),
-					'show_in_nav_menus' => false,
-					'show_admin_column' => true,
-					'show_in_rest' => true,
-					'labels' => array(
-						'menu_name' => 'Topics',
-						'all_items' => 'All Topics'
-					),
-					'capabilities' => array(
-						'manage_terms' => 'manage_event_topics',
-						'edit_terms' => 'edit_event_topics',
-						'delete_terms' => 'delete_event_topics',
-						'assign_terms' => 'assign_event_topics'
-					)
-				)
-			) );
 
 		}
 
