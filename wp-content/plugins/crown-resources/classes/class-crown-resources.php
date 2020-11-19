@@ -39,7 +39,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 			$plugin_file = preg_replace( '/\/classes$/', '', dirname( __FILE__ ) ) . '/plugin.php';
 			register_activation_hook( $plugin_file, array( __CLASS__, 'activate' ));
-			register_deactivation_hook( $plugin_file, array( __CLASS__, 'detactivate' ));
+			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_resource_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_resource_type_taxonomy' ) );
