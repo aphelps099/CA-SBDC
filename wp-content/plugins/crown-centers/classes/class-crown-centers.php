@@ -133,6 +133,11 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 							new Field(array(
 								'label' => 'Email Address',
 								'input' => new TextInput( array( 'name' => 'center_email', 'class' => 'input-medium' ) )
+							) ),
+							new Field(array(
+								'input' => new CheckboxSet( array( 'name' => 'center_options', 'options' => array(
+									array( 'value' => 'hide-from-index', 'label' => 'Hide from index' )
+								) ) )
 							) )
 						)
 					) ),
@@ -300,7 +305,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 				'name' => 'post_center',
 				'singularLabel' => 'SBDC',
 				'pluralLabel' => 'SBDCs',
-				'postTypes' => array( 'event', 'job' ),
+				'postTypes' => array( 'event', 'job', 'team_member' ),
 				'settings' => array(
 					'hierarchical' => true,
 					'rewrite' => array( 'slug' => 'post-centers', 'with_front' => false ),
