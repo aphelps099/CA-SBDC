@@ -54,7 +54,12 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 								'fields' => array(
 									new Field( array(
 										'label' => 'Copyright Text',
+										'description' => 'Use the <code>%%year%%</code> placeholder to display the current year.',
 										'input' => new TextInput( array( 'name' => 'theme_config_footer_copyright' ) )
+									) ),
+									new Field( array(
+										'label' => 'Footer Description',
+										'input' => new Textarea( array( 'name' => 'theme_config_footer_description', 'rows' => 4 ) )
 									) )
 								)
 							) ),
@@ -85,6 +90,10 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 									new Field( array(
 										'label' => 'YouTube Channel URL',
 										'input' => new TextInput( array( 'name' => 'theme_config_youtube_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
+									) ),
+									new Field( array(
+										'label' => 'Vimeo Profile URL',
+										'input' => new TextInput( array( 'name' => 'theme_config_vimeo_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
 									) ),
 									new Field( array(
 										'label' => 'Pinterest Page URL',

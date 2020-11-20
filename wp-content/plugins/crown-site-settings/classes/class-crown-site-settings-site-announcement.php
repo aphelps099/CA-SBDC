@@ -4,11 +4,14 @@ use Crown\AdminPage;
 use Crown\Form\Field;
 use Crown\Form\FieldGroup;
 use Crown\Form\FieldGroupSet;
+use Crown\Form\FieldRepeater;
 use Crown\Form\Input\CheckboxSet;
 use Crown\Form\Input\Media as MediaInput;
 use Crown\Form\Input\RadioSet;
 use Crown\Form\Input\Select;
 use Crown\Form\Input\Text as TextInput;
+use Crown\Form\Input\Date as DateInput;
+use Crown\Form\Input\Color as ColorInput;
 use Crown\Form\Input\Checkbox as CheckboxInput;
 use Crown\Form\Input\Textarea;
 use Crown\Post\MetaBox;
@@ -42,64 +45,116 @@ if ( ! class_exists( 'Crown_Site_Settings_Site_Announcement' ) ) {
 				'title' => 'Site Announcement',
 				'menuTitle' => 'Site Announcement',
 				'fields' => array(
-					new FieldGroupSet( array(
-						'fieldGroups' => array(
-
-							new FieldGroup( array(
-								'label' => 'General',
-								'fields' => array(
-									new Field( array(
-										'input' => new CheckboxInput( array( 'name' => 'site_announcement_enabled', 'label' => 'Enable Site Announcement' ) )
-									) ),
-									new FieldGroup(array(
-										'class' => 'no-border',
-										'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'site_announcement_enabled' ), 'value' => 1 ) ) ),
+					new FieldRepeater( array(
+						'name' => 'site_announcements',
+						'addNewLabel' => 'Add Site Announcement',
+						'fields' => array(
+							new FieldGroupSet( array(
+								'fieldGroups' => array(
+		
+									new FieldGroup( array(
+										'label' => 'General',
 										'fields' => array(
 											new Field( array(
-												'label' => 'Announcement Message',
-												'input' => new TextInput( array( 'name' => 'site_announcement_message', 'class' => 'input-large' ) )
+												'input' => new CheckboxInput( array( 'name' => 'enabled', 'label' => 'Enable Announcement' ) )
 											) ),
-											new FieldGroup( array(
-												'label' => 'Announcement Link',
+											new FieldGroup(array(
+												'class' => 'no-border',
+												// 'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'enabled' ), 'value' => 1 ) ) ),
 												'fields' => array(
-													new FieldGroup(array(
-														'class' => 'no-border two-column large-left',
+													new Field( array(
+														'label' => 'Message',
+														'input' => new TextInput( array( 'name' => 'message', 'class' => 'input-large' ) )
+													) ),
+													new FieldGroup( array(
+														'label' => 'Link',
 														'fields' => array(
-															new Field( array(
-																'label' => 'Link URL',
-																'input' => new TextInput( array( 'name' => 'site_announcement_link_url', 'placeholder' => 'https://' ) )
+															new FieldGroup(array(
+																'class' => 'no-border two-column large-left',
+																'fields' => array(
+																	new Field( array(
+																		'label' => 'Link URL',
+																		'input' => new TextInput( array( 'name' => 'link_url', 'placeholder' => 'https://' ) )
+																	) ),
+																	new Field( array(
+																		'label' => 'Link Label',
+																		'input' => new TextInput( array( 'name' => 'link_label', 'placeholder' => 'Learn More' ) )
+																	) )
+																)
 															) ),
 															new Field( array(
-																'label' => 'Link Label',
-																'input' => new TextInput( array( 'name' => 'site_announcement_link_label', 'placeholder' => 'Learn More' ) )
+																'input' => new CheckboxSet( array( 'name' => 'link_options', 'options' => array(
+																	array( 'value' => 'open-new-window', 'label' => 'Open in new window' )
+																) ) )
 															) )
 														)
-													) ),
-													new Field( array(
-														'input' => new CheckboxSet( array( 'name' => 'site_announcement_link_options', 'options' => array(
-															array( 'value' => 'open-new-window', 'label' => 'Open in new window' )
-														) ) )
+													) )
+												)
+											) )
+										)
+									) ),
+		
+									new FieldGroup( array(
+										'label' => 'Configuration Options',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Background Color',
+												'input' => new ColorInput( array( 'name' => 'bg_color', 'defaultValue' => '#E0003B', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'site_announcement_bg_color' ) ) ) ),
+											) ),
+											new Field( array(
+												'label' => 'Text Color',
+												'description' => 'Manually toggle between dark & light colored text or configure to auto-determine based on background color.',
+												'input' => new RadioSet( array( 'name' => 'text_color', 'defaultValue' => 'auto', 'class' => 'toggle', 'options' => array(
+													array( 'value' => 'auto', 'label' => 'Auto' ),
+													array( 'value' => 'dark', 'label' => 'Dark' ),
+													array( 'value' => 'light', 'label' => 'Light' )
+												) ) )
+											) )
+										)
+									) ),
+
+									new FieldGroup( array(
+										'label' => 'Timing',
+										'fields' => array(
+											new Field( array(
+												'input' => new CheckboxInput( array( 'name' => 'timing_controls_enabled', 'label' => 'Enable Timing Controls' ) )
+											) ),
+											new FieldGroup( array(
+												'class' => 'no-border',
+												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'timing_controls_enabled' ), 'value' => array( 1 ) ) ) ),
+												'fields' => array(
+													new FieldGroup( array(
+														'class' => 'no-border two-column',
+														'fields' => array(
+															new Field( array(
+																'label' => 'Start Date',
+																'input' => new DateInput( array(
+																	'name' => 'start_date',
+																	'class' => 'start-date-input',
+																	'datepickerOptions' => array(
+																		'onClose' => 'function(selectedDate) { $(this).closest(\'.entry\').find(\'.end-date-input\').datepicker(\'option\', \'minDate\', selectedDate); }'
+																	)
+																) )
+															) ),
+															new Field( array(
+																'label' => 'End Date',
+																'input' => new DateInput( array(
+																	'name' => 'end_date',
+																	'class' => 'end-date-input',
+																	'datepickerOptions' => array(
+																		'onClose' => 'function(selectedDate) { $(this).closest(\'.entry\').find(\'.start-date-input\').datepicker(\'option\', \'maxDate\', selectedDate); }'
+																	)
+																) )
+															) )
+														)
 													) )
 												)
 											) )
 										)
 									) )
-								)
-							) ),
-
-							new FieldGroup( array(
-								'label' => 'Configuration Options',
-								'fields' => array(
-									new Field( array(
-										'label' => 'Display on',
-										'input' => new RadioSet( array( 'name' => 'site_announcement_display_on', 'defaultValue' => 'all-pages', 'class' => 'toggle', 'options' => array(
-											array( 'value' => 'all-pages', 'label' => 'All Pages' ),
-											array( 'value' => 'homepage', 'label' => 'Homepage' )
-										) ) )
-									) )
+		
 								)
 							) )
-
 						)
 					) )
 				)
@@ -110,21 +165,41 @@ if ( ! class_exists( 'Crown_Site_Settings_Site_Announcement' ) ) {
 
 		public static function filter_site_announcement( $announcement = null ) {
 
-			if ( ! boolval( get_option( 'site_announcement_enabled' ) ) ) return $announcement;
+			$site_announcements = get_repeater_entries( 'blog', 'site_announcements' );
+			$current_time = new DateTime( current_time( 'Y-m-d H:i:s' ) );
 
-			$display_on = get_option( 'site_announcement_display_on' );
-			if ( $display_on == 'homepage' && ! is_front_page() ) return $announcement;
+			$site_announcements = array_filter( $site_announcements, function( $n ) use ( $current_time ) {
+				if ( ! $n['enabled'] ) return false;
+				if ( $n['timing_controls_enabled'] ) {
+					if ( strtotime( $n['start_date'] ) !== false ) {
+						$startDate = new DateTime( $n['start_date'] );
+						if ( $current_time < $startDate ) return false;
+					}
+					if ( strtotime( $n['end_date'] ) !== false ) {
+						$endDate = new DateTime( $n['end_date'] );
+						$endDate->modify( 'tomorrow' );
+						if ( $current_time > $endDate ) return false;
+					}
+				}
+				return true;
+			} );
 
-			$announcement = (object) array(
-				'message' => get_option( 'site_announcement_message' ),
-				'link' => (object) array(
-					'url' => get_option( 'site_announcement_link_url' ),
-					'label' => get_option( 'site_announcement_link_label' ),
-					'options' => get_option( 'site_announcement_link_options', array() )
-				)
-			);
-
-			return $announcement;
+			usort( $site_announcements, function($a, $b) {
+				if ( ! $a['timing_controls_enabled'] && ! $b['timing_controls_enabled'] ) return 0;
+				if ( ! $a['timing_controls_enabled'] ) return 1;
+				if ( ! $b['timing_controls_enabled'] ) return -1;
+				if ( ( strtotime( $a['start_date'] ) === false && strtotime( $b['start_date'] ) === false ) || $a['start_date'] == $b['start_date'] ) {
+					if ( strtotime( $a['end_date'] ) === false && strtotime( $b['end_date'] ) === false ) return 0;
+					if ( strtotime( $a['end_date'] ) === false) return 1;
+					if ( strtotime( $b['end_date'] ) === false) return -1;
+					return strcmp( $a['end_date'], $b['end_date'] );
+				}
+				if ( strtotime( $a['start_date'] ) === false ) return 1;
+				if ( strtotime( $b['start_date'] ) === false ) return -1;
+				return -strcmp( $a['start_date'], $b['start_date'] );
+			} );
+			
+			return ! empty( $site_announcements ) ? $site_announcements[0] : $announcement;
 
 		}
 
