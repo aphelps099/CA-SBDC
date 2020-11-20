@@ -43,6 +43,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
+			add_filter( 'display_post_states', array( __CLASS__, 'filter_display_post_states'), 10, 2 );
+
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
 		}
@@ -237,6 +239,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 		public static function filter_use_block_editor_for_post_type( $use_block_editor, $post_type ) {
 			return in_array( $post_type, array( 'event' ) ) ? false : $use_block_editor;
+		}
+
+
+		public static function filter_display_post_states( $post_states, $post ) {
+			if( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
+				$post_states['post-featured'] = 'Featured';
+			}
+			return $post_states;
 		}
 
 
