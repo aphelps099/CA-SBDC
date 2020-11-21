@@ -5,31 +5,31 @@
 			<div class="upper">
 				<div class="inner">
 
-					<div id="footer-brand">
-
-						<?php if ( has_custom_logo() ) { ?>
-							<div id="footer-logo">
-								<?php echo get_custom_logo(); ?>
-							</div>
-						<?php } ?>
-	
+					<div id="site-footer-title">
+						<a href="<?php echo home_url( '/' ); ?>"><?php echo get_bloginfo( 'name' ); ?></a>
 					</div>
 
-					<aside id="footer-widgets-1" class="footer-widgets">
-						<?php dynamic_sidebar( 'footer-1' ); ?>
-					</aside>
+					<div class="widget-areas">
 
-					<aside id="footer-widgets-2" class="footer-widgets">
-						<?php dynamic_sidebar( 'footer-2' ); ?>
-					</aside>
+						<aside id="footer-widgets-1" class="footer-widgets">
+							<?php dynamic_sidebar( 'footer-1' ); ?>
+						</aside>
+	
+						<aside id="footer-widgets-2" class="footer-widgets">
+							<?php dynamic_sidebar( 'footer-2' ); ?>
+						</aside>
+	
+						<aside id="footer-widgets-3" class="footer-widgets">
+							<?php dynamic_sidebar( 'footer-3' ); ?>
+						</aside>
+	
+						<aside id="footer-widgets-4" class="footer-widgets">
+							<?php dynamic_sidebar( 'footer-4' ); ?>
+						</aside>
 
-					<aside id="footer-widgets-3" class="footer-widgets">
-						<?php dynamic_sidebar( 'footer-3' ); ?>
-					</aside>
+					</div>
 
-					<aside id="footer-widgets-4" class="footer-widgets">
-						<?php dynamic_sidebar( 'footer-4' ); ?>
-					</aside>
+					<?php ct_social_links(); ?>
 
 				</div>
 			</div>
@@ -37,7 +37,10 @@
 			<div class="lower">
 				<div class="inner">
 
-					<p id="site-copyright"><?php echo get_option( 'theme_config_footer_copyright' ); ?></p>
+					<?php $copyright = apply_filters( 'crown_site_footer_copyright', '' ); ?>
+					<?php if ( ! empty( $copyright ) ) { ?>
+						<p id="site-copyright"><?php echo $copyright; ?></p>
+					<?php } ?>
 
 					<nav id="footer-legal-links">
 						<?php
@@ -45,12 +48,16 @@
 								'theme_location' => 'footer_legal_links',
 								'container' => '',
 								'menu_id' => 'footer-legal-links-menu',
-								'depth' => 1
+								'depth' => 1,
+								'fallback_cb' => false
 							) );
 						?>
 					</nav>
 
-					<?php ct_social_links(); ?>
+					<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
+					<?php if ( ! empty( $description ) ) { ?>
+						<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
+					<?php } ?>
 
 				</div>
 			</div>

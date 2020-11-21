@@ -13,6 +13,7 @@ if ( ! function_exists( 'ct_social_links' ) ) {
 				'linkedin',
 				'instagram',
 				'youtube',
+				'vimeo',
 				'pinterest'
 			)
 		), $args );
@@ -198,74 +199,6 @@ if ( ! function_exists( 'ct_app_links' ) ) {
 						</li>
 					<?php } ?>
 				</ul>
-
-			</div>
-		<?php
-
-	}
-}
-
-
-if ( ! function_exists( 'ct_mega_menu_item_content' ) ) {
-	function ct_mega_menu_item_content( $item_id ) {
-
-		$meta = array(
-			'content' => get_post_meta( $item_id, 'content', true ),
-			'thumbnail' => get_post_meta( $item_id, 'thumbnail', true ),
-			'related_post' => get_post_meta( $item_id, 'related_post', true )
-		);
-
-		?>
-			<div class="contents">
-
-				<?php if ( ! empty( $meta['content'] ) ) { ?>
-
-					<div class="content">
-						<div class="inner">
-							<?php echo apply_filters( 'the_content', $meta['content'] ); ?>
-						</div>
-					</div>
-
-				<?php } ?>
-
-				<?php if ( ! empty( $meta['related_post'] ) && ( $related_post = get_post( $meta['related_post'] ) ) ) { ?>
-
-					<div class="related-post">
-						<div class="inner">
-
-							<div <?php post_class( 'featured-post-cta', $related_post->ID ); ?>>
-								<a href="<?php echo get_permalink( $related_post->ID ); ?>">
-									<div class="cta-bg">
-										<?php if ( $related_post->post_type == 'case_study' ) { ?>
-											<?php $gallery_photos = get_post_meta( $related_post->ID, 'case_study_gallery_photos', true ); ?>
-											<?php if ( ! empty( $gallery_photos ) ) { ?>
-												<?php echo wp_get_attachment_image( $gallery_photos[0], 'medium_large' ); ?>
-											<?php } ?>
-										<?php } else { ?>
-											<?php echo get_the_post_thumbnail( $related_post->ID, 'medium_large' ); ?>
-										<?php } ?>
-									</div>
-									<div class="inner">
-										<div class="cta-contents">
-											<h4 class="cta-title"><?php echo get_the_title( $related_post->ID ); ?></h4>
-										</div>
-										<div class="cta-label"><span>Learn More</span></div>
-									</div>
-								</a>
-							</div>
-
-						</div>
-					</div>
-
-				<?php } else if ( ! empty( $meta['thumbnail'] ) ) { ?>
-
-					<div class="thumbnail">
-						<div class="inner">
-							<?php echo wp_get_attachment_image( $meta['thumbnail'], 'medium_large' ); ?>
-						</div>
-					</div>
-
-				<?php } ?>
 
 			</div>
 		<?php

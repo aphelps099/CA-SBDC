@@ -1,7 +1,10 @@
 <?php $announcement = apply_filters( 'crown_site_announcement', null ); ?>
 <?php if ( $announcement ) { ?>
-	<div id="site-announcement">
+	<div id="site-announcement" data-announcement-id="<?php echo esc_attr( md5( json_encode( $announcement ) ) ); ?>">
 		<div class="inner">
+
+			<button type="button" class="dismiss">Dismiss</button>
+
 			<div class="container">
 				<div class="inner">
 
@@ -19,6 +22,7 @@
 
 				</div>
 			</div>
+
 		</div>
 	</div>
 <?php } ?>

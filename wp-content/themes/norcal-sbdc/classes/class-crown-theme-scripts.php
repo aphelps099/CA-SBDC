@@ -1,6 +1,6 @@
 <?php
 
-if( ! class_exists( 'Crown_Theme_Scripts' ) ) {
+if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 	class Crown_Theme_Scripts {
 
 
@@ -19,53 +19,55 @@ if( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 
 		public static function register_scripts() {
 
-			wp_register_script(
-				'popperjs',
-				Crown_Theme::get_uri().'/lib/popperjs/dist/umd/popper.min.js',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/popperjs/dist/umd/popper.min.js' ),
-				true
+			$scripts = array(
+				array(
+					'handle' => 'popperjs',
+					'local_path' => '/lib/popperjs/dist/umd/popper.min.js'
+				),
+				array(
+					'handle' => 'bootstrap',
+					'local_path' => '/lib/bootstrap/dist/js/bootstrap.min.js',
+					'deps' => array( 'jquery', 'popperjs' )
+				),
+				array(
+					'handle' => 'slick',
+					'local_path' => '/lib/slick/slick.min.js',
+					'deps' => array( 'jquery' )
+				),
+				array(
+					'handle' => 'blueimp-gallery',
+					'local_path' => '/lib/blueimp-gallery/js/blueimp-gallery.min.js'
+				),
+				array(
+					'handle' => 'odometer',
+					'local_path' => '/lib/odometer/odometer.min.js'
+				),
+				array(
+					'handle' => 'crown-theme-main',
+					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
+					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer' )
+				)
 			);
 
-			wp_register_script(
-				'bootstrap',
-				Crown_Theme::get_uri().'/lib/bootstrap/dist/js/bootstrap.min.js',
-				array( 'jquery', 'popperjs' ),
-				filemtime( Crown_Theme::get_dir() . '/lib/bootstrap/dist/js/bootstrap.min.js' ),
-				true
-			);
+			foreach ( $scripts as $script ) {
 
-			wp_register_script(
-				'slick',
-				Crown_Theme::get_uri().'/lib/slick/slick.min.js',
-				array( 'jquery' ),
-				filemtime( Crown_Theme::get_dir() . '/lib/slick/slick.min.js' ),
-				true
-			);
+				$script = array_merge( array(
+					'handle' => '',
+					'local_path' => '',
+					'src' => '',
+					'ver' => '',
+					'deps' => array(),
+					'in_footer' => true
+				), $script);
 
-			wp_register_script(
-				'blueimp-gallery',
-				Crown_Theme::get_uri().'/lib/blueimp-gallery/js/blueimp-gallery.min.js',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/blueimp-gallery/js/blueimp-gallery.min.js' ),
-				true
-			);
+				if ( ! empty( $script['local_path'] ) ) {
+					$script['src'] = empty( $script['src'] ) ? Crown_Theme::get_uri() . $script['local_path'] : $script['src'];
+					$script['ver'] = empty( $script['ver'] ) ? filemtime( Crown_Theme::get_dir() . $script['local_path'] ) : $script['ver'];
+				}
 
-			wp_register_script(
-				'odometer',
-				Crown_Theme::get_uri().'/lib/odometer/odometer.min.js',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/odometer/odometer.min.js' ),
-				true
-			);
+				wp_register_script( $script['handle'], $script['src'], $script['deps'], $script['ver'], $script['in_footer'] );
 
-			wp_register_script(
-				'crown-theme-main',
-				Crown_Theme::get_uri() . '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
-				array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer' ),
-				filemtime( Crown_Theme::get_dir() . '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js' ),
-				true
-			);
+			}
 
 		}
 

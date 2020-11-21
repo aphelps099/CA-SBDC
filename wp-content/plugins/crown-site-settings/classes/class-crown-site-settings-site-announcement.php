@@ -198,8 +198,22 @@ if ( ! class_exists( 'Crown_Site_Settings_Site_Announcement' ) ) {
 				if ( strtotime( $b['start_date'] ) === false ) return -1;
 				return -strcmp( $a['start_date'], $b['start_date'] );
 			} );
+
+			if ( ! empty( $site_announcements ) ) {
+				$a = $site_announcements[0];
+				$announcement = (object) array(
+					'message' => $a['message'],
+					'link' => (object) array(
+						'url' => $a['link_url'],
+						'label' => $a['link_label'],
+						'options' => $a['link_options']
+					),
+					'bg_color' => $a['bg_color'],
+					'text_color' => $a['text_color']
+				);
+			}
 			
-			return ! empty( $site_announcements ) ? $site_announcements[0] : $announcement;
+			return $announcement;
 
 		}
 

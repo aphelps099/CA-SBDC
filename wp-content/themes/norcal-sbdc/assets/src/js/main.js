@@ -2,27 +2,15 @@
 
 (function($) {
 
-	var stickyHeaderData = {
-		scrollTopDelay: 100,
-		scrollUpDelay: 40,
-		prevScrollTop: 0,
-		furthestScrollDown: 0,
-		height: 0,
-		topOffset: 0
-	};
-
 
 	$(document).ready(function() {
 
 		$.wptheme.initHeader();
 		$.wptheme.initMobileMenu();
-		// $.wptheme.initCTAs();
 		$.wptheme.initGalleries();
 		$.wptheme.initSliders();
 		$.wptheme.initModals();
 		$.wptheme.initOdometers();
-		// $.wptheme.initSocialSharingLinks();
-		// $.wptheme.initGatedContent();
 		$.wptheme.initExpandableContent();
 		$.wptheme.initCoreValuesBlocks();
 		$.wptheme.initCaseStudyIndexBlocks();

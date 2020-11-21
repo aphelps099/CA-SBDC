@@ -1,6 +1,6 @@
 <?php
 
-if( ! class_exists( 'Crown_Theme_Styles' ) ) {
+if ( ! class_exists( 'Crown_Theme_Styles' ) ) {
 	class Crown_Theme_Styles {
 
 
@@ -18,47 +18,54 @@ if( ! class_exists( 'Crown_Theme_Styles' ) ) {
 
 		public static function register_styles() {
 
-			wp_register_style(
-				'crown-theme-google-fonts',
-				'https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700;1,800;1,900&family=Ubuntu+Condensed&display=swap',
-				array(),
-				null
+			$styles = array(
+				array(
+					'handle' => 'crown-theme-google-fonts',
+					'src' => 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'
+				),
+				array(
+					'handle' => 'slick',
+					'local_path' => '/lib/slick/slick.css'
+				),
+				array(
+					'handle' => 'slick-theme',
+					'local_path' => '/lib/slick/slick-theme.css',
+					'deps' => array( 'slick' )
+				),
+				array(
+					'handle' => 'blueimp-gallery',
+					'local_path' => '/lib/blueimp-gallery/css/blueimp-gallery.min.css'
+				),
+				array(
+					'handle' => 'odometer-theme-default',
+					'local_path' => '/lib/odometer/odometer-theme-default.css'
+				),
+				array(
+					'handle' => 'crown-theme-style',
+					'local_path' => '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
+					'deps' => array( 'crown-theme-google-fonts', 'slick', 'blueimp-gallery', 'odometer-theme-default' )
+				)
 			);
 
-			wp_register_style(
-				'slick',
-				Crown_Theme::get_uri() . '/lib/slick/slick.css',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/slick/slick.css' )
-			);
+			foreach ( $styles as $style ) {
 
-			wp_register_style(
-				'slick-theme',
-				Crown_Theme::get_uri() . '/lib/slick/slick-theme.css',
-				array( 'slick' ),
-				filemtime( Crown_Theme::get_dir() . '/lib/slick/slick-theme.css' )
-			);
+				$style = array_merge( array(
+					'handle' => '',
+					'local_path' => '',
+					'src' => '',
+					'ver' => '',
+					'deps' => array(),
+					'media' => 'all'
+				), $style);
 
-			wp_register_style(
-				'blueimp-gallery',
-				Crown_Theme::get_uri() . '/lib/blueimp-gallery/css/blueimp-gallery.min.css',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/blueimp-gallery/css/blueimp-gallery.min.css' )
-			);
+				if ( ! empty( $style['local_path'] ) ) {
+					$style['src'] = empty( $style['src'] ) ? Crown_Theme::get_uri() . $style['local_path'] : $style['src'];
+					$style['ver'] = empty( $style['ver'] ) ? filemtime( Crown_Theme::get_dir() . $style['local_path'] ) : $style['ver'];
+				}
 
-			wp_register_style(
-				'odometer-theme-default',
-				Crown_Theme::get_uri() . '/lib/odometer/odometer-theme-default.css',
-				array(),
-				filemtime( Crown_Theme::get_dir() . '/lib/odometer/odometer-theme-default.css' )
-			);
+				wp_register_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
 
-			wp_register_style(
-				'crown-theme-style',
-				Crown_Theme::get_uri() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
-				array( 'crown-theme-google-fonts', 'slick', 'blueimp-gallery', 'odometer-theme-default' ),
-				filemtime( Crown_Theme::get_dir() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css' )
-			);
+			}
 
 		}
 

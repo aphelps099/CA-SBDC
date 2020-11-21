@@ -35,6 +35,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 			// add_action( 'admin_menu', array( __CLASS__, 'add_reusable_blocks_menu_page' ), 50 );
 			add_filter( 'display_post_states', array( __CLASS__, 'filter_display_post_states' ), 10, 2 );
 
+			add_filter( 'crown_site_footer_copyright', array( __CLASS__, 'filter_crown_site_footer_copyright' ));
+			add_filter( 'crown_site_footer_description', array( __CLASS__, 'filter_crown_site_footer_description' ));
+
 		}
 
 
@@ -155,6 +158,19 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 			// 	$post_states['category-tpl-cta'] = 'Category Template CTA';
 			// }
 			return $post_states;
+		}
+
+
+		public static function filter_crown_site_footer_copyright( $copyright = '' ) {
+			$copyright = get_option( 'theme_config_footer_copyright' );
+			$copyright = str_replace( '%%year%%', current_time( 'Y' ), $copyright );
+			return $copyright;
+		}
+
+
+		public static function filter_crown_site_footer_description( $description = '' ) {
+			$description = get_option( 'theme_config_footer_description' );
+			return $description;
 		}
 
 

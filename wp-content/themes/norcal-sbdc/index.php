@@ -1,6 +1,7 @@
 <?php get_header(); ?>
 
 <?php
+
 	$page_title = __( 'Latest', 'crown_theme' );
 	$featured_post_ids = array();
 
@@ -20,7 +21,6 @@
 		$page_title = __( '404: Page Not Found', 'crown_theme' );
 	}
 	
-
 	if ( ! is_paged() ) {
 		if ( is_category() ) {
 			$category = get_queried_object();

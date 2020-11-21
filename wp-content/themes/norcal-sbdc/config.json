@@ -21,8 +21,6 @@
 		{ "name": "White", "slug": "white", "color": "#FFFFFF" }
 	],
 
-	"site_logo_size": { "width": 250, "height": 40, "flex_width": true, "flex_height": true },
-
 	"post_thumbnail_size": { "width": 200, "height": 200, "crop": true },
 
 	"image_sizes": [
@@ -41,16 +39,21 @@
 
 	"nav_menu_locations": [
 		{ "name": "Header: Primary Navigation", "slug": "header_primary" },
+		{ "name": "Header: CTA Links", "slug": "header_cta_links" },
 		{ "name": "Mobile Menu: Primary Navigation", "slug": "mobile_menu_primary" },
 		{ "name": "Footer: Legal Links", "slug": "footer_legal_links" }
 	],
 
 	"widget_locations": [
+		{ "name": "Blog Sidebar", "slug": "blog-sidebar", "description": "Widgets in this area will be displayed in the sidebar of the blog index." },
 		{ "name": "Footer #1", "slug": "footer-1", "description": "Widgets in this area will be displayed in the first column in the footer." },
 		{ "name": "Footer #2", "slug": "footer-2", "description": "Widgets in this area will be displayed in the second column in the footer." },
 		{ "name": "Footer #3", "slug": "footer-3", "description": "Widgets in this area will be displayed in the third column in the footer." },
-		{ "name": "Footer #4", "slug": "footer-4", "description": "Widgets in this area will be displayed in the fourth column in the footer." },
-		{ "name": "Insights Sidebar", "slug": "insights", "description": "Widgets in this area will be displayed in the sidebar of the insights index." }
-	]
+		{ "name": "Footer #4", "slug": "footer-4", "description": "Widgets in this area will be displayed in the fourth column in the footer." }
+	],
+
+	"upload_mimes": {
+		"svg": "image/svg+xml"
+	}
 	
 }

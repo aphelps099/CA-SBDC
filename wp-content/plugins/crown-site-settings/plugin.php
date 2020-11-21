@@ -27,3 +27,4 @@ Crown_Site_Settings_Scripts::init();
 Crown_Site_Settings_Shortcodes::init();
 Crown_Site_Settings_Site_Announcement::init();
 Crown_Site_Settings_Theme_Configuration::init();
+Crown_Site_Settings_Theme_Mega_Menu::init();

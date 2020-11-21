@@ -46,7 +46,7 @@ if ( ! function_exists( 'ct_bg_image_css' ) ) {
 
 		$css = array();
 
-		$grid_breakpoints = Crown_Theme::get_grid_breakpoints();
+		$grid_breakpoints = Crown_Theme_Config::get_grid_breakpoints();
 		foreach ( $grid_breakpoints as $grid_breakpoint ) {
 			if ( array_key_exists( $grid_breakpoint->name, $breakpoint_sizes ) ) {
 				$image_source = ct_get_image_src( $attachment_id, $breakpoint_sizes[ $grid_breakpoint->name ] );
@@ -142,20 +142,5 @@ if ( ! function_exists( 'ct_get_related_posts' ) ) {
 		}
 		return array_map( function( $n ) { return $n->post; }, $ranked_posts);
 
-	}
-}
-
-
-if ( ! function_exists( 'ct_get_post_gated_content_settings' ) ) {
-	function ct_get_post_gated_content_settings( $post_id = 0 ) {
-		$post_id = ! empty( $post_id ) ? $post_id : get_the_ID();
-		$settings = (object) array(
-			'active' => boolval( get_post_meta( get_the_ID(), 'post_gated_content_active', true ) ),
-			'title' => get_post_meta( get_the_ID(), 'post_gated_content_title', true ),
-			'embed_script' => get_post_meta( get_the_ID(), 'post_gated_content_embed_script', true ),
-			'disclaimer' => get_post_meta( get_the_ID(), 'post_gated_content_disclaimer', true )
-		);
-		if ( empty( $settings->embed_script ) ) $settings->active = false;
-		return $settings;
 	}
 }
