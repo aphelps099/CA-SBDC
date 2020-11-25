@@ -4,48 +4,11 @@ h1, h2, h3, h4, h5, h6 {
 	+ h1, + h2, + h3, + h4, + h5, + h6 {
 		margin-top: -.5rem;
 	}
-	&.is-style-section-heading {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		&:before,
-		&:after {
-			content: '';
-			display: block;
-			border-top: 1px solid #000;
-			opacity: .15;
-			flex: 1 1 auto;
-		}
-		&:before {
-			display: none;
-			margin-right: 20px;
-			@include media-breakpoint-up(lg) { margin-right: 30px; }
-			@include media-breakpoint-up(xl) { margin-right: 40px; }
-		}
-		&:after {
-			margin-left: 20px;
-			@include media-breakpoint-up(lg) { margin-left: 30px; }
-			@include media-breakpoint-up(xl) { margin-left: 40px; }
-		}
-		&.has-text-align-center {
-			&:before { display: block; }
-		}
-		&.has-text-align-right {
-			&:before { display: block; }
-			&:after { display: none; }
-		}
-		.text-color-light & {
-			&:before, &:after { border-color: #fff; opacity: .3; }
-		}
-		.text-color-dark & {
-			&:before, &:after { border-color: #000; opacity: .15; }
-		}
-	}
 }
 
 h1.jumbo {
 	@include media-breakpoint-up(md) {
-		font-size: 3.75rem;
+		font-size: 4rem;
 		line-height: 1.2;
 	}
 }
@@ -100,10 +63,7 @@ blockquote {
 
 ul.is-style-dashed {
 	list-style: none;
-	line-height: 1.5;
 	padding-left: 30px;
-	font-weight: 700;
-	font-size: 1rem;
 	> li {
 		margin-bottom: .5rem;
 		position: relative;
@@ -112,7 +72,7 @@ ul.is-style-dashed {
 			display: block;
 			width: 16px;
 			height: 2px;
-			background-color: $sky-blue;
+			background-color: $primary;
 			position: absolute;
 			left: -30px;
 			top: 10px;

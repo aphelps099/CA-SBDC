@@ -9,15 +9,18 @@
 	],
 
 	"color_palette": [
-		{ "name": "Blue", "slug": "blue", "color": "#002F87" },
-		{ "name": "Green", "slug": "green", "color": "#A2BF2F" },
-		{ "name": "Sky Blue", "slug": "sky-blue", "color": "#0099D8" },
-		{ "name": "Gray", "slug": "gray", "color": "#7B8D96" },
-		{ "name": "Onyx", "slug": "onyx", "color": "#3B424E" },
-		{ "name": "Baby Blue", "slug": "baby-blue", "color": "#BADCED" },
-		{ "name": "Light Blue", "slug": "light-blue", "color": "#ECF1F4" },
-		{ "name": "Light Gray", "slug": "light-gray", "color": "#B8C0C4" },
-		{ "name": "Ghost", "slug": "ghost", "color": "#F7F7F7" },
+		{ "name": "Blue", "slug": "blue", "color": "#007bff" },
+		{ "name": "Indigo", "slug": "indigo", "color": "#6610f2" },
+		{ "name": "Purple", "slug": "purple", "color": "#6f42c1" },
+		{ "name": "Pink", "slug": "pink", "color": "#e83e8c" },
+		{ "name": "Red", "slug": "red", "color": "#dc3545" },
+		{ "name": "Orange", "slug": "orange", "color": "#fd7e14" },
+		{ "name": "Yellow", "slug": "yellow", "color": "#ffc107" },
+		{ "name": "Green", "slug": "green", "color": "#28a745" },
+		{ "name": "Teal", "slug": "teal", "color": "#20c997" },
+		{ "name": "Cyan", "slug": "cyan", "color": "#17a2b8" },
+		{ "name": "Dark Gray", "slug": "dark-gray", "color": "#343a40" },
+		{ "name": "Ghost", "slug": "ghost", "color": "#FAFAFA" },
 		{ "name": "White", "slug": "white", "color": "#FFFFFF" }
 	],
 

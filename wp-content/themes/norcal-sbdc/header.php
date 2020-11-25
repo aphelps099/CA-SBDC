@@ -25,7 +25,6 @@
 			<?php get_template_part( 'template-parts/site-header' ); ?>
 
 			<div id="main" role="main">
-				<div class="header-spacer"></div>
 				<div class="inner">
 					<div class="container">
 						<div class="inner">

@@ -2,65 +2,60 @@
 
 // Colors
 
-$blue:       #002F87 !default;
-$green:      #A2BF2F !default;
-$sky-blue:   #0099D8 !default;
-$gray:       #7B8D96 !default;
-$onyx:       #3B424E !default;
-$baby-blue:  #BADCED !default;
-$light-blue: #ECF1F4 !default;
-$light-gray: #B8C0C4 !default;
-$ghost:      #F7F7F7 !default;
+$blue:       #007bff !default;
+$indigo:     #6610f2 !default;
+$purple:     #6f42c1 !default;
+$pink:       #e83e8c !default;
+$red:        #dc3545 !default;
+$orange:     #fd7e14 !default;
+$yellow:     #ffc107 !default;
+$green:      #28a745 !default;
+$teal:       #20c997 !default;
+$cyan:       #17a2b8 !default;
+$dark-gray:  #343a40 !default;
+$ghost:      #FAFAFA !default;
 $white:      #FFFFFF !default;
 
 
 $colors: () !default;
 $colors: map-merge(
 	(
-		"blue":       $blue,
-		"green":      $green,
-		"sky-blue":   $sky-blue,
-		"gray":       $gray,
-		"onyx":       $onyx,
-		"baby-blue":  $baby-blue,
-		"light-blue": $light-blue,
-		"light-gray": $light-gray,
-		"ghost":      $ghost,
-		"white":      $white
+		"blue": $blue,
+		"indigo": $indigo,
+		"purple": $purple,
+		"pink": $pink,
+		"red": $red,
+		"orange": $orange,
+		"yellow": $yellow,
+		"green": $green,
+		"teal": $teal,
+		"cyan": $cyan,
+		"dark-gray": $dark-gray,
+		"ghost": $ghost,
+		"white": $white
 	),
 	$colors
 );
 
 $primary:       $blue !default;
-$secondary:     $sky-blue !default;
-$light:         $ghost !default;
-$dark:          $onyx !default;
+$secondary:     $indigo !default;
+$light:         $white !default;
+$dark:          $dark-gray !default;
 
 $theme-colors: () !default;
 $theme-colors: map-merge(
-	(
-		"blue":       $blue,
-		"green":      $green,
-		"sky-blue":   $sky-blue,
-		"gray":       $gray,
-		"onyx":       $onyx,
-		"baby-blue":  $baby-blue,
-		"light-blue": $light-blue,
-		"light-gray": $light-gray,
-		"ghost":      $ghost,
-		"white":      $white
-	),
+	$colors,
 	$theme-colors
 );
 
 $yiq-contrasted-threshold:  168 !default; // acceptable values are between 0 and 255
-$yiq-text-dark:             $onyx !default;
-$yiq-text-light:            $white !default;
+$yiq-text-dark:             $dark !default;
+$yiq-text-light:            $light !default;
 
 $body-bg:                   $white !default;
-$body-color:                $onyx !default;
+$body-color:                $dark !default;
 
-$link-color:                $sky-blue !default;
+$link-color:                $primary !default;
 $link-decoration:           none !default;
 $link-hover-color:          darken($link-color, 15%) !default;
 $link-hover-decoration:     none !default;
@@ -80,24 +75,26 @@ $grid-breakpoints: (
 	xl: 1200px
 ) !default;
 
+$grid-gutter-width:           2rem !default;
+
 $container-padding-x: (
-	xs: 15px,
-	sm: 15px,
-	md: 20px,
-	lg: 30px,
-	xl: 40px
+	xs: 1rem,
+	sm: 1rem,
+	md: 1.5rem,
+	lg: 2rem,
+	xl: 2.5rem
 ) !default;
 
 $container-max-widths: (
-	sm: 1230px + (map-get($container-padding-x, sm) * 2),
-	md: 1240px + (map-get($container-padding-x, md) * 2),
-	lg: 1250px + (map-get($container-padding-x, lg) * 2),
-	xl: 1260px + (map-get($container-padding-x, xl) * 2)
+	sm: 1230px + rem-to-px(map-get($container-padding-x, sm) * 2),
+	md: 1240px + rem-to-px(map-get($container-padding-x, md) * 2),
+	lg: 1250px + rem-to-px(map-get($container-padding-x, lg) * 2),
+	xl: 1260px + rem-to-px(map-get($container-padding-x, xl) * 2)
 ) !default;
 
 $container-effective-max-width: 1260px;
 
-$mobile-menu-width: 260px;
+$mobile-menu-width: 16rem;
 
 
 // Components
@@ -114,17 +111,18 @@ $component-active-bg:         $blue !default;
 
 // Typography
 
-$font-family-sans-serif:      'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
-$font-family-sans-serif-alt:  'Ubuntu Condensed', #{$font-family-sans-serif} !default;
+$font-family-sans-serif:      "Roboto", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif-alt:  #{$font-family-sans-serif} !default;
 
-$font-size-base:              1.125rem !default; // Assumes the browser default, typically `16px`
-$font-size-lg:                1.375rem !default;
-$font-size-sm:                0.875rem !default;
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                1.25rem !default;
+$font-size-sm:                0.75rem !default;
 
 $font-weight-lighter:         100 !default;
 $font-weight-light:           300 !default;
 $font-weight-normal:          400 !default;
 $font-weight-bold:            700 !default;
+$font-weight-black:           900 !default;
 $font-weight-bolder:          bolder !default;
 $font-weight-base:            $font-weight-normal !default;
 
@@ -132,14 +130,14 @@ $line-height-base:            1.4 !default;
 $line-height-lg:              1.6 !default;
 $line-height-sm:              1.2 !default;
 
-$h1-font-size:                2.875rem !default;
-$h2-font-size:                1.875rem !default;
-$h3-font-size:                1.5rem !default;
-$h4-font-size:                1.25rem !default;
-$h5-font-size:                1.125rem !default;
+$h1-font-size:                3rem !default;
+$h2-font-size:                2.5rem !default;
+$h3-font-size:                2rem !default;
+$h4-font-size:                1.5rem !default;
+$h5-font-size:                1.25rem !default;
 $h6-font-size:                1rem !default;
 
-$headings-margin-bottom:      0.875rem !default;
+$headings-margin-bottom:      1rem !default;
 $headings-font-family:        $font-family-sans-serif !default;
 $headings-font-weight:        $font-weight-bold !default;
 $headings-line-height:        1.2 !default;
@@ -156,7 +154,7 @@ $lead-font-weight:            $font-weight-base !default;
 
 // Buttons + Forms
 
-$input-btn-padding-y:         .75rem !default;
+$input-btn-padding-y:         0.75rem !default;
 $input-btn-padding-x:         1rem !default;
 $input-btn-font-family:       $font-family-sans-serif !default;
 $input-btn-font-size:         $font-size-base !default;
@@ -177,28 +175,28 @@ $input-btn-border-width:      $border-width !default;
 
 // Buttons
 
-$btn-padding-y:               .93rem !default;
+$btn-padding-y:               1rem !default;
 $btn-padding-x:               1.5rem !default;
 $btn-font-family:             $font-family-sans-serif !default;
-$btn-font-size:               0.875rem !default;
+$btn-font-size:               1rem !default;
 $btn-line-height:             $input-btn-line-height !default;
 
-$btn-padding-y-sm:            .56rem !default;
+$btn-padding-y-sm:            0.75rem !default;
 $btn-padding-x-sm:            1rem !default;
 $btn-font-size-sm:            0.75rem !default;
 $btn-line-height-sm:          $input-btn-line-height-sm !default;
 
-$btn-padding-y-lg:            1.06rem !default;
+$btn-padding-y-lg:            1.25rem !default;
 $btn-padding-x-lg:            1.75rem !default;
 $btn-font-size-lg:            1.25rem !default;
 $btn-line-height-lg:          $input-btn-line-height-lg !default;
 
 $btn-font-weight:             $font-weight-bold !default;
-$btn-letter-spacing:          0.1em !default;
+$btn-letter-spacing:          0 !default;
 
-$btn-border-radius:           100rem !default;
-$btn-border-radius-lg:        100rem !default;
-$btn-border-radius-sm:        100rem !default;
+$btn-border-radius:           .1875rem !default;
+$btn-border-radius-lg:        .25rem !default;
+$btn-border-radius-sm:        .125rem !default;
 
 
 // Forms

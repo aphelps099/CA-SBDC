@@ -28,17 +28,17 @@ if ( ! function_exists( 'ct_social_links' ) ) {
 			);
 			if ( empty( $link->url ) ) continue;
 			if ( $link->slug == 'facebook' ) {
-				// $link->icon = ct_get_icon( 'brands/facebook-f', 'font-awesome' );
+				$link->icon = ct_get_icon( 'brands/facebook-f', 'font-awesome' );
 			} else if ( $link->slug == 'google_plus' ) {
 				$link->label = 'Google+';
-				// $link->icon = ct_get_icon( 'brands/google-plus-g', 'font-awesome' );
+				$link->icon = ct_get_icon( 'brands/google-plus-g', 'font-awesome' );
 			} else if ( $link->slug == 'linkedin' ) {
 				$link->label = 'LinkedIn';
-				// $link->icon = ct_get_icon( 'brands/linkedin-in', 'font-awesome' );
+				$link->icon = ct_get_icon( 'brands/linkedin-in', 'font-awesome' );
 			} else if ( $link->slug == 'youtube' ) {
 				$link->label = 'YouTube';
 			} else if ( $link->slug == 'pinterest' ) {
-				// $link->icon = ct_get_icon( 'brands/pinterest-p', 'font-awesome' );
+				$link->icon = ct_get_icon( 'brands/pinterest-p', 'font-awesome' );
 			}
 			$links[] = $link;
 		}
@@ -201,6 +201,170 @@ if ( ! function_exists( 'ct_app_links' ) ) {
 				</ul>
 
 			</div>
+		<?php
+
+	}
+}
+
+
+if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
+	function ct_nav_mega_menu( $args = array() ) {
+
+		$args = array_merge( array(
+			'menu' => null,
+			'id' => '',
+			'class' => ''
+		), $args );
+
+		$menu = $args['menu'];
+		if ( empty( $menu ) || empty( $menu->items ) ) return;
+
+		?>
+			<ul <?php echo ! empty( $args['id'] ) ? 'id="' . esc_attr( $args['id'] ) . '"' : ''; ?> class="menu mega-menu <?php echo esc_attr( $args['class'] ); ?>">
+				
+				<?php foreach ( $menu->items as $menu_item ) { ?>
+					<li id="menu-item-<?php echo $menu_item->id; ?>" class="menu-item menu-item-<?php echo $menu_item->id; ?> mega-menu-item">
+
+						<a <?php echo ! empty( $menu_item->link->href ) ? 'href="' . esc_attr( $menu_item->link->href ) . '"' : ''; ?> <?php echo ! empty( $menu_item->link->href ) ? 'target="' . $menu_item->link->target . '"' : ''; ?>>
+							<?php echo $menu_item->title; ?>
+						</a>
+
+						<?php if ( ! in_array( $menu_item->type, array( 'disabled' ) ) ) { ?>
+							<div id="sub-menu-<?php echo $menu_item->id; ?>" class="sub-menu sub-menu-<?php echo $menu_item->id; ?> mega-sub-menu <?php echo $menu_item->type; ?>">
+								<div class="inner">
+
+									<?php if ( $menu_item->sections->primary ) { ?>
+
+										<section class="sub-menu-section primary <?php echo $menu_item->sections->primary->layout; ?>">
+											<div class="container">
+												<div class="inner">
+
+													<?php if ( ! empty( $menu_item->sections->primary->title ) ) { ?>
+														<h3><?php echo $menu_item->sections->primary->title; ?></h3>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->primary->menus ) ) { ?>
+														<div class="sub-menu-menus">
+															<?php foreach ( $menu_item->sections->primary->menus as $sub_menu ) { ?>
+																<div class="sub-menu-container">
+																	<?php if ( ! empty( $sub_menu->title ) ) { ?>
+																		<h4>
+																			<?php if ( ! empty( $sub_menu->link->href ) ) { ?>
+																				<a href="<?php echo esc_attr( $sub_menu->link->href ); ?>" target="<?php echo $sub_menu->link->target; ?>"><?php echo $sub_menu->title; ?></a>
+																			<?php } else { ?>
+																				<?php echo $sub_menu->title; ?>
+																			<?php } ?>
+																		</h4>
+																	<?php } ?>
+																	<?php if ( ! empty( $sub_menu->menu_id ) ) { ?>
+																		<?php wp_nav_menu( array( 'menu' => $sub_menu->menu_id ) ); ?>
+																	<?php } ?>
+																</div>
+															<?php } ?>
+														</div>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->primary->content ) ) { ?>
+														<div class="sub-menu-content">
+															<?php echo apply_filters( 'the_content', $menu_item->sections->primary->content ); ?>
+														</div>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->primary->cta_links ) ) { ?>
+														<div class="sub-menu-cta-links">
+															<ul>
+																<?php foreach ( $menu_item->sections->primary->cta_links as $cta_link ) { ?>
+																	<?php if ( ! empty( $cta_link->href ) ) { ?>
+																		<li>
+																			<a href="<?php echo esc_attr( $cta_link->href ); ?>" target="<?php echo $cta_link->target; ?>">
+																				<?php echo ! empty( $cta_link->label ) ? $cta_link->label : 'Learn More'; ?>
+																			</a>
+																		</li>
+																	<?php } ?>
+																<?php } ?>
+															</ul>
+														</div>
+													<?php } ?>
+
+													<?php if ( $menu_item->type == 'events' ) { ?>
+														<div class="sub-menu-events">
+															<em>Upcoming events go here...</em>
+														</div>
+													<?php } ?>
+
+												</div>
+											</div>
+										</section>
+
+									<?php } ?>
+
+									<?php if ( $menu_item->sections->secondary ) { ?>
+
+										<section class="sub-menu-section secondary <?php echo $menu_item->sections->secondary->layout; ?>">
+											<div class="container">
+												<div class="inner">
+
+													<?php if ( ! empty( $menu_item->sections->secondary->title ) ) { ?>
+														<h3><?php echo $menu_item->sections->secondary->title; ?></h3>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->secondary->menus ) ) { ?>
+														<div class="sub-menu-menus">
+															<?php foreach ( $menu_item->sections->secondary->menus as $sub_menu ) { ?>
+																<div class="sub-menu-container">
+																	<?php if ( ! empty( $sub_menu->title ) ) { ?>
+																		<h4>
+																			<?php if ( ! empty( $sub_menu->link->href ) ) { ?>
+																				<a href="<?php echo esc_attr( $sub_menu->link->href ); ?>" target="<?php echo $sub_menu->link->target; ?>"><?php echo $sub_menu->title; ?></a>
+																			<?php } else { ?>
+																				<?php echo $sub_menu->title; ?>
+																			<?php } ?>
+																		</h4>
+																	<?php } ?>
+																	<?php if ( ! empty( $sub_menu->menu_id ) ) { ?>
+																		<?php wp_nav_menu( array( 'menu' => $sub_menu->menu_id ) ); ?>
+																	<?php } ?>
+																</div>
+															<?php } ?>
+														</div>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->secondary->content ) ) { ?>
+														<div class="sub-menu-content">
+															<?php echo apply_filters( 'the_content', $menu_item->sections->secondary->content ); ?>
+														</div>
+													<?php } ?>
+
+													<?php if ( ! empty( $menu_item->sections->secondary->cta_links ) ) { ?>
+														<div class="sub-menu-cta-links">
+															<ul>
+																<?php foreach ( $menu_item->sections->secondary->cta_links as $cta_link ) { ?>
+																	<?php if ( ! empty( $cta_link->href ) ) { ?>
+																		<li>
+																			<a href="<?php echo esc_attr( $cta_link->href ); ?>" target="<?php echo $cta_link->target; ?>">
+																				<?php echo ! empty( $cta_link->label ) ? $cta_link->label : 'Learn More'; ?>
+																			</a>
+																		</li>
+																	<?php } ?>
+																<?php } ?>
+															</ul>
+														</div>
+													<?php } ?>
+
+												</div>
+											</div>
+										</section>
+
+									<?php } ?>
+
+								</div>
+							</div>
+						<?php } ?>
+
+					</li>
+				<?php } ?>
+
+			</ul>
 		<?php
 
 	}

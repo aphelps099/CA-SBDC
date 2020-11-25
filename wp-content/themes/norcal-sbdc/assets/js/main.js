@@ -5,6 +5,7 @@
 
 	$(document).ready(function() {
 
+		$.wptheme.initSiteAnnouncement();
 		$.wptheme.initHeader();
 		$.wptheme.initMobileMenu();
 		$.wptheme.initGalleries();
@@ -29,16 +30,41 @@
 	$.wptheme = (function(wptheme) {
 
 
+		wptheme.initSiteAnnouncement = function() {
+
+			$(document).on('click', '#site-announcement button.dismiss', function(e) {
+				var announcement = $('#site-announcement');
+				announcement.removeClass('active');
+				var id = announcement.data('announcement-id');
+				setCookie('site_announcement_' + id, 'dismissed', 365);
+			});
+
+			var announcement = $('#site-announcement');
+			if(announcement.length) {
+				var id = announcement.data('announcement-id');
+				var status = getCookie('site_announcement_' + id);
+				if(status != 'dismissed') announcement.addClass('active');
+			}
+
+		};
+
+
 		wptheme.initHeader = function() {
 
 			var adjustSubMenus = function() {
 				var windowWidth = $('body').width();
 				var gap = 10;
-				$('#header-primary-navigation .sub-menu').each(function(i, el) {
+				$('#header-primary-navigation .sub-menu:not(.mega-sub-menu)').each(function(i, el) {
 					var subMenu = $(el);
+					var isSubSubMenu = subMenu.parent().closest('.sub-menu').length;
 					subMenu.css({ marginLeft: 0 });
+					if(isSubSubMenu) subMenu.removeClass('drop-left');
 					if(subMenu.offset().left + subMenu.outerWidth() > windowWidth - gap) {
-						subMenu.css({ marginLeft: (windowWidth - (subMenu.offset().left + subMenu.outerWidth()) - gap) + 'px' });
+						if(isSubSubMenu) {
+							subMenu.addClass('drop-left');
+						} else {
+							subMenu.css({ marginLeft: (windowWidth - (subMenu.offset().left + subMenu.outerWidth()) - gap) + 'px' });
+						}
 					}
 				});
 			};
@@ -47,114 +73,33 @@
 			$(window).on('load', adjustSubMenus);
 			$(window).on('resize', adjustSubMenus);
 
-			// $('#header-primary-navigation').on('click', '.menu-item > a', function(e) {
-			$('#header-primary-navigation').on('mouseenter', '.menu-item', function(e) {
-				var menuItem = $(this).closest('.menu-item');
-				if(menuItem.parent().hasClass('menu') && menuItem.hasClass('menu-item-dropdown-mega-menu')) {
-					var menuItemId = menuItem.attr('id').replace(/^menu-item-/, '');
-					var dropdown = $('#mega-menu-dropdown-' + menuItemId);
-					if(dropdown.length && !menuItem.hasClass('active')) {
-						// e.preventDefault();
-						$('#header-primary-navigation .menu-item.active').not(menuItem.parents('.menu-item.active')).removeClass('active');
-						menuItem.addClass('active');
-						dropdown.addClass('active');
-						$('.sub-menu .menu-item', dropdown).first().trigger('mouseenter');
-						adjustMegaMenuHeight();
-					}
-				} else {
-					var subMenu = $('> .sub-menu', menuItem);
-					if(subMenu.length && !menuItem.hasClass('active')) {
-						e.preventDefault();
-						$('#header-primary-navigation .menu-item.active').not(menuItem.parents('.menu-item.active')).removeClass('active');
-						$('#header .mega-menu-dropdown.active').removeClass('active');
-						menuItem.addClass('active');
-					}
-				}
-			});
-			$('#header-primary-navigation').on('mouseleave', '.menu-item', function(e) {
-				var menuItem = $(this).closest('.menu-item');
-				if(menuItem.hasClass('active')) {
-					menuItem.removeClass('active');
-					if(menuItem.parent().hasClass('menu') && menuItem.hasClass('menu-item-dropdown-mega-menu')) {
-						var menuItemId = menuItem.attr('id').replace(/^menu-item-/, '');
-						var dropdown = $('#mega-menu-dropdown-' + menuItemId);
-						if(dropdown.length) dropdown.removeClass('active');
-					}
-				}
-			});
-			$('#header').on('mousemove', '.mega-menu-dropdown', function(e) {
-				var dropdown = $(this);
-				var menuItemId = dropdown.attr('id').replace(/^mega-menu-dropdown-/, '');
-				dropdown.addClass('active');
-				$('#header-primary-navigation #menu-item-' + menuItemId).addClass('active');
-			});
-			$('#header').on('mouseleave', '.mega-menu-dropdown', function(e) {
-				var dropdown = $(this);
-				var menuItemId = dropdown.attr('id').replace(/^mega-menu-dropdown-/, '');
-				dropdown.removeClass('active');
-				$('#header-primary-navigation #menu-item-' + menuItemId).removeClass('active');
-			});
+			// // activate sub-menus on hover
+			// $('#header-primary-navigation .menu-item').on('mouseenter', function(e) {
+			// 	var menuItem = $(this);
+			// 	var subMenu = $('> .sub-menu', menuItem);
+			// 	if(subMenu.length) {
+			// 		menuItem.addClass('active');
+			// 	}
+			// }).on('mouseleave', function(e) {
+			// 	var menuItem = $(this);
+			// 	if(menuItem.hasClass('active')) {
+			// 		menuItem.removeClass('active');
+			// 	}
+			// });
 
+			// activate sub-menus on click
+			$('#header-primary-navigation a').on('click', function(e) {
+				var menuItem = $(this).closest('.menu-item');
+				var subMenu = $('> .sub-menu', menuItem);
+				$('#header-primary-navigation .menu-item.active').not($(this).parents('.menu-item.active')).removeClass('active');
+				if(subMenu.length && !menuItem.hasClass('active')) {
+					e.preventDefault();
+					menuItem.addClass('active');
+				}
+			});
 			$(document).on('click', function(e) {
 				if($(e.target).closest('#header-primary-navigation-menu').length) return;
-				if($(e.target).closest('.mega-menu-dropdown').length) return;
 				$('#header-primary-navigation .menu-item.active').removeClass('active');
-				$('#header .mega-menu-dropdown.active').removeClass('active');
-			});
-
-			var adjustMegaMenuHeight = function() {
-				$('.mega-menu-dropdown .sub-menu-content').each(function(i, el) {
-					var container = $(el);
-					var startHeight = container.height();
-					container.css({ height: 'auto' });
-					var content = $('.sub-menu-item-content.active', container);
-					if(content.length) {
-						var endHeight = Math.max(content.outerHeight(), container.height());
-						container.css({ height: startHeight });
-						setTimeout(function() { container.css({ height: endHeight }); }, 1);
-					}
-				});
-			};
-			adjustMegaMenuHeight();
-			$(window).on('load', adjustMegaMenuHeight);
-			$(window).on('resize', adjustMegaMenuHeight);
-
-			$('#header').on('mouseenter', '.mega-menu-dropdown .sub-menu .menu-item', function(e) {
-				var menuItem = $(this);
-				if(!menuItem.hasClass('active')) {
-					menuItem.siblings('.active').removeClass('active');
-					menuItem.addClass('active');
-					var menuItemId = menuItem.attr('id').replace(/^menu-item-/, '');
-					var menuItemContent = $('#sub-menu-item-' + menuItemId + '-content');
-					if(menuItemContent) {
-						menuItemContent.siblings('.active').removeClass('active');
-						menuItemContent.addClass('active');
-						adjustMegaMenuHeight();
-					}
-				}
-			});
-
-			$('#header-primary-navigation .menu > .menu-item.menu-item-dropdown-mega-menu').each(function(i, el) {
-				var menuItem = $(el);
-				var subMenu = $('> .sub-menu', menuItem);
-				if(!subMenu.length) return;
-				var menuItemId = menuItem.attr('id').replace(/^menu-item-/, '');
-				var dropdown = $('<div class="mega-menu-dropdown"><div class="inner"><div class="header-spacer"></div><div class="container"><div class="inner"></div></div></div></div>');
-				dropdown.attr('id', 'mega-menu-dropdown-' + menuItemId);
-				$('#header').append(dropdown);
-				var dropdownContents = $('<div class="dropdown-contents"></div>');
-				$('.container > .inner', dropdown).append(dropdownContents);
-				dropdownContents.append(subMenu);
-				dropdownContents.append('<div class="sub-menu-content"></div>');
-				$('> .menu-item', subMenu).each(function(j, el2) {
-					var subMenuItem = $(el2);
-					var subMenuItemId = subMenuItem.attr('id').replace(/^menu-item-/, '');
-					var subMenuItemContent = $('<div class="sub-menu-item-content">' + $('> a', subMenuItem).data('mega-menu-item') + '</div>');
-					subMenuItemContent.attr('id', 'sub-menu-item-' + subMenuItemId + '-content');
-					$('.sub-menu-content', dropdownContents).append(subMenuItemContent);
-					$('> a', subMenuItem).removeAttr('data-mega-menu-item');
-				});
-				$('.menu-item', subMenu).first().trigger('mouseenter');
 			});
 
 		};
@@ -179,6 +124,39 @@
 			$(document).on('close-mobile-menu', function() {
 				var body = $('body');
 				body.removeClass('mobile-menu-active');
+			});
+
+			$('#mobile-menu-primary-navigation .menu-item').each(function(i, el) {
+				var menuItem = $(this);
+				var subMenu = $('> .sub-menu', menuItem);
+				if(subMenu.length) {
+					menuItem.addClass('menu-item-has-sub-menu');
+					menuItem.append('<button type="button" class="toggle">Toggle</button>');
+				}
+			});
+
+			$('#mobile-menu-primary-navigation').on('click', 'button.toggle', function(e) {
+				var menuItem = $(this).closest('.menu-item');
+				var subMenu = $('> .sub-menu', menuItem);
+				if(!menuItem.hasClass('active')) {
+					menuItem.addClass('active');
+					var startHeight = subMenu.outerHeight();
+					subMenu.css({ height: 'auto' });
+					var endHeight = subMenu.outerHeight();
+					subMenu.css({ height: startHeight });
+					setTimeout(function() { subMenu.css({ height: endHeight }); }, 10);
+					setTimeout(function() { subMenu.css({ height: 'auto' }); }, 210);
+				} else {
+					menuItem.removeClass('active');
+					var startHeight = subMenu.outerHeight();
+					var endHeight = 0;
+					subMenu.css({ height: startHeight });
+					setTimeout(function() { subMenu.css({ height: endHeight }); }, 10);
+				}
+			});
+
+			$('#mobile-menu-primary-navigation .menu-item-has-sub-menu.current-menu-item, #mobile-menu-primary-navigation .menu-item-has-sub-menu.current-menu-ancestor').each(function(i, el) {
+				$('> .toggle', el).trigger('click');
 			});
 
 		};
@@ -628,6 +606,7 @@
 		wptheme.initModals = function() {
 
 			$(document).on('click', 'a', function(e) {
+				if(!$(this).attr('href')) return;
 				if((matches = $(this).attr('href').match(/^#case-study-modal-(\d+)$/))) {
 					e.preventDefault();
 					var modal = $($(this).attr('href') + '.modal');
@@ -671,6 +650,7 @@
 			});
 
 			$(document).on('click', 'a', function(e) {
+				if(!$(this).attr('href')) return;
 				if((matches = $(this).attr('href').match(/^#team-member-modal-(\d+)$/))) {
 					e.preventDefault();
 					var modal = $($(this).attr('href') + '.modal');

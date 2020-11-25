@@ -30,6 +30,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 			self::$init = true;
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_admin_pages' ) );
+			add_filter( 'crown_mega_menu', array( __CLASS__, 'filter_mega_menu' ) );
 
 		}
 
@@ -99,16 +100,16 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 												) ) )
 											) ),
 											new FieldGroup( array(
-												'label' => 'Multi-Column Menu',
+												'label' => 'Sub Menu',
 												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'primary_section_menu_layout' ), 'value' => array( 'default' ) ) ) ),
 												'fields' => array(
 													new Field( array(
 														'label' => 'Title',
-														'input' => new TextInput( array( 'name' => 'primary_section_multi_column_menu_title' ) )
+														'input' => new TextInput( array( 'name' => 'primary_section_sub_menu_title' ) )
 													) ),
 													new Field( array(
 														'label' => 'Menu',
-														'input' => new Select( array( 'name' => 'primary_section_multi_column_menu' ) ),
+														'input' => new Select( array( 'name' => 'primary_section_sub_menu' ) ),
 														'getOutputCb' => array( __CLASS__, 'set_menu_select_field_options' ),
 													) )
 												)
@@ -160,6 +161,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 											) ),
 											new FieldGroup( array(
 												'label' => 'CTA Links',
+												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'primary_section_menu_layout' ), 'value' => array( 'disabled' ), 'compare' => 'not in' ) ) ),
 												'fields' => array(
 													new FieldRepeater( array(
 														'name' => 'primary_section_cta_links',
@@ -211,16 +213,16 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 												) ) )
 											) ),
 											new FieldGroup( array(
-												'label' => 'Multi-Column Menu',
+												'label' => 'Sub Menu',
 												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'secondary_section_menu_layout' ), 'value' => array( 'default' ) ) ) ),
 												'fields' => array(
 													new Field( array(
 														'label' => 'Title',
-														'input' => new TextInput( array( 'name' => 'secondary_section_multi_column_menu_title' ) )
+														'input' => new TextInput( array( 'name' => 'secondary_section_sub_menu_title' ) )
 													) ),
 													new Field( array(
 														'label' => 'Menu',
-														'input' => new Select( array( 'name' => 'secondary_section_multi_column_menu' ) ),
+														'input' => new Select( array( 'name' => 'secondary_section_sub_menu' ) ),
 														'getOutputCb' => array( __CLASS__, 'set_menu_select_field_options' ),
 													) )
 												)
@@ -272,6 +274,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 											) ),
 											new FieldGroup( array(
 												'label' => 'CTA Links',
+												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'secondary_section_menu_layout' ), 'value' => array( 'disabled' ), 'compare' => 'not in' ) ) ),
 												'fields' => array(
 													new FieldRepeater( array(
 														'name' => 'secondary_section_cta_links',
@@ -321,6 +324,140 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 				$options[] = array( 'value' => $nav_menu->term_id, 'label' => $nav_menu->name );
 			}
 			$field->getInput()->setOptions( $options );
+		}
+
+
+		public static function filter_mega_menu( $mega_menu = null ) {
+
+			$menu = (object) array(
+				'items' => array()
+			);
+
+			foreach ( get_repeater_entries( 'blog', 'theme_mega_menu_items' ) as $n ) {
+
+				$item = (object) array(
+					'id' => $n['id'],
+					'title' => $n['title'],
+					'link' => (object) array(
+						'href' => $n['link_url'],
+						'target' => in_array( 'open-new-window', $n['link_options'] ) ? '_blank' : '_self'
+					),
+					'type' => $n['type'],
+					'sections' => (object) array(
+						'primary' => null,
+						'secondary' => null
+					)
+				);
+
+				if ( ! in_array( $item->type, array( 'disabled' ) ) ) {
+
+					$section = (object) array(
+						'title' => $n['primary_section_title'],
+						'layout' => $n['primary_section_menu_layout'],
+						'menus' => null,
+						'content' => '',
+						'cta_links' => array()
+					);
+
+					if ( in_array( $section->layout, array( 'default' ) ) ) {
+						$section->menus[] = (object) array(
+							'title' => $n['primary_section_sub_menu_title'],
+							'link' => (object) array(
+								'href' => '',
+								'target' => '_self'
+							),
+							'menu_id' => $n['primary_section_sub_menu']
+						);
+					}
+					
+					if ( in_array( $section->layout, array( 'sub-menus' ) ) ) {
+						foreach ( get_repeater_entries( 'post', 'primary_section_sub_menus', $n['id'] ) as $m ) {
+							$section->menus[] = (object) array(
+								'title' => $m['title'],
+								'link' => (object) array(
+									'href' => $m['link_url'],
+									'target' => in_array( 'open-new-window', $m['link_options'] ) ? '_blank' : '_self'
+								),
+								'menu_id' => $m['menu']
+							);
+						}
+					}
+					
+					if ( in_array( $section->layout, array( 'content' ) ) ) {
+						$section->content = $n['primary_section_content'];
+					}
+
+					if ( ! in_array( $section->layout, array( 'disabled' ) ) ) {
+						foreach ( get_repeater_entries( 'post', 'primary_section_cta_links', $n['id'] ) as $m ) {
+							$section->cta_links[] = (object) array(
+								'href' => $m['url'],
+								'label' => $m['label'],
+								'target' => in_array( 'open-new-window', $m['options'] ) ? '_blank' : '_self'
+							);
+						}
+					}
+					
+					$item->sections->primary = $section;
+
+				}
+
+				if ( ! in_array( $item->type, array( 'disabled' ) ) ) {
+
+					$section = (object) array(
+						'title' => $n['secondary_section_title'],
+						'layout' => $n['secondary_section_menu_layout'],
+						'menus' => null,
+						'content' => '',
+						'cta_links' => array()
+					);
+
+					if ( in_array( $section->layout, array( 'default' ) ) ) {
+						$section->menus[] = (object) array(
+							'title' => $n['secondary_section_sub_menu_title'],
+							'link' => (object) array(
+								'href' => '',
+								'target' => '_self'
+							),
+							'menu_id' => $n['secondary_section_sub_menu']
+						);
+					}
+					
+					if ( in_array( $section->layout, array( 'sub-menus' ) ) ) {
+						foreach ( get_repeater_entries( 'post', 'secondary_section_sub_menus', $n['id'] ) as $m ) {
+							$section->menus[] = (object) array(
+								'title' => $m['title'],
+								'link' => (object) array(
+									'href' => $m['link_url'],
+									'target' => in_array( 'open-new-window', $m['link_options'] ) ? '_blank' : '_self'
+								),
+								'menu_id' => $m['menu']
+							);
+						}
+					}
+					
+					if ( in_array( $section->layout, array( 'content' ) ) ) {
+						$section->content = $n['secondary_section_content'];
+					}
+
+					if ( ! in_array( $section->layout, array( 'disabled' ) ) ) {
+						foreach ( get_repeater_entries( 'post', 'secondary_section_cta_links', $n['id'] ) as $m ) {
+							$section->cta_links[] = (object) array(
+								'href' => $m['url'],
+								'label' => $m['label'],
+								'target' => in_array( 'open-new-window', $m['options'] ) ? '_blank' : '_self'
+							);
+						}
+					}
+					
+					$item->sections->secondary = $section;
+
+				}
+
+				$menu->items[] = $item;
+
+			}
+
+			return ! empty( $menu->items ) ? $menu : $mega_menu;
 		}
 
 

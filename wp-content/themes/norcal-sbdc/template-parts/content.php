@@ -1,4 +1,4 @@
-<article <?php echo is_singular() ? 'id="main-article"' : ''; ?> <?php post_class(); ?> id="post-<?php the_ID(); ?>">
+<article <?php echo is_singular() ? 'id="main-article"' : ''; ?> <?php post_class(); ?>>
 
 	<div <?php echo is_singular() ? 'id="main-content"' : ''; ?> class="entry-content">
 

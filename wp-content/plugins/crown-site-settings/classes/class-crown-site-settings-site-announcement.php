@@ -95,11 +95,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Site_Announcement' ) ) {
 									) ),
 		
 									new FieldGroup( array(
-										'label' => 'Configuration Options',
+										'label' => 'Style',
 										'fields' => array(
 											new Field( array(
 												'label' => 'Background Color',
-												'input' => new ColorInput( array( 'name' => 'bg_color', 'defaultValue' => '#E0003B', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'site_announcement_bg_color' ) ) ) ),
+												'input' => new ColorInput( array( 'name' => 'bg_color', 'defaultValue' => '#444444', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'site_announcement_bg_color' ) ) ) ),
 											) ),
 											new Field( array(
 												'label' => 'Text Color',

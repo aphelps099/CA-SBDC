@@ -5,31 +5,35 @@
 			<div class="upper">
 				<div class="inner">
 
-					<div id="site-footer-title">
-						<a href="<?php echo home_url( '/' ); ?>"><?php echo get_bloginfo( 'name' ); ?></a>
+					<div id="site-footer-branding">
+						<div id="site-footer-title">
+							<a href="<?php echo home_url( '/' ); ?>"><?php echo get_bloginfo( 'name' ); ?></a>
+						</div>
 					</div>
 
-					<div class="widget-areas">
+					<div class="footer-widget-areas">
+						<div class="inner">
+							
+							<aside id="footer-widgets-1" class="footer-widgets">
+								<?php dynamic_sidebar( 'footer-1' ); ?>
+							</aside>
+		
+							<aside id="footer-widgets-2" class="footer-widgets">
+								<?php dynamic_sidebar( 'footer-2' ); ?>
+							</aside>
+		
+							<aside id="footer-widgets-3" class="footer-widgets">
+								<?php dynamic_sidebar( 'footer-3' ); ?>
+							</aside>
+		
+							<aside id="footer-widgets-4" class="footer-widgets">
+								<?php dynamic_sidebar( 'footer-4' ); ?>
+							</aside>
 
-						<aside id="footer-widgets-1" class="footer-widgets">
-							<?php dynamic_sidebar( 'footer-1' ); ?>
-						</aside>
-	
-						<aside id="footer-widgets-2" class="footer-widgets">
-							<?php dynamic_sidebar( 'footer-2' ); ?>
-						</aside>
-	
-						<aside id="footer-widgets-3" class="footer-widgets">
-							<?php dynamic_sidebar( 'footer-3' ); ?>
-						</aside>
-	
-						<aside id="footer-widgets-4" class="footer-widgets">
-							<?php dynamic_sidebar( 'footer-4' ); ?>
-						</aside>
-
+						</div>
 					</div>
 
-					<?php ct_social_links(); ?>
+					<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
 
 				</div>
 			</div>

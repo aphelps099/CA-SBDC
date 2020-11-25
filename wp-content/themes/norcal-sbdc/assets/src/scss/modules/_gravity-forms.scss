@@ -274,7 +274,7 @@ $gform-gutter-width: 10px;
 	}
 	input[type=submit] {
 		@extend .btn;
-		@extend .btn-sky-blue;
+		@extend .btn-primary;
 		display: block;
 		width: 100%;
 		@include media-breakpoint-up(sm) {

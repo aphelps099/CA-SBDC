@@ -1,6 +1,27 @@
 <?php
 
 
+if ( ! function_exists( 'ct_color_yiq' ) ) {
+	function ct_color_yiq( $color, $dark = 'black', $light = 'light', $threshold = 168 ) {
+
+		$hex = preg_replace( '/[^0-9a-f]/i', '', $color );
+		if ( empty( $hex ) || strlen( $hex ) < 3 ) $hex = 'fff';
+		if ( strlen( $hex ) < 6 ) $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+
+		$c = array();
+		for ( $i = 0; $i < 3; $i++ ) $c[] = hexdec( substr( $hex, $i * 2, 2 ) );
+		$r = $c[0];
+		$g = $c[1];
+		$b = $c[2];
+
+		$yiq = ( ( $r * 299 ) + ( $g * 587 ) + ( $b * 114 ) ) / 1000;
+
+		return $yiq >= $threshold ? $dark : $light;
+
+	}
+}
+
+
 if ( ! function_exists( 'ct_get_svg' ) ) {
 	function ct_get_svg( $file ) {
 		$file_path = Crown_Theme::get_dir() . '/' . $file;

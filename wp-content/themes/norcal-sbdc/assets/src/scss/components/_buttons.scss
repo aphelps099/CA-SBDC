@@ -1,8 +1,11 @@
 
 
 .btn {
-	text-transform: uppercase;
 	letter-spacing: $btn-letter-spacing;
+}
+
+.btn-md {
+	@include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
 }
 
 .btn-link {
@@ -18,25 +21,6 @@
 			&:hover {
 				color: darken($value, 15%);
 			}
-		}
-	}
-}
-
-@each $color, $value in $theme-colors {
-	.btn-outline-#{$color} {
-		border-width: 2px;
-		border-style: dashed;
-		padding: calc(#{$btn-padding-y} - (2px - #{$btn-border-width})) calc(#{$btn-padding-x} - (2px - #{$btn-border-width}));
-		@include hover() {
-			color: $value;
-			background-color: fade-out($value, 0.9);
-			// border-color: $active-border;
-		}
-		&.btn-lg {
-			padding: calc($btn-padding-y-lg - (2px - $btn-border-width)) calc(btn-padding-x-lg - (2px - $btn-border-width));
-		}
-		&.btn-sm {
-			padding: calc($btn-padding-y-sm - (2px - $btn-border-width)) calc(btn-padding-x-sm - (2px - $btn-border-width));
 		}
 	}
 }

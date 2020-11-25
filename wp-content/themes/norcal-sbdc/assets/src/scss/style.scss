@@ -1,6 +1,7 @@
 
 
 // variables
+@import 'config/_functions';
 @import 'config/_variables';
 
 // libraries
@@ -8,7 +9,6 @@
 
 // configuration
 @import 'config/_fonts';
-@import 'config/_functions';
 @import 'config/_mixins';
 
 // core
