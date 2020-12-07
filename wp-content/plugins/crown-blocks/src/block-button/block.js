@@ -31,6 +31,7 @@ registerBlockType('crown-blocks/button', {
 		color: { type: 'string', default: '#0099D8' },
 		colorSlug: { type: 'string', default: 'sky-blue' },
 		size: { type: 'string', default: 'md' },
+		displayWithArrowIcon: { type: 'boolean', default: false },
 		displayAsBlock: { type: 'boolean', default: false },
 		disabledDisplayAsBlockBreakpoint: { type: 'string', default: 'none' },
 		openNewWindow: { type: 'boolean', default: false }
@@ -48,6 +49,7 @@ registerBlockType('crown-blocks/button', {
 			color,
 			colorSlug,
 			size,
+			displayWithArrowIcon,
 			displayAsBlock,
 			disabledDisplayAsBlockBreakpoint,
 			openNewWindow
@@ -68,6 +70,8 @@ registerBlockType('crown-blocks/button', {
 		}
 
 		buttonClasses.push('btn-' + size);
+
+		if(displayWithArrowIcon) buttonClasses.push('btn-has-arrow-icon');
 
 		if(displayAsBlock) {
 			if(disabledDisplayAsBlockBreakpoint == 'none') {
@@ -124,6 +128,12 @@ registerBlockType('crown-blocks/button', {
 							{ label: 'Medium', value: 'md' },
 							{ label: 'Large', value: 'lg' }
 						] }
+					/>
+
+					<ToggleControl
+						label={ 'Display with arrow icon' }
+						checked={ displayWithArrowIcon }
+						onChange={ (value) => { setAttributes({ displayWithArrowIcon: value }); } }
 					/>
 
 					<ToggleControl
@@ -207,6 +217,7 @@ registerBlockType('crown-blocks/button', {
 			color,
 			colorSlug,
 			size,
+			displayWithArrowIcon,
 			displayAsBlock,
 			disabledDisplayAsBlockBreakpoint,
 			openNewWindow
@@ -227,6 +238,8 @@ registerBlockType('crown-blocks/button', {
 		}
 
 		buttonClasses.push('btn-' + size);
+
+		if(displayWithArrowIcon) buttonClasses.push('btn-has-arrow-icon');
 
 		if(displayAsBlock) {
 			if(disabledDisplayAsBlockBreakpoint == 'none') {

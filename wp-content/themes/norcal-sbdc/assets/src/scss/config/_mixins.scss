@@ -8,6 +8,7 @@
 	object-fit: cover;
 }
 
+
 @mixin make-button-size($size) {
 	@if $size == sm {
 		@include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-line-height-sm, $btn-border-radius-sm);
@@ -16,4 +17,11 @@
 	} @else {
 		@include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
 	}
+}
+
+
+@mixin icon($icon-char, $icon-font: FontAwesome) {
+	@include fa-icon();
+	font-family: $icon-font;
+	content: $icon-char;
 }

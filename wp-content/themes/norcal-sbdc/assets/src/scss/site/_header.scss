@@ -31,9 +31,14 @@
 
 #site-announcement {
 	line-height: $line-height-sm;
-	font-size: 0.875rem;
+	font-size: 1rem;
 	position: relative;
 	display: none;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	@include media-breakpoint-up(md) {
+		font-size: 1.375rem;
+	}
 	&.active {
 		display: block;
 	}
@@ -105,11 +110,22 @@
 	p {
 		margin: .25rem .5rem;
 	}
+	.message {
+		+ .link {
+			@include media-breakpoint-up(lg) {
+				padding-left: 1rem;
+				border-left: 2px solid #fff;
+			}
+		}
+	}
 	.link {
-		.btn {
-			display: flex;
-			justify-content: center;
-			align-items: center;
+		a {
+			font-weight: 700;
+			color: inherit;
+			transition: opacity .15s;
+			&:hover {
+				opacity: .8;
+			}
 		}
 	}
 }
@@ -128,20 +144,23 @@
 	outline: none;
 	line-height: $line-height-sm;
 	font-size: 0.875rem;
+	order: -1;
+	height: 30px;
 	@include media-breakpoint-up(md) {
 		display: none;
 	}
 	.label {
 		order: -1;
 		margin-right: .5rem;
+		display: none;
 	}
 	.icon {
 		position: relative;
 		display: block;
-		width: 20px;
-		height: 2px;
-		background-color: $dark;
-		box-shadow: 0 5px 0 $dark, 0 -5px 0 $dark;
+		width: 30px;
+		height: 3px;
+		background-color: $dark-blue;
+		box-shadow: 0 8px 0 $dark-blue, 0 -8px 0 $dark-blue;
 		transition: box-shadow .2s, background-color 0s .2s;
 		&:before,
 		&:after {
@@ -152,7 +171,7 @@
 			left: 0;
 			top: 0;
 			position: absolute;
-			background-color: $dark;
+			background-color: $dark-blue;
 			transition: transform .2s ease-out;
 		}
 	}
@@ -175,34 +194,36 @@ body.mobile-menu-active {
 
 #site-branding {
 	flex: 1 1 auto;
-	margin-right: 1rem;
+	margin-left: 1rem;
+	display: flex;
+	justify-content: flex-end;
 	@include media-breakpoint-up(md) {
-		flex: 0 1 auto;
+		flex: 0 0 150px;
+		margin-left: 0;
+		margin-right: 1rem;
+		display: block;
 	}
 	@include media-breakpoint-up(lg) {
 		margin-right: 2rem;
-	}
-}
-#site-logo {
-	a {
-		display: block;
-	}
-	img {
-		max-height: 40px;
-		width: 200px;
-		@include media-breakpoint-up(md) {
-			width: 250px;
-		}
+		flex: 0 0 225px;
 	}
 }
 #site-title {
-	font-size: 1rem;
-	@include media-breakpoint-up(lg) {
-		font-size: 1.25rem;
+	width: 120px;
+	@include media-breakpoint-up(md) {
+		width: 100%;
 	}
-}
-#site-tagline {
-	font-size: 0.875rem;
+	a {
+		display: block;
+		padding-top: 40%;
+		height: 0;
+		overflow: hidden;
+		text-indent: -1000000px;
+		background-image: url(../img/logos/sbdc-california-450w.png);
+		background-repeat: no-repeat;
+		background-size: contain;
+		background-position: left center;
+	}
 }
 
 
@@ -211,9 +232,11 @@ body.mobile-menu-active {
 
 #header-primary-cta-links {
 	margin-right: 1rem;
+	display: none;
 	@include media-breakpoint-up(md) {
 		margin-right: 0;
 		margin-left: 1rem;
+		display: block;
 	}
 	@include media-breakpoint-up(lg) {
 		margin-left: 2rem;
@@ -230,9 +253,16 @@ body.mobile-menu-active {
 	a {
 		@extend .btn;
 		@extend .btn-sm;
-		@extend .btn-primary;
+		@extend .btn-outline-red;
 		@include media-breakpoint-up(lg) {
 			@include make-button-size(md);
+			border-width: 3px;
+			padding: calc(#{$btn-padding-y} - (3px - #{$btn-border-width})) calc(#{$btn-padding-x} - (3px - #{$btn-border-width}));
+		}
+		@include media-breakpoint-up(xl) {
+			@include make-button-size(lg);
+			border-width: 4px;
+			padding: calc(#{$btn-padding-y-lg} - (4px - #{$btn-border-width})) calc(#{$btn-padding-x-lg} - (4px - #{$btn-border-width}));
 		}
 	}
 }
@@ -268,7 +298,7 @@ body.mobile-menu-active {
 		margin: 0 -0.5rem;
 		@include media-breakpoint-up(lg) {
 			margin: 0 -1rem;
-			font-size: 1.125rem;
+			font-size: 1.25rem;
 		}
 		.menu-item {
 			position: relative;
@@ -279,7 +309,10 @@ body.mobile-menu-active {
 			&:hover,
 			&.active {
 				> a {
-					color: $primary;
+					color: $dark-blue;
+					.label:after {
+						opacity: 1;
+					}
 				}
 			}
 			&.active {
@@ -292,7 +325,7 @@ body.mobile-menu-active {
 			}
 		}
 		a {
-			color: $dark;
+			color: $dark-blue;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -302,6 +335,27 @@ body.mobile-menu-active {
 			cursor: pointer;
 			@include media-breakpoint-up(lg) {
 				padding: 0.5rem 1rem;
+			}
+			.label {
+				padding: 0.3rem 0;
+				position: relative;
+				display: block;
+				@include media-breakpoint-up(lg) {
+					padding: 0.5rem 0;
+				}
+				&:after {
+					content: '';
+					border-top: 2px solid $dark-blue;
+					position: absolute;
+					left: 0;
+					bottom: 0;
+					width: 100%;
+					opacity: 0;
+					transition: opacity .15s;
+					@include media-breakpoint-up(lg) {
+						border-top-width: 4px;
+					}
+				}
 			}
 		}
 	}
@@ -379,6 +433,8 @@ body.mobile-menu-active {
 		min-height: 100px;
 		display: flex;
 		top: calc(100% + 10px);
+		border-radius: 0;
+		border-top: 10px solid $red;
 		@include media-breakpoint-up(lg) {
 			top: calc(100% + 20px);
 		}
@@ -390,25 +446,36 @@ body.mobile-menu-active {
 			flex: 1 1 auto;
 			&.primary {
 				&.default {
-					.sub-menu-menus .menu {
-						columns: 3;
+					.sub-menu-menus {
+						.menu {
+							columns: 3;
+						}
 					}
 				}
 			}
 			&.secondary {
 				flex: 0 0 percentage(1 / 3);
-				background-color: #fafafa;
-				border-top-right-radius: 3px;
-				border-bottom-right-radius: 3px;
+				background-color: $x-light-blue;
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+				h3 {
+					margin-bottom: 1rem;
+				}
 			}
 			&.default {
-				.sub-menu-menus .menu {
-					columns: 2;
-					column-gap: 2rem;
-					.menu-item {
-						display: inline-block;
-						width: 100%;
-						break-inside: avoid;
+				.sub-menu-menus {
+					h4 {
+						font-size: 1.125rem;
+						text-transform: uppercase;
+					}
+					.menu {
+						columns: 2;
+						column-gap: 2rem;
+						.menu-item {
+							display: inline-block;
+							width: 100%;
+							break-inside: avoid;
+						}
 					}
 				}
 			}
@@ -419,6 +486,7 @@ body.mobile-menu-active {
 		}
 		h3 {
 			font-weight: 400;
+			margin-bottom: 2.5rem;
 			+ .sub-menu-cta-links {
 				margin-top: 2rem;
 			}
@@ -431,6 +499,7 @@ body.mobile-menu-active {
 				padding: 0 1rem;
 			}
 			h4 {
+				font-weight: 500;
 				a {
 					padding: 0;
 				}
@@ -439,15 +508,20 @@ body.mobile-menu-active {
 				margin: 0;
 				display: block;
 				font-weight: 400;
-				font-size: 0.875rem;
+				font-size: 1rem;
+				font-family: $font-family-sans-serif-alt;
 				@include media-breakpoint-up(lg) {
-					font-size: 1rem;
+					font-size: 1.25rem;
 				}
 				.menu-item {
 					margin-bottom: 0.5rem;
 				}
 				a {
 					padding: 0;
+					color: rgba($dark, .8);
+					&:hover {
+						color: $primary;
+					}
 				}
 			}
 			+ .sub-menu-cta-links {
@@ -456,6 +530,12 @@ body.mobile-menu-active {
 		}
 		.sub-menu-content {
 			line-height: $line-height-base;
+			font-family: $font-family-sans-serif-alt;
+			font-size: 1rem;
+			color: rgba($dark, .8);
+			@include media-breakpoint-up(lg) {
+				font-size: 1.25rem;
+			}
 			+ .sub-menu-cta-links {
 				margin-top: 2rem;
 			}
@@ -466,10 +546,13 @@ body.mobile-menu-active {
 			}
 			a {
 				@extend .btn;
-				@extend .btn-primary;
+				@extend .btn-outline-blue;
+				@extend .btn-has-arrow-icon;
 				@extend .btn-sm;
 				@include media-breakpoint-up(lg) {
 					@include make-button-size(md);
+					border-width: 3px;
+					padding: calc(#{$btn-padding-y} - (3px - #{$btn-border-width})) calc(#{$btn-padding-x} - (3px - #{$btn-border-width}));
 				}
 			}
 		}

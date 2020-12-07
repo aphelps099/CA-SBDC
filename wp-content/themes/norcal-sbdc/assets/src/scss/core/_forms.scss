@@ -3,8 +3,15 @@
 @each $selector in $form-control-selectors {
 	#{$selector} {
 		@extend .form-control;
+		border: none;
+		padding: add($input-padding-y, $input-border-width) add($input-padding-x, -.25rem);
+		box-shadow: inset 0 -2px $primary;
+		&:focus {
+			box-shadow: inset 0 -2px $secondary;
+		}
 	}
 }
+
 input[type=search] {
 	-webkit-appearance: textfield;
 	&::-webkit-search-cancel-button,
@@ -14,15 +21,27 @@ input[type=search] {
 }
 
 select {
+	@extend .form-control;
 	@extend .custom-select;
+}
+
+textarea {
+	@extend .form-control;
+	border: none;
+	padding: add($input-padding-y, $input-border-width) add($input-padding-x, $input-border-width);
+	background-color: rgba($primary, 0.05);
+	&:focus {
+		background-color: rgba($primary, 0.05);
+		box-shadow: inset 0 0 0 1px $secondary;
+	}
 }
 
 
 label {
 	line-height: $input-line-height-sm;
-	font-size: $font-size-sm;
-	font-family: $headings-font-family;
-	font-weight: $headings-font-weight;
+	font-size: 0.875rem;
+	font-family: $font-family-sans-serif-alt;
+	font-weight: 700;
 }
 
 

@@ -8,19 +8,88 @@
 	@include button-size($btn-padding-y, $btn-padding-x, $btn-font-size, $btn-line-height, $btn-border-radius);
 }
 
+.btn-has-arrow-icon {
+	position: relative;
+	@include hover() {
+		&:after {
+			right: -.25em;
+		}
+	}
+	&:after {
+		@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+		vertical-align: middle;
+		position: relative;
+		margin-left: .5em;
+		margin-right: -.5em;
+		top: -.08em;
+		right: 0;
+		transition: right ease-out .15s;
+	}
+}
+
 .btn-link {
 	padding: 0;
+	padding-bottom: .3em;
 	font-weight: $btn-font-weight;
 	outline: none;
+	border-width: 0;
+	border-bottom-width: 3px;
 	&:focus {
 		box-shadow: none;
+	}
+	&.btn-lg {
+		border-bottom-width: 4px;
+	}
+	&.btn-sm {
+		border-bottom-width: 2px;
+	}
+	&.btn-has-arrow-icon {
+		&:after {
+			margin-right: -1.55em;
+		}
 	}
 	@each $color, $value in $theme-colors {
 		&.btn-link-#{$color} {
 			color: $value;
+			border-color: $value;
 			&:hover {
 				color: darken($value, 15%);
+				border-color: darken($value, 15%);
 			}
+		}
+	}
+}
+
+@each $color, $value in $theme-colors {
+	.btn-outline-#{$color} {
+		border-width: 3px;
+		padding: calc(#{$btn-padding-y} - (3px - #{$btn-border-width})) calc(#{$btn-padding-x} - (3px - #{$btn-border-width}));
+		&.btn-has-arrow-icon {
+			margin-right: 3.5em;
+			@include hover() {
+				&:after {
+					right: -2em;
+				}
+			}
+			&:after {
+				@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
+				position: absolute;
+				margin: 0;
+				color: $value;
+				top: 50%;
+				font-size: 1.666666667em;
+				margin-top: -0.5em;
+				right: -1em;
+				transition: right ease-out .15s;
+			}
+		}
+		&.btn-lg {
+			border-width: 4px;
+			padding: calc(#{$btn-padding-y-lg} - (4px - #{$btn-border-width})) calc(#{$btn-padding-x-lg} - (4px - #{$btn-border-width}));
+		}
+		&.btn-sm {
+			border-width: 2px;
+			padding: calc(#{$btn-padding-y-sm} - (2px - #{$btn-border-width})) calc(#{$btn-padding-x-sm} - (2px - #{$btn-border-width}));
 		}
 	}
 }

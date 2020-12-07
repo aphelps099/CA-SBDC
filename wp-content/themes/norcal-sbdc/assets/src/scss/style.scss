@@ -6,10 +6,12 @@
 
 // libraries
 @import '../../../lib/bootstrap/scss/bootstrap';
+@import '../../../lib/font-awesome/scss/fontawesome.scss';
 
 // configuration
 @import 'config/_fonts';
 @import 'config/_mixins';
+@import 'config/_icons';
 
 // core
 @import 'core/_scaffolding';

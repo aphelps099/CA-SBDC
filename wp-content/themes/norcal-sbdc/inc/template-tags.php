@@ -226,7 +226,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 					<li id="menu-item-<?php echo $menu_item->id; ?>" class="menu-item menu-item-<?php echo $menu_item->id; ?> mega-menu-item">
 
 						<a <?php echo ! empty( $menu_item->link->href ) ? 'href="' . esc_attr( $menu_item->link->href ) . '"' : ''; ?> <?php echo ! empty( $menu_item->link->href ) ? 'target="' . $menu_item->link->target . '"' : ''; ?>>
-							<?php echo $menu_item->title; ?>
+							<span class="label"><?php echo $menu_item->title; ?></span>
 						</a>
 
 						<?php if ( ! in_array( $menu_item->type, array( 'disabled' ) ) ) { ?>

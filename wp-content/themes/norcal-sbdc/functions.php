@@ -36,6 +36,7 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 			Crown_Theme_Main_Query::init();
 			Crown_Theme_Post_Type_Templates::init();
 			Crown_Theme_Scripts::init();
+			Crown_Theme_Shortcode_Filters::init();
 			Crown_Theme_Styles::init();
 			Crown_Theme_Template_Hooks::init();
 

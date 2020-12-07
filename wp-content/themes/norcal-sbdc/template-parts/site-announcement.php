@@ -14,7 +14,7 @@
 
 					<?php if ( ! empty( $announcement->link->url ) ) { ?>	
 						<p class="link">
-							<a href="<?php echo $announcement->link->url; ?>" target="<?php echo in_array( 'open-new-window', $announcement->link->options ) ? '_blank' : '_self'; ?>" class="btn btn-sm btn-<?php echo ct_color_yiq( $announcement->bg_color, 'dark', 'light' ) ?>">
+							<a href="<?php echo $announcement->link->url; ?>" target="<?php echo in_array( 'open-new-window', $announcement->link->options ) ? '_blank' : '_self'; ?>">
 								<?php echo ! empty( $announcement->link->label ) ? $announcement->link->label : 'Learn More'; ?>
 							</a>
 						</p>

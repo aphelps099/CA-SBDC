@@ -30,6 +30,12 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['social_profile_links'] = new Shortcode(array(
+				'tag' => 'social_profile_links',
+				'getOutputCb' => array( __CLASS__, 'get_social_profile_links_shortcode' ),
+				'defaultAtts' => array()
+			));
+
 		}
 
 
@@ -46,6 +52,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			if ( empty( $terms ) ) return '';
 			$term_names = array_map( function( $n ) { return $n->name; }, $terms );
 			return implode( ', ', $term_names );
+		}
+
+
+		public static function get_social_profile_links_shortcode( $atts, $content ) {
+			return apply_filters( 'crown_social_profile_links_shortcode', '', $atts, $content );
 		}
 
 
