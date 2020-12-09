@@ -68,8 +68,8 @@
 		wptheme.initHeader = function() {
 
 			var header = $('#header');
-			var first_section = $('#main-content > .wp-block-crown-blocks-container.alignfull');
-			if(first_section.hasClass('text-color-light')) header.addClass('text-color-light');
+			var first_section = $('#main-content').children().first();
+			if(first_section.is('.wp-block-crown-blocks-container.text-color-light.alignfull')) header.addClass('text-color-light');
 			header.addClass('loaded');
 
 			var adjustSubMenus = function() {
