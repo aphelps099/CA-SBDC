@@ -6,6 +6,7 @@
 
 // libraries
 @import '../../../lib/bootstrap/scss/bootstrap';
+@import '../../../lib/font-awesome/scss/fontawesome.scss';
 
 // configuration
 @import 'config/_fonts';
@@ -37,6 +38,7 @@
 }
 body {
 	padding: 0;
+	background: #fff;
 }
 
 
