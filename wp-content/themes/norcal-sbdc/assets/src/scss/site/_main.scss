@@ -41,18 +41,19 @@
 			@include media-breakpoint-up(xl) {
 				margin-top: -100px;
 			}
-			body.page-header-overlay-header & {
-				margin-top: -40px - 66px;
-				padding-top: 66px;
+			& {
+				margin-top: -40px - 68px;
+				padding-top: 68px;
 				@include media-breakpoint-up(md) {
-					margin-top: -60px - 66px;
+					margin-top: -60px - 80px;
+					padding-top: 80px;
 				}
 				@include media-breakpoint-up(lg) {
-					margin-top: -80px - 94px;
-					padding-top: 94px;
+					margin-top: -80px - 130px;
+					padding-top: 130px;
 				}
 				@include media-breakpoint-up(xl) {
-					margin-top: -100px - 94px;
+					margin-top: -100px - 130px;
 				}
 			}
 		}

@@ -2,6 +2,9 @@
 
 body.mobile-menu-active {
 	overflow: hidden;
+	@include media-breakpoint-up(md) {
+		overflow: auto;
+	}
 }
 
 #page {
@@ -76,7 +79,7 @@ body.mobile-menu-active {
 						left: 0;
 						top: 0;
 						bottom: 0;
-						border-left: 0.25rem solid $primary;
+						border-left: 0.25rem solid $red;
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 
 #footer {
-	background-color: #eee;
+	background-color: $ghost;
 	.container {
 		// max-width: 100%;
 		> .upper {
@@ -16,8 +16,8 @@
 			}
 		}
 		> .lower {
-			border-top: 1px solid #ccc;
-			padding: 1rem 0;
+			border-top: 2px solid $primary;
+			padding: 1rem 0 2rem;
 			> .inner {
 				display: flex;
 				flex-wrap: wrap;
@@ -28,7 +28,7 @@
 	}
 }
 body {
-	background-color: #eee;
+	background-color: $ghost;
 }
 #page {
 	background-color: $body-bg;
@@ -47,7 +47,7 @@ body {
 
 #site-footer-title {
 	font-weight: 700;
-	font-size: 1.25rem;
+	font-size: 1.75rem;
 	line-height: $line-height-sm;
 	a {
 		color: inherit;
@@ -62,7 +62,7 @@ body {
 	flex: 0 0 100%;
 	padding-left: 1rem;
 	padding-right: 1rem;
-	@include media-breakpoint-up(md) {
+	@include media-breakpoint-up(xl) {
 		flex: 1 0 auto;
 	}
 	> .inner {
@@ -85,8 +85,8 @@ body {
 	padding-left: 1rem;
 	padding-right: 1rem;
 	@include media-breakpoint-up(md) {
-		flex: 0 0 auto;
-		max-width: 25%;
+		flex: 0 1 auto;
+		max-width: 33.33%;
 		padding-left: 1.5rem;
 		padding-right: 1.5rem;
 	}
@@ -97,9 +97,16 @@ body {
 	.widget {
 		font-size: 1rem;
 		margin-bottom: 2rem;
+		font-size: 1.25rem;
+		font-family: $font-family-sans-serif-alt;
+		color: mix($body-color, $ghost, 60%);
 		.widget-title {
-			margin-bottom: 0.5rem;
+			margin-bottom: 1rem;
 			font-size: 1rem;
+			font-weight: 600;
+			letter-spacing: .1em;
+			text-transform: uppercase;
+			color: $body-color;
 		}
 		a {
 			color: inherit;
@@ -114,9 +121,10 @@ body {
 			list-style: none;
 			margin: 0;
 			padding: 0;
+			line-height: $line-height-sm;
 		}
 		li {
-			margin-bottom: 0.25rem;
+			margin-bottom: 0.5rem;
 		}
 	}
 }
@@ -130,8 +138,35 @@ body {
 	padding-right: 1rem;
 	margin-bottom: 2rem;
 	flex: 1 0 100%;
-	@include media-breakpoint-up(md) {
+	@include media-breakpoint-up(xl) {
 		flex: 0 0 auto;
+		text-align: center;
+	}
+	h4 {
+		margin-bottom: 1.5rem;
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: .1em;
+		text-transform: uppercase;
+		color: $body-color;
+	}
+	.menu {
+		margin: -0.6rem;
+		@include media-breakpoint-up(xl) {
+			justify-content: center;
+		}
+	}
+	.menu-item {
+		padding: 0.6rem;
+		a:hover .icon svg {
+			fill: mix($body-color, $ghost, 60%);
+		}
+		.icon {
+			svg {
+				height: 3rem;
+				fill: rgba(mix($body-color, $ghost, 60%), 0.5);
+			}
+		}
 	}
 }
 
@@ -144,9 +179,15 @@ body {
 	margin-bottom: 1rem;
 	padding-left: 1rem;
 	padding-right: 1rem;
+	line-height: $line-height-sm;
 	flex: 0 0 100%;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	font-family: $font-family-sans-serif-alt;
+	text-align: center;
 	@include media-breakpoint-up(md) {
 		flex: 1 1 auto;
+		text-align: left;
 	}
 }
 
@@ -161,9 +202,17 @@ body {
 	padding-left: 1rem;
 	padding-right: 1rem;
 	flex: 0 0 100%;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	font-family: $font-family-sans-serif-alt;
+	text-align: center;
+	@include media-breakpoint-up(sm) {
+		margin-bottom: 1rem;
+	}
 	@include media-breakpoint-up(md) {
 		flex: 0 0 auto;
 		margin-bottom: 1rem;
+		text-align: left;
 	}
 	ul {
 		list-style: none;
@@ -171,6 +220,7 @@ body {
 		margin: 0;
 		@include media-breakpoint-up(sm) {
 			display: flex;
+			justify-content: center;
 		}
 	}
 	li {
@@ -184,7 +234,7 @@ body {
 			@include media-breakpoint-up(sm) {
 				margin-left: 10px;
 				padding-left: 10px;
-				border-left: 1px solid #ccc;
+				border-left: 1px solid mix($body-color, $ghost, 40%);
 			}
 		}
 	}
@@ -198,13 +248,63 @@ body {
 }
 
 
-/*	Site Description
+/*	Site Footer Meta
 ---------------------------------------------------------*/
 
-#site-description {
-	font-size: $font-size-sm;
-	color: rgba($body-color, .5);
+#site-footer-meta {
+	flex: 0 0 100%;
 	padding-left: 1rem;
 	padding-right: 1rem;
-	flex: 0 0 100%;
+	@include media-breakpoint-up(md) {
+		display: flex;
+	}
+	.description-accreditations {
+		flex: 1 1 auto;
+	}
+}
+
+#site-description {
+	font-size: 0.75rem;
+	color: mix($body-color, $ghost, 40%);
+	font-family: $font-family-sans-serif-alt;
+	text-align: center;
+	max-width: 920px;
+	@include media-breakpoint-up(md) {
+		text-align: left;
+	}
+}
+
+#site-footer-meta .accreditations {
+	margin-top: 2rem;
+	> .inner {
+		margin: -0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		@include media-breakpoint-up(md) {
+			justify-content: flex-start;
+		}
+	}
+	.logo {
+		margin: 0.5rem;
+		max-width: 100px;
+	}
+}
+
+#site-footer-meta .logos {
+	margin-top: 2rem;
+	@include media-breakpoint-up(md) {
+		flex: 0 0 auto;
+		margin-left: 3rem;
+	}
+	> .inner {
+		margin: -0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.logo {
+		margin: 0.5rem;
+		max-width: 100px;
+	}
 }

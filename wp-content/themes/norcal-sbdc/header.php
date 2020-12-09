@@ -8,6 +8,12 @@
 
 		<link rel="profile" href="https://gmpg.org/xfn/11">
 
+		<noscript>
+			<style>
+				#header { opacity: 1; transform: none; }
+			</style>
+		</noscript>
+
 		<?php wp_head(); ?>
 
 	</head>

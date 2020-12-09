@@ -240,7 +240,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 												<div class="inner">
 
 													<?php if ( ! empty( $menu_item->sections->primary->title ) ) { ?>
-														<h3><?php echo $menu_item->sections->primary->title; ?></h3>
+														<h3><?php echo do_shortcode( $menu_item->sections->primary->title ); ?></h3>
 													<?php } ?>
 
 													<?php if ( ! empty( $menu_item->sections->primary->menus ) ) { ?>
@@ -270,6 +270,17 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 														</div>
 													<?php } ?>
 
+													<?php if ( $menu_item->type == 'events' ) { ?>
+														<div class="sub-menu-events">
+															<?php $events = class_exists( 'Crown_Events' ) ? Crown_Events::get_upcoming_events( 4 ) : array(); ?>
+															<?php foreach ( $events as $event ) { ?>
+																<div class="event-container">
+																	<?php ct_event_teaser( $event->ID ); ?>
+																</div>
+															<?php } ?>
+														</div>
+													<?php } ?>
+
 													<?php if ( ! empty( $menu_item->sections->primary->cta_links ) ) { ?>
 														<div class="sub-menu-cta-links">
 															<ul>
@@ -286,12 +297,6 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 														</div>
 													<?php } ?>
 
-													<?php if ( $menu_item->type == 'events' ) { ?>
-														<div class="sub-menu-events">
-															<em>Upcoming events go here...</em>
-														</div>
-													<?php } ?>
-
 												</div>
 											</div>
 										</section>
@@ -305,7 +310,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 												<div class="inner">
 
 													<?php if ( ! empty( $menu_item->sections->secondary->title ) ) { ?>
-														<h3><?php echo $menu_item->sections->secondary->title; ?></h3>
+														<h3><?php echo do_shortcode( $menu_item->sections->secondary->title ); ?></h3>
 													<?php } ?>
 
 													<?php if ( ! empty( $menu_item->sections->secondary->menus ) ) { ?>
@@ -366,6 +371,48 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 
 			</ul>
 		<?php
+
+	}
+}
+
+
+if ( ! function_exists( 'ct_event_teaser' ) ) {
+	function ct_event_teaser( $post_id ) {
+		global $post;
+
+		$post = get_post( $post_id );
+		if ( ! $post || ! in_array( $post->post_type, array( 'event' ) ) ) return;
+		setup_postdata( $post );
+
+		?>
+			<article <?php post_class( array( 'event-teaser' ) ); ?>>
+				<a href="<?php the_permalink(); ?>">
+					<div class="inner">
+
+						<?php $event_start_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_start_timestamp', true ) ); ?>
+						<?php if ( $event_start_timestamp !== false ) { ?>
+							<div class="entry-event-date">
+								<div class="inner">
+									<span class="month"><?php echo date( 'M', $event_start_timestamp ); ?></span>
+									<span class="date"><?php echo date( 'j', $event_start_timestamp ); ?></span>
+								</div>
+							</div>
+						<?php } ?>
+	
+						<div class="entry-contents">
+	
+							<h3 class="entry-title"><?php the_title(); ?></h3>
+		
+							<p class="entry-cta"><?php _e( 'Read what\'s happening', 'crown_theme' ); ?></p>
+	
+						</div>
+
+					</div>
+				</a>
+			</article>
+		<?php
+
+		wp_reset_postdata();
 
 	}
 }

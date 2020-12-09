@@ -81,6 +81,14 @@ $container-padding-x: (
 	xl: 2.5rem
 ) !default;
 
+$container-padding-x-px: (
+	xs: rem-to-px(map-get($container-padding-x, xs)),
+	sm: rem-to-px(map-get($container-padding-x, sm)),
+	md: rem-to-px(map-get($container-padding-x, md)),
+	lg: rem-to-px(map-get($container-padding-x, lg)),
+	xl: rem-to-px(map-get($container-padding-x, xl))
+) !default;
+
 $container-max-widths: (
 	sm: 1230px + rem-to-px(map-get($container-padding-x, sm) * 2),
 	md: 1240px + rem-to-px(map-get($container-padding-x, md) * 2),

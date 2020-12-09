@@ -20,6 +20,7 @@ use Crown\ListTableColumn;
 use Crown\Post\MetaBox;
 use Crown\Post\Type as PostType;
 use Crown\Post\Taxonomy;
+use Crown\Shortcode;
 use Crown\UIRule;
 
 
@@ -29,6 +30,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		public static $init = false;
 
 		public static $event_post_type = null;
+
+		public static $weekly_event_count_shortcode = null;
 
 
 		public static function init() {
@@ -40,6 +43,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_post_type' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_weekly_event_count_shortcode' ) );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
@@ -237,6 +241,35 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
+		public static function register_weekly_event_count_shortcode() {
+
+			self::$weekly_event_count_shortcode = new Shortcode( array(
+				'tag' => 'weekly_event_count',
+				'defaultAtts' => array(
+					'pre_p' => '',
+					'pre_s' => '',
+					'post_p' => 'events',
+					'post_s' => 'event'
+				),
+				'getOutputCb' => function( $atts, $content ) {
+					$from = date( 'Y-m-d H:i:s', strtotime( 'Monday this week' ) );
+					$to = date( 'Y-m-d H:i:s', strtotime( 'Monday next week' ) );
+					$events = self::get_events( array( 'from' => $from, 'to' => $to, 'fields' => 'ids' ) );
+					$output = array( count( $events ) );
+					if ( count( $events ) == 1 ) {
+						if ( ! empty( $atts['pre_s'] ) ) array_unshift( $output, $atts['pre_s'] );
+						if ( ! empty( $atts['post_s'] ) ) array_push( $output, $atts['post_s'] );
+					} else {
+						if ( ! empty( $atts['pre_p'] ) ) array_unshift( $output, $atts['pre_p'] );
+						if ( ! empty( $atts['post_p'] ) ) array_push( $output, $atts['post_p'] );
+					}
+					return implode( ' ', $output );
+				}
+			) );
+
+		}
+
+
 		public static function filter_use_block_editor_for_post_type( $use_block_editor, $post_type ) {
 			return in_array( $post_type, array( 'event' ) ) ? false : $use_block_editor;
 		}
@@ -280,6 +313,57 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			}
 
+		}
+
+
+		public static function get_events( $args = array() ) {
+
+			$args = array_merge( array(
+				'from' => null,
+				'to' => null,
+				'count' => -1,
+				'order' => 'ASC',
+				'fields' => 'all'
+			), $args );
+
+			$query_args = array(
+				'post_type' => 'event',
+				'posts_per_page' => $args['count'],
+				'orderby' => 'meta_value',
+				'order' => $args['order'],
+				'meta_key' => 'event_start_timestamp_utc',
+				'fields' => $args['fields']
+			);
+			$meta_query = array();
+
+			if ( ! empty( $args['from'] ) ) {
+				$meta_query[] = array( 'key' => 'event_end_timestamp_utc', 'compare' => '>=', 'value' => $args['from'] );
+			}
+			if ( ! empty( $args['to'] ) ) {
+				$meta_query[] = array( 'key' => 'event_start_timestamp_utc', 'compare' => '<=', 'value' => $args['to'] );
+			}
+
+			$query_args['meta_query'] = $meta_query;
+
+			return get_posts(  $query_args );
+
+		}
+
+
+		public static function get_upcoming_events( $count = -1 ) {
+			return self::get_events( array(
+				'from' => date( 'Y-m-d H:i:s' ),
+				'count' => $count
+			) );
+		}
+
+
+		public static function get_past_events( $count = -1 ) {
+			return self::get_events( array(
+				'to' => date( 'Y-m-d H:i:s' ),
+				'count' => $count,
+				'order' => 'DESC'
+			) );
 		}
 
 

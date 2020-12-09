@@ -65,10 +65,16 @@
 		border-width: 3px;
 		padding: calc(#{$btn-padding-y} - (3px - #{$btn-border-width})) calc(#{$btn-padding-x} - (3px - #{$btn-border-width}));
 		&.btn-has-arrow-icon {
-			margin-right: 3.5em;
+			margin-right: 1.8em;
+			@include media-breakpoint-up(sm) {
+				margin-right: 3.5em;
+			}
 			@include hover() {
 				&:after {
-					right: -2em;
+					right: -1.25em;
+					@include media-breakpoint-up(sm) {
+						right: -2em;
+					}
 				}
 			}
 			&:after {

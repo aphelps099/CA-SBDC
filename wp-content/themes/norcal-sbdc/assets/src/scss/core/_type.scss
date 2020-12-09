@@ -6,11 +6,10 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
-h1.jumbo {
-	@include media-breakpoint-up(md) {
-		font-size: 4rem;
-		line-height: 1.2;
-	}
+h1 {
+	font-family: $font-family-sans-serif-alt;
+	text-transform: uppercase;
+	font-weight: 800;
 }
 
 

@@ -5,11 +5,20 @@
 			<div class="inner">
 
 				<div id="site-branding">
-					<div id="site-title">
+
+					<div id="site-logo">
 						<a href="<?php echo home_url( '/' ); ?>">
 							<?php echo get_bloginfo( 'name' ); ?>
 						</a>
 					</div>
+
+					<div id="site-title">
+						<a href="<?php echo home_url( '/' ); ?>">
+							<div class="title"><?php echo get_bloginfo( 'name' ); ?></div>
+							<div class="tagline"><?php echo get_bloginfo( 'description' ); ?></div>
+						</a>
+					</div>
+
 				</div>
 
 				<nav id="header-primary-navigation">

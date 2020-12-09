@@ -44,17 +44,17 @@
 		}
 	}
 	&.alignfull {
-		margin-left: -#{rem-to-pix(map-get($container-padding-x, xs))};
-		margin-right: -#{rem-to-pix(map-get($container-padding-x, xs))};
+		margin-left: -#{map-get($container-padding-x, xs)};
+		margin-right: -#{map-get($container-padding-x, xs)};
 		@include media-breakpoint-up(sm) {
-			margin-left: -#{rem-to-pix(map-get($container-padding-x, sm))};
-			margin-right: -#{rem-to-pix(map-get($container-padding-x, sm))};
+			margin-left: -#{map-get($container-padding-x, sm)};
+			margin-right: -#{map-get($container-padding-x, sm)};
 		}
 		@include media-breakpoint-up(md) {
-			margin-left: -#{rem-to-pix(map-get($container-padding-x, md))};
-			margin-right: -#{rem-to-pix(map-get($container-padding-x, md))};
+			margin-left: -#{map-get($container-padding-x, md)};
+			margin-right: -#{map-get($container-padding-x, md)};
 		}
-		@media (min-width: #{(900px + rem-to-pix(map-get($container-padding-x, md) * 2))}) {
+		@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
 			margin-left: calc((100vw - 900px) / -2);
 			margin-right: calc((100vw - 900px) / -2);
 		}
