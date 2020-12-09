@@ -17,6 +17,9 @@
 .wp-block-crown-blocks-column {
   display: -ms-flexbox;
   display: flex; }
+  .wp-block-crown-blocks-column.vertical-alignment-top {
+    -ms-flex-align: start;
+        align-items: flex-start; }
   .wp-block-crown-blocks-column.vertical-alignment-center {
     -ms-flex-align: center;
         align-items: center; }
@@ -5726,7 +5729,7 @@
   .wp-block-crown-blocks-multi-column > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column:nth-child(2) {
     grid-area: column2; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs > > .inner > .multi-column-columns > .inner {
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs > .inner > .multi-column-columns > .inner {
   display: grid; }
 
 .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-layout-xs-1 > .inner > .multi-column-columns > .inner {
@@ -5763,43 +5766,55 @@
   grid-template-columns: 11fr 1fr; }
 
 .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-0 > .inner > .multi-column-columns > .inner {
-  grid-gap: 0px; }
+  grid-gap: 0rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-1 > .inner > .multi-column-columns > .inner {
+  grid-gap: 1rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-2 > .inner > .multi-column-columns > .inner {
+  grid-gap: 2rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-3 > .inner > .multi-column-columns > .inner {
+  grid-gap: 3rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-4 > .inner > .multi-column-columns > .inner {
+  grid-gap: 4rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-5 > .inner > .multi-column-columns > .inner {
+  grid-gap: 5rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-6 > .inner > .multi-column-columns > .inner {
+  grid-gap: 6rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-7 > .inner > .multi-column-columns > .inner {
+  grid-gap: 7rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-8 > .inner > .multi-column-columns > .inner {
+  grid-gap: 8rem; }
+
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-9 > .inner > .multi-column-columns > .inner {
+  grid-gap: 9rem; }
 
 .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-10 > .inner > .multi-column-columns > .inner {
-  grid-gap: 10px; }
+  grid-gap: 10rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-20 > .inner > .multi-column-columns > .inner {
-  grid-gap: 20px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-11 > .inner > .multi-column-columns > .inner {
+  grid-gap: 11rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-30 > .inner > .multi-column-columns > .inner {
-  grid-gap: 30px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-12 > .inner > .multi-column-columns > .inner {
+  grid-gap: 12rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-40 > .inner > .multi-column-columns > .inner {
-  grid-gap: 40px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-13 > .inner > .multi-column-columns > .inner {
+  grid-gap: 13rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-50 > .inner > .multi-column-columns > .inner {
-  grid-gap: 50px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-14 > .inner > .multi-column-columns > .inner {
+  grid-gap: 14rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-60 > .inner > .multi-column-columns > .inner {
-  grid-gap: 60px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-15 > .inner > .multi-column-columns > .inner {
+  grid-gap: 15rem; }
 
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-70 > .inner > .multi-column-columns > .inner {
-  grid-gap: 70px; }
-
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-80 > .inner > .multi-column-columns > .inner {
-  grid-gap: 80px; }
-
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-90 > .inner > .multi-column-columns > .inner {
-  grid-gap: 90px; }
-
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-100 > .inner > .multi-column-columns > .inner {
-  grid-gap: 100px; }
-
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-110 > .inner > .multi-column-columns > .inner {
-  grid-gap: 110px; }
-
-.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-120 > .inner > .multi-column-columns > .inner {
-  grid-gap: 120px; }
+.wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xs-16 > .inner > .multi-column-columns > .inner {
+  grid-gap: 16rem; }
 
 @media (min-width: 576px) {
   .wp-block-crown-blocks-multi-column.column-breakpoint-sm > .inner > .multi-column-columns > .inner {
@@ -5827,31 +5842,39 @@
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-layout-sm-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-layout-sm-11 > .inner > .multi-column-columns > .inner {
     grid-template-columns: 11fr 1fr; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-0 > .inner > .multi-column-columns > .inner {
-    grid-gap: 0px; }
+    grid-gap: 0rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-1 > .inner > .multi-column-columns > .inner {
+    grid-gap: 1rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-2 > .inner > .multi-column-columns > .inner {
+    grid-gap: 2rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-3 > .inner > .multi-column-columns > .inner {
+    grid-gap: 3rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-4 > .inner > .multi-column-columns > .inner {
+    grid-gap: 4rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-5 > .inner > .multi-column-columns > .inner {
+    grid-gap: 5rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-6 > .inner > .multi-column-columns > .inner {
+    grid-gap: 6rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-7 > .inner > .multi-column-columns > .inner {
+    grid-gap: 7rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-8 > .inner > .multi-column-columns > .inner {
+    grid-gap: 8rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-9 > .inner > .multi-column-columns > .inner {
+    grid-gap: 9rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-10 > .inner > .multi-column-columns > .inner {
-    grid-gap: 10px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-20 > .inner > .multi-column-columns > .inner {
-    grid-gap: 20px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-30 > .inner > .multi-column-columns > .inner {
-    grid-gap: 30px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-40 > .inner > .multi-column-columns > .inner {
-    grid-gap: 40px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-50 > .inner > .multi-column-columns > .inner {
-    grid-gap: 50px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-60 > .inner > .multi-column-columns > .inner {
-    grid-gap: 60px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-70 > .inner > .multi-column-columns > .inner {
-    grid-gap: 70px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-80 > .inner > .multi-column-columns > .inner {
-    grid-gap: 80px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-90 > .inner > .multi-column-columns > .inner {
-    grid-gap: 90px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-100 > .inner > .multi-column-columns > .inner {
-    grid-gap: 100px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-110 > .inner > .multi-column-columns > .inner {
-    grid-gap: 110px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-120 > .inner > .multi-column-columns > .inner {
-    grid-gap: 120px; } }
+    grid-gap: 10rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-11 > .inner > .multi-column-columns > .inner {
+    grid-gap: 11rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-12 > .inner > .multi-column-columns > .inner {
+    grid-gap: 12rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-13 > .inner > .multi-column-columns > .inner {
+    grid-gap: 13rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-14 > .inner > .multi-column-columns > .inner {
+    grid-gap: 14rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-15 > .inner > .multi-column-columns > .inner {
+    grid-gap: 15rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-sm-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-sm-16 > .inner > .multi-column-columns > .inner {
+    grid-gap: 16rem; } }
 
 @media (min-width: 768px) {
   .wp-block-crown-blocks-multi-column.column-breakpoint-md > .inner > .multi-column-columns > .inner {
@@ -5879,31 +5902,39 @@
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-layout-md-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-layout-md-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-layout-md-11 > .inner > .multi-column-columns > .inner {
     grid-template-columns: 11fr 1fr; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-0 > .inner > .multi-column-columns > .inner {
-    grid-gap: 0px; }
+    grid-gap: 0rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-1 > .inner > .multi-column-columns > .inner {
+    grid-gap: 1rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-2 > .inner > .multi-column-columns > .inner {
+    grid-gap: 2rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-3 > .inner > .multi-column-columns > .inner {
+    grid-gap: 3rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-4 > .inner > .multi-column-columns > .inner {
+    grid-gap: 4rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-5 > .inner > .multi-column-columns > .inner {
+    grid-gap: 5rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-6 > .inner > .multi-column-columns > .inner {
+    grid-gap: 6rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-7 > .inner > .multi-column-columns > .inner {
+    grid-gap: 7rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-8 > .inner > .multi-column-columns > .inner {
+    grid-gap: 8rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-9 > .inner > .multi-column-columns > .inner {
+    grid-gap: 9rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-10 > .inner > .multi-column-columns > .inner {
-    grid-gap: 10px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-20 > .inner > .multi-column-columns > .inner {
-    grid-gap: 20px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-30 > .inner > .multi-column-columns > .inner {
-    grid-gap: 30px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-40 > .inner > .multi-column-columns > .inner {
-    grid-gap: 40px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-50 > .inner > .multi-column-columns > .inner {
-    grid-gap: 50px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-60 > .inner > .multi-column-columns > .inner {
-    grid-gap: 60px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-70 > .inner > .multi-column-columns > .inner {
-    grid-gap: 70px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-80 > .inner > .multi-column-columns > .inner {
-    grid-gap: 80px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-90 > .inner > .multi-column-columns > .inner {
-    grid-gap: 90px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-100 > .inner > .multi-column-columns > .inner {
-    grid-gap: 100px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-110 > .inner > .multi-column-columns > .inner {
-    grid-gap: 110px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-120 > .inner > .multi-column-columns > .inner {
-    grid-gap: 120px; } }
+    grid-gap: 10rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-11 > .inner > .multi-column-columns > .inner {
+    grid-gap: 11rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-12 > .inner > .multi-column-columns > .inner {
+    grid-gap: 12rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-13 > .inner > .multi-column-columns > .inner {
+    grid-gap: 13rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-14 > .inner > .multi-column-columns > .inner {
+    grid-gap: 14rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-15 > .inner > .multi-column-columns > .inner {
+    grid-gap: 15rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-md-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-md-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-md-16 > .inner > .multi-column-columns > .inner {
+    grid-gap: 16rem; } }
 
 @media (min-width: 992px) {
   .wp-block-crown-blocks-multi-column.column-breakpoint-lg > .inner > .multi-column-columns > .inner {
@@ -5931,31 +5962,39 @@
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-layout-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-layout-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-layout-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-layout-lg-11 > .inner > .multi-column-columns > .inner {
     grid-template-columns: 11fr 1fr; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-0 > .inner > .multi-column-columns > .inner {
-    grid-gap: 0px; }
+    grid-gap: 0rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-1 > .inner > .multi-column-columns > .inner {
+    grid-gap: 1rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-2 > .inner > .multi-column-columns > .inner {
+    grid-gap: 2rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-3 > .inner > .multi-column-columns > .inner {
+    grid-gap: 3rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-4 > .inner > .multi-column-columns > .inner {
+    grid-gap: 4rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-5 > .inner > .multi-column-columns > .inner {
+    grid-gap: 5rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-6 > .inner > .multi-column-columns > .inner {
+    grid-gap: 6rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-7 > .inner > .multi-column-columns > .inner {
+    grid-gap: 7rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-8 > .inner > .multi-column-columns > .inner {
+    grid-gap: 8rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-9 > .inner > .multi-column-columns > .inner {
+    grid-gap: 9rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-10 > .inner > .multi-column-columns > .inner {
-    grid-gap: 10px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-20 > .inner > .multi-column-columns > .inner {
-    grid-gap: 20px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-30 > .inner > .multi-column-columns > .inner {
-    grid-gap: 30px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-40 > .inner > .multi-column-columns > .inner {
-    grid-gap: 40px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-50 > .inner > .multi-column-columns > .inner {
-    grid-gap: 50px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-60 > .inner > .multi-column-columns > .inner {
-    grid-gap: 60px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-70 > .inner > .multi-column-columns > .inner {
-    grid-gap: 70px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-80 > .inner > .multi-column-columns > .inner {
-    grid-gap: 80px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-90 > .inner > .multi-column-columns > .inner {
-    grid-gap: 90px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-100 > .inner > .multi-column-columns > .inner {
-    grid-gap: 100px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-110 > .inner > .multi-column-columns > .inner {
-    grid-gap: 110px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-120 > .inner > .multi-column-columns > .inner {
-    grid-gap: 120px; } }
+    grid-gap: 10rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-11 > .inner > .multi-column-columns > .inner {
+    grid-gap: 11rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-12 > .inner > .multi-column-columns > .inner {
+    grid-gap: 12rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-13 > .inner > .multi-column-columns > .inner {
+    grid-gap: 13rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-14 > .inner > .multi-column-columns > .inner {
+    grid-gap: 14rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-15 > .inner > .multi-column-columns > .inner {
+    grid-gap: 15rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-lg-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-lg-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-lg-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-lg-16 > .inner > .multi-column-columns > .inner {
+    grid-gap: 16rem; } }
 
 @media (min-width: 1200px) {
   .wp-block-crown-blocks-multi-column.column-breakpoint-xl > .inner > .multi-column-columns > .inner {
@@ -5983,28 +6022,36 @@
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-layout-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-layout-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-layout-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-layout-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-layout-xl-11 > .inner > .multi-column-columns > .inner {
     grid-template-columns: 11fr 1fr; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-0 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-0 > .inner > .multi-column-columns > .inner {
-    grid-gap: 0px; }
+    grid-gap: 0rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-1 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-1 > .inner > .multi-column-columns > .inner {
+    grid-gap: 1rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-2 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-2 > .inner > .multi-column-columns > .inner {
+    grid-gap: 2rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-3 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-3 > .inner > .multi-column-columns > .inner {
+    grid-gap: 3rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-4 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-4 > .inner > .multi-column-columns > .inner {
+    grid-gap: 4rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-5 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-5 > .inner > .multi-column-columns > .inner {
+    grid-gap: 5rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-6 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-6 > .inner > .multi-column-columns > .inner {
+    grid-gap: 6rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-7 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-7 > .inner > .multi-column-columns > .inner {
+    grid-gap: 7rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-8 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-8 > .inner > .multi-column-columns > .inner {
+    grid-gap: 8rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-9 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-9 > .inner > .multi-column-columns > .inner {
+    grid-gap: 9rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-10 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-10 > .inner > .multi-column-columns > .inner {
-    grid-gap: 10px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-20 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-20 > .inner > .multi-column-columns > .inner {
-    grid-gap: 20px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-30 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-30 > .inner > .multi-column-columns > .inner {
-    grid-gap: 30px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-40 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-40 > .inner > .multi-column-columns > .inner {
-    grid-gap: 40px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-50 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-50 > .inner > .multi-column-columns > .inner {
-    grid-gap: 50px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-60 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-60 > .inner > .multi-column-columns > .inner {
-    grid-gap: 60px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-70 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-70 > .inner > .multi-column-columns > .inner {
-    grid-gap: 70px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-80 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-80 > .inner > .multi-column-columns > .inner {
-    grid-gap: 80px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-90 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-90 > .inner > .multi-column-columns > .inner {
-    grid-gap: 90px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-100 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-100 > .inner > .multi-column-columns > .inner {
-    grid-gap: 100px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-110 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-110 > .inner > .multi-column-columns > .inner {
-    grid-gap: 110px; }
-  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-120 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-120 > .inner > .multi-column-columns > .inner {
-    grid-gap: 120px; } }
+    grid-gap: 10rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-11 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-11 > .inner > .multi-column-columns > .inner {
+    grid-gap: 11rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-12 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-12 > .inner > .multi-column-columns > .inner {
+    grid-gap: 12rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-13 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-13 > .inner > .multi-column-columns > .inner {
+    grid-gap: 13rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-14 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-14 > .inner > .multi-column-columns > .inner {
+    grid-gap: 14rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-15 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-15 > .inner > .multi-column-columns > .inner {
+    grid-gap: 15rem; }
+  .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-16 > .inner > .multi-column-columns > .inner {
+    grid-gap: 16rem; } }

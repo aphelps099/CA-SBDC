@@ -29,23 +29,23 @@ registerBlockType('crown-blocks/multi-column', {
 		columnCount: { type: 'number', default: 2 },
 
 		columnLayoutXl: { type: 'number', default: 6 },
-		columnSpacingXl: { type: 'number', default: 30 },
+		columnSpacingXl: { type: 'number', default: 4 },
 
 		overrideColumnLayoutLg: { type: 'boolean', default: false },
 		columnLayoutLg: { type: 'number', default: 6 },
-		columnSpacingLg: { type: 'number', default: 30 },
+		columnSpacingLg: { type: 'number', default: 4 },
 
 		overrideColumnLayoutMd: { type: 'boolean', default: false },
 		columnLayoutMd: { type: 'number', default: 6 },
-		columnSpacingMd: { type: 'number', default: 30 },
+		columnSpacingMd: { type: 'number', default: 4 },
 
 		overrideColumnLayoutSm: { type: 'boolean', default: false },
 		columnLayoutSm: { type: 'number', default: 6 },
-		columnSpacingSm: { type: 'number', default: 30 },
+		columnSpacingSm: { type: 'number', default: 4 },
 
 		overrideColumnLayoutXs: { type: 'boolean', default: false },
 		columnLayoutXs: { type: 'number', default: 6 },
-		columnSpacingXs: { type: 'number', default: 30 }
+		columnSpacingXs: { type: 'number', default: 4 }
 
 	},
 
@@ -198,134 +198,153 @@ registerBlockType('crown-blocks/multi-column', {
 					</ButtonGroup>
 				</div> }
 
-				{ ([ 'xs', 'sm', 'md', 'lg', 'xl' ].includes(columnBreakpoint) && responsiveDeviceMode == 'xl') && <PanelBody title={ 'Layout' } initialOpen={ true }>
+				<PanelBody title={ 'Layout' } initialOpen={ true }>
 
-					<RangeControl
-						label="Column Distribution"
-						value={ columnLayoutXl }
-						onChange={ (value) => setAttributes({ columnLayoutXl: value }) }
-						min={ 1 }
-						max={ 11 }
-					/>
+					{ ([ 'xs', 'sm', 'md', 'lg', 'xl' ].includes(columnBreakpoint) && responsiveDeviceMode == 'xl') && <div>
 
-					<RangeControl
-						label="Column Spacing"
-						value={ columnSpacingXl }
-						onChange={ (value) => setAttributes({ columnSpacingXl: value }) }
-						min={ 0 }
-						max={ 120 }
-						step={ 10 }
-					/>
+						<RangeControl
+							label="Column Distribution"
+							value={ columnLayoutXl }
+							onChange={ (value) => setAttributes({ columnLayoutXl: value }) }
+							min={ 1 }
+							max={ 11 }
+							showTooltip={ true }
+							withInputField={ false }
+							marks={ [
+								{ value: 2, label: '1:3' },
+								{ value: 3, label: '1:2' },
+								{ value: 5, label: '1:1' },
+								{ value: 7, label: '2:1' },
+								{ value: 8, label: '3:1' }
+							] }
+							renderTooltipContent={ (value) => {
+								let fraction = CrownBlocks.reduce(parseInt(value), 12)
+								return fraction[0] + ':' + (fraction[1] - fraction[0]);
+							} }
+						/>
 
-				</PanelBody> }
+						<RangeControl
+							label="Column Spacing"
+							value={ columnSpacingXl }
+							onChange={ (value) => setAttributes({ columnSpacingXl: value }) }
+							min={ 0 }
+							max={ 16 }
+							step={ 1 }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '0' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }, { value: 8, label: '8' }, { value: 10, label: '10' }, { value: 12, label: '12' }, { value: 14, label: '14' }, { value: 16, label: '16' }] }
+						/>
 
-				{ ([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint) && responsiveDeviceMode == 'lg') && <PanelBody title={ 'Layout' } initialOpen={ true }>
+					</div> }
 
-					<ToggleControl
-						label={ 'Override layout' }
-						checked={ overrideColumnLayoutLg }
-						onChange={ (value) => { setAttributes({ overrideColumnLayoutLg: value }); } }
-					/>
+					{ ([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint) && responsiveDeviceMode == 'lg') && <div>
 
-					{ !! overrideColumnLayoutLg && <RangeControl
-						label="Column Distribution"
-						value={ columnLayoutLg }
-						onChange={ (value) => setAttributes({ columnLayoutLg: value }) }
-						min={ 1 }
-						max={ 11 }
-					/> }
+						<ToggleControl
+							label={ 'Override layout' }
+							checked={ overrideColumnLayoutLg }
+							onChange={ (value) => { setAttributes({ overrideColumnLayoutLg: value }); } }
+						/>
 
-					{ !! overrideColumnLayoutLg && <RangeControl
-						label="Column Spacing"
-						value={ columnSpacingLg }
-						onChange={ (value) => setAttributes({ columnSpacingLg: value }) }
-						min={ 0 }
-						max={ 120 }
-						step={ 10 }
-					/> }
+						{ !! overrideColumnLayoutLg && <RangeControl
+							label="Column Distribution"
+							value={ columnLayoutLg }
+							onChange={ (value) => setAttributes({ columnLayoutLg: value }) }
+							min={ 1 }
+							max={ 11 }
+						/> }
 
-				</PanelBody> }
+						{ !! overrideColumnLayoutLg && <RangeControl
+							label="Column Spacing"
+							value={ columnSpacingLg }
+							onChange={ (value) => setAttributes({ columnSpacingLg: value }) }
+							min={ 0 }
+							max={ 16 }
+							step={ 1 }
+						/> }
+						
+					</div> }
 
-				{ ([ 'xs', 'sm', 'md' ].includes(columnBreakpoint) && responsiveDeviceMode == 'md') && <PanelBody title={ 'Layout' } initialOpen={ true }>
+					{ ([ 'xs', 'sm', 'md' ].includes(columnBreakpoint) && responsiveDeviceMode == 'md') && <div>
 
-					<ToggleControl
-						label={ 'Override layout' }
-						checked={ overrideColumnLayoutMd }
-						onChange={ (value) => { setAttributes({ overrideColumnLayoutMd: value }); } }
-					/>
+						<ToggleControl
+							label={ 'Override layout' }
+							checked={ overrideColumnLayoutMd }
+							onChange={ (value) => { setAttributes({ overrideColumnLayoutMd: value }); } }
+						/>
 
-					{ !! overrideColumnLayoutMd && <RangeControl
-						label="Column Distribution"
-						value={ columnLayoutMd }
-						onChange={ (value) => setAttributes({ columnLayoutMd: value }) }
-						min={ 1 }
-						max={ 11 }
-					/> }
+						{ !! overrideColumnLayoutMd && <RangeControl
+							label="Column Distribution"
+							value={ columnLayoutMd }
+							onChange={ (value) => setAttributes({ columnLayoutMd: value }) }
+							min={ 1 }
+							max={ 11 }
+						/> }
 
-					{ !! overrideColumnLayoutMd && <RangeControl
-						label="Column Spacing"
-						value={ columnSpacingMd }
-						onChange={ (value) => setAttributes({ columnSpacingMd: value }) }
-						min={ 0 }
-						max={ 120 }
-						step={ 10 }
-					/> }
+						{ !! overrideColumnLayoutMd && <RangeControl
+							label="Column Spacing"
+							value={ columnSpacingMd }
+							onChange={ (value) => setAttributes({ columnSpacingMd: value }) }
+							min={ 0 }
+							max={ 16 }
+							step={ 1 }
+						/> }
+						
+					</div> }
 
-				</PanelBody> }
+					{ ([ 'xs', 'sm' ].includes(columnBreakpoint) && responsiveDeviceMode == 'sm') && <div>
 
-				{ ([ 'xs', 'sm' ].includes(columnBreakpoint) && responsiveDeviceMode == 'sm') && <PanelBody title={ 'Layout' } initialOpen={ true }>
+						<ToggleControl
+							label={ 'Override layout' }
+							checked={ overrideColumnLayoutSm }
+							onChange={ (value) => { setAttributes({ overrideColumnLayoutSm: value }); } }
+						/>
 
-					<ToggleControl
-						label={ 'Override layout' }
-						checked={ overrideColumnLayoutSm }
-						onChange={ (value) => { setAttributes({ overrideColumnLayoutSm: value }); } }
-					/>
+						{ !! overrideColumnLayoutSm && <RangeControl
+							label="Column Distribution"
+							value={ columnLayoutSm }
+							onChange={ (value) => setAttributes({ columnLayoutSm: value }) }
+							min={ 1 }
+							max={ 11 }
+						/> }
 
-					{ !! overrideColumnLayoutSm && <RangeControl
-						label="Column Distribution"
-						value={ columnLayoutSm }
-						onChange={ (value) => setAttributes({ columnLayoutSm: value }) }
-						min={ 1 }
-						max={ 11 }
-					/> }
+						{ !! overrideColumnLayoutSm && <RangeControl
+							label="Column Spacing"
+							value={ columnSpacingSm }
+							onChange={ (value) => setAttributes({ columnSpacingSm: value }) }
+							min={ 0 }
+							max={ 16 }
+							step={ 1 }
+						/> }
+						
+					</div> }
 
-					{ !! overrideColumnLayoutSm && <RangeControl
-						label="Column Spacing"
-						value={ columnSpacingSm }
-						onChange={ (value) => setAttributes({ columnSpacingSm: value }) }
-						min={ 0 }
-						max={ 120 }
-						step={ 10 }
-					/> }
+					{ ([ 'xs' ].includes(columnBreakpoint) && responsiveDeviceMode == 'xs') && <div>
 
-				</PanelBody> }
+						<ToggleControl
+							label={ 'Override layout' }
+							checked={ overrideColumnLayoutXs }
+							onChange={ (value) => { setAttributes({ overrideColumnLayoutXs: value }); } }
+						/>
 
-				{ ([ 'xs' ].includes(columnBreakpoint) && responsiveDeviceMode == 'xs') && <PanelBody title={ 'Layout' } initialOpen={ true }>
+						{ !! overrideColumnLayoutXs && <RangeControl
+							label="Column Distribution"
+							value={ columnLayoutXs }
+							onChange={ (value) => setAttributes({ columnLayoutXs: value }) }
+							min={ 1 }
+							max={ 11 }
+						/> }
 
-					<ToggleControl
-						label={ 'Override layout' }
-						checked={ overrideColumnLayoutXs }
-						onChange={ (value) => { setAttributes({ overrideColumnLayoutXs: value }); } }
-					/>
+						{ !! overrideColumnLayoutXs && <RangeControl
+							label="Column Spacing"
+							value={ columnSpacingXs }
+							onChange={ (value) => setAttributes({ columnSpacingXs: value }) }
+							min={ 0 }
+							max={ 16 }
+							step={ 1 }
+						/> }
+						
+					</div> }
 
-					{ !! overrideColumnLayoutXs && <RangeControl
-						label="Column Distribution"
-						value={ columnLayoutXs }
-						onChange={ (value) => setAttributes({ columnLayoutXs: value }) }
-						min={ 1 }
-						max={ 11 }
-					/> }
-
-					{ !! overrideColumnLayoutXs && <RangeControl
-						label="Column Spacing"
-						value={ columnSpacingXs }
-						onChange={ (value) => setAttributes({ columnSpacingXs: value }) }
-						min={ 0 }
-						max={ 120 }
-						step={ 10 }
-					/> }
-
-				</PanelBody> }
+				</PanelBody>
 
 			</InspectorControls>,
 

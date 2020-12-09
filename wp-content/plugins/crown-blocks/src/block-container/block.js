@@ -321,7 +321,7 @@ registerBlockType('crown-blocks/container', {
 					</ButtonGroup>
 				</div>
 
-				<PanelBody title={ 'Spacing' } initialOpen={ false }>
+				<PanelBody title={ 'Spacing' } initialOpen={ true }>
 
 					<SelectControl
 						label="Spacing Profile"
@@ -330,7 +330,7 @@ registerBlockType('crown-blocks/container', {
 						options={ spacingProfileOptions }
 					/>
 
-					{ responsiveDeviceMode == 'xl' && <div>
+					{ (responsiveDeviceMode == 'xl') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -339,6 +339,7 @@ registerBlockType('crown-blocks/container', {
 							min={ -40 }
 							max={ 40 }
 							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
 						/>
 
 						<RangeControl
@@ -348,6 +349,7 @@ registerBlockType('crown-blocks/container', {
 							min={ -40 }
 							max={ 40 }
 							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
 						/>
 
 						<RangeControl
@@ -357,7 +359,148 @@ registerBlockType('crown-blocks/container', {
 							min={ -40 }
 							max={ 40 }
 							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
 						/>
+
+					</div> }
+
+					{ (responsiveDeviceMode == 'lg') && <div>
+
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopLg }
+							onChange={ (value) => setSpacingAttribute({ paddingTopLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomLg }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXLg }
+							onChange={ (value) => setSpacingAttribute({ paddingXLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+					</div> }
+
+					{ (responsiveDeviceMode == 'md') && <div>
+
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopMd }
+							onChange={ (value) => setSpacingAttribute({ paddingTopMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomMd }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXMd }
+							onChange={ (value) => setSpacingAttribute({ paddingXMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+					</div> }
+
+					{ (responsiveDeviceMode == 'sm') && <div>
+
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopSm }
+							onChange={ (value) => setSpacingAttribute({ paddingTopSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomSm }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXSm }
+							onChange={ (value) => setSpacingAttribute({ paddingXSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+					</div> }
+
+					{ (responsiveDeviceMode == 'xs') && <div>
+
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopXs }
+							onChange={ (value) => setSpacingAttribute({ paddingTopXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomXs }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXXs }
+							onChange={ (value) => setSpacingAttribute({ paddingXXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+							marks={ [{ value: 40, label: '0' }] }
+						/>
+
+					</div> }
+
+					{ (responsiveDeviceMode == 'xl') && <div>
 
 						<ToggleControl
 							label={ 'Restrict content width' }
@@ -371,137 +514,16 @@ registerBlockType('crown-blocks/container', {
 							onChange={ (value) => setAttributes({ contentsMaxWidth: value }) }
 							min={ 1 }
 							max={ 6 }
+							showTooltip={ false }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '360' }, { value: 1, label: '540' }, { value: 2, label: '720' }, { value: 3, label: '900' }, { value: 4, label: '1080' }, { value: 5, label: '1260' }] }
 						/> }
-
-					</div> }
-
-					{ responsiveDeviceMode == 'lg' && <div>
-
-						<RangeControl
-							label="Top Padding"
-							value={ paddingTopLg }
-							onChange={ (value) => setSpacingAttribute({ paddingTopLg: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Bottom Padding"
-							value={ paddingBottomLg }
-							onChange={ (value) => setSpacingAttribute({ paddingBottomLg: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Horizontal Padding"
-							value={ paddingXLg }
-							onChange={ (value) => setSpacingAttribute({ paddingXLg: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-					</div> }
-
-					{ responsiveDeviceMode == 'md' && <div>
-
-						<RangeControl
-							label="Top Padding"
-							value={ paddingTopMd }
-							onChange={ (value) => setSpacingAttribute({ paddingTopMd: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Bottom Padding"
-							value={ paddingBottomMd }
-							onChange={ (value) => setSpacingAttribute({ paddingBottomMd: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Horizontal Padding"
-							value={ paddingXMd }
-							onChange={ (value) => setSpacingAttribute({ paddingXMd: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-					</div> }
-
-					{ responsiveDeviceMode == 'sm' && <div>
-
-						<RangeControl
-							label="Top Padding"
-							value={ paddingTopSm }
-							onChange={ (value) => setSpacingAttribute({ paddingTopSm: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Bottom Padding"
-							value={ paddingBottomSm }
-							onChange={ (value) => setSpacingAttribute({ paddingBottomSm: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Horizontal Padding"
-							value={ paddingXSm }
-							onChange={ (value) => setSpacingAttribute({ paddingXSm: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-					</div> }
-
-					{ responsiveDeviceMode == 'xs' && <div>
-
-						<RangeControl
-							label="Top Padding"
-							value={ paddingTopXs }
-							onChange={ (value) => setSpacingAttribute({ paddingTopXs: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Bottom Padding"
-							value={ paddingBottomXs }
-							onChange={ (value) => setSpacingAttribute({ paddingBottomXs: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
-
-						<RangeControl
-							label="Horizontal Padding"
-							value={ paddingXXs }
-							onChange={ (value) => setSpacingAttribute({ paddingXXs: value }) }
-							min={ -40 }
-							max={ 40 }
-							step={ 1 }
-						/>
 
 					</div> }
 
 				</PanelBody>
 
-				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Styles' } initialOpen={ false }>
+				{/* { responsiveDeviceMode == 'xl' && <PanelBody title={ 'Styles' } initialOpen={ true }>
 					
 					{ align != 'full' && <ToggleControl
 						label={ 'Enable drop shadow' }
@@ -509,15 +531,15 @@ registerBlockType('crown-blocks/container', {
 						onChange={ (value) => { setAttributes({ dropShadowEnabled: value }); } }
 					/> }
 
-				</PanelBody> }
+				</PanelBody> } */}
 
 				{ responsiveDeviceMode == 'xl' && <PanelColorSettings
 					title={ 'Background Color' }
-					initialOpen={ false }
+					initialOpen={ true }
 					colorSettings={ bgColorSettings }
 				/> }
 
-				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Background Image' } className={ 'crown-blocks-background-image' } initialOpen={ false }>
+				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Background Image' } className={ 'crown-blocks-background-image' } initialOpen={ true }>
 
 					{ !! backgroundImageId && <FocalPointPicker 
 						label="Focal Point"
@@ -580,7 +602,7 @@ registerBlockType('crown-blocks/container', {
 
 				</PanelBody> }
 
-				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Text Color' } initialOpen={ false }>
+				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Text Color' } initialOpen={ true }>
 
 					<ButtonGroup>
 						<Button isPrimary={ textColor == 'auto' } isSecondary={ textColor != 'auto' } onClick={ (e) => setAttributes({ textColor: 'auto' }) }>Auto</Button>

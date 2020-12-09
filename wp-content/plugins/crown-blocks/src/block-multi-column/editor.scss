@@ -24,13 +24,13 @@
 
 		$column-container-selector: '> .inner > .multi-column-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout';
 
-		&.column-breakpoint-xs > #{$column-container-selector} { display: grid; }
+		&.column-breakpoint-xs #{$column-container-selector} { display: grid; }
 		&.column-breakpoint-xs {
 			@for $i from 1 through 11 {
 				&.column-layout-xs-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
 			}
-			@for $i from 0 through 12 {
-				&.column-spacing-xs-#{($i * 10)} #{$column-container-selector} { grid-gap: $i * 10px; }
+			@for $i from 0 through 16 {
+				&.column-spacing-xs-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
 			}
 		}
 		
@@ -40,8 +40,8 @@
 				@for $i from 1 through 11 {
 					&.column-layout-sm-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
 				}
-				@for $i from 0 through 12 {
-					&.column-spacing-sm-#{($i * 10)} #{$column-container-selector} { grid-gap: $i * 10px; }
+				@for $i from 0 through 16 {
+					&.column-spacing-sm-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
 				}
 			}
 		}
@@ -52,8 +52,8 @@
 				@for $i from 1 through 11 {
 					&.column-layout-md-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
 				}
-				@for $i from 0 through 12 {
-					&.column-spacing-md-#{($i * 10)} #{$column-container-selector} { grid-gap: $i * 10px; }
+				@for $i from 0 through 16 {
+					&.column-spacing-md-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
 				}
 			}
 		}
@@ -64,8 +64,8 @@
 				@for $i from 1 through 11 {
 					&.column-layout-lg-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
 				}
-				@for $i from 0 through 12 {
-					&.column-spacing-lg-#{($i * 10)} #{$column-container-selector} { grid-gap: $i * 10px; }
+				@for $i from 0 through 16 {
+					&.column-spacing-lg-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
 				}
 			}
 		}
@@ -76,8 +76,8 @@
 				@for $i from 1 through 11 {
 					&.column-layout-xl-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
 				}
-				@for $i from 0 through 12 {
-					&.column-spacing-xl-#{($i * 10)} #{$column-container-selector} { grid-gap: $i * 10px; }
+				@for $i from 0 through 16 {
+					&.column-spacing-xl-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
 				}
 			}
 		}

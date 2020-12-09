@@ -4,6 +4,7 @@ $spacer: 1rem;
 .wp-block-crown-blocks-column {
 	display: flex;
 
+	&.vertical-alignment-top { align-items: flex-start; }
 	&.vertical-alignment-center { align-items: center; }
 	&.vertical-alignment-bottom { align-items: flex-end; }
 	> .inner {
