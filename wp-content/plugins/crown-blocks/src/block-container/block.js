@@ -12,6 +12,63 @@ const { InnerBlocks, RichText, Editable, MediaUpload, BlockControls, AlignmentTo
 const { PanelBody, RadioControl, ColorPicker, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl } = wp.components;
 const { getColorObjectByColorValue } = wp.blockEditor;
 
+const spacingProfiles = [
+	{
+		spacingProfile:    'Default',
+		paddingTopXl:      4,
+		paddingBottomXl:   4,
+		paddingXXl:        6,
+		paddingTopLg:      4,
+		paddingBottomLg:   4,
+		paddingXLg:        6,
+		paddingTopMd:      4,
+		paddingBottomMd:   4,
+		paddingXMd:        6,
+		paddingTopSm:      4,
+		paddingBottomSm:   4,
+		paddingXSm:        6,
+		paddingTopXs:      4,
+		paddingBottomXs:   4,
+		paddingXXs:        6
+	},
+	{
+		spacingProfile:    'Standard Page Section',
+		paddingTopXl:      10,
+		paddingBottomXl:   10,
+		paddingXXl:        5,
+		paddingTopLg:      10,
+		paddingBottomLg:   10,
+		paddingXLg:        4,
+		paddingTopMd:      7,
+		paddingBottomMd:   7,
+		paddingXMd:        3,
+		paddingTopSm:      5,
+		paddingBottomSm:   5,
+		paddingXSm:        2,
+		paddingTopXs:      5,
+		paddingBottomXs:   5,
+		paddingXXs:        2
+	},
+	{
+		spacingProfile:    'None',
+		paddingTopXl:      0,
+		paddingBottomXl:   0,
+		paddingXXl:        0,
+		paddingTopLg:      0,
+		paddingBottomLg:   0,
+		paddingXLg:        0,
+		paddingTopMd:      0,
+		paddingBottomMd:   0,
+		paddingXMd:        0,
+		paddingTopSm:      0,
+		paddingBottomSm:   0,
+		paddingXSm:        0,
+		paddingTopXs:      0,
+		paddingBottomXs:   0,
+		paddingXXs:        0
+	}
+];
+
 
 registerBlockType('crown-blocks/container', {
 	title: 'Container',
@@ -30,48 +87,29 @@ registerBlockType('crown-blocks/container', {
 		responsiveDeviceMode: { type: 'string', default: 'xl' },
 		restictContentWidth: { type: 'boolean', default: true },
 		contentsMaxWidth: { type: 'number', default: 6 },
+		spacingProfile: { type: 'string', default: 'Default' },
 
-		overrideVerticalSpacingXl: { type: 'boolean', default: false },
-		paddingTopXl: { type: 'number', default: 2 },
-		paddingBottomXl: { type: 'number', default: 2 },
-		overrideHorizontalSpacingXl: { type: 'boolean', default: false },
-		paddingXXl: { type: 'number', default: 2 },
-		overflowXXl: { type: 'number', default: 0 },
+		paddingTopXl:    { type: 'number', default: 4 },
+		paddingBottomXl: { type: 'number', default: 4 },
+		paddingXXl:      { type: 'number', default: 6 },
 
-		overrideVerticalSpacingLg: { type: 'boolean', default: false },
-		paddingTopLg: { type: 'number', default: 2 },
-		paddingBottomLg: { type: 'number', default: 2 },
-		overrideHorizontalSpacingLg: { type: 'boolean', default: false },
-		paddingXLg: { type: 'number', default: 2 },
-		overflowXLg: { type: 'number', default: 0 },
+		paddingTopLg:    { type: 'number', default: 4 },
+		paddingBottomLg: { type: 'number', default: 4 },
+		paddingXLg:      { type: 'number', default: 6 },
 
-		overrideVerticalSpacingMd: { type: 'boolean', default: false },
-		paddingTopMd: { type: 'number', default: 2 },
-		paddingBottomMd: { type: 'number', default: 2 },
-		overrideHorizontalSpacingMd: { type: 'boolean', default: false },
-		paddingXMd: { type: 'number', default: 2 },
-		overflowXMd: { type: 'number', default: 0 },
+		paddingTopMd:    { type: 'number', default: 4 },
+		paddingBottomMd: { type: 'number', default: 4 },
+		paddingXMd:      { type: 'number', default: 6 },
 
-		overrideVerticalSpacingSm: { type: 'boolean', default: false },
-		paddingTopSm: { type: 'number', default: 2 },
-		paddingBottomSm: { type: 'number', default: 2 },
-		overrideHorizontalSpacingSm: { type: 'boolean', default: false },
-		paddingXSm: { type: 'number', default: 2 },
-		overflowXSm: { type: 'number', default: 0 },
+		paddingTopSm:    { type: 'number', default: 4 },
+		paddingBottomSm: { type: 'number', default: 4 },
+		paddingXSm:      { type: 'number', default: 6 },
 
-		overrideVerticalSpacingXs: { type: 'boolean', default: false },
-		paddingTopXs: { type: 'number', default: 2 },
-		paddingBottomXs: { type: 'number', default: 2 },
-		overrideHorizontalSpacingXs: { type: 'boolean', default: false },
-		paddingXXs: { type: 'number', default: 2 },
-		overflowXXs: { type: 'number', default: 0 },
+		paddingTopXs:    { type: 'number', default: 4 },
+		paddingBottomXs: { type: 'number', default: 4 },
+		paddingXXs:      { type: 'number', default: 6 },
 
 		dropShadowEnabled: { type: 'boolean', default: false },
-
-		backgroundWaveTopEnabled: { type: 'boolean', default: false },
-		backgroundWaveTopColor: { type: 'string', default: '#FFFFFF' },
-		backgroundWaveBottomEnabled: { type: 'boolean', default: false },
-		backgroundWaveBottomColor: { type: 'string', default: '#FFFFFF' },
 
 		backgroundColor: { type: 'string', default: '#F7F7F7' },
 		backgroundImageId: { type: 'number' },
@@ -96,48 +134,29 @@ registerBlockType('crown-blocks/container', {
 			responsiveDeviceMode,
 			restictContentWidth,
 			contentsMaxWidth,
+			spacingProfile,
 
-			overrideVerticalSpacingXl,
 			paddingTopXl,
 			paddingBottomXl,
-			overrideHorizontalSpacingXl,
 			paddingXXl,
-			overflowXXl,
 
-			overrideVerticalSpacingLg,
 			paddingTopLg,
 			paddingBottomLg,
-			overrideHorizontalSpacingLg,
 			paddingXLg,
-			overflowXLg,
 
-			overrideVerticalSpacingMd,
 			paddingTopMd,
 			paddingBottomMd,
-			overrideHorizontalSpacingMd,
 			paddingXMd,
-			overflowXMd,
 
-			overrideVerticalSpacingSm,
 			paddingTopSm,
 			paddingBottomSm,
-			overrideHorizontalSpacingSm,
 			paddingXSm,
-			overflowXSm,
 
-			overrideVerticalSpacingXs,
 			paddingTopXs,
 			paddingBottomXs,
-			overrideHorizontalSpacingXs,
 			paddingXXs,
-			overflowXXs,
 			
 			dropShadowEnabled,
-
-			backgroundWaveTopEnabled,
-			backgroundWaveTopColor,
-			backgroundWaveBottomEnabled,
-			backgroundWaveBottomColor,
 
 			backgroundColor,
 			backgroundImageId,
@@ -172,60 +191,43 @@ registerBlockType('crown-blocks/container', {
 			blockClasses.push('contents-mw-' + contentsMaxWidth);
 		}
 
-		if(overrideVerticalSpacingXl) {
-			blockClasses.push('contents-pt-xl-' + paddingTopXl);
-			blockClasses.push('contents-pb-xl-' + paddingBottomXl);
-		}
-		if(overrideHorizontalSpacingXl) {
-			blockClasses.push('contents-px-xl-' + paddingXXl);
-			if(overflowXXl > 0) blockClasses.push('contents-ox-xl-' + overflowXXl);
-		}
+		if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+		if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
+		if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+		if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
+		if(paddingXXl >= 0) blockClasses.push('contents-px-xl-' + paddingXXl);
+		if(paddingXXl < 0) blockClasses.push('contents-ox-xl-' + Math.abs(paddingXXl));
 
-		if(overrideVerticalSpacingLg) {
-			blockClasses.push('contents-pt-lg-' + paddingTopLg);
-			blockClasses.push('contents-pb-lg-' + paddingBottomLg);
-		}
-		if(overrideHorizontalSpacingLg) {
-			blockClasses.push('contents-px-lg-' + paddingXLg);
-			if(overflowXLg > 0) blockClasses.push('contents-ox-lg-' + overflowXLg);
-		}
+		if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+		if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
+		if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+		if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
+		if(paddingXLg >= 0) blockClasses.push('contents-px-lg-' + paddingXLg);
+		if(paddingXLg < 0) blockClasses.push('contents-ox-lg-' + Math.abs(paddingXLg));
 
-		if(overrideVerticalSpacingMd) {
-			blockClasses.push('contents-pt-md-' + paddingTopMd);
-			blockClasses.push('contents-pb-md-' + paddingBottomMd);
-		}
-		if(overrideHorizontalSpacingMd) {
-			blockClasses.push('contents-px-md-' + paddingXMd);
-			if(overflowXMd > 0) blockClasses.push('contents-ox-md-' + overflowXMd);
-		}
+		if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+		if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
+		if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+		if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
+		if(paddingXMd >= 0) blockClasses.push('contents-px-md-' + paddingXMd);
+		if(paddingXMd < 0) blockClasses.push('contents-ox-md-' + Math.abs(paddingXMd));
 
-		if(overrideVerticalSpacingSm) {
-			blockClasses.push('contents-pt-sm-' + paddingTopSm);
-			blockClasses.push('contents-pb-sm-' + paddingBottomSm);
-		}
-		if(overrideHorizontalSpacingSm) {
-			blockClasses.push('contents-px-sm-' + paddingXSm);
-			if(overflowXSm > 0) blockClasses.push('contents-ox-sm-' + overflowXSm);
-		}
+		if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+		if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
+		if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+		if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
+		if(paddingXSm >= 0) blockClasses.push('contents-px-sm-' + paddingXSm);
+		if(paddingXSm < 0) blockClasses.push('contents-ox-sm-' + Math.abs(paddingXSm));
 
-		if(overrideVerticalSpacingXs) {
-			blockClasses.push('contents-pt-' + paddingTopXs);
-			blockClasses.push('contents-pb-' + paddingBottomXs);
-		}
-		if(overrideHorizontalSpacingXs) {
-			blockClasses.push('contents-ps-' + paddingXXs);
-			if(overflowXXs > 0) blockClasses.push('contents-ox-' + overflowXXs);
-		}
+		if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+		if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
+		if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+		if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
+		if(paddingXXs >= 0) blockClasses.push('contents-px-' + paddingXXs);
+		if(paddingXXs < 0) blockClasses.push('contents-ox-' + Math.abs(paddingXXs));
 
 		if(dropShadowEnabled && align != 'full') {
 			blockClasses.push('has-drop-shadow');
-		}
-
-		if(backgroundWaveTopEnabled && align == 'full') {
-			blockClasses.push('bg-wave-top');
-		}
-		if(backgroundWaveBottomEnabled && align == 'full') {
-			blockClasses.push('bg-wave-bottom');
 		}
 
 		let backgroundImageUrl = null;
@@ -234,25 +236,26 @@ registerBlockType('crown-blocks/container', {
 			blockClasses.push('has-bg-image');
 		}
 
+		let setSpacingProfile = (value) => {
+			let profile = _.find(spacingProfiles, function(n) { return n.spacingProfile == value; });
+			if(typeof profile !== 'undefined') setAttributes(profile);
+			setAttributes({ spacingProfile: value });
+		};
+		let spacingProfileOptions = [{ label: 'Custom', value: '' }];
+		for(let i in spacingProfiles) {
+			spacingProfileOptions.push({ label: spacingProfiles[i].spacingProfile, value: spacingProfiles[i].spacingProfile });
+		}
+
+		let setSpacingAttribute = (atts) => {
+			atts.spacingProfile = '';
+			setAttributes(atts);
+		};
+
 		let bgColorSettings = [{
 			label: 'Background Color',
 			value: backgroundColor,
 			onChange: (value) => setAttributes({ backgroundColor: value ? value : '' })
 		}];
-		if(backgroundWaveTopEnabled && align == 'full') {
-			bgColorSettings.push({
-				label: 'Top Wave Color',
-				value: backgroundWaveTopColor,
-				onChange: (value) => setAttributes({ backgroundWaveTopColor: value })
-			});
-		}
-		if(backgroundWaveBottomEnabled && align == 'full') {
-			bgColorSettings.push({
-				label: 'Bottom Wave Color',
-				value: backgroundWaveBottomColor,
-				onChange: (value) => setAttributes({ backgroundWaveBottomColor: value })
-			});
-		}
 
 		return [
 
@@ -318,278 +321,192 @@ registerBlockType('crown-blocks/container', {
 					</ButtonGroup>
 				</div>
 
-				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Spacing' } initialOpen={ false }>
+				<PanelBody title={ 'Spacing' } initialOpen={ false }>
 
-					<ToggleControl
-						label={ 'Restrict content width' }
-						checked={ restictContentWidth }
-						onChange={ (value) => { setAttributes({ restictContentWidth: value }); } }
+					<SelectControl
+						label="Spacing Profile"
+						value={ spacingProfile }
+						onChange={ setSpacingProfile }
+						options={ spacingProfileOptions }
 					/>
 
-					{ !! restictContentWidth && <RangeControl
-						label="Max Content Width"
-						value={ contentsMaxWidth }
-						onChange={ (value) => setAttributes({ contentsMaxWidth: value }) }
-						min={ 1 }
-						max={ 6 }
-					/> }
+					{ responsiveDeviceMode == 'xl' && <div>
 
-					<ToggleControl
-						label={ 'Override vertical spacing' }
-						checked={ overrideVerticalSpacingXl }
-						onChange={ (value) => { setAttributes({ overrideVerticalSpacingXl: value }); } }
-					/>
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopXl }
+							onChange={ (value) => setSpacingAttribute({ paddingTopXl: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingXl && <RangeControl
-						label="Top Padding"
-						value={ paddingTopXl }
-						onChange={ (value) => setAttributes({ paddingTopXl: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomXl }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomXl: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingXl && <RangeControl
-						label="Bottom Padding"
-						value={ paddingBottomXl }
-						onChange={ (value) => setAttributes({ paddingBottomXl: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXXl }
+							onChange={ (value) => setSpacingAttribute({ paddingXXl: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					<ToggleControl
-						label={ 'Override horizontal spacing' }
-						checked={ overrideHorizontalSpacingXl }
-						onChange={ (value) => { setAttributes({ overrideHorizontalSpacingXl: value }); } }
-					/>
+						<ToggleControl
+							label={ 'Restrict content width' }
+							checked={ restictContentWidth }
+							onChange={ (value) => { setAttributes({ restictContentWidth: value }); } }
+						/>
 
-					{ !! overrideHorizontalSpacingXl && <RangeControl
-						label="Horizontal Padding"
-						value={ paddingXXl }
-						onChange={ (value) => setAttributes({ paddingXXl: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						{ !! restictContentWidth && <RangeControl
+							label="Max Content Width"
+							value={ contentsMaxWidth }
+							onChange={ (value) => setAttributes({ contentsMaxWidth: value }) }
+							min={ 1 }
+							max={ 6 }
+						/> }
 
-					{ !! overrideHorizontalSpacingXl && <RangeControl
-						label="Horizontal Overflow"
-						value={ overflowXXl }
-						onChange={ (value) => setAttributes({ overflowXXl: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+					</div> }
 
-				</PanelBody> }
+					{ responsiveDeviceMode == 'lg' && <div>
 
-				{ responsiveDeviceMode == 'lg' && <PanelBody title={ 'Spacing' } initialOpen={ true }>
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopLg }
+							onChange={ (value) => setSpacingAttribute({ paddingTopLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					<ToggleControl
-						label={ 'Override vertical spacing' }
-						checked={ overrideVerticalSpacingLg }
-						onChange={ (value) => { setAttributes({ overrideVerticalSpacingLg: value }); } }
-					/>
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomLg }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingLg && <RangeControl
-						label="Top Padding"
-						value={ paddingTopLg }
-						onChange={ (value) => setAttributes({ paddingTopLg: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXLg }
+							onChange={ (value) => setSpacingAttribute({ paddingXLg: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingLg && <RangeControl
-						label="Bottom Padding"
-						value={ paddingBottomLg }
-						onChange={ (value) => setAttributes({ paddingBottomLg: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+					</div> }
 
-					<ToggleControl
-						label={ 'Override horizontal spacing' }
-						checked={ overrideHorizontalSpacingLg }
-						onChange={ (value) => { setAttributes({ overrideHorizontalSpacingLg: value }); } }
-					/>
+					{ responsiveDeviceMode == 'md' && <div>
 
-					{ !! overrideHorizontalSpacingLg && <RangeControl
-						label="Horizontal Padding"
-						value={ paddingXLg }
-						onChange={ (value) => setAttributes({ paddingXLg: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopMd }
+							onChange={ (value) => setSpacingAttribute({ paddingTopMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideHorizontalSpacingLg && <RangeControl
-						label="Horizontal Overflow"
-						value={ overflowXLg }
-						onChange={ (value) => setAttributes({ overflowXLg: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomMd }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-				</PanelBody> }
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXMd }
+							onChange={ (value) => setSpacingAttribute({ paddingXMd: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-				{ responsiveDeviceMode == 'md' && <PanelBody title={ 'Spacing' } initialOpen={ true }>
+					</div> }
 
-					<ToggleControl
-						label={ 'Override vertical spacing' }
-						checked={ overrideVerticalSpacingMd }
-						onChange={ (value) => { setAttributes({ overrideVerticalSpacingMd: value }); } }
-					/>
+					{ responsiveDeviceMode == 'sm' && <div>
 
-					{ !! overrideVerticalSpacingMd && <RangeControl
-						label="Top Padding"
-						value={ paddingTopMd }
-						onChange={ (value) => setAttributes({ paddingTopMd: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopSm }
+							onChange={ (value) => setSpacingAttribute({ paddingTopSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingMd && <RangeControl
-						label="Bottom Padding"
-						value={ paddingBottomMd }
-						onChange={ (value) => setAttributes({ paddingBottomMd: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomSm }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					<ToggleControl
-						label={ 'Override horizontal spacing' }
-						checked={ overrideHorizontalSpacingMd }
-						onChange={ (value) => { setAttributes({ overrideHorizontalSpacingMd: value }); } }
-					/>
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXSm }
+							onChange={ (value) => setSpacingAttribute({ paddingXSm: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideHorizontalSpacingMd && <RangeControl
-						label="Horizontal Padding"
-						value={ paddingXMd }
-						onChange={ (value) => setAttributes({ paddingXMd: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+					</div> }
 
-					{ !! overrideHorizontalSpacingMd && <RangeControl
-						label="Horizontal Overflow"
-						value={ overflowXMd }
-						onChange={ (value) => setAttributes({ overflowXMd: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+					{ responsiveDeviceMode == 'xs' && <div>
 
-				</PanelBody> }
+						<RangeControl
+							label="Top Padding"
+							value={ paddingTopXs }
+							onChange={ (value) => setSpacingAttribute({ paddingTopXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-				{ responsiveDeviceMode == 'sm' && <PanelBody title={ 'Spacing' } initialOpen={ true }>
+						<RangeControl
+							label="Bottom Padding"
+							value={ paddingBottomXs }
+							onChange={ (value) => setSpacingAttribute({ paddingBottomXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					<ToggleControl
-						label={ 'Override vertical spacing' }
-						checked={ overrideVerticalSpacingSm }
-						onChange={ (value) => { setAttributes({ overrideVerticalSpacingSm: value }); } }
-					/>
+						<RangeControl
+							label="Horizontal Padding"
+							value={ paddingXXs }
+							onChange={ (value) => setSpacingAttribute({ paddingXXs: value }) }
+							min={ -40 }
+							max={ 40 }
+							step={ 1 }
+						/>
 
-					{ !! overrideVerticalSpacingSm && <RangeControl
-						label="Top Padding"
-						value={ paddingTopSm }
-						onChange={ (value) => setAttributes({ paddingTopSm: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+					</div> }
 
-					{ !! overrideVerticalSpacingSm && <RangeControl
-						label="Bottom Padding"
-						value={ paddingBottomSm }
-						onChange={ (value) => setAttributes({ paddingBottomSm: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
+				</PanelBody>
 
-					<ToggleControl
-						label={ 'Override horizontal spacing' }
-						checked={ overrideHorizontalSpacingSm }
-						onChange={ (value) => { setAttributes({ overrideHorizontalSpacingSm: value }); } }
-					/>
-
-					{ !! overrideHorizontalSpacingSm && <RangeControl
-						label="Horizontal Padding"
-						value={ paddingXSm }
-						onChange={ (value) => setAttributes({ paddingXSm: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-					{ !! overrideHorizontalSpacingSm && <RangeControl
-						label="Horizontal Overflow"
-						value={ overflowXSm }
-						onChange={ (value) => setAttributes({ overflowXSm: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-				</PanelBody> }
-
-				{ responsiveDeviceMode == 'xs' && <PanelBody title={ 'Spacing' } initialOpen={ true }>
-
-					<ToggleControl
-						label={ 'Override vertical spacing' }
-						checked={ overrideVerticalSpacingXs }
-						onChange={ (value) => { setAttributes({ overrideVerticalSpacingXs: value }); } }
-					/>
-
-					{ !! overrideVerticalSpacingXs && <RangeControl
-						label="Top Padding"
-						value={ paddingTopXs }
-						onChange={ (value) => setAttributes({ paddingTopXs: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-					{ !! overrideVerticalSpacingXs && <RangeControl
-						label="Bottom Padding"
-						value={ paddingBottomXs }
-						onChange={ (value) => setAttributes({ paddingBottomXs: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-					<ToggleControl
-						label={ 'Override horizontal spacing' }
-						checked={ overrideHorizontalSpacingXs }
-						onChange={ (value) => { setAttributes({ overrideHorizontalSpacingXs: value }); } }
-					/>
-
-					{ !! overrideHorizontalSpacingXs && <RangeControl
-						label="Horizontal Padding"
-						value={ paddingXXs }
-						onChange={ (value) => setAttributes({ paddingXXs: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-					{ !! overrideHorizontalSpacingXs && <RangeControl
-						label="Horizontal Overflow"
-						value={ overflowXXs }
-						onChange={ (value) => setAttributes({ overflowXXs: value }) }
-						min={ 0 }
-						max={ 20 }
-					/> }
-
-				</PanelBody> }
-				
 				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Styles' } initialOpen={ false }>
 					
 					{ align != 'full' && <ToggleControl
 						label={ 'Enable drop shadow' }
 						checked={ dropShadowEnabled }
 						onChange={ (value) => { setAttributes({ dropShadowEnabled: value }); } }
-					/> }
-
-					{ align == 'full' && <ToggleControl
-						label={ 'Enable top wave' }
-						checked={ backgroundWaveTopEnabled }
-						onChange={ (value) => { setAttributes({ backgroundWaveTopEnabled: value }); } }
-					/> }
-
-					{ align == 'full' && <ToggleControl
-						label={ 'Enable bottom wave' }
-						checked={ backgroundWaveBottomEnabled }
-						onChange={ (value) => { setAttributes({ backgroundWaveBottomEnabled: value }); } }
 					/> }
 
 				</PanelBody> }
@@ -655,11 +572,11 @@ registerBlockType('crown-blocks/container', {
 						] }
 					/> }
 
-					{ !! backgroundImageId && <ToggleControl
+					{/* { !! backgroundImageId && <ToggleControl
 						label={ 'Contain background image' }
 						checked={ backgroundImageContain }
 						onChange={ (value) => { setAttributes({ backgroundImageContain: value }); } }
-					/> }
+					/> } */}
 
 				</PanelBody> }
 
@@ -687,12 +604,6 @@ registerBlockType('crown-blocks/container', {
 							mixBlendMode: backgroundImageBlendMode,
 							backgroundSize: backgroundImageContain ? 'contain' : 'cover'
 						} }></div> }
-						{ (backgroundWaveTopEnabled && align == 'full') && <svg class="wave-top" style={ { fill: backgroundWaveTopColor } } width="1440px" height="130px" viewBox="0 0 1440 130" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-							<path fill-rule="evenodd" d="M1440.00021,0 L1440.00021,5.48999154 C1325.76192,-5.02699514 1218.42852,1.58221704 1118,25.3176281 C821.177799,95.4689878 643.66117,119.408195 527.515345,126.332608 C376.707877,135.323487 202.533839,120.790372 4.99323133,82.7332625 L-4.54747351e-13,81.766 L-4.54747351e-13,0 L1440.00021,0 Z"></path>
-						</svg> }
-						{ (backgroundWaveBottomEnabled && align == 'full') && <svg class="wave-bottom" style={ { fill: backgroundWaveBottomColor } } width="1440px" height="130px" viewBox="0 0 1440 130" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-							<path fill-rule="evenodd" d="M1440.00021,5.48999154 L1440.00021,130 L0,130 L0,81.7662281 L4.99323133,82.7332625 C202.533839,120.790372 376.707877,135.323487 527.515345,126.332608 C643.66117,119.408195 821.177799,95.4689878 1118,25.3176281 C1218.42852,1.58221704 1325.76192,-5.02699514 1440.00021,5.48999154 Z"></path>
-						</svg> }
 					</div>
 					<div className="inner">
 						<div className="container-contents">
@@ -713,50 +624,32 @@ registerBlockType('crown-blocks/container', {
 
 		const {
 			align,
+
+			responsiveDeviceMode,
 			restictContentWidth,
 			contentsMaxWidth,
 
-			overrideVerticalSpacingXl,
 			paddingTopXl,
 			paddingBottomXl,
-			overrideHorizontalSpacingXl,
 			paddingXXl,
-			overflowXXl,
 
-			overrideVerticalSpacingLg,
 			paddingTopLg,
 			paddingBottomLg,
-			overrideHorizontalSpacingLg,
 			paddingXLg,
-			overflowXLg,
 
-			overrideVerticalSpacingMd,
 			paddingTopMd,
 			paddingBottomMd,
-			overrideHorizontalSpacingMd,
 			paddingXMd,
-			overflowXMd,
 
-			overrideVerticalSpacingSm,
 			paddingTopSm,
 			paddingBottomSm,
-			overrideHorizontalSpacingSm,
 			paddingXSm,
-			overflowXSm,
 
-			overrideVerticalSpacingXs,
 			paddingTopXs,
 			paddingBottomXs,
-			overrideHorizontalSpacingXs,
 			paddingXXs,
-			overflowXXs,
-
+			
 			dropShadowEnabled,
-
-			backgroundWaveTopEnabled,
-			backgroundWaveTopColor,
-			backgroundWaveBottomEnabled,
-			backgroundWaveBottomColor,
 
 			backgroundColor,
 			backgroundImageId,
@@ -791,60 +684,43 @@ registerBlockType('crown-blocks/container', {
 			blockClasses.push('contents-mw-' + contentsMaxWidth);
 		}
 
-		if(overrideVerticalSpacingXl) {
-			blockClasses.push('contents-pt-xl-' + paddingTopXl);
-			blockClasses.push('contents-pb-xl-' + paddingBottomXl);
-		}
-		if(overrideHorizontalSpacingXl) {
-			blockClasses.push('contents-px-xl-' + paddingXXl);
-			if(overflowXXl > 0) blockClasses.push('contents-ox-xl-' + overflowXXl);
-		}
+		if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+		if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
+		if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+		if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
+		if(paddingXXl >= 0) blockClasses.push('contents-px-xl-' + paddingXXl);
+		if(paddingXXl < 0) blockClasses.push('contents-ox-xl-' + Math.abs(paddingXXl));
 
-		if(overrideVerticalSpacingLg) {
-			blockClasses.push('contents-pt-lg-' + paddingTopLg);
-			blockClasses.push('contents-pb-lg-' + paddingBottomLg);
-		}
-		if(overrideHorizontalSpacingLg) {
-			blockClasses.push('contents-px-lg-' + paddingXLg);
-			if(overflowXLg > 0) blockClasses.push('contents-ox-lg-' + overflowXLg);
-		}
+		if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+		if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
+		if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+		if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
+		if(paddingXLg >= 0) blockClasses.push('contents-px-lg-' + paddingXLg);
+		if(paddingXLg < 0) blockClasses.push('contents-ox-lg-' + Math.abs(paddingXLg));
 
-		if(overrideVerticalSpacingMd) {
-			blockClasses.push('contents-pt-md-' + paddingTopMd);
-			blockClasses.push('contents-pb-md-' + paddingBottomMd);
-		}
-		if(overrideHorizontalSpacingMd) {
-			blockClasses.push('contents-px-md-' + paddingXMd);
-			if(overflowXMd > 0) blockClasses.push('contents-ox-md-' + overflowXMd);
-		}
+		if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+		if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
+		if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+		if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
+		if(paddingXMd >= 0) blockClasses.push('contents-px-md-' + paddingXMd);
+		if(paddingXMd < 0) blockClasses.push('contents-ox-md-' + Math.abs(paddingXMd));
 
-		if(overrideVerticalSpacingSm) {
-			blockClasses.push('contents-pt-sm-' + paddingTopSm);
-			blockClasses.push('contents-pb-sm-' + paddingBottomSm);
-		}
-		if(overrideHorizontalSpacingSm) {
-			blockClasses.push('contents-px-sm-' + paddingXSm);
-			if(overflowXSm > 0) blockClasses.push('contents-ox-sm-' + overflowXSm);
-		}
+		if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+		if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
+		if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+		if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
+		if(paddingXSm >= 0) blockClasses.push('contents-px-sm-' + paddingXSm);
+		if(paddingXSm < 0) blockClasses.push('contents-ox-sm-' + Math.abs(paddingXSm));
 
-		if(overrideVerticalSpacingXs) {
-			blockClasses.push('contents-pt-' + paddingTopXs);
-			blockClasses.push('contents-pb-' + paddingBottomXs);
-		}
-		if(overrideHorizontalSpacingXs) {
-			blockClasses.push('contents-ps-' + paddingXXs);
-			if(overflowXXs > 0) blockClasses.push('contents-ox-' + overflowXXs);
-		}
+		if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+		if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
+		if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+		if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
+		if(paddingXXs >= 0) blockClasses.push('contents-px-' + paddingXXs);
+		if(paddingXXs < 0) blockClasses.push('contents-ox-' + Math.abs(paddingXXs));
 
 		if(dropShadowEnabled && align != 'full') {
 			blockClasses.push('has-drop-shadow');
-		}
-
-		if(backgroundWaveTopEnabled && align == 'full') {
-			blockClasses.push('bg-wave-top');
-		}
-		if(backgroundWaveBottomEnabled && align == 'full') {
-			blockClasses.push('bg-wave-bottom');
 		}
 
 		let backgroundImageUrl = null;
@@ -865,12 +741,6 @@ registerBlockType('crown-blocks/container', {
 						mixBlendMode: backgroundImageBlendMode,
 						backgroundSize: backgroundImageContain ? 'contain' : 'cover'
 					} }></div> }
-					{ (backgroundWaveTopEnabled && align == 'full') && <svg class="wave-top" style={ { fill: backgroundWaveTopColor } } width="1440px" height="130px" viewBox="0 0 1440 130" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-						<path fill-rule="evenodd" d="M1440.00021,0 L1440.00021,5.48999154 C1325.76192,-5.02699514 1218.42852,1.58221704 1118,25.3176281 C821.177799,95.4689878 643.66117,119.408195 527.515345,126.332608 C376.707877,135.323487 202.533839,120.790372 4.99323133,82.7332625 L-4.54747351e-13,81.766 L-4.54747351e-13,0 L1440.00021,0 Z"></path>
-					</svg> }
-					{ (backgroundWaveBottomEnabled && align == 'full') && <svg class="wave-bottom" style={ { fill: backgroundWaveBottomColor } } width="1440px" height="130px" viewBox="0 0 1440 130" version="1.1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-						<path fill-rule="evenodd" d="M1440.00021,5.48999154 L1440.00021,130 L0,130 L0,81.7662281 L4.99323133,82.7332625 C202.533839,120.790372 376.707877,135.323487 527.515345,126.332608 C643.66117,119.408195 821.177799,95.4689878 1118,25.3176281 C1218.42852,1.58221704 1325.76192,-5.02699514 1440.00021,5.48999154 Z"></path>
-					</svg> }
 				</div>
 				<div className="inner">
 					<div className="container-contents">
