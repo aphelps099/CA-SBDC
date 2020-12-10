@@ -111,7 +111,8 @@ registerBlockType('crown-blocks/container', {
 
 		dropShadowEnabled: { type: 'boolean', default: false },
 
-		backgroundColor: { type: 'string', default: '#F7F7F7' },
+		backgroundColor: { type: 'string', default: '#F1F4F7' },
+		backgroundColorSlug: { type: 'string', default: 'ghost' },
 		backgroundImageId: { type: 'number' },
 		backgroundImageData: { type: 'object' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
@@ -159,6 +160,7 @@ registerBlockType('crown-blocks/container', {
 			dropShadowEnabled,
 
 			backgroundColor,
+			backgroundColorSlug,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
@@ -180,11 +182,7 @@ registerBlockType('crown-blocks/container', {
 		let blockStyle = {};
 		if(backgroundColor) {
 			blockStyle.backgroundColor = backgroundColor;
-			let settings = wp.data.select('core/editor').getEditorSettings();
-			if(settings.colors) {
-				let colorObject = getColorObjectByColorValue(settings.colors, backgroundColor);
-				if(colorObject) blockClasses.push('bg-color-' + colorObject.slug);
-			}
+			if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
 		}
 
 		if(restictContentWidth) {
@@ -254,7 +252,15 @@ registerBlockType('crown-blocks/container', {
 		let bgColorSettings = [{
 			label: 'Background Color',
 			value: backgroundColor,
-			onChange: (value) => setAttributes({ backgroundColor: value ? value : '' })
+			onChange: (value) => {
+				let settings = wp.data.select('core/editor').getEditorSettings();
+				let colorSlug = '';
+				if(settings.colors) {
+					let colorObject = getColorObjectByColorValue(settings.colors, value);
+					if(colorObject) colorSlug = colorObject.slug;
+				}
+				setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug });
+			}
 		}];
 
 		return [
@@ -674,6 +680,7 @@ registerBlockType('crown-blocks/container', {
 			dropShadowEnabled,
 
 			backgroundColor,
+			backgroundColorSlug,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
@@ -695,11 +702,7 @@ registerBlockType('crown-blocks/container', {
 		let blockStyle = {};
 		if(backgroundColor) {
 			blockStyle.backgroundColor = backgroundColor;
-			let settings = wp.data.select('core/editor').getEditorSettings();
-			if(settings.colors) {
-				let colorObject = getColorObjectByColorValue(settings.colors, backgroundColor);
-				if(colorObject) blockClasses.push('bg-color-' + colorObject.slug);
-			}
+			if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
 		}
 
 		if(restictContentWidth) {

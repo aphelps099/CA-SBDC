@@ -30,22 +30,22 @@ wp.domReady(function() {
 	jQuery('.edit-post-header-toolbar .ab-toolbar-insert-layout').remove();
 
 
-	wp.blocks.registerBlockStyle('core/heading', [ 
-		{ name: 'default', label: 'Default', isDefault: true },
-		{ name: 'section-heading', label: 'Section Heading' }
-	]);
+	// wp.blocks.registerBlockStyle('core/heading', [ 
+	// 	{ name: 'default', label: 'Default', isDefault: true },
+	// 	{ name: 'section-heading', label: 'Section Heading' }
+	// ]);
 
-	wp.blocks.registerBlockStyle('core/list', [ 
-		{ name: 'default', label: 'Default', isDefault: true },
-		{ name: 'unstyled', label: 'Unstyled' },
-		{ name: 'dashed', label: 'Dashed' }
-	]);
+	// wp.blocks.registerBlockStyle('core/list', [ 
+	// 	{ name: 'default', label: 'Default', isDefault: true },
+	// 	{ name: 'unstyled', label: 'Unstyled' },
+	// 	{ name: 'dashed', label: 'Dashed' }
+	// ]);
 
-	wp.blocks.registerBlockStyle('core/gallery', [ 
-		{ name: 'default', label: 'Default', isDefault: true },
-		{ name: 'mosaic-1', label: 'Mosaic' },
-		{ name: 'logos', label: 'Logos' }
-	]);
+	// wp.blocks.registerBlockStyle('core/gallery', [ 
+	// 	{ name: 'default', label: 'Default', isDefault: true },
+	// 	{ name: 'mosaic-1', label: 'Mosaic' },
+	// 	{ name: 'logos', label: 'Logos' }
+	// ]);
 
 	// wp.blocks.registerBlockStyle('crown-blocks/container', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },

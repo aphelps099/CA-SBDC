@@ -1,11 +1,11 @@
 {
 
 	"font_sizes": [
-		{ "name": "Extra-Small", "slug": "extra-small", "short_name": "XS", "size": 12 },
-		{ "name": "Small", "slug": "small", "short_name": "S", "size": 14 },
-		{ "name": "Normal", "slug": "normal", "short_name": "M", "size": 16 },
-		{ "name": "Large", "slug": "large", "short_name": "L", "size": 18 },
-		{ "name": "Extra-Large", "slug": "extra-large", "short_name": "XL", "size": 21 }
+		{ "name": "Extra-Small", "slug": "extra-small", "short_name": "XS", "size": 14 },
+		{ "name": "Small", "slug": "small", "short_name": "S", "size": 16 },
+		{ "name": "Normal", "slug": "normal", "short_name": "M", "size": 20 },
+		{ "name": "Large", "slug": "large", "short_name": "L", "size": 24 },
+		{ "name": "Extra-Large", "slug": "extra-large", "short_name": "XL", "size": 30 }
 	],
 
 	"color_palette": [
