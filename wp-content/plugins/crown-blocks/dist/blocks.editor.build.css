@@ -32,6 +32,45 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner {
+  display: block;
+  margin: 0; }
+  .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -ms-flex-align: center;
+        align-items: center;
+    margin: -0.125rem; }
+    .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block {
+      margin: 0.125rem;
+      max-width: none; }
+      .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-container, .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-sm-container, .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-md-container, .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-lg-container, .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-xs-container {
+        -ms-flex: 0 0 100%;
+            flex: 0 0 100%; }
+      @media (min-width: 576px) {
+        .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-sm-container {
+          -ms-flex: 0 1 auto;
+              flex: 0 1 auto; } }
+      @media (min-width: 768px) {
+        .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-md-container {
+          -ms-flex: 0 1 auto;
+              flex: 0 1 auto; } }
+      @media (min-width: 992px) {
+        .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-lg-container {
+          -ms-flex: 0 1 auto;
+              flex: 0 1 auto; } }
+      @media (min-width: 1200px) {
+        .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block.btn-block-to-xl-container {
+          -ms-flex: 0 1 auto;
+              flex: 0 1 auto; } }
+      .editor-styles-wrapper .wp-block[data-type="crown-blocks/button-group"] > .crown-block-editor-container > .wp-block-crown-blocks-button-group > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block .button-type-link-container {
+        margin-left: 0.875rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/column"] {
   max-width: none;
   margin-top: 0;

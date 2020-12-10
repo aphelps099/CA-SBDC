@@ -17,11 +17,10 @@
 	}
 	&:after {
 		@include icon(map-get($icomoon-icons, arrow-right), icomoon);
-		vertical-align: middle;
 		position: relative;
 		margin-left: .5em;
 		margin-right: -.5em;
-		top: -.08em;
+		top: .08em;
 		right: 0;
 		transition: right ease-out .15s;
 	}
@@ -44,6 +43,7 @@
 		border-bottom-width: 2px;
 	}
 	&.btn-has-arrow-icon {
+		margin-right: 2em;
 		&:after {
 			margin-right: -1.55em;
 		}

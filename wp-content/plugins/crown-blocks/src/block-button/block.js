@@ -13,6 +13,26 @@ const { PanelBody, Popover, RadioControl, ColorPicker, ColorPalette, ToolbarButt
 const { getColorObjectByColorValue } = wp.blockEditor;
 
 
+const { createHigherOrderComponent } = wp.compose;
+const crownAddComponentBlockButtonClasses = createHigherOrderComponent( ( BlockListBlock ) => {
+	return ( props ) => {
+		let classNames = [];
+		if(props.attributes.displayAsBlock) {
+			if(props.attributes.disabledDisplayAsBlockBreakpoint == 'none') {
+				classNames.push('btn-block-container');
+			} else {
+				classNames.push('btn-block-to-' + props.attributes.disabledDisplayAsBlockBreakpoint + '-container');
+			}
+		}
+		if(classNames.length) {
+			return <BlockListBlock { ...props } className={ classNames.join(' ') } />;
+		}
+		return <BlockListBlock {...props} />;
+	};
+}, 'withClientIdClassName' );
+wp.hooks.addFilter('editor.BlockListBlock', 'crown-blocks/add-component-block-button-classes', crownAddComponentBlockButtonClasses);
+
+
 registerBlockType('crown-blocks/button', {
 	title: 'Button',
 	description: 'Add a button-styled link to your content.',
@@ -26,10 +46,10 @@ registerBlockType('crown-blocks/button', {
 		label: { type: 'string', default: 'Learn More', selector: '.btn-label', source: 'html' },
 		linkUrl: { type: 'string', default: '' },
 		linkPost: { type: 'object' },
-		alignment: { type: 'alignment', default: 'none' },
+		alignment: { type: 'string', default: 'none' },
 		type: { type: 'string', default: 'default' },
-		color: { type: 'string', default: '#0099D8' },
-		colorSlug: { type: 'string', default: 'sky-blue' },
+		color: { type: 'string', default: '#D44457' },
+		colorSlug: { type: 'string', default: 'red' },
 		size: { type: 'string', default: 'md' },
 		displayWithArrowIcon: { type: 'boolean', default: false },
 		displayAsBlock: { type: 'boolean', default: false },
@@ -57,8 +77,9 @@ registerBlockType('crown-blocks/button', {
 
 		let blockClasses = [ className ];
 		if(typeof alignment != 'undefined') blockClasses.push('text-alignment-' + alignment);
+		blockClasses.push('button-type-' + type + '-container');
 
-		let buttonClasses = [ 'btn' ]
+		let buttonClasses = [ 'btn' ];
 
 		if(type == 'outline') {
 			buttonClasses.push('btn-outline-' + colorSlug);
@@ -75,8 +96,10 @@ registerBlockType('crown-blocks/button', {
 
 		if(displayAsBlock) {
 			if(disabledDisplayAsBlockBreakpoint == 'none') {
+				blockClasses.push('btn-block-container');
 				buttonClasses.push('btn-block');
 			} else {
+				blockClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint + '-container');
 				buttonClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint);
 			}
 		}
@@ -225,8 +248,9 @@ registerBlockType('crown-blocks/button', {
 
 		let blockClasses = [ className ];
 		if(typeof alignment != 'undefined') blockClasses.push('text-alignment-' + alignment);
+		blockClasses.push('button-type-' + type + '-container');
 
-		let buttonClasses = [ 'btn' ]
+		let buttonClasses = [ 'btn' ];
 
 		if(type == 'outline') {
 			buttonClasses.push('btn-outline-' + colorSlug);
@@ -243,8 +267,10 @@ registerBlockType('crown-blocks/button', {
 
 		if(displayAsBlock) {
 			if(disabledDisplayAsBlockBreakpoint == 'none') {
+				blockClasses.push('btn-block-container');
 				buttonClasses.push('btn-block');
 			} else {
+				blockClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint + '-container');
 				buttonClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint);
 			}
 		}

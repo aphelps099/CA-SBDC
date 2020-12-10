@@ -11,6 +11,7 @@
 
 
 import './block-button/block.js';
+import './block-button-group/block.js';
 // import './block-call-to-action/block.js';
 // import './block-callout/block.js';
 // import './block-case-study-index/block.js';

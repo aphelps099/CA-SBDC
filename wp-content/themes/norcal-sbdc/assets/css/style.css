@@ -14959,11 +14959,10 @@ label {
     line-height: 1;
     font-family: icomoon;
     content: "";
-    vertical-align: middle;
     position: relative;
     margin-left: .5em;
     margin-right: -.5em;
-    top: -.08em;
+    top: .08em;
     right: 0;
     -webkit-transition: right ease-out .15s;
     transition: right ease-out .15s; }
@@ -14982,8 +14981,10 @@ label {
     border-bottom-width: 4px; }
   .btn-link.btn-sm, .btn-group-sm > .btn-link.btn, .gform_footer .btn-group-sm > input.btn-link[type=submit], #header-primary-cta-links a.btn-link, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link {
     border-bottom-width: 2px; }
-  .btn-link.btn-has-arrow-icon:after, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link:after {
-    margin-right: -1.55em; }
+  .btn-link.btn-has-arrow-icon, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link {
+    margin-right: 2em; }
+    .btn-link.btn-has-arrow-icon:after, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link:after {
+      margin-right: -1.55em; }
   .btn-link.btn-link-primary {
     color: #233053;
     border-color: #233053; }
