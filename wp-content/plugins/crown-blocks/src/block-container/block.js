@@ -9,7 +9,7 @@ import './style.scss';
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const { InnerBlocks, RichText, Editable, MediaUpload, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, URLInput } = wp.blockEditor;
-const { PanelBody, RadioControl, ColorPicker, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl } = wp.components;
+const { PanelBody, RadioControl, ColorPicker, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl, AnglePickerControl } = wp.components;
 const { getColorObjectByColorValue } = wp.blockEditor;
 
 const spacingProfiles = [
@@ -110,9 +110,13 @@ registerBlockType('crown-blocks/container', {
 		paddingXXs:      { type: 'number', default: 6 },
 
 		dropShadowEnabled: { type: 'boolean', default: false },
+		backgroundGradientEnabled: { type: 'boolean', default: false },
+		backgroundGradientAngle: { type: 'number', default: 180 },
 
-		backgroundColor: { type: 'string', default: '#F1F4F7' },
-		backgroundColorSlug: { type: 'string', default: 'ghost' },
+		backgroundColor: { type: 'string', default: '' },
+		backgroundColorSlug: { type: 'string', default: '' },
+		backgroundColorSecondary: { type: 'string', default: '' },
+		backgroundColorSecondarySlug: { type: 'string', default: '' },
 		backgroundImageId: { type: 'number' },
 		backgroundImageData: { type: 'object' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
@@ -158,9 +162,13 @@ registerBlockType('crown-blocks/container', {
 			paddingXXs,
 			
 			dropShadowEnabled,
+			backgroundGradientEnabled,
+			backgroundGradientAngle,
 
 			backgroundColor,
 			backgroundColorSlug,
+			backgroundColorSecondary,
+			backgroundColorSecondarySlug,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
@@ -180,9 +188,18 @@ registerBlockType('crown-blocks/container', {
 		}
 
 		let blockStyle = {};
-		if(backgroundColor) {
-			blockStyle.backgroundColor = backgroundColor;
-			if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
+		if(!backgroundGradientEnabled) {
+			if(backgroundColor) {
+				blockStyle.backgroundColor = backgroundColor;
+				if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
+			}
+		} else {
+			if(backgroundColor || backgroundColorSecondary) {
+				let startColor = backgroundColor ? backgroundColor : 'transparent';
+				let endColor = backgroundColorSecondary ? backgroundColorSecondary : 'transparent';
+				let degrees = parseFloat(backgroundGradientAngle);
+				blockStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
+			}
 		}
 
 		if(restictContentWidth) {
@@ -249,19 +266,49 @@ registerBlockType('crown-blocks/container', {
 			setAttributes(atts);
 		};
 
-		let bgColorSettings = [{
-			label: 'Background Color',
-			value: backgroundColor,
-			onChange: (value) => {
-				let settings = wp.data.select('core/editor').getEditorSettings();
-				let colorSlug = '';
-				if(settings.colors) {
-					let colorObject = getColorObjectByColorValue(settings.colors, value);
-					if(colorObject) colorSlug = colorObject.slug;
+		let bgColorSettings = [];
+		if(!backgroundGradientEnabled) {
+			bgColorSettings.push({
+				label: 'Background Color',
+				value: backgroundColor,
+				onChange: (value) => {
+					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colorSlug = '';
+					if(settings.colors) {
+						let colorObject = getColorObjectByColorValue(settings.colors, value);
+						if(colorObject) colorSlug = colorObject.slug;
+					}
+					setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug, backgroundColorSecondary: value, backgroundColorSecondarySlug: colorSlug });
 				}
-				setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug });
-			}
-		}];
+			});
+		} else {
+			bgColorSettings.push({
+				label: 'Background Gradient Start Color',
+				value: backgroundColor,
+				onChange: (value) => {
+					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colorSlug = '';
+					if(settings.colors) {
+						let colorObject = getColorObjectByColorValue(settings.colors, value);
+						if(colorObject) colorSlug = colorObject.slug;
+					}
+					setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug });
+				}
+			});
+			bgColorSettings.push({
+				label: 'Background Gradient End Color',
+				value: backgroundColorSecondary,
+				onChange: (value) => {
+					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colorSlug = '';
+					if(settings.colors) {
+						let colorObject = getColorObjectByColorValue(settings.colors, value);
+						if(colorObject) colorSlug = colorObject.slug;
+					}
+					setAttributes({ backgroundColorSecondary: value, backgroundColorSecondarySlug: colorSlug });
+				}
+			});
+		}
 
 		return [
 
@@ -336,7 +383,7 @@ registerBlockType('crown-blocks/container', {
 						options={ spacingProfileOptions }
 					/>
 
-					{ (responsiveDeviceMode == 'xl') && <div>
+					{ (spacingProfile == '' && responsiveDeviceMode == 'xl') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -370,7 +417,7 @@ registerBlockType('crown-blocks/container', {
 
 					</div> }
 
-					{ (responsiveDeviceMode == 'lg') && <div>
+					{ (spacingProfile == '' && responsiveDeviceMode == 'lg') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -404,7 +451,7 @@ registerBlockType('crown-blocks/container', {
 
 					</div> }
 
-					{ (responsiveDeviceMode == 'md') && <div>
+					{ (spacingProfile == '' && responsiveDeviceMode == 'md') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -438,7 +485,7 @@ registerBlockType('crown-blocks/container', {
 
 					</div> }
 
-					{ (responsiveDeviceMode == 'sm') && <div>
+					{ (spacingProfile == '' && responsiveDeviceMode == 'sm') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -472,7 +519,7 @@ registerBlockType('crown-blocks/container', {
 
 					</div> }
 
-					{ (responsiveDeviceMode == 'xs') && <div>
+					{ (spacingProfile == '' && responsiveDeviceMode == 'xs') && <div>
 
 						<RangeControl
 							label="Top Padding"
@@ -529,15 +576,27 @@ registerBlockType('crown-blocks/container', {
 
 				</PanelBody>
 
-				{/* { responsiveDeviceMode == 'xl' && <PanelBody title={ 'Styles' } initialOpen={ true }>
+				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Styles' } initialOpen={ true }>
 					
-					{ align != 'full' && <ToggleControl
+					{/* { align != 'full' && <ToggleControl
 						label={ 'Enable drop shadow' }
 						checked={ dropShadowEnabled }
 						onChange={ (value) => { setAttributes({ dropShadowEnabled: value }); } }
+					/> } */}
+
+					<ToggleControl
+						label={ 'Enable Gradient background' }
+						checked={ backgroundGradientEnabled }
+						onChange={ (value) => { setAttributes({ backgroundGradientEnabled: value }); } }
+					/>
+
+					{ backgroundGradientEnabled && <AnglePickerControl
+						label={ 'Gradient Angle' }
+						value={ backgroundGradientAngle }
+						onChange={ (value) => { setAttributes({ backgroundGradientAngle: value }); } }
 					/> }
 
-				</PanelBody> } */}
+				</PanelBody> }
 
 				{ responsiveDeviceMode == 'xl' && <PanelColorSettings
 					title={ 'Background Color' }
@@ -656,6 +715,7 @@ registerBlockType('crown-blocks/container', {
 			responsiveDeviceMode,
 			restictContentWidth,
 			contentsMaxWidth,
+			spacingProfile,
 
 			paddingTopXl,
 			paddingBottomXl,
@@ -678,9 +738,13 @@ registerBlockType('crown-blocks/container', {
 			paddingXXs,
 			
 			dropShadowEnabled,
+			backgroundGradientEnabled,
+			backgroundGradientAngle,
 
 			backgroundColor,
 			backgroundColorSlug,
+			backgroundColorSecondary,
+			backgroundColorSecondarySlug,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
@@ -700,9 +764,18 @@ registerBlockType('crown-blocks/container', {
 		}
 
 		let blockStyle = {};
-		if(backgroundColor) {
-			blockStyle.backgroundColor = backgroundColor;
-			if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
+		if(!backgroundGradientEnabled) {
+			if(backgroundColor) {
+				blockStyle.backgroundColor = backgroundColor;
+				if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
+			}
+		} else {
+			if(backgroundColor || backgroundColorSecondary) {
+				let startColor = backgroundColor ? backgroundColor : 'transparent';
+				let endColor = backgroundColorSecondary ? backgroundColorSecondary : 'transparent';
+				let degrees = parseFloat(backgroundGradientAngle);
+				blockStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
+			}
 		}
 
 		if(restictContentWidth) {
