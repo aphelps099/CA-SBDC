@@ -29,23 +29,23 @@ registerBlockType('crown-blocks/multi-column', {
 		columnCount: { type: 'number', default: 2 },
 
 		columnLayoutXl: { type: 'number', default: 6 },
-		columnSpacingXl: { type: 'number', default: 4 },
+		columnSpacingXl: { type: 'number', default: 2 },
 
 		overrideColumnLayoutLg: { type: 'boolean', default: false },
 		columnLayoutLg: { type: 'number', default: 6 },
-		columnSpacingLg: { type: 'number', default: 4 },
+		columnSpacingLg: { type: 'number', default: 2 },
 
 		overrideColumnLayoutMd: { type: 'boolean', default: false },
 		columnLayoutMd: { type: 'number', default: 6 },
-		columnSpacingMd: { type: 'number', default: 4 },
+		columnSpacingMd: { type: 'number', default: 2 },
 
 		overrideColumnLayoutSm: { type: 'boolean', default: false },
 		columnLayoutSm: { type: 'number', default: 6 },
-		columnSpacingSm: { type: 'number', default: 4 },
+		columnSpacingSm: { type: 'number', default: 2 },
 
 		overrideColumnLayoutXs: { type: 'boolean', default: false },
 		columnLayoutXs: { type: 'number', default: 6 },
-		columnSpacingXs: { type: 'number', default: 4 }
+		columnSpacingXs: { type: 'number', default: 2 }
 
 	},
 

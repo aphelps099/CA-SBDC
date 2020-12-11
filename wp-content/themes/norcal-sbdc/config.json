@@ -1,11 +1,12 @@
 {
 
 	"font_sizes": [
-		{ "name": "Extra-Small", "slug": "extra-small", "short_name": "XS", "size": 14 },
+		{ "name": "X-Small", "slug": "extra-small", "short_name": "XS", "size": 14 },
 		{ "name": "Small", "slug": "small", "short_name": "S", "size": 16 },
 		{ "name": "Normal", "slug": "normal", "short_name": "M", "size": 20 },
 		{ "name": "Large", "slug": "large", "short_name": "L", "size": 24 },
-		{ "name": "Extra-Large", "slug": "extra-large", "short_name": "XL", "size": 30 }
+		{ "name": "X-Large", "slug": "extra-large", "short_name": "XL", "size": 30 },
+		{ "name": "XX-Large", "slug": "extra-extra-large", "short_name": "XXL", "size": 60 }
 	],
 
 	"color_palette": [

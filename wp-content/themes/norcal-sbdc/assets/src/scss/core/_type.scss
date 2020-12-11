@@ -4,12 +4,28 @@ h1, h2, h3, h4, h5, h6 {
 	+ h1, + h2, + h3, + h4, + h5, + h6 {
 		margin-top: -.5rem;
 	}
+	&.is-style-font-weight-normal {
+		font-weight: 400;
+	}
+	&.is-style-spaced-uppercase {
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+	&.is-style-display {
+		text-transform: uppercase;
+		font-weight: 300;
+		letter-spacing: 0.1em;
+		strong {
+			font-weight: 700;
+		}
+	}
 }
 
 h1 {
 	font-family: $font-family-sans-serif-alt;
 	text-transform: uppercase;
 	font-weight: 800;
+	line-height: 1.1;
 }
 
 
@@ -21,11 +37,12 @@ h1 {
 	}
 }
 
-.has-extra-small-font-size { font-size: 0.75rem; }
-.has-small-font-size { font-size: 0.875rem; }
-.has-normal-font-size { font-size: 1rem; }
-.has-large-font-size { font-size: 1.125rem; }
-.has-extra-large-font-size { font-size: 1.3125rem; }
+.has-extra-small-font-size { font-size: 0.875rem; }
+.has-small-font-size { font-size: 1rem; }
+.has-normal-font-size { font-size: 1.25rem; }
+.has-large-font-size { font-size: 1.5rem; }
+.has-extra-large-font-size { font-size: 1.875rem; }
+.has-extra-extra-large-font-size { font-size: 3rem; @include media-breakpoint-up(lg) { font-size: 3.75rem; } }
 
 
 blockquote {

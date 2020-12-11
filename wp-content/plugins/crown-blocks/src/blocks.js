@@ -25,6 +25,7 @@ import './block-container/block.js';
 // import './block-featured-case-study-logos/block.js';
 import './block-grid/block.js';
 import './block-grid-cell/block.js';
+import './block-header/block.js';
 // import './block-locations-map/block.js';
 import './block-multi-column/block.js';
 // import './block-promo/block.js';

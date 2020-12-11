@@ -1,0 +1,12 @@
+$spacer: 1rem;
+
+.editor-styles-wrapper .wp-block[data-type="crown-blocks/header"] {
+	> .crown-block-editor-container > .wp-block-crown-blocks-header {
+		> hr {
+			height: 0.375rem;
+			background-color: red;
+			border: none;
+			margin: 0;
+		}
+	}
+}

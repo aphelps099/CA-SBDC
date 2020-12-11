@@ -14428,10 +14428,25 @@ img {
 h1 + h1, h1 + h2, h1 + h3, h1 + h4, h1 + h5, h1 + h6, h2 + h1, h2 + h2, h2 + h3, h2 + h4, h2 + h5, h2 + h6, h3 + h1, h3 + h2, h3 + h3, h3 + h4, h3 + h5, h3 + h6, h4 + h1, h4 + h2, h4 + h3, h4 + h4, h4 + h5, h4 + h6, h5 + h1, h5 + h2, h5 + h3, h5 + h4, h5 + h5, h5 + h6, h6 + h1, h6 + h2, h6 + h3, h6 + h4, h6 + h5, h6 + h6 {
   margin-top: -.5rem; }
 
+h1.is-style-font-weight-normal, h2.is-style-font-weight-normal, h3.is-style-font-weight-normal, h4.is-style-font-weight-normal, h5.is-style-font-weight-normal, h6.is-style-font-weight-normal {
+  font-weight: 400; }
+
+h1.is-style-spaced-uppercase, h2.is-style-spaced-uppercase, h3.is-style-spaced-uppercase, h4.is-style-spaced-uppercase, h5.is-style-spaced-uppercase, h6.is-style-spaced-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.1em; }
+
+h1.is-style-display, h2.is-style-display, h3.is-style-display, h4.is-style-display, h5.is-style-display, h6.is-style-display {
+  text-transform: uppercase;
+  font-weight: 300;
+  letter-spacing: 0.1em; }
+  h1.is-style-display strong, h2.is-style-display strong, h3.is-style-display strong, h4.is-style-display strong, h5.is-style-display strong, h6.is-style-display strong {
+    font-weight: 700; }
+
 h1 {
   font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   text-transform: uppercase;
-  font-weight: 800; }
+  font-weight: 800;
+  line-height: 1.1; }
 
 .has-blue-color {
   color: #108DBC !important; }
@@ -14515,19 +14530,25 @@ h1 {
   color: #343a40 !important; }
 
 .has-extra-small-font-size {
-  font-size: 0.75rem; }
-
-.has-small-font-size {
   font-size: 0.875rem; }
 
-.has-normal-font-size {
+.has-small-font-size {
   font-size: 1rem; }
 
+.has-normal-font-size {
+  font-size: 1.25rem; }
+
 .has-large-font-size {
-  font-size: 1.125rem; }
+  font-size: 1.5rem; }
 
 .has-extra-large-font-size {
-  font-size: 1.3125rem; }
+  font-size: 1.875rem; }
+
+.has-extra-extra-large-font-size {
+  font-size: 3rem; }
+  @media (min-width: 992px) {
+    .has-extra-extra-large-font-size {
+      font-size: 3.75rem; } }
 
 blockquote {
   font-style: italic; }
@@ -14853,11 +14874,10 @@ label {
     line-height: 1;
     font-family: icomoon;
     content: "";
-    vertical-align: middle;
     position: relative;
     margin-left: .5em;
     margin-right: -.5em;
-    top: -.08em;
+    top: .08em;
     right: 0;
     -webkit-transition: right ease-out .15s;
     transition: right ease-out .15s; }
@@ -14876,8 +14896,10 @@ label {
     border-bottom-width: 4px; }
   .btn-link.btn-sm, .btn-group-sm > .btn-link.btn, .gform_footer .btn-group-sm > input.btn-link[type=submit] {
     border-bottom-width: 2px; }
-  .btn-link.btn-has-arrow-icon:after {
-    margin-right: -1.55em; }
+  .btn-link.btn-has-arrow-icon {
+    margin-right: 2em; }
+    .btn-link.btn-has-arrow-icon:after {
+      margin-right: -1.55em; }
   .btn-link.btn-link-primary {
     color: #233053;
     border-color: #233053; }

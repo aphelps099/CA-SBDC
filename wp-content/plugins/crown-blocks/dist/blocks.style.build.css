@@ -5789,6 +5789,27 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.375rem;
+  position: relative; }
+  .wp-block-crown-blocks-header > hr {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 0.375rem;
+    background-color: red;
+    border: none;
+    margin: 0; }
+  .wp-block-crown-blocks-header > .inner {
+    margin-bottom: 1rem; }
+  .wp-block-crown-blocks-header h1 + p, .wp-block-crown-blocks-header h2 + p, .wp-block-crown-blocks-header h3 + p, .wp-block-crown-blocks-header h4 + p, .wp-block-crown-blocks-header h5 + p, .wp-block-crown-blocks-header h6 + p {
+    margin-top: -.5rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-multi-column > .inner > .multi-column-columns > .inner {
   grid-gap: 0;
   grid-template-columns: 1fr 1fr;

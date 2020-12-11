@@ -30,10 +30,12 @@ wp.domReady(function() {
 	jQuery('.edit-post-header-toolbar .ab-toolbar-insert-layout').remove();
 
 
-	// wp.blocks.registerBlockStyle('core/heading', [ 
-	// 	{ name: 'default', label: 'Default', isDefault: true },
-	// 	{ name: 'section-heading', label: 'Section Heading' }
-	// ]);
+	wp.blocks.registerBlockStyle('core/heading', [ 
+		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'font-weight-normal', label: 'Normal Weight' },
+		{ name: 'spaced-uppercase', label: 'Spaced Uppercase' },
+		{ name: 'display', label: 'Display' }
+	]);
 
 	// wp.blocks.registerBlockStyle('core/list', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },
