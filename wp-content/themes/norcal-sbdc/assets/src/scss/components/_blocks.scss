@@ -89,3 +89,89 @@
 		box-shadow: 0 0 20px fade-out(#000, .85);
 	}
 }
+
+
+/*	Tabbed Content
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-tabbed-content {
+	.text-color-light & {
+		.slick-slider-nav .slick-dots button { color: $white; }
+		.slick-slider-nav .slick-dots li:after { border-color: $white; }
+	}
+	.text-color-dark & {
+		.slick-slider-nav .slick-dots button { color: $body-color; }
+		.slick-slider-nav .slick-dots li:after { border-color: $body-color; }
+	}
+	.slick-slider-nav {
+		margin-bottom: 3rem;
+		.slick-dots {
+			list-style: none;
+			margin: 0 -1rem -1rem;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
+			flex-wrap: wrap;
+			@include media-breakpoint-up(lg) {
+				margin: 0 -2rem -1rem;
+			}
+			li {
+				margin: 0 1rem 1rem;
+				position: relative;
+				padding-bottom: 0.25rem + 0.25rem;
+				@include media-breakpoint-up(lg) {
+					margin: 0 2rem 1rem;
+				}
+				&.slick-active {
+					&:after {
+						left: 0;
+						right: 0;
+						opacity: 1;
+					}
+				}
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					left: 50%;
+					right: 50%;
+					opacity: 0;
+					bottom: 0;
+					transition: left .2s ease-out, right .2s ease-out, opacity .2s;
+					border-top: 0.25rem solid $body-color;
+				}
+			}
+			button {
+				border: none;
+				padding: 0;
+				background-color: transparent;
+				font-size: 1.25rem;
+				line-height: $line-height-sm;
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.1em;
+				outline: none;
+				color: $body-color;
+				.index,
+				.indicator {
+					display: none;
+				}
+			}
+		}
+	}
+	.tabbed-content-tabs {
+		> .inner {
+			display: none;
+			&.slick-initialized {
+				display: block;
+				.slick-slide {
+					outline: none;
+				}
+				.tab-title {
+					display: none;
+				}
+			}
+		}
+	}
+}

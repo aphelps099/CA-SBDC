@@ -6147,3 +6147,15 @@
     grid-gap: 15rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-16 > .inner > .multi-column-columns > .inner {
     grid-gap: 16rem; } }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-tabbed-content {
+  margin-bottom: 1rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-tabbed-content-tab {
+  margin-bottom: 1rem; }

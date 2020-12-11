@@ -1,5 +1,12 @@
 
 
 .wp-block[data-type="crown-blocks/tabbed-content"] {
-	
+	border: 1px dashed fade-out(#000, .8);
+	padding: 20px;
+	.text-color-light & {
+		border-color: fade-out(#fff, .8);
+	}
+	.text-color-dark & {
+		border-color: fade-out(#000, .8);
+	}
 }
