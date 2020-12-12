@@ -37,6 +37,11 @@ wp.domReady(function() {
 		{ name: 'display', label: 'Display' }
 	]);
 
+	wp.blocks.registerBlockStyle('core/paragraph', [ 
+		{ name: 'sans-serif', label: 'Sans-Serif', isDefault: true },
+		{ name: 'serif', label: 'Serif' },
+	]);
+
 	// wp.blocks.registerBlockStyle('core/list', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },
 	// 	{ name: 'unstyled', label: 'Unstyled' },
