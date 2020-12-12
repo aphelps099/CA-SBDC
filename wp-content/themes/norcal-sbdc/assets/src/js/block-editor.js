@@ -43,11 +43,10 @@ wp.domReady(function() {
 	// 	{ name: 'dashed', label: 'Dashed' }
 	// ]);
 
-	// wp.blocks.registerBlockStyle('core/gallery', [ 
-	// 	{ name: 'default', label: 'Default', isDefault: true },
-	// 	{ name: 'mosaic-1', label: 'Mosaic' },
-	// 	{ name: 'logos', label: 'Logos' }
-	// ]);
+	wp.blocks.registerBlockStyle('core/gallery', [ 
+		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'mosaic-8', label: 'Mosaic (8 photos)' }
+	]);
 
 	// wp.blocks.registerBlockStyle('crown-blocks/container', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },

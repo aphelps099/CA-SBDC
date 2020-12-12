@@ -207,52 +207,27 @@
 
 		wptheme.initGalleries = function() {
 
-			var caseStudyGalleryCallback = function(e) {
-				var images = $(this).closest('.entry-photos').find('.image').not('.slick-cloned');
-				var galleryLinks = [];
-				var index = 0;
-				images.each(function(i, el) {
-					galleryLinks.push({
-						title: $('.caption', el).length ? $('.caption', el).text() : '',
-						href: $('img.large', el).attr('src'),
-						thumbnail: $('img.thumbnail', el).attr('src')
-					});
-					if($(el).hasClass('slick-current')) index = i;
-				});
-				blueimp.Gallery(galleryLinks, {
-					index: index
-				});
-			};
-			$(document).on('click', '.wp-block-crown-blocks-featured-case-studies article .entry-photos .expand-image', caseStudyGalleryCallback);
-			$(document).on('click', '.wp-block-crown-blocks-case-study-index article .entry-photos .expand-image', caseStudyGalleryCallback);
-			$(document).on('click', '.modal.case-study article .entry-photos .expand-image', caseStudyGalleryCallback);
+			
 
-			var nextMosiacGalleryBlockSlide = function(block) {
-				var currentSlide = block.data('currentSlide');
-				currentSlide = typeof currentSlide !== 'undefined' ? currentSlide : 0;
-				var items = $('.blocks-gallery-item', block);
-				var nextItem = items.eq(5);
-				var currentSlot = items.eq(currentSlide);
-				$('figure', nextItem).addClass('new');
-				currentSlot.append($('figure', nextItem));
-				$('.blocks-gallery-grid', block).append(nextItem);
-				setTimeout(function() {
-					$('figure', currentSlot).last().removeClass('new');
-				}, 100);
-				setTimeout(function() {
-					nextItem.append($('figure', currentSlot).first());
-				}, 1100);
-				currentSlide++;
-				if(currentSlide >= 5) currentSlide = 0;
-				block.data('currentSlide', currentSlide);
-			}
-			$('.wp-block-gallery.is-style-mosaic-1').each(function(i, el) {
-				var block = $(el);
-				var items = $('.blocks-gallery-item', block);
-				if(items.length > 5) {
-					window.setInterval(nextMosiacGalleryBlockSlide, 3000, block);
-				}
-			});
+			// var caseStudyGalleryCallback = function(e) {
+			// 	var images = $(this).closest('.entry-photos').find('.image').not('.slick-cloned');
+			// 	var galleryLinks = [];
+			// 	var index = 0;
+			// 	images.each(function(i, el) {
+			// 		galleryLinks.push({
+			// 			title: $('.caption', el).length ? $('.caption', el).text() : '',
+			// 			href: $('img.large', el).attr('src'),
+			// 			thumbnail: $('img.thumbnail', el).attr('src')
+			// 		});
+			// 		if($(el).hasClass('slick-current')) index = i;
+			// 	});
+			// 	blueimp.Gallery(galleryLinks, {
+			// 		index: index
+			// 	});
+			// };
+			// $(document).on('click', '.wp-block-crown-blocks-featured-case-studies article .entry-photos .expand-image', caseStudyGalleryCallback);
+			// $(document).on('click', '.wp-block-crown-blocks-case-study-index article .entry-photos .expand-image', caseStudyGalleryCallback);
+			// $(document).on('click', '.modal.case-study article .entry-photos .expand-image', caseStudyGalleryCallback);
 
 		};
 
