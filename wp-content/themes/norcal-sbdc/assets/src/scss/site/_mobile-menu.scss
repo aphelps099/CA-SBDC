@@ -28,6 +28,7 @@ body.mobile-menu-active {
 	color: #fff;
 	overflow: hidden;
 	visibility: hidden;
+	line-height: $line-height-base;
 	@include media-breakpoint-up(md) {
 		display: none;
 	}

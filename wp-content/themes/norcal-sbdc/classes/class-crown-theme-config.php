@@ -24,6 +24,8 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 
 			add_filter( 'crown_theme_colors', array( __CLASS__, 'filter_crown_theme_colors' ), 10, 2 );
 
+			add_filter( 'gform_submit_button', array( __CLASS__, 'filter_gravity_form_submit_button' ), 10, 2 );
+
 		}
 
 
@@ -193,6 +195,14 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			if ( empty( $color_palette ) ) return $colors;
 			$colors = array_map( function( $n ) { return $n->color; }, $color_palette );
 			return $colors;
+		}
+
+
+		public static function filter_gravity_form_submit_button( $button, $form ) {
+			if ( preg_match( '/^\s*<input\s.*value=\'([^\']*)\'/', $button, $matches ) ) {
+				$button = preg_replace( array( '/^<input/', '/\/?>$/' ), array(' <button', '>' . $matches[1] . '</button>'), $button );
+			}
+			return $button;
 		}
 
 

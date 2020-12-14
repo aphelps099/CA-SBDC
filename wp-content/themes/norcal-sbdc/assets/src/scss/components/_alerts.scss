@@ -1,0 +1,12 @@
+
+.alert {
+	border-width: 0;
+	border-left-width: 4px;
+	font-size: 1rem;
+}
+
+@each $color, $value in $theme-colors {
+	.alert-#{$color} {
+		@include alert-variant(mix($value, #fff, 10%), $value, $value);
+	}
+}

@@ -126,11 +126,9 @@ $gform-gutter-width: 10px;
 
 		@each $form-control-selector in $form-control-selectors {
 			#{$form-control-selector} {
-				border-color: $danger;
-				box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+				box-shadow: inset 0 -2px $red;
 				&:focus {
-					border-color: darken($danger, 10%);
-					box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px fade-out($danger, .4);
+					box-shadow: inset 0 -2px $red;
 				}
 			}
 		}
@@ -238,6 +236,7 @@ $gform-gutter-width: 10px;
 .gfield_description {
 	@extend .form-text;
 	color: $text-muted;
+	font-size: 0.75rem;
 	& + &,
 	.ginput_complex + & {
 		margin-top: -5px;
@@ -272,7 +271,7 @@ $gform-gutter-width: 10px;
 			}
 		}
 	}
-	input[type=submit] {
+	button[type=submit] {
 		@extend .btn;
 		@extend .btn-primary;
 		display: block;
@@ -292,4 +291,51 @@ $gform-gutter-width: 10px;
 #gforms_confirmation_message {
 	@extend .alert;
 	@extend .alert-success;
+}
+
+
+
+.simple-subscribe-form_wrapper {
+	form {
+		display: flex;
+		flex-wrap: wrap;
+		> * {
+			flex: 0 0 100%;
+		}
+	}
+	.gform_body {
+		flex: 1 1 auto;
+	}
+	input[type="text"] {
+		box-shadow: inset 0 -2px $secondary;
+	}
+	.gform_footer {
+		flex: 0 0 3rem;
+		padding-top: 1.25rem;
+		button[type=submit] {
+			@extend .btn-secondary;
+			height: 2.925rem;
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			padding: 0;
+			text-indent: -100000px;
+			position: relative;
+			&:after {
+				@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+				position: absolute;
+				text-indent: 0;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		}
+		.gform_ajax_spinner {
+			display: none !important;
+		}
+	}
 }

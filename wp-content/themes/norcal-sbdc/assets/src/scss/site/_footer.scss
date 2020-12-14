@@ -1,6 +1,7 @@
 
 #footer {
 	background-color: $ghost;
+	line-height: $line-height-base;
 	.container {
 		// max-width: 100%;
 		> .upper {
@@ -32,6 +33,147 @@ body {
 }
 #page {
 	background-color: $body-bg;
+}
+
+
+/*	Pre-Footer
+---------------------------------------------------------*/
+
+#pre-footer {
+	background-color: #fff;
+	.container {
+		padding-top: 2rem;
+		padding-bottom: 2rem;
+		@include media-breakpoint-up(md) {
+			padding-top: 3rem;
+			padding-bottom: 3rem;
+		}
+	}
+	.contents {
+		@include media-breakpoint-up(md) {
+			display: flex;
+			margin: 0 -1rem;
+		}
+	}
+}
+
+
+/*	Footer Header
+---------------------------------------------------------*/
+
+#site-footer-header {
+	font-size: 2rem;
+	text-transform: uppercase;
+	letter-spacing: .1em;
+	font-weight: 400;
+	background-color: $primary;
+	color: #fff;
+	text-align: center;
+	padding: 1rem;
+	margin-top: (4.75rem / -2) - 2rem;
+	margin-bottom: 2rem;
+	position: relative;
+	z-index: 5;
+	@include media-breakpoint-up(md) {
+		padding: 2rem;
+		font-size: 2.5rem;
+		margin-top: (7.5rem / -2) - 3rem;
+		margin-bottom: 3rem;
+	}
+}
+
+
+/*	Subscribe Form
+---------------------------------------------------------*/
+
+#footer-subscribe-form {
+	margin-bottom: 2rem;
+	@include media-breakpoint-up(md) {
+		padding: 0 1rem;
+		margin-bottom: 0;
+		width: 50%;
+		order: 10;
+		max-width: 30rem;
+	}
+	.form-overtitle {
+		font-family: $font-family-sans-serif-alt;
+		text-transform: uppercase;
+		letter-spacing: .1em;
+		font-size: 1.125rem;
+		color: $blue;
+		span {
+			color: $primary;
+		}
+	}
+	.gform_heading {
+		margin-bottom: 1rem;
+	}
+	.gform_title {
+		margin-top: -.5rem;
+		font-size: 1.75rem;
+		font-weight: 400;
+	}
+}
+
+
+/*	Footer Logo
+---------------------------------------------------------*/
+
+#site-footer-logos {
+	@include media-breakpoint-up(md) {
+		padding: 0 1rem;
+		padding-right: 2rem;
+		flex: 1 1 auto;
+	}
+}
+
+#site-footer-logo {
+	max-width: 225px;
+	a {
+		display: block;
+		position: relative;
+		width: 100%;
+		padding-top: 40%;
+		height: 0;
+		overflow: hidden;
+		// background-image: url(../img/logos/sbdc-california-450w.png);
+		// background-repeat: no-repeat;
+		// background-size: contain;
+		// background-position: left center;
+		img {
+			position: absolute;
+			display: block;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			object-fit: contain;
+			object-position: left center;
+		}
+	}
+}
+
+
+/*	Host Logos
+---------------------------------------------------------*/
+
+#site-footer-host-logos {
+	margin-top: 1rem;
+	.intro {
+		font-family: $font-family-sans-serif-alt;
+		font-size: 1rem;
+	}
+	.logos {
+		margin: 1rem -1rem -1rem;
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.logo {
+		margin: 1rem;
+		img {
+			max-height: 150px;
+		}
+	}
 }
 
 

@@ -7,6 +7,7 @@
 	transition: opacity .4s, transform .4s ease-out, background-color .4s, box-shadow .4s, visibility 0s;
 	opacity: 0;
 	transform: translateY(-10px);
+	line-height: $line-height-base;
 	&.loaded {
 		opacity: 1;
 		transform: none;
@@ -283,15 +284,25 @@ body.mobile-menu-active {
 	}
 	a {
 		display: block;
+		position: relative;
 		width: 100%;
 		padding-top: 40%;
 		height: 0;
 		overflow: hidden;
-		text-indent: -1000000px;
-		background-image: url(../img/logos/sbdc-california-450w.png);
-		background-repeat: no-repeat;
-		background-size: contain;
-		background-position: left center;
+		// background-image: url(../img/logos/sbdc-california-450w.png);
+		// background-repeat: no-repeat;
+		// background-size: contain;
+		// background-position: left center;
+		img {
+			position: absolute;
+			display: block;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			object-fit: contain;
+			object-position: left center;
+		}
 	}
 }
 #site-title {

@@ -68,6 +68,12 @@
 			@include media-breakpoint-up(xl) {
 				margin-bottom: -100px;
 			}
+			& {
+				padding-bottom: (4.75rem / 2);
+				@include media-breakpoint-up(md) {
+					padding-bottom: (7.5rem / 2);
+				}
+			}
 		}
 	}
 }

@@ -4,11 +4,13 @@ use Crown\AdminPage;
 use Crown\Form\Field;
 use Crown\Form\FieldGroup;
 use Crown\Form\FieldGroupSet;
+use Crown\Form\FieldRepeater;
 use Crown\Form\Input\CheckboxSet;
 use Crown\Form\Input\Media as MediaInput;
 use Crown\Form\Input\RadioSet;
 use Crown\Form\Input\Select;
 use Crown\Form\Input\Text as TextInput;
+use Crown\Form\Input\Gallery as GalleryInput;
 use Crown\Form\Input\Textarea;
 use Crown\Form\Input\RichTextarea;
 use Crown\Post\MetaBox;
@@ -38,6 +40,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 			add_filter( 'crown_site_footer_copyright', array( __CLASS__, 'filter_crown_site_footer_copyright' ));
 			add_filter( 'crown_site_footer_description', array( __CLASS__, 'filter_crown_site_footer_description' ));
 
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
+
 		}
 
 
@@ -55,6 +59,33 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 							new FieldGroup( array(
 								'label' => 'Site Footer',
 								'fields' => array(
+									new FieldGroup( array(
+										'label' => 'Host Logos',
+										'fields' => array(
+											new FieldRepeater( array(
+												'name' => 'theme_config_footer_host_logos',
+												'addNewLabel' => 'Add Host Logo',
+												'fields' => array(
+													new FieldGroup( array(
+														'class' => 'no-border two-column small-left',
+														'fields' => array(
+															new Field( array(
+																'input' => new MediaInput( array( 'name' => 'image', 'mimeType' => 'image', 'buttonLabel' => 'Select Image', 'class' => 'logo' ) )
+															) ),
+															new Field( array(
+																'input' => new TextInput( array( 'name' => 'link_url', 'placeholder' => 'https://', 'label' => 'Link URL' ) )
+															) )
+														)
+													) )
+												)
+											) )
+										)
+									) ),
+									new Field( array(
+										'label' => 'Subscribe Form',
+										'input' => new Select( array( 'name' => 'theme_config_footer_subscribe_form' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_form_select_input_options' )
+									) ),
 									new Field( array(
 										'label' => 'Copyright Text',
 										'description' => 'Use the <code>%%year%%</code> placeholder to display the current year.',
@@ -132,9 +163,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 
 
 		public static function set_form_select_input_options( $field, $args ) {
-			$field->getInput()->setOptions( array_merge( array( array( 'label' => '&mdash;' ) ), self::getFormInputOptions() ) );
+			$field->getInput()->setOptions( array_merge( array( array( 'label' => '&mdash;' ) ), self::get_form_input_options() ) );
 		}
-		private static function getFormInputOptions() {
+		private static function get_form_input_options() {
 			if ( empty( self::$form_input_options ) ) {
 				self::$form_input_options = array();
 				if ( class_exists('RGFormsModel' ) ) {
@@ -171,6 +202,26 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 		public static function filter_crown_site_footer_description( $description = '' ) {
 			$description = get_option( 'theme_config_footer_description' );
 			return $description;
+		}
+
+
+		public static function register_admin_styles( $hook ) {
+			
+			$screen = get_current_screen();
+			if ( $screen->id == 'appearance_page_theme-config' ) {
+
+				ob_start();
+				?>
+					<style>
+						.crown-media-input.logo .media-input-preview img { width: 100%; height: 100px; object-fit: contain; object-position: left center; }
+					</style>
+				<?php
+				$css = trim( ob_get_clean() );
+				$css = trim( preg_replace( array( '/^<style>/', '/<\/style>$/' ), '', $css ) );
+				wp_add_inline_style( 'common', $css );
+
+			}
+
 		}
 
 

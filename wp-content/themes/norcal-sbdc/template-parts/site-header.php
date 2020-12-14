@@ -8,7 +8,7 @@
 
 					<div id="site-logo">
 						<a href="<?php echo home_url( '/' ); ?>">
-							<?php echo get_bloginfo( 'name' ); ?>
+							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-california-450w.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 						</a>
 					</div>
 

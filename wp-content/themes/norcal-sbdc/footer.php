@@ -4,6 +4,7 @@
 				</div><!-- .inner -->
 			</div><!-- #main -->
 
+			<?php get_template_part( 'template-parts/site-pre-footer' ); ?>
 			<?php get_template_part( 'template-parts/site-footer' ); ?>
 		
 		</div><!-- #page -->
