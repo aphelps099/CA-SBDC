@@ -246,3 +246,44 @@
 		}
 	}
 }
+
+
+/*	Featured Client Story
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-featured-client-story {
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: $body-color;
+	}
+	a {
+		&:hover {
+			> .inner:after {
+				opacity: 1;
+				right: 0;
+			}
+		}
+		> .inner {
+			overflow: hidden;
+			&:after {
+				@include media-breakpoint-up(lg) {
+					@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
+					flex: 1 1 auto;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 2.5rem;
+					position: relative;
+					right: .5rem;
+					opacity: 0;
+					transition: right .2s ease-out, opacity .2s;
+				}
+			}
+		}
+	}
+	h6 {
+		font-family: $font-family-sans-serif-alt;
+	}
+}

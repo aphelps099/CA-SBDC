@@ -95,8 +95,6 @@ $spacer: 1rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		position: relative;
-		z-index: 1;
 	}
 
 	> .inner > .container-contents {
@@ -106,6 +104,8 @@ $spacer: 1rem;
 		> .inner {
 			max-width: 100%;
 			margin: 0 auto;
+			position: relative;
+			z-index: 1;
 			> *:last-child {
 				margin-bottom: 0;
 			}

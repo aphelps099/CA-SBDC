@@ -152,6 +152,12 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/featured-client-story"] .wp-block-crown-blocks-featured-client-story a {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/grid"].is-selected > .crown-block-editor-container > .wp-block-crown-blocks-grid > .inner > .grid-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender, .editor-styles-wrapper .wp-block[data-type="crown-blocks/grid"].has-child-selected > .crown-block-editor-container > .wp-block-crown-blocks-grid > .inner > .grid-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender {
   display: -ms-flexbox;
   display: flex; }

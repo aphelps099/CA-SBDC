@@ -1,0 +1,77 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-featured-client-story {
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: #333;
+	}
+	a {
+		color: inherit;
+		position: relative;
+		display: flex;
+		z-index: 1;
+		&:hover {
+			color: inherit;
+			.bg .image {
+				opacity: .2;
+			}
+		}
+		&:before {
+			content: '';
+			width: 0;
+			height: 0;
+			padding-top: 100%;
+		}
+		> .inner {
+			position: relative;
+			padding: 2rem;
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			@media (min-width: 992px) {
+				padding: 3rem;
+			}
+		}
+	}
+	.bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		.image {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			opacity: .1;
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+			transition: opacity .5s;
+		}
+	}
+	h6 {
+		font-size: 1.125rem;
+		text-transform: uppercase;
+		font-weight: 400;
+		letter-spacing: .1em;
+		margin-bottom: 1rem;
+		+ h3 {
+			margin-top: 0;
+		}
+	}
+	h3 {
+		font-size: 2.375rem;
+		text-transform: uppercase;
+		letter-spacing: .1em;
+		border-bottom: 6px solid #333;
+		padding-bottom: .5rem;
+		margin-bottom: 0;
+		align-self: flex-start;
+	}
+}
