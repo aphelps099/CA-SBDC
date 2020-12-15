@@ -287,3 +287,49 @@
 		font-family: $font-family-sans-serif-alt;
 	}
 }
+
+
+/*	Featured Event
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-featured-event {
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: $body-color;
+	}
+	a {
+		&:hover {
+			.entry-contents:after {
+				opacity: 1;
+				right: -0.5rem;
+			}
+		}
+		.entry-contents {
+			@include media-breakpoint-up(lg) {
+				padding-right: 2rem;
+				position: relative;
+			}
+			&:after {
+				@include media-breakpoint-up(lg) {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					position: absolute;
+					display: block;
+					font-size: 1.5rem;
+					right: 0rem;
+					bottom: .25rem;
+					opacity: 0;
+					transition: right .2s ease-out, opacity .2s;
+				}
+			}
+		}
+	}
+	.entry-label {
+		font-family: $font-family-sans-serif-alt;
+	}
+	.entry-excerpt {
+		font-family: $font-family-sans-serif-alt;
+		line-height: $line-height-base;
+	}
+}

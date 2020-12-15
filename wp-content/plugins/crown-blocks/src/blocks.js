@@ -24,6 +24,7 @@ import './block-container/block.js';
 // import './block-featured-case-studies/block.js';
 // import './block-featured-case-study-logos/block.js';
 import './block-featured-client-story/block.js';
+import './block-featured-event/block.js';
 import './block-grid/block.js';
 import './block-grid-cell/block.js';
 import './block-header/block.js';

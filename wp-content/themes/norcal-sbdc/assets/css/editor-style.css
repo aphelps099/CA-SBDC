@@ -16333,7 +16333,11 @@ nav.pagination {
     .event-teaser .entry-event-date .date {
       font-size: 3.125rem;
       font-weight: 700;
-      font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+      font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+      font-style: normal;
+      margin: 0; }
+    .event-teaser .entry-event-date .time {
+      display: none; }
   .event-teaser .entry-contents {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
@@ -16346,6 +16350,27 @@ nav.pagination {
     color: rgba(52, 58, 64, 0.8);
     -webkit-transition: color .15s;
     transition: color .15s; }
+
+.entry-event-date {
+  line-height: 1.2; }
+  .entry-event-date .month {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700; }
+  .entry-event-date .date {
+    display: block;
+    font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-style: italic;
+    font-weight: 900;
+    font-size: 8.75rem;
+    line-height: 1;
+    margin: -.1em 0; }
+  .entry-event-date .time {
+    display: block;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-weight: 700; }
 
 .inline-related-content-link {
   margin-top: 2rem;
@@ -16657,6 +16682,27 @@ nav.pagination {
       display: block; }
   .wp-block-pullquote p {
     font-size: inherit; }
+
+.weekly-event-count-shortcode.dot .count {
+  position: relative; }
+  .weekly-event-count-shortcode.dot .count:before {
+    content: '';
+    position: absolute;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 4em;
+    background-color: #fff;
+    left: 50%;
+    top: 50%;
+    margin-top: -0.75em;
+    margin-left: -0.75em;
+    z-index: -1; }
+    .text-color-dark .weekly-event-count-shortcode.dot .count:before {
+      background-color: #fff; }
+    .bg-color-white.text-color-dark .weekly-event-count-shortcode.dot .count:before {
+      background-color: #E6EDF4; }
+    .text-color-light .weekly-event-count-shortcode.dot .count:before {
+      background-color: rgba(255, 255, 255, 0.2); }
 
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
@@ -17010,6 +17056,50 @@ nav.pagination {
 
 .wp-block-crown-blocks-featured-client-story h6 {
   font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+
+/*	Featured Event
+---------------------------------------------------------*/
+.wp-block-crown-blocks-featured-event.text-color-light {
+  color: #fff; }
+
+.wp-block-crown-blocks-featured-event.text-color-dark {
+  color: #233053; }
+
+.wp-block-crown-blocks-featured-event a:hover .entry-contents:after {
+  opacity: 1;
+  right: -0.5rem; }
+
+@media (min-width: 992px) {
+  .wp-block-crown-blocks-featured-event a .entry-contents {
+    padding-right: 2rem;
+    position: relative; } }
+
+@media (min-width: 992px) {
+  .wp-block-crown-blocks-featured-event a .entry-contents:after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-family: icomoon;
+    content: "";
+    position: absolute;
+    display: block;
+    font-size: 1.5rem;
+    right: 0rem;
+    bottom: .25rem;
+    opacity: 0;
+    -webkit-transition: right .2s ease-out, opacity .2s;
+    transition: right .2s ease-out, opacity .2s; } }
+
+.wp-block-crown-blocks-featured-event .entry-label {
+  font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+
+.wp-block-crown-blocks-featured-event .entry-excerpt {
+  font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  line-height: 1.4; }
 
 .gform_wrapper {
   margin-bottom: 1rem;
@@ -17671,4 +17761,12 @@ body {
 .wp-block[data-type="crown-blocks/featured-client-story"] h6 {
   font-weight: 400; }
   .wp-block[data-type="crown-blocks/featured-client-story"] h6 + h3 {
+    margin-top: 0; }
+
+.wp-block[data-type="crown-blocks/featured-event"] a {
+  color: inherit; }
+
+.wp-block[data-type="crown-blocks/featured-event"] .entry-label {
+  font-weight: 400; }
+  .wp-block[data-type="crown-blocks/featured-event"] .entry-label + .entry-title {
     margin-top: 0; }

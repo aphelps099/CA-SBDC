@@ -5160,6 +5160,97 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-featured-event.text-color-light {
+  color: #fff; }
+
+.wp-block-crown-blocks-featured-event.text-color-dark {
+  color: #333; }
+
+.wp-block-crown-blocks-featured-event a {
+  color: inherit;
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  z-index: 1; }
+  .wp-block-crown-blocks-featured-event a:hover {
+    color: inherit; }
+    .wp-block-crown-blocks-featured-event a:hover .bg .image {
+      opacity: .3; }
+  .wp-block-crown-blocks-featured-event a:before {
+    content: '';
+    width: 0;
+    height: 0;
+    padding-top: 100%; }
+  .wp-block-crown-blocks-featured-event a > .inner {
+    position: relative;
+    padding: 2rem;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+        flex-direction: column;
+    width: 100%; }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-featured-event a > .inner {
+        padding: 3rem; } }
+
+.wp-block-crown-blocks-featured-event .bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0; }
+  .wp-block-crown-blocks-featured-event .bg .image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .5;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    -webkit-transition: opacity .5s;
+    -o-transition: opacity .5s;
+    transition: opacity .5s;
+    mix-blend-mode: multiply; }
+
+.wp-block-crown-blocks-featured-event .entry-label {
+  font-size: 1.125rem;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: .1em;
+  margin-bottom: 1rem;
+  opacity: .6; }
+  .wp-block-crown-blocks-featured-event .entry-label + .entry-title {
+    margin-top: 0; }
+
+.wp-block-crown-blocks-featured-event .entry-event-date {
+  margin-bottom: 2rem; }
+
+.wp-block-crown-blocks-featured-event .entry-contents {
+  -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-pack: end;
+      justify-content: flex-end; }
+
+.wp-block-crown-blocks-featured-event .entry-title {
+  font-size: 2.5rem;
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-weight: 500; }
+
+.wp-block-crown-blocks-featured-event .entry-excerpt {
+  font-size: 1.5rem; }
+  .wp-block-crown-blocks-featured-event .entry-excerpt p {
+    margin-bottom: 0; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-grid > .inner > .grid-columns > .inner {
   display: -ms-flexbox;
   display: flex;

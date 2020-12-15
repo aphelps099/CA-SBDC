@@ -121,7 +121,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'singularLabel' => 'Event',
 				'pluralLabel' => 'Events',
 				'settings' => array(
-					'supports' => array( 'title', 'editor', 'excerpt', 'revisions' ),
+					'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'thumbnail' ),
 					'rewrite' => array( 'slug' => 'events', 'with_front' => false ),
 					'menu_icon' => 'dashicons-calendar',
 					'has_archive' => false,
@@ -249,13 +249,15 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 					'pre_p' => '',
 					'pre_s' => '',
 					'post_p' => 'events',
-					'post_s' => 'event'
+					'post_s' => 'event',
+					'class' => ''
 				),
 				'getOutputCb' => function( $atts, $content ) {
+					$classes = array( 'weekly-event-count-shortcode', $atts['class'] );
 					$from = date( 'Y-m-d H:i:s', strtotime( 'Monday this week' ) );
 					$to = date( 'Y-m-d H:i:s', strtotime( 'Monday next week' ) );
 					$events = self::get_events( array( 'from' => $from, 'to' => $to, 'fields' => 'ids' ) );
-					$output = array( count( $events ) );
+					$output = array( '<span class="count"><span class="value">' . count( $events ) . '</span></span>' );
 					if ( count( $events ) == 1 ) {
 						if ( ! empty( $atts['pre_s'] ) ) array_unshift( $output, $atts['pre_s'] );
 						if ( ! empty( $atts['post_s'] ) ) array_push( $output, $atts['post_s'] );
@@ -263,7 +265,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						if ( ! empty( $atts['pre_p'] ) ) array_unshift( $output, $atts['pre_p'] );
 						if ( ! empty( $atts['post_p'] ) ) array_push( $output, $atts['post_p'] );
 					}
-					return implode( ' ', $output );
+					return '<span class="' . implode( ' ', $classes ) . '">' . implode( ' ', $output ) . '</span>';
 				}
 			) );
 
@@ -323,7 +325,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'to' => null,
 				'count' => -1,
 				'order' => 'ASC',
-				'fields' => 'all'
+				'fields' => 'all',
+				'tax_query' => array(),
+				'meta_query' => array()
 			), $args );
 
 			$query_args = array(
@@ -332,9 +336,10 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'orderby' => 'meta_value',
 				'order' => $args['order'],
 				'meta_key' => 'event_start_timestamp_utc',
-				'fields' => $args['fields']
+				'fields' => $args['fields'],
+				'tax_query' => $args['tax_query'],
 			);
-			$meta_query = array();
+			$meta_query = $args['meta_query'];
 
 			if ( ! empty( $args['from'] ) ) {
 				$meta_query[] = array( 'key' => 'event_end_timestamp_utc', 'compare' => '>=', 'value' => $args['from'] );
@@ -350,20 +355,25 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
-		public static function get_upcoming_events( $count = -1 ) {
-			return self::get_events( array(
+		public static function get_upcoming_events( $count = -1, $tax_query = array(), $featured = false ) {
+			$args = array(
 				'from' => date( 'Y-m-d H:i:s' ),
-				'count' => $count
-			) );
+				'count' => $count,
+				'tax_query' => $tax_query
+			);
+			if ( $featured ) $args['meta_query'] = array( array( 'key' => '__event_options', 'value' => 'featured-post' ) );
+			return self::get_events( $args );
 		}
 
 
-		public static function get_past_events( $count = -1 ) {
-			return self::get_events( array(
+		public static function get_past_events( $count = -1, $tax_query = array(), $featured = false ) {
+			$args = array(
 				'to' => date( 'Y-m-d H:i:s' ),
 				'count' => $count,
-				'order' => 'DESC'
-			) );
+				'order' => 'DESC',
+				'tax_query' => $tax_query
+			);
+			return self::get_events( $args );
 		}
 
 

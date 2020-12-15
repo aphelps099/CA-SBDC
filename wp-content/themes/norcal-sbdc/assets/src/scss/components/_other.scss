@@ -127,6 +127,11 @@
 			font-size: 3.125rem;
 			font-weight: 700;
 			font-family: $font-family-sans-serif-alt;
+			font-style: normal;
+			margin: 0;
+		}
+		.time {
+			display: none;
 		}
 	}
 	.entry-contents {
@@ -140,6 +145,31 @@
 	.entry-cta {
 		color: rgba($dark, .8);
 		transition: color .15s;
+	}
+}
+
+.entry-event-date {
+	line-height: $line-height-sm;
+	.month {
+		display: block;
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+	.date {
+		display: block;
+		font-family: $font-family-sans-serif-alt;
+		font-style: italic;
+		font-weight: 900;
+		font-size: 8.75rem;
+		line-height: 1;
+		margin: -.1em 0;
+	}
+	.time {
+		display: block;
+		font-size: 0.875rem;
+		text-transform: uppercase;
+		letter-spacing: .1em;
+		font-weight: 700;
 	}
 }
 
@@ -294,5 +324,35 @@
 	}
 	p {
 		font-size: inherit;
+	}
+}
+
+.weekly-event-count-shortcode {
+	&.dot {
+		.count {
+			position: relative;
+			&:before {
+				content: '';
+				position: absolute;
+				width: 1.5em;
+				height: 1.5em;
+				border-radius: 4em;
+				background-color: #fff;
+				left: 50%;
+				top: 50%;
+				margin-top: (-1.5em / 2);
+				margin-left: (-1.5em / 2);
+				z-index: -1;
+				.text-color-dark & {
+					background-color: #fff;
+				}
+				.bg-color-white.text-color-dark & {
+					background-color: $light-gray;
+				}
+				.text-color-light & {
+					background-color: rgba(#fff, .2);
+				}
+			}
+		}
 	}
 }

@@ -300,3 +300,15 @@ body {
 		}
 	}
 }
+
+.wp-block[data-type="crown-blocks/featured-event"] {
+	a {
+		color: inherit;
+	}
+	.entry-label {
+		font-weight: 400;
+		+ .entry-title {
+			margin-top: 0;
+		}
+	}
+}

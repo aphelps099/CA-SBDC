@@ -389,15 +389,7 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 				<a href="<?php the_permalink(); ?>">
 					<div class="inner">
 
-						<?php $event_start_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_start_timestamp', true ) ); ?>
-						<?php if ( $event_start_timestamp !== false ) { ?>
-							<div class="entry-event-date">
-								<div class="inner">
-									<span class="month"><?php echo date( 'M', $event_start_timestamp ); ?></span>
-									<span class="date"><?php echo date( 'j', $event_start_timestamp ); ?></span>
-								</div>
-							</div>
-						<?php } ?>
+						<?php ct_event_date( $post_id ); ?>
 	
 						<div class="entry-contents">
 	
@@ -410,6 +402,34 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 					</div>
 				</a>
 			</article>
+		<?php
+
+		wp_reset_postdata();
+
+	}
+}
+
+
+if ( ! function_exists( 'ct_event_date' ) ) {
+	function ct_event_date( $post_id ) {
+		global $post;
+
+		$post = get_post( $post_id );
+		if ( ! $post || ! in_array( $post->post_type, array( 'event' ) ) ) return;
+		setup_postdata( $post );
+
+		$event_start_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_start_timestamp', true ) );
+		$event_end_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_end_timestamp', true ) );
+		if ( $event_start_timestamp === false ) return;
+
+		?>
+			<div class="entry-event-date">
+				<div class="inner">
+					<span class="month"><?php echo date( 'M', $event_start_timestamp ); ?></span>
+					<span class="date"><?php echo date( 'j', $event_start_timestamp ); ?></span>
+					<span class="time"><?php echo date( 'g:i a', $event_start_timestamp ); ?><?php if ( $event_end_timestamp !== false) { ?> &mdash; <?php echo date( 'g:i a', $event_end_timestamp ); ?></span><?php } ?>
+				</div>
+			</div>
 		<?php
 
 		wp_reset_postdata();
