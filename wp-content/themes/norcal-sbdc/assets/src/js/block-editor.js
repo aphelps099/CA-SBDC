@@ -42,6 +42,9 @@ wp.domReady(function() {
 		{ name: 'serif', label: 'Serif' },
 	]);
 
+	wp.blocks.unregisterBlockStyle('core/pullquote', 'default');
+	wp.blocks.unregisterBlockStyle('core/pullquote', 'solid-color');
+
 	// wp.blocks.registerBlockStyle('core/list', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },
 	// 	{ name: 'unstyled', label: 'Unstyled' },

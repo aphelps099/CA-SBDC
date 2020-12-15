@@ -5809,6 +5809,9 @@
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
 
 .wp-block-crown-blocks-multi-column > .inner > .multi-column-columns > .inner {
   grid-gap: 0;
