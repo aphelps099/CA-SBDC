@@ -266,15 +266,21 @@ body.mobile-menu-active {
 	}
 }
 #site-logo {
-	width: 120px;
+	// width: 120px;
+	width: 80px;
+	height: 48px;
 	display: flex;
 	align-items: center;
 	transition: opacity .2s, visibility 0s, transform .2s ease-out;
 	@include media-breakpoint-up(md) {
-		width: 150px;
+		// width: 150px;
+		width: 100px;
+		height: 60px;
 	}
 	@include media-breakpoint-up(lg) {
-		width: 225px;
+		// width: 225px;
+		width: 150px;
+		height: 90px;
 	}
 	#header.is-sticky & {
 		opacity: 0;
@@ -286,8 +292,7 @@ body.mobile-menu-active {
 		display: block;
 		position: relative;
 		width: 100%;
-		padding-top: 40%;
-		height: 0;
+		height: 100%;
 		overflow: hidden;
 		// background-image: url(../img/logos/sbdc-california-450w.png);
 		// background-repeat: no-repeat;
@@ -297,11 +302,20 @@ body.mobile-menu-active {
 			position: absolute;
 			display: block;
 			left: 0;
-			right: 0;
 			top: 0;
-			bottom: 0;
+			width: 100%;
+			height: 100%;
 			object-fit: contain;
-			object-position: left center;
+			object-position: right center;
+			transition: opacity .2s;
+			&.light { opacity: 0; }
+			#header.text-color-light & {
+				&.dark { opacity: 0; }
+				&.light { opacity: 1; }
+			}
+			@include media-breakpoint-up(md) {
+				object-position: left center;
+			}
 		}
 	}
 }

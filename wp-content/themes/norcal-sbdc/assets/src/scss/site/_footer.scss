@@ -129,11 +129,13 @@ body {
 
 #site-footer-logo {
 	max-width: 225px;
+	// max-width: 150px;
 	a {
 		display: block;
 		position: relative;
 		width: 100%;
-		padding-top: 40%;
+		// padding-top: 40%;
+		padding-top: 60%;
 		height: 0;
 		overflow: hidden;
 		// background-image: url(../img/logos/sbdc-california-450w.png);
@@ -144,9 +146,9 @@ body {
 			position: absolute;
 			display: block;
 			left: 0;
-			right: 0;
 			top: 0;
-			bottom: 0;
+			width: 100%;
+			height: 100%;
 			object-fit: contain;
 			object-position: left center;
 		}
