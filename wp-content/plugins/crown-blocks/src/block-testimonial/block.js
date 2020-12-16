@@ -31,8 +31,8 @@ registerBlockType('crown-blocks/testimonial', {
 		featuredImageId: { type: 'number' },
 		featuredImageData: { type: 'object' },
 		featuredImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
-		textColor: { type: 'string', default: 'auto' },
-		source: { selector: '.testimonial-source', source: 'children' },
+		title: { selector: '.testimonial-title', source: 'children' },
+		source: { selector: '.testimonial-source', source: 'children' }
 	},
 
 
@@ -42,6 +42,7 @@ registerBlockType('crown-blocks/testimonial', {
 			featuredImageId,
 			featuredImageData,
 			featuredImageFocalPoint,
+			title,
 			source
 		} = attributes;
 
@@ -91,19 +92,28 @@ registerBlockType('crown-blocks/testimonial', {
 				<div className={ blockClasses.join(' ') } key="testimonial">
 					<div className="inner">
 
-						{ featuredImageUrl && <div className="testimonial-featured-image">
+						<div className="testimonial-featured-image">
 							<div class="inner">
-								<div className={ 'image' } style={ {
+								{ featuredImageUrl && <div className={ 'image' } style={ {
 									backgroundImage: 'url(' + featuredImageUrl + ')',
 									backgroundPosition: `${ featuredImageFocalPoint.x * 100 }% ${ featuredImageFocalPoint.y * 100 }%`,
 								} }>
 									<img src={ featuredImageUrl } />
-								</div>
+								</div> }
 							</div>
-						</div> }
+						</div>
 
 						<div className="testimonial-contents">
 							<div className="inner">
+
+								<RichText
+									tagName="h3"
+									className="testimonial-title"
+									onChange={ (value) => setAttributes({ title: value }) } 
+									value={ title }
+									placeholder="Optional Title"
+									allowedFormats={ [] }
+								/>
 
 								<div class="testimonial-quote">
 									<div className="inner">
@@ -112,7 +122,7 @@ registerBlockType('crown-blocks/testimonial', {
 								</div>
 
 								<RichText
-									tagName="p"
+									tagName="cite"
 									className="testimonial-source"
 									onChange={ (value) => setAttributes({ source: value }) } 
 									value={ source }
@@ -138,6 +148,7 @@ registerBlockType('crown-blocks/testimonial', {
 			featuredImageId,
 			featuredImageData,
 			featuredImageFocalPoint,
+			title,
 			source
 		} = attributes;
 
@@ -156,19 +167,21 @@ registerBlockType('crown-blocks/testimonial', {
 			<blockquote className={ blockClasses.join(' ') } key="testimonial">
 				<div className="inner">
 
-					{ featuredImageUrl && <div className="testimonial-featured-image">
+					<div className="testimonial-featured-image">
 						<div class="inner">
-							<div className={ 'image' } style={ {
+							{ featuredImageUrl && <div className={ 'image' } style={ {
 								backgroundImage: 'url(' + featuredImageUrl + ')',
 								backgroundPosition: `${ featuredImageFocalPoint.x * 100 }% ${ featuredImageFocalPoint.y * 100 }%`,
 							} }>
 								<img src={ featuredImageUrl } />
-							</div>
+							</div> }
 						</div>
-					</div> }
+					</div>
 
 					<div className="testimonial-contents">
 						<div className="inner">
+
+							{ title != '' && <RichText.Content tagName="h3" className="testimonial-title" value={ title } /> }
 
 							<div class="testimonial-quote">
 								<div className="inner">
@@ -176,7 +189,7 @@ registerBlockType('crown-blocks/testimonial', {
 								</div>
 							</div>
 
-							{ source != '' && <RichText.Content tagName="footer" className="testimonial-source" value={ source } /> }
+							{ source != '' && <RichText.Content tagName="cite" className="testimonial-source" value={ source } /> }
 
 						</div>
 					</div>

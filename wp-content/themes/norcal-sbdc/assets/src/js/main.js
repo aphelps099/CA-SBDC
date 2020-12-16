@@ -19,6 +19,7 @@
 		
 		// $.wptheme.initExpandableContentBlocks();
 		$.wptheme.initTabbedContentBlocks();
+		$.wptheme.initTestimonialSliderBlocks();
 
 	});
 
@@ -417,6 +418,41 @@
 					}
 				};
 				slider.slick(slickSettings);
+			});
+		};
+
+
+		wptheme.initTestimonialSliderBlocks = function() {
+			$('.wp-block-crown-blocks-testimonial-slider').each(function(i, el) {
+				var slider = $('.testimonial-slider-testimonials > .inner', el);
+				if(slider.hasClass('slick-initialized')) return;
+				var sliderNavContainer = $('<div class="slick-slider-nav"></div>');
+				$('.testimonial-slider-testimonials', el).before(sliderNavContainer);
+				slider.children().wrap('<div></div>');
+				var slickSettings = {
+					mobileFirst: true,
+					draggable: false,
+					dots: false,
+					arrows: true,
+					fade: true,
+					appendArrows: sliderNavContainer,
+					adaptiveHeight: true
+				};
+				slider.on('init', function(e, slick) {
+					var block = slick.$slider.closest('.wp-block-crown-blocks-testimonial-slider');
+					var nav = $('.slick-slider-nav', block);
+					$('.status', nav).remove();
+					if(slick.slideCount > 1) {
+						nav.append('<span class="status"><span class="current">' + (slick.currentSlide + 1) + '</span> <span class="of">of</span> <span class="total">' + slick.slideCount + '</span></span>')
+					}
+				}).on('beforeChange', function(e, slick, currentSlide, nextSlide) {
+					var block = slick.$slider.closest('.wp-block-crown-blocks-testimonial-slider');
+					var nav = $('.slick-slider-nav', block);
+					$('.status', nav).remove();
+					if(slick.slideCount > 1) {
+						nav.append('<span class="status"><span class="current">' + (nextSlide + 1) + '</span> <span class="of">of</span> <span class="total">' + slick.slideCount + '</span></span>')
+					}
+				}).slick(slickSettings);
 			});
 		};
 

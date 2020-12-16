@@ -6328,3 +6328,51 @@
 
 .wp-block-crown-blocks-tabbed-content-tab {
   margin-bottom: 1rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-testimonial {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-testimonial .testimonial-featured-image {
+    max-width: 70px;
+    margin-bottom: 1rem; }
+    .wp-block-crown-blocks-testimonial .testimonial-featured-image > .inner {
+      height: 0;
+      padding-top: 100%;
+      border-radius: 100%;
+      position: relative;
+      background-color: #ccc; }
+    .wp-block-crown-blocks-testimonial .testimonial-featured-image .image {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 100%; }
+      .wp-block-crown-blocks-testimonial .testimonial-featured-image .image img {
+        display: none; }
+  .wp-block-crown-blocks-testimonial .testimonial-contents {
+    text-align: left; }
+  .wp-block-crown-blocks-testimonial .testimonial-title {
+    font-style: normal;
+    border-bottom: 2px solid #333;
+    padding-bottom: 0.25rem; }
+  .wp-block-crown-blocks-testimonial .testimonial-quote > .inner p {
+    margin-bottom: .75rem; }
+    .wp-block-crown-blocks-testimonial .testimonial-quote > .inner p:last-child {
+      margin-bottom: 0; }
+  .wp-block-crown-blocks-testimonial .testimonial-source {
+    margin-bottom: 0;
+    margin-top: .75rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-testimonial-slider {
+  margin-bottom: 1rem; }

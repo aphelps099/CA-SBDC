@@ -5,16 +5,22 @@
 	margin: 0 auto;
 	margin-bottom: 1rem;
 
-	> .inner {
-		padding: 2.25rem 2rem;
-	}
-
 	.testimonial-featured-image {
 		max-width: 70px;
-		margin-bottom: .5rem;
-		.image {
+		margin-bottom: 1rem;
+		> .inner {
 			height: 0;
 			padding-top: 100%;
+			border-radius: 100%;
+			position: relative;
+			background-color: #ccc;
+		}
+		.image {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
 			background-size: cover;
 			background-position: center;
 			background-repeat: no-repeat;
@@ -27,6 +33,11 @@
 
 	.testimonial-contents {
 		text-align: left;
+	}
+	.testimonial-title {
+		font-style: normal;
+		border-bottom: 2px solid #333;
+		padding-bottom: 0.25rem;
 	}
 	.testimonial-quote {
 		> .inner {
@@ -41,7 +52,6 @@
 	.testimonial-source {
 		margin-bottom: 0;
 		margin-top: .75rem;
-		font-weight: 700;
 	}
 
 }

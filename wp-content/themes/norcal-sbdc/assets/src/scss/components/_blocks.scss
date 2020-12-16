@@ -333,3 +333,224 @@
 		line-height: $line-height-base;
 	}
 }
+
+
+/*	Testimonial
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-testimonial {
+	max-width: none;
+	> .inner {
+		@include media-breakpoint-up(lg) {
+			display: flex;
+		}
+	}
+	.testimonial-featured-image {
+		@include media-breakpoint-up(lg) {
+			flex: 0 0 45%;
+			margin: 0;
+			max-width: none;
+			opacity: .75;
+		}
+		> .inner {
+			background-color: $light-blue;
+		}
+		.image {
+			@include media-breakpoint-up(lg) {
+				mix-blend-mode: overlay;
+				filter: grayscale(1);
+			}
+		}
+	}
+	.testimonial-contents {
+		@include media-breakpoint-up(lg) {
+			flex: 1 1 auto;
+			align-self: center;
+			margin-left: -15%;
+			position: relative;
+		}
+	}
+	.testimonial-title {
+		border-color: $primary;
+		@include media-breakpoint-up(md) {
+			font-size: 2.5rem;
+		}
+	}
+	.testimonial-quote {
+		font-size: 1.5rem;
+		line-height: $line-height-base;
+		@include media-breakpoint-up(md) {
+			font-size: 1.875rem;
+		}
+		@include media-breakpoint-up(lg) {
+			position: relative;
+		}
+		&:before {
+			@include media-breakpoint-up(lg) {
+				content: '“';
+				font-size: 5rem;
+				line-height: 1;
+				position: absolute;
+				left: -4rem;
+				top: 0;
+				font-style: normal;
+				font-weight: 700;
+				font-family: $font-family-sans-serif;
+			}
+		}
+	}
+	.testimonial-source {
+		@include media-breakpoint-up(lg) {
+			font-weight: 700;
+			color: inherit;
+			text-transform: uppercase;
+			letter-spacing: .1em;
+			font-family: $font-family-sans-serif-alt;
+			opacity: 1;
+			font-size: 1.25rem;
+			margin-top: 1rem;
+		}
+	}
+}
+
+
+/*	Testimonial Slider
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-testimonial-slider {
+	&.has-link {
+		.slick-slide .wp-block-crown-blocks-testimonial .testimonial-contents {
+			@include media-breakpoint-up(lg) {
+				margin-bottom: 7rem;
+			}
+		}
+	}
+	> .inner {
+		position: relative;
+	}
+	.testimonial-slider-title {
+		@include media-breakpoint-up(lg) {
+			margin-bottom: -5rem;
+			position: relative;
+			z-index: 1000;
+		}
+	}
+	.slick-slider-nav {
+		display: flex;
+		align-items: center;
+		position: absolute;
+		right: 0;
+		z-index: 1000;
+		margin-top: 0.75rem;
+		@include media-breakpoint-up(lg) {
+			margin-top: 2rem;
+		}
+		.slick-arrow {
+			width: 2.75rem;
+			height: 2.75rem;
+			overflow: hidden;
+			padding: 0;
+			border: none;
+			outline: none;
+			background-color: $light-blue;
+			border-radius: 100rem;
+			text-indent: -1000000px;
+			position: relative;
+			&.slick-prev {
+				margin-right: .25rem;
+				order: 1;
+				&:before { transform: rotateY(180deg); }
+			}
+			&.slick-next {
+				order: 3;
+				margin-left: .25rem;
+			}
+			&:before {
+				@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+				position: absolute;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				font-size: 1rem;
+				line-height: 1;
+				text-indent: 0;
+			}
+		}
+		.status {
+			order: 2;
+			font-size: 1.125rem;
+			line-height: $line-height-sm;
+			min-width: 80px;
+			text-align: center;
+			.of {
+				font-family: $font-family-serif;
+				margin-right: .1em;
+			}
+		}
+	}
+	.testimonial-slider-testimonials {
+		> .inner {
+			display: none;
+			&.slick-initialized {
+				display: block;
+			}
+		}
+	}
+	.slick-slide {
+		outline: none;
+		.wp-block-crown-blocks-testimonial {
+			> .inner {
+				@include media-breakpoint-up(lg) {
+					padding-top: 8rem;
+				}
+			}
+			.testimonial-featured-image {
+				@include media-breakpoint-up(lg) {
+					margin-top: -8rem;
+				}
+			}
+			.testimonial-contents {
+				@include media-breakpoint-up(lg) {
+					align-self: flex-start;
+					display: flex;
+					align-items: center;
+				}
+				&:before {
+					@include media-breakpoint-up(lg) {
+						content: '';
+						display: block;
+						width: 0;
+						height: 0;
+						padding-top: 38%;
+					}
+				}
+				> .inner {
+					@include media-breakpoint-up(lg) {
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+	.testimonial-slider-link {
+		margin-top: 1rem;
+		margin-bottom: 0;
+		@include media-breakpoint-up(lg) {
+			text-align: right;
+			margin-top: -5rem;
+			position: relative;
+			z-index: 1000;
+		}
+		a {
+			@extend .btn;
+			@extend .btn-blue;
+			@include media-breakpoint-up(lg) {
+				@include make-button-size(lg);
+			}
+		}
+	}
+}

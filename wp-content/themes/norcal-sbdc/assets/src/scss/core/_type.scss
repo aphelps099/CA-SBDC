@@ -60,8 +60,11 @@ blockquote,
 	border-left: none;
 	line-height: $line-height-base;
 	&.is-style-large {
-		font-size: 1.875rem;
+		font-size: 1.5rem;
 		line-height: $line-height-base;
+		@include media-breakpoint-up(md) {
+			font-size: 1.875rem;
+		}
 		p {
 			font-size: inherit;
 			line-height: inherit;
