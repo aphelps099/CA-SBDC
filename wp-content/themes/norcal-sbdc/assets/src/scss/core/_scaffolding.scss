@@ -3,6 +3,10 @@ body {
 	line-height: $line-height-lg;
 }
 
+a {
+	transition: color .15s;
+}
+
 img {
 	display: block;
 	max-width: 100%;

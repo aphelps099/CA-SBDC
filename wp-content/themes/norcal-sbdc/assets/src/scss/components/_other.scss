@@ -62,6 +62,61 @@
 }
 
 
+.contact-info {
+	&.simple {
+		.branch {
+			margin-bottom: 1rem;
+		}
+		.name {
+			line-height: inherit;
+			font-weight: inherit;
+			font-size: inherit;
+			font-family: inherit;
+			text-transform: none;
+			letter-spacing: 0;
+			margin-bottom: 0;
+		}
+	}
+	.branch {
+		margin-bottom: 2rem;
+	}
+	.columns {
+		display: grid;
+		grid-gap: 2rem;
+		grid-template-columns: 1fr 1fr;
+	}
+	.name {
+		margin-bottom: .25rem;
+		text-transform: uppercase;
+		letter-spacing: .1em;
+	}
+	p {
+		margin: 0;
+	}
+	a {
+		color: inherit;
+		&:hover {
+			color: $link-color;
+		}
+	}
+}
+
+
+.branch-map {
+	height: 0;
+	padding-top: 60%;
+	position: relative;
+	margin-bottom: 1rem;
+	.google-map {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+}
+
+
 .event-teaser {
 	text-align: left;
 	a {

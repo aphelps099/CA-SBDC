@@ -718,6 +718,17 @@ body.mobile-menu-active {
 			+ .sub-menu-cta-links {
 				margin-top: 2rem;
 			}
+			a {
+				color: inherit;
+				&:hover {
+					color: $link-color;
+				}
+			}
+			.contact-info {
+				.directions {
+					display: none;
+				}
+			}
 		}
 		.sub-menu-events {
 			display: flex;

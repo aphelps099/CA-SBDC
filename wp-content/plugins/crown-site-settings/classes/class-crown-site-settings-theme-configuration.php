@@ -1,6 +1,7 @@
 <?php
 
 use Crown\AdminPage;
+use Crown\Api\GoogleMaps;
 use Crown\Form\Field;
 use Crown\Form\FieldGroup;
 use Crown\Form\FieldGroupSet;
@@ -11,6 +12,7 @@ use Crown\Form\Input\RadioSet;
 use Crown\Form\Input\Select;
 use Crown\Form\Input\Text as TextInput;
 use Crown\Form\Input\Gallery as GalleryInput;
+use Crown\Form\Input\GeoCoordinates as GeoCoordinatesInput;
 use Crown\Form\Input\Textarea;
 use Crown\Form\Input\RichTextarea;
 use Crown\Post\MetaBox;
@@ -94,44 +96,6 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 									new Field( array(
 										'label' => 'Footer Description',
 										'input' => new Textarea( array( 'name' => 'theme_config_footer_description', 'rows' => 4 ) )
-									) )
-								)
-							) ),
-
-							new FieldGroup( array(
-								'label' => 'Social Media Links',
-								'fields' => array(
-									new Field( array(
-										'label' => 'Facebook Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_facebook_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'Twitter Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_twitter_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'Google+ Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_google_plus_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'LinkedIn Business Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_linkedin_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'Instagram Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_instagram_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'YouTube Channel URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_youtube_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'Vimeo Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_vimeo_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
-									) ),
-									new Field( array(
-										'label' => 'Pinterest Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_pinterest_profile_url', 'class' => 'input-medium', 'placeholder' => 'https://' ) )
 									) )
 								)
 							) )

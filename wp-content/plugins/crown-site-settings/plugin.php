@@ -19,12 +19,14 @@ foreach ( scandir( $class_files_dir ) as $file) {
 }
 
 Crown_Site_Settings_Admin::init();
+Crown_Site_Settings_Contact::init();
 Crown_Site_Settings_Discussion::init();
 Crown_Site_Settings_Media::init();
 Crown_Site_Settings_Pages::init();
 Crown_Site_Settings_Posts::init();
 Crown_Site_Settings_Scripts::init();
 Crown_Site_Settings_Shortcodes::init();
+Crown_Site_Settings_Social_Media::init();
 Crown_Site_Settings_Site_Announcement::init();
 Crown_Site_Settings_Theme_Configuration::init();
 Crown_Site_Settings_Theme_Mega_Menu::init();

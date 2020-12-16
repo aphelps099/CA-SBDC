@@ -339,3 +339,13 @@ $gform-gutter-width: 10px;
 		}
 	}
 }
+
+.general-contact-form_wrapper {
+	.gform_footer {
+		button[type=submit] {
+			@extend .btn-red;
+			@extend .btn-lg;
+			@extend .btn-block;
+		}
+	}
+}

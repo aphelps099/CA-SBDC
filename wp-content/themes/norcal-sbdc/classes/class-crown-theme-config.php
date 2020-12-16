@@ -23,6 +23,7 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			add_filter( 'wp_check_filetype_and_ext', array( __CLASS__, 'validate_file_ext_and_type' ), 10, 4 );
 
 			add_filter( 'crown_theme_colors', array( __CLASS__, 'filter_crown_theme_colors' ), 10, 2 );
+			add_filter( 'crown_google_map_styles', array( __CLASS__, 'filter_crown_google_map_styles' ) );
 
 			add_filter( 'gform_submit_button', array( __CLASS__, 'filter_gravity_form_submit_button' ), 10, 2 );
 
@@ -195,6 +196,13 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			if ( empty( $color_palette ) ) return $colors;
 			$colors = array_map( function( $n ) { return $n->color; }, $color_palette );
 			return $colors;
+		}
+
+
+		public static function filter_crown_google_map_styles( $styles = null ) {
+			$path = Crown_Theme::get_dir() . '/assets/data/google-map-styles.json';
+			if ( ! file_exists( $path ) ) return $styles;
+			return json_decode( file_get_contents( $path ) );
 		}
 
 
