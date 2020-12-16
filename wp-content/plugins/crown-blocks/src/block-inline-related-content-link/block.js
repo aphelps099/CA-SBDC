@@ -90,7 +90,7 @@ registerBlockType('crown-blocks/inline-related-content-link', {
 			<div class="crown-block-editor-container">
 
 				<BlockControls>
-					<ToolbarGroup class="components-toolbar-group crown-block-button-toolbar">
+					<ToolbarGroup class="components-toolbar components-toolbar-group crown-block-button-toolbar">
 						<URLInputButton
 							url={ linkUrl }
 							onChange={ ( url, post ) => setAttributes({ linkUrl: url, linkPost: post }) }

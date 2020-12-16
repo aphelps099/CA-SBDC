@@ -50,6 +50,24 @@ const spacingProfiles = [
 		paddingXXs:        2
 	},
 	{
+		spacingProfile:    'Content Slide',
+		paddingTopXl:      8,
+		paddingBottomXl:   8,
+		paddingXXl:        10,
+		paddingTopLg:      6,
+		paddingBottomLg:   6,
+		paddingXLg:        8,
+		paddingTopMd:      4,
+		paddingBottomMd:   4,
+		paddingXMd:        4,
+		paddingTopSm:      3,
+		paddingBottomSm:   3,
+		paddingXSm:        2,
+		paddingTopXs:      2,
+		paddingBottomXs:   2,
+		paddingXXs:        2,
+	},
+	{
 		spacingProfile:    'None',
 		paddingTopXl:      0,
 		paddingBottomXl:   0,
@@ -566,10 +584,10 @@ registerBlockType('crown-blocks/container', {
 							value={ contentsMaxWidth }
 							onChange={ (value) => setAttributes({ contentsMaxWidth: value }) }
 							min={ 1 }
-							max={ 6 }
+							max={ 7 }
 							showTooltip={ false }
 							withInputField={ false }
-							marks={ [{ value: 0, label: '360' }, { value: 1, label: '540' }, { value: 2, label: '720' }, { value: 3, label: '900' }, { value: 4, label: '1080' }, { value: 5, label: '1260' }] }
+							marks={ [{ value: 0, label: '360' }, { value: 1, label: '540' }, { value: 2, label: '720' }, { value: 3, label: '900' }, { value: 4, label: '1080' }, { value: 5, label: '1260' }, { value: 6, label: '1440' }] }
 						/> }
 
 					</div> }
@@ -695,7 +713,7 @@ registerBlockType('crown-blocks/container', {
 					<div className="inner">
 						<div className="container-contents">
 							<div className="inner">
-								<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } />
+								<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } templateLock={ false } />
 							</div>
 						</div>
 					</div>

@@ -1,0 +1,12 @@
+
+
+.wp-block-crown-blocks-content-slider {
+	> .inner {
+		> .wp-block-crown-blocks-content-slider-slide {
+			display: none;
+			&:first-child {
+				display: block;
+			}
+		}
+	}
+}

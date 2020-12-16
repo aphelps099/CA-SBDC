@@ -5,8 +5,9 @@
 		{ "name": "Small", "slug": "small", "short_name": "S", "size": 16 },
 		{ "name": "Normal", "slug": "normal", "short_name": "M", "size": 20 },
 		{ "name": "Large", "slug": "large", "short_name": "L", "size": 24 },
-		{ "name": "X-Large", "slug": "extra-large", "short_name": "XL", "size": 30 },
-		{ "name": "XX-Large", "slug": "extra-extra-large", "short_name": "XXL", "size": 60 }
+		{ "name": "XL", "slug": "extra-large", "short_name": "XL", "size": 30 },
+		{ "name": "XXL", "slug": "extra-extra-large", "short_name": "XXL", "size": 60 },
+		{ "name": "XXXL", "slug": "extra-extra-extra-large", "short_name": "XXXL", "size": 80 }
 	],
 
 	"color_palette": [

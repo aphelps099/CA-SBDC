@@ -18,6 +18,7 @@ $spacer: 1rem;
 	&.contents-mw-4 > .inner > .container-contents > .inner { max-width: 900px !important; }
 	&.contents-mw-5 > .inner > .container-contents > .inner { max-width: 1080px !important; }
 	&.contents-mw-6 > .inner > .container-contents > .inner { max-width: 1260px !important; }
+	&.contents-mw-7 > .inner > .container-contents > .inner { max-width: 1440px !important; }
 
 	@for $i from 0 through 40 {
 		&.contents-pt-#{$i} > .inner > .container-contents { padding-top: ($spacer / 2) * $i !important; }

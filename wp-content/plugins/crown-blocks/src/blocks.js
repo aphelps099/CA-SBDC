@@ -18,6 +18,8 @@ import './block-button-group/block.js';
 import './block-column/block.js';
 import './block-container/block.js';
 // import './block-container-featured-image/block.js';
+import './block-content-slider/block.js';
+import './block-content-slider-slide/block.js';
 // import './block-core-values/block.js';
 // import './block-core-values-item/block.js';
 // import './block-expandable-content/block.js';

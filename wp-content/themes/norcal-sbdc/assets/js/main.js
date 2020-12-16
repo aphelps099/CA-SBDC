@@ -20,6 +20,7 @@
 		// $.wptheme.initExpandableContentBlocks();
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
+		$.wptheme.initContentSliderBlocks();
 
 	});
 
@@ -453,6 +454,22 @@
 						nav.append('<span class="status"><span class="current">' + (nextSlide + 1) + '</span> <span class="of">of</span> <span class="total">' + slick.slideCount + '</span></span>')
 					}
 				}).slick(slickSettings);
+			});
+		};
+
+
+		wptheme.initContentSliderBlocks = function() {
+			$('.wp-block-crown-blocks-content-slider').each(function(i, el) {
+				var slider = $('> .inner', el);
+				if(slider.hasClass('slick-initialized')) return;
+				var slickSettings = {
+					mobileFirst: true,
+					draggable: true,
+					dots: true,
+					arrows: false,
+					fade: false
+				};
+				slider.slick(slickSettings);
 			});
 		};
 

@@ -42,7 +42,8 @@ h1 {
 .has-normal-font-size { font-size: 1.25rem; }
 .has-large-font-size { font-size: 1.5rem; }
 .has-extra-large-font-size { font-size: 1.875rem; line-height: $line-height-base; }
-.has-extra-extra-large-font-size { font-size: 3rem; line-height: $line-height-base; @include media-breakpoint-up(lg) { font-size: 3.75rem; } }
+.has-extra-extra-large-font-size { font-size: 3rem; line-height: $line-height-sm; @include media-breakpoint-up(lg) { font-size: 3.75rem; } }
+.has-extra-extra-extra-large-font-size { font-size: 3rem; line-height: $line-height-sm; @include media-breakpoint-up(lg) { font-size: 5rem; } }
 
 .is-style-sans-serif {
 	font-family: $font-family-sans-serif;
@@ -62,6 +63,7 @@ blockquote,
 	&.is-style-large {
 		font-size: 1.5rem;
 		line-height: $line-height-base;
+		padding: 0;
 		@include media-breakpoint-up(md) {
 			font-size: 1.875rem;
 		}
@@ -79,14 +81,15 @@ blockquote,
 	.wp-block-pullquote__citation,
 	cite {
 		display: block;
-		margin-top: -0.25rem;
-		font-size: 1rem;
+		margin-top: 0;
+		font-size: 0.875rem;
 		color: inherit;
-		font-weight: 400;
-		font-family: $font-family-base;
-		opacity: 0.6;
+		font-weight: 600;
+		letter-spacing: .1em;
+		font-family: $font-family-sans-serif;
+		opacity: 1;
 		font-style: normal;
-		text-transform: none;
+		text-transform: uppercase;
 		// &:before {
 		// 	content: "~\00A0";
 		// }

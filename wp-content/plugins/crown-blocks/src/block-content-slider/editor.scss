@@ -1,0 +1,12 @@
+
+
+.wp-block[data-type="crown-blocks/content-slider"] {
+	border: 1px dashed fade-out(#000, .8);
+	padding: 10px;
+	.text-color-light & {
+		border-color: fade-out(#fff, .8);
+	}
+	.text-color-dark & {
+		border-color: fade-out(#000, .8);
+	}
+}
