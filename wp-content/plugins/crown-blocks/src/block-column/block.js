@@ -377,6 +377,7 @@ registerBlockType('crown-blocks/column', {
 						<Button isPrimary={ verticalAlignment == 'top' } isSecondary={ verticalAlignment != 'top' } onClick={ (e) => setAttributes({ verticalAlignment: 'top' }) }>Top</Button>
 						<Button isPrimary={ verticalAlignment == 'center' } isSecondary={ verticalAlignment != 'center' } onClick={ (e) => setAttributes({ verticalAlignment: 'center' }) }>Center</Button>
 						<Button isPrimary={ verticalAlignment == 'bottom' } isSecondary={ verticalAlignment != 'bottom' } onClick={ (e) => setAttributes({ verticalAlignment: 'bottom' }) }>Bottom</Button>
+						<Button isPrimary={ verticalAlignment == 'stretch' } isSecondary={ verticalAlignment != 'stretch' } onClick={ (e) => setAttributes({ verticalAlignment: 'stretch' }) }>Stretch</Button>
 					</ButtonGroup>
 
 				</PanelBody> }

@@ -7,8 +7,29 @@ $spacer: 1rem;
 	&.vertical-alignment-top { align-items: flex-start; }
 	&.vertical-alignment-center { align-items: center; }
 	&.vertical-alignment-bottom { align-items: flex-end; }
+	&.vertical-alignment-stretch { align-items: stretch; }
 	> .inner {
 		width: 100%;
+	}
+	&.vertical-alignment-stretch > .inner {
+		display: flex;
+		> .column-contents {
+			width: 100%;
+			display: flex;
+			> .inner {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				> .wp-block-crown-blocks-container:first-child:last-child {
+					flex: 1 1 auto;
+					display: flex;
+					align-items: center;
+					> .inner {
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 
 	@for $i from 0 through 20 {

@@ -312,3 +312,24 @@ body {
 		}
 	}
 }
+
+.wp-block[data-type="crown-blocks/stat"] {
+	+ .wp-block[data-type="crown-blocks/stat"] {
+		padding-top: 1rem;
+		border-top: 4px dotted rgba($body-color, .5);
+		.text-color-light & { border-color: rgba(#fff, .5); }
+		.text-color-dark & { border-color: rgba($body-color, .5); }
+	}
+}
+
+.wp-block[data-type="crown-blocks/stat-table"] {
+	.wp-block[data-type="crown-blocks/stat"] {
+		margin: 0;
+		+ .wp-block[data-type="crown-blocks/stat"] {
+			padding-top: 1rem;
+			border-top: 1px solid $body-color;
+			.text-color-light & { border-color: #fff; }
+			.text-color-dark & { border-color: $body-color; }
+		}
+	}
+}

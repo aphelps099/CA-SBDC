@@ -17,6 +17,17 @@
 		}
 		span.odometer {
 			font-family: inherit;
+			line-height: inherit;
+			vertical-align: baseline;
+			.odometer-digit {
+				vertical-align: baseline;
+				.odometer-value {
+					min-width: 100%;
+				}
+			}
+			.odometer-digit-spacer {
+				display: block;
+			}
 		}
 	}
 }

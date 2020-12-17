@@ -1,0 +1,20 @@
+
+
+.wp-block-crown-blocks-stat-table {
+	margin-bottom: 1rem;
+	.wp-block-crown-blocks-stat {
+		> .inner {
+			display: flex;
+			align-items: center;
+		}
+		.stat-value {
+			order: 2;
+			margin-bottom: 0;
+		}
+		.stat-label {
+			margin-bottom: 0;
+			flex: 1 1 auto;
+			margin-right: 1rem;
+		}
+	}
+}

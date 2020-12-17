@@ -22,8 +22,8 @@ registerBlockType('crown-blocks/stat', {
 	supports: {},
 
 	attributes: {
-		label: { selector: '.stat-label', source: 'children' },
-		value: { selector: '.stat-value', source: 'children' }
+		value: { selector: '.stat-value', source: 'children' },
+		label: { selector: '.stat-label', source: 'children' }
 	},
 
 
@@ -47,20 +47,20 @@ registerBlockType('crown-blocks/stat', {
 
 						<RichText
 							tagName="p"
-							className="stat-label"
-							onChange={ (value) => setAttributes({ label: value }) } 
-							value={ label }
-							placeholder="Provide a Label"
+							className="stat-value"
+							onChange={ (value) => setAttributes({ value: value }) } 
+							value={ value }
+							placeholder="#"
 							allowedFormats={ [] }
 						/>
 
 						<RichText
 							tagName="p"
-							className="stat-value"
-							onChange={ (value) => setAttributes({ value: value }) } 
-							value={ value }
-							placeholder="Statistic Value"
-							allowedFormats={ [] }
+							className="stat-label"
+							onChange={ (value) => setAttributes({ label: value }) } 
+							value={ label }
+							placeholder="Provide a Label"
+							allowedFormats={ [ 'core/bold' ] }
 						/>
 
 					</div>
@@ -88,9 +88,9 @@ registerBlockType('crown-blocks/stat', {
 			<div className={ blockClasses.join(' ') } key="stat">
 				<div className="inner odometer-statistic">
 
-					{ (label != '') && <RichText.Content tagName="p" className="stat-label" value={ label } /> }
-
 					{ (value != '') && <RichText.Content tagName="p" className="stat-value" value={ value } /> }
+
+					{ (label != '') && <RichText.Content tagName="p" className="stat-label" value={ label } /> }
 
 				</div>
 			</div>

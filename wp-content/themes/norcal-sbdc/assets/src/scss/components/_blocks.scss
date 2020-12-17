@@ -18,6 +18,9 @@
 ---------------------------------------------------------*/
 
 .wp-block-crown-blocks-container {
+	&:last-child {
+		margin-bottom: 0;
+	}
 	&.text-color-light {
 		color: #fff;
 	}
@@ -727,5 +730,93 @@
 	}
 	.block-link {
 		margin-top: 2rem;
+	}
+}
+
+
+/*	Stat
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-stat {
+	margin-bottom: 2rem;
+	+ .wp-block-crown-blocks-stat {
+		padding-top: 1.5rem;
+		border-top: 4px dotted rgba($body-color, .5);
+		@include media-breakpoint-up(lg) {
+			padding-top: 1rem;
+		}
+		.text-color-light & { border-color: rgba(#fff, .5); }
+		.text-color-dark & { border-color: rgba($body-color, .5); }
+	}
+	.text-color-light & {
+		.stat-label { color: rgba(#fff, .7); }
+		.stat-label strong { color: #fff; }
+	}
+	.text-color-dark & {
+		.stat-label { color: rgba($body-color, .7); }
+		.stat-label strong { color: $body-color; }
+	}
+	.stat-value {
+		margin-bottom: 0;
+		font-size: 5rem;
+		line-height: 1;
+		font-family: $font-family-sans-serif-alt;
+		font-weight: 800;
+		font-style: italic;
+		@include media-breakpoint-up(lg) {
+			font-size: 8.75rem;
+		}
+		.odometer {
+			// line-height: inherit;
+		}
+	}
+	.stat-label {
+		font-size: 1rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: rgba($body-color, .7);
+		line-height: $line-height-base;
+		strong {
+			color: $body-color;
+		}
+	}
+}
+
+
+/*	Stat Table
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-stat-table {
+	margin-bottom: 1rem;
+	.text-color-light & {
+		.wp-block-crown-blocks-stat .stat-label { color: #fff; }
+	}
+	.text-color-dark & {
+		.wp-block-crown-blocks-stat .stat-label { color: $body-color; }
+	}
+	.wp-block-crown-blocks-stat {
+		margin-bottom: 1rem;
+		+ .wp-block-crown-blocks-stat {
+			padding-top: 1rem;
+			border-top: 1px solid $body-color;
+			border-top-style: solid;
+			.text-color-light & { border-color: #fff; }
+			.text-color-dark & { border-color: $body-color; }
+		}
+		.stat-value {
+			margin-bottom: 0;
+			font-family: $font-family-base;
+			font-size: 1.75rem;
+			font-style: normal;
+			font-weight: 500;
+			text-align: right;
+		}
+		.stat-label {
+			margin-bottom: 0;
+			font-size: 1.25rem;
+			font-weight: 400;
+			color: $body-color;
+			text-transform: none;
+		}
 	}
 }

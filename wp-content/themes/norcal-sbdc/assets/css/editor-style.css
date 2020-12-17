@@ -16376,7 +16376,15 @@ nav.pagination {
   display: inline-block; }
 
 .odometer-statistic .stat-value span.odometer {
-  font-family: inherit; }
+  font-family: inherit;
+  line-height: inherit;
+  vertical-align: baseline; }
+  .odometer-statistic .stat-value span.odometer .odometer-digit {
+    vertical-align: baseline; }
+    .odometer-statistic .stat-value span.odometer .odometer-digit .odometer-value {
+      min-width: 100%; }
+  .odometer-statistic .stat-value span.odometer .odometer-digit-spacer {
+    display: block; }
 
 .social-links h4 {
   margin-bottom: 1rem;
@@ -16946,6 +16954,9 @@ nav.pagination {
 
 /*	Container
 ---------------------------------------------------------*/
+.wp-block-crown-blocks-container:last-child {
+  margin-bottom: 0; }
+
 .wp-block-crown-blocks-container.text-color-light {
   color: #fff; }
 
@@ -17688,6 +17699,79 @@ nav.pagination {
   .wp-block-crown-blocks-featured-post-slider .block-link {
     margin-top: 2rem; }
 
+/*	Stat
+---------------------------------------------------------*/
+.wp-block-crown-blocks-stat {
+  margin-bottom: 2rem; }
+  .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+    padding-top: 1.5rem;
+    border-top: 4px dotted rgba(35, 48, 83, 0.5); }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+        padding-top: 1rem; } }
+    .text-color-light .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+      border-color: rgba(255, 255, 255, 0.5); }
+    .text-color-dark .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+      border-color: rgba(35, 48, 83, 0.5); }
+  .text-color-light .wp-block-crown-blocks-stat .stat-label {
+    color: rgba(255, 255, 255, 0.7); }
+  .text-color-light .wp-block-crown-blocks-stat .stat-label strong {
+    color: #fff; }
+  .text-color-dark .wp-block-crown-blocks-stat .stat-label {
+    color: rgba(35, 48, 83, 0.7); }
+  .text-color-dark .wp-block-crown-blocks-stat .stat-label strong {
+    color: #233053; }
+  .wp-block-crown-blocks-stat .stat-value {
+    margin-bottom: 0;
+    font-size: 5rem;
+    line-height: 1;
+    font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-weight: 800;
+    font-style: italic; }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-stat .stat-value {
+        font-size: 8.75rem; } }
+  .wp-block-crown-blocks-stat .stat-label {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgba(35, 48, 83, 0.7);
+    line-height: 1.4; }
+    .wp-block-crown-blocks-stat .stat-label strong {
+      color: #233053; }
+
+/*	Stat Table
+---------------------------------------------------------*/
+.wp-block-crown-blocks-stat-table {
+  margin-bottom: 1rem; }
+  .text-color-light .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-label {
+    color: #fff; }
+  .text-color-dark .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-label {
+    color: #233053; }
+  .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat {
+    margin-bottom: 1rem; }
+    .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+      padding-top: 1rem;
+      border-top: 1px solid #233053;
+      border-top-style: solid; }
+      .text-color-light .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+        border-color: #fff; }
+      .text-color-dark .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat + .wp-block-crown-blocks-stat {
+        border-color: #233053; }
+    .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-value {
+      margin-bottom: 0;
+      font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-size: 1.75rem;
+      font-style: normal;
+      font-weight: 400;
+      text-align: right; }
+    .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-label {
+      margin-bottom: 0;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #233053;
+      text-transform: none; }
+
 .gform_wrapper {
   margin-bottom: 1rem;
   text-align: left; }
@@ -18357,3 +18441,21 @@ body {
   font-weight: 400; }
   .wp-block[data-type="crown-blocks/featured-event"] .entry-label + .entry-title {
     margin-top: 0; }
+
+.wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+  padding-top: 1rem;
+  border-top: 4px dotted rgba(35, 48, 83, 0.5); }
+  .text-color-light .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+    border-color: rgba(255, 255, 255, 0.5); }
+  .text-color-dark .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+    border-color: rgba(35, 48, 83, 0.5); }
+
+.wp-block[data-type="crown-blocks/stat-table"] .wp-block[data-type="crown-blocks/stat"] {
+  margin: 0; }
+  .wp-block[data-type="crown-blocks/stat-table"] .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+    padding-top: 1rem;
+    border-top: 1px solid #233053; }
+    .text-color-light .wp-block[data-type="crown-blocks/stat-table"] .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+      border-color: #fff; }
+    .text-color-dark .wp-block[data-type="crown-blocks/stat-table"] .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
+      border-color: #233053; }
