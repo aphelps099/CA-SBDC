@@ -15,27 +15,22 @@ const { getColorObjectByColorValue } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 
 
-registerBlockType('crown-blocks/recent-posts', {
-	title: 'Recent Posts',
-	description: 'Display the latest posts published to the blog.',
+registerBlockType('crown-blocks/featured-post-slider', {
+	title: 'Featured Post Slider',
+	description: 'Display a set of posts published to the blog.',
 	icon: 'admin-post',
 	category: 'widgets',
-	keywords: [ 'feed', 'latest', 'crown-blocks' ],
+	keywords: [ 'feed', 'recent', 'crown-blocks' ],
 
-	supports: {
-		align: [ 'wide', 'full' ],
-	},
+	supports: {},
 
 	attributes: {
-		align: { type: 'string', default: '' },
-		displayAs:  { type: 'string', default: 'thumbnails' },
-		thumbnailsMaxPostCount:  { type: 'string', default: '3' },
-		displayAsSliderMobile: { type: 'boolean', default: false },
-		listMaxPostCount:  { type: 'string', default: '4' },
+		maxPostCount:  { type: 'string', default: '9' },
 		manuallySelectPosts: { type: 'boolean', default: false },
 		excludePrevPosts: { type: 'boolean', default: false },
 		filterCategories: { type: 'array', default: [] },
 		filterTags: { type: 'array', default: [] },
+		filterTopics: { type: 'array', default: [] },
 		filterPostsExclude: { type: 'array', default: [] },
 		filterPostsInclude: { type: 'array', default: [] }
 	},
@@ -45,20 +40,19 @@ registerBlockType('crown-blocks/recent-posts', {
 		return {
 			posts: select('core').getEntityRecords('postType', 'post', { per_page: -1 }),
 			categories: select('core').getEntityRecords('taxonomy', 'category', { per_page: -1 }),
-			tags: select('core').getEntityRecords('taxonomy', 'post_tag', { per_page: -1 })
+			tags: select('core').getEntityRecords('taxonomy', 'post_tag', { per_page: -1 }),
+			topics: select('core').getEntityRecords('taxonomy', 'post_topic', { per_page: -1 })
 		};
-    })(({ posts, categories, tags, attributes, className, isSelected, setAttributes }) => {
-		if(!posts || !categories|| !tags) return '';
+    })(({ posts, categories, tags, topics, attributes, className, isSelected, setAttributes }) => {
+		if(!posts || !categories|| !tags || !topics) return '';
 
 		const {
-			displayAs,
-			thumbnailsMaxPostCount,
-			displayAsSliderMobile,
-			listMaxPostCount,
+			maxPostCount,
 			manuallySelectPosts,
 			excludePrevPosts,
 			filterCategories,
 			filterTags,
+			filterTopics,
 			filterPostsExclude,
 			filterPostsInclude
 		} = attributes;
@@ -77,6 +71,14 @@ registerBlockType('crown-blocks/recent-posts', {
 			let token = tags[i].name + ' (ID: ' + tags[i].id + ')'
 			availableTags[token] = tags[i];
 			tagSuggestions.push(token);
+		}
+
+		let availableTopics = {};
+		let topicSuggestions = [];
+		for(let i in topics) {
+			let token = topics[i].name + ' (ID: ' + topics[i].id + ')'
+			availableTopics[token] = topics[i];
+			topicSuggestions.push(token);
 		}
 
 		let availablePostsExclude = {};
@@ -103,47 +105,19 @@ registerBlockType('crown-blocks/recent-posts', {
 
 				<PanelBody title={ 'Appearance' } initialOpen={ true }>
 
-					<BaseControl label="Display as:">
-						<div>
-							<ButtonGroup>
-								<Button isPrimary={ displayAs == 'thumbnails' } isSecondary={ displayAs != 'thumbnails' } onClick={ (e) => setAttributes({ displayAs: 'thumbnails' }) }>Thumbnails</Button>
-								<Button isPrimary={ displayAs == 'list' } isSecondary={ displayAs != 'list' } onClick={ (e) => setAttributes({ displayAs: 'list' }) }>List</Button>
-							</ButtonGroup>
-						</div>
-					</BaseControl>
-
-					{ displayAs == 'thumbnails' && <SelectControl
+					<SelectControl
 						label="Max number of posts to display"
-						value={ thumbnailsMaxPostCount }
-						onChange={ (value) => setAttributes({ thumbnailsMaxPostCount: value }) }
-						options={ [
-							{ label: '2', value: '2' },
-							{ label: '3', value: '3' },
-							{ label: '4', value: '4' }
-						] }
-					/> }
-
-					{ displayAs == 'thumbnails' && <ToggleControl
-						label={ 'Display as slider for mobile devices' }
-						checked={ displayAsSliderMobile }
-						onChange={ (value) => { setAttributes({ displayAsSliderMobile: value }); } }
-					/> }
-
-					{ displayAs == 'list' && <SelectControl
-						label="Max number of posts to display"
-						value={ listMaxPostCount }
-						onChange={ (value) => setAttributes({ listMaxPostCount: value }) }
+						value={ maxPostCount }
+						onChange={ (value) => setAttributes({ maxPostCount: value }) }
 						options={ [
 							{ label: '3', value: '3' },
-							{ label: '4', value: '4' },
-							{ label: '5', value: '5' },
 							{ label: '6', value: '6' },
-							{ label: '7', value: '7' },
-							{ label: '8', value: '8' },
 							{ label: '9', value: '9' },
-							{ label: '10', value: '10' }
+							{ label: '12', value: '12' },
+							{ label: '15', value: '15' },
+							{ label: '18', value: '18' }
 						] }
-					/> }
+					/>
 
 				</PanelBody>
 
@@ -156,7 +130,7 @@ registerBlockType('crown-blocks/recent-posts', {
 					/>
 
 					{ !! !manuallySelectPosts && <ToggleControl
-						label={ 'Exclude posts featured in other recent post feeds above this on the page (Note: does not affect output in editor)' }
+						label={ 'Exclude posts featured in other recent post feeds above this on the page (note: does not affect output in editor)' }
 						checked={ excludePrevPosts }
 						onChange={ (value) => { setAttributes({ excludePrevPosts: value }); } }
 					/> }
@@ -208,6 +182,29 @@ registerBlockType('crown-blocks/recent-posts', {
 					/> }
 
 					{ !! !manuallySelectPosts && <FormTokenField 
+						label="Filter by Topic"
+						value={ filterTopics } 
+						suggestions={ topicSuggestions } 
+						onChange={ (tokens) => {
+							let matchedTokens = [];
+							for(let i in tokens) {
+								let token = typeof tokens[i] === 'string' ? tokens[i] : (tokens[i].value ? tokens[i].value : '');
+								if(topicSuggestions.includes(token)) {
+									matchedTokens.push(token);
+								}
+							}
+							let filterTopics = [];
+							for(let i in matchedTokens) {
+								if(availableTopics[matchedTokens[i]]) {
+									filterTopics.push({ value: matchedTokens[i], id: availableTopics[matchedTokens[i]].id });
+								}
+							}
+							setAttributes({ filterTopics: filterTopics })
+						} }
+						placeholder="Search topics..."
+					/> }
+
+					{ !! !manuallySelectPosts && <FormTokenField 
 						label="Exclude Specific Posts from Feed"
 						value={ filterPostsExclude } 
 						suggestions={ postsExcludeSuggestions } 
@@ -251,7 +248,6 @@ registerBlockType('crown-blocks/recent-posts', {
 							setAttributes({ filterPostsInclude: filterPostsInclude })
 						} }
 						placeholder="Search posts..."
-						description="test"
 					/> }
 
 				</PanelBody>
@@ -260,7 +256,7 @@ registerBlockType('crown-blocks/recent-posts', {
 
 			<div class="crown-block-editor-container">
 
-				<ServerSideRender block="crown-blocks/recent-posts" attributes={ attributes } />
+				<ServerSideRender block="crown-blocks/featured-post-slider" attributes={ attributes } />
 
 			</div>
 

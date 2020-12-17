@@ -1,10 +1,10 @@
 <?php
 
-if(!class_exists('Crown_Block_Recent_Posts')) {
-	class Crown_Block_Recent_Posts extends Crown_Block {
+if(!class_exists('Crown_Block_Featured_Post_Slider')) {
+	class Crown_Block_Featured_Post_Slider extends Crown_Block {
 
 
-		public static $name = 'recent-posts';
+		public static $name = 'featured-post-slider';
 
 		protected static $output_post_ids = array();
 
@@ -20,15 +20,12 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'align' => array( 'type' => 'string', 'default' => '' ),
-				'displayAs' => array( 'type' => 'string', 'default' => 'thumbnails' ),
-				'thumbnailsMaxPostCount' => array( 'type' => 'string', 'default' => '3' ),
-				'displayAsSliderMobile' => array( 'type' => 'boolean', 'default' => false ),
-				'listMaxPostCount' => array( 'type' => 'string', 'default' => '4' ),
+				'maxPostCount' => array( 'type' => 'string', 'default' => '9' ),
 				'manuallySelectPosts' => array( 'type' => 'boolean', 'default' => false ),
 				'excludePrevPosts' => array( 'type' => 'boolean', 'default' => false ),
 				'filterCategories' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) ),
 				'filterTags' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) ),
+				'filterTopics' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) ),
 				'filterPostsExclude' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) ),
 				'filterPostsInclude' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) )
 			);
@@ -40,6 +37,7 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 
 			$queryArgs = array(
 				'post_type' => 'post',
+				'posts_per_page' => $atts['maxPostCount'],
 				'tax_query' => array(),
 				'post__not_in' => array(),
 				'post__in' => array()
@@ -58,6 +56,10 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 				$queryArgs['tax_query'][] = array( 'taxonomy' => 'post_tag', 'terms' => array_map( function( $n ) { return $n['id']; }, $atts['filterTags'] ) );
 			}
 
+			if ( ! empty( $atts['filterTopics'] ) ) {
+				$queryArgs['tax_query'][] = array( 'taxonomy' => 'post_topic', 'terms' => array_map( function( $n ) { return $n['id']; }, $atts['filterTopics'] ) );
+			}
+
 			if ( ! empty( $atts['filterPostsExclude'] ) ) {
 				$queryArgs['post__not_in'] = array_unique( array_merge( $queryArgs['post__not_in'], array_map( function( $n ) { return $n['id']; }, $atts['filterPostsExclude'] ) ) );
 			}
@@ -71,18 +73,10 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 				$queryArgs['order'] = 'ASC';
 			}
 
-			if ( $atts['displayAs'] == 'list' ) {
-				$queryArgs['posts_per_page'] = $atts['listMaxPostCount'];
-			} else {
-				$queryArgs['posts_per_page'] = $atts['thumbnailsMaxPostCount'];
-			}
-
 			$query = new WP_Query( $queryArgs );
 			if ( ! $query->have_posts() ) return '';
 
-			$block_class = array( 'wp-block-crown-blocks-recent-posts', 'display-as-' . $atts['displayAs'], $atts['className'] );
-			if ( ! empty( $atts['align'] ) ) $block_class[] = 'align' . $atts['align'];
-			if ( boolval( $atts['displayAsSliderMobile'] ) ) $block_class[] = 'display-as-slider-mobile';
+			$block_class = array( 'wp-block-crown-blocks-featured-post-slider' );
 
 			ob_start();
 			// print_r($atts);
@@ -91,52 +85,52 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 				<div class="<?php echo implode( ' ', $block_class ); ?>">
 					<div class="inner">
 
-						<div class="post-feed item-count-<?php echo $query->post_count; ?> <?php echo $atts['displayAs']; ?>" data-item-count="<?php echo $query->post_count; ?>">
+						<div class="post-feed item-count-<?php echo $query->post_count; ?>" data-item-count="<?php echo $query->post_count; ?>">
 							<div class="inner">
 
-								<?php if ( $atts['displayAs'] == 'list' ) { ?>
-	
-									<ul>
-										<?php while ( $query->have_posts() ) { ?>
-											<?php $query->the_post(); ?>
-											<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+								<?php while ( $query->have_posts() ) { ?>
+									<?php $query->the_post(); ?>
+									<article <?php post_class(); ?>>
+
+										<?php $color = class_exists( 'Crown_Site_Settings_Posts' ) && method_exists( 'Crown_Site_Settings_Posts', 'get_post_primary_category_color' ) ? Crown_Site_Settings_Posts::get_post_primary_category_color( get_the_ID() ) : false; ?>
+										<div class="entry-date">
+											<div class="inner">
+												<span class="month"><?php the_time( 'M' ); ?></span>
+												<span class="date"><?php the_time( 'j' ); ?></span>
+												<span class="line" <?php echo ! empty( $color ) ? 'style="border-color: ' . $color . ';"' : ''; ?>></span>
+											</div>
+										</div>
+
+										<?php $topics = get_the_terms( get_the_ID(), 'post_topic' ); ?>
+										<?php if ( ! empty( $topics ) ) { ?>
+											<p class="entry-topics">
+												<?php foreach ( $topics as $term ) { ?>
+													<span class="topic"><?php echo $term->name; ?></span>
+												<?php } ?>
+											</p>
 										<?php } ?>
-									</ul>
-	
-								<?php } else { ?>
-	
-									<?php while ( $query->have_posts() ) { ?>
-										<?php $query->the_post(); ?>
-										<article <?php post_class(); ?>>
 
-											<div class="entry-thumbnail">
-												<div class="inner">
-													<a href="<?php the_permalink(); ?>">
-														<?php $image_src = wp_get_attachment_image_src( get_post_thumbnail_id(), 'medium_large' ); ?>
-														<div class="image" <?php echo $image_src ? 'style="background-image: url(' . $image_src[0] . ');"' : ''; ?>>
-															<?php echo wp_get_attachment_image( get_post_thumbnail_id(), 'medium_large' ); ?>
-														</div>
-													</a>
-												</div>
-											</div>
+										<div class="entry-header">
+											<h4 class="entry-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+										</div>
 
-											<div class="entry-header">
-												<h4 class="entry-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-											</div>
-
-											<div class="entry-excerpt">
-												<?php the_excerpt(); ?>
-											</div>
-											
-										</article>
-									<?php } ?>
-
+										<p class="entry-link">
+											<a href="<?php the_permalink(); ?>"><?php _e( 'Read Full Article', 'crown_blocks' ); ?></a>
+										</p>
+										
+									</article>
 								<?php } ?>
-
 								<?php wp_reset_postdata(); ?>
 
 							</div>
 						</div>
+
+						<p class="block-link">
+							<a href="<?php echo get_post_type_archive_link( 'post' ); ?>" class="action-subject-link">
+								<span class="action"><?php _e( 'View All' ); ?></span>
+								<span class="subject"><?php _e( 'SBDC Updates' ); ?></span>
+							</a>
+						</p>
 
 					</div>
 				</div>
@@ -166,5 +160,5 @@ if(!class_exists('Crown_Block_Recent_Posts')) {
 
 
 	}
-	Crown_Block_Recent_Posts::init();
+	Crown_Block_Featured_Post_Slider::init();
 }

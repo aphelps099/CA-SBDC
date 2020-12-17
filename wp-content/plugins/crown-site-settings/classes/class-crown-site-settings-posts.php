@@ -10,7 +10,9 @@ use Crown\Form\Input\RadioSet;
 use Crown\Form\Input\Select;
 use Crown\Form\Input\Text as TextInput;
 use Crown\Form\Input\Checkbox as CheckboxInput;
+use Crown\Form\Input\Color as ColorInput;
 use Crown\Form\Input\Textarea;
+use Crown\ListTableColumn;
 use Crown\Post\MetaBox;
 use Crown\Post\Taxonomy;
 use Crown\Post\Type as PostType;
@@ -23,6 +25,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 		public static $init = false;
 
 		public static $post_types = array();
+		public static $post_category_taxonomy = null;
 		public static $post_topic_taxonomy = null;
 
 
@@ -35,7 +38,10 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
 			// add_action( 'after_setup_theme', array( __CLASS__, 'register_post_fields' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_category_taxonomy_fields' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_topic_taxonomy' ) );
+
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
 		}
 
@@ -91,6 +97,36 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 		}
 
 
+		public static function register_post_category_taxonomy_fields() {
+
+			self::$post_category_taxonomy = new Taxonomy( array(
+				'name' => 'category',
+				'postTypes' => array( 'post' ),
+				'fields' => array(
+					new Field( array(
+						'label' => 'Color',
+						'input' => new ColorInput( array( 'name' => 'category_color', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'category_color' ) ) ) )
+					) )
+				),
+				'listTableColumns' => array(
+					new ListTableColumn(array(
+						'key' => 'category-color',
+						'title' => '',
+						'position' => 1,
+						'outputCb' => function( $term_id, $args ) {
+							$color = get_term_meta( $term_id, 'category_color', true );
+							if ( ! empty( $color ) ) {
+								$screen = get_current_screen();
+								echo '<a class="color" style="background-color: ' . $color . ';" href="' . get_edit_term_link( $term_id, $screen->taxonomy, $screen->post_type ) . '">' . $color . '</a>';
+							}
+						}
+					))
+				)
+			) );
+
+		}
+
+
 		public static function register_post_topic_taxonomy() {
 
 			self::$post_topic_taxonomy = new Taxonomy( array(
@@ -103,7 +139,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 					'rewrite' => array( 'slug' => 'topics', 'with_front' => false ),
 					'show_in_nav_menus' => false,
 					'show_admin_column' => true,
-					'publicly_queryable' => false,
+					'publicly_queryable' => true,
 					'show_in_rest' => true,
 					'labels' => array(
 						'menu_name' => 'Topics',
@@ -118,6 +154,45 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 				)
 			) );
 
+		}
+
+
+		public static function register_admin_styles( $hook ) {
+			
+			$screen = get_current_screen();
+			if ( $screen->base == 'edit-tags' && $screen->taxonomy == 'category' ) {
+
+				ob_start();
+				?>
+					<style>
+						.wp-list-table .column-category-color { width: 30px; }
+						.wp-list-table .column-category-color .color { display: block; overflow: hidden; text-indent: -100000px; width: 30px; height: 30px; border-radius: 3px; }
+					</style>
+				<?php
+				$css = trim( ob_get_clean() );
+				$css = trim( preg_replace( array( '/^<style>/', '/<\/style>$/' ), '', $css ) );
+				wp_add_inline_style( 'common', $css );
+
+			}
+
+		}
+
+
+		public static function get_post_primary_category_color( $post_id ) {
+
+			$term_ids = wp_get_post_terms( $post_id, 'category', array( 'fields' => 'ids' ) );
+
+			$primary_term_id = get_post_meta( $post_id, '_primary_term_category', true );
+			
+			if ( ! empty( $primary_term_id ) && in_array( $primary_term_id, $term_ids ) ) array_unshift( $term_ids, $primary_term_id );
+			$term_ids = array_values( array_unique( $term_ids ) );
+
+			foreach( $term_ids as $term_id ) {
+				$color = get_term_meta( $term_id, 'category_color', true );
+				if ( ! empty( $color ) ) return $color;
+			}
+
+			return '';
 		}
 
 

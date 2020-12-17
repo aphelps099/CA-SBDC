@@ -151,3 +151,48 @@
 // 	@extend .btn;
 // 	@extend .btn-sky-blue;
 // }
+
+
+.action-subject-link {
+	display: inline-block;
+	line-height: $line-height-sm;
+	text-align: left;
+	font-weight: 400;
+	color: $primary;
+	&:hover {
+		color: $primary;
+		.subject {
+			color: $blue;
+			&:after {
+				right: -2.5em;
+			}
+		}
+	}
+	.action {
+		display: block;
+		font-size: 1.625rem;
+		font-family: $font-family-serif;
+		font-style: italic;
+	}
+	.subject {
+		display: block;
+		text-transform: lowercase;
+		font-weight: 700;
+		font-family: $font-family-sans-serif-alt;
+		font-size: 1.25rem;
+		margin-right: 3em;
+		position: relative;
+		transition: color .15s;
+		&:after {
+			@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
+			position: absolute;
+			margin: 0;
+			color: $red;
+			top: 50%;
+			font-size: 1.666666667em;
+			margin-top: -0.55em;
+			right: -2em;
+			transition: right ease-out .15s;
+		}
+	}
+}
