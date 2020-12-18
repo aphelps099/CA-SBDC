@@ -71,6 +71,14 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/center-finder"] .wp-block-crown-blocks-center-finder a,
+.wp-block[data-type="crown-blocks/center-finder"] .wp-block-crown-blocks-center-finder input,
+.wp-block[data-type="crown-blocks/center-finder"] .wp-block-crown-blocks-center-finder button {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/column"] {
   max-width: none;
   margin-top: 0;

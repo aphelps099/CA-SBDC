@@ -340,7 +340,7 @@ body.mobile-menu-active {
 	}
 	#header.is-sticky & {
 		opacity: 1;
-		visibility: visible;
+		visibility: inherit;
 		transform: none;
 		transition-delay: 0s;
 	}

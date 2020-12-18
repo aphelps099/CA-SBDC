@@ -3,6 +3,7 @@
 (function($) {
 
 	var stickyHeaderScrollTracker = 0;
+	var mapSettings = null;
 
 
 	$(document).ready(function() {
@@ -22,6 +23,9 @@
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
+		$.wptheme.initCenterFinderBlocks();
+
+		$.wptheme.initBranchMapShortcodes();
 
 	});
 
@@ -34,6 +38,33 @@
 
 
 	$.wptheme = (function(wptheme) {
+
+
+		wptheme.initMapSettings = function() {
+			if(mapSettings) return;
+			if(typeof google === 'undefined') return;
+			mapSettings = {
+				markerShapes: {
+					default: {
+						coords: [ 15,0 , 26,4 , 30,15 , 26,19 , 15,37 , 4,19 , 0,15 , 4,4 ],
+						type: 'poly'
+					}
+				},
+				markerImages: {
+					darkBlue: {
+						url: crownThemeData.themeUrl + '/assets/img/icons/map-markers.png',
+						size: new google.maps.Size(30, 37),
+						scaledSize: new google.maps.Size(150, 37),
+						origin: new google.maps.Point(0, 0),
+						anchor: new google.maps.Point(15, 37)
+					}
+				}
+			};
+			mapSettings.markerImages.blue = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 1), 0) });
+			mapSettings.markerImages.red = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 2), 0) });
+			mapSettings.markerImages.gray = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 3), 0) });
+			mapSettings.markerImages.white = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 4), 0) });
+		};
 
 
 		wptheme.initSiteAnnouncement = function() {
@@ -380,6 +411,89 @@
 		};
 
 
+		wptheme.initMap = function(map) {
+			wptheme.initMapSettings();
+			if(typeof google === 'undefined') return;
+
+			map.on('mapInitialized', function(e) {
+				var mapData = $(this).data('map-data');
+				if(mapData.settings.points.length && !mapData.markers.length) {
+
+					var infoWindow = null;
+
+					if(typeof InfoBox !== 'undefined') {
+
+						infoWindow = new InfoBox({
+							pixelOffset: new google.maps.Size(-120, -50),
+							alignBottom: true,
+							closeBoxURL: ''
+						});
+
+						google.maps.event.addListener(mapData.map, 'click', function() {
+							infoWindow.close();
+						});
+
+					}
+
+					mapData.bounds = new google.maps.LatLngBounds();
+					for(var i in mapData.settings.points) {
+						var point = mapData.settings.points[i];
+
+						var position = new google.maps.LatLng(point.lat, point.lng);
+						var markerSettings = {
+							markerIndex: parseInt(i),
+							position: position,
+							map: mapData.map,
+							icon: mapSettings.markerImages.red,
+							shape: mapSettings.markerShapes.default,
+							title: point.title,
+							data: point
+						};
+						var marker = new google.maps.Marker(markerSettings);
+
+						if(infoWindow && markerSettings.data.infoBoxContent) {
+							google.maps.event.addListener(marker, 'click', function() {
+								infoWindow.setOptions({ boxClass: 'infoBox' });
+								infoWindow.setContent(this.data.infoBoxContent);
+								infoWindow.open(this.map, this);
+								setTimeout(function() { infoWindow.setOptions({ boxClass: 'infoBox active' }); }, 100);
+							});
+						}
+
+						if($(mapData.map.getDiv()).closest('.wp-block-crown-blocks-center-finder').length) {
+							google.maps.event.addListener(marker, 'click', function() {
+								var block = $(this.map.getDiv()).closest('.wp-block-crown-blocks-center-finder');
+								var location = $('.locations article.location[data-location-id="' + this.data.locationId + '"]', block);
+								if(location.length) {
+									location.trigger('click');
+									$('.locations', block).stop(true).animate({ scrollTop: location.offset().top - location.parent().offset().top }, 1000, 'easeOutExpo');
+								}
+							});
+						}
+
+						mapData.markers.push(marker);
+						mapData.bounds.extend(position);
+					}
+
+					if(mapData.settings.points.length) {
+
+						mapData.map.fitBounds(mapData.bounds);
+
+						google.maps.event.addListenerOnce(mapData.map, 'idle', function() { 
+							var mapData = $(this.getDiv()).data('map-data');
+							if(mapData.map.getZoom() > mapData.settings.options.zoom) {
+								mapData.map.setZoom(mapData.settings.options.zoom);
+							}
+						});
+
+					}
+
+				}
+			});
+
+		};
+
+
 		wptheme.initExpandableContentBlocks = function() {
 			$(document).on('click', '.wp-block-crown-blocks-expandable-content .expandable-content-toggle button', function() {
 				var container = $(this).closest('.wp-block-crown-blocks-expandable-content');
@@ -493,6 +607,55 @@
 					]
 				};
 				slider.slick(slickSettings);
+			});
+		};
+
+		
+		wptheme.initCenterFinderBlocks = function() {
+			$('.wp-block-crown-blocks-center-finder').each(function(i, el) {
+				var block = $(el);
+
+				wptheme.initMap($('.google-map', block));
+
+				block.on('click', '.locations article.location', function(e) {
+					var location = $(this);
+					if(location.hasClass('active')) return;
+					var block = $(this).closest('.wp-block-crown-blocks-center-finder');
+
+					$('.locations article.location.active', block).removeClass('active');
+					var preview = location.clone();
+					location.addClass('active');
+					$('.preview', block).html(preview);
+
+					var locationId = parseInt(location.data('location-id'));
+					var map = $('.map .google-map', block);
+					if(map.hasClass('map-initialized')) {
+						var mapData = map.data('map-data');
+						for(var i in mapData.markers) mapData.markers[i].setIcon(mapSettings.markerImages.red);
+						var marker = mapData.markers.find(function(n) { return n.data.locationId == locationId; });
+						if(typeof marker !== 'undefined') {
+							marker.setIcon(mapSettings.markerImages.blue);
+						}
+					} else {
+						map.on('mapInitialized', function(e) {
+							var mapData = $(this).data('map-data');
+							for(var i in mapData.markers) mapData.markers[i].setIcon(mapSettings.markerImages.red);
+							var marker = mapData.markers.find(function(n) { return n.data.locationId == locationId; });
+							if(typeof marker !== 'undefined') {
+								marker.setIcon(mapSettings.markerImages.blue);
+							}
+						});
+					}
+				});
+				$('.locations article.location:first', block).trigger('click');
+
+			});
+		};
+
+
+		wptheme.initBranchMapShortcodes = function() {
+			$('.branch-map > .google-map').each(function(i, el) {
+				wptheme.initMap($(el));
 			});
 		};
 

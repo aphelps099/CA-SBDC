@@ -820,3 +820,118 @@
 		}
 	}
 }
+
+
+/*	Center Finder
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-center-finder {
+	.location-search-form {
+		.field {
+			position: relative;
+			&:before {
+				content: '';
+				background-image: escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#{$blue}" class="bi bi-search" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>'));
+				width: 1.5rem;
+				height: 1.5rem;
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				position: absolute;
+				left: 0;
+				top: .6rem;
+			}
+			input {
+				padding-left: 2.25rem;
+				box-shadow: inset 0 -2px $blue;
+			}
+		}
+		.form-footer {
+			button {
+				@extend .btn-blue;
+				width: 3rem;
+				padding-left: 0;
+				padding-right: 0;
+				text-indent: -100000px;
+				overflow: hidden;
+				position: relative;
+				&:before {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					text-indent: 0;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 1.25rem;
+				}
+			}
+		}
+	}
+	.locations {
+		article.location {
+			@include media-breakpoint-up(lg) {
+				cursor: pointer;
+			}
+			@include media-breakpoint-up(xl) {
+				padding-right: 4rem;
+				position: relative;
+				transition: background-color .2s, color .2s;
+				&:hover {
+					&:after {
+						opacity: 1;
+						text-indent: 0;
+					}
+				}
+			}
+			&.active {
+				@include media-breakpoint-up(lg) {
+					background-color: $blue;
+					color: #fff;
+					a {
+						color: mix($blue, #fff, 40%);
+						&:hover {
+							color: #fff;
+						}
+					}
+				}
+				&:after {
+					@include media-breakpoint-up(xl) {
+						background-color: #fff;
+						color: $blue;
+						opacity: 1;
+						text-indent: 0;
+					}
+				}
+			}
+			&:after {
+				@include media-breakpoint-up(xl) {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					width: 2.25rem;
+					height: 2.25rem;
+					border-radius: 10rem;
+					position: absolute;
+					right: 1rem;
+					top: 2rem;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					background-color: $blue;
+					color: #fff;
+					line-height: 1;
+					font-size: 1.25rem;
+					overflow: hidden;
+					transition: text-indent .2s ease-out, opacity .2s;
+					text-indent: -1rem;
+					opacity: 0;
+				}
+			}
+		}
+	}
+	article.location {
+		background-color: $x-light-blue;
+	}
+}

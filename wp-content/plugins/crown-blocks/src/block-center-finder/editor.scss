@@ -1,0 +1,11 @@
+
+
+.wp-block[data-type="crown-blocks/center-finder"] {
+	.wp-block-crown-blocks-center-finder {
+		a,
+		input,
+		button {
+			pointer-events: none;
+		}
+	}
+}

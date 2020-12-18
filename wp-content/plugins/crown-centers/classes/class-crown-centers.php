@@ -225,7 +225,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 
 		public static function get_address_components_field_output( $field, $args ) {
-			$object_id = $args['entryId'];
+			$object_id = isset( $args['entryId'] ) ? $args['entryId'] : 0;
 
 			$address_component_meta_keys = array(
 				'street_number' => 'Street Number',
@@ -392,6 +392,281 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 			}
 
+		}
+
+
+		public static function center_finder( $is_editor = false ) {
+
+			$queried_zip = isset( $_GET['zip'] ) ? trim( $_GET['zip'] ) : '';
+
+			$excluded_center_ids = get_posts( array(
+				'post_type' => 'center',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+				'meta_query' => array(
+					array( 'key' => '__center_options', 'value' => 'hide-from-index' )
+				)
+			) );
+			// $excluded_center_ids = array();
+			
+			$included_center_ids = get_posts( array(
+				'post_type' => 'center',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+				'post__not_in' => $excluded_center_ids
+			) );
+
+			$office_query_args = array(
+				'post_type' => 'crown_repeater_entry',
+				'posts_per_page' => -1,
+				'post_status' => 'publish',
+				'post_parent__in' => $included_center_ids,
+				'fields' => 'ids',
+				'meta_query' => array(
+					array( 'key' => 'crown_repeater_entry_name', 'value' => 'center_office_locations' )
+				)
+			);
+
+			$nearby_offices = array();
+			if ( ! empty( $queried_zip ) ) {
+				$nearby_locations = self::get_nearby_center_locations( $queried_zip, 100 );
+				if ( ! empty( $nearby_locations ) ) {
+					$office_query_args['post__in'] = array_map( function( $n ) { return $n->office_id; }, $nearby_locations );
+					$office_query_args['orderby'] = 'post__in';
+					$office_query_args['order'] = 'ASC';
+					foreach( $nearby_locations as $n ) {
+						$nearby_offices[ 'id:' . $n->office_id ] = $n;
+					}
+				} else {
+					$office_query_args['post__in'] = array( 0 ); // no results
+				}
+			}
+
+			$office_ids = get_posts( $office_query_args );
+			$locations = array_map( function( $office_id ) use ( $nearby_offices ) {
+				$center_id = wp_get_post_parent_id( $office_id );
+				return (object) array(
+					'center' => (object) array(
+						'id' => $center_id,
+						'title' => get_the_title( $center_id ),
+						'website' => get_post_meta( $center_id, 'center_website', true ),
+						'phone' => get_post_meta( $center_id, 'center_phone', true ),
+						'email' => get_post_meta( $center_id, 'center_email', true )
+					),
+					'office' => (object) array(
+						'id' => $office_id,
+						'featured_image' => get_post_meta( $office_id, 'featured_image', true ),
+						'phone' => get_post_meta( $office_id, 'phone', true ),
+						'address' => get_post_meta( $office_id, 'address', true ),
+						'coordinates' => get_post_meta( $office_id, 'coordinates', true )
+					),
+					'distance' => array_key_exists( 'id:' . $office_id, $nearby_offices ) ? $nearby_offices[ 'id:' . $office_id ]->distance : null
+				);
+			}, $office_ids );
+
+			if ( empty( $nearby_locations ) ) {
+				usort( $locations, function( $a, $b ) {
+					if ( $a->center->title == $b->center->title ) {
+						return strcmp( $a->office->address, $b->office->address );
+					}
+					return strcmp( $a->center->title, $b->center->title );
+				} );
+			}
+
+			$map_args = array(
+				'points' => array(),
+				'autoAddMarkers' => false,
+				'options' => array(
+					'styles' => apply_filters( 'crown_google_map_styles', null ),
+					'scrollwheel' => false,
+					'mapTypeControl' => false,
+					'streetViewControl' => false,
+					'zoom' => 11
+				)
+			);
+			foreach ( $locations as $location ) {
+				if ( ! is_array( $location->office->coordinates ) || empty( $location->office->coordinates['lat'] ) || empty( $location->office->coordinates['lng'] ) ) continue;
+				$point = $location->office->coordinates;
+				$point['locationId'] = $location->office->id;
+				$map_args['points'][] = $point;
+			}
+
+			$search_action = remove_query_arg( array( 'zip' ) );
+
+			?>
+				<div class="center-finder">
+
+					<form class="location-search-form" method="get" action="<?php echo esc_attr( $search_action ); ?>">
+						<div class="field">
+							<input type="text" name="zip" value="<?php echo esc_attr( $queried_zip ); ?>" placeholder="<?php echo esc_attr( __( 'Enter Your Zipcode' ), 'crown_centers' ); ?>">
+						</div>
+						<footer class="form-footer">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</footer>
+					</form>
+
+					<?php if ( empty( $locations ) ) { ?>
+
+						<div class="alert alert-warning no-results">
+							<h4><?php _e( 'No Results Found' ); ?></h4>
+							<p><?php _e( 'Please try searching another zip code or'); ?> <a href="<?php echo esc_attr( $search_action ); ?>"><?php _e( 'view all' ); ?></a> <?php _e( 'our SBDC\'s' ); ?>.</p>
+						</div>
+
+					<?php } else { ?>
+
+						<div class="map">
+							<div class="inner">
+								<?php if ( $is_editor ) { ?>
+									<div class="placeholder"></div>
+								<?php } else { ?>
+									<?php echo GoogleMaps::getMap( $map_args ); ?>
+								<?php } ?>
+							</div>
+						</div>
+
+						<div class="results">
+
+							<div class="locations">
+								<div class="inner">
+									<?php foreach( $locations as $location ) { ?>
+										<?php self::center_finder_location( $location ); ?>
+									<?php } ?>
+								</div>
+							</div>
+
+							<div class="preview">
+								<?php self::center_finder_location( $locations[0] ); ?>
+							</div>
+
+						</div>
+
+					<?php } ?>
+
+				</div>
+			<?php
+		}
+
+
+		protected static function center_finder_location( $location ) {
+			?>
+				<article class="location" data-location-id="<?php echo $location->office->id; ?>">
+					
+					<?php $image_src = $location->office->featured_image ? wp_get_attachment_image_url( $location->office->featured_image, 'large' ) : false; ?>
+					<?php if ( ! empty( $image_src ) ) { ?>
+						<div class="entry-featured-image">
+							<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
+								<?php echo wp_get_attachment_image( $location->office->featured_image, 'large' ) ?>
+							</div>
+						</div>
+					<?php } ?>
+
+					<header class="entry-header">
+						<h3 class="entry-title"><?php echo $location->center->title; ?></h3>
+						<?php if ( $location->distance != null ) { ?>
+							<p class="entry-distance">
+								<span class="value"><?php echo number_format( $location->distance, 2 ); ?></span>
+								<span class="units"><?php _e( 'mi', 'crown_centers' ); ?></span>
+							</p>
+						<?php } ?>
+					</header>
+
+					<div class="entry-contents">
+
+						<p class="entry-address"><?php echo nl2br( $location->office->address ); ?></p>
+
+						<?php $phone = ! empty( $location->office->phone ) ? $location->office->phone : $location->center->phone; ?>
+						<?php if ( ! empty( $phone ) ) { ?>
+							<p class="entry-phone">
+								<span class="label"><?php _e( 'Phone', 'crown_centers' ); ?>:</span>
+								<span class="value"><a href="<?php echo self::get_tel_link( $phone ); ?>"><?php echo $phone; ?></a></span>
+							</p>
+						<?php } ?>
+
+						<?php if ( ! empty( $location->center->email ) ) { ?>
+							<p class="entry-email">
+								<span class="label"><?php _e( 'Email', 'crown_centers' ); ?>:</span>
+								<span class="value"><a href="mailto:<?php echo esc_attr( $location->center->email ); ?>"><?php echo $location->center->email; ?></a></span>
+							</p>
+						<?php } ?>
+
+						<?php if ( ! empty( $location->center->website ) ) { ?>
+							<p class="entry-website">
+								<span class="label"><?php _e( 'Web', 'crown_centers' ); ?>:</span>
+								<span class="value"><a href="<?php echo esc_attr( $location->center->website ); ?>" target="_blank"><?php echo self::get_url_domain_name( $location->center->website ); ?></a></span>
+							</p>
+						<?php } ?>
+
+						<?php if ( ! empty( $location->center->website ) ) { ?>
+							<p class="entry-link">
+								<a href="<?php echo esc_attr( $location->center->website ); ?>" target="_blank" class="btn btn-red btn-lg btn-has-arrow-icon"><?php _e( 'Visit Website', 'crown_centers' ); ?></a>
+							</p>
+						<?php } ?>
+
+					</div>
+
+				</article>
+			<?php
+		}
+
+
+		protected static function get_nearby_center_locations( $address, $radius = 0 ) {
+			global $wpdb;
+
+			$search_coords = GoogleMaps::geocode( $address );
+			if ( empty( $search_coords ) ) return array();
+
+			$query = "
+				SELECT
+					center.ID center_id,
+					center.post_title center_title,
+					p.ID office_id,
+					lat.meta_value lat,
+					lng.meta_value lng,
+					(3959 * acos(cos(radians(" . $search_coords->lat . ")) * cos(radians(lat.meta_value)) * cos(radians(lng.meta_value) - radians(" . $search_coords->lng . ")) + sin(radians(" . $search_coords->lat . ")) * sin(radians(lat.meta_value)))) AS distance
+				FROM $wpdb->posts p
+				INNER JOIN $wpdb->posts center ON (p.post_parent = center.ID AND center.post_type = 'center' AND center.post_status = 'publish')
+				INNER JOIN $wpdb->postmeta name ON (p.ID = name.post_id AND name.meta_key = 'crown_repeater_entry_name' AND name.meta_value = 'center_office_locations')
+				INNER JOIN $wpdb->postmeta lat ON (p.ID = lat.post_id AND lat.meta_key = 'coordinates_lat')
+				INNER JOIN $wpdb->postmeta lng ON (p.ID = lng.post_id AND lng.meta_key = 'coordinates_lng')
+				WHERE p.post_type = 'crown_repeater_entry'
+				AND p.post_status = 'publish'
+				" . ( $radius > 0 ? "HAVING distance <= " . $radius : "" ) . "
+				ORDER BY distance ASC
+			";
+			return $wpdb->get_results( $query );
+
+		}
+
+
+		protected static function get_tel_link( $phone_number ) {
+
+			$phone_number = preg_replace( '/[^0-9A-Z]/', '', strtoupper( $phone_number ) );
+
+			$t9_map = array(
+				'2' => array( 'A', 'B', 'C' ),
+				'3' => array( 'D', 'E', 'F' ),
+				'4' => array( 'G', 'H', 'I' ),
+				'5' => array( 'J', 'K', 'L' ),
+				'6' => array( 'M', 'N', 'O' ),
+				'7' => array( 'P', 'Q', 'R', 'S' ),
+				'8' => array( 'T', 'U', 'V' ),
+				'9' => array( 'W', 'X', 'Y', 'Z' )
+			);
+			$s = array_map( function( $n ) { return '/[' . implode( '', $n ) . ']/'; }, $t9_map );
+			$r = array_keys( $t9_map );
+			$phone_number = preg_replace( $s, $r, $phone_number );
+
+			return 'tel:' . $phone_number;
+		}
+
+
+		protected static function get_url_domain_name( $url ) {
+			$domain = $url;
+			if ( preg_match( '/^(?:https?:\/\/)?([\w.-]+(?:\.[\w\.-]+)+).*/i', $url, $matches ) ) {
+				$domain = $matches[1];
+			}
+			$domain = preg_replace( '/^www\./', '', $domain );
+			return $domain;
 		}
 
 

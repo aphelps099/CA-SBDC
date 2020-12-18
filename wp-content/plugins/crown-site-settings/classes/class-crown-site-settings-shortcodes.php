@@ -169,7 +169,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			$map_args = array(
 				'points' => array(),
 				'class' => implode( ' ', $classes ),
-				'autoAddMarkers' => true,
+				'autoAddMarkers' => false,
 				'options' => array(
 					'styles' => apply_filters( 'crown_google_map_styles', null ),
 					'scrollwheel' => false,

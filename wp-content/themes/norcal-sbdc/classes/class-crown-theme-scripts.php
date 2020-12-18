@@ -43,6 +43,11 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'local_path' => '/lib/odometer/odometer.min.js'
 				),
 				array(
+					'handle' => 'google-maps-infobox',
+					'local_path' => '/lib/infobox/infobox_packed.js',
+					'deps' => array( 'google-maps-api' )
+				),
+				array(
 					'handle' => 'crown-theme-main',
 					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
 					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer' )

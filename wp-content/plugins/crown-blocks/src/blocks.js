@@ -15,6 +15,7 @@ import './block-button-group/block.js';
 // import './block-call-to-action/block.js';
 // import './block-callout/block.js';
 // import './block-case-study-index/block.js';
+import './block-center-finder/block.js';
 import './block-column/block.js';
 import './block-container/block.js';
 // import './block-container-featured-image/block.js';
