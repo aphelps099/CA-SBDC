@@ -53,6 +53,7 @@ wp.domReady(function() {
 
 	wp.blocks.registerBlockStyle('core/gallery', [ 
 		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'logos', label: 'Logos' },
 		{ name: 'mosaic-8', label: 'Mosaic (8 photos)' }
 	]);
 
