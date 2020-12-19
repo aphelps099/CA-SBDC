@@ -48,6 +48,18 @@
 									}
 								}
 							}
+							> .wp-block[data-type="crown-blocks/portal-link"] {
+								flex: 1 1 auto;
+								display: flex;
+								width: 100%;
+								> .crown-block-editor-container {
+									width: 100%;
+									display: flex;
+									> .wp-block-crown-blocks-portal-link {
+										width: 100%;
+									}
+								}
+							}
 						}
 					}
 					

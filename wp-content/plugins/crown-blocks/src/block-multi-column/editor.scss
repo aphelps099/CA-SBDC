@@ -9,25 +9,24 @@
 				> .block-editor-inner-blocks {
 					> .block-editor-block-list__layout {
 						grid-gap: 0;
-						grid-template-columns: 1fr 1fr;
-						grid-template-areas: 'column1 column2';
+						grid-template-columns: repeat(12, 1fr);
 						> .wp-block {
 							margin: 0;
 							min-width: 0;
 						}
-						> .wp-block:nth-child(1) { grid-area: column1; }
-						> .wp-block:nth-child(2) { grid-area: column2; }
 					}
 				}
 			}
 		}
 
 		$column-container-selector: '> .inner > .multi-column-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout';
+		$column-selector: '> .inner > .multi-column-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block';
 
 		&.column-breakpoint-xs #{$column-container-selector} { display: grid; }
 		&.column-breakpoint-xs {
 			@for $i from 1 through 11 {
-				&.column-layout-xs-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
+				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(1) { grid-column: 0 / span $i; }
+				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(2) { grid-column: $i / span (12 - $i); }
 			}
 			@for $i from 0 through 16 {
 				&.column-spacing-xs-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
@@ -38,7 +37,8 @@
 			&.column-breakpoint-sm #{$column-container-selector} { display: grid; }
 			&.column-breakpoint-xs, &.column-breakpoint-sm {
 				@for $i from 1 through 11 {
-					&.column-layout-sm-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
+					&.column-layout-sm-#{$i} #{$column-selector}:nth-child(1) { grid-column: 1 / span $i; }
+					&.column-layout-sm-#{$i} #{$column-selector}:nth-child(2) { grid-column: ($i + 1) / span (12 - $i); }
 				}
 				@for $i from 0 through 16 {
 					&.column-spacing-sm-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
@@ -50,7 +50,8 @@
 			&.column-breakpoint-md #{$column-container-selector} { display: grid; }
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md {
 				@for $i from 1 through 11 {
-					&.column-layout-md-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
+					&.column-layout-md-#{$i} #{$column-selector}:nth-child(1) { grid-column: 1 / span $i; }
+					&.column-layout-md-#{$i} #{$column-selector}:nth-child(2) { grid-column: ($i + 1) / span (12 - $i); }
 				}
 				@for $i from 0 through 16 {
 					&.column-spacing-md-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
@@ -62,7 +63,8 @@
 			&.column-breakpoint-lg #{$column-container-selector} { display: grid; }
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg {
 				@for $i from 1 through 11 {
-					&.column-layout-lg-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
+					&.column-layout-lg-#{$i} #{$column-selector}:nth-child(1) { grid-column: 1 / span $i; }
+					&.column-layout-lg-#{$i} #{$column-selector}:nth-child(2) { grid-column: ($i + 1) / span (12 - $i); }
 				}
 				@for $i from 0 through 16 {
 					&.column-spacing-lg-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }
@@ -74,7 +76,8 @@
 			&.column-breakpoint-xl #{$column-container-selector} { display: grid; }
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl {
 				@for $i from 1 through 11 {
-					&.column-layout-xl-#{$i} #{$column-container-selector} { grid-template-columns: ($i * 1fr) (12fr - $i * 1fr); }
+					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(1) { grid-column: 0 / span $i; }
+					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(2) { grid-column: $i / span (12 - $i); }
 				}
 				@for $i from 0 through 16 {
 					&.column-spacing-xl-#{$i} #{$column-container-selector} { grid-gap: $i * 1rem; }

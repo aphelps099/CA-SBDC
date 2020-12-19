@@ -965,3 +965,46 @@
 		background-color: $x-light-blue;
 	}
 }
+
+
+/*	Portal Link
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-portal-link {
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: $body-color;
+	}
+	> .link {
+		&:hover {
+			> .inner:after {
+				margin-right: 0;
+				opacity: 1;
+			}
+		}
+		> .inner {
+			@include media-breakpoint-up(xl) {
+				padding-right: 4rem;
+				&:after {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					position: absolute;
+					margin-right: .5em;
+					bottom: 2.5rem;
+					right: 1.5rem;
+					opacity: 0;
+					transition: margin-right .2s ease-out, opacity .2s;
+					line-height: 1;
+					font-size: 1.5rem;
+				}
+			}
+		}
+	}
+	.link-title {
+		font-size: 1.5rem;
+		@include media-breakpoint-up(xl) {
+			font-size: 2.5rem;
+		}
+	}
+}
