@@ -977,6 +977,14 @@
 	&.text-color-dark {
 		color: $body-color;
 	}
+	&.is-style-outline {
+		&.text-color-light {
+			> .link:hover { color: #fff; }
+		}
+		&.text-color-dark {
+			> .link:hover { color: $body-color; }
+		}
+	}
 	> .link {
 		&:hover {
 			> .inner:after {

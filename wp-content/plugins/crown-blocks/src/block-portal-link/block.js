@@ -30,6 +30,7 @@ registerBlockType('crown-blocks/portal-link', {
 		linkUrl: { type: 'string', default: '' },
 		linkPost: { type: 'object' },
 		linkOpenInNewWindow: { type: 'boolean', default: false },
+		isStyleOutline: { type: 'boolean', default: false },
 		backgroundColor: { type: 'string', default: '#233053' },
 		backgroundImageId: { type: 'number' },
 		backgroundImageData: { type: 'object' },
@@ -49,12 +50,13 @@ registerBlockType('crown-blocks/portal-link', {
 			linkUrl,
 			linkPost,
 			linkOpenInNewWindow,
+			isStyleOutline,
 			backgroundColor,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
 			backgroundImageOpacity,
-			textColor,
+			textColor
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -65,7 +67,16 @@ registerBlockType('crown-blocks/portal-link', {
 			blockClasses.push('text-color-' + textColor);
 		}
 
+		let blockStyle = {};
 		let bgStyle = {};
+		let outlineStyle = {};
+		if(isStyleOutline) {
+			blockClasses.push('is-style-outline');
+			if(backgroundColor) {
+				blockStyle.color = backgroundColor;
+				outlineStyle.borderColor = backgroundColor;
+			}
+		}
 		if(backgroundColor) {
 			bgStyle.backgroundColor = backgroundColor;
 		}
@@ -96,9 +107,7 @@ registerBlockType('crown-blocks/portal-link', {
 
 				<PanelBody title={ 'Call to Action' } initialOpen={ true }>
 
-					<BaseControl
-						label="Link Type"
-					>
+					<BaseControl label="Link Type">
 						<div>
 							<ButtonGroup>
 								<Button isPrimary={ linkType == 'url' } isSecondary={ linkType != 'url' } onClick={ (e) => setAttributes({ linkType: 'url' }) }>Link URL</Button>
@@ -133,6 +142,16 @@ registerBlockType('crown-blocks/portal-link', {
 						checked={ linkOpenInNewWindow }
 						onChange={ (value) => { setAttributes({ linkOpenInNewWindow: value }); } }
 					/> }
+
+				</PanelBody>
+
+				<PanelBody title={ 'Style' } initialOpen={ true }>
+
+					<ToggleControl
+						label={ 'Display as outlined block' }
+						checked={ isStyleOutline }
+						onChange={ (value) => { setAttributes({ isStyleOutline: value }); } }
+					/>
 
 				</PanelBody>
 
@@ -189,7 +208,7 @@ registerBlockType('crown-blocks/portal-link', {
 
 			<div class="crown-block-editor-container">
 
-				<div className={ blockClasses.join(' ') } key="link">
+				<div className={ blockClasses.join(' ') } style={ blockStyle } key="link">
 					<div class="link">
 						<div className="link-bg" style={ bgStyle }>
 							{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
@@ -198,6 +217,7 @@ registerBlockType('crown-blocks/portal-link', {
 								backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`
 							} }></div> }
 						</div>
+						{ isStyleOutline && <div class="link-outline" style={ outlineStyle }></div> }
 						<div className="inner">
 
 							<div className="link-contents">
@@ -237,12 +257,13 @@ registerBlockType('crown-blocks/portal-link', {
 			linkUrl,
 			linkPost,
 			linkOpenInNewWindow,
+			isStyleOutline,
 			backgroundColor,
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
 			backgroundImageOpacity,
-			textColor,
+			textColor
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -253,7 +274,16 @@ registerBlockType('crown-blocks/portal-link', {
 			blockClasses.push('text-color-' + textColor);
 		}
 
+		let blockStyle = {};
 		let bgStyle = {};
+		let outlineStyle = {};
+		if(isStyleOutline) {
+			blockClasses.push('is-style-outline');
+			if(backgroundColor) {
+				blockStyle.color = backgroundColor;
+				outlineStyle.borderColor = backgroundColor;
+			}
+		}
 		if(backgroundColor) {
 			bgStyle.backgroundColor = backgroundColor;
 		}
@@ -273,7 +303,7 @@ registerBlockType('crown-blocks/portal-link', {
 
 		return (
 
-			<div className={ blockClasses.join(' ') }>
+			<div className={ blockClasses.join(' ') } style={ blockStyle }>
 				<a class="link" href={ blockLink } target={ blockLinkOpenInNewWindow && '_blank' } rel={ blockLinkOpenInNewWindow && 'noopener noreferrer' }>
 					<div className="link-bg" style={ bgStyle }>
 						{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
@@ -282,6 +312,7 @@ registerBlockType('crown-blocks/portal-link', {
 							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`
 						} }></div> }
 					</div>
+					{ isStyleOutline && <div class="link-outline" style={ outlineStyle }></div> }
 					<div class="inner">
 						<div className="link-contents">
 

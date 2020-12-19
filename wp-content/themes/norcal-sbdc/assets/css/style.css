@@ -18091,6 +18091,12 @@ nav.pagination {
 .wp-block-crown-blocks-portal-link.text-color-dark {
   color: #233053; }
 
+.wp-block-crown-blocks-portal-link.is-style-outline.text-color-light > .link:hover {
+  color: #fff; }
+
+.wp-block-crown-blocks-portal-link.is-style-outline.text-color-dark > .link:hover {
+  color: #233053; }
+
 .wp-block-crown-blocks-portal-link > .link:hover > .inner:after {
   margin-right: 0;
   opacity: 1; }
