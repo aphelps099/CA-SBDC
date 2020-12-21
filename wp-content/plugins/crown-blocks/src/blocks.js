@@ -29,6 +29,7 @@ import './block-content-slider-slide/block.js';
 import './block-featured-client-story/block.js';
 import './block-featured-event/block.js';
 import './block-featured-post-slider/block.js';
+import './block-featured-resource-slider/block.js';
 import './block-grid/block.js';
 import './block-grid-cell/block.js';
 import './block-header/block.js';

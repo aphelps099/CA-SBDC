@@ -97,7 +97,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				'singularLabel' => 'Resource',
 				'pluralLabel' => 'Resources',
 				'settings' => array(
-					'supports' => array( 'title', 'editor', 'excerpt', 'revisions' ),
+					'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'thumbnail' ),
 					'rewrite' => array( 'slug' => 'resources', 'with_front' => false ),
 					'menu_icon' => 'dashicons-text-page',
 					'has_archive' => false,
@@ -131,7 +131,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					'rewrite' => array( 'slug' => 'resource-types', 'with_front' => false ),
 					'show_in_nav_menus' => false,
 					'show_admin_column' => true,
-					'publicly_queryable' => false,
+					'publicly_queryable' => true,
 					'show_in_rest' => true,
 					'labels' => array(
 						'menu_name' => 'Types',
@@ -205,6 +205,99 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 			}
 
+		}
+
+
+		public static function get_resource_primary_type_color( $post_id ) {
+			
+			$term_ids = wp_get_post_terms( $post_id, 'resource_type', array( 'fields' => 'ids' ) );
+
+			$primary_term_id = get_post_meta( $post_id, '_primary_term_resource_type', true );
+			
+			if ( ! empty( $primary_term_id ) && in_array( $primary_term_id, $term_ids ) ) array_unshift( $term_ids, $primary_term_id );
+			$term_ids = array_values( array_unique( $term_ids ) );
+
+			foreach( $term_ids as $term_id ) {
+				$color = get_term_meta( $term_id, 'resource_type_color', true );
+				if ( ! empty( $color ) ) return $color;
+			}
+
+			return '';
+		}
+
+
+		public static function resource_teaser( $post_id = null ) {
+			global $post;
+
+			if ( ! empty( $post_id ) ) {
+				$post = get_post( $post_id );
+				if ( ! $post || ! in_array( $post->post_type, array( 'resource' ) ) ) return;
+				setup_postdata( $post );
+			}
+
+			$color = self::get_resource_primary_type_color( get_the_ID() );
+
+			?>
+				<article <?php post_class( 'resource-teaser' ); ?>>
+					<a href="<?php the_permalink(); ?>">
+
+						<div class="entry-featured-image">
+							<div class="inner <?php echo ! empty( $color ) ? ( self::is_dark_color( $color ) ? 'dark' : 'light' ) : 'dark'; ?>" <?php echo ! empty( $color ) ? 'style="background-color: ' . $color . ';"' : ''; ?>>
+								<?php $image_src = has_post_thumbnail() ? wp_get_attachment_image_url( get_post_thumbnail_id(), 'medium_large' ) : false; ?>
+								<?php if ( ! empty( $image_src ) ) { ?>
+									<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
+										<?php echo wp_get_attachment_image( get_post_thumbnail_id(), 'medium_large' ) ?>
+									</div>
+								<?php } ?>
+							</div>
+						</div>
+
+						<div class="entry-header">
+							
+							<?php $types = get_the_terms( get_the_ID(), 'resource_type' ); ?>
+							<?php if ( ! empty( $types ) ) { ?>
+								<p class="entry-type">
+									<?php echo implode( ', ', array_map( function( $n ) { return $n->name; }, $types ) ); ?>
+								</p>
+							<?php } ?>
+
+							<h4 class="entry-title"><?php the_title(); ?></h4>
+
+						</div>
+
+						<div class="entry-excerpt"><?php the_excerpt(); ?></div>
+
+					</a>
+				</article>
+			<?php
+
+			if ( ! empty( $post_id ) ) {
+				wp_reset_postdata();
+			}
+
+		}
+
+
+		protected static function is_dark_color( $hex, $threshold = 0.607843137 ) {
+			$luminosity = self::get_color_luminosity( $hex );
+			return $luminosity <= $threshold;
+		}
+
+		protected static function get_color_luminosity( $hex = '' ) {
+			$hex = preg_replace( '/[^0-9a-f]/i', '', $hex );
+			if ( $hex == '' || strlen( $hex ) < 3 ) $hex = 'fff';
+			if ( strlen( $hex ) < 6 ) $hex = $hex[0] + $hex[0] + $hex[1] + $hex[1] + $hex[2] + $hex[2];
+			$c = array();
+			for ( $i = 0; $i < 3; $i++ ) $c[] = intval( substr( $hex, $i * 2, 2 ), 16) / 255;
+			for ( $i = 0; $i < 3; $i++ ) {
+				if ( $c[ $i ] <= 0.03928) {
+					$c[ $i ] = $c[ $i ] / 12.92;
+				} else {
+					$c[ $i ] = pow( ( $c[ $i ] + 0.055 ) / 1.055, 2.4 );
+				}
+			}
+			$luminosity = ( 0.2126 * $c[0] ) + ( 0.7152 * $c[1] ) + ( 0.0722 * $c[2] );
+			return $luminosity;
 		}
 
 

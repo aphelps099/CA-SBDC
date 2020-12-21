@@ -41,7 +41,7 @@ if(!class_exists('Crown_Block_Featured_Client_Story')) {
 			$block_class = array( 'wp-block-crown-blocks-featured-client-story', $atts['className'] );
 
 			if ( $atts['textColor'] == 'auto' && ! empty( $atts['backgroundColor'] ) ) {
-				$block_class[] = 'text-color-' . ( self::isDarkColor( $atts['backgroundColor'] ) ? 'light' : 'dark' );
+				$block_class[] = 'text-color-' . ( self::is_dark_color( $atts['backgroundColor'] ) ? 'light' : 'dark' );
 			} else if ( $atts['textColor'] != 'auto' ) {
 				$block_class[] = 'text-color-' . $atts['textColor'];
 			}

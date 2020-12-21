@@ -412,14 +412,12 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 
 if ( ! function_exists( 'ct_event_date' ) ) {
 	function ct_event_date( $post_id ) {
-		global $post;
 
 		$post = get_post( $post_id );
 		if ( ! $post || ! in_array( $post->post_type, array( 'event' ) ) ) return;
-		setup_postdata( $post );
 
-		$event_start_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_start_timestamp', true ) );
-		$event_end_timestamp = strtotime( get_post_meta( get_the_ID(), 'event_end_timestamp', true ) );
+		$event_start_timestamp = strtotime( get_post_meta( $post_id, 'event_start_timestamp', true ) );
+		$event_end_timestamp = strtotime( get_post_meta( $post_id, 'event_end_timestamp', true ) );
 		if ( $event_start_timestamp === false ) return;
 
 		?>
@@ -431,8 +429,6 @@ if ( ! function_exists( 'ct_event_date' ) ) {
 				</div>
 			</div>
 		<?php
-
-		wp_reset_postdata();
 
 	}
 }

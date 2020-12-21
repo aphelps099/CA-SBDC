@@ -112,12 +112,12 @@ if ( ! class_exists( 'Crown_Block' ) ) {
 		}
 
 
-		protected static function isDarkColor( $hex, $threshold = 0.607843137 ) {
-			$luminosity = self::getColorLuminosity( $hex );
+		protected static function is_dark_color( $hex, $threshold = 0.607843137 ) {
+			$luminosity = self::get_color_luminosity( $hex );
 			return $luminosity <= $threshold;
 		}
 
-		protected static function getColorLuminosity( $hex = '' ) {
+		protected static function get_color_luminosity( $hex = '' ) {
 			$hex = preg_replace( '/[^0-9a-f]/i', '', $hex );
 			if ( $hex == '' || strlen( $hex ) < 3 ) $hex = 'fff';
 			if ( strlen( $hex ) < 6 ) $hex = $hex[0] + $hex[0] + $hex[1] + $hex[1] + $hex[2] + $hex[2];

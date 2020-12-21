@@ -5450,6 +5450,32 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-featured-resource-slider .post-feed > .inner {
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 -1rem; }
+  .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article {
+    padding: 0 1rem;
+    display: none;
+    width: 100%; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article {
+        width: 50%; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article {
+        width: 33.33333%; } }
+    .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article:nth-child(1) {
+      display: block; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article:nth-child(2) {
+        display: block; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-featured-resource-slider .post-feed > .inner > article:nth-child(3) {
+        display: block; } }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-grid > .inner > .grid-columns > .inner {
   display: -ms-flexbox;
   display: flex;

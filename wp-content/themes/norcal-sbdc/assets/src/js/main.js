@@ -23,6 +23,7 @@
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
+		$.wptheme.initFeaturedResourceSliderBlocks();
 		$.wptheme.initCenterFinderBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
@@ -591,6 +592,28 @@
 
 		wptheme.initFeaturedPostSliderBlocks = function() {
 			$('.wp-block-crown-blocks-featured-post-slider').each(function(i, el) {
+				var slider = $('.post-feed > .inner', el);
+				if(slider.hasClass('slick-initialized')) return;
+				var slickSettings = {
+					mobileFirst: true,
+					draggable: true,
+					dots: false,
+					arrows: true,
+					fade: false,
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					responsive: [
+						{ breakpoint: 768 - 1,  settings: { slidesToShow: 2, slidesToScroll: 2 } },
+						{ breakpoint: 992 - 1,  settings: { slidesToShow: 3, slidesToScroll: 3 } }
+					]
+				};
+				slider.slick(slickSettings);
+			});
+		};
+
+
+		wptheme.initFeaturedResourceSliderBlocks = function() {
+			$('.wp-block-crown-blocks-featured-resource-slider').each(function(i, el) {
 				var slider = $('.post-feed > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
 				var slickSettings = {

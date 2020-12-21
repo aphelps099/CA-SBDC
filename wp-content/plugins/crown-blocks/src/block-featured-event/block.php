@@ -36,7 +36,7 @@ if(!class_exists('Crown_Block_Featured_Event')) {
 			$block_class = array( 'wp-block-crown-blocks-featured-event', $atts['className'] );
 
 			if ( $atts['textColor'] == 'auto' && ! empty( $atts['backgroundColor'] ) ) {
-				$block_class[] = 'text-color-' . ( self::isDarkColor( $atts['backgroundColor'] ) ? 'light' : 'dark' );
+				$block_class[] = 'text-color-' . ( self::is_dark_color( $atts['backgroundColor'] ) ? 'light' : 'dark' );
 			} else if ( $atts['textColor'] != 'auto' ) {
 				$block_class[] = 'text-color-' . $atts['textColor'];
 			}
