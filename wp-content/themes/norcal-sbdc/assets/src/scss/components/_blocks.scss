@@ -1016,3 +1016,36 @@
 		}
 	}
 }
+
+
+/*	Portal Link List
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-portal-link-list {
+	.wp-block-crown-blocks-portal-link {
+		> .link {
+			&:hover {
+				> .inner:after {
+					margin-right: 0;
+					opacity: 1;
+				}
+			}
+			> .inner {
+				@include media-breakpoint-up(xl) {
+					padding-right: 4rem;
+					&:after {
+						@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
+						margin-right: .5em;
+						bottom: auto;
+						top: .8rem;
+						right: 0;
+						font-size: 2rem;
+					}
+				}
+			}
+		}
+		.link-title {
+			font-family: $font-family-sans-serif-alt;
+		}
+	}
+}

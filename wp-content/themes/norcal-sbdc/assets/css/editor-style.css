@@ -17943,6 +17943,12 @@ nav.pagination {
 .wp-block-crown-blocks-portal-link.text-color-dark {
   color: #233053; }
 
+.wp-block-crown-blocks-portal-link.is-style-outline.text-color-light > .link:hover {
+  color: #fff; }
+
+.wp-block-crown-blocks-portal-link.is-style-outline.text-color-dark > .link:hover {
+  color: #233053; }
+
 .wp-block-crown-blocks-portal-link > .link:hover > .inner:after {
   margin-right: 0;
   opacity: 1; }
@@ -17975,6 +17981,34 @@ nav.pagination {
   @media (min-width: 1200px) {
     .wp-block-crown-blocks-portal-link .link-title {
       font-size: 2.5rem; } }
+
+/*	Portal Link List
+---------------------------------------------------------*/
+.wp-block-crown-blocks-portal-link-list .wp-block-crown-blocks-portal-link > .link:hover > .inner:after {
+  margin-right: 0;
+  opacity: 1; }
+
+@media (min-width: 1200px) {
+  .wp-block-crown-blocks-portal-link-list .wp-block-crown-blocks-portal-link > .link > .inner {
+    padding-right: 4rem; }
+    .wp-block-crown-blocks-portal-link-list .wp-block-crown-blocks-portal-link > .link > .inner:after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      font-family: icomoon;
+      content: "";
+      margin-right: .5em;
+      bottom: auto;
+      top: .8rem;
+      right: 0;
+      font-size: 2rem; } }
+
+.wp-block-crown-blocks-portal-link-list .wp-block-crown-blocks-portal-link .link-title {
+  font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
 
 .gform_wrapper {
   margin-bottom: 1rem;

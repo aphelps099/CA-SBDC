@@ -1,0 +1,27 @@
+
+
+.editor-styles-wrapper .wp-block[data-type="crown-blocks/portal-link-list"] {
+	> .crown-block-editor-container > .wp-block-crown-blocks-portal-link-list {
+		
+		.wp-block-crown-blocks-portal-link {
+			&.text-color-light,
+			&.text-color-dark {
+				color: inherit;
+			}
+			&.is-style-outline {
+				&.text-color-light > .link,
+				&.text-color-dark > .link,
+				> .link {
+					color: inherit;
+				}
+			}
+			.link-title {
+				font-size: 1.25rem;
+				@media (min-width: 992px) {
+					font-size: 1.5rem;
+				}
+			}
+		}
+
+	}
+}
