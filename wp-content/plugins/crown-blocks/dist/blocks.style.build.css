@@ -7484,6 +7484,18 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-section-nav {
+  margin: 1rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-section-nav-content {
+  margin: 0; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-stat {
   margin-bottom: 1rem;
   text-align: left; }

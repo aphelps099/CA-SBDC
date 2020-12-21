@@ -25,6 +25,7 @@
 		$.wptheme.initFeaturedPostSliderBlocks();
 		$.wptheme.initFeaturedResourceSliderBlocks();
 		$.wptheme.initCenterFinderBlocks();
+		$.wptheme.initSectionNavBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
 
@@ -676,6 +677,37 @@
 		};
 
 
+		wptheme.initSectionNavBlocks = function() {
+
+			$('.wp-block-crown-blocks-section-nav').each(function(i, el) {
+				var navBlock = $(el);
+				var nav = $('<nav class="section-nav-nav"><div class="inner"><ul class="menu"></ul></div></nav>');
+				$('.section-nav-contents', navBlock).before(nav);
+				if($('.section-nav-title', navBlock).length) $('> .inner', nav).prepend('<h2>' + $('.section-nav-title', navBlock).text() + '</h2>');
+				$('.wp-block-crown-blocks-section-nav-content', navBlock).each(function(j, el2) {
+					var contentBlock = $(el2);
+					var title = 'Section ' + (j + 1);
+					if($('.section-nav-content-title', contentBlock).length) title = $('.section-nav-content-title', contentBlock).text();
+					$('.menu', nav).append('<li><a href="#">' + title + '</a></li>');
+				});
+			});
+
+			$(document).on('click', '.wp-block-crown-blocks-section-nav .section-nav-nav .menu a', function(e) {
+				e.preventDefault();
+				var navBlock = $(this).closest('.wp-block-crown-blocks-section-nav');
+				var itemIndex = $(this).parent().index();
+				if(itemIndex == 0) {
+					wptheme.smoothScrollToElement(navBlock);
+				} else {
+					var contentBlock = $('.section-nav-contents > .inner > .wp-block-crown-blocks-section-nav-content', navBlock).eq(itemIndex);
+					var offset = $('.section-nav-nav', navBlock).outerHeight();
+					wptheme.smoothScrollToElement(contentBlock, 1000, -offset);
+				}
+			});
+
+		};
+
+
 		wptheme.initBranchMapShortcodes = function() {
 			$('.branch-map > .google-map').each(function(i, el) {
 				wptheme.initMap($(el));
@@ -694,7 +726,8 @@
 		wptheme.smoothScrollToPos = function(y, speed, offset) {
 			speed = typeof speed !== 'undefined' ? speed : 1000;
 			offset = typeof offset !== 'undefined' ? offset : 0;
-			var fixedHeaderOffset = 0;
+			var windowWidth = $('body').width();
+			var fixedHeaderOffset = windowWidth > 600 && $('#wpadminbar').length ? $('#wpadminbar').outerHeight() : 0;
 			$('html, body').stop(true).animate({ scrollTop: y - fixedHeaderOffset + offset }, speed, 'easeOutExpo');
 		};
 

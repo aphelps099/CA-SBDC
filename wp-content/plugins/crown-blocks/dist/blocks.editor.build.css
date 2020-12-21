@@ -3695,6 +3695,53 @@
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }
+
+.wp-block[data-type="crown-blocks/section-nav"],
+.block-editor-block-list__block[data-type="crown-blocks/section-nav"] {
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  padding: 20px; }
+  .wp-block[data-type="crown-blocks/section-nav"] .wp-block,
+  .block-editor-block-list__block[data-type="crown-blocks/section-nav"] .wp-block {
+    max-width: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content > .inner {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+
+.wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px 16px;
+  line-height: 1.2;
+  font-size: 20px;
+  min-height: 44px;
+  min-width: 60px;
+  position: relative;
+  margin: 0;
+  z-index: 1;
+  display: block; }
+  .text-color-light .wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
+    background-color: rgba(255, 255, 255, 0.2); }
+  .text-color-dark .wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
+    background-color: rgba(0, 0, 0, 0.2); }
+
+.wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-contents {
+  -ms-flex: 0 0 100%;
+      flex: 0 0 100%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  padding: 20px; }
+  .text-color-light .wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-contents {
+    border-color: rgba(255, 255, 255, 0.4); }
+  .text-color-dark .wp-block[data-type="crown-blocks/section-nav-content"] > .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content .section-nav-content-contents {
+    border-color: rgba(0, 0, 0, 0.4); }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

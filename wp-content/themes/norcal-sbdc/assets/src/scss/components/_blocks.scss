@@ -3,11 +3,13 @@
 .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container-featured-image.alignfull,
 .wp-block-crown-blocks-promo.alignfull,
-.wp-block-crown-blocks-call-to-action.alignfull {
+.wp-block-crown-blocks-call-to-action.alignfull,
+.wp-block-crown-blocks-section-nav.alignfull {
 	+ .wp-block-crown-blocks-container.alignfull,
 	+ .wp-block-crown-blocks-container-featured-image.alignfull,
 	+ .wp-block-crown-blocks-promo.alignfull,
-	+ .wp-block-crown-blocks-call-to-action.alignfull {
+	+ .wp-block-crown-blocks-call-to-action.alignfull,
+	+ .wp-block-crown-blocks-section-nav.alignfull {
 		margin-top: -1rem;
 	}
 }
@@ -90,6 +92,122 @@
 	&.is-style-panel {
 		border-radius: 3px;
 		box-shadow: 0 0 20px fade-out(#000, .85);
+	}
+}
+
+
+/*	Section Nav
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-section-nav {
+	&:last-child {
+		margin-bottom: 0;
+	}
+	&.alignfull {
+		margin-left: -#{map-get($container-padding-x, xs)};
+		margin-right: -#{map-get($container-padding-x, xs)};
+		@include media-breakpoint-up(sm) {
+			margin-left: -#{map-get($container-padding-x, sm)};
+			margin-right: -#{map-get($container-padding-x, sm)};
+		}
+		@include media-breakpoint-up(md) {
+			margin-left: -#{map-get($container-padding-x, md)};
+			margin-right: -#{map-get($container-padding-x, md)};
+		}
+		@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
+			margin-left: calc((100vw - 900px) / -2);
+			margin-right: calc((100vw - 900px) / -2);
+		}
+	}
+	.section-nav-title {
+		display: none;
+	}
+	.section-nav-nav {
+		background-color: $primary;
+		color: #fff;
+		text-align: left;
+		padding: 2rem map-get($container-padding-x, xs);
+		@include media-breakpoint-up(sm) {
+			padding: 2rem map-get($container-padding-x, sm);
+		}
+		@include media-breakpoint-up(md) {
+			padding: 2rem map-get($container-padding-x, md);
+		}
+		@include media-breakpoint-up(lg) {
+			padding: 3rem map-get($container-padding-x, lg);
+		}
+		@include media-breakpoint-up(xl) {
+			padding: 3rem map-get($container-padding-x, xl);
+		}
+		@include media-breakpoint-up(md) {
+			position: sticky;
+			top: 0;
+			z-index: 499;
+		}
+		> .inner {
+			@include media-breakpoint-up(md) {
+				display: flex;
+				justify-content: space-between;
+			}
+			@include media-breakpoint-up(lg) {
+				&:before {
+					content: '';
+					display: block;
+					height: 6px;
+					flex: 1 1 auto;
+					min-width: 40px;
+					background: linear-gradient(to right, rgba(#fff, 0), #fff);
+					margin-right: 2rem;
+					margin-top: .6rem;
+				}
+			}
+		}
+		h2 {
+			font-size: 1.375rem;
+			text-transform: uppercase;
+			font-family: $font-family-sans-serif-alt;
+			font-weight: 800;
+			letter-spacing: .1em;
+			@include media-breakpoint-up(md) {
+				margin: 0;
+				margin-right: 2rem;
+				order: -1;
+			}
+		}
+		a {
+			color: inherit;
+			transition: opacity .15s;
+			&:hover {
+				opacity: .8;
+			}
+		}
+		.menu {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			font-size: 1rem;
+			line-height: $line-height-sm;
+			text-transform: uppercase;
+			font-weight: 400;
+			letter-spacing: .1em;
+			@include media-breakpoint-up(md) {
+				margin: .1rem -1rem -1rem;
+				display: flex;
+				flex-wrap: wrap;
+				font-weight: 700;
+			}
+			li {
+				margin-top: 1rem;
+				@include media-breakpoint-up(md) {
+					margin: 0 1rem 1rem;
+				}
+			}
+		}
+	}
+}
+.wp-block-crown-blocks-section-nav-content {
+	.section-nav-content-title {
+		display: none;
 	}
 }
 

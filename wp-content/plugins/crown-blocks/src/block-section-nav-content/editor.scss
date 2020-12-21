@@ -1,0 +1,40 @@
+
+
+.wp-block[data-type="crown-blocks/section-nav-content"] {
+	> .crown-block-editor-container > .wp-block-crown-blocks-section-nav-content {
+		> .inner {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.section-nav-content-title {
+			color: #fff;
+			background-color: fade-out(#000, .8);
+			padding: 10px 16px;
+			line-height: 1.2;
+			font-size: 20px;
+			min-height: 44px;
+			min-width: 60px;
+			position: relative;
+			margin: 0;
+			z-index: 1;
+			display: block;
+			.text-color-light & {
+				background-color: fade-out(#fff, .8);
+			}
+			.text-color-dark & {
+				background-color: fade-out(#000, .8);
+			}
+		}
+		.section-nav-content-contents {
+			flex: 0 0 100%;
+			border: 1px solid fade-out(#000, .6);
+			padding: 20px;
+			.text-color-light & {
+				border-color: fade-out(#fff, .6);
+			}
+			.text-color-dark & {
+				border-color: fade-out(#000, .6);
+			}
+		}
+	}
+}
