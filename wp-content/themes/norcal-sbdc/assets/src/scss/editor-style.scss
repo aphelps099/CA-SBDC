@@ -306,6 +306,17 @@ body {
 	}
 }
 
+.wp-block[data-type="crown-blocks/testimonial-slider"] {
+	.testimonial-slider-title {
+		margin-bottom: 1rem;
+	}
+	.testimonial-slider-testimonials {
+		> .inner {
+			display: block;
+		}
+	}
+}
+
 .wp-block[data-type="crown-blocks/stat"] {
 	+ .wp-block[data-type="crown-blocks/stat"] {
 		padding-top: 1rem;

@@ -18921,6 +18921,12 @@ body {
   .wp-block[data-type="crown-blocks/featured-event"] .entry-label + .entry-title {
     margin-top: 0; }
 
+.wp-block[data-type="crown-blocks/testimonial-slider"] .testimonial-slider-title {
+  margin-bottom: 1rem; }
+
+.wp-block[data-type="crown-blocks/testimonial-slider"] .testimonial-slider-testimonials > .inner {
+  display: block; }
+
 .wp-block[data-type="crown-blocks/stat"] + .wp-block[data-type="crown-blocks/stat"] {
   padding-top: 1rem;
   border-top: 4px dotted rgba(35, 48, 83, 0.5); }
