@@ -511,7 +511,8 @@
 
 
 		wptheme.initTabbedContentBlocks = function() {
-			$('.wp-block-crown-blocks-tabbed-content').each(function(i, el) {
+
+			$('.wp-block-crown-blocks-tabbed-content:not(.type-grid)').each(function(i, el) {
 				var slider = $('.tabbed-content-tabs > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
 				var sliderNavContainer = $('<div class="slick-slider-nav"></div>');
@@ -528,7 +529,7 @@
 					customPaging: function(slider, pageIndex) {
 						var tabTitleEl = $('> .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title', slider.$slides[pageIndex]);
 						var title = tabTitleEl ? tabTitleEl.text() : '';
-						var tab = $('<button></button');
+						var tab = $('<button type="button"></button');
 						tab.append('<span class="index">' + padNumber(pageIndex + 1, 2) + '<span>');
 						if(title != '') tab.append(' <span class="label">' + title + '<span>');
 						tab.append(' <span class="indicator"><span></span></span>');
@@ -537,6 +538,93 @@
 				};
 				slider.slick(slickSettings);
 			});
+
+			$('.wp-block-crown-blocks-tabbed-content.type-grid').each(function(i, el) {
+				var block = $(el);
+				var nav = $('<nav class="tabbed-content-nav"><ul class="menu"></ul></nav>');
+				$('> .inner', block).prepend(nav);
+				$('> .inner > .tabbed-content-tabs > .inner > .wp-block-crown-blocks-tabbed-content-tab', block).each(function(j, el2) {
+					var tab = $(el2);
+					var title = $('> .inner > .tab-title', tab).length ? $('> .inner > .tab-title', tab).text() : '';
+					var tabButton = $('<button type="button"><span class="inner"></span></button>');
+					tabButton.data('tab-index', j);
+					tab.data('tab-index', j);
+					$('> .inner', tabButton).append('<span class="index">' + padNumber(j + 1, 2) + '<span>');
+					if(title != '') $('> .inner', tabButton).append(' <span class="label">' + title + '<span>');
+					$('> .inner', tabButton).append(' <span class="indicator"><span></span></span>');
+					$('.menu', nav).append(tabButton);
+					tabButton.wrap('<li class="menu-item"></li>');
+				});
+			});
+			$(document).on('click', '.wp-block-crown-blocks-tabbed-content.type-grid > .inner > .tabbed-content-nav button', function(e) {
+				var block = $(this).closest('.wp-block-crown-blocks-tabbed-content');
+				var menuItem = $(this).closest('.menu-item');
+				var menu = $(this).closest('.menu');
+				var tabIndex = $(this).data('tab-index');
+				if(menuItem.hasClass('active')) {
+					menuItem.removeClass('active');
+					$('.drawer', menu).each(function(i, el) {
+						var oldDrawer = $(el);
+						$('> .inner', oldDrawer).css({ height: oldDrawer.height() });
+						oldDrawer.removeClass('active');
+						setTimeout(function() { $('> .inner', oldDrawer).css({ height: 0 }) }, 100);
+						setTimeout(function() { oldDrawer.remove(); }, 600);
+					});
+				} else {
+					$('.menu-item.active', menu).removeClass('active');
+					menuItem.addClass('active');
+					var tabContent = $('> .inner > .tabbed-content-tabs > .inner > .wp-block-crown-blocks-tabbed-content-tab', block).eq(tabIndex).clone();
+					var lirItem = menuItem;
+					while(lirItem.nextAll('.menu-item').length && lirItem.nextAll('.menu-item').first().offset().top == menuItem.offset().top) {
+						lirItem = lirItem.nextAll('.menu-item').first();
+					}
+					var drawer = lirItem.next('.drawer');
+					if(!drawer.length) {
+						drawer = $('<li class="drawer"><div class="inner"></div></li>');
+						lirItem.after(drawer);
+						if(drawer.closest('.text-color-light, .text-color-dark').hasClass('text-color-light')) {
+							drawer.addClass('text-color-dark');
+						} else {
+							drawer.addClass('text-color-light');
+						}
+					}
+					$('.drawer', menu).not(drawer).each(function(i, el) {
+						var oldDrawer = $(el);
+						oldDrawer.hide();
+						var scrollTo = menuItem.offset().top;
+						oldDrawer.show();
+						$('> .inner', oldDrawer).css({ height: oldDrawer.height() });
+						oldDrawer.removeClass('active');
+						setTimeout(function() { $('> .inner', oldDrawer).css({ height: 0 }) }, 100);
+						setTimeout(function() { oldDrawer.remove(); }, 500);
+						wptheme.smoothScrollToPos(scrollTo);
+					});
+					$('> .inner', drawer).css({ height: drawer.hasClass('active') ? drawer.height() : 0 });
+					$('> .inner', drawer).html(tabContent);
+					$(' > .inner', tabContent).css({ maxWidth: menu.parent().width() });
+					drawer.addClass('active');
+					setTimeout(function() { $('> .inner', drawer).css({ height: tabContent.outerHeight() }) }, 100);
+					setTimeout(function() { $('> .inner', drawer).css({ height: 'auto' }) }, 600);
+				}
+			});
+			$(window).on('resize', function() {
+				$('.wp-block-crown-blocks-tabbed-content.type-grid .tabbed-content-nav .drawer').each(function(i, el) {
+					var drawer = $(el);
+					var menu = drawer.closest('.menu');
+					var menuItem = $('> .menu-item.active', menu);
+					drawer.hide();
+					var lirItem = menuItem;
+					while(lirItem.nextAll('.menu-item').length && lirItem.nextAll('.menu-item').first().offset().top == menuItem.offset().top) {
+						lirItem = lirItem.nextAll('.menu-item').first();
+					}
+					if(!lirItem.next('.drawer').length || !lirItem.next('.drawer').is(drawer)) {
+						lirItem.after(drawer);
+					}
+					drawer.show();
+					$('> .inner > .wp-block-crown-blocks-tabbed-content-tab > .inner').css({ maxWidth: menu.parent().width() });
+				});
+			});
+
 		};
 
 

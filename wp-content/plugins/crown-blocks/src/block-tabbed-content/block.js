@@ -28,28 +28,50 @@ registerBlockType('crown-blocks/tabbed-content', {
 	supports: {},
 
 	attributes: {
-		
+		type: { type: 'string', default: '' },
 	},
 
 
 	edit: ({ attributes, className, isSelected, setAttributes }) => {
 
 		const {
-			
+			type
 		} = attributes;
 
-		let blockClasses = [
-			className
-		];
+		let blockClasses = [ className ];
+		let tabsClasses = [ 'tabbed-content-tabs '];
+
+		if(type != '') blockClasses.push('type-' + type);
+		// if(type == 'grid') {
+		// 	tabsClasses.push('text-color-dark');
+		// }
 
 		return [
+
+			<InspectorControls key="inspector-controls">
+
+				<PanelBody title={ 'Appearance' } initialOpen={ true }>
+
+					<SelectControl
+						label="Display Style"
+						value={ type }
+						onChange={ (value) => setAttributes({ type: value }) }
+						options={ [
+							{ label: 'Default', value: '' },
+							{ label: 'Grid', value: 'grid' }
+						] }
+					/>
+
+				</PanelBody>
+
+			</InspectorControls>,
 
 			<div class="crown-block-editor-container">
 
 				<div className={ blockClasses.join(' ') } key="tabbed-content">
 					<div className="inner">
 
-						<div className="tabbed-content-tabs">
+						<div className={ tabsClasses.join(' ') }>
 							<div className="inner">
 
 								<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } />
@@ -69,19 +91,23 @@ registerBlockType('crown-blocks/tabbed-content', {
 	save: ({ attributes, className }) => {
 		
 		const {
-			
+			type
 		} = attributes;
 
-		let blockClasses = [
-			className
-		];
+		let blockClasses = [ className ];
+		let tabsClasses = [ 'tabbed-content-tabs '];
+
+		if(type != '') blockClasses.push('type-' + type);
+		// if(type == 'grid') {
+		// 	tabsClasses.push('text-color-dark');
+		// }
 
 		return (
 
 			<div className={ blockClasses.join(' ') } key="tabbed-content">
 				<div className="inner">
 
-					<div className="tabbed-content-tabs">
+				<div className={ tabsClasses.join(' ') }>
 						<div className="inner">
 
 							<InnerBlocks.Content />
