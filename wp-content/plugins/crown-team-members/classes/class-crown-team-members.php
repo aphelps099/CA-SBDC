@@ -224,7 +224,9 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			if ( ! empty( $first ) ) $post_data['post_title'][] = implode( ' ', $first );
 			if ( isset( $input['team_member_last_name'] ) && ! empty( $input['team_member_last_name'] ) ) $post_data['post_title'][] = $input['team_member_last_name'];
 			update_post_meta( $object_id, 'team_member_name_first_comma_last', implode( ', ', $post_data['post_title'] ) );
+			update_post_meta( $object_id, 'team_member_name_first_comma_last_lc', strtolower( implode( ', ', $post_data['post_title'] ) ) );
 			update_post_meta( $object_id, 'team_member_name_last_comma_first', implode( ', ', array_reverse( $post_data['post_title'] ) ) );
+			update_post_meta( $object_id, 'team_member_name_last_comma_first_lc', strtolower( implode( ', ', array_reverse( $post_data['post_title'] ) ) ) );
 			$post_data['post_title'] = implode( ' ', $post_data['post_title'] );
 			$post_data['post_name'] = sanitize_title( $post_data['post_title'] );
 			wp_update_post( $post_data );
