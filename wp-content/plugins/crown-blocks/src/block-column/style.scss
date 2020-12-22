@@ -38,16 +38,22 @@ $spacer: 1rem;
 
 	@for $i from 0 through 20 {
 		&.contents-pl-#{$i} > .inner > .column-contents { padding-left: $spacer * $i; }
+		&.contents-ol-#{$i} > .inner > .column-contents { margin-left: -$spacer * $i; }
 		&.contents-pr-#{$i} > .inner > .column-contents { padding-right: $spacer * $i; }
+		&.contents-or-#{$i} > .inner > .column-contents { margin-right: -$spacer * $i; }
 		&.contents-pt-#{$i} > .inner > .column-contents { padding-top: $spacer * $i; }
+		&.contents-ot-#{$i} > .inner > .column-contents { margin-top: -$spacer * $i; }
 		&.contents-pb-#{$i} > .inner > .column-contents { padding-bottom: $spacer * $i; }
 		&.contents-ob-#{$i} > .inner > .column-contents { margin-bottom: -$spacer * $i; }
 	}
 	@media (min-width: 576px) {
 		@for $i from 0 through 20 {
 			&.contents-pl-sm-#{$i} > .inner > .column-contents { padding-left: $spacer * $i; }
+			&.contents-ol-sm-#{$i} > .inner > .column-contents { margin-left: -$spacer * $i; }
 			&.contents-pr-sm-#{$i} > .inner > .column-contents { padding-right: $spacer * $i; }
+			&.contents-or-sm-#{$i} > .inner > .column-contents { margin-right: -$spacer * $i; }
 			&.contents-pt-sm-#{$i} > .inner > .column-contents { padding-top: $spacer * $i; }
+			&.contents-ot-sm-#{$i} > .inner > .column-contents { margin-top: -$spacer * $i; }
 			&.contents-pb-sm-#{$i} > .inner > .column-contents { padding-bottom: $spacer * $i; }
 			&.contents-ob-sm-#{$i} > .inner > .column-contents { margin-bottom: -$spacer * $i; }
 		}
@@ -55,8 +61,11 @@ $spacer: 1rem;
 	@media (min-width: 768px) {
 		@for $i from 0 through 20 {
 			&.contents-pl-md-#{$i} > .inner > .column-contents { padding-left: $spacer * $i; }
+			&.contents-ol-md-#{$i} > .inner > .column-contents { margin-left: -$spacer * $i; }
 			&.contents-pr-md-#{$i} > .inner > .column-contents { padding-right: $spacer * $i; }
+			&.contents-or-md-#{$i} > .inner > .column-contents { margin-right: -$spacer * $i; }
 			&.contents-pt-md-#{$i} > .inner > .column-contents { padding-top: $spacer * $i; }
+			&.contents-ot-md-#{$i} > .inner > .column-contents { margin-top: -$spacer * $i; }
 			&.contents-pb-md-#{$i} > .inner > .column-contents { padding-bottom: $spacer * $i; }
 			&.contents-ob-md-#{$i} > .inner > .column-contents { margin-bottom: -$spacer * $i; }
 		}
@@ -64,8 +73,11 @@ $spacer: 1rem;
 	@media (min-width: 992px) {
 		@for $i from 0 through 20 {
 			&.contents-pl-lg-#{$i} > .inner > .column-contents { padding-left: $spacer * $i; }
+			&.contents-ol-lg-#{$i} > .inner > .column-contents { margin-left: -$spacer * $i; }
 			&.contents-pr-lg-#{$i} > .inner > .column-contents { padding-right: $spacer * $i; }
+			&.contents-or-lg-#{$i} > .inner > .column-contents { margin-right: -$spacer * $i; }
 			&.contents-pt-lg-#{$i} > .inner > .column-contents { padding-top: $spacer * $i; }
+			&.contents-ot-lg-#{$i} > .inner > .column-contents { margin-top: -$spacer * $i; }
 			&.contents-pb-lg-#{$i} > .inner > .column-contents { padding-bottom: $spacer * $i; }
 			&.contents-ob-lg-#{$i} > .inner > .column-contents { margin-bottom: -$spacer * $i; }
 		}
@@ -73,8 +85,11 @@ $spacer: 1rem;
 	@media (min-width: 1200px) {
 		@for $i from 0 through 20 {
 			&.contents-pl-xl-#{$i} > .inner > .column-contents { padding-left: $spacer * $i; }
+			&.contents-ol-xl-#{$i} > .inner > .column-contents { margin-left: -$spacer * $i; }
 			&.contents-pr-xl-#{$i} > .inner > .column-contents { padding-right: $spacer * $i; }
+			&.contents-or-xl-#{$i} > .inner > .column-contents { margin-right: -$spacer * $i; }
 			&.contents-pt-xl-#{$i} > .inner > .column-contents { padding-top: $spacer * $i; }
+			&.contents-ot-xl-#{$i} > .inner > .column-contents { margin-top: -$spacer * $i; }
 			&.contents-pb-xl-#{$i} > .inner > .column-contents { padding-bottom: $spacer * $i; }
 			&.contents-ob-xl-#{$i} > .inner > .column-contents { margin-bottom: -$spacer * $i; }
 		}

@@ -18,6 +18,7 @@
 		$.wptheme.initOdometers();
 		$.wptheme.initSocialSharingLinks();
 		
+		$.wptheme.initContainerBlocks();
 		// $.wptheme.initExpandableContentBlocks();
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
@@ -492,6 +493,25 @@
 
 				}
 			});
+
+		};
+
+
+		wptheme.initContainerBlocks = function() {
+
+			var adjustContainerBGs = function() {
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-container.bg-flush-right').each(function(i, el) {
+					var container = $(el);
+					$('> .container-bg', container).css({ right: Math.min(0, container.offset().left + container.outerWidth() - windowWidth) });
+				});
+				$('.wp-block-crown-blocks-container.bg-flush-left').each(function(i, el) {
+					var container = $(el);
+					$('> .container-bg', container).css({ left: Math.min(0, -container.offset().left) });
+				});
+			};
+			adjustContainerBGs();
+			$(window).on('load resize', adjustContainerBGs);
 
 		};
 

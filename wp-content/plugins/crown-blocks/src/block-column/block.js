@@ -43,10 +43,10 @@ registerBlockType('crown-blocks/column', {
 		paddingLeftMd: { type: 'number', default: 0 },
 		paddingRightMd: { type: 'number', default: 0 },
 
-		paddingTopSM: { type: 'number', default: 0 },
-		paddingBottomSM: { type: 'number', default: 0 },
-		paddingLeftSM: { type: 'number', default: 0 },
-		paddingRightSM: { type: 'number', default: 0 },
+		paddingTopSm: { type: 'number', default: 0 },
+		paddingBottomSm: { type: 'number', default: 0 },
+		paddingLeftSm: { type: 'number', default: 0 },
+		paddingRightSm: { type: 'number', default: 0 },
 
 		paddingTopXs: { type: 'number', default: 0 },
 		paddingBottomXs: { type: 'number', default: 0 },
@@ -97,29 +97,49 @@ registerBlockType('crown-blocks/column', {
 		];
 
 		if(paddingLeftXl >= 0) blockClasses.push('contents-pl-xl-' + paddingLeftXl);
+		if(paddingLeftXl < 0) blockClasses.push('contents-ol-xl-' + Math.abs(paddingLeftXl));
 		if(paddingRightXl >= 0) blockClasses.push('contents-pr-xl-' + paddingRightXl);
+		if(paddingRightXl < 0) blockClasses.push('contents-or-xl-' + Math.abs(paddingRightXl));
 		if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+		if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
 		if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+		if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
 
 		if(paddingLeftLg >= 0) blockClasses.push('contents-pl-lg-' + paddingLeftLg);
+		if(paddingLeftLg < 0) blockClasses.push('contents-ol-lg-' + Math.abs(paddingLeftLg));
 		if(paddingRightLg >= 0) blockClasses.push('contents-pr-lg-' + paddingRightLg);
+		if(paddingRightLg < 0) blockClasses.push('contents-or-lg-' + Math.abs(paddingRightLg));
 		if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+		if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
 		if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+		if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
 
 		if(paddingLeftMd >= 0) blockClasses.push('contents-pl-md-' + paddingLeftMd);
+		if(paddingLeftMd < 0) blockClasses.push('contents-ol-md-' + Math.abs(paddingLeftMd));
 		if(paddingRightMd >= 0) blockClasses.push('contents-pr-md-' + paddingRightMd);
+		if(paddingRightMd < 0) blockClasses.push('contents-or-md-' + Math.abs(paddingRightMd));
 		if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+		if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
 		if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+		if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
 
 		if(paddingLeftSm >= 0) blockClasses.push('contents-pl-sm-' + paddingLeftSm);
+		if(paddingLeftSm < 0) blockClasses.push('contents-ol-sm-' + Math.abs(paddingLeftSm));
 		if(paddingRightSm >= 0) blockClasses.push('contents-pr-sm-' + paddingRightSm);
+		if(paddingRightSm < 0) blockClasses.push('contents-or-sm-' + Math.abs(paddingRightSm));
 		if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+		if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
 		if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+		if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
 
 		if(paddingLeftXs >= 0) blockClasses.push('contents-pl-' + paddingLeftXs);
+		if(paddingLeftXs < 0) blockClasses.push('contents-ol-' + Math.abs(paddingLeftXs));
 		if(paddingRightXs >= 0) blockClasses.push('contents-pr-' + paddingRightXs);
+		if(paddingRightXs < 0) blockClasses.push('contents-or-' + Math.abs(paddingRightXs));
 		if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+		if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
 		if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+		if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
 
 		if(verticalAlignment != '') blockClasses.push('vertical-alignment-' + verticalAlignment);
 
@@ -195,7 +215,7 @@ registerBlockType('crown-blocks/column', {
 							label="Left Padding"
 							value={ paddingLeftXl }
 							onChange={ (value) => setAttributes({ paddingLeftXl: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -203,7 +223,7 @@ registerBlockType('crown-blocks/column', {
 							label="Right Padding"
 							value={ paddingRightXl }
 							onChange={ (value) => setAttributes({ paddingRightXl: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -211,7 +231,7 @@ registerBlockType('crown-blocks/column', {
 							label="Top Padding"
 							value={ paddingTopXl }
 							onChange={ (value) => setAttributes({ paddingTopXl: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -219,7 +239,7 @@ registerBlockType('crown-blocks/column', {
 							label="Bottom Padding"
 							value={ paddingBottomXl }
 							onChange={ (value) => setAttributes({ paddingBottomXl: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -231,7 +251,7 @@ registerBlockType('crown-blocks/column', {
 							label="Left Padding"
 							value={ paddingLeftLg }
 							onChange={ (value) => setAttributes({ paddingLeftLg: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -239,7 +259,7 @@ registerBlockType('crown-blocks/column', {
 							label="Right Padding"
 							value={ paddingRightLg }
 							onChange={ (value) => setAttributes({ paddingRightLg: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -247,7 +267,7 @@ registerBlockType('crown-blocks/column', {
 							label="Top Padding"
 							value={ paddingTopLg }
 							onChange={ (value) => setAttributes({ paddingTopLg: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -255,7 +275,7 @@ registerBlockType('crown-blocks/column', {
 							label="Bottom Padding"
 							value={ paddingBottomLg }
 							onChange={ (value) => setAttributes({ paddingBottomLg: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -267,7 +287,7 @@ registerBlockType('crown-blocks/column', {
 							label="Left Padding"
 							value={ paddingLeftMd }
 							onChange={ (value) => setAttributes({ paddingLeftMd: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -275,7 +295,7 @@ registerBlockType('crown-blocks/column', {
 							label="Right Padding"
 							value={ paddingRightMd }
 							onChange={ (value) => setAttributes({ paddingRightMd: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -283,7 +303,7 @@ registerBlockType('crown-blocks/column', {
 							label="Top Padding"
 							value={ paddingTopMd }
 							onChange={ (value) => setAttributes({ paddingTopMd: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -291,7 +311,7 @@ registerBlockType('crown-blocks/column', {
 							label="Bottom Padding"
 							value={ paddingBottomMd }
 							onChange={ (value) => setAttributes({ paddingBottomMd: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -303,7 +323,7 @@ registerBlockType('crown-blocks/column', {
 							label="Left Padding"
 							value={ paddingLeftSm }
 							onChange={ (value) => setAttributes({ paddingLeftSm: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -311,7 +331,7 @@ registerBlockType('crown-blocks/column', {
 							label="Right Padding"
 							value={ paddingRightSm }
 							onChange={ (value) => setAttributes({ paddingRightSm: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -319,7 +339,7 @@ registerBlockType('crown-blocks/column', {
 							label="Top Padding"
 							value={ paddingTopSm }
 							onChange={ (value) => setAttributes({ paddingTopSm: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -327,7 +347,7 @@ registerBlockType('crown-blocks/column', {
 							label="Bottom Padding"
 							value={ paddingBottomSm }
 							onChange={ (value) => setAttributes({ paddingBottomSm: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -339,7 +359,7 @@ registerBlockType('crown-blocks/column', {
 							label="Left Padding"
 							value={ paddingLeftXs }
 							onChange={ (value) => setAttributes({ paddingLeftXs: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -347,7 +367,7 @@ registerBlockType('crown-blocks/column', {
 							label="Right Padding"
 							value={ paddingRightXs }
 							onChange={ (value) => setAttributes({ paddingRightXs: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -355,7 +375,7 @@ registerBlockType('crown-blocks/column', {
 							label="Top Padding"
 							value={ paddingTopXs }
 							onChange={ (value) => setAttributes({ paddingTopXs: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -363,7 +383,7 @@ registerBlockType('crown-blocks/column', {
 							label="Bottom Padding"
 							value={ paddingBottomXs }
 							onChange={ (value) => setAttributes({ paddingBottomXs: value }) }
-							min={ 0 }
+							min={ -20 }
 							max={ 20 }
 						/>
 
@@ -444,29 +464,49 @@ registerBlockType('crown-blocks/column', {
 		];
 
 		if(paddingLeftXl >= 0) blockClasses.push('contents-pl-xl-' + paddingLeftXl);
+		if(paddingLeftXl < 0) blockClasses.push('contents-ol-xl-' + Math.abs(paddingLeftXl));
 		if(paddingRightXl >= 0) blockClasses.push('contents-pr-xl-' + paddingRightXl);
+		if(paddingRightXl < 0) blockClasses.push('contents-or-xl-' + Math.abs(paddingRightXl));
 		if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+		if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
 		if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+		if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
 
 		if(paddingLeftLg >= 0) blockClasses.push('contents-pl-lg-' + paddingLeftLg);
+		if(paddingLeftLg < 0) blockClasses.push('contents-ol-lg-' + Math.abs(paddingLeftLg));
 		if(paddingRightLg >= 0) blockClasses.push('contents-pr-lg-' + paddingRightLg);
+		if(paddingRightLg < 0) blockClasses.push('contents-or-lg-' + Math.abs(paddingRightLg));
 		if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+		if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
 		if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+		if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
 
 		if(paddingLeftMd >= 0) blockClasses.push('contents-pl-md-' + paddingLeftMd);
+		if(paddingLeftMd < 0) blockClasses.push('contents-ol-md-' + Math.abs(paddingLeftMd));
 		if(paddingRightMd >= 0) blockClasses.push('contents-pr-md-' + paddingRightMd);
+		if(paddingRightMd < 0) blockClasses.push('contents-or-md-' + Math.abs(paddingRightMd));
 		if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+		if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
 		if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+		if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
 
 		if(paddingLeftSm >= 0) blockClasses.push('contents-pl-sm-' + paddingLeftSm);
+		if(paddingLeftSm < 0) blockClasses.push('contents-ol-sm-' + Math.abs(paddingLeftSm));
 		if(paddingRightSm >= 0) blockClasses.push('contents-pr-sm-' + paddingRightSm);
+		if(paddingRightSm < 0) blockClasses.push('contents-or-sm-' + Math.abs(paddingRightSm));
 		if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+		if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
 		if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+		if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
 
 		if(paddingLeftXs >= 0) blockClasses.push('contents-pl-' + paddingLeftXs);
+		if(paddingLeftXs < 0) blockClasses.push('contents-ol-' + Math.abs(paddingLeftXs));
 		if(paddingRightXs >= 0) blockClasses.push('contents-pr-' + paddingRightXs);
+		if(paddingRightXs < 0) blockClasses.push('contents-or-' + Math.abs(paddingRightXs));
 		if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+		if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
 		if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+		if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
 
 		if(verticalAlignment != '') blockClasses.push('vertical-alignment-' + verticalAlignment);
 
@@ -491,6 +531,144 @@ registerBlockType('crown-blocks/column', {
 
 
 	deprecated: [
+
+		{
+			attributes: {
+
+				responsiveDeviceMode: { type: 'string', default: 'xl' },
+		
+				paddingTopXl: { type: 'number', default: 0 },
+				paddingBottomXl: { type: 'number', default: 0 },
+				paddingLeftXl: { type: 'number', default: 0 },
+				paddingRightXl: { type: 'number', default: 0 },
+		
+				paddingTopLg: { type: 'number', default: 0 },
+				paddingBottomLg: { type: 'number', default: 0 },
+				paddingLeftLg: { type: 'number', default: 0 },
+				paddingRightLg: { type: 'number', default: 0 },
+		
+				paddingTopMd: { type: 'number', default: 0 },
+				paddingBottomMd: { type: 'number', default: 0 },
+				paddingLeftMd: { type: 'number', default: 0 },
+				paddingRightMd: { type: 'number', default: 0 },
+		
+				paddingTopSM: { type: 'number', default: 0 },
+				paddingBottomSM: { type: 'number', default: 0 },
+				paddingLeftSM: { type: 'number', default: 0 },
+				paddingRightSM: { type: 'number', default: 0 },
+		
+				paddingTopXs: { type: 'number', default: 0 },
+				paddingBottomXs: { type: 'number', default: 0 },
+				paddingLeftXs: { type: 'number', default: 0 },
+				paddingRightXs: { type: 'number', default: 0 },
+		
+				verticalAlignment: { type: 'string', default: 'top' },
+		
+			},
+
+			save: ({ attributes, className }) => {
+
+				const {
+
+					paddingTopXl,
+					paddingBottomXl,
+					paddingLeftXl,
+					paddingRightXl,
+		
+					paddingTopLg,
+					paddingBottomLg,
+					paddingLeftLg,
+					paddingRightLg,
+		
+					paddingTopMd,
+					paddingBottomMd,
+					paddingLeftMd,
+					paddingRightMd,
+		
+					paddingTopSm,
+					paddingBottomSm,
+					paddingLeftSm,
+					paddingRightSm,
+		
+					paddingTopXs,
+					paddingBottomXs,
+					paddingLeftXs,
+					paddingRightXs,
+		
+					verticalAlignment
+		
+				} = attributes;
+		
+				let blockClasses = [
+					className
+				];
+				
+				if(paddingLeftXl >= 0) blockClasses.push('contents-pl-xl-' + paddingLeftXl);
+				if(paddingLeftXl < 0) blockClasses.push('contents-ol-xl-' + Math.abs(paddingLeftXl));
+				if(paddingRightXl >= 0) blockClasses.push('contents-pr-xl-' + paddingRightXl);
+				if(paddingRightXl < 0) blockClasses.push('contents-or-xl-' + Math.abs(paddingRightXl));
+				if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+				if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
+				if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+				if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
+
+				if(paddingLeftLg >= 0) blockClasses.push('contents-pl-lg-' + paddingLeftLg);
+				if(paddingLeftLg < 0) blockClasses.push('contents-ol-lg-' + Math.abs(paddingLeftLg));
+				if(paddingRightLg >= 0) blockClasses.push('contents-pr-lg-' + paddingRightLg);
+				if(paddingRightLg < 0) blockClasses.push('contents-or-lg-' + Math.abs(paddingRightLg));
+				if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+				if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
+				if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+				if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
+
+				if(paddingLeftMd >= 0) blockClasses.push('contents-pl-md-' + paddingLeftMd);
+				if(paddingLeftMd < 0) blockClasses.push('contents-ol-md-' + Math.abs(paddingLeftMd));
+				if(paddingRightMd >= 0) blockClasses.push('contents-pr-md-' + paddingRightMd);
+				if(paddingRightMd < 0) blockClasses.push('contents-or-md-' + Math.abs(paddingRightMd));
+				if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+				if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
+				if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+				if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
+
+				if(paddingLeftSm >= 0) blockClasses.push('contents-pl-sm-' + paddingLeftSm);
+				if(paddingLeftSm < 0) blockClasses.push('contents-ol-sm-' + Math.abs(paddingLeftSm));
+				if(paddingRightSm >= 0) blockClasses.push('contents-pr-sm-' + paddingRightSm);
+				if(paddingRightSm < 0) blockClasses.push('contents-or-sm-' + Math.abs(paddingRightSm));
+				if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+				if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
+				if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+				if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
+
+				if(paddingLeftXs >= 0) blockClasses.push('contents-pl-' + paddingLeftXs);
+				if(paddingLeftXs < 0) blockClasses.push('contents-ol-' + Math.abs(paddingLeftXs));
+				if(paddingRightXs >= 0) blockClasses.push('contents-pr-' + paddingRightXs);
+				if(paddingRightXs < 0) blockClasses.push('contents-or-' + Math.abs(paddingRightXs));
+				if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+				if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
+				if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+				if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
+
+				if(verticalAlignment != '') blockClasses.push('vertical-alignment-' + verticalAlignment);
+
+				return (
+
+					<div className={ blockClasses.join(' ') } key="column">
+						<div className="inner">
+
+							<div className="column-contents">
+								<div className="inner">
+
+									<InnerBlocks.Content />
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+				);
+			}
+		}
 
 	]
 

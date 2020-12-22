@@ -205,10 +205,10 @@ registerBlockType('crown-blocks/container', {
 			blockClasses.push('text-color-' + textColor);
 		}
 
-		let blockStyle = {};
+		let bgStyle = {};
 		if(!backgroundGradientEnabled) {
 			if(backgroundColor) {
-				blockStyle.backgroundColor = backgroundColor;
+				bgStyle.backgroundColor = backgroundColor;
 				if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
 			}
 		} else {
@@ -216,7 +216,7 @@ registerBlockType('crown-blocks/container', {
 				let startColor = backgroundColor ? backgroundColor : 'transparent';
 				let endColor = backgroundColorSecondary ? backgroundColorSecondary : 'transparent';
 				let degrees = parseFloat(backgroundGradientAngle);
-				blockStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
+				bgStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
 			}
 		}
 
@@ -699,8 +699,8 @@ registerBlockType('crown-blocks/container', {
 
 			<div class="crown-block-editor-container">
 
-				<div className={ blockClasses.join(' ') } style={ blockStyle } key="container">
-					<div className="container-bg">
+				<div className={ blockClasses.join(' ') } key="container">
+					<div className="container-bg" style={ bgStyle }>
 						{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
 							backgroundImage: 'url(' + backgroundImageUrl + ')',
 							opacity: (backgroundImageOpacity / 100),
@@ -781,10 +781,10 @@ registerBlockType('crown-blocks/container', {
 			blockClasses.push('text-color-' + textColor);
 		}
 
-		let blockStyle = {};
+		let bgStyle = {};
 		if(!backgroundGradientEnabled) {
 			if(backgroundColor) {
-				blockStyle.backgroundColor = backgroundColor;
+				bgStyle.backgroundColor = backgroundColor;
 				if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
 			}
 		} else {
@@ -792,7 +792,7 @@ registerBlockType('crown-blocks/container', {
 				let startColor = backgroundColor ? backgroundColor : 'transparent';
 				let endColor = backgroundColorSecondary ? backgroundColorSecondary : 'transparent';
 				let degrees = parseFloat(backgroundGradientAngle);
-				blockStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
+				bgStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
 			}
 		}
 
@@ -847,8 +847,8 @@ registerBlockType('crown-blocks/container', {
 
 		return (
 
-			<div className={ blockClasses.join(' ') } style={ blockStyle } key="container">
-				<div className="container-bg">
+			<div className={ blockClasses.join(' ') } key="container">
+				<div className="container-bg" style={ bgStyle }>
 					{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
 						backgroundImage: 'url(' + backgroundImageUrl + ')',
 						opacity: (backgroundImageOpacity / 100),
@@ -868,7 +868,203 @@ registerBlockType('crown-blocks/container', {
 			</div>
 
 		);
-	}
+	},
+
+	deprecated: [
+
+		{
+			attributes: {
+				align: { type: 'string', default: '' },
+				responsiveDeviceMode: { type: 'string', default: 'xl' },
+				restictContentWidth: { type: 'boolean', default: true },
+				contentsMaxWidth: { type: 'number', default: 6 },
+				spacingProfile: { type: 'string', default: 'Default' },
+		
+				paddingTopXl:    { type: 'number', default: 4 },
+				paddingBottomXl: { type: 'number', default: 4 },
+				paddingXXl:      { type: 'number', default: 6 },
+		
+				paddingTopLg:    { type: 'number', default: 4 },
+				paddingBottomLg: { type: 'number', default: 4 },
+				paddingXLg:      { type: 'number', default: 6 },
+		
+				paddingTopMd:    { type: 'number', default: 4 },
+				paddingBottomMd: { type: 'number', default: 4 },
+				paddingXMd:      { type: 'number', default: 6 },
+		
+				paddingTopSm:    { type: 'number', default: 4 },
+				paddingBottomSm: { type: 'number', default: 4 },
+				paddingXSm:      { type: 'number', default: 6 },
+		
+				paddingTopXs:    { type: 'number', default: 4 },
+				paddingBottomXs: { type: 'number', default: 4 },
+				paddingXXs:      { type: 'number', default: 6 },
+		
+				dropShadowEnabled: { type: 'boolean', default: false },
+				backgroundGradientEnabled: { type: 'boolean', default: false },
+				backgroundGradientAngle: { type: 'number', default: 180 },
+		
+				backgroundColor: { type: 'string', default: '' },
+				backgroundColorSlug: { type: 'string', default: '' },
+				backgroundColorSecondary: { type: 'string', default: '' },
+				backgroundColorSecondarySlug: { type: 'string', default: '' },
+				backgroundImageId: { type: 'number' },
+				backgroundImageData: { type: 'object' },
+				backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
+				backgroundImageOpacity: { type: 'number', default: 100 },
+				backgroundImageGrayscale: { type: 'number', default: 0 },
+				backgroundImageBlendMode: { type: 'string', default: 'normal' },
+				backgroundImageContain: { type: 'boolean', default: false },
+				textColor: { type: 'string', default: 'auto' }
+			},
+			
+			save: ({ attributes, className }) => {
+				
+				const {
+					align,
+		
+					responsiveDeviceMode,
+					restictContentWidth,
+					contentsMaxWidth,
+					spacingProfile,
+		
+					paddingTopXl,
+					paddingBottomXl,
+					paddingXXl,
+		
+					paddingTopLg,
+					paddingBottomLg,
+					paddingXLg,
+		
+					paddingTopMd,
+					paddingBottomMd,
+					paddingXMd,
+		
+					paddingTopSm,
+					paddingBottomSm,
+					paddingXSm,
+		
+					paddingTopXs,
+					paddingBottomXs,
+					paddingXXs,
+					
+					dropShadowEnabled,
+					backgroundGradientEnabled,
+					backgroundGradientAngle,
+		
+					backgroundColor,
+					backgroundColorSlug,
+					backgroundColorSecondary,
+					backgroundColorSecondarySlug,
+					backgroundImageId,
+					backgroundImageData,
+					backgroundImageFocalPoint,
+					backgroundImageOpacity,
+					backgroundImageGrayscale,
+					backgroundImageBlendMode,
+					backgroundImageContain,
+					textColor
+				} = attributes;
+		
+				let blockClasses = [ className ];
+		
+				if(textColor == 'auto' && backgroundColor) {
+					blockClasses.push('text-color-' + (CrownBlocks.isDarkColor(backgroundColor) ? 'light' : 'dark'));
+				} else if(textColor != 'auto') {
+					blockClasses.push('text-color-' + textColor);
+				}
+		
+				let blockStyle = {};
+				if(!backgroundGradientEnabled) {
+					if(backgroundColor) {
+						blockStyle.backgroundColor = backgroundColor;
+						if(backgroundColorSlug) blockClasses.push('bg-color-' + backgroundColorSlug);
+					}
+				} else {
+					if(backgroundColor || backgroundColorSecondary) {
+						let startColor = backgroundColor ? backgroundColor : 'transparent';
+						let endColor = backgroundColorSecondary ? backgroundColorSecondary : 'transparent';
+						let degrees = parseFloat(backgroundGradientAngle);
+						blockStyle.background = 'linear-gradient(' + degrees + 'deg, ' + startColor + ', ' + endColor + ')';
+					}
+				}
+		
+				if(restictContentWidth) {
+					blockClasses.push('contents-mw-' + contentsMaxWidth);
+				}
+		
+				if(paddingTopXl >= 0) blockClasses.push('contents-pt-xl-' + paddingTopXl);
+				if(paddingTopXl < 0) blockClasses.push('contents-ot-xl-' + Math.abs(paddingTopXl));
+				if(paddingBottomXl >= 0) blockClasses.push('contents-pb-xl-' + paddingBottomXl);
+				if(paddingBottomXl < 0) blockClasses.push('contents-ob-xl-' + Math.abs(paddingBottomXl));
+				if(paddingXXl >= 0) blockClasses.push('contents-px-xl-' + paddingXXl);
+				if(paddingXXl < 0) blockClasses.push('contents-ox-xl-' + Math.abs(paddingXXl));
+		
+				if(paddingTopLg >= 0) blockClasses.push('contents-pt-lg-' + paddingTopLg);
+				if(paddingTopLg < 0) blockClasses.push('contents-ot-lg-' + Math.abs(paddingTopLg));
+				if(paddingBottomLg >= 0) blockClasses.push('contents-pb-lg-' + paddingBottomLg);
+				if(paddingBottomLg < 0) blockClasses.push('contents-ob-lg-' + Math.abs(paddingBottomLg));
+				if(paddingXLg >= 0) blockClasses.push('contents-px-lg-' + paddingXLg);
+				if(paddingXLg < 0) blockClasses.push('contents-ox-lg-' + Math.abs(paddingXLg));
+		
+				if(paddingTopMd >= 0) blockClasses.push('contents-pt-md-' + paddingTopMd);
+				if(paddingTopMd < 0) blockClasses.push('contents-ot-md-' + Math.abs(paddingTopMd));
+				if(paddingBottomMd >= 0) blockClasses.push('contents-pb-md-' + paddingBottomMd);
+				if(paddingBottomMd < 0) blockClasses.push('contents-ob-md-' + Math.abs(paddingBottomMd));
+				if(paddingXMd >= 0) blockClasses.push('contents-px-md-' + paddingXMd);
+				if(paddingXMd < 0) blockClasses.push('contents-ox-md-' + Math.abs(paddingXMd));
+		
+				if(paddingTopSm >= 0) blockClasses.push('contents-pt-sm-' + paddingTopSm);
+				if(paddingTopSm < 0) blockClasses.push('contents-ot-sm-' + Math.abs(paddingTopSm));
+				if(paddingBottomSm >= 0) blockClasses.push('contents-pb-sm-' + paddingBottomSm);
+				if(paddingBottomSm < 0) blockClasses.push('contents-ob-sm-' + Math.abs(paddingBottomSm));
+				if(paddingXSm >= 0) blockClasses.push('contents-px-sm-' + paddingXSm);
+				if(paddingXSm < 0) blockClasses.push('contents-ox-sm-' + Math.abs(paddingXSm));
+		
+				if(paddingTopXs >= 0) blockClasses.push('contents-pt-' + paddingTopXs);
+				if(paddingTopXs < 0) blockClasses.push('contents-ot-' + Math.abs(paddingTopXs));
+				if(paddingBottomXs >= 0) blockClasses.push('contents-pb-' + paddingBottomXs);
+				if(paddingBottomXs < 0) blockClasses.push('contents-ob-' + Math.abs(paddingBottomXs));
+				if(paddingXXs >= 0) blockClasses.push('contents-px-' + paddingXXs);
+				if(paddingXXs < 0) blockClasses.push('contents-ox-' + Math.abs(paddingXXs));
+		
+				if(dropShadowEnabled && align != 'full') {
+					blockClasses.push('has-drop-shadow');
+				}
+		
+				let backgroundImageUrl = null;
+				if(backgroundImageId) {
+					backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+					blockClasses.push('has-bg-image');
+				}
+		
+				return (
+		
+					<div className={ blockClasses.join(' ') } style={ blockStyle } key="container">
+						<div className="container-bg">
+							{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
+								backgroundImage: 'url(' + backgroundImageUrl + ')',
+								opacity: (backgroundImageOpacity / 100),
+								backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+								filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+								mixBlendMode: backgroundImageBlendMode,
+								backgroundSize: backgroundImageContain ? 'contain' : 'cover'
+							} }></div> }
+						</div>
+						<div className="inner">
+							<div className="container-contents">
+								<div className="inner">
+									<InnerBlocks.Content />
+								</div>
+							</div>
+						</div>
+					</div>
+		
+				);
+			}
+		}
+
+	]
 
 
 } );
