@@ -375,6 +375,7 @@
 		@include media-breakpoint-up(md) { margin-left: -1rem; margin-right: 2rem; float: left; width: calc(50% - 1rem + 1rem); }
 		@include media-breakpoint-up(lg) { margin-left: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
 		@include media-breakpoint-up(xl) { margin-left: -2rem; width: calc(33.3333% - 1rem + 2rem); }
+		p { font-size: inherit; }
 	}
 	&.alignright {
 		max-width: none;
@@ -382,6 +383,7 @@
 		@include media-breakpoint-up(md) { margin-right: -1rem; margin-left: 2rem; float: right; width: calc(50% - 1rem + 1rem); }
 		@include media-breakpoint-up(lg) { margin-right: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
 		@include media-breakpoint-up(xl) { margin-right: -2rem; width: calc(33.3333% - 1rem + 2rem); }
+		p { font-size: inherit; }
 	}
 	blockquote {
 		margin: 0;

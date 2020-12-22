@@ -76,9 +76,17 @@ body {
 	}
 }
 
+.wp-block-pullquote {
+	border-bottom: none;
+	color: inherit;
+	font-size: 1.5rem;
+	@include media-breakpoint-up(md) {
+		font-size: 1.875rem;
+	}
+}
 .wp-block[data-type="core/pullquote"],
 .block-editor-block-list__block[data-type="core/pullquote"] {
-	&[data-align=wide] {
+	.wp-block[data-align=wide] > & {
 		max-width: 900px;
 		margin-left: auto;
 		margin-right: auto;
@@ -86,42 +94,25 @@ body {
 		@include media-breakpoint-up(lg) { max-width: 900px + 48px; }
 		@include media-breakpoint-up(xl) { max-width: 900px + 64px; }
 	}
-	&[data-align=left] {
+	.wp-block[data-align=left] > & {
 		max-width: 900px;
 		margin-left: auto;
 		margin-right: auto;
-		@include media-breakpoint-up(md) { max-width: 900px + 32px; }
-		@include media-breakpoint-up(lg) { max-width: 900px + 48px; }
-		@include media-breakpoint-up(xl) { max-width: 900px + 64px; }
-		.wp-block > * {
-			position: relative;
-			float: none;
-			margin-right: 0;
-			@include media-breakpoint-up(md) { margin-left: -1rem; margin-right: 2rem; float: left; width: calc(50% - 1rem + 1rem); }
-			@include media-breakpoint-up(lg) { margin-left: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
-			@include media-breakpoint-up(xl) { margin-left: -2rem; width: calc(33.3333% - 1rem + 2rem); }
-		}
-		.wp-block-pullquote { font-size: 1.5rem; }
+		font-size: 1.5rem;
+		@include media-breakpoint-up(md) { margin-left: -1rem; width: calc(50% - 1rem + 1rem); margin-right: 2rem; float: left; max-width: none; }
+		@include media-breakpoint-up(lg) { margin-left: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
+		@include media-breakpoint-up(xl) { margin-left: -2rem; width: calc(33.3333% - 1rem + 2rem); }
+		p { font-size: inherit; }
 	}
-	&[data-align=right] {
+	.wp-block[data-align=right] > & {
 		max-width: 900px;
 		margin-left: auto;
 		margin-right: auto;
-		@include media-breakpoint-up(md) { max-width: 900px + 32px; }
-		@include media-breakpoint-up(lg) { max-width: 900px + 48px; }
-		@include media-breakpoint-up(xl) { max-width: 900px + 64px; }
-		.wp-block > * {
-			position: relative;
-			float: none;
-			margin-right: 0;
-			@include media-breakpoint-up(md) { margin-right: -1rem; margin-left: 2rem; float: right; width: calc(50% - 1rem + 1rem); }
-			@include media-breakpoint-up(lg) { margin-right: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
-			@include media-breakpoint-up(xl) { margin-right: -2rem; width: calc(33.3333% - 1rem + 2rem); }
-		}
-		.wp-block-pullquote { font-size: 1.5rem; }
-	}
-	.wp-block-pullquote {
-		border-bottom: none;
+		font-size: 1.5rem;
+		@include media-breakpoint-up(md) { margin-right: -1rem; width: calc(50% - 1rem + 1rem); margin-left: 2rem; float: right; max-width: none; }
+		@include media-breakpoint-up(lg) { margin-right: -1.5rem; width: calc(50% - 1rem + 1.5rem); }
+		@include media-breakpoint-up(xl) { margin-right: -2rem; width: calc(33.3333% - 1rem + 2rem); }
+		p { font-size: inherit; }
 	}
 }
 

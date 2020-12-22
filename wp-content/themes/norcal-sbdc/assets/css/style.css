@@ -17041,6 +17041,8 @@ nav.pagination {
       .wp-block-pullquote.alignleft {
         margin-left: -2rem;
         width: calc(33.3333% - 1rem + 2rem); } }
+    .wp-block-pullquote.alignleft p {
+      font-size: inherit; }
   .wp-block-pullquote.alignright {
     max-width: none;
     font-size: 1.5rem; }
@@ -17058,6 +17060,8 @@ nav.pagination {
       .wp-block-pullquote.alignright {
         margin-right: -2rem;
         width: calc(33.3333% - 1rem + 2rem); } }
+    .wp-block-pullquote.alignright p {
+      font-size: inherit; }
   .wp-block-pullquote blockquote {
     margin: 0; }
     .wp-block-pullquote blockquote:before {
