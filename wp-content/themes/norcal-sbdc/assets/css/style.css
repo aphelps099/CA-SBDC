@@ -19296,7 +19296,8 @@ nav.pagination {
         -webkit-filter: none;
                 filter: none; }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-header {
-      border-color: #fff; }
+      border-color: #fff;
+      padding-top: 0; }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-job-title {
       font-family: "utopia-std", serif;
       font-style: italic; }
@@ -22051,9 +22052,6 @@ body.single-team_member article.type-team_member {
       body.single-team_member article.type-team_member .entry-header {
         padding-bottom: .75rem;
         border-bottom-width: 6px; } }
-    @media (min-width: 1200px) {
-      body.single-team_member article.type-team_member .entry-header {
-        padding-top: 1rem; } }
   body.single-team_member article.type-team_member .entry-title {
     font-size: 1.5rem;
     margin-bottom: .25rem; }

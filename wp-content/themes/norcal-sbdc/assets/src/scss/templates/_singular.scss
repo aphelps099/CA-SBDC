@@ -332,9 +332,6 @@ body.single-team_member {
 				padding-bottom: .75rem;
 				border-bottom-width: 6px;
 			}
-			@include media-breakpoint-up(xl) {
-				padding-top: 1rem;
-			}
 		}
 		.entry-title {
 			font-size: 1.5rem;
