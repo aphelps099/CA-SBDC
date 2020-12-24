@@ -1002,7 +1002,7 @@
 						lirArticle.after(drawer);
 					}
 					drawer.show();
-					var drawerContent = $('> .inner', inner).children().first();
+					var drawerContent = $('> .inner', drawer).children().first();
 					if(article.offset().left == article.parent().offset().left) {
 						drawerContent.addClass('flipped');
 					} else {

@@ -18992,7 +18992,7 @@ nav.pagination {
       .wp-block-crown-blocks-team-member-index article.type-team_member.active a .entry-link span:after {
         left: 0;
         opacity: 1; }
-  .wp-block-crown-blocks-team-member-index article.type-team_member.loading .entry-headshot-photo .image:before {
+  .wp-block-crown-blocks-team-member-index article.type-team_member.loading .entry-headshot-photo > .inner:after {
     opacity: 1;
     visibility: visible;
     -webkit-transition-delay: 0s;
@@ -19051,6 +19051,26 @@ nav.pagination {
       position: relative;
       padding-top: 125%;
       background-color: #7F94AA; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo > .inner:after {
+        content: '';
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        border: 4px solid #fff;
+        border-radius: 10rem;
+        border-top-color: transparent;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -1rem;
+        margin-top: -1rem;
+        -webkit-animation: spinner 1s infinite linear;
+                animation: spinner 1s infinite linear;
+        -webkit-transition: opacity .2s, visibility 0s .2s;
+        transition: opacity .2s, visibility 0s .2s;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 10; }
     .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image {
       position: absolute;
       left: 0;
@@ -19076,30 +19096,8 @@ nav.pagination {
         -webkit-filter: none;
                 filter: none;
         mix-blend-mode: normal; }
-        .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image.overlay:after {
-          display: none; }
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image img {
         display: none; }
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image:after {
-        content: '';
-        display: block;
-        width: 2rem;
-        height: 2rem;
-        border: 4px solid #fff;
-        border-radius: 10rem;
-        border-top-color: transparent;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin-left: -1rem;
-        margin-top: -1rem;
-        -webkit-animation: spinner 1s infinite linear;
-                animation: spinner 1s infinite linear;
-        -webkit-transition: opacity .2s, visibility 0s .2s;
-        transition: opacity .2s, visibility 0s .2s;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 10; }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-teaser {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
