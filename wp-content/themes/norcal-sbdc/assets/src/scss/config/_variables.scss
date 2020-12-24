@@ -274,3 +274,11 @@ $alert-padding-x:                   1.25rem !default;
 // Alerts
 
 $alert-border-radius:               0 !default;
+
+
+// Animations
+
+@keyframes spinner {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

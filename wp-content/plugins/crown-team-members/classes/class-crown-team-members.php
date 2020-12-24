@@ -227,6 +227,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			update_post_meta( $object_id, 'team_member_name_first_comma_last_lc', strtolower( implode( ', ', $post_data['post_title'] ) ) );
 			update_post_meta( $object_id, 'team_member_name_last_comma_first', implode( ', ', array_reverse( $post_data['post_title'] ) ) );
 			update_post_meta( $object_id, 'team_member_name_last_comma_first_lc', strtolower( implode( ', ', array_reverse( $post_data['post_title'] ) ) ) );
+			update_post_meta( $object_id, 'team_member_name_last_initial_lc', substr( strtolower( implode( ', ', array_reverse( $post_data['post_title'] ) ) ), 0, 1 ) );
+			update_post_meta( $object_id, 'team_member_name_first_initial_lc', substr( strtolower( implode( ', ', $post_data['post_title'] ) ), 0, 1 ) );
 			$post_data['post_title'] = implode( ' ', $post_data['post_title'] );
 			$post_data['post_name'] = sanitize_title( $post_data['post_title'] );
 			wp_update_post( $post_data );

@@ -515,3 +515,28 @@
 		font-weight: 500;
 	}
 }
+
+.ajax-loader {
+	position: relative;
+	&.loading {
+		&:after {
+			display: block;
+		}
+		.ajax-content {
+			opacity: .5;
+		}
+	}
+	&:after {
+		position: absolute;
+		content: '';
+		display: block;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		display: none;
+	}
+	.ajax-content {
+		transition: opacity .5s;
+	}
+}

@@ -31,6 +31,7 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 			}
 
 			// initialize theme modules
+			Crown_Theme_Ajax_Content::init();
 			Crown_Theme_Block_Editor::init();
 			Crown_Theme_Config::init();
 			Crown_Theme_Main_Query::init();

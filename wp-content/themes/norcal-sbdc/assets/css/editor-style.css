@@ -1,4 +1,19 @@
 @charset "UTF-8";
+@-webkit-keyframes spinner {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+@keyframes spinner {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+
 /*!
  * Bootstrap v4.5.3 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
@@ -2378,7 +2393,7 @@ textarea.form-control, textarea {
     .form-inline .custom-control-label {
       margin-bottom: 0; } }
 
-.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
+.btn, nav.pagination .nav-links .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
   display: inline-block;
   font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700;
@@ -2400,23 +2415,25 @@ textarea.form-control, textarea {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out; }
   @media (prefers-reduced-motion: reduce) {
-    .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
+    .btn, nav.pagination .nav-links .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
       -webkit-transition: none;
       transition: none; } }
-  .btn:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link a:hover, .gform_footer button:hover[type=submit] {
+  .btn:hover, nav.pagination .nav-links .page-numbers:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link a:hover, .gform_footer button:hover[type=submit] {
     color: #233053;
     text-decoration: none; }
-  .btn:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus, .gform_footer button:focus[type=submit], .btn.focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.focus, .wp-block-crown-blocks-featured-post-slider article .entry-link a.focus, .gform_footer button.focus[type=submit] {
+  .btn:focus, nav.pagination .nav-links .page-numbers:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus, .gform_footer button:focus[type=submit], .btn.focus, nav.pagination .nav-links .focus.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.focus, .wp-block-crown-blocks-featured-post-slider article .entry-link a.focus, .gform_footer button.focus[type=submit] {
     outline: 0;
     -webkit-box-shadow: 0 0 0 0 rgba(16, 141, 188, 0.25);
             box-shadow: 0 0 0 0 rgba(16, 141, 188, 0.25); }
-  .btn.disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a.disabled, .gform_footer button.disabled[type=submit], .btn:disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a:disabled, .gform_footer button:disabled[type=submit] {
+  .btn.disabled, nav.pagination .nav-links .disabled.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a.disabled, .gform_footer button.disabled[type=submit], .btn:disabled, nav.pagination .nav-links .page-numbers:disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a:disabled, .gform_footer button:disabled[type=submit] {
     opacity: 0.65; }
-  .btn:not(:disabled):not(.disabled), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled), .wp-block-crown-blocks-featured-post-slider article .entry-link a:not(:disabled):not(.disabled), .gform_footer button:not(:disabled):not(.disabled)[type=submit] {
+  .btn:not(:disabled):not(.disabled), nav.pagination .nav-links .page-numbers:not(:disabled):not(.disabled), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled), .wp-block-crown-blocks-featured-post-slider article .entry-link a:not(:disabled):not(.disabled), .gform_footer button:not(:disabled):not(.disabled)[type=submit] {
     cursor: pointer; }
 
-a.btn.disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a.disabled,
+a.btn.disabled, nav.pagination .nav-links a.disabled.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-featured-post-slider article .entry-link a.disabled,
 fieldset:disabled a.btn,
+fieldset:disabled nav.pagination .nav-links a.page-numbers,
+nav.pagination .nav-links fieldset:disabled a.page-numbers,
 fieldset:disabled .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link fieldset:disabled a,
 fieldset:disabled .wp-block-crown-blocks-featured-post-slider article .entry-link a,
@@ -2679,33 +2696,35 @@ fieldset:disabled .wp-block-crown-blocks-featured-post-slider article .entry-lin
       -webkit-box-shadow: 0 0 0 0 rgba(68, 79, 109, 0.5);
               box-shadow: 0 0 0 0 rgba(68, 79, 109, 0.5); }
 
-.btn-blue, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button {
+.btn-blue, nav.pagination .nav-links .page-numbers.current, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button {
   color: #FFFFFF;
   background-color: #108DBC;
   border-color: #108DBC; }
-  .btn-blue:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:hover, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:hover {
+  .btn-blue:hover, nav.pagination .nav-links .page-numbers.current:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:hover, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:hover {
     color: #FFFFFF;
     background-color: #0d7399;
     border-color: #0c6a8d; }
-  .btn-blue:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:focus, .btn-blue.focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button.focus {
+  .btn-blue:focus, nav.pagination .nav-links .page-numbers.current:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:focus, .btn-blue.focus, nav.pagination .nav-links .focus.page-numbers.current, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button.focus {
     color: #FFFFFF;
     background-color: #0d7399;
     border-color: #0c6a8d;
     -webkit-box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5);
             box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5); }
-  .btn-blue.disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button.disabled, .btn-blue:disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:disabled, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:disabled {
+  .btn-blue.disabled, nav.pagination .nav-links .disabled.page-numbers.current, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a.disabled, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button.disabled, .btn-blue:disabled, nav.pagination .nav-links .page-numbers.current:disabled, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:disabled, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:disabled {
     color: #FFFFFF;
     background-color: #108DBC;
     border-color: #108DBC; }
-  .btn-blue:not(:disabled):not(.disabled):active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled):active, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled):active, .btn-blue:not(:disabled):not(.disabled).active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled).active, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled).active,
+  .btn-blue:not(:disabled):not(.disabled):active, nav.pagination .nav-links .page-numbers.current:not(:disabled):not(.disabled):active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled):active, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled):active, .btn-blue:not(:disabled):not(.disabled).active, nav.pagination .nav-links .page-numbers.current:not(:disabled):not(.disabled).active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled).active, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled).active,
   .show > .btn-blue.dropdown-toggle,
+  nav.pagination .nav-links .show > .dropdown-toggle.page-numbers.current,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .show > a.dropdown-toggle,
   .wp-block-crown-blocks-center-finder .location-search-form .form-footer .show > button.dropdown-toggle {
     color: #FFFFFF;
     background-color: #0c6a8d;
     border-color: #0b6181; }
-    .btn-blue:not(:disabled):not(.disabled):active:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled):active:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled):active:focus, .btn-blue:not(:disabled):not(.disabled).active:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled).active:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled).active:focus,
+    .btn-blue:not(:disabled):not(.disabled):active:focus, nav.pagination .nav-links .page-numbers.current:not(:disabled):not(.disabled):active:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled):active:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled):active:focus, .btn-blue:not(:disabled):not(.disabled).active:focus, nav.pagination .nav-links .page-numbers.current:not(:disabled):not(.disabled).active:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:not(:disabled):not(.disabled).active:focus, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button:not(:disabled):not(.disabled).active:focus,
     .show > .btn-blue.dropdown-toggle:focus,
+    nav.pagination .nav-links .show > .dropdown-toggle.page-numbers.current:focus,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .show > a.dropdown-toggle:focus,
     .wp-block-crown-blocks-center-finder .location-search-form .form-footer .show > button.dropdown-toggle:focus {
       -webkit-box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5);
@@ -2825,31 +2844,33 @@ fieldset:disabled .wp-block-crown-blocks-featured-post-slider article .entry-lin
       -webkit-box-shadow: 0 0 0 0 rgba(156, 190, 64, 0.5);
               box-shadow: 0 0 0 0 rgba(156, 190, 64, 0.5); }
 
-.btn-light-gray {
+.btn-light-gray, nav.pagination .nav-links .page-numbers {
   color: #343a40;
   background-color: #E6EDF4;
   border-color: #E6EDF4; }
-  .btn-light-gray:hover {
+  .btn-light-gray:hover, nav.pagination .nav-links .page-numbers:hover {
     color: #343a40;
     background-color: #cbdae8;
     border-color: #c3d4e4; }
-  .btn-light-gray:focus, .btn-light-gray.focus {
+  .btn-light-gray:focus, nav.pagination .nav-links .page-numbers:focus, .btn-light-gray.focus, nav.pagination .nav-links .focus.page-numbers {
     color: #343a40;
     background-color: #cbdae8;
     border-color: #c3d4e4;
     -webkit-box-shadow: 0 0 0 0 rgba(203, 210, 217, 0.5);
             box-shadow: 0 0 0 0 rgba(203, 210, 217, 0.5); }
-  .btn-light-gray.disabled, .btn-light-gray:disabled {
+  .btn-light-gray.disabled, nav.pagination .nav-links .disabled.page-numbers, .btn-light-gray:disabled, nav.pagination .nav-links .page-numbers:disabled {
     color: #343a40;
     background-color: #E6EDF4;
     border-color: #E6EDF4; }
-  .btn-light-gray:not(:disabled):not(.disabled):active, .btn-light-gray:not(:disabled):not(.disabled).active,
-  .show > .btn-light-gray.dropdown-toggle {
+  .btn-light-gray:not(:disabled):not(.disabled):active, nav.pagination .nav-links .page-numbers:not(:disabled):not(.disabled):active, .btn-light-gray:not(:disabled):not(.disabled).active, nav.pagination .nav-links .page-numbers:not(:disabled):not(.disabled).active,
+  .show > .btn-light-gray.dropdown-toggle,
+  nav.pagination .nav-links .show > .dropdown-toggle.page-numbers {
     color: #343a40;
     background-color: #c3d4e4;
     border-color: #bacde1; }
-    .btn-light-gray:not(:disabled):not(.disabled):active:focus, .btn-light-gray:not(:disabled):not(.disabled).active:focus,
-    .show > .btn-light-gray.dropdown-toggle:focus {
+    .btn-light-gray:not(:disabled):not(.disabled):active:focus, nav.pagination .nav-links .page-numbers:not(:disabled):not(.disabled):active:focus, .btn-light-gray:not(:disabled):not(.disabled).active:focus, nav.pagination .nav-links .page-numbers:not(:disabled):not(.disabled).active:focus,
+    .show > .btn-light-gray.dropdown-toggle:focus,
+    nav.pagination .nav-links .show > .dropdown-toggle.page-numbers:focus {
       -webkit-box-shadow: 0 0 0 0 rgba(203, 210, 217, 0.5);
               box-shadow: 0 0 0 0 rgba(203, 210, 217, 0.5); }
 
@@ -3415,13 +3436,13 @@ fieldset:disabled .wp-block-crown-blocks-featured-post-slider article .entry-lin
     color: #6c757d;
     pointer-events: none; }
 
-.btn-lg, .btn-group-lg > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a, .gform_footer .btn-group-lg > button[type=submit], .general-contact-form_wrapper .gform_footer button[type=submit] {
+.btn-lg, .btn-group-lg > .btn, nav.pagination .nav-links .btn-group-lg > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a, .gform_footer .btn-group-lg > button[type=submit], .general-contact-form_wrapper .gform_footer button[type=submit] {
   padding: 1.25rem 2.25rem;
   font-size: 1.5rem;
   line-height: 1.2;
   border-radius: 0; }
 
-.btn-sm, .btn-group-sm > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a, .gform_footer .btn-group-sm > button[type=submit] {
+.btn-sm, .btn-group-sm > .btn, nav.pagination .nav-links .btn-group-sm > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a, .gform_footer .btn-group-sm > button[type=submit] {
   padding: 0.4rem 0.85rem;
   font-size: 0.75rem;
   line-height: 1.2;
@@ -3671,8 +3692,9 @@ input[type="button"].btn-block {
   display: -ms-inline-flexbox;
   display: inline-flex;
   vertical-align: middle; }
-  .btn-group > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a, .gform_footer .btn-group > button[type=submit],
+  .btn-group > .btn, nav.pagination .nav-links .btn-group > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a, .gform_footer .btn-group > button[type=submit],
   .btn-group-vertical > .btn,
+  nav.pagination .nav-links .btn-group-vertical > .page-numbers,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a,
   .gform_footer .btn-group-vertical > button[type=submit] {
@@ -3680,22 +3702,26 @@ input[type="button"].btn-block {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
             flex: 1 1 auto; }
-    .btn-group > .btn:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:hover, .gform_footer .btn-group > button:hover[type=submit],
+    .btn-group > .btn:hover, nav.pagination .nav-links .btn-group > .page-numbers:hover, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:hover, .gform_footer .btn-group > button:hover[type=submit],
     .btn-group-vertical > .btn:hover,
+    nav.pagination .nav-links .btn-group-vertical > .page-numbers:hover,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:hover,
     .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:hover,
     .gform_footer .btn-group-vertical > button:hover[type=submit] {
       z-index: 1; }
-    .btn-group > .btn:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:focus, .gform_footer .btn-group > button:focus[type=submit], .btn-group > .btn:active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:active, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:active, .gform_footer .btn-group > button:active[type=submit], .btn-group > .btn.active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a.active, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a.active, .gform_footer .btn-group > button.active[type=submit],
+    .btn-group > .btn:focus, nav.pagination .nav-links .btn-group > .page-numbers:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:focus, .gform_footer .btn-group > button:focus[type=submit], .btn-group > .btn:active, nav.pagination .nav-links .btn-group > .page-numbers:active, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:active, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:active, .gform_footer .btn-group > button:active[type=submit], .btn-group > .btn.active, nav.pagination .nav-links .btn-group > .active.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a.active, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a.active, .gform_footer .btn-group > button.active[type=submit],
     .btn-group-vertical > .btn:focus,
+    nav.pagination .nav-links .btn-group-vertical > .page-numbers:focus,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:focus,
     .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:focus,
     .gform_footer .btn-group-vertical > button:focus[type=submit],
     .btn-group-vertical > .btn:active,
+    nav.pagination .nav-links .btn-group-vertical > .page-numbers:active,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:active,
     .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:active,
     .gform_footer .btn-group-vertical > button:active[type=submit],
     .btn-group-vertical > .btn.active,
+    nav.pagination .nav-links .btn-group-vertical > .active.page-numbers,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a.active,
     .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a.active,
     .gform_footer .btn-group-vertical > button.active[type=submit] {
@@ -3713,20 +3739,22 @@ input[type="button"].btn-block {
   .btn-toolbar .input-group {
     width: auto; }
 
-.btn-group > .btn:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:first-child), .gform_footer .btn-group > button:not(:first-child)[type=submit],
+.btn-group > .btn:not(:first-child), nav.pagination .nav-links .btn-group > .page-numbers:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:first-child), .gform_footer .btn-group > button:not(:first-child)[type=submit],
 .btn-group > .btn-group:not(:first-child) {
   margin-left: -1px; }
 
-.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:last-child):not(.dropdown-toggle), .gform_footer .btn-group > button:not(:last-child):not(.dropdown-toggle)[type=submit],
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle), nav.pagination .nav-links .btn-group > .page-numbers:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:last-child):not(.dropdown-toggle), .gform_footer .btn-group > button:not(:last-child):not(.dropdown-toggle)[type=submit],
 .btn-group > .btn-group:not(:last-child) > .btn,
+nav.pagination .nav-links .btn-group > .btn-group:not(:last-child) > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > .btn-group:not(:last-child) > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > .btn-group:not(:last-child) > a,
 .gform_footer .btn-group > .btn-group:not(:last-child) > button[type=submit] {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.btn-group > .btn:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:first-child), .gform_footer .btn-group > button:not(:first-child)[type=submit],
+.btn-group > .btn:not(:first-child), nav.pagination .nav-links .btn-group > .page-numbers:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > a:not(:first-child), .gform_footer .btn-group > button:not(:first-child)[type=submit],
 .btn-group > .btn-group:not(:first-child) > .btn,
+nav.pagination .nav-links .btn-group > .btn-group:not(:first-child) > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group > .btn-group:not(:first-child) > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group > .btn-group:not(:first-child) > a,
 .gform_footer .btn-group > .btn-group:not(:first-child) > button[type=submit] {
@@ -3743,11 +3771,11 @@ input[type="button"].btn-block {
   .dropleft .dropdown-toggle-split::before {
     margin-right: 0; }
 
-.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a + .dropdown-toggle-split, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a + .dropdown-toggle-split, .gform_footer .btn-group-sm > button[type=submit] + .dropdown-toggle-split {
+.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split, nav.pagination .nav-links .btn-group-sm > .page-numbers + .dropdown-toggle-split, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a + .dropdown-toggle-split, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a + .dropdown-toggle-split, .gform_footer .btn-group-sm > button[type=submit] + .dropdown-toggle-split {
   padding-right: 0.6375rem;
   padding-left: 0.6375rem; }
 
-.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a + .dropdown-toggle-split, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a + .dropdown-toggle-split, .gform_footer .btn-group-lg > button[type=submit] + .dropdown-toggle-split, .general-contact-form_wrapper .gform_footer button[type=submit] + .dropdown-toggle-split {
+.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split, nav.pagination .nav-links .btn-group-lg > .page-numbers + .dropdown-toggle-split, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a + .dropdown-toggle-split, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a + .dropdown-toggle-split, .gform_footer .btn-group-lg > button[type=submit] + .dropdown-toggle-split, .general-contact-form_wrapper .gform_footer button[type=submit] + .dropdown-toggle-split {
   padding-right: 1.6875rem;
   padding-left: 1.6875rem; }
 
@@ -3764,45 +3792,52 @@ input[type="button"].btn-block {
           justify-content: center; }
   
   .btn-group-vertical > .btn,
+  nav.pagination .nav-links .btn-group-vertical > .page-numbers,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a,
   .gform_footer .btn-group-vertical > button[type=submit],
   .btn-group-vertical > .btn-group {
     width: 100%; }
-  .btn-group-vertical > .btn:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:first-child), .gform_footer .btn-group-vertical > button:not(:first-child)[type=submit],
+  .btn-group-vertical > .btn:not(:first-child), nav.pagination .nav-links .btn-group-vertical > .page-numbers:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:first-child), .gform_footer .btn-group-vertical > button:not(:first-child)[type=submit],
   .btn-group-vertical > .btn-group:not(:first-child) {
     margin-top: -1px; }
-  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:last-child):not(.dropdown-toggle), .gform_footer .btn-group-vertical > button:not(:last-child):not(.dropdown-toggle)[type=submit],
+  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), nav.pagination .nav-links .btn-group-vertical > .page-numbers:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:last-child):not(.dropdown-toggle), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:last-child):not(.dropdown-toggle), .gform_footer .btn-group-vertical > button:not(:last-child):not(.dropdown-toggle)[type=submit],
   .btn-group-vertical > .btn-group:not(:last-child) > .btn,
+  nav.pagination .nav-links .btn-group-vertical > .btn-group:not(:last-child) > .page-numbers,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > .btn-group:not(:last-child) > a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > .btn-group:not(:last-child) > a,
   .gform_footer .btn-group-vertical > .btn-group:not(:last-child) > button[type=submit] {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0; }
-  .btn-group-vertical > .btn:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:first-child), .gform_footer .btn-group-vertical > button:not(:first-child)[type=submit],
+  .btn-group-vertical > .btn:not(:first-child), nav.pagination .nav-links .btn-group-vertical > .page-numbers:not(:first-child), .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > a:not(:first-child), .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > a:not(:first-child), .gform_footer .btn-group-vertical > button:not(:first-child)[type=submit],
   .btn-group-vertical > .btn-group:not(:first-child) > .btn,
+  nav.pagination .nav-links .btn-group-vertical > .btn-group:not(:first-child) > .page-numbers,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-vertical > .btn-group:not(:first-child) > a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-vertical > .btn-group:not(:first-child) > a,
   .gform_footer .btn-group-vertical > .btn-group:not(:first-child) > button[type=submit] {
     border-top-left-radius: 0;
     border-top-right-radius: 0; }
 
-.btn-group-toggle > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > a, .gform_footer .btn-group-toggle > button[type=submit],
+.btn-group-toggle > .btn, nav.pagination .nav-links .btn-group-toggle > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > a, .gform_footer .btn-group-toggle > button[type=submit],
 .btn-group-toggle > .btn-group > .btn,
+nav.pagination .nav-links .btn-group-toggle > .btn-group > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > .btn-group > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > .btn-group > a,
 .gform_footer .btn-group-toggle > .btn-group > button[type=submit] {
   margin-bottom: 0; }
-  .btn-group-toggle > .btn input[type="radio"], .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > a input[type="radio"], .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > a input[type="radio"], .gform_footer .btn-group-toggle > button[type=submit] input[type="radio"],
+  .btn-group-toggle > .btn input[type="radio"], nav.pagination .nav-links .btn-group-toggle > .page-numbers input[type="radio"], .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > a input[type="radio"], .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > a input[type="radio"], .gform_footer .btn-group-toggle > button[type=submit] input[type="radio"],
   .btn-group-toggle > .btn input[type="checkbox"],
+  nav.pagination .nav-links .btn-group-toggle > .page-numbers input[type="checkbox"],
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > a input[type="checkbox"],
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > a input[type="checkbox"],
   .gform_footer .btn-group-toggle > button[type=submit] input[type="checkbox"],
   .btn-group-toggle > .btn-group > .btn input[type="radio"],
+  nav.pagination .nav-links .btn-group-toggle > .btn-group > .page-numbers input[type="radio"],
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > .btn-group > a input[type="radio"],
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > .btn-group > a input[type="radio"],
   .gform_footer .btn-group-toggle > .btn-group > button[type=submit] input[type="radio"],
   .btn-group-toggle > .btn-group > .btn input[type="checkbox"],
+  nav.pagination .nav-links .btn-group-toggle > .btn-group > .page-numbers input[type="checkbox"],
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-toggle > .btn-group > a input[type="checkbox"],
   .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-toggle > .btn-group > a input[type="checkbox"],
   .gform_footer .btn-group-toggle > .btn-group > button[type=submit] input[type="checkbox"] {
@@ -4003,8 +4038,10 @@ input[type="button"].btn-block {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex; }
-  .input-group-prepend .btn, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a, .input-group-prepend .gform_footer button[type=submit], .gform_footer .input-group-prepend button[type=submit],
+  .input-group-prepend .btn, .input-group-prepend nav.pagination .nav-links .page-numbers, nav.pagination .nav-links .input-group-prepend .page-numbers, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a, .input-group-prepend .gform_footer button[type=submit], .gform_footer .input-group-prepend button[type=submit],
   .input-group-append .btn,
+  .input-group-append nav.pagination .nav-links .page-numbers,
+  nav.pagination .nav-links .input-group-append .page-numbers,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a,
@@ -4013,8 +4050,10 @@ input[type="button"].btn-block {
   .gform_footer .input-group-append button[type=submit] {
     position: relative;
     z-index: 2; }
-    .input-group-prepend .btn:focus, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a:focus, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a:focus, .input-group-prepend .gform_footer button:focus[type=submit], .gform_footer .input-group-prepend button:focus[type=submit],
+    .input-group-prepend .btn:focus, .input-group-prepend nav.pagination .nav-links .page-numbers:focus, nav.pagination .nav-links .input-group-prepend .page-numbers:focus, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a:focus, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a:focus, .input-group-prepend .gform_footer button:focus[type=submit], .gform_footer .input-group-prepend button:focus[type=submit],
     .input-group-append .btn:focus,
+    .input-group-append nav.pagination .nav-links .page-numbers:focus,
+    nav.pagination .nav-links .input-group-append .page-numbers:focus,
     .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a:focus,
     .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a:focus,
     .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus,
@@ -4022,8 +4061,10 @@ input[type="button"].btn-block {
     .input-group-append .gform_footer button:focus[type=submit],
     .gform_footer .input-group-append button:focus[type=submit] {
       z-index: 3; }
-  .input-group-prepend .btn + .btn, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + .btn, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + .btn, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + .btn, .input-group-prepend .gform_footer button[type=submit] + .btn, .gform_footer .input-group-prepend button[type=submit] + .btn, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .btn + a, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + a, .input-group-prepend .gform_footer .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link button[type=submit] + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .gform_footer button[type=submit] + a, .gform_footer .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link button[type=submit] + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer .input-group-prepend button[type=submit] + a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .btn + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .btn + a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + a, .input-group-prepend .gform_footer .wp-block-crown-blocks-featured-post-slider article .entry-link button[type=submit] + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .gform_footer button[type=submit] + a, .gform_footer .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link button[type=submit] + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .gform_footer .input-group-prepend button[type=submit] + a, .input-group-prepend .gform_footer .btn + button[type=submit], .gform_footer .input-group-prepend .btn + button[type=submit], .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer a + button[type=submit], .gform_footer .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + button[type=submit], .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .gform_footer a + button[type=submit], .gform_footer .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + button[type=submit], .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .gform_footer a + button[type=submit], .gform_footer .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + button[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .gform_footer a + button[type=submit], .gform_footer .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + button[type=submit], .input-group-prepend .gform_footer button[type=submit] + button[type=submit], .gform_footer .input-group-prepend button[type=submit] + button[type=submit],
+  .input-group-prepend .btn + .btn, .input-group-prepend nav.pagination .nav-links .page-numbers + .btn, nav.pagination .nav-links .input-group-prepend .page-numbers + .btn, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + .btn, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + .btn, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + .btn, .input-group-prepend .gform_footer button[type=submit] + .btn, .gform_footer .input-group-prepend button[type=submit] + .btn, .input-group-prepend nav.pagination .nav-links .btn + .page-numbers, nav.pagination .nav-links .input-group-prepend .btn + .page-numbers, .input-group-prepend nav.pagination .nav-links .page-numbers + .page-numbers, nav.pagination .nav-links .input-group-prepend .page-numbers + .page-numbers, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link nav.pagination .nav-links a + .page-numbers, nav.pagination .nav-links .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend nav.pagination .nav-links a + .page-numbers, nav.pagination .nav-links .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + .page-numbers, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links a + .page-numbers, nav.pagination .nav-links .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + .page-numbers, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend nav.pagination .nav-links a + .page-numbers, nav.pagination .nav-links .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + .page-numbers, .input-group-prepend .gform_footer nav.pagination .nav-links button[type=submit] + .page-numbers, nav.pagination .nav-links .input-group-prepend .gform_footer button[type=submit] + .page-numbers, .gform_footer .input-group-prepend nav.pagination .nav-links button[type=submit] + .page-numbers, nav.pagination .nav-links .gform_footer .input-group-prepend button[type=submit] + .page-numbers, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .btn + a, .input-group-prepend nav.pagination .nav-links .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .page-numbers + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend nav.pagination .nav-links .page-numbers + a, nav.pagination .nav-links .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .page-numbers + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link nav.pagination .nav-links .input-group-prepend .page-numbers + a, .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + a, .input-group-prepend .gform_footer .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link button[type=submit] + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .gform_footer button[type=submit] + a, .gform_footer .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link button[type=submit] + a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer .input-group-prepend button[type=submit] + a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .btn + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .btn + a, .input-group-prepend nav.pagination .nav-links .wp-block-crown-blocks-featured-post-slider article .entry-link .page-numbers + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend nav.pagination .nav-links .page-numbers + a, nav.pagination .nav-links .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .page-numbers + a, .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links .input-group-prepend .page-numbers + a, .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + a, .input-group-prepend .gform_footer .wp-block-crown-blocks-featured-post-slider article .entry-link button[type=submit] + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .gform_footer button[type=submit] + a, .gform_footer .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link button[type=submit] + a, .wp-block-crown-blocks-featured-post-slider article .entry-link .gform_footer .input-group-prepend button[type=submit] + a, .input-group-prepend .gform_footer .btn + button[type=submit], .gform_footer .input-group-prepend .btn + button[type=submit], .input-group-prepend nav.pagination .nav-links .gform_footer .page-numbers + button[type=submit], .gform_footer .input-group-prepend nav.pagination .nav-links .page-numbers + button[type=submit], nav.pagination .nav-links .input-group-prepend .gform_footer .page-numbers + button[type=submit], .gform_footer nav.pagination .nav-links .input-group-prepend .page-numbers + button[type=submit], .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer a + button[type=submit], .gform_footer .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + button[type=submit], .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .gform_footer a + button[type=submit], .gform_footer .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + button[type=submit], .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .gform_footer a + button[type=submit], .gform_footer .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + button[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend .gform_footer a + button[type=submit], .gform_footer .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-prepend a + button[type=submit], .input-group-prepend .gform_footer button[type=submit] + button[type=submit], .gform_footer .input-group-prepend button[type=submit] + button[type=submit],
   .input-group-prepend .btn + .input-group-text,
+  .input-group-prepend nav.pagination .nav-links .page-numbers + .input-group-text,
+  nav.pagination .nav-links .input-group-prepend .page-numbers + .input-group-text,
   .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .input-group-text,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend a + .input-group-text,
   .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link a + .input-group-text,
@@ -4032,6 +4073,8 @@ input[type="button"].btn-block {
   .gform_footer .input-group-prepend button[type=submit] + .input-group-text,
   .input-group-prepend .input-group-text + .input-group-text,
   .input-group-prepend .input-group-text + .btn,
+  .input-group-prepend nav.pagination .nav-links .input-group-text + .page-numbers,
+  nav.pagination .nav-links .input-group-prepend .input-group-text + .page-numbers,
   .input-group-prepend .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-text + a,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-prepend .input-group-text + a,
   .input-group-prepend .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-text + a,
@@ -4039,14 +4082,36 @@ input[type="button"].btn-block {
   .input-group-prepend .gform_footer .input-group-text + button[type=submit],
   .gform_footer .input-group-prepend .input-group-text + button[type=submit],
   .input-group-append .btn + .btn,
+  .input-group-append nav.pagination .nav-links .page-numbers + .btn,
+  nav.pagination .nav-links .input-group-append .page-numbers + .btn,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .btn,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a + .btn,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a + .btn,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append a + .btn,
   .input-group-append .gform_footer button[type=submit] + .btn,
   .gform_footer .input-group-append button[type=submit] + .btn,
+  .input-group-append nav.pagination .nav-links .btn + .page-numbers,
+  nav.pagination .nav-links .input-group-append .btn + .page-numbers,
+  .input-group-append nav.pagination .nav-links .page-numbers + .page-numbers,
+  nav.pagination .nav-links .input-group-append .page-numbers + .page-numbers,
+  .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link nav.pagination .nav-links a + .page-numbers,
+  nav.pagination .nav-links .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .page-numbers,
+  .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append nav.pagination .nav-links a + .page-numbers,
+  nav.pagination .nav-links .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a + .page-numbers,
+  .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links a + .page-numbers,
+  nav.pagination .nav-links .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a + .page-numbers,
+  .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append nav.pagination .nav-links a + .page-numbers,
+  nav.pagination .nav-links .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append a + .page-numbers,
+  .input-group-append .gform_footer nav.pagination .nav-links button[type=submit] + .page-numbers,
+  nav.pagination .nav-links .input-group-append .gform_footer button[type=submit] + .page-numbers,
+  .gform_footer .input-group-append nav.pagination .nav-links button[type=submit] + .page-numbers,
+  nav.pagination .nav-links .gform_footer .input-group-append button[type=submit] + .page-numbers,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn + a,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append .btn + a,
+  .input-group-append nav.pagination .nav-links .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .page-numbers + a,
+  .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append nav.pagination .nav-links .page-numbers + a,
+  nav.pagination .nav-links .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .page-numbers + a,
+  .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link nav.pagination .nav-links .input-group-append .page-numbers + a,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + a,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a + a,
   .input-group-append .gform_footer .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link button[type=submit] + a,
@@ -4055,6 +4120,10 @@ input[type="button"].btn-block {
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer .input-group-append button[type=submit] + a,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link .btn + a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append .btn + a,
+  .input-group-append nav.pagination .nav-links .wp-block-crown-blocks-featured-post-slider article .entry-link .page-numbers + a,
+  .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append nav.pagination .nav-links .page-numbers + a,
+  nav.pagination .nav-links .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link .page-numbers + a,
+  .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links .input-group-append .page-numbers + a,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a + a,
   .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-append a + a,
   .input-group-append .gform_footer .wp-block-crown-blocks-featured-post-slider article .entry-link button[type=submit] + a,
@@ -4063,6 +4132,10 @@ input[type="button"].btn-block {
   .wp-block-crown-blocks-featured-post-slider article .entry-link .gform_footer .input-group-append button[type=submit] + a,
   .input-group-append .gform_footer .btn + button[type=submit],
   .gform_footer .input-group-append .btn + button[type=submit],
+  .input-group-append nav.pagination .nav-links .gform_footer .page-numbers + button[type=submit],
+  .gform_footer .input-group-append nav.pagination .nav-links .page-numbers + button[type=submit],
+  nav.pagination .nav-links .input-group-append .gform_footer .page-numbers + button[type=submit],
+  .gform_footer nav.pagination .nav-links .input-group-append .page-numbers + button[type=submit],
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .gform_footer a + button[type=submit],
   .gform_footer .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + button[type=submit],
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append .gform_footer a + button[type=submit],
@@ -4074,6 +4147,8 @@ input[type="button"].btn-block {
   .input-group-append .gform_footer button[type=submit] + button[type=submit],
   .gform_footer .input-group-append button[type=submit] + button[type=submit],
   .input-group-append .btn + .input-group-text,
+  .input-group-append nav.pagination .nav-links .page-numbers + .input-group-text,
+  nav.pagination .nav-links .input-group-append .page-numbers + .input-group-text,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a + .input-group-text,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append a + .input-group-text,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link a + .input-group-text,
@@ -4082,6 +4157,8 @@ input[type="button"].btn-block {
   .gform_footer .input-group-append button[type=submit] + .input-group-text,
   .input-group-append .input-group-text + .input-group-text,
   .input-group-append .input-group-text + .btn,
+  .input-group-append nav.pagination .nav-links .input-group-text + .page-numbers,
+  nav.pagination .nav-links .input-group-append .input-group-text + .page-numbers,
   .input-group-append .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-text + a,
   .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-append .input-group-text + a,
   .input-group-append .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-text + a,
@@ -4129,10 +4206,12 @@ input[type="button"].btn-block {
 .input-group-lg > .input-group-prepend > .input-group-text,
 .input-group-lg > .input-group-append > .input-group-text,
 .input-group-lg > .input-group-prepend > .btn,
+nav.pagination .nav-links .input-group-lg > .input-group-prepend > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-lg > .input-group-prepend > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-lg > .input-group-prepend > a,
 .gform_footer .input-group-lg > .input-group-prepend > button[type=submit],
 .input-group-lg > .input-group-append > .btn,
+nav.pagination .nav-links .input-group-lg > .input-group-append > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-lg > .input-group-append > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-lg > .input-group-append > a,
 .gform_footer .input-group-lg > .input-group-append > button[type=submit] {
@@ -4152,10 +4231,12 @@ input[type="button"].btn-block {
 .input-group-sm > .input-group-prepend > .input-group-text,
 .input-group-sm > .input-group-append > .input-group-text,
 .input-group-sm > .input-group-prepend > .btn,
+nav.pagination .nav-links .input-group-sm > .input-group-prepend > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-sm > .input-group-prepend > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-sm > .input-group-prepend > a,
 .gform_footer .input-group-sm > .input-group-prepend > button[type=submit],
 .input-group-sm > .input-group-append > .btn,
+nav.pagination .nav-links .input-group-sm > .input-group-append > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group-sm > .input-group-append > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group-sm > .input-group-append > a,
 .gform_footer .input-group-sm > .input-group-append > button[type=submit] {
@@ -4171,14 +4252,16 @@ input[type="button"].btn-block {
 .input-group-sm > select {
   padding-right: 1.8rem; }
 
-.input-group > .input-group-prepend > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-prepend > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-prepend > a, .gform_footer .input-group > .input-group-prepend > button[type=submit],
+.input-group > .input-group-prepend > .btn, nav.pagination .nav-links .input-group > .input-group-prepend > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-prepend > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-prepend > a, .gform_footer .input-group > .input-group-prepend > button[type=submit],
 .input-group > .input-group-prepend > .input-group-text,
 .input-group > .input-group-append:not(:last-child) > .btn,
+nav.pagination .nav-links .input-group > .input-group-append:not(:last-child) > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-append:not(:last-child) > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-append:not(:last-child) > a,
 .gform_footer .input-group > .input-group-append:not(:last-child) > button[type=submit],
 .input-group > .input-group-append:not(:last-child) > .input-group-text,
 .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+nav.pagination .nav-links .input-group > .input-group-append:last-child > .page-numbers:not(:last-child):not(.dropdown-toggle),
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-append:last-child > a:not(:last-child):not(.dropdown-toggle),
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-append:last-child > a:not(:last-child):not(.dropdown-toggle),
 .gform_footer .input-group > .input-group-append:last-child > button:not(:last-child):not(.dropdown-toggle)[type=submit],
@@ -4186,14 +4269,16 @@ input[type="button"].btn-block {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.input-group > .input-group-append > .btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-append > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-append > a, .gform_footer .input-group > .input-group-append > button[type=submit],
+.input-group > .input-group-append > .btn, nav.pagination .nav-links .input-group > .input-group-append > .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-append > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-append > a, .gform_footer .input-group > .input-group-append > button[type=submit],
 .input-group > .input-group-append > .input-group-text,
 .input-group > .input-group-prepend:not(:first-child) > .btn,
+nav.pagination .nav-links .input-group > .input-group-prepend:not(:first-child) > .page-numbers,
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-prepend:not(:first-child) > a,
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-prepend:not(:first-child) > a,
 .gform_footer .input-group > .input-group-prepend:not(:first-child) > button[type=submit],
 .input-group > .input-group-prepend:not(:first-child) > .input-group-text,
 .input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+nav.pagination .nav-links .input-group > .input-group-prepend:first-child > .page-numbers:not(:first-child),
 .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .input-group > .input-group-prepend:first-child > a:not(:first-child),
 .wp-block-crown-blocks-featured-post-slider article .entry-link .input-group > .input-group-prepend:first-child > a:not(:first-child),
 .gform_footer .input-group > .input-group-prepend:first-child > button:not(:first-child)[type=submit],
@@ -5305,7 +5390,7 @@ input[type="button"].btn-block {
   .badge:empty {
     display: none; }
 
-.btn .badge, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a .badge, .wp-block-crown-blocks-featured-post-slider article .entry-link a .badge, .gform_footer button[type=submit] .badge {
+.btn .badge, nav.pagination .nav-links .page-numbers .badge, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a .badge, .wp-block-crown-blocks-featured-post-slider article .entry-link a .badge, .gform_footer button[type=submit] .badge {
   position: relative;
   top: -1px; }
 
@@ -14985,6 +15070,279 @@ label {
   font-size: 1rem;
   line-height: 1.2; }
 
+form.feed-filters {
+  margin: 0 -.5rem 2rem;
+  padding: 1rem .5rem;
+  border-top: 5px solid transparent;
+  border-bottom: 2px solid transparent;
+  -webkit-transition: border-color .3s;
+  transition: border-color .3s; }
+  form.feed-filters.active {
+    border-color: #233053; }
+    form.feed-filters.active .filters-header button.filters-close {
+      opacity: 1;
+      visibility: visible;
+      -webkit-transition-delay: 0s;
+              transition-delay: 0s; }
+    form.feed-filters.active .filters-header ul.options.quick-filters {
+      display: none; }
+    form.feed-filters.active .filters-header .filters-nav {
+      display: block; }
+  form.feed-filters .filters-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+    @media (min-width: 992px) {
+      form.feed-filters .filters-header {
+        -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap; } }
+    form.feed-filters .filters-header button.filters-toggle {
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+      line-height: 1.2;
+      font-size: 1.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: left;
+      outline: none;
+      color: #233053;
+      -webkit-transition: opactity .15s, color .15s;
+      transition: opactity .15s, color .15s; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header button.filters-toggle {
+          -webkit-box-flex: 0;
+              -ms-flex: 0 0 auto;
+                  flex: 0 0 auto;
+          margin-right: 3rem; } }
+      form.feed-filters .filters-header button.filters-toggle:hover {
+        color: #108DBC; }
+      form.feed-filters .filters-header button.filters-toggle:after {
+        content: '';
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30.402' height='20.268' viewBox='0 0 30.402 20.268'%3E%3Cpath id='Icon_material-sort' data-name='Icon material-sort' d='M4.5,29.268H14.634V25.89H4.5ZM4.5,9v3.378H34.9V9Zm0,11.823H24.768V17.445H4.5Z' transform='translate(-4.5 -9)' fill='%23108DBC'/%3E%3C/svg%3E%0A");
+        display: inline-block;
+        margin-left: .4em;
+        width: 1em;
+        height: 1em;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        vertical-align: top; }
+    form.feed-filters .filters-header button.filters-close {
+      margin-left: 2rem;
+      border: none;
+      padding: .5rem 0;
+      background-color: transparent;
+      line-height: 1.2;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: left;
+      outline: none;
+      color: rgba(35, 48, 83, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      -webkit-transition: opacity .15s, color .15s, visibility 0s .15s;
+      transition: opacity .15s, color .15s, visibility 0s .15s; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header button.filters-close {
+          -webkit-box-ordinal-group: 101;
+              -ms-flex-order: 100;
+                  order: 100; } }
+      form.feed-filters .filters-header button.filters-close:hover {
+        color: #108DBC; }
+      form.feed-filters .filters-header button.filters-close:after {
+        content: '×';
+        display: inline-block;
+        margin-left: .1em;
+        font-size: 3em;
+        line-height: 1;
+        vertical-align: top;
+        font-weight: 400;
+        margin-top: -.35em;
+        margin-bottom: -.5em;
+        color: #233053; }
+    form.feed-filters .filters-header ul.options.quick-filters {
+      width: 100%;
+      margin-top: 1rem; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header ul.options.quick-filters {
+          margin-top: 0;
+          width: auto;
+          -webkit-box-flex: 1;
+              -ms-flex: 1 1 auto;
+                  flex: 1 1 auto; } }
+    form.feed-filters .filters-header .filters-nav {
+      width: 100%;
+      display: none;
+      margin-top: 1rem; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header .filters-nav {
+          margin-top: 0;
+          width: auto;
+          -webkit-box-flex: 1;
+              -ms-flex: 1 1 auto;
+                  flex: 1 1 auto; } }
+      form.feed-filters .filters-header .filters-nav ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        margin: 0 0 -.5rem; }
+        form.feed-filters .filters-header .filters-nav ul li {
+          display: block;
+          margin: 0.25rem 0 0.75rem;
+          margin-right: 1.5rem; }
+          form.feed-filters .filters-header .filters-nav ul li.active button {
+            color: #233053;
+            border-color: #233053; }
+        form.feed-filters .filters-header .filters-nav ul button {
+          display: block;
+          padding: 0;
+          border: none;
+          background-color: transparent;
+          line-height: 1.2;
+          font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: .1em;
+          font-size: 0.875rem;
+          border-bottom: 0.125rem solid transparent;
+          -webkit-transition: color .15s, border-color .15s;
+          transition: color .15s, border-color .15s;
+          color: rgba(35, 48, 83, 0.5);
+          padding-top: 0.25rem;
+          padding-bottom: 0.125rem;
+          margin: -0.25rem 0;
+          outline: none; }
+          form.feed-filters .filters-header .filters-nav ul button:hover {
+            color: #233053; }
+  form.feed-filters .filters-tabs {
+    overflow: hidden;
+    height: 0;
+    -webkit-transition: height .3s ease-out;
+    transition: height .3s ease-out; }
+    form.feed-filters .filters-tabs > .inner {
+      padding-top: 1.5rem;
+      padding-bottom: .5rem; }
+  form.feed-filters .filters-tab {
+    display: none; }
+    form.feed-filters .filters-tab.active {
+      display: block; }
+  form.feed-filters .filters-footer {
+    display: none; }
+  form.feed-filters ul.options {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    margin: 0 -.25rem -.5rem; }
+    @media (min-width: 992px) {
+      form.feed-filters ul.options {
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center; } }
+    form.feed-filters ul.options.quick-filters {
+      margin: 0 0 -.5rem;
+      -webkit-box-pack: start;
+          -ms-flex-pack: start;
+              justify-content: flex-start; }
+      form.feed-filters ul.options.quick-filters li.option {
+        margin: 0.25rem 0 0.75rem;
+        margin-right: .75rem;
+        padding-right: .75rem;
+        border-right: 2px solid rgba(35, 48, 83, 0.5); }
+        form.feed-filters ul.options.quick-filters li.option:last-child {
+          margin-right: 0;
+          border-right: none;
+          padding-right: 0; }
+        form.feed-filters ul.options.quick-filters li.option label:hover .label {
+          background-color: transparent;
+          color: #233053; }
+        form.feed-filters ul.options.quick-filters li.option label input:checked + .label {
+          background-color: transparent;
+          border-color: #233053;
+          color: #233053; }
+        form.feed-filters ul.options.quick-filters li.option label .label {
+          border-radius: 0;
+          padding: 0;
+          padding-top: 0.25rem;
+          padding-bottom: 0.125rem;
+          margin: -0.25rem 0;
+          border: none;
+          border-bottom: 0.125rem solid transparent;
+          -webkit-transition: color .15s, border-color .15s;
+          transition: color .15s, border-color .15s;
+          color: rgba(35, 48, 83, 0.5); }
+    form.feed-filters ul.options.name {
+      margin: 0 -.5rem -.75rem; }
+      form.feed-filters ul.options.name li.option {
+        margin: 0 .5rem .75rem; }
+        form.feed-filters ul.options.name li.option input:checked + .label {
+          background-color: transparent;
+          color: #233053; }
+        form.feed-filters ul.options.name li.option label:hover .label {
+          background-color: transparent;
+          color: rgba(35, 48, 83, 0.75); }
+        form.feed-filters ul.options.name li.option label .label {
+          color: rgba(35, 48, 83, 0.5);
+          border: none;
+          padding: 0;
+          border-radius: 0;
+          font-size: 1.5rem; }
+    form.feed-filters ul.options li.option {
+      margin: 0 .25rem .5rem;
+      display: block; }
+      form.feed-filters ul.options li.option label {
+        display: block;
+        margin: 0;
+        line-height: 1.2;
+        font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        cursor: pointer; }
+        form.feed-filters ul.options li.option label:hover .label {
+          background-color: rgba(35, 48, 83, 0.1); }
+        form.feed-filters ul.options li.option label input {
+          display: none; }
+          form.feed-filters ul.options li.option label input:checked + .label {
+            background-color: #233053;
+            color: #fff; }
+        form.feed-filters ul.options li.option label .label {
+          display: block;
+          padding: .5rem .75rem;
+          border-radius: 10rem;
+          border: 2px solid #233053;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: .1em;
+          font-size: 0.875rem;
+          color: #233053;
+          -webkit-transition: background-color .15s, color .15s;
+          transition: background-color .15s, color .15s; }
+
 /*	Icon Links
 ---------------------------------------------------------*/
 .icon-link {
@@ -15001,7 +15359,7 @@ label {
     line-height: 1;
     margin-top: .1em; }
 
-.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
+.btn, nav.pagination .nav-links .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit] {
   letter-spacing: 0.05em; }
 
 .btn-md {
@@ -15042,9 +15400,9 @@ label {
   .btn-link:focus, .wp-block-crown-blocks-featured-post-slider article .entry-link a:focus {
     -webkit-box-shadow: none;
             box-shadow: none; }
-  .btn-link.btn-lg, .btn-group-lg > .btn-link.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a, .gform_footer .btn-group-lg > button.btn-link[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link a.btn-lg, .general-contact-form_wrapper .gform_footer button.btn-link[type=submit] {
+  .btn-link.btn-lg, .btn-group-lg > .btn-link.btn, nav.pagination .nav-links .btn-group-lg > .btn-link.page-numbers, .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links .btn-group-lg > a.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a, .gform_footer .btn-group-lg > button.btn-link[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link a.btn-lg, .general-contact-form_wrapper .gform_footer button.btn-link[type=submit] {
     border-bottom-width: 4px; }
-  .btn-link.btn-sm, .btn-group-sm > .btn-link.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a, .gform_footer .btn-group-sm > button.btn-link[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link a.btn-sm {
+  .btn-link.btn-sm, .btn-group-sm > .btn-link.btn, nav.pagination .nav-links .btn-group-sm > .btn-link.page-numbers, .wp-block-crown-blocks-featured-post-slider article .entry-link nav.pagination .nav-links .btn-group-sm > a.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a, .gform_footer .btn-group-sm > button.btn-link[type=submit], .wp-block-crown-blocks-featured-post-slider article .entry-link a.btn-sm {
     border-bottom-width: 2px; }
   .btn-link.btn-has-arrow-icon, .wp-block-crown-blocks-featured-post-slider article .entry-link a {
     margin-right: 2em; }
@@ -15197,10 +15555,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-primary.btn-lg, .btn-group-lg > .btn-outline-primary.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-primary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-primary, .gform_footer .btn-group-lg > button.btn-outline-primary[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-primary[type=submit] {
+  .btn-outline-primary.btn-lg, .btn-group-lg > .btn-outline-primary.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-primary.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-primary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-primary, .gform_footer .btn-group-lg > button.btn-outline-primary[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-primary[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-primary.btn-sm, .btn-group-sm > .btn-outline-primary.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-primary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-primary, .gform_footer .btn-group-sm > button.btn-outline-primary[type=submit] {
+  .btn-outline-primary.btn-sm, .btn-group-sm > .btn-outline-primary.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-primary.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-primary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-primary, .gform_footer .btn-group-sm > button.btn-outline-primary[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15236,10 +15594,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-secondary.btn-lg, .btn-group-lg > .btn-outline-secondary.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-secondary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-secondary, .gform_footer .btn-group-lg > button.btn-outline-secondary[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-secondary[type=submit] {
+  .btn-outline-secondary.btn-lg, .btn-group-lg > .btn-outline-secondary.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-secondary.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-secondary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-secondary, .gform_footer .btn-group-lg > button.btn-outline-secondary[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-secondary[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-secondary.btn-sm, .btn-group-sm > .btn-outline-secondary.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-secondary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-secondary, .gform_footer .btn-group-sm > button.btn-outline-secondary[type=submit] {
+  .btn-outline-secondary.btn-sm, .btn-group-sm > .btn-outline-secondary.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-secondary.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-secondary, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-secondary, .gform_footer .btn-group-sm > button.btn-outline-secondary[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15275,10 +15633,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-success.btn-lg, .btn-group-lg > .btn-outline-success.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-success, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-success, .gform_footer .btn-group-lg > button.btn-outline-success[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-success[type=submit] {
+  .btn-outline-success.btn-lg, .btn-group-lg > .btn-outline-success.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-success.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-success, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-success, .gform_footer .btn-group-lg > button.btn-outline-success[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-success[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-success.btn-sm, .btn-group-sm > .btn-outline-success.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-success, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-success, .gform_footer .btn-group-sm > button.btn-outline-success[type=submit] {
+  .btn-outline-success.btn-sm, .btn-group-sm > .btn-outline-success.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-success.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-success, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-success, .gform_footer .btn-group-sm > button.btn-outline-success[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15314,10 +15672,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-info.btn-lg, .btn-group-lg > .btn-outline-info.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-info, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-info, .gform_footer .btn-group-lg > button.btn-outline-info[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-info[type=submit] {
+  .btn-outline-info.btn-lg, .btn-group-lg > .btn-outline-info.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-info.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-info, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-info, .gform_footer .btn-group-lg > button.btn-outline-info[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-info[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-info.btn-sm, .btn-group-sm > .btn-outline-info.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-info, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-info, .gform_footer .btn-group-sm > button.btn-outline-info[type=submit] {
+  .btn-outline-info.btn-sm, .btn-group-sm > .btn-outline-info.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-info.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-info, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-info, .gform_footer .btn-group-sm > button.btn-outline-info[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15353,10 +15711,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-warning.btn-lg, .btn-group-lg > .btn-outline-warning.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-warning, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-warning, .gform_footer .btn-group-lg > button.btn-outline-warning[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-warning[type=submit] {
+  .btn-outline-warning.btn-lg, .btn-group-lg > .btn-outline-warning.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-warning.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-warning, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-warning, .gform_footer .btn-group-lg > button.btn-outline-warning[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-warning[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-warning.btn-sm, .btn-group-sm > .btn-outline-warning.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-warning, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-warning, .gform_footer .btn-group-sm > button.btn-outline-warning[type=submit] {
+  .btn-outline-warning.btn-sm, .btn-group-sm > .btn-outline-warning.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-warning.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-warning, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-warning, .gform_footer .btn-group-sm > button.btn-outline-warning[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15392,10 +15750,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-danger.btn-lg, .btn-group-lg > .btn-outline-danger.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-danger, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-danger, .gform_footer .btn-group-lg > button.btn-outline-danger[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-danger[type=submit] {
+  .btn-outline-danger.btn-lg, .btn-group-lg > .btn-outline-danger.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-danger.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-danger, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-danger, .gform_footer .btn-group-lg > button.btn-outline-danger[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-danger[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-danger.btn-sm, .btn-group-sm > .btn-outline-danger.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-danger, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-danger, .gform_footer .btn-group-sm > button.btn-outline-danger[type=submit] {
+  .btn-outline-danger.btn-sm, .btn-group-sm > .btn-outline-danger.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-danger.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-danger, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-danger, .gform_footer .btn-group-sm > button.btn-outline-danger[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15431,10 +15789,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-light.btn-lg, .btn-group-lg > .btn-outline-light.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light, .gform_footer .btn-group-lg > button.btn-outline-light[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light[type=submit] {
+  .btn-outline-light.btn-lg, .btn-group-lg > .btn-outline-light.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-light.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light, .gform_footer .btn-group-lg > button.btn-outline-light[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-light.btn-sm, .btn-group-sm > .btn-outline-light.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light, .gform_footer .btn-group-sm > button.btn-outline-light[type=submit] {
+  .btn-outline-light.btn-sm, .btn-group-sm > .btn-outline-light.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-light.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light, .gform_footer .btn-group-sm > button.btn-outline-light[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15470,10 +15828,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-dark.btn-lg, .btn-group-lg > .btn-outline-dark.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark, .gform_footer .btn-group-lg > button.btn-outline-dark[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark[type=submit] {
+  .btn-outline-dark.btn-lg, .btn-group-lg > .btn-outline-dark.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-dark.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark, .gform_footer .btn-group-lg > button.btn-outline-dark[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-dark.btn-sm, .btn-group-sm > .btn-outline-dark.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark, .gform_footer .btn-group-sm > button.btn-outline-dark[type=submit] {
+  .btn-outline-dark.btn-sm, .btn-group-sm > .btn-outline-dark.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-dark.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark, .gform_footer .btn-group-sm > button.btn-outline-dark[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15509,10 +15867,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-dark-blue.btn-lg, .btn-group-lg > .btn-outline-dark-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark-blue, .gform_footer .btn-group-lg > button.btn-outline-dark-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark-blue[type=submit] {
+  .btn-outline-dark-blue.btn-lg, .btn-group-lg > .btn-outline-dark-blue.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-dark-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark-blue, .gform_footer .btn-group-lg > button.btn-outline-dark-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark-blue[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-dark-blue.btn-sm, .btn-group-sm > .btn-outline-dark-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark-blue, .gform_footer .btn-group-sm > button.btn-outline-dark-blue[type=submit] {
+  .btn-outline-dark-blue.btn-sm, .btn-group-sm > .btn-outline-dark-blue.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-dark-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark-blue, .gform_footer .btn-group-sm > button.btn-outline-dark-blue[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15548,10 +15906,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-blue.btn-lg, .btn-group-lg > .btn-outline-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-blue, .gform_footer .btn-group-lg > button.btn-outline-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-blue[type=submit] {
+  .btn-outline-blue.btn-lg, .btn-group-lg > .btn-outline-blue.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-blue, .gform_footer .btn-group-lg > button.btn-outline-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-blue[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-blue.btn-sm, .btn-group-sm > .btn-outline-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-blue, .gform_footer .btn-group-sm > button.btn-outline-blue[type=submit] {
+  .btn-outline-blue.btn-sm, .btn-group-sm > .btn-outline-blue.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-blue, .gform_footer .btn-group-sm > button.btn-outline-blue[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15587,10 +15945,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-light-blue.btn-lg, .btn-group-lg > .btn-outline-light-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light-blue, .gform_footer .btn-group-lg > button.btn-outline-light-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light-blue[type=submit] {
+  .btn-outline-light-blue.btn-lg, .btn-group-lg > .btn-outline-light-blue.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-light-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light-blue, .gform_footer .btn-group-lg > button.btn-outline-light-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light-blue[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-light-blue.btn-sm, .btn-group-sm > .btn-outline-light-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light-blue, .gform_footer .btn-group-sm > button.btn-outline-light-blue[type=submit] {
+  .btn-outline-light-blue.btn-sm, .btn-group-sm > .btn-outline-light-blue.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-light-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light-blue, .gform_footer .btn-group-sm > button.btn-outline-light-blue[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15626,10 +15984,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-x-light-blue.btn-lg, .btn-group-lg > .btn-outline-x-light-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-x-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-x-light-blue, .gform_footer .btn-group-lg > button.btn-outline-x-light-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-x-light-blue[type=submit] {
+  .btn-outline-x-light-blue.btn-lg, .btn-group-lg > .btn-outline-x-light-blue.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-x-light-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-x-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-x-light-blue, .gform_footer .btn-group-lg > button.btn-outline-x-light-blue[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-x-light-blue[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-x-light-blue.btn-sm, .btn-group-sm > .btn-outline-x-light-blue.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-x-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-x-light-blue, .gform_footer .btn-group-sm > button.btn-outline-x-light-blue[type=submit] {
+  .btn-outline-x-light-blue.btn-sm, .btn-group-sm > .btn-outline-x-light-blue.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-x-light-blue.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-x-light-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-x-light-blue, .gform_footer .btn-group-sm > button.btn-outline-x-light-blue[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15665,10 +16023,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-red.btn-lg, .btn-group-lg > .btn-outline-red.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-red, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-red, .gform_footer .btn-group-lg > button.btn-outline-red[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-red[type=submit] {
+  .btn-outline-red.btn-lg, .btn-group-lg > .btn-outline-red.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-red.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-red, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-red, .gform_footer .btn-group-lg > button.btn-outline-red[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-red[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-red.btn-sm, .btn-group-sm > .btn-outline-red.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-red, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-red, .gform_footer .btn-group-sm > button.btn-outline-red[type=submit] {
+  .btn-outline-red.btn-sm, .btn-group-sm > .btn-outline-red.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-red.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-red, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-red, .gform_footer .btn-group-sm > button.btn-outline-red[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15704,10 +16062,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-green.btn-lg, .btn-group-lg > .btn-outline-green.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-green, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-green, .gform_footer .btn-group-lg > button.btn-outline-green[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-green[type=submit] {
+  .btn-outline-green.btn-lg, .btn-group-lg > .btn-outline-green.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-green.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-green, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-green, .gform_footer .btn-group-lg > button.btn-outline-green[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-green[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-green.btn-sm, .btn-group-sm > .btn-outline-green.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-green, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-green, .gform_footer .btn-group-sm > button.btn-outline-green[type=submit] {
+  .btn-outline-green.btn-sm, .btn-group-sm > .btn-outline-green.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-green.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-green, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-green, .gform_footer .btn-group-sm > button.btn-outline-green[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15743,10 +16101,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-light-gray.btn-lg, .btn-group-lg > .btn-outline-light-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light-gray, .gform_footer .btn-group-lg > button.btn-outline-light-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light-gray[type=submit] {
+  .btn-outline-light-gray.btn-lg, .btn-group-lg > .btn-outline-light-gray.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-light-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-light-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-light-gray, .gform_footer .btn-group-lg > button.btn-outline-light-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-light-gray[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-light-gray.btn-sm, .btn-group-sm > .btn-outline-light-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light-gray, .gform_footer .btn-group-sm > button.btn-outline-light-gray[type=submit] {
+  .btn-outline-light-gray.btn-sm, .btn-group-sm > .btn-outline-light-gray.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-light-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-light-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-light-gray, .gform_footer .btn-group-sm > button.btn-outline-light-gray[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15782,10 +16140,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-gray.btn-lg, .btn-group-lg > .btn-outline-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-gray, .gform_footer .btn-group-lg > button.btn-outline-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-gray[type=submit] {
+  .btn-outline-gray.btn-lg, .btn-group-lg > .btn-outline-gray.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-gray, .gform_footer .btn-group-lg > button.btn-outline-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-gray[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-gray.btn-sm, .btn-group-sm > .btn-outline-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-gray, .gform_footer .btn-group-sm > button.btn-outline-gray[type=submit] {
+  .btn-outline-gray.btn-sm, .btn-group-sm > .btn-outline-gray.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-gray, .gform_footer .btn-group-sm > button.btn-outline-gray[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15821,10 +16179,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-dark-gray.btn-lg, .btn-group-lg > .btn-outline-dark-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark-gray, .gform_footer .btn-group-lg > button.btn-outline-dark-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark-gray[type=submit] {
+  .btn-outline-dark-gray.btn-lg, .btn-group-lg > .btn-outline-dark-gray.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-dark-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-dark-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-dark-gray, .gform_footer .btn-group-lg > button.btn-outline-dark-gray[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-dark-gray[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-dark-gray.btn-sm, .btn-group-sm > .btn-outline-dark-gray.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark-gray, .gform_footer .btn-group-sm > button.btn-outline-dark-gray[type=submit] {
+  .btn-outline-dark-gray.btn-sm, .btn-group-sm > .btn-outline-dark-gray.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-dark-gray.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-dark-gray, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-dark-gray, .gform_footer .btn-group-sm > button.btn-outline-dark-gray[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15860,10 +16218,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-ghost.btn-lg, .btn-group-lg > .btn-outline-ghost.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-ghost, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-ghost, .gform_footer .btn-group-lg > button.btn-outline-ghost[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-ghost[type=submit] {
+  .btn-outline-ghost.btn-lg, .btn-group-lg > .btn-outline-ghost.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-ghost.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-ghost, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-ghost, .gform_footer .btn-group-lg > button.btn-outline-ghost[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-ghost[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-ghost.btn-sm, .btn-group-sm > .btn-outline-ghost.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-ghost, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-ghost, .gform_footer .btn-group-sm > button.btn-outline-ghost[type=submit] {
+  .btn-outline-ghost.btn-sm, .btn-group-sm > .btn-outline-ghost.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-ghost.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-ghost, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-ghost, .gform_footer .btn-group-sm > button.btn-outline-ghost[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -15899,10 +16257,10 @@ label {
       right: -1em;
       -webkit-transition: right ease-out .15s;
       transition: right ease-out .15s; }
-  .btn-outline-white.btn-lg, .btn-group-lg > .btn-outline-white.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-white, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-white, .gform_footer .btn-group-lg > button.btn-outline-white[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-white[type=submit] {
+  .btn-outline-white.btn-lg, .btn-group-lg > .btn-outline-white.btn, nav.pagination .nav-links .btn-group-lg > .btn-outline-white.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-lg > a.btn-outline-white, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-lg > a.btn-outline-white, .gform_footer .btn-group-lg > button.btn-outline-white[type=submit], .general-contact-form_wrapper .gform_footer button.btn-outline-white[type=submit] {
     border-width: 4px;
     padding: calc(1.25rem - (4px - 1px)) calc(2.25rem - (4px - 1px)); }
-  .btn-outline-white.btn-sm, .btn-group-sm > .btn-outline-white.btn, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-white, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-white, .gform_footer .btn-group-sm > button.btn-outline-white[type=submit] {
+  .btn-outline-white.btn-sm, .btn-group-sm > .btn-outline-white.btn, nav.pagination .nav-links .btn-group-sm > .btn-outline-white.page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link .btn-group-sm > a.btn-outline-white, .wp-block-crown-blocks-featured-post-slider article .entry-link .btn-group-sm > a.btn-outline-white, .gform_footer .btn-group-sm > button.btn-outline-white[type=submit] {
     border-width: 2px;
     padding: calc(0.4rem - (2px - 1px)) calc(0.85rem - (2px - 1px)); }
 
@@ -16132,63 +16490,34 @@ nav.pagination {
     display: flex;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-    margin: 0 -3px -6px; }
+    margin: 0 -0.125rem -0.25rem; }
     nav.pagination .nav-links .page-numbers {
-      border-radius: 2px;
-      position: relative;
-      color: #233053;
-      text-decoration: none;
-      padding: 4px 10px;
-      border: none;
-      outline: none;
-      -webkit-box-shadow: none;
-              box-shadow: none;
-      background-color: rgba(35, 48, 83, 0);
-      -webkit-transition: background-color .15s;
-      transition: background-color .15s;
-      font-size: 1rem;
-      line-height: 1.2;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: center;
-          -ms-flex-pack: center;
-              justify-content: center;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      min-width: 32px;
-      min-height: 32px;
-      margin: 0 3px 6px; }
-      nav.pagination .nav-links .page-numbers:hover {
-        background-color: rgba(35, 48, 83, 0.1); }
+      margin: 0 0.125rem 0.25rem;
+      padding-left: .5rem;
+      padding-right: .5rem;
+      min-width: 3rem; }
       nav.pagination .nav-links .page-numbers.current {
-        background-color: #233053;
-        color: #fff; }
-      nav.pagination .nav-links .page-numbers.prev, nav.pagination .nav-links .page-numbers.next {
-        background-position: center center;
-        background-size: 14px 11px;
-        background-repeat: no-repeat; }
-        nav.pagination .nav-links .page-numbers.prev span, nav.pagination .nav-links .page-numbers.next span {
-          display: none; }
-      nav.pagination .nav-links .page-numbers.prev {
-        background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='14px' height='11px' viewBox='0 0 14 11' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3EFill 1%3C/title%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.3454579,4.9029558 L7.73288456,1.1571952 L7.73288456,11.6510083 C7.73288456,12.7829972 6.05718424,12.7829972 6.05718424,11.6510083 L6.05718424,1.31348884 L2.66887876,5.05924944 C2.11073256,5.72268788 1.10531236,4.708167 1.66345857,4.04472856 L6.54152078,-1.33897623 C6.72757162,-1.53387738 7.09966698,-1.57260054 7.28573675,-1.33897623 L12.3129954,3.84977454 C12.9093397,4.47448652 11.9408874,5.56646032 11.3445432,4.90302189 L11.3454579,4.9029558 Z' id='Fill-1' fill='%23002F87' transform='translate(7.000000, 5.500000) scale(-1, 1) rotate(-270.000000) translate(-7.000000, -5.500000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E"); }
-      nav.pagination .nav-links .page-numbers.next {
-        background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='14px' height='11px' viewBox='0 0 14 11' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3EFill 1%3C/title%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M11.3454579,4.9029558 L7.73288456,1.1571952 L7.73288456,11.6510083 C7.73288456,12.7829972 6.05718424,12.7829972 6.05718424,11.6510083 L6.05718424,1.31348884 L2.66887876,5.05924944 C2.11073256,5.72268788 1.10531236,4.708167 1.66345857,4.04472856 L6.54152078,-1.33897623 C6.72757162,-1.53387738 7.09966698,-1.57260054 7.28573675,-1.33897623 L12.3129954,3.84977454 C12.9093397,4.47448652 11.9408874,5.56646032 11.3445432,4.90302189 L11.3454579,4.9029558 Z' id='Fill-1' fill='%23002F87' transform='translate(7.000000, 5.500000) rotate(-270.000000) translate(-7.000000, -5.500000) '%3E%3C/path%3E%3C/g%3E%3C/svg%3E"); }
-      nav.pagination .nav-links .page-numbers:before {
-        position: absolute;
-        content: '';
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 2px;
-        border: 1px dashed #233053; }
-    nav.pagination .nav-links span.page-numbers:hover {
-      background-color: rgba(35, 48, 83, 0); }
+        pointer-events: none; }
+      nav.pagination .nav-links .page-numbers.prev:after, nav.pagination .nav-links .page-numbers.next:after {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        line-height: 1;
+        font-family: icomoon;
+        content: "";
+        position: relative;
+        top: .08em; }
+      nav.pagination .nav-links .page-numbers.prev span, nav.pagination .nav-links .page-numbers.next span {
+        display: none; }
+      nav.pagination .nav-links .page-numbers.prev:after {
+        -webkit-transform: rotateY(180deg);
+                transform: rotateY(180deg); }
+    nav.pagination .nav-links span.page-numbers {
+      pointer-events: none;
+      color: rgba(52, 58, 64, 0.5); }
 
 .alert, .gform_wrapper .validation_error, #gforms_confirmation_message {
   border-width: 0;
@@ -17030,6 +17359,25 @@ nav.pagination {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 500; }
+
+.ajax-loader {
+  position: relative; }
+  .ajax-loader.loading:after {
+    display: block; }
+  .ajax-loader.loading .ajax-content {
+    opacity: .5; }
+  .ajax-loader:after {
+    position: absolute;
+    content: '';
+    display: block;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: none; }
+  .ajax-loader .ajax-content {
+    -webkit-transition: opacity .5s;
+    transition: opacity .5s; }
 
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
@@ -18438,6 +18786,440 @@ nav.pagination {
 
 .wp-block-crown-blocks-portal-link-list .wp-block-crown-blocks-portal-link .link-title {
   font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+
+/*	Team Member Index
+---------------------------------------------------------*/
+.wp-block-crown-blocks-team-member-index .post-feed > .inner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin: 0 -.5rem -2rem; }
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-team-member-index .post-feed > .inner {
+      margin: 0 -1rem -1rem; } }
+  .wp-block-crown-blocks-team-member-index .post-feed > .inner > .alert-wrapper {
+    width: 100%;
+    padding: 0 .5rem 2rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index .post-feed > .inner > .alert-wrapper {
+        padding: 0 1rem 1rem; } }
+
+.wp-block-crown-blocks-team-member-index article.type-team_member {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-transition: background-color .2s;
+  transition: background-color .2s; }
+  .wp-block-crown-blocks-team-member-index article.type-team_member.active {
+    background-color: rgba(35, 48, 83, 0.1); }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member.active {
+        background-color: transparent; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member.active a .entry-headshot-photo .image.overlay {
+      opacity: 1;
+      visibility: visible;
+      -webkit-transition-delay: 0s;
+              transition-delay: 0s; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member.active a .entry-link {
+      opacity: 1; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member.active a .entry-link span:after {
+        left: 0;
+        opacity: 1; }
+  .wp-block-crown-blocks-team-member-index article.type-team_member.loading .entry-headshot-photo .image:before {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transition-delay: 0s;
+            transition-delay: 0s; }
+  .wp-block-crown-blocks-team-member-index article.type-team_member a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    color: inherit;
+    width: 100%;
+    padding: .5rem;
+    padding-bottom: 1.5rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member a {
+        padding: 1rem; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-headshot-photo .image.overlay {
+      opacity: 1;
+      visibility: visible;
+      -webkit-transition-delay: 0s;
+              transition-delay: 0s; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link {
+      opacity: 1; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link span:after {
+        left: 0;
+        opacity: 1; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member a > .inner {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      width: 100%;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column; }
+      @media (min-width: 992px) {
+        .wp-block-crown-blocks-team-member-index article.type-team_member a > .inner {
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: row;
+                  flex-direction: row; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
+    margin-bottom: .5rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
+        margin-bottom: 1rem; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
+        width: 40%;
+        margin-right: 1.5rem;
+        -webkit-box-flex: 0;
+            -ms-flex: 0 0 40%;
+                flex: 0 0 40%;
+        margin-bottom: 0; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo > .inner {
+      height: 0;
+      position: relative;
+      padding-top: 125%;
+      background-color: #7F94AA; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      mix-blend-mode: luminosity;
+      -webkit-filter: grayscale(1);
+              filter: grayscale(1);
+      opacity: .75;
+      -webkit-transition: opacity .2s, -webkit-filter .2s;
+      transition: opacity .2s, -webkit-filter .2s;
+      transition: opacity .2s, filter .2s;
+      transition: opacity .2s, filter .2s, -webkit-filter .2s; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image.overlay {
+        opacity: 0;
+        visibility: hidden;
+        -webkit-transition: opacity .2s, visibility 0s .2s;
+        transition: opacity .2s, visibility 0s .2s;
+        -webkit-filter: none;
+                filter: none;
+        mix-blend-mode: normal; }
+        .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image.overlay:after {
+          display: none; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image img {
+        display: none; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image:after {
+        content: '';
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        border: 4px solid #fff;
+        border-radius: 10rem;
+        border-top-color: transparent;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -1rem;
+        margin-top: -1rem;
+        -webkit-animation: spinner 1s infinite linear;
+                animation: spinner 1s infinite linear;
+        -webkit-transition: opacity .2s, visibility 0s .2s;
+        transition: opacity .2s, visibility 0s .2s;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 10; }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-teaser {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-teaser > .push {
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto; }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
+    margin-bottom: 1rem;
+    border-bottom: 4px solid #233053;
+    padding-bottom: .5rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
+        padding-bottom: .75rem;
+        border-bottom-width: 6px; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
+        padding-top: 1rem; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
+    font-size: 1rem;
+    margin-bottom: .25rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
+        font-size: 2rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
+        font-size: 3rem; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-job-title {
+    line-height: 1.2;
+    font-size: 0.875rem;
+    font-family: "utopia-std", serif;
+    font-style: italic;
+    margin-bottom: 0; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-job-title {
+        font-size: 1.25rem;
+        font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-style: normal; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-job-title {
+        font-size: 1.5rem; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-centers {
+    margin-bottom: 1rem;
+    margin-top: -0.5rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-centers {
+        margin-top: 0; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-centers span {
+      display: inline-block;
+      line-height: 1.2;
+      font-weight: 700;
+      font-size: 0.625rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      border: 1px solid #233053;
+      padding: .5rem .75rem; }
+      @media (min-width: 768px) {
+        .wp-block-crown-blocks-team-member-index article.type-team_member .entry-centers span {
+          font-size: 0.75rem;
+          border-width: 2px; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
+        font-size: 1.25rem;
+        margin-top: 1rem; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
+        padding-bottom: .5rem;
+        opacity: 0; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span {
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: inline-block;
+      color: #108DBC; }
+      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span:after {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        line-height: 1;
+        font-family: icomoon;
+        content: "";
+        display: block;
+        line-height: 1;
+        font-size: 2em;
+        position: relative;
+        -webkit-transition: left .2s .2s, opacity .2s .2s;
+        transition: left .2s .2s, opacity .2s .2s; }
+        @media (min-width: 992px) {
+          .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span:after {
+            left: -.5rem;
+            opacity: 0; } }
+  .wp-block-crown-blocks-team-member-index article.type-team_member .entry-details {
+    display: none; }
+
+.wp-block-crown-blocks-team-member-index .drawer {
+  width: 100%; }
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-team-member-index .drawer {
+      padding: 0 1rem; } }
+  .wp-block-crown-blocks-team-member-index .drawer > .inner {
+    overflow: hidden;
+    -webkit-transition: height .5s ease-out;
+    transition: height .5s ease-out; }
+  .wp-block-crown-blocks-team-member-index .drawer article.type-team_member {
+    padding-bottom: 1rem;
+    width: 100%; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member.flipped .entry-photo-overview {
+      -webkit-box-ordinal-group: 11;
+          -ms-flex-order: 10;
+              order: 10; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member[data-color="dark-blue"] > .inner {
+      background-color: #233053; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member[data-color="blue"] > .inner {
+      background-color: #108DBC; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member[data-color="red"] > .inner {
+      background-color: #D44457; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member[data-color="gray"] > .inner {
+      background-color: #7F94AA; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member[data-color="dark-gray"] > .inner {
+      background-color: #343a40; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member > .inner {
+      background-color: #D44457;
+      color: #fff;
+      position: relative;
+      width: 100%; }
+      @media (min-width: 768px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member > .inner {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex; } }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member button.drawer-close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: .5rem .75rem;
+      border: none;
+      outline: none;
+      line-height: 1.2;
+      font-family: "utopia-std", serif;
+      font-style: inherit;
+      font-size: 1rem;
+      background-color: rgba(52, 58, 64, 0.5);
+      color: #fff;
+      -webkit-transition: background-color .15s;
+      transition: background-color .15s;
+      z-index: 10; }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member button.drawer-close:hover {
+        background-color: rgba(52, 58, 64, 0.8); }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member button.drawer-close:before {
+        content: '×';
+        font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        display: inline-block;
+        margin-right: .2em;
+        font-size: 1.5em;
+        line-height: 1;
+        vertical-align: top;
+        font-weight: 400;
+        margin-top: -.17em;
+        margin-bottom: -.5em; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-photo-overview {
+      display: none;
+      padding: 2rem;
+      background-color: rgba(255, 255, 255, 0.1); }
+      @media (min-width: 768px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-photo-overview {
+          display: block;
+          width: 41.66667%; } }
+      @media (min-width: 992px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-photo-overview {
+          width: 33.33333%; } }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo {
+      margin: -2rem -2rem 2rem;
+      width: auto; }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo .image {
+        opacity: 1;
+        mix-blend-mode: normal;
+        -webkit-filter: none;
+                filter: none; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-header {
+      border-color: #fff; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-job-title {
+      font-family: "utopia-std", serif;
+      font-style: italic; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contact-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      margin-top: 1.5rem; }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contact-links li.linkedin a:before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='47.223' height='47.414' viewBox='0 0 47.223 47.414'%3E%3Cpath id='Icon_metro-linkedin' data-name='Icon metro-linkedin' d='M41.862,1.928H10.5A7.971,7.971,0,0,0,2.571,9.892V41.378A7.971,7.971,0,0,0,10.5,49.342H41.862a7.971,7.971,0,0,0,7.932-7.964V9.892A7.971,7.971,0,0,0,41.862,1.928ZM20.28,40.452h-5.9V19.708h5.9ZM17.328,16.745a2.963,2.963,0,1,1,2.951-2.963A2.957,2.957,0,0,1,17.328,16.745ZM40.94,40.452h-5.9V28.6a2.951,2.951,0,1,0-5.9,0V40.452h-5.9V19.708h5.9v3.68c1.217-1.679,3.078-3.68,5.165-3.68,3.668,0,6.641,3.317,6.641,7.408Z' transform='translate(-2.571 -1.928)' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"); }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contact-links a {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        padding: 0;
+        -webkit-transition: opacity .15s;
+        transition: opacity .15s; }
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contact-links a:hover {
+          opacity: .8; }
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contact-links a:before {
+          content: '';
+          display: block;
+          width: 2em;
+          height: 2em;
+          margin-right: .4em;
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contents {
+      padding: 2rem; }
+      @media (min-width: 768px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contents {
+          width: 58.33333%; } }
+      @media (min-width: 992px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contents {
+          width: 66.66667%;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+                  flex-direction: column;
+          padding: 3rem; } }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contents > .push {
+        -webkit-box-flex: 1;
+            -ms-flex: 1 1 auto;
+                flex: 1 1 auto; }
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-contents > .push + .entry-expertise {
+          margin-top: 2rem; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio {
+      font-family: "utopia-std", serif;
+      font-size: 1rem; }
+      @media (min-width: 992px) {
+        .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio {
+          font-size: 1.25rem; } }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio .bio-heading {
+        font-size: 1.25rem; }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise {
+      margin-bottom: 0; }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .label {
+        display: block;
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: .5rem; }
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise {
+        display: inline-block;
+        line-height: 1.2;
+        font-weight: 700;
+        font-size: 0.625rem;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        border-radius: 3px;
+        border: 1px solid #fff;
+        padding: .5rem .75rem; }
+        @media (min-width: 768px) {
+          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise {
+            font-size: 0.75rem;
+            border-width: 2px; } }
+
+.wp-block-crown-blocks-team-member-index .pagination-wrapper {
+  margin-top: 3rem; }
 
 .gform_wrapper {
   margin-bottom: 1rem;

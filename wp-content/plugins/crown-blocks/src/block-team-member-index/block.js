@@ -25,21 +25,19 @@ registerBlockType('crown-blocks/team-member-index', {
 	supports: {},
 
 	attributes: {
-		postsPerPage: { type: 'number', default: 60 },
-		scrollAnchor: { type: 'string', default: '' }
+		postsPerPage: { type: 'string', default: '10' }
 	},
 
 
 	edit: ({ attributes, className, isSelected, setAttributes }) => {
 
 		const {
-			postsPerPage,
-			scrollAnchor
+			postsPerPage
 		} = attributes;
 
 		let postsPerPageOptions = [];
-		for(let i = 1; i <= 10; i++) {
-			postsPerPageOptions.push({ label: i * 10, value: i * 10 });
+		for(let i = 4; i <= 20; i += 2) {
+			postsPerPageOptions.push({ label: i, value: i });
 		}
 
 		let blockClasses = [ className ];
@@ -55,16 +53,6 @@ registerBlockType('crown-blocks/team-member-index', {
 						value={ postsPerPage }
 						onChange={ (value) => setAttributes({ postsPerPage: value }) }
 						options={ postsPerPageOptions }
-					/>
-
-				</PanelBody>
-
-				<PanelBody title={ 'Interactivity' } initialOpen={ true }>
-
-					<TextControl
-						label="HTML anchor to scroll to upon filtering"
-						value={ scrollAnchor }
-						onChange={ (value) => setAttributes({ scrollAnchor: value }) }
 					/>
 
 				</PanelBody>

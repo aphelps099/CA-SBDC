@@ -3796,6 +3796,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/team-member-index"] .wp-block-crown-blocks-team-member-index form.feed-filters,
+.wp-block[data-type="crown-blocks/team-member-index"] .wp-block-crown-blocks-team-member-index a {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .edit-post-sidebar .components-panel__body.crown-blocks-featured-image .components-focal-point-picker_position-display-container {
   display: none; }
 
