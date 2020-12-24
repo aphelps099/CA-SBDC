@@ -1671,7 +1671,7 @@
 				outline: none;
 				line-height: $line-height-sm;
 				font-family: $font-family-serif;
-				font-style: inherit;
+				font-style: italic;
 				font-size: 1rem;
 				background-color: rgba($dark, .5);
 				color: #fff;
@@ -1685,6 +1685,7 @@
 					font-family: $font-family-base;
 					display: inline-block;
 					margin-right: .2em;
+					font-style: normal;
 					font-size: 1.5em;
 					line-height: 1;
 					vertical-align: top;
@@ -1776,6 +1777,7 @@
 				}
 				.bio-heading {
 					font-size: 1.25rem;
+					font-style: normal;
 				}
 			}
 			.entry-expertise {

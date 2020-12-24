@@ -19255,7 +19255,7 @@ nav.pagination {
       outline: none;
       line-height: 1.2;
       font-family: "utopia-std", serif;
-      font-style: inherit;
+      font-style: italic;
       font-size: 1rem;
       background-color: rgba(52, 58, 64, 0.5);
       color: #fff;
@@ -19269,6 +19269,7 @@ nav.pagination {
         font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         display: inline-block;
         margin-right: .2em;
+        font-style: normal;
         font-size: 1.5em;
         line-height: 1;
         vertical-align: top;
@@ -19357,7 +19358,8 @@ nav.pagination {
         .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio {
           font-size: 1.25rem; } }
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio .bio-heading {
-        font-size: 1.25rem; }
+        font-size: 1.25rem;
+        font-style: normal; }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise {
       margin-bottom: 0; }
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .label {
