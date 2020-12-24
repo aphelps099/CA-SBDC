@@ -10,7 +10,7 @@
 
 		<noscript>
 			<style>
-				#header { opacity: 1; transform: none; }
+				#header { opacity: 1 !important; transform: none !important; position: relative !important; }
 			</style>
 		</noscript>
 
