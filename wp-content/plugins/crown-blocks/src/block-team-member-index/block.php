@@ -392,19 +392,10 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 		}
 
 
-		public static function get_ajax_member_details() {
+		public static function get_member_details( $post_id ) {
 			global $post;
-
-			$response = (object) array(
-				'id' => '',
-				'content' => ''
-			);
-
-			$id = isset( $_GET['id'] ) ? $_GET['id'] : '';
-			$response->id = $id;
-
-			if ( empty( $id ) || ! ( $post = get_post( $id ) ) || $post->post_type != 'team_member' ) wp_send_json( $response );
-
+			$post = get_post( $post_id );
+			if ( ! $post || $post->post_type != 'team_member') return '';
 			setup_postdata( $post );
 			ob_start();
 			?>
@@ -448,6 +439,15 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 									</ul>
 								<?php } ?>
 
+								<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+								<?php if ( ! empty( $centers ) ) { ?>
+									<p class="entry-centers">
+										<?php foreach ( $centers as $term ) { ?>
+											<span class="center"><?php echo $term->name; ?></span>
+										<?php } ?>
+									</p>
+								<?php } ?>
+
 							</div>
 
 						</div>
@@ -479,8 +479,24 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 					</div>
 				</div>
 			<?php
-			$response->content = ob_get_clean();
+			return ob_get_clean();
+		}
 
+
+		public static function get_ajax_member_details() {
+			global $post;
+
+			$response = (object) array(
+				'id' => '',
+				'content' => ''
+			);
+
+			$id = isset( $_GET['id'] ) ? $_GET['id'] : '';
+			$response->id = $id;
+
+			if ( empty( $id ) ) wp_send_json( $response );
+
+			$response->content = self::get_member_details( $id );
 			wp_send_json( $response );
 		}
 

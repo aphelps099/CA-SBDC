@@ -1750,6 +1750,9 @@
 					}
 				}
 			}
+			.entry-centers {
+				display: none;
+			}
 			.entry-contents {
 				padding: 2rem;
 				@include media-breakpoint-up(md) {
