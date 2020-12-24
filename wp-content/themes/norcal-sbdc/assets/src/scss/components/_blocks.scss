@@ -1770,6 +1770,7 @@
 			.entry-bio {
 				font-family: $font-family-serif;
 				font-size: 1rem;
+				font-style: italic;
 				@include media-breakpoint-up(lg) {
 					font-size: 1.25rem;
 				}

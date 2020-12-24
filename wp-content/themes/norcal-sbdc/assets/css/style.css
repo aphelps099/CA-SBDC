@@ -19351,7 +19351,8 @@ nav.pagination {
           margin-top: 2rem; }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio {
       font-family: "utopia-std", serif;
-      font-size: 1rem; }
+      font-size: 1rem;
+      font-style: italic; }
       @media (min-width: 992px) {
         .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio {
           font-size: 1.25rem; } }
