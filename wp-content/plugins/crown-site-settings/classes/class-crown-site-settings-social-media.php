@@ -50,37 +50,109 @@ if ( ! class_exists( 'Crown_Site_Settings_Social_Media' ) ) {
 							new FieldGroup( array(
 								'label' => 'Social Media Links',
 								'fields' => array(
-									new Field( array(
-										'label' => 'Facebook Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_facebook_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Facebook Page URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_facebook_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_facebook_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'Twitter Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_twitter_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Twitter Profile URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_twitter_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_twitter_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'Google+ Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_google_plus_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Google+ Profile URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_google_plus_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_google_plus_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'LinkedIn Business Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_linkedin_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'LinkedIn Business Page URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_linkedin_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_linkedin_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'Instagram Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_instagram_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Instagram Profile URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_instagram_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_instagram_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'YouTube Channel URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_youtube_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'YouTube Channel URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_youtube_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_youtube_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'Vimeo Profile URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_vimeo_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Vimeo Profile URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_vimeo_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_vimeo_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) ),
-									new Field( array(
-										'label' => 'Pinterest Page URL',
-										'input' => new TextInput( array( 'name' => 'theme_config_pinterest_profile_url', 'placeholder' => 'https://' ) )
+									new FieldGroup( array(
+										'class' => 'no-border two-column large-left',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Pinterest Page URL',
+												'input' => new TextInput( array( 'name' => 'theme_config_pinterest_profile_url', 'placeholder' => 'https://' ) )
+											) ),
+											new Field( array(
+												'label' => 'Handle',
+												'input' => new TextInput( array( 'name' => 'theme_config_pinterest_profile_handle', 'placeholder' => '' ) )
+											) )
+										)
 									) )
 								)
 							) )

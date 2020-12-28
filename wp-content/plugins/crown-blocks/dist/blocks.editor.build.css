@@ -3696,6 +3696,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/post-index"] .wp-block-crown-blocks-post-index form.feed-filters,
+.wp-block[data-type="crown-blocks/post-index"] .wp-block-crown-blocks-post-index a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/section-nav"],
 .block-editor-block-list__block[data-type="crown-blocks/section-nav"] {
   border: 1px dashed rgba(0, 0, 0, 0.2);

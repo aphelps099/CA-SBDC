@@ -1,0 +1,10 @@
+
+
+.wp-block[data-type="crown-blocks/post-index"] {
+	.wp-block-crown-blocks-post-index {
+		form.feed-filters,
+		a {
+			pointer-events: none !important;
+		}
+	}
+}

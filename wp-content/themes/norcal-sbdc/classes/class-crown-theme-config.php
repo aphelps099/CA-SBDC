@@ -18,6 +18,7 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			add_action( 'init', array( __CLASS__, 'disable_emojis' ) );
 			add_filter( 'image_size_names_choose', array( __CLASS__, 'filter_image_size_select_option_names' ) );
 			add_action( 'widgets_init', array( __CLASS__, 'register_widget_locations' ) );
+			add_action( 'update_option_page_for_posts', array( __CLASS__, 'setup_page_for_posts' ), 10, 2 );
 
 			add_filter( 'upload_mimes', array( __CLASS__, 'filter_allowed_upload_mimes' ) );
 			add_filter( 'wp_check_filetype_and_ext', array( __CLASS__, 'validate_file_ext_and_type' ), 10, 4 );
@@ -41,7 +42,7 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			add_theme_support( 'post-thumbnails' );
 			add_theme_support( 'title-tag' );
 			add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'script', 'style' ) );
-			add_theme_support( 'post-formats', array() );
+			// add_theme_support( 'post-formats', array() );
 			add_theme_support( 'align-wide' );
 			add_theme_support( 'responsive-embeds' );
 			add_theme_support( 'editor-styles' );
@@ -174,6 +175,14 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 				}
 			}
 
+		}
+
+
+		public static function setup_page_for_posts( $old_value, $new_value ) {
+			$post = $new_value ? get_post( $new_value ) : null;
+			if ( $post && empty( $post->post_content ) ) {
+				wp_update_post( array( 'ID' => $post->ID, 'post_content' => ' ' ) );
+			}
 		}
 
 

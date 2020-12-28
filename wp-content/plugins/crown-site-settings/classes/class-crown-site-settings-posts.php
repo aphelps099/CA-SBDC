@@ -37,11 +37,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 			register_activation_hook( $plugin_file, array( __CLASS__, 'activate' ));
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
-			// add_action( 'after_setup_theme', array( __CLASS__, 'register_post_fields' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_fields' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_category_taxonomy_fields' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_topic_taxonomy' ) );
 
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
+
+			add_filter( 'post_class', array( __CLASS__, 'filter_post_class' ), 10, 3 );
+			add_filter( 'post_link', array( __CLASS__, 'filter_post_link' ), 10, 3 );
 
 		}
 
@@ -90,7 +93,25 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 			self::$post_types['post'] = new PostType( array(
 				'name' => 'post',
 				'metaBoxes' => array(
-					
+					new MetaBox( array(
+						'id' => 'post-format',
+						'title' => 'Post Format',
+						'context' => 'side',
+						'fields' => array(
+							new Field(array(
+								'input' => new Select( array( 'name' => 'crown_post_format', 'defaultValue' => '', 'options' => array(
+									array( 'value' => '', 'label' => 'Default' ),
+									array( 'value' => 'tweet', 'label' => 'Tweet' ),
+									array( 'value' => 'facebook-update', 'label' => 'Facebook Update' )
+								) ) )
+							) ),
+							new Field(array(
+								'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'crown_post_format' ), 'value' => array( 'tweet', 'facebook-update' ) ) ) ),
+								'label' => 'External Link',
+								'input' => new TextInput( array( 'name' => 'post_external_link', 'placeholder' => 'https://' ) )
+							) )
+						)
+					) )
 				)
 			) );
 
@@ -175,6 +196,44 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 
 			}
 
+		}
+
+
+		public static function filter_post_class( $classes, $class, $post_id ) {
+			if ( get_post_type( $post_id ) == 'post' ) {
+				$format = get_post_meta( $post_id, 'crown_post_format', true );
+				if ( ! empty( $format ) ) {
+					$classes[] = 'post-format-' . $format;
+					$external_link = get_post_meta( $post_id, 'post_external_link', true );
+					if ( empty( $external_link ) ) {
+						if ( $format == 'tweet' && ( $profile_url = get_option( 'theme_config_twitter_profile_url' ) ) ) {
+							$external_link = $profile_url;
+						} else if ( $format == 'facebook-update' && ( $profile_url = get_option( 'theme_config_facebook_profile_url' ) ) ) {
+							$external_link = $profile_url;
+						}
+					}
+					if ( ! empty( $external_link ) ) $classes[] = 'has-external-link';
+				}
+			}
+			return $classes;
+		}
+
+
+		public static function filter_post_link( $permalink, $post, $leavename ) {
+			if ( get_post_type( $post->ID ) == 'post' ) {
+				$format = get_post_meta( $post->ID, 'crown_post_format', true );
+				if ( in_array( $format, array( 'tweet', 'facebook-update' ) ) ) {
+					$external_link = get_post_meta( $post->ID, 'post_external_link', true );
+					if ( ! empty( $external_link ) ) {
+						$permalink = $external_link;
+					} else if ( $format == 'tweet' && ( $profile_url = get_option( 'theme_config_twitter_profile_url' ) ) ) {
+						$permalink = $profile_url;
+					} else if ( $format == 'facebook-update' && ( $profile_url = get_option( 'theme_config_facebook_profile_url' ) ) ) {
+						$permalink = $profile_url;
+					}
+				}
+			}
+			return $permalink;
 		}
 
 

@@ -1,6 +1,6 @@
-<article <?php echo is_singular() ? 'id="main-article"' : ''; ?> <?php post_class(); ?>>
+<article id="main-article" <?php post_class(); ?>>
 
-	<div <?php echo is_singular() ? 'id="main-content"' : ''; ?> class="entry-content">
+	<div id="main-content" class="entry-content">
 
 		<?php the_content( __( 'Continue reading', 'crown_theme' ) ); ?>
 
