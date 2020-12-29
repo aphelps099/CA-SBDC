@@ -19542,6 +19542,8 @@ nav.pagination {
       background-color: rgba(16, 141, 188, 0.2); }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item .icon svg {
     fill: #233053; }
+  .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+    background-color: #cfe8f2; }
 
 .gform_wrapper {
   margin-bottom: 1rem;
