@@ -436,12 +436,44 @@
 }
 
 .resource-teaser {
+	&.resource_type-video,
+	&.resource_type-webinar {
+		a:hover {
+			.entry-featured-image > .inner:after {
+				left: 50%;
+				transform: scale(1.1);
+			}
+		}
+		.entry-featured-image > .inner {
+			&.dark:after { background-image: escape-svg(url('data:image/svg+xml,<svg width="68px" height="87px" viewBox="0 0 68 87" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#{$white}"><path d="M0,2.154 L0,84.846 C0,86.0327487 1.31286893,86.7495111 2.31113639,86.1077677 L66.6271364,44.7617677 C67.5456212,44.1713132 67.5456212,42.8286868 66.6271364,42.2382323 L2.31113639,0.892232287 C1.31286893,0.250488924 0,0.96725131 0,2.154 Z M3,4.901 L63.042,43.5 L3,82.098 L3,4.901 Z" fill-rule="nonzero"></path></svg>')); }
+			&.light:after { background-image: escape-svg(url('data:image/svg+xml,<svg width="68px" height="87px" viewBox="0 0 68 87" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#{$body-color}"><path d="M0,2.154 L0,84.846 C0,86.0327487 1.31286893,86.7495111 2.31113639,86.1077677 L66.6271364,44.7617677 C67.5456212,44.1713132 67.5456212,42.8286868 66.6271364,42.2382323 L2.31113639,0.892232287 C1.31286893,0.250488924 0,0.96725131 0,2.154 Z M3,4.901 L63.042,43.5 L3,82.098 L3,4.901 Z" fill-rule="nonzero"></path></svg>')); }
+			&:after {
+				content: '';
+				background-image: escape-svg(url('data:image/svg+xml,<svg width="68px" height="87px" viewBox="0 0 68 87" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#{$white}"><path d="M0,2.154 L0,84.846 C0,86.0327487 1.31286893,86.7495111 2.31113639,86.1077677 L66.6271364,44.7617677 C67.5456212,44.1713132 67.5456212,42.8286868 66.6271364,42.2382323 L2.31113639,0.892232287 C1.31286893,0.250488924 0,0.96725131 0,2.154 Z M3,4.901 L63.042,43.5 L3,82.098 L3,4.901 Z" fill-rule="nonzero"></path></svg>'));
+				background-position: center;
+				background-size: contain;
+				background-repeat: no-repeat;
+				width: 4rem;
+				height: 4rem;
+				margin-top: -2rem;
+				left: 50%;
+				margin-left: -2rem;
+				opacity: 1;
+				transition: transform .3s;
+			}
+		}
+	}
 	a {
 		color: inherit;
 		&:hover {
-			.entry-featured-image > .inner:after {
-				left: 0;
-				opacity: 1;
+			.entry-featured-image {
+				> .inner:after {
+					left: 0;
+					opacity: 1;
+				}
+				.image {
+					opacity: .4;
+				}
 			}
 		}
 	}
@@ -492,6 +524,7 @@
 			mix-blend-mode: multiply;
 			opacity: .5;
 			filter: grayscale(1);
+			transition: opacity .3s;
 			img {
 				display: none;
 			}

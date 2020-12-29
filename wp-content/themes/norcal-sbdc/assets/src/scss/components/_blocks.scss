@@ -2193,3 +2193,31 @@
 		}
 	}
 }
+
+
+/*	Post Index
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-resource-index {
+	.post-feed {
+		> .inner {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -1rem -2rem;
+			> .alert-wrapper {
+				width: 100%;
+				padding: 0 1rem 2rem;
+			}
+		}
+	}
+	article.type-resource {
+		width: 100%;
+		padding: 0 1rem 2rem;
+		@include media-breakpoint-up(md) {
+			width: percentage(1 / 2);
+		}
+		@include media-breakpoint-up(lg) {
+			width: percentage(1 / 3);
+		}
+	}
+}

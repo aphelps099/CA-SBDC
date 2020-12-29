@@ -43,6 +43,7 @@ import './block-post-header/block.js';
 import './block-post-index/block.js';
 // import './block-promo/block.js';
 import './block-resource-header/block.js';
+import './block-resource-index/block.js';
 import './block-section-nav/block.js';
 import './block-section-nav-content/block.js';
 import './block-stat/block.js';
