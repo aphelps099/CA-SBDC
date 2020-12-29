@@ -111,6 +111,7 @@
 			var header = $('#header');
 			var first_section = $('#main-content').children().first();
 			if(first_section.is('.wp-block-crown-blocks-container.text-color-light.alignfull')) header.addClass('text-color-light');
+			if(first_section.is('.wp-block-crown-blocks-post-header')) header.addClass('text-color-light');
 			header.addClass('loaded');
 
 			var adjustSubMenus = function() {
@@ -413,6 +414,15 @@
 					window.open($(this).attr('href'), 'Share Link', 'top=' + winTop + ',left=' + winLeft + ',toolbar=0,status=0,width=' + winWidth + ',height=' + winHeight);
 				}
 			});
+
+			var adjustStickyShareLinks = function() {
+				var footerTop = $('#pre-footer').offset().top;
+				$('.wp-block-crown-blocks-post-header .sticky-share-links').each(function(i, el) {
+					$(el).height(footerTop - $(el).offset().top - 200);
+				});
+			}
+			adjustStickyShareLinks();
+			$(window).on('load resize', adjustStickyShareLinks);
 
 		};
 

@@ -39,6 +39,7 @@ import './block-multi-column/block.js';
 import './block-portal-link/block.js';
 import './block-portal-link-grid/block.js';
 import './block-portal-link-list/block.js';
+import './block-post-header/block.js';
 import './block-post-index/block.js';
 // import './block-promo/block.js';
 import './block-section-nav/block.js';

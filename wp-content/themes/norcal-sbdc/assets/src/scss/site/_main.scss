@@ -33,7 +33,8 @@
 	> .wp-block-crown-blocks-call-to-action.alignfull,
 	> .wp-block-crown-blocks-container.alignfull,
 	> .wp-block-crown-blocks-container-featured-image.alignfull,
-	> .wp-block-crown-blocks-promo.alignfull {
+	> .wp-block-crown-blocks-promo.alignfull,
+	> .wp-block-crown-blocks-post-header {
 		&:first-child {
 			margin-top: -40px;
 			@include media-breakpoint-up(md) {

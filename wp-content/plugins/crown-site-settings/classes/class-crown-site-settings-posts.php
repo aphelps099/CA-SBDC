@@ -40,6 +40,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_fields' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_category_taxonomy_fields' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_topic_taxonomy' ) );
+			add_action( 'init', array( __CLASS__, 'register_post_template' ) );
 
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
@@ -175,6 +176,15 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 				)
 			) );
 
+		}
+
+
+		public static function register_post_template() {
+			$post_type_object = get_post_type_object( 'post' );
+			$post_type_object->template = array(
+				array( 'crown-blocks/post-header', array() ),
+				array( 'core/paragraph', array() )
+			);
 		}
 
 

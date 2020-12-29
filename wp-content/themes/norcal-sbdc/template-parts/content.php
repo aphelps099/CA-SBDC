@@ -16,10 +16,6 @@
 	?>
 
 	<?php if ( is_singular( array( 'post' ) ) ) { ?>
-		<?php ct_social_sharing_links(); ?>
-	<?php } ?>
-
-	<?php if ( is_singular( array( 'post' ) ) ) { ?>
 		<?php get_template_part( 'template-parts/entry-footer', get_post_type() ); ?>
 	<?php } ?>
 

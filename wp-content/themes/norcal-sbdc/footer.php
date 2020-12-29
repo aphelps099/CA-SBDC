@@ -12,6 +12,8 @@
 		<?php get_template_part( 'template-parts/site-mobile-menu' ); ?>
 		<?php get_template_part( 'template-parts/lightbox-gallery' ); ?>
 
+		<?php get_template_part( 'template-parts/modal-subscribe' ); ?>
+
 		<?php wp_footer(); ?>
 
 	</body>

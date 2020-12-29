@@ -88,10 +88,9 @@ if ( ! function_exists( 'ct_social_sharing_links' ) ) {
 		$args = array_merge( array(
 			'title' => __( 'Share', 'crown_theme' ),
 			'links' => array(
-				'linkedin',
 				'facebook',
 				'twitter',
-				'email'
+				'linkedin'
 			)
 		), $args );
 
