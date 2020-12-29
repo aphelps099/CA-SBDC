@@ -1919,6 +1919,7 @@
 			display: flex;
 			color: inherit;
 			@include media-breakpoint-up(md) {
+				background-color: #fff;
 				transition: background-color .2s, color .2s;
 				&:hover {
 					background-color: $primary;

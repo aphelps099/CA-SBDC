@@ -19363,6 +19363,7 @@ nav.pagination {
     color: inherit; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-index article.type-post a {
+        background-color: #fff;
         -webkit-transition: background-color .2s, color .2s;
         transition: background-color .2s, color .2s; }
         .wp-block-crown-blocks-post-index article.type-post a:hover {
