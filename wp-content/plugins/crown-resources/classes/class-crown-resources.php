@@ -106,7 +106,11 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					'show_in_nav_menus' => false,
 					'capability_type' => array( 'resource', 'resources' ),
 					'map_meta_cap' => true,
-					'menu_position' => 32
+					'menu_position' => 32,
+					'template' => array(
+						array( 'crown-blocks/resource-header', array() ),
+						array( 'core/paragraph', array() )
+					)
 				),
 				'metaBoxes' => array(
 					
@@ -278,7 +282,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 		}
 
 
-		protected static function is_dark_color( $hex, $threshold = 0.607843137 ) {
+		public static function is_dark_color( $hex, $threshold = 0.607843137 ) {
 			$luminosity = self::get_color_luminosity( $hex );
 			return $luminosity <= $threshold;
 		}

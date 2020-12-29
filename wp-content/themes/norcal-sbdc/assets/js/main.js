@@ -417,9 +417,8 @@
 
 			var adjustStickyShareLinks = function() {
 				var footerTop = $('#pre-footer').offset().top;
-				$('.wp-block-crown-blocks-post-header .sticky-share-links').each(function(i, el) {
-					$(el).height(footerTop - $(el).offset().top - 200);
-				});
+				$('.wp-block-crown-blocks-post-header .sticky-share-links').each(function(i, el) { $(el).height(footerTop - $(el).offset().top - 200); });
+				$('.wp-block-crown-blocks-resource-header .sticky-share-links').each(function(i, el) { $(el).height(footerTop - $(el).offset().top - 200); });
 			}
 			adjustStickyShareLinks();
 			$(window).on('load resize', adjustStickyShareLinks);

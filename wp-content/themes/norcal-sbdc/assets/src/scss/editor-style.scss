@@ -345,3 +345,11 @@ body {
 		margin-right: 0;
 	}
 }
+
+.wp-block[data-type="crown-blocks/resource-header"] {
+	max-width: none;
+	.wp-block-crown-blocks-resource-header {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}

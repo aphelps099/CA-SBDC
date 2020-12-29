@@ -2121,3 +2121,75 @@
 		}
 	}
 }
+
+
+/*	Resource Header
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-resource-header {
+	&:last-child {
+		margin-bottom: 0;
+	}
+	margin-left: -#{map-get($container-padding-x, xs)};
+	margin-right: -#{map-get($container-padding-x, xs)};
+	@include media-breakpoint-up(sm) {
+		margin-left: -#{map-get($container-padding-x, sm)};
+		margin-right: -#{map-get($container-padding-x, sm)};
+	}
+	@include media-breakpoint-up(md) {
+		margin-left: -#{map-get($container-padding-x, md)};
+		margin-right: -#{map-get($container-padding-x, md)};
+	}
+	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
+		margin-left: calc((100vw - 900px) / -2);
+		margin-right: calc((100vw - 900px) / -2);
+	}
+	> .header-bg {
+		background-color: $ghost;
+	}
+	> .inner > .header-contents {
+		@each $breakpoint, $padding-x in $container-padding-x {
+			@include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+				padding-left: $padding-x;
+				padding-right: $padding-x;
+			}
+		}
+	}
+	.index-title {
+		font-family: $font-family-sans-serif-alt;
+	}
+	.article-header {
+		&.text-color-light {
+			color: #fff;
+		}
+		&.text-color-dark {
+			color: $body-color;
+		}
+	}
+	.social-sharing-links {
+		.menu-item {
+			a {
+				border-color: $blue;
+				&:hover {
+					background-color: rgba($blue, .2);
+				}
+			}
+			.icon {
+				svg {
+					fill: $primary;
+				}
+			}
+		}
+	}
+	.sticky-share-links {
+		.social-sharing-links {
+			.menu-item {
+				a {
+					&:hover {
+						background-color: mix($blue, #fff, 20%);
+					}
+				}
+			}
+		}
+	}
+}
