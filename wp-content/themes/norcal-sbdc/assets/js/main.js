@@ -112,6 +112,7 @@
 			var first_section = $('#main-content').children().first();
 			if(first_section.is('.wp-block-crown-blocks-container.text-color-light.alignfull')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-post-header')) header.addClass('text-color-light');
+			if(first_section.is('.wp-block-crown-blocks-event-header')) header.addClass('text-color-light');
 			header.addClass('loaded');
 
 			var adjustSubMenus = function() {

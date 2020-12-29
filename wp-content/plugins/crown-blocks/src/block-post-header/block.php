@@ -15,7 +15,7 @@ if(!class_exists('Crown_Block_Post_Header')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'backgroundImageId' => array( 'type' => 'number', 'default' => 0 ),
+				'backgroundImageId' => array( 'type' => 'string', 'default' => '' ),
 				'backgroundImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) )
 			);
 		}

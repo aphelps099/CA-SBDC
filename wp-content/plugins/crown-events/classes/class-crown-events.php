@@ -130,7 +130,82 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 					'show_in_nav_menus' => false,
 					'capability_type' => array( 'event', 'events' ),
 					'map_meta_cap' => true,
-					'menu_position' => 31
+					'menu_position' => 31,
+					'template' => array(
+						array( 'crown-blocks/event-header', array() ),
+						array( 'crown-blocks/container', array(
+							'align' => 'full',
+							'spacingProfile' => '',
+							'paddingTopXl' => 0,
+							'paddingBottomXl' => 10,
+							'paddingXXl' => 5,
+							'paddingTopLg' => 0,
+							'paddingBottomLg' => 10,
+							'paddingXLg' => 4,
+							'paddingTopMd' => 0,
+							'paddingBottomMd' => 7,
+							'paddingXMd' => 3,
+							'paddingTopSm' => 0,
+							'paddingBottomSm' => 5,
+							'paddingXSm' => 2,
+							'paddingTopXs' => 0,
+							'paddingBottomXs' => 5,
+							'paddingXXs' => 2
+						), array(
+							array( 'crown-blocks/multi-column', array(
+								'columnBreakpoint' => 'lg',
+								'columnSpacingXl' => 0
+							), array(
+								array( 'crown-blocks/column', array(
+									'paddingTopXs' => 2,
+									'paddingTopSm' => 2,
+									'paddingTopMd' => 2,
+									'paddingTopLg' => 2,
+									'paddingTopXl' => 3,
+									'paddingRightLg' => 2,
+									'paddingRightXl' => 3,
+									'paddingBottomXs' => 2,
+									'paddingBottomSm' => 2,
+									'paddingBottomMd' => 2,
+									'paddingBottomLg' => 2,
+									'paddingBottomXl' => 3
+								), array(
+									array( 'core/heading', array(
+										'content' => 'Event Details'
+									) ),
+									array( 'core/paragraph', array() )
+								) ),
+								array( 'crown-blocks/column', array(), array(
+									array( 'crown-blocks/container', array(
+										'spacingProfile' => '',
+										'paddingTopXl' => 6,
+										'paddingBottomXl' => 6,
+										'paddingXXl' => 6,
+										'paddingTopLg' => 4,
+										'paddingBottomLg' => 4,
+										'paddingXLg' => 4,
+										'paddingTopMd' => 4,
+										'paddingBottomMd' => 4,
+										'paddingXMd' => 4,
+										'paddingTopSm' => 4,
+										'paddingBottomSm' => 4,
+										'paddingXSm' => 4,
+										'paddingTopXs' => 4,
+										'paddingBottomXs' => 4,
+										'paddingXXs' => 4,
+										'backgroundColor' => '#F1F4F7',
+										'backgroundColorSlug' => 'ghost',
+										'className' => 'bg-flush-right'
+									), array(
+										array( 'core/heading', array(
+											'level' => 3,
+											'placeholder' => 'Register for this Event'
+										) )
+									) )
+								) )
+							) )
+						) )
+					)
 				),
 				'metaBoxes' => array(
 					new MetaBox( array(
