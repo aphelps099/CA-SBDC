@@ -1850,7 +1850,7 @@
 			padding: 0 1rem 2rem;
 		}
 		@include media-breakpoint-up(xl) {
-			&:nth-child(4),
+			&:nth-child(4):not(:last-child),
 			&:nth-child(5) {
 				width: 50%;
 				.entry-featured-image {
