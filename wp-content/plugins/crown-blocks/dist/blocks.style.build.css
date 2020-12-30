@@ -260,6 +260,9 @@
     @media (min-width: 768px) {
       .wp-block-crown-blocks-client-story-header .entry-intro {
         font-size: 1.5rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-client-story-header .entry-intro {
+        font-size: 1.875rem; } }
   .wp-block-crown-blocks-client-story-header .social-sharing-links {
     margin: 0;
     margin-top: 2rem; }

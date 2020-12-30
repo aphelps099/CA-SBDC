@@ -32,7 +32,7 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 			$featured_image_id = get_post_thumbnail_id( $post_id );
 			$featured_image_url = '';
 			if ( ! empty( $atts['featuredImageId'] ) ) $featured_image_id = $atts['featuredImageId'];
-			$featured_image_url = ! empty( $featured_image_id ) ? wp_get_attachment_image_url( $featured_image_id, 'medium_large' ) : $featured_image_url;
+			$featured_image_url = ! empty( $featured_image_id ) ? wp_get_attachment_image_url( $featured_image_id, 'extra_large' ) : $featured_image_url;
 			if ( ! empty( $featured_image_url ) ) $block_class[] = 'has-featured-image';
 
 			ob_start();
@@ -74,8 +74,8 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 
 								<?php if ( ! empty( $featured_image_url ) ) { ?>
 									<div class="entry-featured-image">
-										<div class="image" style="background-image: url(<?php echo $featured_image_url; ?>);">
-											<?php echo wp_get_attachment_image( $featured_image_id, 'medium_large' ) ?>
+										<div class="image" style="background-image: url(<?php echo $featured_image_url; ?>); background-position: <?php echo floatval( $atts['featuredImageFocalPoint']['x'] ) * 100; ?>% <?php echo floatval( $atts['featuredImageFocalPoint']['y'] ) * 100; ?>%;">
+											<?php echo wp_get_attachment_image( $featured_image_id, 'extra_large' ) ?>
 										</div>
 									</div>
 								<?php } ?>
