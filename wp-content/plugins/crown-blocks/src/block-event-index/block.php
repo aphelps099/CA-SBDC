@@ -1,10 +1,10 @@
 <?php
 
-if(!class_exists('Crown_Block_Resource_Index')) {
-	class Crown_Block_Resource_Index extends Crown_Block {
+if(!class_exists('Crown_Block_Event_Index')) {
+	class Crown_Block_Event_Index extends Crown_Block {
 
 
-		public static $name = 'resource-index';
+		public static $name = 'event-index';
 
 
 		public static function init() {
@@ -15,57 +15,76 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'postsPerPage' => array( 'type' => 'string', 'default' => '12' )
+				'postsPerPage' => array( 'type' => 'string', 'default' => '10' )
 			);
 		}
 
 
 		public static function render( $atts, $content ) {
 			global $post;
+			if ( ! class_exists( 'Crown_Events' ) ) return '';
 
 			$filters = (object) array(
-				'type' => (object) array( 'key' => 'r_type', 'queried' => null, 'options' => array() ),
-				'topic' => (object) array( 'key' => 'r_topic', 'queried' => null, 'options' => array() ),
-				'search' => (object) array( 'key' => 'r_search', 'queried' => null, 'options' => array() )
+				'topic' => (object) array( 'key' => 'e_topic', 'queried' => null, 'options' => array() ),
+				'series' => (object) array( 'key' => 'e_series', 'queried' => null, 'options' => array() ),
+				'month' => (object) array( 'key' => 'e_month', 'queried' => null, 'options' => array() )
 			);
 
-			// $atts['postsPerPage'] = 1;
-			$query_args = array(
-				'post_type' => 'resource',
-				'posts_per_page' => $atts['postsPerPage'],
-				'paged' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-				'tax_query' => array(),
-				'meta_query' => array()
+			$event_args = array(
+				'from' => date( 'Y-m-d H:i:s' ),
+				'tax_query' => array()
 			);
-
-			$filters->type->queried = isset( $_GET[ $filters->type->key ] ) ? ( is_array( $_GET[ $filters->type->key ] ) ? $_GET[ $filters->type->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->type->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->type->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'resource_type', 'terms' => $filters->type->queried );
 
 			$filters->topic->queried = isset( $_GET[ $filters->topic->key ] ) ? ( is_array( $_GET[ $filters->topic->key ] ) ? $_GET[ $filters->topic->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->topic->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->topic->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'post_topic', 'terms' => $filters->topic->queried );
+			if ( ! empty( $filters->topic->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_topic', 'terms' => $filters->topic->queried );
 
-			$filters->search->queried = isset( $_GET[ $filters->search->key ] ) ? trim( $_GET[ $filters->search->key ] ) : '';
-			if ( ! empty( $filters->search->queried ) ) $query_args['s'] = $filters->search->queried;
+			$filters->series->queried = isset( $_GET[ $filters->series->key ] ) ? ( is_array( $_GET[ $filters->series->key ] ) ? $_GET[ $filters->series->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->series->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+			if ( ! empty( $filters->series->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'event_series', 'terms' => $filters->series->queried );
 
+			$filters->month->queried = isset( $_GET[ $filters->month->key ] ) ? trim( $_GET[ $filters->month->key ] ) : '';
+			if ( ! empty( $filters->month->queried ) && preg_match( '/^(\d{1,2})-(\d{4})$/', $filters->month->queried, $matches ) ) {
+				$m = str_pad( $matches[1], 2, '0', STR_PAD_LEFT );
+				$y = $matches[2];
+				$filters->month->queried = $m . '-' . $y;
+				$queried_date = new DateTime( $y . '-' . $m . '-1 00:00:00' );
+				$event_args['from'] = $queried_date->format( 'Y-m-d H:i:s' );
+				$queried_date->modify( 'first day of next month' );
+				$event_args['to'] = $queried_date->format( 'Y-m-d H:i:s' );
+			}
+
+			$query_args = Crown_Events::get_event_query_args( $event_args );
+			$query_args = array_merge( $query_args, array(
+				'posts_per_page' => $atts['postsPerPage'],
+				'paged' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1
+			) );
 			$query = new WP_Query( $query_args );
 
 			$filters_action = remove_query_arg( array(
-				$filters->type->key,
 				$filters->topic->key,
-				$filters->search->key
+				$filters->series->key,
+				$filters->month->key
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
-
-			$filters->type->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->type->queried ) );
-			}, get_terms( array( 'taxonomy' => 'resource_type' ) ) );
 
 			$filters->topic->options = array_map( function( $n ) use ( $filters ) {
 				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->topic->queried ) );
 			}, get_terms( array( 'taxonomy' => 'post_topic' ) ) );
 
-			$block_class = array( 'wp-block-crown-blocks-resource-index', 'post-feed-block', $atts['className'] );
-			$block_id = 'post-feed-block-' . md5( json_encode( array( 'resource-index', $atts ) ) );
+			$filters->series->options = array_map( function( $n ) use ( $filters ) {
+				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->series->queried ) );
+			}, get_terms( array( 'taxonomy' => 'event_series' ) ) );
+
+			$current_month = new DateTime( current_time( 'Y-m-d H:i:s' ) );
+			$current_month->modify( 'first day of this month' )->modify( 'today' );
+			$n = clone $current_month;
+			$n->modify( '4 months ago' );
+			for ( $i = 0; $i < 12; $i++ ) {
+				$filters->month->options[] = (object) array( 'value' => $n->format( 'm-Y' ), 'label' => $n->format( 'M' ), 'is_past' => $n < $current_month, 'selected' => $n->format( 'm-Y' ) == $filters->month->queried );
+				$n->modify( '+1 month' );
+			}
+
+			$block_class = array( 'wp-block-crown-blocks-event-index', 'post-feed-block', $atts['className'] );
+			$block_id = 'post-feed-block-' . md5( json_encode( array( 'event-index', $atts ) ) );
 
 			ob_start();
 			// print_r($filters);
@@ -82,14 +101,11 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 
 								<button type="button" class="filters-close"><?php _e( 'Close', 'crown_blocks' ); ?></button>
 
-								<div class="search-field">
-									<input type="text" name="<?php echo $filters->search->key; ?>" value="<?php echo esc_attr( $filters->search->queried ); ?>" placeholder="<?php echo esc_attr( __( 'Search' ), 'crown_blocks' ); ?>">
-								</div>
-
 								<nav class="filters-nav">
 									<ul>
-										<?php if ( ! empty( $filters->type->options ) ) { ?><li><button type="button" data-tab="type"><?php _e( 'Type', 'crown_blocks' ); ?></button></li><?php } ?>
 										<?php if ( ! empty( $filters->topic->options ) ) { ?><li><button type="button" data-tab="topic"><?php _e( 'Topic', 'crown_blocks' ); ?></button></li><?php } ?>
+										<?php if ( ! empty( $filters->month->options ) ) { ?><li><button type="button" data-tab="month"><?php _e( 'Month', 'crown_blocks' ); ?></button></li><?php } ?>
+										<?php if ( ! empty( $filters->series->options ) ) { ?><li><button type="button" data-tab="series"><?php _e( 'Series', 'crown_blocks' ); ?></button></li><?php } ?>
 									</ul>
 								</nav>
 
@@ -100,13 +116,13 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 							<div class="filters-tabs">
 								<div class="inner">
 
-									<?php if ( ! empty( $filters->type->options ) ) { ?>
-										<div class="filters-tab" data-tab="type">
-											<ul class="options type">
-												<?php foreach ( $filters->type->options as $option ) { ?>
+									<?php if ( ! empty( $filters->topic->options ) ) { ?>
+										<div class="filters-tab" data-tab="topic">
+											<ul class="options topic">
+												<?php foreach ( $filters->topic->options as $option ) { ?>
 													<li class="option">
 														<label>
-															<input type="checkbox" name="<?php echo $filters->type->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+															<input type="checkbox" name="<?php echo $filters->topic->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
 															<span class="label"><?php echo $option->label; ?></span>
 														</label>
 													</li>
@@ -115,13 +131,28 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 										</div>
 									<?php } ?>
 
-									<?php if ( ! empty( $filters->topic->options ) ) { ?>
-										<div class="filters-tab" data-tab="topic">
-											<ul class="options topic">
-												<?php foreach ( $filters->topic->options as $option ) { ?>
+									<?php if ( ! empty( $filters->month->options ) ) { ?>
+										<div class="filters-tab" data-tab="month">
+											<ul class="options singular month">
+												<?php foreach ( $filters->month->options as $option ) { ?>
+													<li class="option <?php echo $option->is_past ? 'past' : ''; ?>">
+														<label>
+															<input type="checkbox" name="<?php echo $filters->month->key; ?>" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+															<span class="label"><?php echo $option->label; ?></span>
+														</label>
+													</li>
+												<?php } ?>
+											</ul>
+										</div>
+									<?php } ?>
+
+									<?php if ( ! empty( $filters->series->options ) ) { ?>
+										<div class="filters-tab" data-tab="series">
+											<ul class="options series">
+												<?php foreach ( $filters->series->options as $option ) { ?>
 													<li class="option">
 														<label>
-															<input type="checkbox" name="<?php echo $filters->topic->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+															<input type="checkbox" name="<?php echo $filters->series->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
 															<span class="label"><?php echo $option->label; ?></span>
 														</label>
 													</li>
@@ -148,7 +179,7 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 										<?php if ( ! $query->have_posts() ) { ?>
 											<div class="alert-wrapper">
 												<div class="alert alert-info no-results">
-													<h4>No Resources Found</h4>
+													<h4>No Events Found</h4>
 													<p>Please try adjusting your selected filters above.</p>
 												</div>
 											</div>
@@ -156,7 +187,42 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 										
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
-											<?php if ( class_exists( 'Crown_Resources' ) ) Crown_Resources::resource_teaser(); ?>
+											<article <?php post_class(); ?>>
+												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo get_the_ID(); ?>">
+													<div class="inner">
+
+														<div class="entry-event-date-container">
+															<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( get_the_ID() ); ?>
+														</div>
+
+														<div class="entry-teaser">
+
+															<header class="entry-header">
+
+																<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+																<?php if ( ! empty( $centers ) ) { ?>
+																	<p class="entry-centers">
+																		<?php foreach ( $centers as $term ) { ?>
+																			<span class="center"><?php echo $term->name; ?></span>
+																		<?php } ?>
+																	</p>
+																<?php } ?>
+
+																<h3 class="entry-title"><?php the_title(); ?></h3>
+
+															</header>
+
+															<div class="entry-excerpt"><?php the_excerpt(); ?></div>
+
+															<p class="entry-link">
+																<span class="btn btn-link btn-link-blue btn-has-arrow-icon"><?php _e( 'View Event Details', 'crown_blocks' ); ?></span>
+															</p>
+
+														</div>
+
+													</div>
+												</a>
+											</article>
 										<?php } ?>
 										<?php wp_reset_postdata(); ?>
 	
@@ -271,5 +337,5 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 
 
 	}
-	Crown_Block_Resource_Index::init();
+	Crown_Block_Event_Index::init();
 }

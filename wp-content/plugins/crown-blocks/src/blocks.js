@@ -24,6 +24,7 @@ import './block-content-slider-slide/block.js';
 // import './block-core-values/block.js';
 // import './block-core-values-item/block.js';
 import './block-event-header/block.js';
+import './block-event-index/block.js';
 // import './block-expandable-content/block.js';
 // import './block-featured-case-studies/block.js';
 // import './block-featured-case-study-logos/block.js';

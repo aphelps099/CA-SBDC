@@ -30,6 +30,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		public static $init = false;
 
 		public static $event_post_type = null;
+		public static $event_series_taxonomy = null;
 
 		public static $weekly_event_count_shortcode = null;
 
@@ -43,6 +44,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_post_type' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_series_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_weekly_event_count_shortcode' ) );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
@@ -63,14 +65,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						$role->add_cap( $cap . '_events' );
 					}
 				}
-				// foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
-				// 	if ( $role->has_cap( 'manage_categories' ) ) {
-				// 		$role->add_cap( $cap . '_event_topics' );
-				// 	}
-				// }
-				// if ( $role->has_cap( 'edit_posts' ) ) {
-				// 	$role->add_cap( 'assign_event_topics' );
-				// }
+				foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
+					if ( $role->has_cap( 'manage_categories' ) ) {
+						$role->add_cap( $cap . '_event_series' );
+					}
+				}
+				if ( $role->has_cap( 'edit_posts' ) ) {
+					$role->add_cap( 'assign_event_series' );
+				}
 			}
 
 			flush_rewrite_rules();
@@ -84,9 +86,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				foreach ( array( 'publish', 'delete', 'delete_others', 'delete_private', 'delete_published', 'edit', 'edit_others', 'edit_private', 'edit_published', 'read_private' ) as $cap ) {
 					$role->remove_cap( $cap . '_events' );
 				}
-				// foreach ( array( 'manage', 'edit', 'delete', 'assign' ) as $cap ) {
-				// 	$role->remove_cap ( $cap . '_event_topics' );
-				// }
+				foreach ( array( 'manage', 'edit', 'delete', 'assign' ) as $cap ) {
+					$role->remove_cap ( $cap . '_event_series' );
+				}
 			}
 			
 			flush_rewrite_rules();
@@ -316,6 +318,35 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
+		public static function register_event_series_taxonomy() {
+
+			self::$event_series_taxonomy = new Taxonomy( array(
+				'name' => 'event_series',
+				'singularLabel' => 'Event Series',
+				'pluralLabel' => 'Event Series',
+				'postTypes' => array( 'event' ),
+				'settings' => array(
+					'hierarchical' => true,
+					'rewrite' => array( 'slug' => 'event-series', 'with_front' => false ),
+					'show_in_nav_menus' => false,
+					'show_admin_column' => true,
+					'publicly_queryable' => true,
+					'show_in_rest' => true,
+					'labels' => array(
+						'menu_name' => 'Series',
+						'all_items' => 'All Series'
+					),
+					'capabilities' => array(
+						'manage_terms' => 'manage_event_series',
+						'edit_terms' => 'edit_event_series',
+						'delete_terms' => 'delete_event_series',
+						'assign_terms' => 'assign_event_series'
+					)
+				)
+			) );
+		}
+
+
 		public static function register_weekly_event_count_shortcode() {
 
 			self::$weekly_event_count_shortcode = new Shortcode( array(
@@ -393,7 +424,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
-		public static function get_events( $args = array() ) {
+		public static function get_event_query_args( $args = array() ) {
 
 			$args = array_merge( array(
 				'from' => null,
@@ -425,8 +456,13 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			$query_args['meta_query'] = $meta_query;
 
-			return get_posts(  $query_args );
+			return $query_args;
 
+		}
+
+
+		public static function get_events( $args = array() ) {
+			return get_posts( self::get_event_query_args( $args ) );
 		}
 
 
