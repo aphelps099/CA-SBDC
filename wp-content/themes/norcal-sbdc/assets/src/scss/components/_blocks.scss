@@ -2348,3 +2348,42 @@
 		}
 	}
 }
+
+
+/*	Client Story Header
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-client-story-header {
+	margin-left: -#{map-get($container-padding-x, xs)};
+	margin-right: -#{map-get($container-padding-x, xs)};
+	@include media-breakpoint-up(sm) {
+		margin-left: -#{map-get($container-padding-x, sm)};
+		margin-right: -#{map-get($container-padding-x, sm)};
+	}
+	@include media-breakpoint-up(md) {
+		margin-left: -#{map-get($container-padding-x, md)};
+		margin-right: -#{map-get($container-padding-x, md)};
+	}
+	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
+		margin-left: calc((100vw - 900px) / -2);
+		margin-right: calc((100vw - 900px) / -2);
+	}
+	> .header-bg {
+		background-color: $primary;
+	}
+	> .inner > .header-contents {
+		@each $breakpoint, $padding-x in $container-padding-x {
+			@include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+				padding-left: $padding-x;
+				padding-right: $padding-x;
+			}
+		}
+	}
+	.entry-title {
+		font-family: $font-family-sans-serif;
+		border-color: $red;
+	}
+	.entry-intro {
+		font-family: $font-family-serif;
+	}
+}

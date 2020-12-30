@@ -19803,6 +19803,50 @@ nav.pagination {
 .wp-block-crown-blocks-event-index article.type-event .entry-title {
   margin-bottom: 0; }
 
+/*	Client Story Header
+---------------------------------------------------------*/
+.wp-block-crown-blocks-client-story-header {
+  margin-left: -1rem;
+  margin-right: -1rem; }
+  @media (min-width: 576px) {
+    .wp-block-crown-blocks-client-story-header {
+      margin-left: -1rem;
+      margin-right: -1rem; } }
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-client-story-header {
+      margin-left: -1.5rem;
+      margin-right: -1.5rem; } }
+  @media (min-width: 948px) {
+    .wp-block-crown-blocks-client-story-header {
+      margin-left: calc((100vw - 900px) / -2);
+      margin-right: calc((100vw - 900px) / -2); } }
+  .wp-block-crown-blocks-client-story-header > .header-bg {
+    background-color: #233053; }
+  .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
+    padding-left: 1rem;
+    padding-right: 1rem; }
+    @media (min-width: 576px) {
+      .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
+        padding-left: 1rem;
+        padding-right: 1rem; } }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
+        padding-left: 2rem;
+        padding-right: 2rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem; } }
+  .wp-block-crown-blocks-client-story-header .entry-title {
+    font-family: "semplicitapro", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    border-color: #D44457; }
+  .wp-block-crown-blocks-client-story-header .entry-intro {
+    font-family: "utopia-std", serif; }
+
 .gform_wrapper {
   margin-bottom: 1rem;
   text-align: left; }

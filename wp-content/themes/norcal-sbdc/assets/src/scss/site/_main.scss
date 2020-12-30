@@ -36,7 +36,8 @@
 	> .wp-block-crown-blocks-promo.alignfull,
 	> .wp-block-crown-blocks-post-header,
 	> .wp-block-crown-blocks-resource-header,
-	> .wp-block-crown-blocks-event-header {
+	> .wp-block-crown-blocks-event-header,
+	> .wp-block-crown-blocks-client-story-header {
 		&:first-child {
 			margin-top: -40px;
 			@include media-breakpoint-up(md) {

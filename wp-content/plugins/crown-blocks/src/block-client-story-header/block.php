@@ -1,0 +1,97 @@
+<?php
+
+if(!class_exists('Crown_Block_Client_Story_Header')) {
+	class Crown_Block_Client_Story_Header extends Crown_Block {
+
+
+		public static $name = 'client-story-header';
+
+
+		public static function init() {
+			parent::init();
+		}
+
+
+		public static function get_attributes() {
+			return array(
+				'className' => array( 'type' => 'string', 'default' => '' ),
+				'introContent' => array( 'type' => 'string', 'default' => '' ),
+				'featuredImageId' => array( 'type' => 'string', 'default' => '' ),
+				'featuredImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) )
+			);
+		}
+
+
+		public static function render( $atts, $content ) {
+
+			$post_id = get_the_ID();
+			if ( empty( $post_id ) ) return '';
+			
+			$block_class = array( 'wp-block-crown-blocks-client-story-header', 'text-color-light', $atts['className'] );
+
+			$featured_image_id = get_post_thumbnail_id( $post_id );
+			$featured_image_url = '';
+			if ( ! empty( $atts['featuredImageId'] ) ) $featured_image_id = $atts['featuredImageId'];
+			$featured_image_url = ! empty( $featured_image_id ) ? wp_get_attachment_image_url( $featured_image_id, 'medium_large' ) : $featured_image_url;
+			if ( ! empty( $featured_image_url ) ) $block_class[] = 'has-featured-image';
+
+			ob_start();
+			// print_r($atts);
+			?>
+
+				<header class="<?php echo implode( ' ', $block_class); ?>">
+					<div class="header-bg"></div>
+					<div class="inner">
+						<div class="header-contents">
+							<div class="inner">
+
+								<div class="article-header">
+									<div class="inner">
+
+										<div class="push">
+
+											<?php $centers = get_the_terms( $post_id, 'post_center' ); ?>
+											<?php if ( ! empty( $centers ) ) { ?>
+												<p class="entry-centers">
+													<?php foreach ( $centers as $term ) { ?>
+														<span class="center"><?php echo $term->name; ?></span>
+													<?php } ?>
+												</p>
+											<?php } ?>
+	
+											<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
+
+											<?php if ( ! empty( $atts['introContent'] ) ) { ?>
+												<div class="entry-intro"><?php echo apply_filters( 'the_content', $atts['introContent'] ); ?></div>
+											<?php } ?>
+
+										</div>
+
+										<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+									</div>
+								</div>
+
+								<?php if ( ! empty( $featured_image_url ) ) { ?>
+									<div class="entry-featured-image">
+										<div class="image" style="background-image: url(<?php echo $featured_image_url; ?>);">
+											<?php echo wp_get_attachment_image( $featured_image_id, 'medium_large' ) ?>
+										</div>
+									</div>
+								<?php } ?>
+
+							</div>
+						</div>
+					</div>
+				</header>
+
+			<?php
+			$output = ob_get_clean();
+
+			return $output;
+		}
+
+
+	}
+	Crown_Block_Client_Story_Header::init();
+}

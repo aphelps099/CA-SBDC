@@ -108,7 +108,11 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 					'show_in_nav_menus' => false,
 					'capability_type' => array( 'client_story', 'client_stories' ),
 					'map_meta_cap' => true,
-					'menu_position' => 36
+					'menu_position' => 36,
+					'template' => array(
+						array( 'crown-blocks/client-story-header', array() ),
+						array( 'core/paragraph', array() )
+					)
 				),
 				'metaBoxes' => array(
 					new MetaBox( array(
