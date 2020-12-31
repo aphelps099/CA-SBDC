@@ -17,6 +17,7 @@ import './block-button-group/block.js';
 // import './block-case-study-index/block.js';
 import './block-center-finder/block.js';
 import './block-client-story-header/block.js';
+import './block-client-story-index/block.js';
 import './block-column/block.js';
 import './block-container/block.js';
 // import './block-container-featured-image/block.js';

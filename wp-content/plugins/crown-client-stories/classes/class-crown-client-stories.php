@@ -114,12 +114,28 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 						array( 'core/paragraph', array() )
 					)
 				),
+				'fields' => array(
+					new Field( array(
+						'saveMetaCb' => function ( $field, $input, $type, $objectId, $value ) {
+							$post = get_post( $objectId );
+							$initial = substr( strtoupper( $post->post_title ), 0, 1 );
+							if ( ! in_array( $initial, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ) ) ) {
+								$initial = '#';
+							}
+							update_post_meta( $post->ID, 'client_story_initial_lc', strtolower( $initial ) );
+						}
+					) )
+				),
 				'metaBoxes' => array(
 					new MetaBox( array(
 						'id' => 'client-story-options',
 						'title' => 'Client Story Options',
 						'context' => 'side',
 						'fields' => array(
+							new Field( array(
+								'label' => 'Color',
+								'input' => new ColorInput( array( 'name' => 'client_story_color', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'client_story_color' ) ) ) )
+							) ),
 							new Field(array(
 								'input' => new CheckboxSet( array( 'name' => 'client_story_options', 'options' => array(
 									array( 'value' => 'featured-post', 'label' => 'Featured Client Story' )

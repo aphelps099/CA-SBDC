@@ -2196,7 +2196,7 @@
 }
 
 
-/*	Post Index
+/*	Resource Index
 ---------------------------------------------------------*/
 
 .wp-block-crown-blocks-resource-index {
@@ -2385,5 +2385,189 @@
 	}
 	.entry-intro {
 		font-family: $font-family-serif;
+	}
+}
+
+
+/*	Client Story Index
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-client-story-index {
+	.ajax-loader {
+		max-width: 1080px;
+		margin: auto;
+	}
+	article.type-client_story {
+		margin-bottom: 2rem;
+		a {
+			display: block;
+			color: inherit;
+			transition: box-shadow .5s;
+			&:hover {
+				box-shadow: 0 .5rem 1.5rem rgba(#000, .15);
+				.entry-link > span:nth-child(1):before {
+					max-width: 100%;
+				}
+				.entry-link > span:nth-child(2) { opacity: 1; transform: none; }
+				.entry-link > span:nth-child(2):before { opacity: 1; left: 0; }
+			}
+			&.text-color-light {
+				color: #fff;
+				.entry-centers span { border-color: #fff; }
+				.entry-link > span:nth-child(1):before { background: linear-gradient(to right, rgba(#fff, 0), #fff); }
+			}
+			&.text-color-dark {
+				color: $body-color;
+				.entry-centers span { border-color: $body-color; }
+				.entry-link > span:nth-child(1):before { background: linear-gradient(to right, rgba($body-color, 0), $body-color); }
+			}
+			> .inner {
+				display: flex;
+			}
+		}
+		.entry-featured-image {
+			display: none;
+			width: 30%;
+			@include media-breakpoint-up(md) {
+				display: flex;
+				+ .entry-teaser {
+					width: 70%;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+				}
+			}
+			&:before {
+				content: '';
+				display: block;
+				height: 0;
+				padding-top: 125%;
+				align-self: flex-start;
+			}
+			.image {
+				width: 100%;
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: cover;
+				img {
+					display: none;
+				}
+			}
+		}
+		.entry-teaser {
+			width: 100%;
+			padding: 2rem;
+			position: relative;
+			@include media-breakpoint-up(xl) {
+				padding: 3rem;
+			}
+		}
+		.entry-header {
+			flex: 1 1 auto;
+		}
+		.entry-centers {
+			margin-bottom: 2rem;
+			span {
+				display: inline-block;
+				line-height: 1.2;
+				font-weight: 700;
+				font-size: 0.625rem;
+				letter-spacing: .05em;
+				text-transform: uppercase;
+				border-radius: 10rem;
+				border: 1px solid $body-color;
+				padding: .5rem .75rem;
+			}
+		}
+		.entry-title {
+			margin-bottom: 0;
+			@include media-breakpoint-up(xl) {
+				font-size: 2.5rem;
+			}
+		}
+		.entry-excerpt {
+			margin-top: 1rem;
+		}
+		.entry-link {
+			margin-top: 2rem;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			> span:nth-child(1) {
+				display: block;
+				margin-right: 2rem;
+				flex: 1 1 auto;
+				&:before {
+					content: '';
+					display: block;
+					height: 0.25rem;
+					transition: max-width .4s;
+					background: linear-gradient(to right, rgba($body-color, 0), $body-color);
+					@include media-breakpoint-up(md) {
+						max-width: 6rem;
+					}
+				}
+			}
+			> span:nth-child(2) {
+				display: block;
+				width: 4rem;
+				height: 4rem;
+				border-radius: 10rem;
+				background-color: #fff;
+				overflow: hidden;
+				position: relative;
+				transition: opacity .2s, transform .2s ease-out;
+				@include media-breakpoint-up(md) {
+					opacity: 0;
+					transform: scale(.8);
+				}
+				&:before {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					color: $body-color;
+					position: absolute;
+					display: flex;
+					width: 100%;
+					height: 100%;
+					left: 0;
+					top: 0;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					transition: left ease-out .2s, opacity .2s;
+					transition-delay: .2s;
+					@include media-breakpoint-up(md) {
+						left: -.5rem;
+						opacity: 0;
+					}
+				}
+			}
+		}
+	}
+	blockquote {
+		max-width: 42rem;
+		margin: 4rem auto 6rem;
+		text-align: center;
+		@include media-breakpoint-up(xl) {
+			margin: 6rem auto 8rem;
+		}
+		cite {
+			span {
+				display: block;
+				&.photo {
+					width: 6rem;
+					height: 6rem;
+					margin: 0 auto .5rem;
+					img {
+						width: 100%;
+						height: 100%;
+						object-fit: contain;
+						border-radius: 100rem;
+					}
+				}
+				&.job-title {
+					opacity: .6;
+				}
+			}
+		}
 	}
 }

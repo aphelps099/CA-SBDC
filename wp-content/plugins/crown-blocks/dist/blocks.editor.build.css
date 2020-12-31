@@ -102,6 +102,27 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/client-story-index"] .wp-block-crown-blocks-client-story-index form.feed-filters,
+.wp-block[data-type="crown-blocks/client-story-index"] .wp-block-crown-blocks-client-story-index a {
+  pointer-events: none !important; }
+
+.edit-post-sidebar .components-panel__body.crown-blocks-background-image .components-focal-point-picker_position-display-container {
+  display: none; }
+
+.edit-post-sidebar .crown-blocks-media-upload {
+  margin-bottom: 8px; }
+  .edit-post-sidebar .crown-blocks-media-upload button.image-preview {
+    border-radius: 2px;
+    overflow: hidden;
+    padding: 0;
+    height: auto;
+    margin-bottom: 10px; }
+  .edit-post-sidebar .crown-blocks-media-upload button.is-destructive {
+    margin-left: 10px; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/column"] {
   max-width: none;
   margin-top: 0;

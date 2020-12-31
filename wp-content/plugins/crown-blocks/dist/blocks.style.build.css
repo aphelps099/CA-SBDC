@@ -338,6 +338,12 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-client-story-index {
+  margin-bottom: 1rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-column {
   display: -ms-flexbox;
   display: flex; }

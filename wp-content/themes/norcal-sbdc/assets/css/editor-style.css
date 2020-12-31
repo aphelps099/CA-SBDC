@@ -19668,7 +19668,7 @@ nav.pagination {
   .wp-block-crown-blocks-resource-header .sticky-share-links .social-sharing-links .menu-item a:hover {
     background-color: #cfe8f2; }
 
-/*	Post Index
+/*	Resource Index
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-resource-index .post-feed > .inner {
   display: -webkit-box;
@@ -19846,6 +19846,219 @@ nav.pagination {
     border-color: #D44457; }
   .wp-block-crown-blocks-client-story-header .entry-intro {
     font-family: "utopia-std", serif; }
+
+/*	Client Story Index
+---------------------------------------------------------*/
+.wp-block-crown-blocks-client-story-index .ajax-loader {
+  max-width: 1080px;
+  margin: auto; }
+
+.wp-block-crown-blocks-client-story-index article.type-client_story {
+  margin-bottom: 2rem; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story a {
+    display: block;
+    color: inherit;
+    -webkit-transition: -webkit-box-shadow .5s;
+    transition: -webkit-box-shadow .5s;
+    transition: box-shadow .5s;
+    transition: box-shadow .5s, -webkit-box-shadow .5s; }
+    .wp-block-crown-blocks-client-story-index article.type-client_story a:hover {
+      -webkit-box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+              box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15); }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a:hover .entry-link > span:nth-child(1):before {
+        max-width: 100%; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a:hover .entry-link > span:nth-child(2) {
+        opacity: 1;
+        -webkit-transform: none;
+            -ms-transform: none;
+                transform: none; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a:hover .entry-link > span:nth-child(2):before {
+        opacity: 1;
+        left: 0; }
+    .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-light {
+      color: #fff; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-light .entry-centers span {
+        border-color: #fff; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-light .entry-link > span:nth-child(1):before {
+        background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff); }
+    .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-dark {
+      color: #233053; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-dark .entry-centers span {
+        border-color: #233053; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story a.text-color-dark .entry-link > span:nth-child(1):before {
+        background: -webkit-gradient(linear, left top, right top, from(rgba(35, 48, 83, 0)), to(#233053));
+        background: linear-gradient(to right, rgba(35, 48, 83, 0), #233053); }
+    .wp-block-crown-blocks-client-story-index article.type-client_story a > .inner {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image {
+    display: none;
+    width: 30%; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex; }
+        .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image + .entry-teaser {
+          width: 70%;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+                  flex-direction: column;
+          -webkit-box-pack: center;
+              -ms-flex-pack: center;
+                  justify-content: center; } }
+    .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image:before {
+      content: '';
+      display: block;
+      height: 0;
+      padding-top: 125%;
+      -ms-flex-item-align: start;
+          align-self: flex-start; }
+    .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image .image {
+      width: 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-featured-image .image img {
+        display: none; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-teaser {
+    width: 100%;
+    padding: 2rem;
+    position: relative; }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-teaser {
+        padding: 3rem; } }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-header {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-centers {
+    margin-bottom: 2rem; }
+    .wp-block-crown-blocks-client-story-index article.type-client_story .entry-centers span {
+      display: inline-block;
+      line-height: 1.2;
+      font-weight: 700;
+      font-size: 0.625rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border-radius: 10rem;
+      border: 1px solid #233053;
+      padding: .5rem .75rem; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-title {
+    margin-bottom: 0; }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-title {
+        font-size: 2.5rem; } }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-excerpt {
+    margin-top: 1rem; }
+  .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link {
+    margin-top: 2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+    .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(1) {
+      display: block;
+      margin-right: 2rem;
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto; }
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(1):before {
+        content: '';
+        display: block;
+        height: 0.25rem;
+        -webkit-transition: max-width .4s;
+        transition: max-width .4s;
+        background: -webkit-gradient(linear, left top, right top, from(rgba(35, 48, 83, 0)), to(#233053));
+        background: linear-gradient(to right, rgba(35, 48, 83, 0), #233053); }
+        @media (min-width: 768px) {
+          .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(1):before {
+            max-width: 6rem; } }
+    .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(2) {
+      display: block;
+      width: 4rem;
+      height: 4rem;
+      border-radius: 10rem;
+      background-color: #fff;
+      overflow: hidden;
+      position: relative;
+      -webkit-transition: opacity .2s, -webkit-transform .2s ease-out;
+      transition: opacity .2s, -webkit-transform .2s ease-out;
+      transition: opacity .2s, transform .2s ease-out;
+      transition: opacity .2s, transform .2s ease-out, -webkit-transform .2s ease-out; }
+      @media (min-width: 768px) {
+        .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(2) {
+          opacity: 0;
+          -webkit-transform: scale(0.8);
+              -ms-transform: scale(0.8);
+                  transform: scale(0.8); } }
+      .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(2):before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        line-height: 1;
+        font-family: icomoon;
+        content: "";
+        color: #233053;
+        position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: flex;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-transition: left ease-out .2s, opacity .2s;
+        transition: left ease-out .2s, opacity .2s;
+        -webkit-transition-delay: .2s;
+                transition-delay: .2s; }
+        @media (min-width: 768px) {
+          .wp-block-crown-blocks-client-story-index article.type-client_story .entry-link > span:nth-child(2):before {
+            left: -.5rem;
+            opacity: 0; } }
+
+.wp-block-crown-blocks-client-story-index blockquote {
+  max-width: 42rem;
+  margin: 4rem auto 6rem;
+  text-align: center; }
+  @media (min-width: 1200px) {
+    .wp-block-crown-blocks-client-story-index blockquote {
+      margin: 6rem auto 8rem; } }
+  .wp-block-crown-blocks-client-story-index blockquote cite span {
+    display: block; }
+    .wp-block-crown-blocks-client-story-index blockquote cite span.photo {
+      width: 6rem;
+      height: 6rem;
+      margin: 0 auto .5rem; }
+      .wp-block-crown-blocks-client-story-index blockquote cite span.photo img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+           object-fit: contain;
+        border-radius: 100rem; }
+    .wp-block-crown-blocks-client-story-index blockquote cite span.job-title {
+      opacity: .6; }
 
 .gform_wrapper {
   margin-bottom: 1rem;
