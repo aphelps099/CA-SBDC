@@ -25,8 +25,8 @@ registerBlockType('crown-blocks/post-header', {
 	supports: {},
 
 	attributes: {
-		backgroundImageId: { type: 'number' },
-		backgroundImageData: { type: 'object' },
+		backgroundImageId: { type: 'number', default: 0 },
+		backgroundImagePreviewSrc: { type: 'string', default: '' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } }
 	},
 
@@ -35,17 +35,9 @@ registerBlockType('crown-blocks/post-header', {
 
 		const {
 			backgroundImageId,
-			backgroundImageData,
+			backgroundImagePreviewSrc,
 			backgroundImageFocalPoint
 		} = attributes;
-
-		let blockAtts = {
-			className: className,
-			backgroundImageId: backgroundImageId,
-			backgroundImageFocalPoint: backgroundImageFocalPoint
-		};
-
-		let blockClasses = [ className ];
 
 		return [
 
@@ -55,21 +47,21 @@ registerBlockType('crown-blocks/post-header', {
 
 					{ !! backgroundImageId && <FocalPointPicker 
 						label="Focal Point"
-						url={ backgroundImageData.sizes.medium ? backgroundImageData.sizes.medium.url : backgroundImageData.sizes.thumbnail.url }
+						url={ backgroundImagePreviewSrc }
 						dimensions={ { width: 400, height: 100 } }
 						value={ backgroundImageFocalPoint }
 						onChange={ (value) => setAttributes({ backgroundImageFocalPoint: value }) } 
 					/> }
 
 					<MediaUpload
-						onSelect={ (media) => { setAttributes({ backgroundImageId: media.id, backgroundImageData: media, backgroundImageFocalPoint: { x: 0.5, y: 0.5 } }); } }
+						onSelect={ (media) => { setAttributes({ backgroundImageId: media.id, backgroundImagePreviewSrc: media.sizes.medium ? media.sizes.medium.url : media.sizes.thumbnail.url, backgroundImageFocalPoint: { x: 0.5, y: 0.5 } }); } }
 						type="image"
 						value={ backgroundImageId }
 						render={ ({ open }) => (
 							<div className={ 'crown-blocks-media-upload' }>
 								{/* { backgroundImageId && <Button className={ 'image-preview' } onClick={ open }><img src={ backgroundImageData.sizes.medium ? backgroundImageData.sizes.medium.url : backgroundImageData.sizes.thumbnail.url } /></Button> } */}
 								<Button className={ 'button' } onClick={ open }>Select Image</Button>
-								{ backgroundImageId && <Button className={ 'button is-link is-destructive' } onClick={ (e) => { setAttributes({ backgroundImageId: null, backgroundImageData: null }); } }>Remove Image</Button> }
+								{ !! backgroundImageId && <Button className={ 'button is-link is-destructive' } onClick={ (e) => { setAttributes({ backgroundImageId: 0, backgroundImagePreviewSrc: '' }); } }>Remove Image</Button> }
 							</div>
 						) }
 					/>
@@ -80,7 +72,7 @@ registerBlockType('crown-blocks/post-header', {
 
 			<div class="crown-block-editor-container">
 
-				<ServerSideRender block="crown-blocks/post-header" attributes={ blockAtts } />
+				<ServerSideRender block="crown-blocks/post-header" attributes={ attributes } />
 
 			</div>
 

@@ -15,13 +15,15 @@ if(!class_exists('Crown_Block_Post_Header')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'backgroundImageId' => array( 'type' => 'string', 'default' => '' ),
+				'backgroundImageId' => array( 'type' => 'number', 'default' => 0 ),
+				'backgroundImagePreviewSrc' => array( 'type' => 'string', 'default' => '' ),
 				'backgroundImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) )
 			);
 		}
 
 
 		public static function render( $atts, $content ) {
+			// ob_start(); var_dump($atts); return ob_get_clean();
 
 			$post_id = get_the_ID();
 			if ( empty( $post_id ) ) return '';
@@ -35,7 +37,6 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			}
 
 			ob_start();
-			// print_r($atts);
 			?>
 
 				<header class="<?php echo implode( ' ', $block_class); ?>">
