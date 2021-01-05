@@ -97,9 +97,9 @@ if(!class_exists('Crown_Block_Event_Index')) {
 
 							<header class="filters-header">
 
-								<button type="button" class="filters-toggle"><?php _e( 'Filter', 'crown_blocks' ); ?></button>
-
-								<button type="button" class="filters-close"><?php _e( 'Close', 'crown_blocks' ); ?></button>
+								<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
+								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
+								<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
 
 								<nav class="filters-nav">
 									<ul>

@@ -15209,11 +15209,14 @@ form.feed-filters {
   transition: border-color .3s; }
   form.feed-filters.active {
     border-color: #233053; }
+    form.feed-filters.active .filters-header button.filters-clear,
     form.feed-filters.active .filters-header button.filters-close {
       opacity: 1;
       visibility: visible;
       -webkit-transition-delay: 0s;
               transition-delay: 0s; }
+    form.feed-filters.active .filters-header button.filters-clear {
+      opacity: .25; }
     form.feed-filters.active .filters-header ul.options.quick-filters {
       display: none; }
     form.feed-filters.active .filters-header .filters-nav {
@@ -15222,6 +15225,8 @@ form.feed-filters {
       display: block; }
     form.feed-filters.active .filters-header .spacer {
       display: none; }
+    form.feed-filters.active.has-active-filters .filters-header button.filters-clear {
+      opacity: 1; }
   form.feed-filters .filters-header {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -15271,6 +15276,56 @@ form.feed-filters {
         background-position: center;
         background-repeat: no-repeat;
         vertical-align: top; }
+    form.feed-filters .filters-header button.filters-clear {
+      margin-left: 2rem;
+      border: none;
+      padding: .5rem 0;
+      background-color: transparent;
+      line-height: 1.2;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: left;
+      outline: none;
+      color: rgba(35, 48, 83, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      -webkit-transition: opacity .15s, color .15s, visibility 0s .15s;
+      transition: opacity .15s, color .15s, visibility 0s .15s; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header button.filters-clear {
+          -webkit-box-ordinal-group: 101;
+              -ms-flex-order: 100;
+                  order: 100; } }
+      form.feed-filters .filters-header button.filters-clear:hover {
+        color: #108DBC; }
+      form.feed-filters .filters-header button.filters-clear:after {
+        content: '';
+        display: inline-block;
+        margin-left: 0;
+        height: 1.5rem;
+        width: 1.5rem;
+        vertical-align: top;
+        margin-top: -.35em;
+        margin-bottom: -.5em;
+        background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="%23233053"%3e%3cpath d="M256 8C119.034 8 8 119.033 8 256s111.034 248 248 248 248-111.034 248-248S392.967 8 256 8zm130.108 117.892c65.448 65.448 70 165.481 20.677 235.637L150.47 105.216c70.204-49.356 170.226-44.735 235.638 20.676zM125.892 386.108c-65.448-65.448-70-165.481-20.677-235.637L361.53 406.784c-70.203 49.356-170.226 44.736-235.638-20.676z"/%3e%3c/svg%3e');
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat; }
+        @media (min-width: 576px) {
+          form.feed-filters .filters-header button.filters-clear:after {
+            margin-left: .5em; } }
+      form.feed-filters .filters-header button.filters-clear span {
+        display: none; }
+        @media (min-width: 576px) {
+          form.feed-filters .filters-header button.filters-clear span {
+            display: inline; } }
+      form.feed-filters .filters-header button.filters-clear + button.filters-close {
+        margin-left: .5rem; }
+        @media (min-width: 576px) {
+          form.feed-filters .filters-header button.filters-clear + button.filters-close {
+            margin-left: 1rem; } }
     form.feed-filters .filters-header button.filters-close {
       margin-left: 2rem;
       border: none;
@@ -15298,7 +15353,7 @@ form.feed-filters {
       form.feed-filters .filters-header button.filters-close:after {
         content: '×';
         display: inline-block;
-        margin-left: .1em;
+        margin-left: 0;
         font-size: 3em;
         line-height: 1;
         vertical-align: top;
@@ -15306,6 +15361,14 @@ form.feed-filters {
         margin-top: -.35em;
         margin-bottom: -.5em;
         color: #233053; }
+        @media (min-width: 576px) {
+          form.feed-filters .filters-header button.filters-close:after {
+            margin-left: .1em; } }
+      form.feed-filters .filters-header button.filters-close span {
+        display: none; }
+        @media (min-width: 576px) {
+          form.feed-filters .filters-header button.filters-close span {
+            display: inline; } }
     form.feed-filters .filters-header ul.options.quick-filters {
       width: 100%;
       margin-top: 1rem; }

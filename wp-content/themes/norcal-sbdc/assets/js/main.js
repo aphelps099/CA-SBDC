@@ -525,6 +525,23 @@
 					tabs.height($('> .inner', tabs).outerHeight());
 					setTimeout(function() { tabs.css({ height: 'auto' }); }, 300);
 				}
+
+				var hasActiveFilters = false;
+				if($('input[type=text]', form).filter(function(i, el) { return $(el).val() != '' }).length) hasActiveFilters = true;
+				if($('input[type=checkbox]:checked', form).length) hasActiveFilters = true;
+				if(hasActiveFilters) {
+					form.addClass('has-active-filters');
+				} else {
+					form.removeClass('has-active-filters');
+				}
+
+			});
+
+			$(document).on('click', 'form.feed-filters button.filters-clear', function(e) {
+				var form = $(this).closest('form');
+				$('input[type=text]', form).val('');
+				$('input[type=checkbox]', form).prop('checked', false);
+				form.trigger('submit');
 			});
 
 			$(document).on('click', 'form.feed-filters button.filters-close', function(e) {
@@ -565,6 +582,16 @@
 				var url = $(this).attr('action');
 				if(queryString != '') url += ($(this).attr('action').match(/\?/) ? '&' : '?') + queryString;
 				wptheme.updatePostFeedBlock($(this).closest('.post-feed-block'), url);
+
+				var hasActiveFilters = false;
+				if($('input[type=text]', this).filter(function(i, el) { return $(el).val() != '' }).length) hasActiveFilters = true;
+				if($('input[type=checkbox]:checked', this).length) hasActiveFilters = true;
+				if(hasActiveFilters) {
+					$(this).addClass('has-active-filters');
+				} else {
+					$(this).removeClass('has-active-filters');
+				}
+
 			});
 			$(document).on('click', '.post-feed-block .pagination a', function(e) {
 				e.preventDefault();

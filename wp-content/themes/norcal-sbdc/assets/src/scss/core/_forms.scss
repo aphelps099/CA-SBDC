@@ -63,10 +63,14 @@ form.feed-filters {
 	&.active {
 		border-color: $primary;
 		.filters-header {
+			button.filters-clear,
 			button.filters-close {
 				opacity: 1;
 				visibility: visible;
 				transition-delay: 0s;
+			}
+			button.filters-clear {
+				opacity: .25;
 			}
 			ul.options.quick-filters {
 				display: none;
@@ -79,6 +83,13 @@ form.feed-filters {
 			}
 			.spacer {
 				display: none;
+			}
+		}
+		&.has-active-filters {
+			.filters-header {
+				button.filters-clear {
+					opacity: 1;
+				}
 			}
 		}
 	}
@@ -123,6 +134,58 @@ form.feed-filters {
 				vertical-align: top;
 			}
 		}
+		button.filters-clear {
+			margin-left: 2rem;
+			border: none;
+			padding: .5rem 0;
+			background-color: transparent;
+			line-height: $line-height-sm;
+			font-size: 0.875rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .1em;
+			text-align: left;
+			outline: none;
+			color: rgba($primary, .5);
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity .15s, color .15s, visibility 0s .15s;
+			@include media-breakpoint-up(lg) {
+				order: 100;
+			}
+			&:hover {
+				color: $blue;
+			}
+			&:after {
+				content: '';
+				display: inline-block;
+				margin-left: 0;
+				height: 1.5rem;
+				width: 1.5rem;
+				vertical-align: top;
+				margin-top: -.35em;
+				margin-bottom: -.5em;
+				background-image: escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#{$primary}"><path d="M256 8C119.034 8 8 119.033 8 256s111.034 248 248 248 248-111.034 248-248S392.967 8 256 8zm130.108 117.892c65.448 65.448 70 165.481 20.677 235.637L150.47 105.216c70.204-49.356 170.226-44.735 235.638 20.676zM125.892 386.108c-65.448-65.448-70-165.481-20.677-235.637L361.53 406.784c-70.203 49.356-170.226 44.736-235.638-20.676z"/></svg>'));
+				background-position: center;
+				background-size: contain;
+				background-repeat: no-repeat;
+				@include media-breakpoint-up(sm) {
+					margin-left: .5em;
+				}
+			}
+			span {
+				display: none;
+				@include media-breakpoint-up(sm) {
+					display: inline;
+				}
+			}
+			+ button.filters-close {
+				margin-left: .5rem;
+				@include media-breakpoint-up(sm) {
+					margin-left: 1rem;
+				}
+			}
+		}
 		button.filters-close {
 			margin-left: 2rem;
 			border: none;
@@ -148,7 +211,7 @@ form.feed-filters {
 			&:after {
 				content: '×';
 				display: inline-block;
-				margin-left: .1em;
+				margin-left: 0;
 				font-size: 3em;
 				line-height: 1;
 				vertical-align: top;
@@ -156,6 +219,15 @@ form.feed-filters {
 				margin-top: -.35em;
 				margin-bottom: -.5em;
 				color: $primary;
+				@include media-breakpoint-up(sm) {
+					margin-left: .1em;
+				}
+			}
+			span {
+				display: none;
+				@include media-breakpoint-up(sm) {
+					display: inline;
+				}
 			}
 		}
 		ul.options.quick-filters {
