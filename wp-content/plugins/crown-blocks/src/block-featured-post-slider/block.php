@@ -76,7 +76,7 @@ if(!class_exists('Crown_Block_Featured_Post_Slider')) {
 			$query = new WP_Query( $queryArgs );
 			if ( ! $query->have_posts() ) return '';
 
-			$block_class = array( 'wp-block-crown-blocks-featured-post-slider' );
+			$block_class = array( 'wp-block-crown-blocks-featured-post-slider', $atts['className'] );
 
 			ob_start();
 			// print_r($atts);

@@ -828,14 +828,29 @@
 
 
 		wptheme.initFeaturedPostSliderBlocks = function() {
+
+			var adjustFeaturedPostSliders = function() {
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-featured-post-slider.slider-flush-right').each(function(i, el) {
+					var block = $(el);
+					var container = $('.post-feed', el);
+					container.css({ marginRight: Math.min(0, block.offset().left + block.outerWidth() - windowWidth) });
+				});
+			};
+			adjustFeaturedPostSliders();
+			$(window).on('load resize', adjustFeaturedPostSliders);
+
 			$('.wp-block-crown-blocks-featured-post-slider').each(function(i, el) {
 				var slider = $('.post-feed > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
+				var sliderNav = $('<div class="post-feed-nav"></div>');
+				slider.parent().after(sliderNav);
 				var slickSettings = {
 					mobileFirst: true,
 					draggable: true,
 					dots: false,
 					arrows: true,
+					appendArrows: sliderNav,
 					fade: false,
 					slidesToShow: 1,
 					slidesToScroll: 1,
@@ -846,6 +861,7 @@
 				};
 				slider.slick(slickSettings);
 			});
+
 		};
 
 

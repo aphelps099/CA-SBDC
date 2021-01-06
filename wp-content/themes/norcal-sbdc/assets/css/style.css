@@ -18742,10 +18742,16 @@ nav.pagination {
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-featured-post-slider {
   margin-bottom: 2rem; }
-  .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider {
-    position: relative;
-    margin: 0; }
-    .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-arrow {
+  .wp-block-crown-blocks-featured-post-slider .post-feed {
+    overflow: hidden; }
+    .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider {
+      position: relative;
+      margin: 0; }
+      .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
+        margin: 0 -1rem; }
+  .wp-block-crown-blocks-featured-post-slider .post-feed-nav {
+    position: relative; }
+    .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow {
       position: absolute;
       top: 100%;
       right: 0;
@@ -18765,14 +18771,19 @@ nav.pagination {
       opacity: .5;
       -webkit-transition: opacity .15s;
       transition: opacity .15s; }
-      .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-arrow:hover {
+      @media (min-width: 1200px) {
+        .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow {
+          width: 2.5rem;
+          height: 2.5rem; } }
+      .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow:hover {
         opacity: 1; }
-      .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-arrow.slick-prev {
+      .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow.slick-prev {
         right: 2rem;
         -webkit-transform: rotateY(180deg);
                 transform: rotateY(180deg); }
-    .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
-      margin: 0 -1rem; }
+        @media (min-width: 1200px) {
+          .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow.slick-prev {
+            right: 3rem; } }
   .wp-block-crown-blocks-featured-post-slider article {
     padding: 0 1rem;
     outline: none; }
@@ -21102,7 +21113,7 @@ body.mobile-menu-active #mobile-menu-toggle .icon {
     padding: 2rem 0; }
     @media (min-width: 576px) {
       #footer .container > .upper {
-        padding: 3rem 0; } }
+        padding: 3rem 0 2rem; } }
     #footer .container > .upper > .inner {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -21114,6 +21125,13 @@ body.mobile-menu-active #mobile-menu-toggle .icon {
   #footer .container > .lower {
     border-top: 2px solid #233053;
     padding: 1rem 0 2rem; }
+    @media (min-width: 992px) {
+      #footer .container > .lower {
+        padding-top: 1.5rem; } }
+    @media (min-width: 1400px) {
+      #footer .container > .lower {
+        margin-left: -3rem;
+        margin-right: -3rem; } }
     #footer .container > .lower > .inner {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -21158,16 +21176,19 @@ body {
   color: #fff;
   text-align: center;
   padding: 1rem;
-  margin-top: -4.375rem;
+  margin-top: -4.59375rem;
   margin-bottom: 2rem;
   position: relative;
   z-index: 5; }
   @media (min-width: 768px) {
     #site-footer-header {
-      padding: 2rem;
-      font-size: 2.5rem;
-      margin-top: -6.75rem;
-      margin-bottom: 3rem; } }
+      padding: 1.5rem;
+      font-size: 2.25rem;
+      margin-top: -6.28125rem; } }
+  @media (min-width: 1400px) {
+    #site-footer-header {
+      margin-left: -3rem;
+      margin-right: -3rem; } }
 
 /*	Subscribe Form
 ---------------------------------------------------------*/
@@ -21181,7 +21202,9 @@ body {
       -webkit-box-ordinal-group: 11;
           -ms-flex-order: 10;
               order: 10;
-      max-width: 30rem; } }
+      max-width: 30rem;
+      -ms-flex-item-align: center;
+          align-self: center; } }
   #footer-subscribe-form .form-overtitle {
     font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     text-transform: uppercase;
@@ -21208,7 +21231,7 @@ body {
             flex: 1 1 auto; } }
 
 #site-footer-logo {
-  max-width: 225px; }
+  max-width: 200px; }
   #site-footer-logo a {
     display: block;
     position: relative;
@@ -21245,7 +21268,7 @@ body {
   #site-footer-host-logos .logo {
     margin: 1rem; }
     #site-footer-host-logos .logo img {
-      max-height: 150px; }
+      max-height: 130px; }
 
 /*	Footer Branding
 ---------------------------------------------------------*/
@@ -21313,13 +21336,12 @@ body {
       padding-left: 2rem;
       padding-right: 2rem; } }
   .footer-widgets .widget {
-    font-size: 1rem;
     margin-bottom: 2rem;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     color: #757e95; }
     .footer-widgets .widget .widget-title {
-      margin-bottom: 1rem;
+      margin-bottom: .5rem;
       font-size: 1rem;
       font-weight: 600;
       letter-spacing: .1em;
@@ -21337,7 +21359,7 @@ body {
     padding: 0;
     line-height: 1.2; }
   .footer-widgets .widget_nav_menu li {
-    margin-bottom: 0.5rem; }
+    margin-bottom: 0.25rem; }
 
 /*	Footer Social Links
 ---------------------------------------------------------*/
@@ -21376,10 +21398,123 @@ body {
       height: 3rem;
       fill: rgba(117, 126, 149, 0.5); }
 
+/*	Site Footer Meta
+---------------------------------------------------------*/
+#site-footer-meta {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 100%;
+          flex: 0 0 100%;
+  padding-left: 1rem;
+  padding-right: 1rem; }
+  @media (min-width: 768px) {
+    #site-footer-meta {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+      -webkit-box-pack: center;
+          -ms-flex-pack: center;
+              justify-content: center;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      margin-bottom: 1rem; } }
+  @media (min-width: 992px) {
+    #site-footer-meta {
+      -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between; } }
+
+#site-description {
+  font-size: 0.75rem;
+  color: #9fa6b5;
+  font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  text-align: center;
+  max-width: 720px; }
+  @media (min-width: 992px) {
+    #site-description {
+      margin: 0 2rem;
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto; } }
+
+#site-footer-meta .accreditations {
+  margin-top: 2rem; }
+  @media (min-width: 768px) {
+    #site-footer-meta .accreditations {
+      margin-top: 0;
+      padding-right: 1rem;
+      width: 50%;
+      -webkit-box-flex: 0;
+          -ms-flex: 0 0 auto;
+              flex: 0 0 auto; } }
+  @media (min-width: 992px) {
+    #site-footer-meta .accreditations {
+      width: calc((100px + (.5rem * 2)) * 2 - (.5rem * 2) + 1rem);
+      -webkit-box-ordinal-group: 0;
+          -ms-flex-order: -1;
+              order: -1; } }
+  #site-footer-meta .accreditations > .inner {
+    margin: -0.5rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center; }
+    @media (min-width: 768px) {
+      #site-footer-meta .accreditations > .inner {
+        -webkit-box-pack: start;
+            -ms-flex-pack: start;
+                justify-content: flex-start; } }
+  #site-footer-meta .accreditations .logo {
+    margin: 0.5rem;
+    max-width: 100px; }
+
+#site-footer-meta .logos {
+  margin-top: 2rem; }
+  @media (min-width: 768px) {
+    #site-footer-meta .logos {
+      -webkit-box-flex: 0;
+          -ms-flex: 0 0 auto;
+              flex: 0 0 auto;
+      padding-left: 1rem;
+      margin-top: 0;
+      width: 50%; } }
+  @media (min-width: 992px) {
+    #site-footer-meta .logos {
+      width: calc((100px + (.5rem * 2)) * 2 - (.5rem * 2) + 1rem); } }
+  #site-footer-meta .logos > .inner {
+    margin: -0.5rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center; }
+    @media (min-width: 768px) {
+      #site-footer-meta .logos > .inner {
+        -webkit-box-pack: end;
+            -ms-flex-pack: end;
+                justify-content: flex-end; } }
+  #site-footer-meta .logos .logo {
+    margin: 0.5rem;
+    max-width: 100px; }
+
 /*	Site Copyright
 ---------------------------------------------------------*/
 #site-copyright {
   font-size: 0.75rem;
+  margin-top: 2rem;
   margin-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -21396,14 +21531,16 @@ body {
       -webkit-box-flex: 1;
           -ms-flex: 1 1 auto;
               flex: 1 1 auto;
-      text-align: left; } }
+      text-align: left;
+      margin-bottom: 0;
+      margin-top: 1rem; } }
 
 /*	Legal Links
 ---------------------------------------------------------*/
 #footer-legal-links {
   font-size: 0.75rem;
   line-height: 1.2;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   padding-left: 1rem;
   padding-right: 1rem;
   -webkit-box-flex: 0;
@@ -21413,16 +21550,12 @@ body {
   letter-spacing: 0.1em;
   font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   text-align: center; }
-  @media (min-width: 576px) {
-    #footer-legal-links {
-      margin-bottom: 1rem; } }
   @media (min-width: 768px) {
     #footer-legal-links {
       -webkit-box-flex: 0;
           -ms-flex: 0 0 auto;
               flex: 0 0 auto;
-      margin-bottom: 1rem;
-      text-align: left; } }
+      margin-top: 1rem; } }
   #footer-legal-links ul {
     list-style: none;
     padding: 0;
@@ -21457,79 +21590,6 @@ body {
     transition: color .15s; }
     #footer-legal-links a:hover {
       color: #233053; }
-
-/*	Site Footer Meta
----------------------------------------------------------*/
-#site-footer-meta {
-  -webkit-box-flex: 0;
-      -ms-flex: 0 0 100%;
-          flex: 0 0 100%;
-  padding-left: 1rem;
-  padding-right: 1rem; }
-  @media (min-width: 768px) {
-    #site-footer-meta {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex; } }
-  #site-footer-meta .description-accreditations {
-    -webkit-box-flex: 1;
-        -ms-flex: 1 1 auto;
-            flex: 1 1 auto; }
-
-#site-description {
-  font-size: 0.75rem;
-  color: #9fa6b5;
-  font-family: "proxima-nova", semplicitapro, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  text-align: center;
-  max-width: 920px; }
-  @media (min-width: 768px) {
-    #site-description {
-      text-align: left; } }
-
-#site-footer-meta .accreditations {
-  margin-top: 2rem; }
-  #site-footer-meta .accreditations > .inner {
-    margin: -0.5rem;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center; }
-    @media (min-width: 768px) {
-      #site-footer-meta .accreditations > .inner {
-        -webkit-box-pack: start;
-            -ms-flex-pack: start;
-                justify-content: flex-start; } }
-  #site-footer-meta .accreditations .logo {
-    margin: 0.5rem;
-    max-width: 100px; }
-
-#site-footer-meta .logos {
-  margin-top: 2rem; }
-  @media (min-width: 768px) {
-    #site-footer-meta .logos {
-      -webkit-box-flex: 0;
-          -ms-flex: 0 0 auto;
-              flex: 0 0 auto;
-      margin-left: 3rem; } }
-  #site-footer-meta .logos > .inner {
-    margin: -0.5rem;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center; }
-  #site-footer-meta .logos .logo {
-    margin: 0.5rem;
-    max-width: 100px; }
 
 body.mobile-menu-active {
   overflow: hidden; }
@@ -21936,7 +21996,7 @@ body.mobile-menu-active {
   #main .container > .inner > .wp-block-crown-blocks-event-header:last-child,
   #main .container > .inner > .wp-block-crown-blocks-client-story-header:last-child {
     margin-bottom: calc(-40px - (4.75rem / 2));
-    padding-bottom: 2.375rem; }
+    padding-bottom: 2.59375rem; }
     @media (min-width: 768px) {
       #main-content > .wp-block-crown-blocks-call-to-action.alignfull:last-child,
       #main-content > .wp-block-crown-blocks-container.alignfull:last-child,
@@ -21955,7 +22015,7 @@ body.mobile-menu-active {
       #main .container > .inner > .wp-block-crown-blocks-event-header:last-child,
       #main .container > .inner > .wp-block-crown-blocks-client-story-header:last-child {
         margin-bottom: calc(-60px - (7.5rem / 2));
-        padding-bottom: 3.75rem; } }
+        padding-bottom: 3.28125rem; } }
     @media (min-width: 992px) {
       #main-content > .wp-block-crown-blocks-call-to-action.alignfull:last-child,
       #main-content > .wp-block-crown-blocks-container.alignfull:last-child,

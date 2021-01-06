@@ -926,13 +926,17 @@
 .wp-block-crown-blocks-featured-post-slider {
 	margin-bottom: 2rem;
 	.post-feed {
-		> .inner {
-			
+		overflow: hidden;
+		> .slick-slider {
+			position: relative;
+			margin: 0;
+			.slick-list {
+				margin: 0 -1rem;
+			}
 		}
 	}
-	.post-feed > .slick-slider {
+	.post-feed-nav {
 		position: relative;
-		margin: 0;
 		.slick-arrow {
 			position: absolute;
 			top: 100%;
@@ -952,16 +956,20 @@
 			background-size: contain;
 			opacity: .5;
 			transition: opacity .15s;
+			@include media-breakpoint-up(xl) {
+				width: 2.5rem;
+				height: 2.5rem;
+			}
 			&:hover {
 				opacity: 1;
 			}
 			&.slick-prev {
 				right: 2rem;
 				transform: rotateY(180deg);
+				@include media-breakpoint-up(xl) {
+					right: 3rem;
+				}
 			}
-		}
-		.slick-list {
-			margin: 0 -1rem;
 		}
 	}
 	article {

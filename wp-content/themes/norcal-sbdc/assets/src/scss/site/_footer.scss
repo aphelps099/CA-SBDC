@@ -7,7 +7,7 @@
 		> .upper {
 			padding: 2rem 0;
 			@include media-breakpoint-up(sm) {
-				padding: 3rem 0;
+				padding: 3rem 0 2rem;
 			}
 			> .inner {
 				display: flex;
@@ -19,6 +19,13 @@
 		> .lower {
 			border-top: 2px solid $primary;
 			padding: 1rem 0 2rem;
+			@include media-breakpoint-up(lg) {
+				padding-top: 1.5rem;
+			}
+			@media (min-width: 1400px) {
+				margin-left: -3rem;
+				margin-right: -3rem;
+			}
 			> .inner {
 				display: flex;
 				flex-wrap: wrap;
@@ -70,15 +77,19 @@ body {
 	color: #fff;
 	text-align: center;
 	padding: 1rem;
-	margin-top: (4.75rem / -2) - 2rem;
+	margin-top: (5.1875rem / -2) - 2rem;
 	margin-bottom: 2rem;
 	position: relative;
 	z-index: 5;
 	@include media-breakpoint-up(md) {
-		padding: 2rem;
-		font-size: 2.5rem;
-		margin-top: (7.5rem / -2) - 3rem;
-		margin-bottom: 3rem;
+		padding: 1.5rem;
+		font-size: 2.25rem;
+		margin-top: (6.5625rem / -2) - 3rem;
+		// margin-bottom: 3rem;
+	}
+	@media (min-width: 1400px) {
+		margin-left: -3rem;
+		margin-right: -3rem;
 	}
 }
 
@@ -94,6 +105,7 @@ body {
 		width: 50%;
 		order: 10;
 		max-width: 30rem;
+		align-self: center;
 	}
 	.form-overtitle {
 		font-family: $font-family-sans-serif-alt;
@@ -128,7 +140,7 @@ body {
 }
 
 #site-footer-logo {
-	max-width: 225px;
+	max-width: 200px;
 	// max-width: 150px;
 	a {
 		display: block;
@@ -173,7 +185,7 @@ body {
 	.logo {
 		margin: 1rem;
 		img {
-			max-height: 150px;
+			max-height: 130px;
 		}
 	}
 }
@@ -239,13 +251,12 @@ body {
 		padding-right: 2rem;
 	}
 	.widget {
-		font-size: 1rem;
 		margin-bottom: 2rem;
-		font-size: 1.25rem;
+		font-size: 1.125rem;
 		font-family: $font-family-sans-serif-alt;
 		color: mix($body-color, $ghost, 60%);
 		.widget-title {
-			margin-bottom: 1rem;
+			margin-bottom: .5rem;
 			font-size: 1rem;
 			font-weight: 600;
 			letter-spacing: .1em;
@@ -268,7 +279,7 @@ body {
 			line-height: $line-height-sm;
 		}
 		li {
-			margin-bottom: 0.5rem;
+			margin-bottom: 0.25rem;
 		}
 	}
 }
@@ -315,11 +326,98 @@ body {
 }
 
 
+/*	Site Footer Meta
+---------------------------------------------------------*/
+
+#site-footer-meta {
+	flex: 0 0 100%;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	@include media-breakpoint-up(md) {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+	@include media-breakpoint-up(lg) {
+		flex-wrap: nowrap;
+		justify-content: space-between;
+	}
+}
+
+#site-description {
+	font-size: 0.75rem;
+	color: mix($body-color, $ghost, 40%);
+	font-family: $font-family-sans-serif-alt;
+	text-align: center;
+	max-width: 720px;
+	@include media-breakpoint-up(lg) {
+		margin: 0 2rem;
+		flex: 1 1 auto;
+	}
+}
+
+#site-footer-meta .accreditations {
+	margin-top: 2rem;
+	@include media-breakpoint-up(md) {
+		margin-top: 0;
+		padding-right: 1rem;
+		width: 50%;
+		flex: 0 0 auto;
+	}
+	@include media-breakpoint-up(lg) {
+		width: calc((100px + (.5rem * 2)) * 2 - (.5rem * 2) + 1rem);
+		order: -1;
+	}
+	> .inner {
+		margin: -0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		@include media-breakpoint-up(md) {
+			justify-content: flex-start;
+		}
+	}
+	.logo {
+		margin: 0.5rem;
+		max-width: 100px;
+	}
+}
+
+#site-footer-meta .logos {
+	margin-top: 2rem;
+	@include media-breakpoint-up(md) {
+		flex: 0 0 auto;
+		padding-left: 1rem;
+		margin-top: 0;
+		width: 50%;
+	}
+	@include media-breakpoint-up(lg) {
+		width: calc((100px + (.5rem * 2)) * 2 - (.5rem * 2) + 1rem);
+	}
+	> .inner {
+		margin: -0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		@include media-breakpoint-up(md) {
+			justify-content: flex-end;
+		}
+	}
+	.logo {
+		margin: 0.5rem;
+		max-width: 100px;
+	}
+}
+
+
 /*	Site Copyright
 ---------------------------------------------------------*/
 
 #site-copyright {
 	font-size: 0.75rem;
+	margin-top: 2rem;
 	margin-bottom: 1rem;
 	padding-left: 1rem;
 	padding-right: 1rem;
@@ -332,6 +430,8 @@ body {
 	@include media-breakpoint-up(md) {
 		flex: 1 1 auto;
 		text-align: left;
+		margin-bottom: 0;
+		margin-top: 1rem;
 	}
 }
 
@@ -342,7 +442,7 @@ body {
 #footer-legal-links {
 	font-size: 0.75rem;
 	line-height: $line-height-sm;
-	margin-bottom: 0.5rem;
+	margin-bottom: 0;
 	padding-left: 1rem;
 	padding-right: 1rem;
 	flex: 0 0 100%;
@@ -350,13 +450,9 @@ body {
 	letter-spacing: 0.1em;
 	font-family: $font-family-sans-serif-alt;
 	text-align: center;
-	@include media-breakpoint-up(sm) {
-		margin-bottom: 1rem;
-	}
 	@include media-breakpoint-up(md) {
 		flex: 0 0 auto;
-		margin-bottom: 1rem;
-		text-align: left;
+		margin-top: 1rem;
 	}
 	ul {
 		list-style: none;
@@ -388,67 +484,5 @@ body {
 		&:hover {
 			color: $primary;
 		}
-	}
-}
-
-
-/*	Site Footer Meta
----------------------------------------------------------*/
-
-#site-footer-meta {
-	flex: 0 0 100%;
-	padding-left: 1rem;
-	padding-right: 1rem;
-	@include media-breakpoint-up(md) {
-		display: flex;
-	}
-	.description-accreditations {
-		flex: 1 1 auto;
-	}
-}
-
-#site-description {
-	font-size: 0.75rem;
-	color: mix($body-color, $ghost, 40%);
-	font-family: $font-family-sans-serif-alt;
-	text-align: center;
-	max-width: 920px;
-	@include media-breakpoint-up(md) {
-		text-align: left;
-	}
-}
-
-#site-footer-meta .accreditations {
-	margin-top: 2rem;
-	> .inner {
-		margin: -0.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		@include media-breakpoint-up(md) {
-			justify-content: flex-start;
-		}
-	}
-	.logo {
-		margin: 0.5rem;
-		max-width: 100px;
-	}
-}
-
-#site-footer-meta .logos {
-	margin-top: 2rem;
-	@include media-breakpoint-up(md) {
-		flex: 0 0 auto;
-		margin-left: 3rem;
-	}
-	> .inner {
-		margin: -0.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.logo {
-		margin: 0.5rem;
-		max-width: 100px;
 	}
 }

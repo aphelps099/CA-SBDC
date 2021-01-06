@@ -41,6 +41,39 @@
 			<div class="lower">
 				<div class="inner">
 
+					<div id="site-footer-meta">
+
+						<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
+						<?php if ( ! empty( $description ) ) { ?>
+							<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
+						<?php } ?>
+	
+						<div class="accreditations">
+							<div class="inner">
+
+								<div class="logo ca-gobed">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development">
+								</div>
+
+								<div class="logo sbdc-accredited-member">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member.png" alt="America's SBDC Accredited Member">
+								</div>
+
+							</div>
+						</div>
+
+						<div class="logos">
+							<div class="inner">
+
+								<div class="logo powered-by-sba">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association">
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+
 					<?php $copyright = apply_filters( 'crown_site_footer_copyright', '' ); ?>
 					<?php if ( ! empty( $copyright ) ) { ?>
 						<p id="site-copyright"><?php echo $copyright; ?></p>
@@ -57,43 +90,6 @@
 							) );
 						?>
 					</nav>
-
-					<div id="site-footer-meta">
-
-						<div class="description-accreditations">
-
-							<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
-							<?php if ( ! empty( $description ) ) { ?>
-								<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
-							<?php } ?>
-	
-							<div class="accreditations">
-								<div class="inner">
-	
-									<div class="logo ca-gobed">
-										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development">
-									</div>
-	
-									<div class="logo sbdc-accredited-member">
-										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member.png" alt="America's SBDC Accredited Member">
-									</div>
-	
-								</div>
-							</div>
-
-						</div>
-
-						<div class="logos">
-							<div class="inner">
-
-								<div class="logo powered-by-sba">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association">
-								</div>
-
-							</div>
-						</div>
-
-					</div>
 
 				</div>
 			</div>
