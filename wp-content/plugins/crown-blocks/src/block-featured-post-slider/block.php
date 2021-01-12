@@ -105,7 +105,7 @@ if(!class_exists('Crown_Block_Featured_Post_Slider')) {
 										<?php if ( ! empty( $topics ) ) { ?>
 											<p class="entry-topics">
 												<?php foreach ( $topics as $term ) { ?>
-													<span class="topic"><?php echo $term->name; ?></span>
+													<a class="topic" href="<?php echo get_home_url(); ?>/news/?p_topic=<?php echo $term->term_id; ?>"><?php echo $term->name; ?></a>
 												<?php } ?>
 											</p>
 										<?php } ?>
