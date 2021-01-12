@@ -18956,7 +18956,7 @@ nav.pagination {
     margin-bottom: 0;
     font-size: 5rem;
     line-height: 1;
-    font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-weight: 800;
     font-style: italic; }
     @media (min-width: 992px) {
@@ -18991,7 +18991,7 @@ nav.pagination {
         border-color: #233053; }
     .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-value {
       margin-bottom: 0;
-      font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
       font-size: 1.75rem;
       font-style: normal;
       font-weight: 500;

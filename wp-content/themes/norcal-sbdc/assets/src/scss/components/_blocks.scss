@@ -1187,7 +1187,7 @@
 		margin-bottom: 0;
 		font-size: 5rem;
 		line-height: 1;
-		font-family: $font-family-sans-serif;
+		font-family: $font-family-sans-serif-alt;
 		font-weight: 800;
 		font-style: italic;
 		@include media-breakpoint-up(lg) {
@@ -1232,7 +1232,7 @@
 		}
 		.stat-value {
 			margin-bottom: 0;
-			font-family: $font-family-base;
+			font-family: $font-family-sans-serif-alt;
 			font-size: 1.75rem;
 			font-style: normal;
 			font-weight: 500;
