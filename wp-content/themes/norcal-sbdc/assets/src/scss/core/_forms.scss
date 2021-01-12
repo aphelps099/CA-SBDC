@@ -42,7 +42,7 @@ textarea {
 label {
 	line-height: $input-line-height-sm;
 	font-size: 0.875rem;
-	font-family: $font-family-sans-serif-alt;
+	font-family: $font-family-sans-serif;
 	font-weight: 700;
 	margin-bottom: 0.25rem;
 }
@@ -219,6 +219,7 @@ form.feed-filters {
 				margin-top: -.35em;
 				margin-bottom: -.5em;
 				color: $primary;
+				font-family: $font-family-sans-serif-alt;
 				@include media-breakpoint-up(sm) {
 					margin-left: .1em;
 				}

@@ -701,7 +701,6 @@ body.mobile-menu-active {
 				display: block;
 				font-weight: 400;
 				font-size: 1rem;
-				font-family: $font-family-sans-serif-alt;
 				@include media-breakpoint-up(lg) {
 					font-size: 1.25rem;
 				}
@@ -723,7 +722,6 @@ body.mobile-menu-active {
 		}
 		.sub-menu-content {
 			line-height: $line-height-base;
-			font-family: $font-family-sans-serif-alt;
 			font-size: 1rem;
 			color: rgba($dark, .8);
 			@include media-breakpoint-up(lg) {

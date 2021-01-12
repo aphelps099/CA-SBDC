@@ -166,7 +166,7 @@
 		h2 {
 			font-size: 1.375rem;
 			text-transform: uppercase;
-			font-family: $font-family-sans-serif-alt;
+			font-family: $font-family-sans-serif;
 			font-weight: 800;
 			letter-spacing: .1em;
 			@include media-breakpoint-up(md) {
@@ -585,7 +585,7 @@
 		}
 	}
 	h6 {
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 	}
 }
 
@@ -627,10 +627,10 @@
 		}
 	}
 	.entry-label {
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 	}
 	.entry-excerpt {
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 		line-height: $line-height-base;
 	}
 }
@@ -991,7 +991,7 @@
 			.date {
 				font-size: 3.125rem;
 				font-weight: 700;
-				font-family: $font-family-sans-serif-alt;
+				font-family: $font-family-sans-serif;
 			}
 			.line {
 				display: block;
@@ -1011,7 +1011,7 @@
 				border-radius: 10rem;
 				text-transform: uppercase;
 				letter-spacing: .1em;
-				font-family: $font-family-sans-serif-alt;
+				font-family: $font-family-sans-serif;
 				color: rgba($dark-gray, .6);
 				font-weight: 700;
 			}
@@ -1123,7 +1123,7 @@
 		margin-bottom: 0;
 		font-size: 5rem;
 		line-height: 1;
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 		font-weight: 800;
 		font-style: italic;
 		@include media-breakpoint-up(lg) {
@@ -1378,7 +1378,7 @@
 			}
 		}
 		.link-title {
-			font-family: $font-family-sans-serif-alt;
+			font-family: $font-family-sans-serif;
 		}
 	}
 }
@@ -2165,7 +2165,7 @@
 		}
 	}
 	.index-title {
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 	}
 	.article-header {
 		&.text-color-light {
@@ -2267,7 +2267,7 @@
 		}
 	}
 	.index-title {
-		font-family: $font-family-sans-serif-alt;
+		font-family: $font-family-sans-serif;
 	}
 	.article-header {
 		> .container-bg {

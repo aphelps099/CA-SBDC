@@ -6,6 +6,7 @@
 		text-shadow: none;
 		transition: opacity .15s;
 		font-weight: 300;
+		font-family: $font-family-sans-serif-alt;
 		&:not(:disabled):not(.disabled):hover,
 		&:not(:disabled):not(.disabled):focus {
 			opacity: 1;
