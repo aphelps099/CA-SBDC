@@ -334,7 +334,7 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 1rem;
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700;
   line-height: 1.2; }
 
@@ -1970,7 +1970,7 @@ pre {
   width: 100%;
   height: calc(1.2em + 1.6rem + 2px);
   padding: 0.8rem 0.8rem;
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.2;
@@ -4414,7 +4414,7 @@ nav.pagination .nav-links .input-group > .input-group-prepend:first-child > .pag
   width: 100%;
   height: calc(1.2em + 1.6rem + 2px);
   padding: 0.8rem 1.8rem 0.8rem 0.8rem;
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.2;
@@ -4495,7 +4495,7 @@ nav.pagination .nav-links .input-group > .input-group-prepend:first-child > .pag
   z-index: 1;
   height: calc(1.2em + 1.6rem + 2px);
   padding: 0.8rem 0.8rem;
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 400;
   line-height: 1.2;
   color: #233053;
@@ -16572,7 +16572,6 @@ form.feed-filters {
     display: block;
     text-transform: lowercase;
     font-weight: 700;
-    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-size: 1.25rem;
     margin-right: 3em;
     position: relative;
@@ -17816,6 +17815,26 @@ nav.pagination {
 .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
   display: none; }
 
+@media (max-width: 575.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-sm > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 767.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-md > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 991.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-lg > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 1199.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-xl > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
 /*	Tabbed Content
 ---------------------------------------------------------*/
 .text-color-light .wp-block-crown-blocks-tabbed-content .slick-slider-nav .slick-dots button {
@@ -18770,7 +18789,7 @@ nav.pagination {
     margin-bottom: 0;
     font-size: 5rem;
     line-height: 1;
-    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: 800;
     font-style: italic; }
     @media (min-width: 992px) {
@@ -18805,7 +18824,7 @@ nav.pagination {
         border-color: #233053; }
     .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-value {
       margin-bottom: 0;
-      font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+      font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
       font-size: 1.75rem;
       font-style: normal;
       font-weight: 500;
@@ -20575,7 +20594,7 @@ body {
   background: #fff; }
 
 .editor-post-title__input {
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   text-align: center; }
 
 .components-button {
