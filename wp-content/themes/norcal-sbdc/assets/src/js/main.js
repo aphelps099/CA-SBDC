@@ -991,11 +991,11 @@
 					if(top > 0 && top < maxTop) {
 						if(!block.hasClass('is-fixed')) {
 							var fixedTop = nav.outerHeight() + $('body').offset().top;
-							block.addClass('is-fixed').css({ position: 'fixed', top: fixedTop, width: block.outerWidth() });
+							block.addClass('is-fixed').css({ position: 'fixed', top: fixedTop, width: block.outerWidth(), left: block.offset().left });
 						}
 					} else {
 						if(block.hasClass('is-fixed')) {
-							block.removeClass('is-fixed').css({ position: 'relative', width: 'auto' });
+							block.removeClass('is-fixed').css({ position: 'relative', width: 'auto', left: 0 });
 						}
 						block.css({ top: Math.min(top, maxTop) });
 					}
