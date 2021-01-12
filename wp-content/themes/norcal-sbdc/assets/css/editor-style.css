@@ -17727,6 +17727,12 @@ nav.pagination {
       top: 0;
       z-index: 499; } }
   @media (min-width: 768px) {
+    body.admin-bar .wp-block-crown-blocks-section-nav .section-nav-nav {
+      top: 46px; } }
+  @media (min-width: 783px) {
+    body.admin-bar .wp-block-crown-blocks-section-nav .section-nav-nav {
+      top: 32px; } }
+  @media (min-width: 768px) {
     .wp-block-crown-blocks-section-nav .section-nav-nav > .inner {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -17785,10 +17791,27 @@ nav.pagination {
             flex-wrap: wrap;
         font-weight: 700; } }
     .wp-block-crown-blocks-section-nav .section-nav-nav .menu li {
-      margin-top: 1rem; }
+      margin-top: 1rem;
+      position: relative; }
       @media (min-width: 768px) {
         .wp-block-crown-blocks-section-nav .section-nav-nav .menu li {
           margin: 0 1rem 1rem; } }
+      .wp-block-crown-blocks-section-nav .section-nav-nav .menu li.active:before {
+        opacity: 1; }
+      .wp-block-crown-blocks-section-nav .section-nav-nav .menu li:before {
+        content: '';
+        position: absolute;
+        display: none;
+        left: 0;
+        right: 0;
+        bottom: -0.25rem;
+        border-top: 0.25rem solid #fff;
+        opacity: 0;
+        -webkit-transition: opacity .2s;
+        transition: opacity .2s; }
+        @media (min-width: 768px) {
+          .wp-block-crown-blocks-section-nav .section-nav-nav .menu li:before {
+            display: block; } }
 
 .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
   display: none; }
@@ -18747,7 +18770,7 @@ nav.pagination {
     margin-bottom: 0;
     font-size: 5rem;
     line-height: 1;
-    font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-weight: 800;
     font-style: italic; }
     @media (min-width: 992px) {
@@ -18782,7 +18805,7 @@ nav.pagination {
         border-color: #233053; }
     .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-value {
       margin-bottom: 0;
-      font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
       font-size: 1.75rem;
       font-style: normal;
       font-weight: 500;

@@ -18002,6 +18002,26 @@ nav.pagination {
 .wp-block-crown-blocks-section-nav-content .section-nav-content-title {
   display: none; }
 
+@media (max-width: 575.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-sm > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 767.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-md > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 991.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-lg > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
+@media (max-width: 1199.98px) {
+  .wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-multi-column.column-breakpoint-xl > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky {
+    position: static !important;
+    min-height: 0 !important; } }
+
 /*	Tabbed Content
 ---------------------------------------------------------*/
 .text-color-light .wp-block-crown-blocks-tabbed-content .slick-slider-nav .slick-dots button {
@@ -18956,7 +18976,7 @@ nav.pagination {
     margin-bottom: 0;
     font-size: 5rem;
     line-height: 1;
-    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: 800;
     font-style: italic; }
     @media (min-width: 992px) {
@@ -18991,7 +19011,7 @@ nav.pagination {
         border-color: #233053; }
     .wp-block-crown-blocks-stat-table .wp-block-crown-blocks-stat .stat-value {
       margin-bottom: 0;
-      font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+      font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
       font-size: 1.75rem;
       font-style: normal;
       font-weight: 500;
