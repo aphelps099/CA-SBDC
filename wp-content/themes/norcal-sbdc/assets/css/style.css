@@ -14892,6 +14892,9 @@ h1 {
 .is-style-sans-serif {
   font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
 
+.is-style-sans-serif-alt {
+  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+
 .is-style-serif {
   font-family: "utopia-std", serif; }
 
