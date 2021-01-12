@@ -8915,6 +8915,8 @@
 
 .wp-block-crown-blocks-section-nav-content {
   margin: 0; }
+  .wp-block-crown-blocks-section-nav-content > .inner > .section-nav-content-contents > .inner > .wp-block-crown-blocks-container {
+    margin: 0; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

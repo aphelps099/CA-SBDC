@@ -166,6 +166,15 @@ body {
 	}
 }
 
+.wp-block-crown-blocks-multi-column {
+	&.relative-to-container-width {
+		> .inner {
+			> .multi-column-columns {
+				max-width: none;
+			}
+		}
+	}
+}
 
 .wp-block[data-type="crown-blocks/tabbed-content"] {
 	> .crown-block-editor-container > .wp-block-crown-blocks-tabbed-content {

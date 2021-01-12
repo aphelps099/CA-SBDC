@@ -957,6 +957,55 @@
 				}
 			});
 
+			var updateSectionNavBlocks = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('.wp-block-crown-blocks-section-nav').each(function(i, el) {
+					var block = $(el);
+					var nav = $('> .inner > .section-nav-nav', block);
+					var sections = $('> .inner > .section-nav-contents > .inner > .wp-block-crown-blocks-section-nav-content', block);
+					var currentSection = sections.first();
+					while(currentSection.next().length) {
+						if(currentSection.next().offset().top < scrollTop + (windowHeight / 2)) {
+							currentSection = currentSection.next();
+						} else {
+							break;
+						}
+					}
+					var currentNavItem = $('.menu li:eq(' + currentSection.index() + ')', nav);
+					if(!currentNavItem.hasClass('active')) {
+						$('.menu li.active', nav).removeClass('active');
+						currentNavItem.addClass('active');
+					}
+				});
+				$('.wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-column.sticky').each(function(i, el) {
+					var block = $(el);
+					var container = block.closest('.wp-block-crown-blocks-section-nav-content');
+					var nav = container.closest('.wp-block-crown-blocks-section-nav').find('.section-nav-nav');
+					var top = Math.max(0, scrollTop - container.offset().top + nav.outerHeight() + $('body').offset().top);
+					block.css({ minHeight: 'calc(100vh - ' + (nav.outerHeight() + $('body').offset().top) + 'px)' });
+					var height = block.outerHeight();
+					block.parent().css({ minHeight: height });
+					// var atBottom = top + height >= container.offset().top + container.outerHeight();
+					var maxTop = container.outerHeight() - height;
+					if(top > 0 && top < maxTop) {
+						if(!block.hasClass('is-fixed')) {
+							var fixedTop = nav.outerHeight() + $('body').offset().top;
+							block.addClass('is-fixed').css({ position: 'fixed', top: fixedTop, width: block.outerWidth() });
+						}
+					} else {
+						if(block.hasClass('is-fixed')) {
+							block.removeClass('is-fixed').css({ position: 'relative', width: 'auto' });
+						}
+						block.css({ top: Math.min(top, maxTop) });
+					}
+				});
+			};
+			if($('.wp-block-crown-blocks-section-nav').length) {
+				updateSectionNavBlocks();
+				$(window).on('load scroll resize', updateSectionNavBlocks);
+			}
+
 		};
 
 

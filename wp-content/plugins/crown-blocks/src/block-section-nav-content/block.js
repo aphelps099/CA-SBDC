@@ -85,7 +85,7 @@ registerBlockType('crown-blocks/section-nav-content', {
 						<div className="section-nav-content-contents">
 							<div className="inner">
 
-								<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } templateLock={ 'insert' } />
+								<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } />
 
 							</div>
 						</div>
