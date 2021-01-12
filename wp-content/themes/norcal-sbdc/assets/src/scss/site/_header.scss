@@ -621,8 +621,9 @@ body.mobile-menu-active {
 		}
 		&.events {
 			.sub-menu-section.secondary {
+				flex: 0 0 percentage(4 / 12);
 				@include media-breakpoint-up(xl) {
-					flex: 0 0 percentage(1 / 4);
+					flex: 0 0 percentage(3 / 12);
 				}
 			}
 		}
@@ -646,22 +647,22 @@ body.mobile-menu-active {
 				}
 			}
 			&.secondary {
-				flex: 0 0 percentage(1 / 3);
+				flex: 0 0 percentage(5 / 12);
 				background-color: $x-light-blue;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
+				.container {
+					padding-top: 2.5rem;
+				}
 				h3 {
 					margin-bottom: 1rem;
+					margin-top: -.5rem;
 				}
 			}
 			&.default {
 				.sub-menu-menus {
-					h4 {
-						font-size: 1.125rem;
-						text-transform: uppercase;
-					}
 					.menu {
-						columns: 2;
+						columns: 1;
 						column-gap: 2rem;
 						.menu-item {
 							display: inline-block;
@@ -669,6 +670,11 @@ body.mobile-menu-active {
 							break-inside: avoid;
 						}
 					}
+				}
+			}
+			&.sub-menus {
+				h4 {
+					color: $gray;
 				}
 			}
 		}
@@ -691,9 +697,18 @@ body.mobile-menu-active {
 				padding: 0 1rem;
 			}
 			h4 {
-				font-weight: 500;
+				font-weight: 700;
+				letter-spacing: .05em;
+				margin-bottom: 1.5rem;
+				font-size: 1.5rem;
+				text-transform: uppercase;
 				a {
 					padding: 0;
+					color: inherit;
+				}
+				strong {
+					display: block;
+					color: $primary;
 				}
 			}
 			.menu {
@@ -709,10 +724,11 @@ body.mobile-menu-active {
 				}
 				a {
 					padding: 0;
-					color: rgba($dark, .8);
+					color: $primary;
 					display: block;
+					font-weight: 700;
 					&:hover {
-						color: $primary;
+						color: $blue;
 					}
 				}
 			}
