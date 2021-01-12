@@ -957,6 +957,7 @@
 				}
 			});
 
+			$('.wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-column.sticky').css({ position: 'relative' });
 			var updateSectionNavBlocks = function() {
 				var scrollTop = $(window).scrollTop();
 				var windowHeight = $(window).height();
