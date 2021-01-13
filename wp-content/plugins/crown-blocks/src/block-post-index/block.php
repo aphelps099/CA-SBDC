@@ -228,6 +228,8 @@ if(!class_exists('Crown_Block_Post_Index')) {
 																	<?php } ?>
 		
 																</header>
+
+																<div class="entry-link"><span></span><span></span></div>
 			
 															</div>
 
