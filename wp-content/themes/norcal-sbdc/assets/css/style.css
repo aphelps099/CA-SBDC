@@ -22320,11 +22320,12 @@ body.mobile-menu-active {
 #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-events .event-teaser .entry-cta {
   display: none; }
 
-#mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links li + li {
-  margin-top: 0.25rem; }
-
-#mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a {
-  color: #fff; }
+#mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links {
+  margin-top: 1.5rem; }
+  #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links li + li {
+    margin-top: 0.25rem; }
+  #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a {
+    color: #fff; }
 
 #mobile-menu-primary-navigation-menu .mega-sub-menu .social-links .menu {
   margin: -.4rem; }
