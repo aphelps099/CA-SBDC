@@ -17122,14 +17122,25 @@ nav.pagination {
     transition: opacity .15s;
     font-weight: 300;
     font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-    color: #fff; }
+    color: #fff;
+    width: 4rem;
+    height: 4rem;
+    padding: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    font-size: 3rem; }
     .modal button.close:not(:disabled):not(.disabled):hover, .modal button.close:not(:disabled):not(.disabled):focus {
       opacity: 1; }
     @media (min-width: 768px) {
       .modal button.close {
-        font-size: 3rem;
-        padding-top: .5rem;
-        padding-bottom: .5rem; } }
+        font-size: 4rem; } }
 
 .modal.loading .modal-header {
   display: none; }
@@ -17158,7 +17169,11 @@ nav.pagination {
 .modal-header {
   border-bottom: none;
   background-color: #108DBC;
-  color: #fff; }
+  color: #fff;
+  min-height: 4rem; }
+  @media (min-width: 768px) {
+    .modal-header {
+      min-height: 6rem; } }
 
 .modal.contact-form .disclaimer {
   font-size: 0.75rem;
@@ -17175,13 +17190,16 @@ nav.pagination {
 
 #subscribe-modal .modal-title {
   text-transform: uppercase;
-  letter-spacing: .1em; }
+  letter-spacing: .15em;
+  font-size: 1.5rem;
+  margin-top: 0.25rem; }
 
 @media (min-width: 768px) {
   #subscribe-modal .modal-body {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex; } }
+    display: flex;
+    padding-bottom: 4rem; } }
 
 #subscribe-modal .subscribe-contents {
   background-color: #F4F8FD;
@@ -17252,7 +17270,7 @@ nav.pagination {
       font-weight: normal;
       line-height: 1;
       font-family: icomoon;
-      content: "";
+      content: "";
       position: absolute;
       text-indent: 0;
       left: 0;
@@ -17267,7 +17285,8 @@ nav.pagination {
               justify-content: center;
       -webkit-box-align: center;
           -ms-flex-align: center;
-              align-items: center; }
+              align-items: center;
+      font-size: 1.25rem; }
   #subscribe-modal .gform_footer .gform_ajax_spinner {
     display: none !important; }
 
@@ -23033,7 +23052,7 @@ body.mobile-menu-active {
       font-weight: normal;
       line-height: 1;
       font-family: icomoon;
-      content: "";
+      content: "";
       position: absolute;
       text-indent: 0;
       left: 0;
@@ -23048,7 +23067,8 @@ body.mobile-menu-active {
               justify-content: center;
       -webkit-box-align: center;
           -ms-flex-align: center;
-              align-items: center; }
+              align-items: center;
+      font-size: 1.25rem; }
   .simple-subscribe-form_wrapper .gform_footer .gform_ajax_spinner {
     display: none !important; }
 

@@ -327,7 +327,7 @@ $gform-gutter-width: 10px;
 			text-indent: -100000px;
 			position: relative;
 			&:after {
-				@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+				@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
 				position: absolute;
 				text-indent: 0;
 				left: 0;
@@ -337,6 +337,7 @@ $gform-gutter-width: 10px;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				font-size: 1.25rem;
 			}
 		}
 		.gform_ajax_spinner {
