@@ -28,7 +28,7 @@ if ( ! function_exists( 'ct_social_links' ) ) {
 			);
 			if ( empty( $link->url ) ) continue;
 			if ( $link->slug == 'facebook' ) {
-				$link->icon = ct_get_icon( 'brands/facebook-f', 'font-awesome' );
+				$link->icon = ct_get_icon( 'brands/facebook-square', 'font-awesome' );
 			} else if ( $link->slug == 'google_plus' ) {
 				$link->label = 'Google+';
 				$link->icon = ct_get_icon( 'brands/google-plus-g', 'font-awesome' );
