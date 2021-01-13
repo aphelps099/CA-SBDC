@@ -98,6 +98,30 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										'input' => new Textarea( array( 'name' => 'theme_config_footer_description', 'rows' => 4 ) )
 									) )
 								)
+							) ),
+
+							new FieldGroup( array(
+								'label' => 'Modals',
+								'fields' => array(
+									new FieldGroup( array(
+										'label' => 'Subscribe',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Title',
+												'input' => new TextInput( array( 'name' => 'theme_config_modal_subscribe_title', 'class' => 'input-large' ) )
+											) ),
+											new Field( array(
+												'label' => 'Description',
+												'input' => new TextInput( array( 'name' => 'theme_config_modal_subscribe_description' ) )
+											) ),
+											new Field( array(
+												'label' => 'Form',
+												'input' => new Select( array( 'name' => 'theme_config_modal_subscribe_form' ) ),
+												'getOutputCb' => array( __CLASS__, 'set_form_select_input_options' )
+											) )
+										)
+									) )
+								)
 							) )
 
 						)

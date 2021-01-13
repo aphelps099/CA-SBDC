@@ -7,9 +7,15 @@
 		transition: opacity .15s;
 		font-weight: 300;
 		font-family: $font-family-sans-serif-alt;
+		color: #fff;
 		&:not(:disabled):not(.disabled):hover,
 		&:not(:disabled):not(.disabled):focus {
 			opacity: 1;
+		}
+		@include media-breakpoint-up(md) {
+			font-size: 3rem;
+			padding-top: .5rem;
+			padding-bottom: .5rem;
 		}
 	}
 }
@@ -24,6 +30,25 @@
 		align-items: center;
 		min-height: 400px;
 	}
+}
+
+.modal-content {
+	border: none;
+}
+.modal-header,
+.modal-body,
+.modal-footer {
+	@include media-breakpoint-up(md) {
+		padding: 2rem;
+	}
+}
+.modal-header {
+	border-bottom: none;
+	background-color: $blue;
+	color: #fff;
+}
+.modal-footer {
+	// border-top: none;
 }
 
 
@@ -42,25 +67,101 @@
 
 
 #subscribe-modal {
+	.modal-dialog {
+		width: 880px;
+		max-width: calc(100vw - 1rem);
+	}
 	.modal-title {
-		font-family: $font-family-sans-serif-alt;
 		text-transform: uppercase;
 		letter-spacing: .1em;
-		font-size: 1.125rem;
+	}
+	.modal-body {
+		@include media-breakpoint-up(md) {
+			display: flex;
+		}
+	}
+	.subscribe-contents {
+		background-color: $x-light-blue;
+		margin: -1rem -1rem 1rem;
+		padding: 1rem;
+		@include media-breakpoint-up(md) {
+			margin: -2rem 0 -2rem;
+			margin-left: -2rem;
+			padding: 2rem;
+			width: calc(50% + 2rem);
+		}
+	}
+	.subscribe-title {
+		font-weight: 500;
+		font-size: 2.125rem;
+		border-bottom: 0.125rem solid $primary;
+		padding-bottom: 1rem;
+		margin-bottom: 1.5rem;
+	}
+	.subscribe-description {
 		color: $blue;
-		padding: .3rem 0;
-		span {
-			color: $primary;
+		font-family: $font-family-serif;
+		font-style: italic;
+	}
+	.subscribe-form {
+		@include media-breakpoint-up(md) {
+			width: 50%;
+			padding-left: 2rem;
 		}
 	}
 	.gform_wrapper {
 		margin-bottom: 0;
 	}
-	.gform_heading {
-		margin-bottom: 1rem;
+	form {
+		position: relative;
 	}
-	.gform_title {
-		font-size: 1.75rem;
-		font-weight: 400;
+	.gform_fields {
+		> .gfield:last-child {
+			margin-bottom: 0;
+			margin-right: 3.5rem;
+			position: relative;
+			&.gfield_error {
+				margin-bottom: 1.5rem;
+			}
+			.gfield_description {
+				display: none;
+				position: absolute;
+				left: 0;
+				top: 100%;
+				width: 100%;
+				&.validation_message {
+					display: block;
+				}
+			}
+		}
+	}
+	.gform_footer {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		width: 3.5rem;
+		button[type=submit] {
+			@extend .btn-secondary;
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			text-indent: -100000px;
+			position: relative;
+			&:after {
+				@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+				position: absolute;
+				text-indent: 0;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		}
+		.gform_ajax_spinner {
+			display: none !important;
+		}
 	}
 }

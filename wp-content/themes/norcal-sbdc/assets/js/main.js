@@ -284,75 +284,18 @@
 
 		wptheme.initModals = function() {
 
-			$(document).on('click', 'a', function(e) {
-				if(!$(this).attr('href')) return;
-				if((matches = $(this).attr('href').match(/^#case-study-modal-(\d+)$/))) {
-					e.preventDefault();
-					var modal = $($(this).attr('href') + '.modal');
-					if(modal.length) {
-						modal.modal();
-					} else {
-						var id = parseInt(matches[1]);
-						modal = $('<div class="modal fade case-study"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"></div></div></div></div>');
-						modal.attr('id', 'case-study-modal-' + id);
-						modal.addClass('loading');
-						$('.modal-content', modal).prepend('<div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>');
-						$('.modal-body', modal).html('<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>');
-						$('body').append(modal);
-						modal.modal();
-						$.get(crownThemeData.ajaxUrl, { action: 'the_case_study', id: id }, function(response) {
-							var modal = $('#case-study-modal-' + response.id);
-							if(modal.length) {
-								modal.removeClass('loading');
-								$('.modal-body', modal).html(response.html);
-								if($('article.has-photos', modal).length) modal.addClass('has-photos');
-								setTimeout(function() { 
-									if($('article.has-multiple-photos', modal).length) {
-										var slider = $('.entry-photos .slider', modal);
-										if(slider.hasClass('slick-initialized')) return;
-										var slickSettings = {
-											mobileFirst: true,
-											draggable: false,
-											dots: false,
-											arrows: true,
-											fade: false,
-											autoplay: false
-										};
-										slider.slick(slickSettings);
-									}
-								}, 500);
-								setTimeout(function() { $(window).trigger('resize'); }, 1000);
-							}
-						}, 'json');
-					}
+			$(document).on('submit', '#footer-subscribe-form form', function(e) {
+				e.preventDefault();
+				var form = $(this);
+				var formId = form.attr('id').replace(/^gform_/, '');
+				var email = $('.ginput_container_email input', form).val();
+				var modal = $('#subscribe-modal');
+				if(modal.length) {
+					$('.ginput_container_email input', modal).val(email);
+					modal.modal('show');
 				}
-			});
-
-			$(document).on('click', 'a', function(e) {
-				if(!$(this).attr('href')) return;
-				if((matches = $(this).attr('href').match(/^#team-member-modal-(\d+)$/))) {
-					e.preventDefault();
-					var modal = $($(this).attr('href') + '.modal');
-					if(modal.length) {
-						modal.modal();
-					} else {
-						var id = parseInt(matches[1]);
-						modal = $('<div class="modal fade team-member"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"></div></div></div></div>');
-						modal.attr('id', 'team-member-modal-' + id);
-						modal.addClass('loading');
-						$('.modal-content', modal).prepend('<div class="modal-header"><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div>');
-						$('.modal-body', modal).html('<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>');
-						$('body').append(modal);
-						modal.modal();
-						$.get(crownThemeData.ajaxUrl, { action: 'the_team_member', id: id }, function(response) {
-							var modal = $('#team-member-modal-' + response.id);
-							if(modal.length) {
-								modal.removeClass('loading');
-								$('.modal-body', modal).html(response.html);
-							}
-						}, 'json');
-					}
-				}
+				window['gf_submitting_' + formId] = false;
+				return false;
 			});
 
 		};

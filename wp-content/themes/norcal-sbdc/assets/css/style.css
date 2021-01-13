@@ -2474,32 +2474,34 @@ fieldset:disabled #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-l
       -webkit-box-shadow: 0 0 0 0 rgba(68, 79, 109, 0.5);
               box-shadow: 0 0 0 0 rgba(68, 79, 109, 0.5); }
 
-.btn-secondary, .simple-subscribe-form_wrapper .gform_footer button[type=submit] {
+.btn-secondary, #subscribe-modal .gform_footer button[type=submit], .simple-subscribe-form_wrapper .gform_footer button[type=submit] {
   color: #FFFFFF;
   background-color: #108DBC;
   border-color: #108DBC; }
-  .btn-secondary:hover, .simple-subscribe-form_wrapper .gform_footer button:hover[type=submit] {
+  .btn-secondary:hover, #subscribe-modal .gform_footer button:hover[type=submit], .simple-subscribe-form_wrapper .gform_footer button:hover[type=submit] {
     color: #FFFFFF;
     background-color: #0d7399;
     border-color: #0c6a8d; }
-  .btn-secondary:focus, .simple-subscribe-form_wrapper .gform_footer button:focus[type=submit], .btn-secondary.focus, .simple-subscribe-form_wrapper .gform_footer button.focus[type=submit] {
+  .btn-secondary:focus, #subscribe-modal .gform_footer button:focus[type=submit], .simple-subscribe-form_wrapper .gform_footer button:focus[type=submit], .btn-secondary.focus, #subscribe-modal .gform_footer button.focus[type=submit], .simple-subscribe-form_wrapper .gform_footer button.focus[type=submit] {
     color: #FFFFFF;
     background-color: #0d7399;
     border-color: #0c6a8d;
     -webkit-box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5);
             box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5); }
-  .btn-secondary.disabled, .simple-subscribe-form_wrapper .gform_footer button.disabled[type=submit], .btn-secondary:disabled, .simple-subscribe-form_wrapper .gform_footer button:disabled[type=submit] {
+  .btn-secondary.disabled, #subscribe-modal .gform_footer button.disabled[type=submit], .simple-subscribe-form_wrapper .gform_footer button.disabled[type=submit], .btn-secondary:disabled, #subscribe-modal .gform_footer button:disabled[type=submit], .simple-subscribe-form_wrapper .gform_footer button:disabled[type=submit] {
     color: #FFFFFF;
     background-color: #108DBC;
     border-color: #108DBC; }
-  .btn-secondary:not(:disabled):not(.disabled):active, .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled):active[type=submit], .btn-secondary:not(:disabled):not(.disabled).active, .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled).active[type=submit],
+  .btn-secondary:not(:disabled):not(.disabled):active, #subscribe-modal .gform_footer button:not(:disabled):not(.disabled):active[type=submit], .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled):active[type=submit], .btn-secondary:not(:disabled):not(.disabled).active, #subscribe-modal .gform_footer button:not(:disabled):not(.disabled).active[type=submit], .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled).active[type=submit],
   .show > .btn-secondary.dropdown-toggle,
+  #subscribe-modal .gform_footer .show > button.dropdown-toggle[type=submit],
   .simple-subscribe-form_wrapper .gform_footer .show > button.dropdown-toggle[type=submit] {
     color: #FFFFFF;
     background-color: #0c6a8d;
     border-color: #0b6181; }
-    .btn-secondary:not(:disabled):not(.disabled):active:focus, .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled):active:focus[type=submit], .btn-secondary:not(:disabled):not(.disabled).active:focus, .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled).active:focus[type=submit],
+    .btn-secondary:not(:disabled):not(.disabled):active:focus, #subscribe-modal .gform_footer button:not(:disabled):not(.disabled):active:focus[type=submit], .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled):active:focus[type=submit], .btn-secondary:not(:disabled):not(.disabled).active:focus, #subscribe-modal .gform_footer button:not(:disabled):not(.disabled).active:focus[type=submit], .simple-subscribe-form_wrapper .gform_footer button:not(:disabled):not(.disabled).active:focus[type=submit],
     .show > .btn-secondary.dropdown-toggle:focus,
+    #subscribe-modal .gform_footer .show > button.dropdown-toggle:focus[type=submit],
     .simple-subscribe-form_wrapper .gform_footer .show > button.dropdown-toggle:focus[type=submit] {
       -webkit-box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5);
               box-shadow: 0 0 0 0 rgba(52, 158, 198, 0.5); }
@@ -16985,9 +16987,15 @@ nav.pagination {
     -webkit-transition: opacity .15s;
     transition: opacity .15s;
     font-weight: 300;
-    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+    font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    color: #fff; }
     .modal button.close:not(:disabled):not(.disabled):hover, .modal button.close:not(:disabled):not(.disabled):focus {
       opacity: 1; }
+    @media (min-width: 768px) {
+      .modal button.close {
+        font-size: 3rem;
+        padding-top: .5rem;
+        padding-bottom: .5rem; } }
 
 .modal.loading .modal-header {
   display: none; }
@@ -17004,6 +17012,20 @@ nav.pagination {
           align-items: center;
   min-height: 400px; }
 
+.modal-content {
+  border: none; }
+
+@media (min-width: 768px) {
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 2rem; } }
+
+.modal-header {
+  border-bottom: none;
+  background-color: #108DBC;
+  color: #fff; }
+
 .modal.contact-form .disclaimer {
   font-size: 0.75rem;
   line-height: 1.2;
@@ -17013,25 +17035,107 @@ nav.pagination {
     color: inherit;
     text-decoration: underline; }
 
+#subscribe-modal .modal-dialog {
+  width: 880px;
+  max-width: calc(100vw - 1rem); }
+
 #subscribe-modal .modal-title {
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   text-transform: uppercase;
-  letter-spacing: .1em;
-  font-size: 1.125rem;
+  letter-spacing: .1em; }
+
+@media (min-width: 768px) {
+  #subscribe-modal .modal-body {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; } }
+
+#subscribe-modal .subscribe-contents {
+  background-color: #F4F8FD;
+  margin: -1rem -1rem 1rem;
+  padding: 1rem; }
+  @media (min-width: 768px) {
+    #subscribe-modal .subscribe-contents {
+      margin: -2rem 0 -2rem;
+      margin-left: -2rem;
+      padding: 2rem;
+      width: calc(50% + 2rem); } }
+
+#subscribe-modal .subscribe-title {
+  font-weight: 500;
+  font-size: 2.125rem;
+  border-bottom: 0.125rem solid #233053;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem; }
+
+#subscribe-modal .subscribe-description {
   color: #108DBC;
-  padding: .3rem 0; }
-  #subscribe-modal .modal-title span {
-    color: #233053; }
+  font-family: "utopia-std", serif;
+  font-style: italic; }
+
+@media (min-width: 768px) {
+  #subscribe-modal .subscribe-form {
+    width: 50%;
+    padding-left: 2rem; } }
 
 #subscribe-modal .gform_wrapper {
   margin-bottom: 0; }
 
-#subscribe-modal .gform_heading {
-  margin-bottom: 1rem; }
+#subscribe-modal form {
+  position: relative; }
 
-#subscribe-modal .gform_title {
-  font-size: 1.75rem;
-  font-weight: 400; }
+#subscribe-modal .gform_fields > .gfield:last-child {
+  margin-bottom: 0;
+  margin-right: 3.5rem;
+  position: relative; }
+  #subscribe-modal .gform_fields > .gfield:last-child.gfield_error {
+    margin-bottom: 1.5rem; }
+  #subscribe-modal .gform_fields > .gfield:last-child .gfield_description {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%; }
+    #subscribe-modal .gform_fields > .gfield:last-child .gfield_description.validation_message {
+      display: block; }
+
+#subscribe-modal .gform_footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 3.5rem; }
+  #subscribe-modal .gform_footer button[type=submit] {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-indent: -100000px;
+    position: relative; }
+    #subscribe-modal .gform_footer button[type=submit]:after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      font-family: icomoon;
+      content: "";
+      position: absolute;
+      text-indent: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: center;
+          -ms-flex-pack: center;
+              justify-content: center;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center; }
+  #subscribe-modal .gform_footer .gform_ajax_spinner {
+    display: none !important; }
 
 .odometer-statistic.fade-in {
   opacity: 0; }
@@ -22356,7 +22460,7 @@ body.mobile-menu-active {
     -webkit-box-shadow: inset 0 -2px #D44457;
             box-shadow: inset 0 -2px #D44457; }
 
-.gfield.no-label .gfield_label {
+.gfield.no-label .gfield_label, .gfield.hidden_label .gfield_label {
   display: none; }
 
 .gfield_required {
@@ -22425,20 +22529,24 @@ body.mobile-menu-active {
   .gfield_radio li,
   .gfield_checkbox li {
     margin-top: 0;
-    margin-bottom: 5px;
-    padding-left: 20px; }
+    margin-bottom: .5rem;
+    padding-left: 1.5rem; }
     .gfield_radio li label,
     .gfield_checkbox li label {
       padding-left: 0;
       margin-bottom: 0;
-      color: inherit; }
+      color: inherit;
+      font-size: 1rem;
+      font-weight: 400; }
   .gfield_radio input[type="radio"],
   .gfield_radio input[type="checkbox"],
   .gfield_checkbox input[type="radio"],
   .gfield_checkbox input[type="checkbox"] {
     float: left;
-    margin-left: -20px;
-    margin-top: .2em; }
+    margin-left: -1.5rem;
+    margin-top: .05rem;
+    width: 1rem;
+    height: 1rem; }
 
 .gfield_description {
   color: #6c757d;
