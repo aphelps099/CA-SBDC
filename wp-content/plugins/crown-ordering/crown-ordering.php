@@ -21,7 +21,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 
 		public static $sortablePostTypes = array(false); // replace with post types to make sortable
 		public static $sortableTaxonomies = array(false); // replace with taxonomies to make terms sortable
-		public static $sortableTermPostsTaxonomies = array(false); // replace with taxonomies to make term posts sortable
+		public static $sortableTermPostsTaxonomies = array( 'faq_topic' ); // replace with taxonomies to make term posts sortable
 
 		public static $init = false;
 

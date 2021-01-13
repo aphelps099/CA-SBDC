@@ -95,6 +95,7 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 
 		public static function setup_editor_stylesheet() {
 			add_editor_style( 'assets/css/editor-style.css' );
+			add_editor_style( Crown_Theme::get_uri() . '/assets/css/editor-style.css?ver=' . filemtime( Crown_Theme::get_dir() . '/assets/css/editor-style.css' ) );
 		}
 
 
