@@ -20023,7 +20023,7 @@ nav.pagination {
       .wp-block-crown-blocks-post-header > .inner > .header-contents {
         padding-top: 3rem;
         padding-bottom: 3rem; } }
-  .wp-block-crown-blocks-post-header .entry-categories span {
+  .wp-block-crown-blocks-post-header .entry-categories .category {
     border-color: #233053; }
   .wp-block-crown-blocks-post-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }

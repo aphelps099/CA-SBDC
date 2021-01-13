@@ -58,7 +58,7 @@
 
 	.entry-categories {
 		margin-bottom: 1rem;
-		span {
+		.category {
 			display: inline-block;
 			line-height: 1.2;
 			font-weight: 700;
@@ -68,6 +68,7 @@
 			border-radius: 10rem;
 			border: 1px solid #333;
 			padding: .5rem .75rem;
+			color: inherit;
 		}
 	}
 

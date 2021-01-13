@@ -8554,7 +8554,7 @@
         margin-bottom: 0; }
   .wp-block-crown-blocks-post-header .entry-categories {
     margin-bottom: 1rem; }
-    .wp-block-crown-blocks-post-header .entry-categories span {
+    .wp-block-crown-blocks-post-header .entry-categories .category {
       display: inline-block;
       line-height: 1.2;
       font-weight: 700;
@@ -8563,7 +8563,8 @@
       text-transform: uppercase;
       border-radius: 10rem;
       border: 1px solid #333;
-      padding: .5rem .75rem; }
+      padding: .5rem .75rem;
+      color: inherit; }
   .wp-block-crown-blocks-post-header .entry-title {
     font-size: 2rem;
     line-height: 1.2;

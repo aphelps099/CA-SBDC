@@ -53,7 +53,7 @@ if(!class_exists('Crown_Block_Post_Header')) {
 								<?php if ( ! empty( $categories ) ) { ?>
 									<p class="entry-categories">
 										<?php foreach ( $categories as $term ) { ?>
-											<span class="category"><?php echo $term->name; ?></span>
+											<a class="category" href="<?php echo get_home_url(); ?>/news/?p_category=<?php echo $term->term_id; ?>"><?php echo $term->name; ?></a>
 										<?php } ?>
 									</p>
 								<?php } ?>
