@@ -19124,7 +19124,13 @@ nav.pagination {
         letter-spacing: .1em;
         font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         color: rgba(52, 58, 64, 0.6);
-        font-weight: 700; }
+        font-weight: 700;
+        -webkit-transition: background-color .2s, color .2s, boder-color .2s;
+        transition: background-color .2s, color .2s, boder-color .2s; }
+        .wp-block-crown-blocks-featured-post-slider article .entry-topics .topic:hover {
+          background-color: #233053;
+          border-color: #233053;
+          color: #fff; }
     .wp-block-crown-blocks-featured-post-slider article .entry-title {
       font-size: 1.75;
       font-weight: 400; }
@@ -20259,7 +20265,13 @@ nav.pagination {
         padding-top: 3rem;
         padding-bottom: 3rem; } }
   .wp-block-crown-blocks-post-header .entry-categories .category {
-    border-color: #233053; }
+    border-color: #233053;
+    -webkit-transition: background-color .2s, color .2s, boder-color .2s;
+    transition: background-color .2s, color .2s, boder-color .2s; }
+    .wp-block-crown-blocks-post-header .entry-categories .category:hover {
+      background-color: #233053;
+      border-color: #233053;
+      color: #fff; }
   .wp-block-crown-blocks-post-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item a {
