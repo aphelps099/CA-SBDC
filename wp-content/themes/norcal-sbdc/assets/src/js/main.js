@@ -202,7 +202,11 @@
 				}
 			});
 
-			$(document).on('touchstart', 'body.mobile-menu-active #page', function(e) {
+			$(document).on('click', '#mobile-menu-close', function(e) {
+				$(document).trigger('close-mobile-menu');
+			});
+
+			$(document).on('touchstart click', 'body.mobile-menu-active #page', function(e) {
 				if($(e.target).closest('#mobile-menu-toggle').length) return;
 				$(document).trigger('close-mobile-menu');
 			});

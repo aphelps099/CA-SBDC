@@ -242,7 +242,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 														<h3><?php echo do_shortcode( $menu_item->sections->primary->title ); ?></h3>
 													<?php } ?>
 
-													<?php if ( ! empty( $menu_item->sections->primary->menus ) ) { ?>
+													<?php if ( $menu_item->type != 'events' && ! empty( $menu_item->sections->primary->menus ) ) { ?>
 														<div class="sub-menu-menus">
 															<?php foreach ( $menu_item->sections->primary->menus as $sub_menu ) { ?>
 																<div class="sub-menu-container">

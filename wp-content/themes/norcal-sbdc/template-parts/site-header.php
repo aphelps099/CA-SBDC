@@ -55,8 +55,8 @@
 				</nav>
 
 				<button id="mobile-menu-toggle" type="button">
-					<span class="icon"></span>
 					<span class="label">Menu</span>
+					<span class="icon"></span>
 				</button>
 
 			</div>

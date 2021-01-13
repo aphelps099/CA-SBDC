@@ -81,6 +81,15 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 		public static function get_contact_info_shortcode( $atts, $content ) {
 			$branches = get_repeater_entries( 'blog', 'theme_config_contact_branches' );
 			if ( empty( $branches ) ) return '';
+
+			if ( $atts['context'] == 'primary-phone' ) {
+				foreach ( $branches as $branch ) {
+					if ( ! empty( $branch['phone'] ) ) {
+						return '<a href="' . self::get_tel_link( $branch['phone'] ) . '">' . $branch['phone'] . '</a>';
+					}
+				}
+			}
+
 			$classes = array( 'contact-info' );
 			if ( ! empty( $atts['context'] ) ) $classes[] = $atts['context'];
 			ob_start();
