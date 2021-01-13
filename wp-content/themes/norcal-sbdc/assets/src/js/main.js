@@ -545,6 +545,13 @@
 				wptheme.updatePostFeedBlock($(this).closest('.post-feed-block'), $(this).attr('href'));
 			});
 
+			$(document).on('mouseenter', '.wp-block-crown-blocks-post-index .post-feed article a', function(e) {
+				if($(this).hasClass('hover-color-set')) return;
+				var colors = [ 'blue', 'red', 'gray', 'dark-gray' ];
+				var color = Math.floor(Math.random() * 2) == 0 ? 'dark-blue' : colors[Math.floor(Math.random() * Math.floor(colors.length))];
+				$(this).addClass('hover-color-set hover-color-' + color);
+			});
+
 		};
 		wptheme.updatePostFeedBlock = function(block, url) {
 			if(url.match(/^\//)) url = crownThemeData.baseUrl + url;
