@@ -311,6 +311,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index form.feed-filters,
+.wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/featured-client-story"] .wp-block-crown-blocks-featured-client-story a {
   pointer-events: none; }
 .crown-block-general-controls {

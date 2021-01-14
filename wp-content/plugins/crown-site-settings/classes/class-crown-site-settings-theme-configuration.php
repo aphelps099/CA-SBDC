@@ -28,6 +28,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 		public static $theme_config_admin_page = null;
 		public static $post_types = array();
 
+		public static $post_type_input_options = array();
 		public static $form_input_options = null;
 
 
@@ -122,6 +123,17 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										)
 									) )
 								)
+							) ),
+
+							new FieldGroup( array(
+								'label' => 'Index Pages',
+								'fields' => array(
+									new Field( array(
+										'label' => 'FAQs',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_faq' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) )
+								)
 							) )
 
 						)
@@ -147,6 +159,22 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 				}, $posts ) );
 				$field->getInput()->setOptions( $options );
 			}
+		}
+
+
+		public static function set_page_select_input_options( $field, $args ) {
+			$field->getInput()->setOptions( array_merge( array( array( 'label' => '&mdash;' ) ), self::get_post_input_options( 'page' ) ) );
+		}
+		private static function get_post_input_options( $post_type = 'post', $order_by = 'title', $order = 'ASC', $parent = 0, $level = 0 ) {
+			if ( $parent == 0 && array_key_exists( $post_type, self::$post_type_input_options ) ) return self::$post_type_input_options[ $post_type ];
+			$options = array();
+			$posts = get_posts( array( 'post_type' => $post_type, 'posts_per_page' => -1, 'orderby' => $order_by, 'order' => $order, 'post_parent' => $parent ) );
+			foreach ( $posts as $post ) {
+				$options[] = array( 'value' => $post->ID, 'label' => $post->post_title, 'depth' => $level );
+				$options = array_merge( $options, self::get_post_input_options( $post_type, $order_by, $order, $post->ID, $level + 1 ) );
+			}
+			if ( $parent == 0 ) self::$post_type_input_options[ $post_type ] = $options;
+			return $options;
 		}
 
 
