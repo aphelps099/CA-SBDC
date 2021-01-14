@@ -346,7 +346,8 @@ $gform-gutter-width: 10px;
 	}
 }
 
-.general-contact-form_wrapper {
+.general-contact-form_wrapper,
+.event-registration-form_wrapper {
 	.gform_footer {
 		button[type=submit] {
 			@extend .btn-red;
