@@ -4,12 +4,22 @@ $spacer: 1rem;
 .wp-block-crown-blocks-column {
 	display: flex;
 
-	&.vertical-alignment-top { align-items: flex-start; }
+	&.vertical-alignment-top { align-items: flex-start; align-items: stretch; }
 	&.vertical-alignment-center { align-items: center; }
 	&.vertical-alignment-bottom { align-items: flex-end; }
 	&.vertical-alignment-stretch { align-items: stretch; }
 	> .inner {
 		width: 100%;
+	}
+	&.vertical-alignment-top > .inner {
+		display: flex;
+		> .column-contents {
+			width: 100%;
+			display: flex;
+			> .inner {
+				width: 100%;
+			}
+		}
 	}
 	&.vertical-alignment-stretch > .inner {
 		display: flex;

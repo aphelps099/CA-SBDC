@@ -17,3 +17,13 @@ img {
 .screen-reader-text {
 	@extend .sr-only;
 }
+
+
+@each $size, $value in $grid-breakpoints {
+	.position-#{$size}-sticky {
+		@include media-breakpoint-up($size) {
+			position: sticky;
+			top: 0;
+		}
+	}
+}
