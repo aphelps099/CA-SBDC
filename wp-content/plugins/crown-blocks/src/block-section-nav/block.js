@@ -32,21 +32,43 @@ registerBlockType('crown-blocks/section-nav', {
 
 	attributes: {
 		align: { type: 'string', default: 'full' },
-		title: { selector: '.section-nav-title', source: 'children' }
+		title: { selector: '.section-nav-title', source: 'children' },
+		layout: { type: 'string', default: '' }
 	},
 
 
 	edit: ({ attributes, className, isSelected, setAttributes }) => {
 
 		const {
-			title
+			title,
+			layout
 		} = attributes;
 
 		let blockClasses = [
 			className
 		];
 
+		if(layout != '') blockClasses.push('layout-' + layout);
+
 		return [
+
+			<InspectorControls key="inspector-controls">
+
+				<PanelBody title={ 'Appearance' } initialOpen={ true }>
+
+					<SelectControl
+						label="Layout"
+						value={ layout }
+						onChange={ (value) => setAttributes({ layout: value }) }
+						options={ [
+							{ label: 'Header', value: '' },
+							{ label: 'Sidebar', value: 'sidebar' }
+						] }
+					/>
+
+				</PanelBody>
+
+			</InspectorControls>,
 
 			<div class="crown-block-editor-container">
 
@@ -82,12 +104,15 @@ registerBlockType('crown-blocks/section-nav', {
 	save: ({ attributes, className }) => {
 		
 		const {
-			title
+			title,
+			layout
 		} = attributes;
 
 		let blockClasses = [
 			className
 		];
+
+		if(layout != '') blockClasses.push('layout-' + layout);
 
 		return (
 

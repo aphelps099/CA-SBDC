@@ -194,6 +194,20 @@ body {
 		.section-nav-title {
 			display: block;
 		}
+		&.layout-sidebar {
+			> .inner {
+				@include media-breakpoint-up(md) {
+					display: block;
+					margin: 0;
+				}
+			}
+			.section-nav-contents {
+				@include media-breakpoint-up(md) {
+					padding: 0;
+					width: auto;
+				}
+			}
+		}
 	}
 }
 

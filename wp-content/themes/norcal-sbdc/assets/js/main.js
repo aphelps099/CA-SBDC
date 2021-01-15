@@ -903,10 +903,13 @@
 				var navBlock = $(this).closest('.wp-block-crown-blocks-section-nav');
 				var itemIndex = $(this).parent().index();
 				if(itemIndex == 0) {
-					wptheme.smoothScrollToElement(navBlock);
+					var offset = 0;
+					if(navBlock.hasClass('layout-sidebar')) offset = 32;
+					wptheme.smoothScrollToElement(navBlock, 1000, -offset);
 				} else {
 					var contentBlock = $('.section-nav-contents > .inner > .wp-block-crown-blocks-section-nav-content', navBlock).eq(itemIndex);
 					var offset = $('.section-nav-nav', navBlock).outerHeight();
+					if(navBlock.hasClass('layout-sidebar')) offset = 32;
 					wptheme.smoothScrollToElement(contentBlock, 1000, -offset);
 				}
 			});
