@@ -342,14 +342,18 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 			$term_id = get_post_meta( $post_id, 'center_term_id', true );
 			$term = get_term( $term_id, 'post_center' );
 			if ( is_wp_error( $term ) || empty( $term ) ) {
-				$term = wp_insert_term( $post->post_title, 'post_center' );
-				$term = get_term( $term['term_id'], 'post_center' );
+				$new_term = wp_insert_term( $post->post_title, 'post_center' );
+				$term = ! is_wp_error( $new_term ) ? get_term( $new_term['term_id'], 'post_center' ) : null;
 			}
 
-			update_post_meta( $post_id, 'center_term_id', $term->term_id );
+			if ( ! is_wp_error( $term ) && ! empty( $term ) ) {
 
-			wp_update_term( $term->term_id, 'post_center', array( 'name' => $post->post_title, 'slug' => sanitize_title( $post->post_title ) ) );
-			update_term_meta( $term->term_id, 'center_post_id', $post_id );
+				update_post_meta( $post_id, 'center_term_id', $term->term_id );
+
+				wp_update_term( $term->term_id, 'post_center', array( 'name' => $post->post_title, 'slug' => sanitize_title( $post->post_title ) ) );
+				update_term_meta( $term->term_id, 'center_post_id', $post_id );
+
+			}
 
 		}
 
