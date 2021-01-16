@@ -1,0 +1,10 @@
+
+
+.wp-block[data-type="crown-blocks/event-registration-form"] {
+	.wp-block-crown-event-registration-form {
+		form,
+		a {
+			pointer-events: none;
+		}
+	}
+}

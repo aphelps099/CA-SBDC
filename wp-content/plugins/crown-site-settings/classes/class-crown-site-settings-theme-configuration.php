@@ -126,6 +126,17 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 							) ),
 
 							new FieldGroup( array(
+								'label' => 'Events',
+								'fields' => array(
+									new Field( array(
+										'label' => 'Form',
+										'input' => new Select( array( 'name' => 'theme_config_events_zoom_meeting_registration_form' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_form_select_input_options' )
+									) )
+								)
+							) ),
+
+							new FieldGroup( array(
 								'label' => 'Index Pages',
 								'fields' => array(
 									new Field( array(

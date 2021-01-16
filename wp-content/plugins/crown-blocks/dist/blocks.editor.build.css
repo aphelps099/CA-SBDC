@@ -311,6 +311,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/event-registration-form"] .wp-block-crown-event-registration-form form,
+.wp-block[data-type="crown-blocks/event-registration-form"] .wp-block-crown-event-registration-form a {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index form.feed-filters,
 .wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index a {
   pointer-events: none !important; }
