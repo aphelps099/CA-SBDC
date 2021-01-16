@@ -58,18 +58,18 @@
 				},
 				markerImages: {
 					darkBlue: {
-						url: crownThemeData.themeUrl + '/assets/img/icons/map-markers.png',
+						url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-dark-blue.png',
 						size: new google.maps.Size(30, 37),
-						scaledSize: new google.maps.Size(150, 37),
+						scaledSize: new google.maps.Size(30, 37),
 						origin: new google.maps.Point(0, 0),
 						anchor: new google.maps.Point(15, 37)
 					}
 				}
 			};
-			mapSettings.markerImages.blue = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 1), 0) });
-			mapSettings.markerImages.red = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 2), 0) });
-			mapSettings.markerImages.gray = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 3), 0) });
-			mapSettings.markerImages.white = $.extend(true, {}, mapSettings.markerImages.darkBlue, { origin: new google.maps.Point((30 * 4), 0) });
+			mapSettings.markerImages.blue = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-blue.png' });
+			mapSettings.markerImages.red = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-red.png' });
+			mapSettings.markerImages.gray = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-gray.png' });
+			mapSettings.markerImages.white = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-white.png' });
 		};
 
 
