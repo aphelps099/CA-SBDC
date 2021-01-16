@@ -6159,8 +6159,10 @@
   .wp-block-crown-blocks-event-header .entry-centers,
   .wp-block-crown-blocks-event-header .entry-topics {
     margin-bottom: 0; }
-    .wp-block-crown-blocks-event-header .entry-centers span,
-    .wp-block-crown-blocks-event-header .entry-topics span {
+    .wp-block-crown-blocks-event-header .entry-centers .center,
+    .wp-block-crown-blocks-event-header .entry-centers .topic,
+    .wp-block-crown-blocks-event-header .entry-topics .center,
+    .wp-block-crown-blocks-event-header .entry-topics .topic {
       display: inline-block;
       line-height: 1.2;
       font-weight: 700;
@@ -6169,7 +6171,17 @@
       text-transform: uppercase;
       border-radius: 10rem;
       border: 1px solid #fff;
-      padding: .5rem .75rem; }
+      padding: .5rem .75rem;
+      color: inherit; }
+    .wp-block-crown-blocks-event-header .entry-centers a,
+    .wp-block-crown-blocks-event-header .entry-topics a {
+      -webkit-transition: background-color .2s, color .2s, boder-color .2s;
+      -o-transition: background-color .2s, color .2s, boder-color .2s;
+      transition: background-color .2s, color .2s, boder-color .2s; }
+      .wp-block-crown-blocks-event-header .entry-centers a:hover,
+      .wp-block-crown-blocks-event-header .entry-topics a:hover {
+        background-color: #fff;
+        color: #333; }
   .wp-block-crown-blocks-event-header .entry-centers {
     margin-bottom: 2rem; }
   .wp-block-crown-blocks-event-header .entry-event-date {

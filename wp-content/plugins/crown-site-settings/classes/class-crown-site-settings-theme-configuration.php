@@ -129,8 +129,43 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 								'label' => 'Index Pages',
 								'fields' => array(
 									new Field( array(
+										'label' => 'Posts',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_post' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Events',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_event' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Resources',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_resource' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Jobs',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_job' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Team Members',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_team_member' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Client Stories',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_client_story' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
 										'label' => 'FAQs',
 										'input' => new Select( array( 'name' => 'theme_config_index_page_faq' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'SBDCs',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_center' ) ),
 										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
 									) )
 								)

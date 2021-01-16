@@ -101,7 +101,8 @@
 	.entry-centers,
 	.entry-topics {
 		margin-bottom: 0;
-		span {
+		.center,
+		.topic {
 			display: inline-block;
 			line-height: 1.2;
 			font-weight: 700;
@@ -111,6 +112,14 @@
 			border-radius: 10rem;
 			border: 1px solid #fff;
 			padding: .5rem .75rem;
+			color: inherit;
+		}
+		a {
+			transition: background-color .2s, color .2s, boder-color .2s;
+			&:hover {
+				background-color: #fff;
+				color: #333;
+			}
 		}
 	}
 	.entry-centers {

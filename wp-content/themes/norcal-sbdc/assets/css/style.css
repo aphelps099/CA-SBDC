@@ -20598,6 +20598,9 @@ nav.pagination {
     background-color: #108DBC; }
   .wp-block-crown-blocks-event-header .entry-categories span {
     border-color: #233053; }
+  .wp-block-crown-blocks-event-header .entry-centers a:hover,
+  .wp-block-crown-blocks-event-header .entry-topics a:hover {
+    color: #233053; }
   .wp-block-crown-blocks-event-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
 

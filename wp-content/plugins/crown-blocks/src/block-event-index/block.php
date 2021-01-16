@@ -27,7 +27,8 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			$filters = (object) array(
 				'topic' => (object) array( 'key' => 'e_topic', 'queried' => null, 'options' => array() ),
 				'series' => (object) array( 'key' => 'e_series', 'queried' => null, 'options' => array() ),
-				'month' => (object) array( 'key' => 'e_month', 'queried' => null, 'options' => array() )
+				'month' => (object) array( 'key' => 'e_month', 'queried' => null, 'options' => array() ),
+				'center' => (object) array( 'key' => 'e_center', 'queried' => null, 'options' => array() ),
 			);
 
 			$event_args = array(
@@ -51,6 +52,9 @@ if(!class_exists('Crown_Block_Event_Index')) {
 				$queried_date->modify( 'first day of next month' );
 				$event_args['to'] = $queried_date->format( 'Y-m-d H:i:s' );
 			}
+
+			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+			if ( ! empty( $filters->center->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
 
 			$query_args = Crown_Events::get_event_query_args( $event_args );
 			$query_args = array_merge( $query_args, array(
@@ -87,7 +91,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			$block_id = 'post-feed-block-' . md5( json_encode( array( 'event-index', $atts ) ) );
 
 			ob_start();
-			// print_r($filters);
+			// print_r($query_args);
 			?>
 
 				<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $block_class ); ?>">

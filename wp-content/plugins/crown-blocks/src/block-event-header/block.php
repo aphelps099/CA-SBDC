@@ -34,6 +34,9 @@ if(!class_exists('Crown_Block_Event_Header')) {
 				$block_class[] = 'has-bg-image';
 			}
 
+			$index_page_url = '';
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_event' ) ) ) $index_page_url = get_permalink( $index_page_id );
+
 			ob_start();
 			// print_r($atts);
 			?>
@@ -60,7 +63,11 @@ if(!class_exists('Crown_Block_Event_Header')) {
 												<?php if ( ! empty( $centers ) ) { ?>
 													<p class="entry-centers">
 														<?php foreach ( $centers as $term ) { ?>
-															<span class="center"><?php echo $term->name; ?></span>
+															<?php if ( ! empty( $index_page_url ) ) { ?>
+																<a class="center" href="<?php echo add_query_arg( 'e_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+															<?php } else { ?>
+																<span class="center"><?php echo $term->name; ?></span>
+															<?php } ?>
 														<?php } ?>
 													</p>
 												<?php } ?>
@@ -76,7 +83,11 @@ if(!class_exists('Crown_Block_Event_Header')) {
 														<?php if ( ! empty( $topics ) ) { ?>
 															<p class="entry-topics">
 																<?php foreach ( $topics as $term ) { ?>
-																	<span class="topic"><?php echo $term->name; ?></span>
+																	<?php if ( ! empty( $index_page_url ) ) { ?>
+																		<a class="topic" href="<?php echo add_query_arg( 'e_topic', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+																	<?php } else { ?>
+																		<span class="topic"><?php echo $term->name; ?></span>
+																	<?php } ?>
 																<?php } ?>
 															</p>
 														<?php } ?>
