@@ -129,7 +129,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 								'label' => 'Events',
 								'fields' => array(
 									new Field( array(
-										'label' => 'Form',
+										'label' => 'Event Zoom Meeting Registration Form',
 										'input' => new Select( array( 'name' => 'theme_config_events_zoom_meeting_registration_form' ) ),
 										'getOutputCb' => array( __CLASS__, 'set_form_select_input_options' )
 									) )
