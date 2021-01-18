@@ -1023,9 +1023,9 @@
 								drawer.addClass('active');
 								setTimeout(function() { $('> .inner', drawer).css({ height: drawerContent.outerHeight() }) }, 100);
 								setTimeout(function() { $('> .inner', drawer).css({ height: 'auto' }) }, 600);
-								if(article.offset().left == article.parent().offset().left) {
-									drawerContent.addClass('flipped');
-								}
+								// if(article.offset().left >= Math.floor($('body').width() / 2)) {
+								// 	drawerContent.addClass('flipped');
+								// }
 								var colors = [ 'dark-blue', 'blue', 'red', 'gray', 'dark-gray' ];
 								drawerContent.attr('data-color', colors[Math.floor(Math.random() * Math.floor(colors.length))]);
 							}

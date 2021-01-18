@@ -20310,7 +20310,8 @@ nav.pagination {
           width: 33.33333%; } }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo {
       margin: -2rem -2rem 2rem;
-      width: auto; }
+      width: auto;
+      display: none; }
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo .image {
         opacity: 1;
         mix-blend-mode: normal;
