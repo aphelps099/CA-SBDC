@@ -72,24 +72,36 @@ registerBlockType('crown-blocks/two-column-scroll-slider', {
 		blockClasses.push('column-breakpoint-' + columnBreakpoint);
 		blockClasses.push('column-count-' + columnCount);
 
-		let defaultLayoutBrakpoint = columnBreakpoint;
-		if([ 'xs' ].includes(columnBreakpoint) && overrideColumnLayoutXs) {
-			defaultLayoutBrakpoint = 'sm';
-			blockClasses.push('column-layout-xs-' + columnLayoutXs);
+		let prevColumnLayout = columnLayoutXl;
+		blockClasses.push('column-layout-xl-' + columnLayoutXl);
+
+		if([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutLg) {
+				prevColumnLayout = columnLayoutLg;
+			}
+			blockClasses.push('column-layout-lg-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm' ].includes(columnBreakpoint) && overrideColumnLayoutSm) {
-			defaultLayoutBrakpoint = 'md';
-			blockClasses.push('column-layout-sm-' + columnLayoutSm);
+		
+		if([ 'xs', 'sm', 'md' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutMd) {
+				prevColumnLayout = columnLayoutMd;
+			}
+			blockClasses.push('column-layout-md-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm', 'md' ].includes(columnBreakpoint) && overrideColumnLayoutMd) {
-			defaultLayoutBrakpoint = 'lg';
-			blockClasses.push('column-layout-md-' + columnLayoutMd);
+		
+		if([ 'xs', 'sm' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutSm) {
+				prevColumnLayout = columnLayoutSm;
+			}
+			blockClasses.push('column-layout-sm-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint) && overrideColumnLayoutLg) {
-			defaultLayoutBrakpoint = 'xl';
-			blockClasses.push('column-layout-lg-' + columnLayoutLg);
+
+		if([ 'xs' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutXs) {
+				prevColumnLayout = columnLayoutXs;
+			}
+			blockClasses.push('column-layout-xs-' + prevColumnLayout);
 		}
-		blockClasses.push('column-layout-' + defaultLayoutBrakpoint + '-' + columnLayoutXl);
 
 		return [
 
@@ -314,24 +326,36 @@ registerBlockType('crown-blocks/two-column-scroll-slider', {
 		blockClasses.push('column-breakpoint-' + columnBreakpoint);
 		blockClasses.push('column-count-' + columnCount);
 
-		let defaultLayoutBrakpoint = columnBreakpoint;
-		if([ 'xs' ].includes(columnBreakpoint) && overrideColumnLayoutXs) {
-			defaultLayoutBrakpoint = 'sm';
-			blockClasses.push('column-layout-xs-' + columnLayoutXs);
+		let prevColumnLayout = columnLayoutXl;
+		blockClasses.push('column-layout-xl-' + columnLayoutXl);
+
+		if([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutLg) {
+				prevColumnLayout = columnLayoutLg;
+			}
+			blockClasses.push('column-layout-lg-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm' ].includes(columnBreakpoint) && overrideColumnLayoutSm) {
-			defaultLayoutBrakpoint = 'md';
-			blockClasses.push('column-layout-sm-' + columnLayoutSm);
+		
+		if([ 'xs', 'sm', 'md' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutMd) {
+				prevColumnLayout = columnLayoutMd;
+			}
+			blockClasses.push('column-layout-md-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm', 'md' ].includes(columnBreakpoint) && overrideColumnLayoutMd) {
-			defaultLayoutBrakpoint = 'lg';
-			blockClasses.push('column-layout-md-' + columnLayoutMd);
+		
+		if([ 'xs', 'sm' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutSm) {
+				prevColumnLayout = columnLayoutSm;
+			}
+			blockClasses.push('column-layout-sm-' + prevColumnLayout);
 		}
-		if([ 'xs', 'sm', 'md', 'lg' ].includes(columnBreakpoint) && overrideColumnLayoutLg) {
-			defaultLayoutBrakpoint = 'xl';
-			blockClasses.push('column-layout-lg-' + columnLayoutLg);
+
+		if([ 'xs' ].includes(columnBreakpoint)) {
+			if(overrideColumnLayoutXs) {
+				prevColumnLayout = columnLayoutXs;
+			}
+			blockClasses.push('column-layout-xs-' + prevColumnLayout);
 		}
-		blockClasses.push('column-layout-' + defaultLayoutBrakpoint + '-' + columnLayoutXl);
 
 		return (
 

@@ -1141,7 +1141,7 @@
 			min-height: 100vh;
 		}
 	}
-	&.column-breakpoint-sm {
+	&.column-breakpoint-xs, &.column-breakpoint-sm {
 		@include media-breakpoint-up(sm) {
 			> .inner.static { display: none; }
 			> .inner.slider { display: grid; }
@@ -1155,7 +1155,7 @@
 			}
 		}
 	}
-	&.column-breakpoint-md {
+	&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md {
 		@include media-breakpoint-up(md) {
 			> .inner.static { display: none; }
 			> .inner.slider { display: grid; }
@@ -1169,7 +1169,7 @@
 			}
 		}
 	}
-	&.column-breakpoint-lg {
+	&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg {
 		@include media-breakpoint-up(lg) {
 			> .inner.static { display: none; }
 			> .inner.slider { display: grid; }
@@ -1183,7 +1183,7 @@
 			}
 		}
 	}
-	&.column-breakpoint-xl {
+	&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl, {
 		@include media-breakpoint-up(xl) {
 			> .inner.static { display: none; }
 			> .inner.slider { display: grid; }

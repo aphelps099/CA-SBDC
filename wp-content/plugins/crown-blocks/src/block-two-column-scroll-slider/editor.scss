@@ -29,8 +29,8 @@
 		&.column-breakpoint-xs #{$column-container-selector} { display: grid; }
 		&.column-breakpoint-xs {
 			@for $i from 1 through 11 {
-				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(1) { grid-column: 0 / span $i; }
-				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(2) { grid-column: $i / span (12 - $i); }
+				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(1) { grid-column: 1 / span $i; }
+				&.column-layout-xs-#{$i} #{$column-selector}:nth-child(2) { grid-column: ($i + 1) / span (12 - $i); }
 			}
 		}
 		
@@ -68,8 +68,8 @@
 			&.column-breakpoint-xl #{$column-container-selector} { display: grid; }
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl {
 				@for $i from 1 through 11 {
-					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(1) { grid-column: 0 / span $i; }
-					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(2) { grid-column: $i / span (12 - $i); }
+					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(1) { grid-column: 1 / span $i; }
+					&.column-layout-xl-#{$i} #{$column-selector}:nth-child(2) { grid-column: ($i + 1) / span (12 - $i); }
 				}
 			}
 		}
