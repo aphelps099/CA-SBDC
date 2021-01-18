@@ -25,6 +25,7 @@
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();
+		$.wptheme.initTwoColumnScrollSliderBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
 		$.wptheme.initFeaturedResourceSliderBlocks();
 		$.wptheme.initCenterFinderBlocks();
@@ -778,6 +779,64 @@
 				};
 				slider.slick(slickSettings);
 			});
+		};
+
+		
+		wptheme.initTwoColumnScrollSliderBlocks = function() {
+
+			$('.wp-block-crown-blocks-two-column-scroll-slider').each(function(i, el) {
+				var block = $(el);
+				var static = $('> .inner', block);
+				var slider = static.clone();
+				slider.addClass('slider');
+				
+				var col1 = $('<div class="column"></div>');
+				var col2 = $('<div class="column"></div>');
+				var slides = $('> .wp-block-crown-blocks-two-column-scroll-slider-slide', slider);
+				slides.each(function(j, el2) {
+					col1.append($('> .inner > .wp-block-crown-blocks-container:eq(0)', el2));
+					col2.append($('> .inner > .wp-block-crown-blocks-container:eq(0)', el2));
+				});
+				slides.remove();
+				slider.append(col1).append(col2);
+
+				static.addClass('static');
+				block.append(slider);
+			});
+
+			var adjustTwoColumnScrollSliderSlides = function() {
+				var windowHeight = $(window).height();
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-two-column-scroll-slider > .inner.slider').each(function(i, el) {
+					var slider = $(el);
+					var col1 = $('> .column:eq(0)', slider);
+					var col2 = $('> .column:eq(1)', slider);
+					var offset = $('html').offset().top;
+					if(windowWidth >= 768 && slider.closest('.wp-block-crown-blocks-section-nav').length) {
+						offset += slider.closest('.wp-block-crown-blocks-section-nav').find('> .inner > .section-nav-nav').outerHeight();
+					}
+					$('> .column > .wp-block-crown-blocks-container', slider).css({ minHeight: windowHeight - offset });
+					$('> .wp-block-crown-blocks-container', col1).each(function(j, el2) {
+						var container1 = $('> .wp-block-crown-blocks-container:eq(' + j + ')', col1);
+						var container2 = $('> .wp-block-crown-blocks-container:eq(' + j + ')', col2);
+						container1.css({ height: 'auto' });
+						container2.css({ height: 'auto' });
+						var maxHeight = Math.max(container1.outerHeight(), container2.outerHeight());
+						container1.css({ height: maxHeight });
+						container2.css({ height: maxHeight });
+						if(maxHeight <= windowHeight - offset) {
+							container1.addClass('sticky').css({ top: offset });
+							container2.addClass('sticky').css({ top: offset });
+						} else {
+							container1.removeClass('sticky').css({ top: 0 });
+							container2.removeClass('sticky').css({ top: 0 });
+						}
+					});
+				});
+			};
+			adjustTwoColumnScrollSliderSlides();
+			$(window).on('load resize', adjustTwoColumnScrollSliderSlides);
+
 		};
 
 

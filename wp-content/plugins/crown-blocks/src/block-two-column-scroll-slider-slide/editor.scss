@@ -1,0 +1,20 @@
+
+
+.wp-block[data-type="crown-blocks/two-column-scroll-slider-slide"] {
+	border: 1px dashed fade-out(#000, .8);
+	padding: 10px;
+	margin: 0;
+	+ .wp-block[data-type="crown-blocks/two-column-scroll-slider-slide"] {
+		margin-top: 10px;
+	}
+	> .crown-block-editor-container > .wp-block-crown-blocks-content-slider-slide {
+		> .block-editor-inner-blocks > .block-editor-block-list__layout {
+			> .wp-block {
+				margin: 0;
+				> .crown-block-editor-container > .wp-block-crown-blocks-container {
+					margin: 0;
+				}
+			}
+		}
+	}
+}

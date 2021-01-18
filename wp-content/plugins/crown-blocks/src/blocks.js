@@ -57,5 +57,7 @@ import './block-stat-table/block.js';
 import './block-tabbed-content/block.js';
 import './block-tabbed-content-tab/block.js';
 import './block-team-member-index/block.js';
+import './block-two-column-scroll-slider/block.js';
+import './block-two-column-scroll-slider-slide/block.js';
 import './block-testimonial/block.js';
 import './block-testimonial-slider/block.js';
