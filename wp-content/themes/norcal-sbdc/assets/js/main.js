@@ -919,6 +919,7 @@
 					if($('.section-nav-content-title', contentBlock).length) title = $('.section-nav-content-title', contentBlock).text();
 					$('.menu', nav).append('<li><a href="#">' + title + '</a></li>');
 				});
+				$(window).trigger('load');
 			});
 
 			$(document).on('click', '.wp-block-crown-blocks-section-nav .section-nav-nav .menu a', function(e) {
@@ -937,7 +938,6 @@
 				}
 			});
 
-			$('.wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-column.sticky').css({ position: 'relative' });
 			var updateSectionNavBlocks = function() {
 				var scrollTop = $(window).scrollTop();
 				var windowHeight = $(window).height();
@@ -957,28 +957,6 @@
 					if(!currentNavItem.hasClass('active')) {
 						$('.menu li.active', nav).removeClass('active');
 						currentNavItem.addClass('active');
-					}
-				});
-				$('.wp-block-crown-blocks-section-nav-content .wp-block-crown-blocks-column.sticky').each(function(i, el) {
-					var block = $(el);
-					var container = block.closest('.wp-block-crown-blocks-section-nav-content');
-					var nav = container.closest('.wp-block-crown-blocks-section-nav').find('.section-nav-nav');
-					var top = Math.max(0, scrollTop - container.offset().top + nav.outerHeight() + $('body').offset().top);
-					block.css({ minHeight: 'calc(100vh - ' + (nav.outerHeight() + $('body').offset().top) + 'px)' });
-					var height = block.outerHeight();
-					block.parent().css({ minHeight: height });
-					// var atBottom = top + height >= container.offset().top + container.outerHeight();
-					var maxTop = container.outerHeight() - height;
-					if(top > 0 && top < maxTop) {
-						if(!block.hasClass('is-fixed')) {
-							var fixedTop = nav.outerHeight() + $('body').offset().top;
-							block.addClass('is-fixed').css({ position: 'fixed', top: fixedTop, width: block.outerWidth(), left: block.offset().left });
-						}
-					} else {
-						if(block.hasClass('is-fixed')) {
-							block.removeClass('is-fixed').css({ position: 'relative', width: 'auto', left: 0 });
-						}
-						block.css({ top: Math.min(top, maxTop) });
 					}
 				});
 			};
