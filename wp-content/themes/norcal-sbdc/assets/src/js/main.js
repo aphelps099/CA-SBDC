@@ -16,7 +16,6 @@
 		$.wptheme.initGalleries();
 		$.wptheme.initSliders();
 		$.wptheme.initModals();
-		$.wptheme.initOdometers();
 		$.wptheme.initSocialSharingLinks();
 		$.wptheme.initPostFeeds();
 		
@@ -33,6 +32,8 @@
 		$.wptheme.initTeamMemberIndexBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
+
+		$.wptheme.initOdometers();
 
 	});
 
@@ -302,43 +303,6 @@
 				window['gf_submitting_' + formId] = false;
 				return false;
 			});
-
-		};
-
-
-		wptheme.initOdometers = function() {
-
-			$('.odometer-statistic').each(function(i, el) {
-				var value = $('.stat-value', el);
-				$(el).addClass('fade-in');
-				if(value.length && (matches = value.text().match(/([^\d]*)([\d\.,]+)(.*)/))) {
-
-					value.data('odometer-final-value', matches[2]);
-
-					var preOd = $('<span class="pre">' + matches[1] + '</span>');
-					var odometer = $('<span class="odometer">' + matches[2] + '</span>');
-					var postOd = $('<span class="post">' + matches[3] + '</span>');
-					value.html('');
-					value.append(preOd).append(odometer).append(postOd);
-					
-					var od = new Odometer({ el: odometer[0], value: '0'.padStart(5, 0) });
-
-				}
-			});
-
-			var animateStats = function() {
-				var scrollTop = $(window).scrollTop();
-				var windowHeight = $(window).height();
-				$('.odometer-statistic.fade-in:not(.animated)').each(function(i, el) {
-					var value = $('.stat-value', el);
-					if(value.offset().top <= scrollTop + (windowHeight * .9)) {
-						$(el).addClass('animated');
-						$('.odometer', value).text(value.data('odometer-final-value'));
-					}
-				});
-			};
-			animateStats();
-			$(window).on('load scroll', animateStats);
 
 		};
 
@@ -1138,6 +1102,43 @@
 			$('.branch-map > .google-map').each(function(i, el) {
 				wptheme.initMap($(el));
 			});
+		};
+
+
+		wptheme.initOdometers = function() {
+
+			$('.odometer-statistic').each(function(i, el) {
+				var value = $('.stat-value', el);
+				$(el).addClass('fade-in');
+				if(value.length && (matches = value.text().match(/([^\d]*)([\d\.,]+)(.*)/))) {
+
+					value.data('odometer-final-value', matches[2]);
+
+					var preOd = $('<span class="pre">' + matches[1] + '</span>');
+					var odometer = $('<span class="odometer">' + matches[2] + '</span>');
+					var postOd = $('<span class="post">' + matches[3] + '</span>');
+					value.html('');
+					value.append(preOd).append(odometer).append(postOd);
+					
+					var od = new Odometer({ el: odometer[0], value: '0'.padStart(5, 0) });
+
+				}
+			});
+
+			var animateStats = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('.odometer-statistic.fade-in:not(.animated)').each(function(i, el) {
+					var value = $('.stat-value', el);
+					if(value.offset().top <= scrollTop + (windowHeight * .9)) {
+						$(el).addClass('animated');
+						$('.odometer', value).text(value.data('odometer-final-value'));
+					}
+				});
+			};
+			animateStats();
+			$(window).on('load scroll', animateStats);
+
 		};
 
 
