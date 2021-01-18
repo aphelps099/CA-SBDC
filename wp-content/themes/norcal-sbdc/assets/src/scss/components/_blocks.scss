@@ -1780,7 +1780,7 @@
 				.entry-link {
 					opacity: 1;
 					span:after {
-						left: 0;
+						right: 0;
 						opacity: 1;
 					}
 				}
@@ -1929,7 +1929,7 @@
 			transition: opacity .2s;
 			@include media-breakpoint-up(md) {
 				font-size: 1.25rem;
-				margin-top: 1rem;
+				// margin-top: 1rem;
 			}
 			// @include media-breakpoint-up(lg) {
 			// 	padding-bottom: .5rem;
@@ -1942,16 +1942,17 @@
 				display: inline-block;
 				color: $blue;
 				&:after {
-					@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
-					display: block;
-					line-height: 1;
-					font-size: 2em;
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
 					position: relative;
-					transition: left .2s .2s, opacity .2s .2s;
-					// @include media-breakpoint-up(lg) {
-					// 	left: -.5rem;
-					// 	opacity: 0;
-					// }
+					margin-left: .5em;
+					margin-right: -.5em;
+					top: .08em;
+					opacity: 1;
+					transition: right ease-out .15s, opacity .15s;
+					@include media-breakpoint-up(md) {
+						opacity: 0;
+						right: .5em;
+					}
 				}
 			}
 		}

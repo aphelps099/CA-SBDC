@@ -20078,7 +20078,7 @@ nav.pagination {
     .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link {
       opacity: 1; }
       .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link span:after {
-        left: 0;
+        right: 0;
         opacity: 1; }
     .wp-block-crown-blocks-team-member-index article.type-team_member a > .inner {
       display: -webkit-box;
@@ -20214,8 +20214,7 @@ nav.pagination {
     transition: opacity .2s; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
-        font-size: 1.25rem;
-        margin-top: 1rem; } }
+        font-size: 1.25rem; } }
     .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span {
       letter-spacing: .1em;
       text-transform: uppercase;
@@ -20231,13 +20230,18 @@ nav.pagination {
         font-weight: normal;
         line-height: 1;
         font-family: icomoon;
-        content: "";
-        display: block;
-        line-height: 1;
-        font-size: 2em;
+        content: "";
         position: relative;
-        -webkit-transition: left .2s .2s, opacity .2s .2s;
-        transition: left .2s .2s, opacity .2s .2s; }
+        margin-left: .5em;
+        margin-right: -.5em;
+        top: .08em;
+        opacity: 1;
+        -webkit-transition: right ease-out .15s, opacity .15s;
+        transition: right ease-out .15s, opacity .15s; }
+        @media (min-width: 768px) {
+          .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span:after {
+            opacity: 0;
+            right: .5em; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-details {
     display: none; }
 
