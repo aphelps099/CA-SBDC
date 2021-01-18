@@ -17921,12 +17921,14 @@ nav.pagination {
     @media (min-width: 1200px) {
       .wp-block-crown-blocks-section-nav.layout-sidebar .section-nav-nav > .inner {
         padding-left: 6rem; } }
+    .wp-block-crown-blocks-section-nav.layout-sidebar .section-nav-nav > .inner:before {
+      display: none; }
   .wp-block-crown-blocks-section-nav.layout-sidebar .section-nav-nav h2 {
     font-size: 1.75rem;
     text-transform: none;
     letter-spacing: 0;
     font-weight: 700;
-    padding-bottom: 0.625rem;
+    padding-bottom: 0.875rem;
     position: relative;
     margin: 0;
     margin-bottom: 1rem; }
@@ -17938,7 +17940,9 @@ nav.pagination {
       right: 0;
       bottom: 0;
       height: 0.375rem;
-      background-color: #D44457; }
+      background-color: #D44457;
+      background: -webkit-gradient(linear, left top, right top, from(#233053), to(#D44457));
+      background: linear-gradient(to right, #233053, #D44457); }
   .wp-block-crown-blocks-section-nav.layout-sidebar .section-nav-nav .menu {
     font-size: 1.25rem;
     letter-spacing: 0;
@@ -18250,6 +18254,8 @@ nav.pagination {
         padding: 3rem 2.5rem; } }
     .wp-block-crown-blocks-tabbed-content.type-grid .tabbed-content-nav .drawer .wp-block-crown-blocks-tabbed-content-tab > .inner {
       margin: 0 auto; }
+      .wp-block-crown-blocks-tabbed-content.type-grid .tabbed-content-nav .drawer .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title {
+        display: none; }
 
 /*	Gallery
 ---------------------------------------------------------*/
@@ -18777,6 +18783,361 @@ nav.pagination {
     .wp-block-crown-blocks-content-slider .slick-dots button:hover {
       opacity: 1; }
 
+/*	Two-Column Scroll Slider
+---------------------------------------------------------*/
+.wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide {
+  max-width: 1260px;
+  margin: 0 auto; }
+  @media (min-width: 1260px) {
+    .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container:nth-child(1) {
+      margin-left: calc((100vw - 1260px) / -2);
+      padding-left: calc((100vw - 1260px) / 2); }
+      .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container:nth-child(1) > .inner > .container-contents {
+        padding-left: 0 !important; }
+    .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container:nth-child(2) {
+      margin-right: calc((100vw - 1260px) / -2);
+      padding-right: calc((100vw - 1260px) / 2); }
+      .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container:nth-child(2) > .inner > .container-contents {
+        padding-right: 0 !important; } }
+
+.wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner.slider {
+  max-width: 1260px;
+  margin: 0 auto; }
+  @media (min-width: 1260px) {
+    .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner.slider > .column:nth-child(1) > .wp-block-crown-blocks-container {
+      margin-left: calc((100vw - 1260px) / -2);
+      padding-left: calc((100vw - 1260px) / 2); }
+      .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner.slider > .column:nth-child(1) > .wp-block-crown-blocks-container > .inner > .container-contents {
+        padding-left: 0 !important; }
+    .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner.slider > .column:nth-child(2) > .wp-block-crown-blocks-container {
+      margin-right: calc((100vw - 1260px) / -2);
+      padding-right: calc((100vw - 1260px) / 2); }
+      .wp-block-crown-blocks-two-column-scroll-slider.relative-to-container-width > .inner.slider > .column:nth-child(2) > .wp-block-crown-blocks-container > .inner > .container-contents {
+        padding-right: 0 !important; } }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.static {
+  display: none; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.slider {
+  display: grid; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-1 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 1; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-1 > .inner > .column:nth-child(2) {
+  grid-column: 2/span 11; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-2 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 2; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-2 > .inner > .column:nth-child(2) {
+  grid-column: 3/span 10; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-3 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 3; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-3 > .inner > .column:nth-child(2) {
+  grid-column: 4/span 9; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-4 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 4; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-4 > .inner > .column:nth-child(2) {
+  grid-column: 5/span 8; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-5 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 5; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-5 > .inner > .column:nth-child(2) {
+  grid-column: 6/span 7; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-6 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 6; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-6 > .inner > .column:nth-child(2) {
+  grid-column: 7/span 6; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-7 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 7; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-7 > .inner > .column:nth-child(2) {
+  grid-column: 8/span 5; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-8 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 8; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-8 > .inner > .column:nth-child(2) {
+  grid-column: 9/span 4; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-9 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 9; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-9 > .inner > .column:nth-child(2) {
+  grid-column: 10/span 3; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-10 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 10; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-10 > .inner > .column:nth-child(2) {
+  grid-column: 11/span 2; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-11 > .inner > .column:nth-child(1) {
+  grid-column: 1/span 11; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xs-11 > .inner > .column:nth-child(2) {
+  grid-column: 12/span 1; }
+
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+.wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .column > .wp-block-crown-blocks-container {
+  min-height: 100vh; }
+
+@media (min-width: 576px) {
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.static {
+    display: none; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.slider {
+    display: grid; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-1 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-1 > .inner > .column:nth-child(2) {
+    grid-column: 2/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-2 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-2 > .inner > .column:nth-child(2) {
+    grid-column: 3/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-3 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-3 > .inner > .column:nth-child(2) {
+    grid-column: 4/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-4 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-4 > .inner > .column:nth-child(2) {
+    grid-column: 5/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-5 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-5 > .inner > .column:nth-child(2) {
+    grid-column: 6/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-6 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-6 > .inner > .column:nth-child(2) {
+    grid-column: 7/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-7 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-7 > .inner > .column:nth-child(2) {
+    grid-column: 8/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-8 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-8 > .inner > .column:nth-child(2) {
+    grid-column: 9/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-9 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-9 > .inner > .column:nth-child(2) {
+    grid-column: 10/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-10 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-10 > .inner > .column:nth-child(2) {
+    grid-column: 11/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-11 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-sm-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-sm-11 > .inner > .column:nth-child(2) {
+    grid-column: 12/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .column > .wp-block-crown-blocks-container {
+    min-height: 100vh; } }
+
+@media (min-width: 768px) {
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.static {
+    display: none; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.slider {
+    display: grid; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-1 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-1 > .inner > .column:nth-child(2) {
+    grid-column: 2/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-2 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-2 > .inner > .column:nth-child(2) {
+    grid-column: 3/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-3 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-3 > .inner > .column:nth-child(2) {
+    grid-column: 4/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-4 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-4 > .inner > .column:nth-child(2) {
+    grid-column: 5/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-5 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-5 > .inner > .column:nth-child(2) {
+    grid-column: 6/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-6 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-6 > .inner > .column:nth-child(2) {
+    grid-column: 7/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-7 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-7 > .inner > .column:nth-child(2) {
+    grid-column: 8/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-8 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-8 > .inner > .column:nth-child(2) {
+    grid-column: 9/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-9 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-9 > .inner > .column:nth-child(2) {
+    grid-column: 10/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-10 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-10 > .inner > .column:nth-child(2) {
+    grid-column: 11/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-11 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-md-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-md-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-md-11 > .inner > .column:nth-child(2) {
+    grid-column: 12/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .column > .wp-block-crown-blocks-container {
+    min-height: 100vh; } }
+
+@media (min-width: 992px) {
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner.static {
+    display: none; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner.slider {
+    display: grid; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-1 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-1 > .inner > .column:nth-child(2) {
+    grid-column: 2/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-2 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-2 > .inner > .column:nth-child(2) {
+    grid-column: 3/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-3 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-3 > .inner > .column:nth-child(2) {
+    grid-column: 4/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-4 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-4 > .inner > .column:nth-child(2) {
+    grid-column: 5/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-5 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-5 > .inner > .column:nth-child(2) {
+    grid-column: 6/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-6 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-6 > .inner > .column:nth-child(2) {
+    grid-column: 7/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-7 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-7 > .inner > .column:nth-child(2) {
+    grid-column: 8/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-8 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-8 > .inner > .column:nth-child(2) {
+    grid-column: 9/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-9 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-9 > .inner > .column:nth-child(2) {
+    grid-column: 10/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-10 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-10 > .inner > .column:nth-child(2) {
+    grid-column: 11/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-11 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-lg-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-lg-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-lg-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-lg-11 > .inner > .column:nth-child(2) {
+    grid-column: 12/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner > .column > .wp-block-crown-blocks-container {
+    min-height: 100vh; } }
+
+@media (min-width: 1200px) {
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner.static, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl > .inner.static {
+    display: none; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner.slider, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl > .inner.slider {
+    display: grid; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-1 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-1 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-1 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-1 > .inner > .column:nth-child(2) {
+    grid-column: 2/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-2 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-2 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-2 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-2 > .inner > .column:nth-child(2) {
+    grid-column: 3/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-3 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-3 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-3 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-3 > .inner > .column:nth-child(2) {
+    grid-column: 4/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-4 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-4 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-4 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-4 > .inner > .column:nth-child(2) {
+    grid-column: 5/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-5 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-5 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-5 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-5 > .inner > .column:nth-child(2) {
+    grid-column: 6/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-6 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-6 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-6 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-6 > .inner > .column:nth-child(2) {
+    grid-column: 7/span 6; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-7 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-7 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 7; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-7 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-7 > .inner > .column:nth-child(2) {
+    grid-column: 8/span 5; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-8 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-8 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 8; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-8 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-8 > .inner > .column:nth-child(2) {
+    grid-column: 9/span 4; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-9 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-9 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 9; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-9 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-9 > .inner > .column:nth-child(2) {
+    grid-column: 10/span 3; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-10 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-10 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 10; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-10 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-10 > .inner > .column:nth-child(2) {
+    grid-column: 11/span 2; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-11 > .inner > .column:nth-child(1), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-11 > .inner > .column:nth-child(1) {
+    grid-column: 1/span 11; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs.column-layout-xl-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm.column-layout-xl-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md.column-layout-xl-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg.column-layout-xl-11 > .inner > .column:nth-child(2), .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl.column-layout-xl-11 > .inner > .column:nth-child(2) {
+    grid-column: 12/span 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xs > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-sm > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-md > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-lg > .inner > .column > .wp-block-crown-blocks-container, .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+  .wp-block-crown-blocks-two-column-scroll-slider.column-breakpoint-xl > .inner > .column > .wp-block-crown-blocks-container {
+    min-height: 100vh; } }
+
+.wp-block-crown-blocks-two-column-scroll-slider > .inner.slider {
+  display: none;
+  grid-gap: 0;
+  grid-template-columns: repeat(12, 1fr); }
+
+.wp-block-crown-blocks-two-column-scroll-slider > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container,
+.wp-block-crown-blocks-two-column-scroll-slider > .inner > .column > .wp-block-crown-blocks-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0; }
+  .wp-block-crown-blocks-two-column-scroll-slider > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container > .inner,
+  .wp-block-crown-blocks-two-column-scroll-slider > .inner > .column > .wp-block-crown-blocks-container > .inner {
+    width: 100%; }
+
+.wp-block-crown-blocks-two-column-scroll-slider > .inner > .wp-block-crown-blocks-two-column-scroll-slider-slide > .inner > .wp-block-crown-blocks-container.invisible {
+  display: none; }
+
+.wp-block-crown-blocks-two-column-scroll-slider > .inner > .column > .wp-block-crown-blocks-container {
+  position: relative;
+  z-index: 1; }
+  .wp-block-crown-blocks-two-column-scroll-slider > .inner > .column > .wp-block-crown-blocks-container.sticky {
+    position: sticky;
+    top: 0; }
+
 /*	Featured Post Slider
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-featured-post-slider {
@@ -19231,6 +19592,12 @@ nav.pagination {
   display: flex;
   -webkit-transition: background-color .2s;
   transition: background-color .2s; }
+  @media (min-width: 992px) {
+    .wp-block-crown-blocks-team-member-index article.type-team_member {
+      width: 33.33333%; } }
+  @media (min-width: 1200px) {
+    .wp-block-crown-blocks-team-member-index article.type-team_member {
+      width: 25%; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member.active {
     background-color: rgba(35, 48, 83, 0.1); }
     @media (min-width: 768px) {
@@ -19270,7 +19637,7 @@ nav.pagination {
     .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link {
       opacity: 1; }
       .wp-block-crown-blocks-team-member-index article.type-team_member a:hover .entry-link span:after {
-        left: 0;
+        right: 0;
         opacity: 1; }
     .wp-block-crown-blocks-team-member-index article.type-team_member a > .inner {
       display: -webkit-box;
@@ -19281,25 +19648,11 @@ nav.pagination {
       -webkit-box-direction: normal;
           -ms-flex-direction: column;
               flex-direction: column; }
-      @media (min-width: 992px) {
-        .wp-block-crown-blocks-team-member-index article.type-team_member a > .inner {
-          -webkit-box-orient: horizontal;
-          -webkit-box-direction: normal;
-              -ms-flex-direction: row;
-                  flex-direction: row; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
     margin-bottom: .5rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
         margin-bottom: 1rem; } }
-    @media (min-width: 992px) {
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo {
-        width: 40%;
-        margin-right: 1.5rem;
-        -webkit-box-flex: 0;
-            -ms-flex: 0 0 40%;
-                flex: 0 0 40%;
-        margin-bottom: 0; } }
     .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo > .inner {
       height: 0;
       position: relative;
@@ -19375,18 +19728,12 @@ nav.pagination {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
         padding-bottom: .75rem;
         border-bottom-width: 6px; } }
-    @media (min-width: 1200px) {
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
-        padding-top: 1rem; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
     font-size: 1rem;
     margin-bottom: .25rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
         font-size: 2rem; } }
-    @media (min-width: 1200px) {
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
-        font-size: 3rem; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-job-title {
     line-height: 1.2;
     font-size: 0.875rem;
@@ -19398,9 +19745,6 @@ nav.pagination {
         font-size: 1.25rem;
         font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         font-style: normal; } }
-    @media (min-width: 1200px) {
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-job-title {
-        font-size: 1.5rem; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-centers {
     margin-bottom: 1rem;
     margin-top: -0.5rem; }
@@ -19429,12 +19773,7 @@ nav.pagination {
     transition: opacity .2s; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
-        font-size: 1.25rem;
-        margin-top: 1rem; } }
-    @media (min-width: 992px) {
-      .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link {
-        padding-bottom: .5rem;
-        opacity: 0; } }
+        font-size: 1.25rem; } }
     .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span {
       letter-spacing: .1em;
       text-transform: uppercase;
@@ -19450,17 +19789,18 @@ nav.pagination {
         font-weight: normal;
         line-height: 1;
         font-family: icomoon;
-        content: "";
-        display: block;
-        line-height: 1;
-        font-size: 2em;
+        content: "";
         position: relative;
-        -webkit-transition: left .2s .2s, opacity .2s .2s;
-        transition: left .2s .2s, opacity .2s .2s; }
-        @media (min-width: 992px) {
+        margin-left: .5em;
+        margin-right: -.5em;
+        top: .08em;
+        opacity: 1;
+        -webkit-transition: right ease-out .15s, opacity .15s;
+        transition: right ease-out .15s, opacity .15s; }
+        @media (min-width: 768px) {
           .wp-block-crown-blocks-team-member-index article.type-team_member .entry-link span:after {
-            left: -.5rem;
-            opacity: 0; } }
+            opacity: 0;
+            right: .5em; } }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-details {
     display: none; }
 
@@ -19543,7 +19883,8 @@ nav.pagination {
           width: 33.33333%; } }
     .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo {
       margin: -2rem -2rem 2rem;
-      width: auto; }
+      width: auto;
+      display: none; }
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-headshot-photo .image {
         opacity: 1;
         mix-blend-mode: normal;
@@ -20151,6 +20492,9 @@ nav.pagination {
     background-color: #108DBC; }
   .wp-block-crown-blocks-event-header .entry-categories span {
     border-color: #233053; }
+  .wp-block-crown-blocks-event-header .entry-centers a:hover,
+  .wp-block-crown-blocks-event-header .entry-topics a:hover {
+    color: #233053; }
   .wp-block-crown-blocks-event-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
 

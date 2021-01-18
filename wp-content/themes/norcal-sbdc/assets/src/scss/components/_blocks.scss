@@ -609,6 +609,9 @@
 					}
 					> .inner {
 						margin: 0 auto;
+						> .tab-title {
+							display: none;
+						}
 					}
 				}
 			}

@@ -18697,6 +18697,8 @@ nav.pagination {
         padding: 3rem 2.5rem; } }
     .wp-block-crown-blocks-tabbed-content.type-grid .tabbed-content-nav .drawer .wp-block-crown-blocks-tabbed-content-tab > .inner {
       margin: 0 auto; }
+      .wp-block-crown-blocks-tabbed-content.type-grid .tabbed-content-nav .drawer .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title {
+        display: none; }
 
 /*	Gallery
 ---------------------------------------------------------*/
