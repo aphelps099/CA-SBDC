@@ -932,7 +932,7 @@
 					wptheme.smoothScrollToElement(navBlock, 1000, -offset);
 				} else {
 					var contentBlock = $('.section-nav-contents > .inner > .wp-block-crown-blocks-section-nav-content', navBlock).eq(itemIndex);
-					var offset = $('.section-nav-nav', navBlock).outerHeight();
+					var offset = $('body').width() >= 768 ? $('.section-nav-nav', navBlock).outerHeight() : 0;
 					if(navBlock.hasClass('layout-sidebar')) offset = 32;
 					wptheme.smoothScrollToElement(contentBlock, 1000, -offset);
 				}
