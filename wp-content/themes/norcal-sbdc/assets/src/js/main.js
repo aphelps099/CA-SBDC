@@ -24,7 +24,7 @@
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();
-		// $.wptheme.initTwoColumnScrollSliderBlocks();
+		$.wptheme.initTwoColumnScrollSliderBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
 		$.wptheme.initFeaturedResourceSliderBlocks();
 		$.wptheme.initCenterFinderBlocks();
