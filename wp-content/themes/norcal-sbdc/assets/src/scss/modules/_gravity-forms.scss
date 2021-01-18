@@ -180,6 +180,10 @@ $gform-gutter-width: 10px;
 
 	}
 
+	&.gfield_visibility_hidden {
+		display: none;
+	}
+
 	&.no-label,
 	&.hidden_label {
 		.gfield_label {
