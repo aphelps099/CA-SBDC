@@ -608,6 +608,13 @@
 			top: calc(100% + 20px);
 		}
 		&.events {
+			.sub-menu-section.primary {
+				display: flex;
+				align-items: center;
+				.container {
+					width: 100%;
+				}
+			}
 			.sub-menu-section.secondary {
 				flex: 0 0 percentage(4 / 12);
 				@include media-breakpoint-up(xl) {
@@ -778,9 +785,9 @@
 				margin-bottom: 1rem;
 				padding: 0 1rem;
 				width: 100%;
-				@include media-breakpoint-up(xl) {
-					width: 50%;
-				}
+				// @include media-breakpoint-up(xl) {
+				// 	width: 50%;
+				// }
 			}
 			.event-teaser {
 				a {

@@ -271,7 +271,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 
 													<?php if ( $menu_item->type == 'events' ) { ?>
 														<div class="sub-menu-events">
-															<?php $events = class_exists( 'Crown_Events' ) ? Crown_Events::get_upcoming_events( 4 ) : array(); ?>
+															<?php $events = class_exists( 'Crown_Events' ) ? Crown_Events::get_upcoming_events( 2 ) : array(); ?>
 															<?php foreach ( $events as $event ) { ?>
 																<div class="event-container">
 																	<?php ct_event_teaser( $event->ID ); ?>
