@@ -66,7 +66,8 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			$filters_action = remove_query_arg( array(
 				$filters->topic->key,
 				$filters->series->key,
-				$filters->month->key
+				$filters->month->key,
+				$filters->center->key
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
 

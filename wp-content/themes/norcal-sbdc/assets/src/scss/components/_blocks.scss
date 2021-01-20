@@ -2791,6 +2791,13 @@
 			}
 		}
 	}
+	.entry-centers {
+		a {
+			&:hover {
+				color: $primary;
+			}
+		}
+	}
 	.entry-title {
 		font-family: $font-family-sans-serif;
 		border-color: $red;

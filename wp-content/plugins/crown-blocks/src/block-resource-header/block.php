@@ -34,6 +34,9 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 				$is_dark_color = ! empty( $color ) ? Crown_Resources::is_dark_color( $color ) : $is_dark_color;
 			}
 
+			$index_page_url = '';
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_resource' ) ) ) $index_page_url = get_permalink( $index_page_id );
+
 			ob_start();
 			// print_r($atts);
 			?>
@@ -52,7 +55,13 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 										<?php $types = get_the_terms( $post_id, 'resource_type' ); ?>
 										<?php if ( ! empty( $types ) ) { ?>
 											<p class="entry-type">
-												<?php echo implode( ', ', array_map( function( $n ) { return $n->name; }, $types ) ); ?>
+												<?php foreach ( $types as $term ) { ?>
+													<?php if ( ! empty( $index_page_url ) ) { ?>
+														<a class="type" href="<?php echo add_query_arg( 'r_type', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+													<?php } else { ?>
+														<span class="type"><?php echo $term->name; ?></span>
+													<?php } ?>
+												<?php } ?>
 											</p>
 										<?php } ?>
 

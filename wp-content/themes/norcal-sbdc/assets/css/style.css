@@ -21754,6 +21754,8 @@ nav.pagination {
       .wp-block-crown-blocks-client-story-header > .inner > .header-contents {
         padding-left: 2.5rem;
         padding-right: 2.5rem; } }
+  .wp-block-crown-blocks-client-story-header .entry-centers a:hover {
+    color: #233053; }
   .wp-block-crown-blocks-client-story-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     border-color: #E60045; }

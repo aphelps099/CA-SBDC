@@ -30,7 +30,8 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 			$filters = (object) array(
 				'industry' => (object) array( 'key' => 'cs_industry', 'queried' => null, 'options' => array() ),
 				'letter' => (object) array( 'key' => 'cs_letter', 'queried' => null, 'options' => array() ),
-				'search' => (object) array( 'key' => 'cs_search', 'queried' => null, 'options' => array() )
+				'search' => (object) array( 'key' => 'cs_search', 'queried' => null, 'options' => array() ),
+				'center' => (object) array( 'key' => 'cs_center', 'queried' => null, 'options' => array() )
 			);
 
 			// $atts['postsPerPage'] = 1;
@@ -55,12 +56,16 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 			$filters->search->queried = isset( $_GET[ $filters->search->key ] ) ? trim( $_GET[ $filters->search->key ] ) : '';
 			if ( ! empty( $filters->search->queried ) ) $query_args['s'] = $filters->search->queried;
 
+			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+			if ( ! empty( $filters->center->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+
 			$query = new WP_Query( $query_args );
 
 			$filters_action = remove_query_arg( array(
 				$filters->industry->key,
 				$filters->letter->key,
-				$filters->search->key
+				$filters->search->key,
+				$filters->center->key
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
 

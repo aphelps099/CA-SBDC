@@ -90,6 +90,13 @@
 		margin-bottom: 2rem;
 		text-transform: uppercase;
 		letter-spacing: .05em;
+		a {
+			color: inherit;
+			transition: opacity .15s;
+			&:hover {
+				opacity: .75;
+			}
+		}
 	}
 	.entry-title {
 		font-size: 2rem;

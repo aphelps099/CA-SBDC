@@ -35,6 +35,9 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 			$featured_image_url = ! empty( $featured_image_id ) ? wp_get_attachment_image_url( $featured_image_id, 'extra_large' ) : $featured_image_url;
 			if ( ! empty( $featured_image_url ) ) $block_class[] = 'has-featured-image';
 
+			$index_page_url = '';
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_client_story' ) ) ) $index_page_url = get_permalink( $index_page_id );
+
 			ob_start();
 			// print_r($atts);
 			?>
@@ -54,7 +57,11 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 											<?php if ( ! empty( $centers ) ) { ?>
 												<p class="entry-centers">
 													<?php foreach ( $centers as $term ) { ?>
-														<span class="center"><?php echo $term->name; ?></span>
+														<?php if ( ! empty( $index_page_url ) ) { ?>
+															<a class="center" href="<?php echo add_query_arg( 'cs_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+														<?php } else { ?>
+															<span class="center"><?php echo $term->name; ?></span>
+														<?php } ?>
 													<?php } ?>
 												</p>
 											<?php } ?>
