@@ -21015,7 +21015,7 @@ nav.pagination {
         background-color: rgba(52, 58, 64, 0.8); }
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member button.drawer-close:before {
         content: '×';
-        font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
         display: inline-block;
         margin-right: .2em;
         font-style: normal;
