@@ -21233,10 +21233,10 @@ nav.pagination {
     color: inherit;
     background-color: #233053;
     color: #fff;
-    -webkit-transition: -webkit-box-shadow .4s;
-    transition: -webkit-box-shadow .4s;
-    transition: box-shadow .4s;
-    transition: box-shadow .4s, -webkit-box-shadow .4s; }
+    -webkit-transition: background-color .4s, -webkit-box-shadow .4s;
+    transition: background-color .4s, -webkit-box-shadow .4s;
+    transition: background-color .4s, box-shadow .4s;
+    transition: background-color .4s, box-shadow .4s, -webkit-box-shadow .4s; }
     .wp-block-crown-blocks-post-index article.type-post a.color-dark-blue {
       background-color: #233053; }
     .wp-block-crown-blocks-post-index article.type-post a.color-blue {

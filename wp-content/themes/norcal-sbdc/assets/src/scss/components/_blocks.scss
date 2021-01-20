@@ -2256,7 +2256,7 @@
 			color: inherit;
 			background-color: $dark-blue;
 			color: #fff;
-			transition: box-shadow .4s;
+			transition: background-color .4s, box-shadow .4s;
 			&.color-dark-blue { background-color: $dark-blue; }
 			&.color-blue { background-color: $blue; }
 			&.color-red { background-color: $red; }
