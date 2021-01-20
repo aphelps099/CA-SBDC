@@ -185,6 +185,8 @@
 			}
 		}
 		> .inner {
+			max-width: $container-effective-max-width;
+			margin: 0 auto;
 			@include media-breakpoint-up(md) {
 				display: flex;
 				justify-content: space-between;
