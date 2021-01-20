@@ -395,7 +395,13 @@
 								var location = $('.locations article.location[data-location-id="' + this.data.locationId + '"]', block);
 								if(location.length) {
 									location.trigger('click');
-									$('.locations', block).stop(true).animate({ scrollTop: location.offset().top - location.parent().offset().top }, 1000, 'easeOutExpo');
+									var offset = 32;
+									if(location.offset().top - 32 < $(window).scrollTop()) {
+										wptheme.smoothScrollToPos(location.offset().top - 32);
+									} else if(location.offset().top + location.outerHeight() + 32 > $(window).scrollTop() + $(window).height()) {
+										wptheme.smoothScrollToPos(location.offset().top + location.outerHeight() + 32 - $(window).height());
+									}
+									// $('.locations', block).stop(true).animate({ scrollTop: location.offset().top - location.parent().offset().top }, 1000, 'easeOutExpo');
 								}
 							});
 						}

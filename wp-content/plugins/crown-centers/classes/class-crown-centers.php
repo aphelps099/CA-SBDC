@@ -518,22 +518,22 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 					<?php } else { ?>
 
-						<div class="map">
-							<div class="inner">
-								<?php if ( $is_editor ) { ?>
-									<div class="placeholder"></div>
-								<?php } else { ?>
-									<?php echo GoogleMaps::getMap( $map_args ); ?>
-								<?php } ?>
-							</div>
-						</div>
-
 						<div class="results">
 
 							<div class="locations">
 								<div class="inner">
 									<?php foreach( $locations as $location ) { ?>
 										<?php self::center_finder_location( $location ); ?>
+									<?php } ?>
+								</div>
+							</div>
+
+							<div class="map">
+								<div class="inner">
+									<?php if ( $is_editor ) { ?>
+										<div class="placeholder"></div>
+									<?php } else { ?>
+										<?php echo GoogleMaps::getMap( $map_args ); ?>
 									<?php } ?>
 								</div>
 							</div>

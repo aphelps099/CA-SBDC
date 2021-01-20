@@ -20580,7 +20580,7 @@ nav.pagination {
             align-items: center;
     font-size: 1.25rem; }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .wp-block-crown-blocks-center-finder .locations article.location {
     cursor: pointer; } }
 
@@ -20594,7 +20594,7 @@ nav.pagination {
       opacity: 1;
       text-indent: 0; } }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
   .wp-block-crown-blocks-center-finder .locations article.location.active {
     background-color: #108DBC;
     color: #fff; }
