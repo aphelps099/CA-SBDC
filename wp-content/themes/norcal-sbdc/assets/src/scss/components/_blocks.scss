@@ -2254,27 +2254,23 @@
 			width: 100%;
 			display: flex;
 			color: inherit;
-			@include media-breakpoint-up(md) {
-				background-color: #fff;
-				transition: background-color .4s, color .4s, box-shadow .4s;
-				&:hover {
-					background-color: $primary;
-					color: #fff;
-					box-shadow: 0 4px 16px rgba(#000, .2);
-					&.hover-color-dark-blue { background-color: $dark-blue; }
-					&.hover-color-blue { background-color: $blue; }
-					&.hover-color-red { background-color: $red; }
-					&.hover-color-gray { background-color: $gray; }
-					&.hover-color-dark-gray { background-color: $dark-gray; }
-					.entry-categories span { border-color: #fff; }
-					// .entry-teaser:after { opacity: 1; margin-right: 0; transition-delay: .2s; }
-					.entry-link > span:nth-child(1):before {
-						max-width: 100%;
-						background: linear-gradient(to right, rgba(#fff, 0), #fff);
-					}
-					.entry-link > span:nth-child(2) { opacity: 1; transform: none; }
-					.entry-link > span:nth-child(2):before { opacity: 1; left: 0; }
+			background-color: $dark-blue;
+			color: #fff;
+			transition: box-shadow .4s;
+			&.color-dark-blue { background-color: $dark-blue; }
+			&.color-blue { background-color: $blue; }
+			&.color-red { background-color: $red; }
+			&.color-gray { background-color: $gray; }
+			&.color-dark-gray { background-color: $dark-gray; }
+			&:hover {
+				box-shadow: 0 4px 16px rgba(#000, .2);
+				.entry-categories span { border-color: #fff; }
+				// .entry-teaser:after { opacity: 1; margin-right: 0; transition-delay: .2s; }
+				.entry-link > span:nth-child(1):before {
+					max-width: 100%;
 				}
+				.entry-link > span:nth-child(2) { opacity: 1; transform: none; }
+				.entry-link > span:nth-child(2):before { opacity: 1; left: 0; }
 			}
 			> .inner {
 				display: flex;
@@ -2356,7 +2352,7 @@
 				letter-spacing: .05em;
 				text-transform: uppercase;
 				border-radius: 10rem;
-				border: 1px solid $primary;
+				border: 1px solid #fff;
 				padding: .5rem .75rem;
 				transition: border-color .2s;
 				// @include media-breakpoint-up(md) {
@@ -2397,7 +2393,7 @@
 					display: block;
 					height: 0.25rem;
 					transition: max-width .4s, background .4s;
-					background: linear-gradient(to right, rgba($body-color, 0), $body-color);
+					background: linear-gradient(to right, rgba(#fff, 0), #fff);
 					@include media-breakpoint-up(md) {
 						max-width: 6rem;
 					}

@@ -425,6 +425,19 @@
 
 		wptheme.initPostFeeds = function() {
 
+			$('.wp-block-crown-blocks-post-index').on('setArticleColors', function(e) {
+				var block = $(this);
+				if(block.hasClass('wp-block-crown-blocks-post-index')) {
+					$('.post-feed article:not(.post-format-tweet):not(.post-format-facebook-update) a', block).each(function(i, el) {
+						if($(this).hasClass('color-set')) return;
+						var colors = [ 'blue', 'red', 'gray', 'dark-gray' ];
+						var color = Math.floor(Math.random() * 2) == 0 ? 'dark-blue' : colors[Math.floor(Math.random() * Math.floor(colors.length))];
+						$(this).addClass('color-set color-' + color);
+					});
+				}
+			});
+			$('.wp-block-crown-blocks-post-index').trigger('setArticleColors');
+
 			$(document).on('click', 'form.feed-filters button.filters-toggle', function(e) {
 				var form = $(this).closest('form');
 				form.toggleClass('active');
@@ -510,12 +523,7 @@
 				wptheme.updatePostFeedBlock($(this).closest('.post-feed-block'), $(this).attr('href'));
 			});
 
-			$(document).on('mouseenter', '.wp-block-crown-blocks-post-index .post-feed article a', function(e) {
-				if($(this).hasClass('hover-color-set')) return;
-				var colors = [ 'blue', 'red', 'gray', 'dark-gray' ];
-				var color = Math.floor(Math.random() * 2) == 0 ? 'dark-blue' : colors[Math.floor(Math.random() * Math.floor(colors.length))];
-				$(this).addClass('hover-color-set hover-color-' + color);
-			});
+			updateFeedArticleColors();
 
 		};
 		wptheme.updatePostFeedBlock = function(block, url) {
@@ -536,6 +544,7 @@
 							if(block.offset().top < $(window).scrollTop()) {
 								wptheme.smoothScrollToElement(block);
 							}
+							block.trigger('setArticleColors');
 						}
 					}
 					$('.ajax-loader', block).removeClass('loading');
