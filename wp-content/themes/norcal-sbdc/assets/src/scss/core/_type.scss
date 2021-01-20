@@ -47,12 +47,15 @@ h1 {
 
 .is-style-sans-serif {
 	font-family: $font-family-sans-serif;
+	.revslider & { font-family: $font-family-sans-serif !important; }
 }
 .is-style-sans-serif-alt {
 	font-family: $font-family-sans-serif-alt;
+	.revslider & { font-family: $font-family-sans-serif-alt !important; }
 }
 .is-style-serif {
 	font-family: $font-family-serif;
+	.revslider & { font-family: $font-family-serif !important; }
 }
 
 
