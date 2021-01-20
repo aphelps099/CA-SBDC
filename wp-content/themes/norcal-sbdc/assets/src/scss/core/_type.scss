@@ -58,6 +58,17 @@ h1 {
 	.revslider & { font-family: $font-family-serif !important; }
 }
 
+.font-weight-black { font-weight: $font-weight-black; }
+.revslider {
+	.font-weight-bold { font-weight: $font-weight-bold !important; }
+	.font-weight-bolder { font-weight: $font-weight-bolder !important; }
+	.font-weight-normal { font-weight: $font-weight-normal !important; }
+	.font-weight-light { font-weight: $font-weight-light !important; }
+	.font-weight-lighter { font-weight: $font-weight-lighter !important; }
+	.font-weight-black { font-weight: $font-weight-black !important; }
+	.font-italic { font-style: italic !important; }
+}
+
 
 blockquote,
 .wp-block-quote {

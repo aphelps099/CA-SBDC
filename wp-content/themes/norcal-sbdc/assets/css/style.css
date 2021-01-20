@@ -15635,6 +15635,30 @@ h1 {
   .revslider .is-style-serif {
     font-family: "utopia-std", serif !important; }
 
+.font-weight-black {
+  font-weight: 900; }
+
+.revslider .font-weight-bold {
+  font-weight: 700 !important; }
+
+.revslider .font-weight-bolder {
+  font-weight: bolder !important; }
+
+.revslider .font-weight-normal {
+  font-weight: 400 !important; }
+
+.revslider .font-weight-light {
+  font-weight: 300 !important; }
+
+.revslider .font-weight-lighter {
+  font-weight: 100 !important; }
+
+.revslider .font-weight-black {
+  font-weight: 900 !important; }
+
+.revslider .font-italic {
+  font-style: italic !important; }
+
 blockquote,
 .wp-block-quote {
   font-style: italic;
