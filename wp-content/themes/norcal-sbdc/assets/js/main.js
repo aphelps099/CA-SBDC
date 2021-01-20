@@ -523,8 +523,6 @@
 				wptheme.updatePostFeedBlock($(this).closest('.post-feed-block'), $(this).attr('href'));
 			});
 
-			updateFeedArticleColors();
-
 		};
 		wptheme.updatePostFeedBlock = function(block, url) {
 			if(url.match(/^\//)) url = crownThemeData.baseUrl + url;
