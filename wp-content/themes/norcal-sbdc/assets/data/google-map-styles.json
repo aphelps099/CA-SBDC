@@ -1,88 +1,33 @@
 [
     {
         "featureType": "all",
-        "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#0057ff"
-            }
-        ]
-    },
-    {
-        "featureType": "all",
-        "elementType": "labels.text.stroke",
-        "stylers": [
+                "saturation": 0
+            },
             {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "all",
-        "elementType": "labels.icon",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#0057ff"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry.fill",
-        "stylers": [
-            {
-                "color": "#ffffff"
+                "hue": "#e7ecf0"
             }
         ]
     },
     {
         "featureType": "road",
-        "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "elementType": "geometry.stroke",
-        "stylers": [
-            {
-                "color": "#0057ff"
+                "saturation": -70
             }
         ]
     },
     {
         "featureType": "transit",
-        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
         "stylers": [
             {
                 "visibility": "off"
@@ -91,19 +36,12 @@
     },
     {
         "featureType": "water",
-        "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#ffffff"
-            }
-        ]
-    },
-    {
-        "featureType": "water",
-        "elementType": "labels.icon",
-        "stylers": [
+                "visibility": "simplified"
+            },
             {
-                "visibility": "off"
+                "saturation": -60
             }
         ]
     }
