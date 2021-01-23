@@ -1000,6 +1000,7 @@
 				} else {
 					$('> article.active', container).removeClass('active');
 					article.addClass('active');
+					var scrollTo = $('.entry-teaser', article).offset().top;
 
 					var lirArticle = article;
 					while(lirArticle.nextAll('article').length && lirArticle.nextAll('article').first().offset().top == article.offset().top) {
@@ -1013,13 +1014,12 @@
 					$('.drawer', container).not(drawer).each(function(i, el) {
 						var oldDrawer = $(el);
 						oldDrawer.hide();
-						var scrollTo = article.offset().top;
+						scrollTo = $('.entry-teaser', article).offset().top;
 						oldDrawer.show();
 						$('> .inner', oldDrawer).css({ height: oldDrawer.height() });
 						oldDrawer.removeClass('active');
 						setTimeout(function() { $('> .inner', oldDrawer).css({ height: 0 }) }, 100);
 						setTimeout(function() { oldDrawer.remove(); }, 500);
-						wptheme.smoothScrollToPos(scrollTo);
 					});
 
 					article.addClass('loading');
@@ -1045,6 +1045,7 @@
 						}
 					}, 'json');
 
+					wptheme.smoothScrollToPos(scrollTo, 500, -32);
 					
 					// $('> .inner', drawer).css({ height: drawer.hasClass('active') ? drawer.height() : 0 });
 					// $('> .inner', drawer).html(drawerContent);
