@@ -1448,10 +1448,22 @@
 		font-weight: 800;
 		font-style: italic;
 		@include media-breakpoint-up(lg) {
+			font-size: 6.5rem;
+		}
+		@include media-breakpoint-up(xl) {
 			font-size: 8.75rem;
 		}
 		.odometer {
 			// line-height: inherit;
+		}
+		.pre,
+		.post {
+			font-weight: 400;
+			font-size: 60%;
+		}
+		.pre {
+			vertical-align: top;
+			margin-top: .2em;
 		}
 	}
 	.stat-label {

@@ -20488,7 +20488,17 @@ nav.pagination {
     font-style: italic; }
     @media (min-width: 992px) {
       .wp-block-crown-blocks-stat .stat-value {
+        font-size: 6.5rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-stat .stat-value {
         font-size: 8.75rem; } }
+    .wp-block-crown-blocks-stat .stat-value .pre,
+    .wp-block-crown-blocks-stat .stat-value .post {
+      font-weight: 400;
+      font-size: 60%; }
+    .wp-block-crown-blocks-stat .stat-value .pre {
+      vertical-align: top;
+      margin-top: .2em; }
   .wp-block-crown-blocks-stat .stat-label {
     font-size: 1rem;
     font-weight: 700;
