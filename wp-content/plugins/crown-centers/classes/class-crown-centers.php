@@ -68,11 +68,11 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 						$role->add_cap( $cap . '_centers' );
 					}
 				}
-				// foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
-				// 	if ( $role->has_cap( 'manage_categories' ) ) {
-				// 		$role->add_cap( $cap . '_post_centers' );
-				// 	}
-				// }
+				foreach ( array( 'manage', 'edit', 'delete' ) as $cap ) {
+					if ( $role->has_cap( 'manage_categories' ) ) {
+						$role->add_cap( $cap . '_post_centers' );
+					}
+				}
 				if ( $role->has_cap( 'edit_posts' ) ) {
 					$role->add_cap( 'assign_post_centers' );
 				}
@@ -310,6 +310,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 					'hierarchical' => true,
 					'rewrite' => array( 'slug' => 'post-centers', 'with_front' => false ),
 					'show_in_nav_menus' => false,
+					'show_in_menu' => false,
 					'show_admin_column' => true,
 					'publicly_queryable' => false,
 					'show_in_rest' => true,

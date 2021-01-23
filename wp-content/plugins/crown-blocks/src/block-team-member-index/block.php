@@ -19,7 +19,8 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'postsPerPage' => array( 'type' => 'string', 'default' => '10' )
+				'postsPerPage' => array( 'type' => 'string', 'default' => '10' ),
+				'filterCenters' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) )
 			);
 		}
 
@@ -35,6 +36,8 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'lang' => (object) array( 'key' => 'tm_lang', 'queried' => null, 'options' => array() )
 			);
 
+			$prefiltered = false;
+
 			// $atts['postsPerPage'] = 1;
 			$query_args = array(
 				'post_type' => 'team_member',
@@ -47,23 +50,33 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'meta_query' => array()
 			);
 
-			$filters->category->queried = isset( $_GET[ $filters->category->key ] ) ? ( is_array( $_GET[ $filters->category->key ] ) ? $_GET[ $filters->category->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->category->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->category->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_category', 'terms' => $filters->category->queried );
+			if ( ! empty( $atts['filterCenters'] ) ) {
 
-			$filters->expertise->queried = isset( $_GET[ $filters->expertise->key ] ) ? ( is_array( $_GET[ $filters->expertise->key ] ) ? $_GET[ $filters->expertise->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->expertise->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->expertise->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_expertise', 'terms' => $filters->expertise->queried );
+				$prefiltered = true;
 
-			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->center->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+				$query_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => array_map( function( $n ) { return $n['id']; }, $atts['filterCenters'] ) );
 
-			$filters->letter->queried = isset( $_GET[ $filters->letter->key ] ) ? strtolower( trim( $_GET[ $filters->letter->key ] ) ) : '';
-			if ( ! empty( $filters->letter->queried ) ) $query_args['meta_query'][] = array( 'key' => 'team_member_name_last_initial_lc', 'value' => $filters->letter->queried );
+			} else {
 
-			$filters->lang->queried = isset( $_GET[ $filters->lang->key ] ) ? ( is_array( $_GET[ $filters->lang->key ] ) ? $_GET[ $filters->lang->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->lang->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->lang->queried ) ) $query_args['meta_query'][] = array( 'key' => '__team_member_options', 'compare' => 'IN', 'value' => $filters->lang->queried );
+				$filters->category->queried = isset( $_GET[ $filters->category->key ] ) ? ( is_array( $_GET[ $filters->category->key ] ) ? $_GET[ $filters->category->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->category->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+				if ( ! empty( $filters->category->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_category', 'terms' => $filters->category->queried );
 
-			// $queried_search = isset( $_GET['keywords'] ) ? trim( $_GET['keywords'] ) : '';
-			// if ( ! empty( $queried_search ) ) $query_args['s'] = $queried_search;
+				$filters->expertise->queried = isset( $_GET[ $filters->expertise->key ] ) ? ( is_array( $_GET[ $filters->expertise->key ] ) ? $_GET[ $filters->expertise->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->expertise->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+				if ( ! empty( $filters->expertise->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_expertise', 'terms' => $filters->expertise->queried );
+
+				$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+				if ( ! empty( $filters->center->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+
+				$filters->letter->queried = isset( $_GET[ $filters->letter->key ] ) ? strtolower( trim( $_GET[ $filters->letter->key ] ) ) : '';
+				if ( ! empty( $filters->letter->queried ) ) $query_args['meta_query'][] = array( 'key' => 'team_member_name_last_initial_lc', 'value' => $filters->letter->queried );
+
+				$filters->lang->queried = isset( $_GET[ $filters->lang->key ] ) ? ( is_array( $_GET[ $filters->lang->key ] ) ? $_GET[ $filters->lang->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->lang->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+				if ( ! empty( $filters->lang->queried ) ) $query_args['meta_query'][] = array( 'key' => '__team_member_options', 'compare' => 'IN', 'value' => $filters->lang->queried );
+
+				// $queried_search = isset( $_GET['keywords'] ) ? trim( $_GET['keywords'] ) : '';
+				// if ( ! empty( $queried_search ) ) $query_args['s'] = $queried_search;
+
+			}
 
 			$query = new WP_Query( $query_args );
 
@@ -76,25 +89,29 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
 
-			$filters->category->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->category->queried ) );
-			}, get_terms( array( 'taxonomy' => 'team_member_category' ) ) );
+			if ( ! $prefiltered ) {
 
-			$filters->expertise->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->expertise->queried ) );
-			}, get_terms( array( 'taxonomy' => 'team_member_expertise' ) ) );
+				$filters->category->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->category->queried ) );
+				}, get_terms( array( 'taxonomy' => 'team_member_category' ) ) );
 
-			$filters->center->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->center->queried ) );
-			}, get_terms( array( 'taxonomy' => 'post_center' ) ) );
+				$filters->expertise->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->expertise->queried ) );
+				}, get_terms( array( 'taxonomy' => 'team_member_expertise' ) ) );
 
-			$filters->letter->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
-			}, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ) );
+				$filters->center->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->center->queried ) );
+				}, get_terms( array( 'taxonomy' => 'post_center' ) ) );
 
-			$filters->lang->options = array(
-				(object) array( 'value' => 'multilingual', 'label' => 'Multilingual', 'selected' => in_array( 'multilingual', $filters->lang->queried ) )
-			);
+				$filters->letter->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
+				}, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ) );
+
+				$filters->lang->options = array(
+					(object) array( 'value' => 'multilingual', 'label' => 'Multilingual', 'selected' => in_array( 'multilingual', $filters->lang->queried ) )
+				);
+
+			}
 
 			$block_class = array( 'wp-block-crown-blocks-team-member-index', 'post-feed-block', $atts['className'] );
 			$block_id = 'post-feed-block-' . md5( json_encode( array( 'team-member-index', $atts ) ) );
@@ -106,109 +123,113 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $block_class ); ?>">
 					<div class="inner">
 
-						<form action="<?php echo $filters_action; ?>" method="get" class="feed-filters">
+						<?php if ( ! $prefiltered ) { ?>
 
-							<header class="filters-header">
+							<form action="<?php echo $filters_action; ?>" method="get" class="feed-filters">
 
-								<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
-								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
-								<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
+								<header class="filters-header">
 
-								<?php if ( ! empty( $filters->category->options ) ) { ?>
-									<ul class="options singular quick-filters">
-										<?php foreach ( $filters->category->options as $option ) { ?>
-											<li class="option">
-												<label>
-													<input type="checkbox" name="<?php echo $filters->category->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-													<span class="label"><?php echo $option->label; ?></span>
-												</label>
-											</li>
+									<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
+									<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
+									<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
+
+									<?php if ( ! empty( $filters->category->options ) ) { ?>
+										<ul class="options singular quick-filters">
+											<?php foreach ( $filters->category->options as $option ) { ?>
+												<li class="option">
+													<label>
+														<input type="checkbox" name="<?php echo $filters->category->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+														<span class="label"><?php echo $option->label; ?></span>
+													</label>
+												</li>
+											<?php } ?>
+										</ul>
+									<?php } ?>
+
+									<nav class="filters-nav">
+										<ul>
+											<?php if ( ! empty( $filters->letter->options ) ) { ?><li><button type="button" data-tab="letter"><?php _e( 'Name', 'crown_blocks' ); ?></button></li><?php } ?>
+											<?php if ( ! empty( $filters->expertise->options ) ) { ?><li><button type="button" data-tab="expertise"><?php _e( 'Expertise', 'crown_blocks' ); ?></button></li><?php } ?>
+											<?php if ( ! empty( $filters->center->options ) ) { ?><li><button type="button" data-tab="center"><?php _e( 'Center', 'crown_blocks' ); ?></button></li><?php } ?>
+											<?php if ( ! empty( $filters->lang->options ) ) { ?><li><button type="button" data-tab="lang"><?php _e( 'Multilingual', 'crown_blocks' ); ?></button></li><?php } ?>
+										</ul>
+									</nav>
+
+								</header>
+
+								<div class="filters-tabs">
+									<div class="inner">
+
+										<?php if ( ! empty( $filters->letter->options ) ) { ?>
+											<div class="filters-tab" data-tab="letter">
+												<ul class="options singular name">
+													<?php foreach ( $filters->letter->options as $option ) { ?>
+														<li class="option">
+															<label>
+																<input type="checkbox" name="<?php echo $filters->letter->key; ?>" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+																<span class="label"><?php echo $option->label; ?></span>
+															</label>
+														</li>
+													<?php } ?>
+												</ul>
+											</div>
 										<?php } ?>
-									</ul>
-								<?php } ?>
+		
+										<?php if ( ! empty( $filters->expertise->options ) ) { ?>
+											<div class="filters-tab" data-tab="expertise">
+												<ul class="options expertise">
+													<?php foreach ( $filters->expertise->options as $option ) { ?>
+														<li class="option">
+															<label>
+																<input type="checkbox" name="<?php echo $filters->expertise->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+																<span class="label"><?php echo $option->label; ?></span>
+															</label>
+														</li>
+													<?php } ?>
+												</ul>
+											</div>
+										<?php } ?>
+		
+										<?php if ( ! empty( $filters->center->options ) ) { ?>
+											<div class="filters-tab" data-tab="center">
+												<ul class="options center">
+													<?php foreach ( $filters->center->options as $option ) { ?>
+														<li class="option">
+															<label>
+																<input type="checkbox" name="<?php echo $filters->center->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+																<span class="label"><?php echo $option->label; ?></span>
+															</label>
+														</li>
+													<?php } ?>
+												</ul>
+											</div>
+										<?php } ?>
+		
+										<?php if ( ! empty( $filters->lang->options ) ) { ?>
+											<div class="filters-tab" data-tab="lang">
+												<ul class="options lang">
+													<?php foreach ( $filters->lang->options as $option ) { ?>
+														<li class="option">
+															<label>
+																<input type="checkbox" name="<?php echo $filters->lang->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+																<span class="label"><?php echo $option->label; ?></span>
+															</label>
+														</li>
+													<?php } ?>
+												</ul>
+											</div>
+										<?php } ?>
 
-								<nav class="filters-nav">
-									<ul>
-										<?php if ( ! empty( $filters->letter->options ) ) { ?><li><button type="button" data-tab="letter"><?php _e( 'Name', 'crown_blocks' ); ?></button></li><?php } ?>
-										<?php if ( ! empty( $filters->expertise->options ) ) { ?><li><button type="button" data-tab="expertise"><?php _e( 'Expertise', 'crown_blocks' ); ?></button></li><?php } ?>
-										<?php if ( ! empty( $filters->center->options ) ) { ?><li><button type="button" data-tab="center"><?php _e( 'Center', 'crown_blocks' ); ?></button></li><?php } ?>
-										<?php if ( ! empty( $filters->lang->options ) ) { ?><li><button type="button" data-tab="lang"><?php _e( 'Multilingual', 'crown_blocks' ); ?></button></li><?php } ?>
-									</ul>
-								</nav>
-
-							</header>
-
-							<div class="filters-tabs">
-								<div class="inner">
-
-									<?php if ( ! empty( $filters->letter->options ) ) { ?>
-										<div class="filters-tab" data-tab="letter">
-											<ul class="options singular name">
-												<?php foreach ( $filters->letter->options as $option ) { ?>
-													<li class="option">
-														<label>
-															<input type="checkbox" name="<?php echo $filters->letter->key; ?>" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-															<span class="label"><?php echo $option->label; ?></span>
-														</label>
-													</li>
-												<?php } ?>
-											</ul>
-										</div>
-									<?php } ?>
-	
-									<?php if ( ! empty( $filters->expertise->options ) ) { ?>
-										<div class="filters-tab" data-tab="expertise">
-											<ul class="options expertise">
-												<?php foreach ( $filters->expertise->options as $option ) { ?>
-													<li class="option">
-														<label>
-															<input type="checkbox" name="<?php echo $filters->expertise->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-															<span class="label"><?php echo $option->label; ?></span>
-														</label>
-													</li>
-												<?php } ?>
-											</ul>
-										</div>
-									<?php } ?>
-	
-									<?php if ( ! empty( $filters->center->options ) ) { ?>
-										<div class="filters-tab" data-tab="center">
-											<ul class="options center">
-												<?php foreach ( $filters->center->options as $option ) { ?>
-													<li class="option">
-														<label>
-															<input type="checkbox" name="<?php echo $filters->center->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-															<span class="label"><?php echo $option->label; ?></span>
-														</label>
-													</li>
-												<?php } ?>
-											</ul>
-										</div>
-									<?php } ?>
-	
-									<?php if ( ! empty( $filters->lang->options ) ) { ?>
-										<div class="filters-tab" data-tab="lang">
-											<ul class="options lang">
-												<?php foreach ( $filters->lang->options as $option ) { ?>
-													<li class="option">
-														<label>
-															<input type="checkbox" name="<?php echo $filters->lang->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-															<span class="label"><?php echo $option->label; ?></span>
-														</label>
-													</li>
-												<?php } ?>
-											</ul>
-										</div>
-									<?php } ?>
-
+									</div>
 								</div>
-							</div>
 
-							<footer class="filters-footer">
-								<button type="submit"><?php _e( 'Submit', 'crown_blocks' ); ?></button>
-							</footer>
+								<footer class="filters-footer">
+									<button type="submit"><?php _e( 'Submit', 'crown_blocks' ); ?></button>
+								</footer>
 
-						</form>
+							</form>
+
+						<?php } ?>
 
 						<div class="ajax-loader">
 							<div class="ajax-content">
