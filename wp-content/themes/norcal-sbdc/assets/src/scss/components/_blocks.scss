@@ -112,12 +112,14 @@
 							> .inner > .column-contents > .inner > .wp-block-crown-blocks-container {
 								margin-left: calc((100vw - #{$container-effective-max-width}) / -2);
 								padding-left: calc((100vw - #{$container-effective-max-width}) / 2);
+								> .inner > .container-contents { padding-left: 0 !important; }
 							}
 						}
 						> .wp-block-crown-blocks-column:nth-child(2) {
 							> .inner > .column-contents > .inner > .wp-block-crown-blocks-container {
 								margin-right: calc((100vw - #{$container-effective-max-width}) / -2);
 								padding-right: calc((100vw - #{$container-effective-max-width}) / 2);
+								> .inner > .container-contents { padding-right: 0 !important; }
 							}
 						}
 					}
