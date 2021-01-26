@@ -8571,22 +8571,21 @@
         align-items: center;
     padding-top: 4rem; }
   .wp-block-crown-blocks-post-header.has-bg-image > .inner {
-    padding-top: 8rem; }
+    padding-top: 6rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-header.has-bg-image > .inner {
-        padding-top: 10rem; } }
+        padding-top: 8rem; } }
     @media (min-width: 992px) {
       .wp-block-crown-blocks-post-header.has-bg-image > .inner {
-        padding-top: 16rem; } }
+        padding-top: 12rem; } }
     @media (min-width: 1200px) {
       .wp-block-crown-blocks-post-header.has-bg-image > .inner {
-        padding-top: 20rem; } }
+        padding-top: 12rem; } }
   .wp-block-crown-blocks-post-header > .inner > .header-contents {
     padding: 2rem;
     -ms-flex: 1 1 100%;
         flex: 1 1 100%;
     max-width: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
     position: relative;
     z-index: 1; }
     .wp-block-crown-blocks-post-header > .inner > .header-contents > .inner {
@@ -8616,25 +8615,32 @@
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-header .entry-title {
         font-size: 2.5rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-post-header .entry-title {
+        font-size: 3.5rem;
+        line-height: 1.1; } }
   .wp-block-crown-blocks-post-header .header-meta {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap;
     -ms-flex-align: end;
-        align-items: flex-end; }
+        align-items: flex-end;
+    border-top: 0.125rem solid #333;
+    padding-top: 1.5rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-header .header-meta {
         -ms-flex-align: center;
             align-items: center;
-        margin-top: 4rem; } }
+        margin-top: 2rem;
+        padding-top: 2rem; } }
   .wp-block-crown-blocks-post-header .entry-date {
     width: 100%;
     line-height: 1.2;
     font-size: 1.5rem;
     font-weight: 500;
-    margin-bottom: 2rem; }
+    margin-bottom: 1rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-header .entry-date {
         font-size: 1.75rem;

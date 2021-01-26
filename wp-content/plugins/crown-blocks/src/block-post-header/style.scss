@@ -34,17 +34,16 @@
 		padding-top: 4rem;
 	}
 	&.has-bg-image > .inner {
-		padding-top: 8rem;
-		@media (min-width: 768px) { padding-top: 10rem; }
-		@media (min-width: 992px) { padding-top: 16rem; }
-		@media (min-width: 1200px) { padding-top: 20rem; }
+		padding-top: 6rem;
+		@media (min-width: 768px) { padding-top: 8rem; }
+		@media (min-width: 992px) { padding-top: 12rem; }
+		@media (min-width: 1200px) { padding-top: 12rem; }
 	}
 
 	> .inner > .header-contents {
 		padding: 2rem;
 		flex: 1 1 100%;
 		max-width: 100%;
-		background-color: rgba(#fff, .9);
 		position: relative;
 		z-index: 1;
 		> .inner {
@@ -81,16 +80,23 @@
 		@media (min-width: 768px) {
 			font-size: 2.5rem;
 		}
+		@media (min-width: 1200px) {
+			font-size: 3.5rem;
+			line-height: 1.1;
+		}
 	}
 	
 	.header-meta {
-		margin-top: 2rem;
+		margin-top: 1.5rem;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: flex-end;
+		border-top: 0.125rem solid #333;
+		padding-top: 1.5rem;
 		@media (min-width: 768px) {
 			align-items: center;
-			margin-top: 4rem;
+			margin-top: 2rem;
+			padding-top: 2rem;
 		}
 	}
 	.entry-date {
@@ -98,7 +104,7 @@
 		line-height: 1.2;
 		font-size: 1.5rem;
 		font-weight: 500;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 		@media (min-width: 768px) {
 			font-size: 1.75rem;
 			width: auto;

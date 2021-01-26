@@ -25,7 +25,8 @@ if(!class_exists('Crown_Block_Post_Header')) {
 				'backgroundImageOpacity' => array( 'type' => 'number', 'default' => 100 ),
 				'backgroundImageGrayscale' => array( 'type' => 'number', 'default' => 0 ),
 				'backgroundImageBlendMode' => array( 'type' => 'string', 'default' => 'normal' ),
-				'backgroundImageContain' => array( 'type' => 'boolean', 'default' => false )
+				'backgroundImageContain' => array( 'type' => 'boolean', 'default' => false ),
+				'textColor' => array( 'type' => 'string', 'default' => 'auto' )
 			);
 		}
 
@@ -37,6 +38,12 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			if ( empty( $post_id ) ) return '';
 			
 			$block_class = array( 'wp-block-crown-blocks-post-header', $atts['className'] );
+
+			if ( $atts['textColor'] == 'auto' && ! empty( $atts['backgroundColor'] ) ) {
+				$block_class[] = 'text-color-' . ( self::is_dark_color( $atts['backgroundColor'] ) ? 'light' : 'dark' );
+			} else if ( $atts['textColor'] != 'auto' ) {
+				$block_class[] = 'text-color-' . $atts['textColor'];
+			}
 
 			$bg_style = array();
 			if ( ! $atts['backgroundGradientEnabled'] ) {

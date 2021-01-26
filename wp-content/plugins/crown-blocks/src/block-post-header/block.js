@@ -36,6 +36,7 @@ registerBlockType('crown-blocks/post-header', {
 		backgroundImageGrayscale: { type: 'number', default: 0 },
 		backgroundImageBlendMode: { type: 'string', default: 'normal' },
 		backgroundImageContain: { type: 'boolean', default: false },
+		textColor: { type: 'string', default: 'auto' }
 	},
 
 
@@ -52,7 +53,8 @@ registerBlockType('crown-blocks/post-header', {
 			backgroundImageOpacity,
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
-			backgroundImageContain
+			backgroundImageContain,
+			textColor
 		} = attributes;
 
 		let bgColorSettings = [];
@@ -161,6 +163,16 @@ registerBlockType('crown-blocks/post-header', {
 						checked={ backgroundImageContain }
 						onChange={ (value) => { setAttributes({ backgroundImageContain: value }); } }
 					/> } */}
+
+				</PanelBody>
+
+				<PanelBody title={ 'Text Color' } initialOpen={ true }>
+
+					<ButtonGroup>
+						<Button isPrimary={ textColor == 'auto' } isSecondary={ textColor != 'auto' } onClick={ (e) => setAttributes({ textColor: 'auto' }) }>Auto</Button>
+						<Button isPrimary={ textColor == 'dark' } isSecondary={ textColor != 'dark' } onClick={ (e) => setAttributes({ textColor: 'dark' }) }>Dark</Button>
+						<Button isPrimary={ textColor == 'light' } isSecondary={ textColor != 'light' } onClick={ (e) => setAttributes({ textColor: 'light' }) }>Light</Button>
+					</ButtonGroup>
 
 				</PanelBody>
 

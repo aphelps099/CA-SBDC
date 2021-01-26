@@ -21483,6 +21483,28 @@ nav.pagination {
   margin-right: -1rem; }
   .wp-block-crown-blocks-post-header:last-child {
     margin-bottom: 0; }
+  .wp-block-crown-blocks-post-header.text-color-light {
+    color: #fff; }
+    .wp-block-crown-blocks-post-header.text-color-light .entry-categories .category {
+      border-color: #fff; }
+      .wp-block-crown-blocks-post-header.text-color-light .entry-categories .category:hover {
+        background-color: #fff;
+        border-color: #fff;
+        color: #233053; }
+    .wp-block-crown-blocks-post-header.text-color-light .header-meta {
+      border-color: #fff; }
+    .wp-block-crown-blocks-post-header.text-color-light .social-sharing-links .menu-item a {
+      border-color: #fff; }
+      .wp-block-crown-blocks-post-header.text-color-light .social-sharing-links .menu-item a:hover {
+        background-color: rgba(255, 255, 255, 0.2); }
+    .wp-block-crown-blocks-post-header.text-color-light .social-sharing-links .menu-item .icon svg {
+      fill: #fff; }
+    .wp-block-crown-blocks-post-header.text-color-light .subscribe-button {
+      border-color: #fff;
+      color: #fff; }
+      .wp-block-crown-blocks-post-header.text-color-light .subscribe-button:hover {
+        background-color: #fff;
+        color: #343a40; }
   @media (min-width: 576px) {
     .wp-block-crown-blocks-post-header {
       margin-left: -1rem;
@@ -21532,10 +21554,12 @@ nav.pagination {
       color: #fff; }
   .wp-block-crown-blocks-post-header .entry-title {
     font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
+  .wp-block-crown-blocks-post-header .header-meta {
+    border-color: #233053; }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item a {
-    border-color: #108DBC; }
+    border-color: #233053; }
     .wp-block-crown-blocks-post-header .social-sharing-links .menu-item a:hover {
-      background-color: rgba(16, 141, 188, 0.2); }
+      background-color: rgba(35, 48, 83, 0.2); }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item .icon svg {
     fill: #233053; }
   .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
