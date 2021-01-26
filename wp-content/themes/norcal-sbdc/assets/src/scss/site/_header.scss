@@ -391,7 +391,7 @@
 	a {
 		@extend .btn;
 		@extend .btn-sm;
-		@extend .btn-outline-red;
+		@extend .btn-red;
 		@include media-breakpoint-up(lg) {
 			@include make-button-size(md);
 			border-width: 3px;
@@ -402,13 +402,13 @@
 			border-width: 4px;
 			padding: calc(#{$btn-padding-y-lg} - (4px - #{$btn-border-width})) calc(#{$btn-padding-x-lg} - (4px - #{$btn-border-width}));
 		}
-		#header.text-color-light & {
-			color: #fff;
-		}
 		#header.is-sticky & {
+			background-color: transparent;
 			color: $red;
 			@include hover() {
+				background-color: $red;
 				color: #fff;
+				border-color: $red;
 			}
 		}
 	}
