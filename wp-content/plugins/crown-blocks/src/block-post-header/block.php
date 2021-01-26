@@ -15,9 +15,17 @@ if(!class_exists('Crown_Block_Post_Header')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
+				'backgroundGradientEnabled' => array( 'type' => 'boolean', 'default' => false ),
+				'backgroundGradientAngle' => array( 'type' => 'number', 'default' => 180 ),
+				'backgroundColor' => array( 'type' => 'string', 'default' => '' ),
+				'backgroundColorSecondary' => array( 'type' => 'string', 'default' => '' ),
 				'backgroundImageId' => array( 'type' => 'number', 'default' => 0 ),
 				'backgroundImagePreviewSrc' => array( 'type' => 'string', 'default' => '' ),
-				'backgroundImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) )
+				'backgroundImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) ),
+				'backgroundImageOpacity' => array( 'type' => 'number', 'default' => 100 ),
+				'backgroundImageGrayscale' => array( 'type' => 'number', 'default' => 0 ),
+				'backgroundImageBlendMode' => array( 'type' => 'string', 'default' => 'normal' ),
+				'backgroundImageContain' => array( 'type' => 'boolean', 'default' => false )
 			);
 		}
 
@@ -30,6 +38,20 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			
 			$block_class = array( 'wp-block-crown-blocks-post-header', $atts['className'] );
 
+			$bg_style = array();
+			if ( ! $atts['backgroundGradientEnabled'] ) {
+				if ( ! empty( $atts['backgroundColor'] ) ) {
+					$bg_style[] = 'background-color: ' . $atts['backgroundColor'] . ';';
+				}
+			} else {
+				if ( ! empty( $atts['backgroundColor'] ) || ! empty( $atts['backgroundColorSecondary'] ) ) {
+					$start_color = ! empty( $atts['backgroundColor'] ) ? $atts['backgroundColor'] : 'transparent';
+					$end_color = ! empty( $atts['backgroundColorSecondary'] ) ? $atts['backgroundColorSecondary'] : 'transparent';
+					$degrees = floatval( $atts['backgroundGradientAngle'] );
+					$bg_style[] = 'background: linear-gradient(' . $degrees . 'deg, ' . $start_color . ', ' . $end_color . ');';
+				}
+			}
+
 			$background_image_url = null;
 			if ( $atts['backgroundImageId'] ) {
 				$background_image_url = wp_get_attachment_image_url( $atts['backgroundImageId'], 'fullscreen' );
@@ -40,9 +62,17 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			?>
 
 				<header class="<?php echo implode( ' ', $block_class); ?>">
-					<div class="header-bg">
+					<div class="header-bg" style="<?php echo implode( ' ', $bg_style ); ?>">
 						<?php if ( ! empty( $background_image_url ) ) { ?>
-							<div class="bg-image" style="background-image: url(<?php echo $background_image_url; ?>); background-position: <?php echo floatval( $atts['backgroundImageFocalPoint']['x'] ) * 100; ?>% <?php echo floatval( $atts['backgroundImageFocalPoint']['y'] ) * 100; ?>%;"></div>
+							<?php $bg_image_style = array(
+								'background-image: url(' . $background_image_url . ');',
+								'background-position: ' . ( floatval( $atts['backgroundImageFocalPoint']['x'] ) * 100 ) . '% ' . ( floatval( $atts['backgroundImageFocalPoint']['y'] ) * 100 ) . '%;',
+								'opacity: ' . ( $atts['backgroundImageOpacity'] / 100 ) . ';',
+								'filter: grayscale(' . ( $atts['backgroundImageGrayscale'] / 100 ) . ');',
+								'mix-blend-mode: ' . $atts['backgroundImageBlendMode'] . ';',
+								'background-size: ' . ( $atts['backgroundImageContain'] ? 'contain' : 'cover' ) . ';',
+							); ?>
+							<div class="bg-image" style="<?php echo implode( ' ', $bg_image_style ); ?>"></div>
 						<?php } ?>
 					</div>
 					<div class="inner">
