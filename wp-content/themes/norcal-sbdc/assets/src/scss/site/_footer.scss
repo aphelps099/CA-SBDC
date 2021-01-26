@@ -217,8 +217,8 @@ body {
 	flex: 0 0 100%;
 	padding-left: 1rem;
 	padding-right: 1rem;
-	@include media-breakpoint-up(xl) {
-		flex: 1 0 auto;
+	@include media-breakpoint-up(lg) {
+		flex: 1 1 0;
 	}
 	> .inner {
 		display: flex;
@@ -232,6 +232,7 @@ body {
 		@include media-breakpoint-up(lg) {
 			margin-left: -2rem;
 			margin-right: -2rem;
+			flex-wrap: nowrap;
 		}
 	}
 }
@@ -292,7 +293,7 @@ body {
 	padding-right: 1rem;
 	margin-bottom: 2rem;
 	flex: 1 0 100%;
-	@include media-breakpoint-up(xl) {
+	@include media-breakpoint-up(lg) {
 		flex: 0 0 auto;
 		text-align: center;
 	}
