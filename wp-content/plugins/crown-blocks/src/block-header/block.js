@@ -27,7 +27,7 @@ registerBlockType('crown-blocks/header', {
 	supports: {},
 
 	attributes: {
-		borderColor: { type: 'string', default: '#D44457' }
+		borderColor: { type: 'string', default: '#E60045' }
 	},
 
 

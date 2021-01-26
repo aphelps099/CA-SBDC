@@ -26,7 +26,7 @@ registerBlockType('crown-blocks/featured-event', {
 
 	attributes: {
 		label:  { type: 'string', default: 'Featured Event' },
-		backgroundColor: { type: 'string', default: '#D44457' },
+		backgroundColor: { type: 'string', default: '#E60045' },
 		backgroundColorSecondary: { type: 'string', default: '#108DBC' },
 		textColor: { type: 'string', default: 'auto' }
 	},

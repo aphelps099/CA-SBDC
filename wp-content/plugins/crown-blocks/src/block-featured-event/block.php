@@ -17,7 +17,7 @@ if(!class_exists('Crown_Block_Featured_Event')) {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
 				'label' => array( 'type' => 'string', 'default' => 'Featured Event' ),
-				'backgroundColor' => array( 'type' => 'string', 'default' => '#D44457' ),
+				'backgroundColor' => array( 'type' => 'string', 'default' => '#E60045' ),
 				'backgroundColorSecondary' => array( 'type' => 'string', 'default' => '#108DBC' ),
 				'textColor' => array( 'type' => 'string', 'default' => 'auto' )
 			);

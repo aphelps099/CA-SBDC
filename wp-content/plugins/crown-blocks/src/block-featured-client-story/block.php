@@ -18,7 +18,7 @@ if(!class_exists('Crown_Block_Featured_Client_Story')) {
 				'className' => array( 'type' => 'string', 'default' => '' ),
 				'label' => array( 'type' => 'string', 'default' => 'Featured Client' ),
 				'backgroundColor' => array( 'type' => 'string', 'default' => '#108DBC' ),
-				'borderColor' => array( 'type' => 'string', 'default' => '#D44457' ),
+				'borderColor' => array( 'type' => 'string', 'default' => '#E60045' ),
 				'textColor' => array( 'type' => 'string', 'default' => 'auto' )
 			);
 		}
