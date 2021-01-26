@@ -27,8 +27,8 @@ registerBlockType('crown-blocks/post-header', {
 	attributes: {
 		backgroundGradientEnabled: { type: 'boolean', default: false },
 		backgroundGradientAngle: { type: 'number', default: 180 },
-		backgroundColor: { type: 'string', default: '' },
-		backgroundColorSecondary: { type: 'string', default: '' },
+		backgroundColor: { type: 'string', default: '#233053' },
+		backgroundColorSecondary: { type: 'string', default: '#233053' },
 		backgroundImageId: { type: 'number', default: 0 },
 		backgroundImagePreviewSrc: { type: 'string', default: '' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
