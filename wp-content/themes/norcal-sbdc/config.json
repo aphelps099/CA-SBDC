@@ -12,6 +12,7 @@
 
 	"color_palette": [
 		{ "name": "Dark Blue", "slug": "dark-blue", "color": "#233053" },
+		{ "name": "Dark Medium Blue", "slug": "dark-med-blue", "color": "#1d406e" },
 		{ "name": "Blue", "slug": "blue", "color": "#108DBC" },
 		{ "name": "Light Blue", "slug": "light-blue", "color": "#D0E4F8" },
 		{ "name": "Extra Light Blue", "slug": "x-light-blue", "color": "#F4F8FD" },
