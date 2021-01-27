@@ -534,13 +534,20 @@
 		margin-bottom: .5rem;
 	}
 	.entry-type {
-		font-family: $font-family-sans-serif;
-		text-transform: uppercase;
-		line-height: $line-height-sm;
-		letter-spacing: .1em;
-		font-weight: 700;
-		font-size: 1.25rem;
 		margin-bottom: 1rem;
+		.type {
+			transition: background-color .2s, color .2s, boder-color .2s;
+			display: inline-block;
+			line-height: $line-height-sm;
+			font-weight: 700;
+			font-size: 0.625rem;
+			letter-spacing: .05em;
+			text-transform: uppercase;
+			border-radius: 10rem;
+			border: 1px solid $primary;
+			padding: .5rem .75rem;
+			color: $primary;
+		}
 	}
 	.entry-title {
 		margin: 0;

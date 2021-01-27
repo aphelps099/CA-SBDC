@@ -34,6 +34,11 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 				$is_dark_color = ! empty( $color ) ? Crown_Resources::is_dark_color( $color ) : $is_dark_color;
 			}
 
+			$type = null;
+			if ( class_exists( 'Crown_Resources' ) ) {
+				$type = Crown_Resources::get_resource_primary_type( get_the_ID() );
+			}
+
 			$index_page_url = '';
 			if ( ( $index_page_id = get_option( 'theme_config_index_page_resource' ) ) ) $index_page_url = get_permalink( $index_page_id );
 
@@ -48,6 +53,15 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 							<div class="inner">
 
 								<h2 class="index-title"><?php _e( 'Resource Library', 'crown_blocks' ); ?></h2>
+
+								<?php if ( ! empty( $index_page_url ) ) { ?>
+									<div class="entry-breadcrumbs">
+										<span class="crumb"><a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Resources', 'crown_blocks' ); ?></a></span>
+										<?php if ( $type ) { ?>
+											<span class="crumb"><a href="<?php echo add_query_arg( 'r_type', $type->term_id, $index_page_url ); ?>"><?php echo $type->name; ?></a></span>
+										<?php } ?>
+									</div>
+								<?php } ?>
 
 								<div class="article-header text-color-<?php echo $is_dark_color ? 'light' : 'dark'; ?>" style="background-color: <?php echo $color; ?>;">
 									<div class="inner">
@@ -66,6 +80,8 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 										<?php } ?>
 
 										<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
+
+										<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
 
 									</div>
 								</div>

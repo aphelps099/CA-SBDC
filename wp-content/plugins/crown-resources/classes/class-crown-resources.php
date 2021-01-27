@@ -212,6 +212,19 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 		}
 
 
+		public static function get_resource_primary_type( $post_id ) {
+			
+			$term_ids = wp_get_post_terms( $post_id, 'resource_type', array( 'fields' => 'ids' ) );
+
+			$primary_term_id = get_post_meta( $post_id, '_primary_term_resource_type', true );
+			
+			if ( ! empty( $primary_term_id ) && in_array( $primary_term_id, $term_ids ) ) array_unshift( $term_ids, $primary_term_id );
+			$term_ids = array_values( array_unique( $term_ids ) );
+
+			return ! empty( $term_ids ) ? get_term( $term_ids[0], 'resource_type' ) : null;
+		}
+
+
 		public static function get_resource_primary_type_color( $post_id ) {
 			
 			$term_ids = wp_get_post_terms( $post_id, 'resource_type', array( 'fields' => 'ids' ) );
@@ -261,7 +274,9 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 							<?php $types = get_the_terms( get_the_ID(), 'resource_type' ); ?>
 							<?php if ( ! empty( $types ) ) { ?>
 								<p class="entry-type">
-									<?php echo implode( ', ', array_map( function( $n ) { return $n->name; }, $types ) ); ?>
+									<?php foreach ( $types as $term ) { ?>
+										<span class="type"><?php echo $term->name; ?></span>
+									<?php } ?>
 								</p>
 							<?php } ?>
 
