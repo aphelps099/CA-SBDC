@@ -21639,6 +21639,12 @@ nav.pagination {
     .wp-block-crown-blocks-resource-header .article-header.text-color-light .entry-type a.type:hover {
       background-color: #fff;
       color: #233053; }
+    .wp-block-crown-blocks-resource-header .article-header.text-color-light .social-sharing-links .menu-item a {
+      border-color: #fff; }
+      .wp-block-crown-blocks-resource-header .article-header.text-color-light .social-sharing-links .menu-item a:hover {
+        background-color: rgba(255, 255, 255, 0.2); }
+    .wp-block-crown-blocks-resource-header .article-header.text-color-light .social-sharing-links .menu-item .icon svg {
+      fill: #fff; }
   .wp-block-crown-blocks-resource-header .article-header.text-color-dark {
     color: #233053; }
     .wp-block-crown-blocks-resource-header .article-header.text-color-dark .entry-type .type {
@@ -21647,6 +21653,12 @@ nav.pagination {
     .wp-block-crown-blocks-resource-header .article-header.text-color-dark .entry-type a.type:hover {
       background-color: #233053;
       color: #fff; }
+    .wp-block-crown-blocks-resource-header .article-header.text-color-dark .social-sharing-links .menu-item a {
+      border-color: #108DBC; }
+      .wp-block-crown-blocks-resource-header .article-header.text-color-dark .social-sharing-links .menu-item a:hover {
+        background-color: rgba(16, 141, 188, 0.2); }
+    .wp-block-crown-blocks-resource-header .article-header.text-color-dark .social-sharing-links .menu-item .icon svg {
+      fill: #233053; }
   .wp-block-crown-blocks-resource-header .entry-type .type {
     border-color: #233053;
     color: #233053; }

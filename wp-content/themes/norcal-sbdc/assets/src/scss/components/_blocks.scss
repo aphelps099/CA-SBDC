@@ -2656,11 +2656,41 @@
 			color: #fff;
 			.entry-type .type { border-color: #fff; color: #fff; }
 			.entry-type a.type:hover { background-color: #fff; color: $primary; }
+			.social-sharing-links {
+				.menu-item {
+					a {
+						border-color: #fff;
+						&:hover {
+							background-color: rgba(#fff, .2);
+						}
+					}
+					.icon {
+						svg {
+							fill: #fff;
+						}
+					}
+				}
+			}
 		}
 		&.text-color-dark {
 			color: $body-color;
 			.entry-type .type { border-color: $primary; color: $primary; }
 			.entry-type a.type:hover { background-color: $primary; color: #fff; }
+			.social-sharing-links {
+				.menu-item {
+					a {
+						border-color: $blue;
+						&:hover {
+							background-color: rgba($blue, .2);
+						}
+					}
+					.icon {
+						svg {
+							fill: $primary;
+						}
+					}
+				}
+			}
 		}
 	}
 	.entry-type {
