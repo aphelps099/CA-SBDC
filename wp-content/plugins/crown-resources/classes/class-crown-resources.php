@@ -292,6 +292,8 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 							<?php } ?>
 						</div>
 
+						<div class="bottom-border" <?php echo ! empty( $color ) ? 'style="border-color: ' . $color . ';"' : ''; ?>></div>
+
 					</a>
 				</article>
 			<?php
