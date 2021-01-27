@@ -8713,7 +8713,8 @@
     display: none;
     position: absolute;
     right: 2rem;
-    top: calc(100% + 4rem); }
+    top: calc(100% + 4rem);
+    z-index: 50; }
     @media (min-width: 1200px) {
       .wp-block-crown-blocks-post-header .sticky-share-links {
         display: block; } }
@@ -8971,7 +8972,8 @@
     display: none;
     position: absolute;
     right: 2rem;
-    top: calc(100% + 4rem); }
+    top: calc(100% + 4rem);
+    z-index: 50; }
     @media (min-width: 1200px) {
       .wp-block-crown-blocks-resource-header .sticky-share-links {
         display: block; } }

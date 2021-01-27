@@ -295,3 +295,36 @@ body.single-team_member {
 		}
 	}
 }
+
+
+body.single-resource {
+	#related-content {
+		margin-top: 4rem;
+		@include media-breakpoint-up(md) {
+			margin-top: 6rem;
+		}
+		@media (min-width: (900px + (16px * 1.5 * 2))) {
+			margin-left: calc((100vw - 900px - (1.5rem * 2)) / -2);
+			margin-right: calc((100vw - 900px - (1.5rem * 2)) / -2);
+		}
+		@media (min-width: 992px) {
+			margin-left: calc((100vw - 900px - (2rem * 2)) / -2);
+			margin-right: calc((100vw - 900px - (2rem * 2)) / -2);
+		}
+		@media (min-width: 1200px) {
+			margin-left: calc((100vw - 900px - (2.5rem * 2)) / -2);
+			margin-right: calc((100vw - 900px - (2.5rem * 2)) / -2);
+		}
+		@media (min-width: (1260px + (16px * 2.5 * 2))) {
+			margin-left: calc((1260px - 900px) / -2);
+			margin-right: calc((1260px - 900px) / -2);
+		}
+		.related-content-title {
+			margin-bottom: 2rem;
+			text-align: center;
+		}
+		.wp-block-crown-blocks-featured-resource-slider {
+			margin-bottom: 0;
+		}
+	}
+}

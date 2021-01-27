@@ -218,6 +218,7 @@
 		position: absolute;
 		right: 2rem;
 		top: calc(100% + 4rem);
+		z-index: 50;
 		@media (min-width: 1200px) {
 			display: block;
 		}

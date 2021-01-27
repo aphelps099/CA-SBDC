@@ -1370,10 +1370,15 @@
 		&.item-count-2 > .slick-slider { @include media-breakpoint-up(md) { padding-bottom: 0; } }
 		&.item-count-3 > .slick-slider { @include media-breakpoint-up(lg) { padding-bottom: 0; } }
 	}
+	.post-feed > .inner {
+		margin-top: -1rem;
+		margin-bottom: -1rem;
+	}
 	.post-feed > .slick-slider {
 		position: relative;
-		margin: 0;
+		margin: -1rem 0;
 		padding-bottom: 3rem;
+		display: block;
 		.slick-arrow {
 			position: absolute;
 			bottom: 0;
@@ -1405,7 +1410,7 @@
 		}
 	}
 	article {
-		padding: 0 1rem;
+		padding: 1rem 1rem;
 		outline: none;
 		a {
 			> * {
