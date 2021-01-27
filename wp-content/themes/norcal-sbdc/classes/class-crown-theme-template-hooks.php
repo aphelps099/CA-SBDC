@@ -10,6 +10,15 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 			add_filter( 'excerpt_length', array( __CLASS__, 'filter_excerpt_length' ) );
 			add_filter( 'excerpt_more', array( __CLASS__, 'filter_excerpt_more' ) );
 
+			add_filter( 'gform_submit_button', array( __CLASS__, 'filter_gravity_form_submit_button' ), 10, 2 );
+			add_filter( 'gform_next_button', array( __CLASS__, 'filter_gravity_form_next_button' ), 10, 2 );
+			add_filter( 'gform_previous_button', array( __CLASS__, 'filter_gravity_form_previous_button' ), 10, 2 );
+
+			add_filter( 'get_previous_post_join', array( __CLASS__, 'filter_get_adjacent_post_join' ), 10, 5 );
+			add_filter( 'get_next_post_join', array( __CLASS__, 'filter_get_adjacent_post_join' ), 10, 5 );
+			add_filter( 'get_previous_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
+			add_filter( 'get_next_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
+
 		}
 
 
@@ -35,6 +44,47 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 		public static function filter_excerpt_more( $excerpt_more ) {
 			$excerpt_more = '&hellip;';
 			return $excerpt_more;
+		}
+
+
+		public static function filter_gravity_form_submit_button( $button, $form ) {
+			if ( preg_match( '/^\s*<input\s.*value=\'([^\']*)\'/', $button, $matches ) ) {
+				$button = preg_replace( array( '/^<input/', '/\/?>$/' ), array(' <button', '>' . $matches[1] . '</button>'), $button );
+			}
+			return $button;
+		}
+
+
+		public static function filter_gravity_form_next_button( $button, $form ) {
+			if ( preg_match( '/^\s*<input\s.*value=\'([^\']*)\'/', $button, $matches ) ) {
+				$button = preg_replace( array( '/^<input/', '/\/?>$/' ), array(' <button', '>' . $matches[1] . '</button>'), $button );
+			}
+			return $button;
+		}
+
+
+		public static function filter_gravity_form_previous_button( $button, $form ) {
+			if ( preg_match( '/^\s*<input\s.*value=\'([^\']*)\'/', $button, $matches ) ) {
+				$button = preg_replace( array( '/^<input/', '/\/?>$/' ), array(' <button', '>' . $matches[1] . '</button>'), $button );
+			}
+			return $button;
+		}
+
+
+		public static function filter_get_adjacent_post_join( $join, $in_same_term, $excluded_terms, $taxonomy, $post ) {
+			global $wpdb;
+			if ( $post->post_type == 'post' ) {
+				$join .= " LEFT JOIN $wpdb->postmeta AS pm_pf ON (p.ID = pm_pf.post_id AND pm_pf.meta_key = 'crown_post_format')";
+			}
+			return $join;
+		}
+
+		public static function filter_get_adjacent_post_where( $where, $in_same_term, $excluded_terms, $taxonomy, $post ) {
+			global $wpdb;
+			if ( $post->post_type == 'post' ) {
+				$where .= " AND (pm_pf.meta_value IS NULL OR pm_pf.meta_value NOT IN ('tweet', 'facebook-update'))";
+			}
+			return $where;
 		}
 
 

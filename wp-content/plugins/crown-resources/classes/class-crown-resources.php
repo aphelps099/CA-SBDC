@@ -284,7 +284,13 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 						</div>
 
-						<div class="entry-excerpt"><?php the_excerpt(); ?></div>
+						<div class="entry-excerpt">
+							<?php if ( function_exists( 'ct_the_excerpt' ) ) { ?>
+								<?php ct_the_excerpt( 16 ); ?>
+							<?php } else { ?>
+								<?php the_excerpt(); ?>
+							<?php } ?>
+						</div>
 
 					</a>
 				</article>

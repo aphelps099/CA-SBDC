@@ -1,6 +1,35 @@
 <?php
 
 
+if ( ! function_exists( 'ct_the_excerpt' ) ) {
+	function ct_the_excerpt( $length = 55, $more = '&hellip;' ) {
+		$excerpt = '';
+
+		$post = get_post( get_the_ID() );
+		if ( empty( $post ) ) return;
+
+		if ( post_password_required( $post ) ) {
+			$excerpt = __( 'There is no excerpt because this is a protected post.', 'crown_theme' );
+		} else if ( ! empty( trim( $post->post_excerpt ) ) ) {
+			$excerpt = trim( $post->post_excerpt );
+		} else {
+
+			$text = get_the_content( '', false, $post );
+			$text = strip_shortcodes( $text );
+			$text = excerpt_remove_blocks( $text );
+
+			$text = apply_filters( 'the_content', $text );
+			$text = str_replace( ']]>', ']]&gt;', $text );
+
+			$excerpt = wp_trim_words( $text, $length, $more );
+			
+		}
+		
+		echo apply_filters( 'the_excerpt', $excerpt );
+	}
+}
+
+
 if ( ! function_exists( 'ct_social_links' ) ) {
 	function ct_social_links( $args = array() ) {
 
