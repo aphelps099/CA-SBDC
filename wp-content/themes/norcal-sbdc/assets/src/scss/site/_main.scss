@@ -90,6 +90,10 @@
 					margin-bottom: calc(-100px - (7.5rem / 2));
 				}
 			}
+			body.single-post & {
+				margin-bottom: 0;
+				padding-bottom: 0;
+			}
 		}
 	}
 }
