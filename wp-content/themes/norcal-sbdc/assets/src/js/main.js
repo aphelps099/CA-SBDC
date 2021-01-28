@@ -533,7 +533,7 @@
 		wptheme.updatePostFeedBlock = function(block, url) {
 			if(url.match(/^\//)) url = crownThemeData.baseUrl + url;
 			var blockId = block.attr('id');
-			$('.ajax-loader', block).addClass('loading');
+			$('.ajax-loader', block).addClass($('.ajax-loader', block).hasClass('infinite') && url.match(/\/page\/\d+\//) ? 'loading-page' : 'loading');
 			if(history.replaceState != null) {
 				history.replaceState('', document.title, url);
 			}
@@ -560,7 +560,7 @@
 							block.trigger('setArticleColors');
 						}
 					}
-					$('.ajax-loader', block).removeClass('loading');
+					$('.ajax-loader', block).removeClass('loading loading-page');
 				}
 			}, 'json');
 		};

@@ -596,33 +596,11 @@
 			opacity: .5;
 		}
 	}
-	&.infinite {
-		&.loading {
-			.pagination-wrapper {
-				opacity: .5;
-				&:after {
-					display: block;
-				}
-			}
-		}
-		&:after {
-			display: none;
-		}
-		.ajax-content {
-			opacity: 1;
-		}
+	&.infinite.loading-page {
 		.pagination-wrapper {
-			position: relative;
-			transition: opacity .5s;
+			opacity: .5;
 			&:after {
-				position: absolute;
-				content: '';
 				display: block;
-				left: 0;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				display: none;
 			}
 		}
 	}
@@ -638,5 +616,19 @@
 	}
 	.ajax-content {
 		transition: opacity .5s;
+	}
+	.pagination-wrapper {
+		position: relative;
+		transition: opacity .5s;
+		&:after {
+			position: absolute;
+			content: '';
+			display: block;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			display: none;
+		}
 	}
 }
