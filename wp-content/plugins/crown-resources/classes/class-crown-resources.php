@@ -98,7 +98,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				'pluralLabel' => 'Resources',
 				'settings' => array(
 					'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'thumbnail' ),
-					'rewrite' => array( 'slug' => 'resources', 'with_front' => false ),
+					'rewrite' => array( 'slug' => 'resource', 'with_front' => false ),
 					'menu_icon' => 'dashicons-text-page',
 					'has_archive' => false,
 					'publicly_queryable' => true,

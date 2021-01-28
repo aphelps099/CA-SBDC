@@ -139,11 +139,11 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 
 						</form>
 
-						<div class="ajax-loader">
+						<div class="ajax-loader infinite">
 							<div class="ajax-content">
 
 								<div class="post-feed item-count-<?php echo $query->post_count; ?>" data-item-count="<?php echo $query->post_count; ?>">
-									<div class="inner">
+									<div class="inner infinite-loader-container">
 	
 										<?php if ( ! $query->have_posts() ) { ?>
 											<div class="alert-wrapper">
@@ -163,7 +163,8 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 									</div>
 								</div>
 	
-								<?php self::render_pagination( $query, 5 ); ?>
+								<?php //self::render_pagination( $query, 5 ); ?>
+								<?php self::render_pagination_infinite( $query ); ?>
 
 							</div>
 						</div>
@@ -175,98 +176,6 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 			$output = ob_get_clean();
 
 			return $output;
-		}
-
-
-		protected static function render_pagination( $query, $max_page_links = 5, $scroll_anchor = '' ) {
-
-			$pagination = self::get_pagination( $query, $scroll_anchor );
-			if(!$pagination) return;
-
-			$index_min = max( 1, $pagination->current_page - ceil( ( $max_page_links - 2 ) / 2 ) );
-			$index_max = min( count( $pagination->pages ) - 2, $pagination->current_page - 1 + floor( ( $max_page_links - 2 ) / 2 ) );
-
-			$index_min = $index_min == 1 ? 0 : $index_min;
-			$index_max = $index_max == count( $pagination->pages ) - 2 ? count( $pagination->pages ) - 1 : $index_max;
-
-			if ( $index_max - $index_min + 2 < $max_page_links ) {
-				if ( $index_min == 0 ) {
-					$index_max = $index_max + ( $max_page_links - ( $index_max - $index_min + 2 ) );
-					$index_max = $index_max == count( $pagination->pages ) - 2 ? count( $pagination->pages ) - 1 : $index_max;
-				} else if ( $index_max == count( $pagination->pages ) - 1 ) {
-					$index_min = $index_min - ( $max_page_links - ( $index_max - $index_min + 2 ) );
-					$index_min = $index_min == 1 ? 0 : $index_min;
-				}
-			}
-
-			?>
-				<div class="pagination-wrapper">
-					<nav class="navigation pagination">
-						<h3 class="screen-reader-text">Page Navigation</h3>
-						<div class="nav-links">
-	
-							<?php if ( ! empty( $pagination->prev ) ) { ?>
-								<a class="page-numbers prev" href="<?php echo esc_attr( $pagination->prev ); ?>"><span>Previous</span></a>
-							<?php } else { ?>
-								<span class="page-numbers prev"><span>Previous</span></span>
-							<?php } ?>
-	
-							<?php if ( $index_min > 0 ) { ?>
-								<a class="page-numbers <?php echo $pagination->current_page == 1 ? 'current' : ''; ?>" href="<?php echo esc_attr( $pagination->pages[0] ); ?>"><span>1</span></a>
-								<span class="page-numbers dots"><span>&hellip;</span></span>
-							<?php } ?>
-							
-							<?php $page_links = array_slice( $pagination->pages, $index_min, $index_max - $index_min + 1 ); ?>
-							<?php foreach ( $page_links as $i => $page_link ) { ?>
-								<a class="page-numbers <?php echo $pagination->current_page == $i + $index_min + 1 ? 'current' : ''; ?>" href="<?php echo esc_attr( $page_link ); ?>"><span><?php echo $i + $index_min + 1; ?></span></a>
-							<?php } ?>
-	
-							<?php if ( $index_max < count( $pagination->pages ) - 1 ) { ?>
-								<span class="page-numbers dots"><span>&hellip;</span></span>
-								<a class="page-numbers" href="<?php echo esc_attr( $pagination->pages[ count( $pagination->pages ) - 1 ] ); ?>"><span><?php echo count( $pagination->pages ); ?></span></a>
-							<?php } ?>
-	
-							<?php if ( ! empty( $pagination->next ) ) { ?>
-								<a class="page-numbers next" href="<?php echo esc_attr( $pagination->next ); ?>"><span>Next</span></a>
-							<?php } else { ?>
-								<span class="page-numbers next"><span>Next</span></span>
-							<?php } ?>
-	
-						</div>
-					</nav>
-				</div>
-			<?php
-		}
-
-
-		protected static function get_pagination( $query, $scroll_anchor = '' ) {
-
-			$page = $query->get( 'paged' );
-			if ( ! $page ) $page = 1;
-			$maxPage = $query->max_num_pages;
-			if ( $maxPage < 2 ) return false;
-
-			$pagination = (object) array(
-				'current_page' => $page,
-				'pages' => array(),
-				'next' => null,
-				'prev' => null
-			);
-
-			for ( $i = 1; $i <= $maxPage; $i++ ) {
-				$pagination->pages[] = get_pagenum_link( $i ) . ( ! empty( $scroll_anchor ) ? '#' . $scroll_anchor : '' );
-			}
-
-			$nextPage = intval( $page ) + 1;
-			if ( ! is_single() && ( $nextPage <= $maxPage ) ) {
-				$pagination->next = next_posts( $maxPage, false ) . ( ! empty( $scroll_anchor ) ? '#' . $scroll_anchor : '' );
-			}
-
-			if ( ! is_single() && $page > 1 ) {
-				$pagination->prev = previous_posts( false ) . ( ! empty( $scroll_anchor ) ? '#' . $scroll_anchor : '' );
-			}
-
-			return $pagination;
 		}
 
 

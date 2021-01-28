@@ -127,7 +127,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'pluralLabel' => 'Events',
 				'settings' => array(
 					'supports' => array( 'title', 'editor', 'excerpt', 'revisions', 'thumbnail' ),
-					'rewrite' => array( 'slug' => 'events', 'with_front' => false ),
+					'rewrite' => array( 'slug' => 'event', 'with_front' => false ),
 					'menu_icon' => 'dashicons-calendar',
 					'has_archive' => false,
 					'publicly_queryable' => true,

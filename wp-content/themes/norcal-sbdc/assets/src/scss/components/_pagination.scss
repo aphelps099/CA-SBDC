@@ -4,6 +4,9 @@
 }
 nav.pagination {
 	display: block;
+	&.infinite {
+		text-align: center;
+	}
 	.nav-links {
 		display: flex;
 		flex-wrap: wrap;

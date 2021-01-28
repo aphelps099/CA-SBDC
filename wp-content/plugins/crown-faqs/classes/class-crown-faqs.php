@@ -98,7 +98,7 @@ if ( ! class_exists( 'Crown_Faqs' ) ) {
 				'pluralLabel' => 'FAQs',
 				'settings' => array(
 					'supports' => array( 'title', 'editor', 'revisions' ),
-					'rewrite' => array( 'slug' => 'faqs', 'with_front' => false ),
+					'rewrite' => array( 'slug' => 'faq', 'with_front' => false ),
 					'menu_icon' => 'dashicons-info',
 					'has_archive' => false,
 					'publicly_queryable' => true,

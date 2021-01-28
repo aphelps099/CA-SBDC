@@ -544,9 +544,18 @@
 					if(response.content) {
 						var content = $('#' + blockId + ' .ajax-content', response.content);
 						if(content.length) {
-							$('.ajax-content', block).html(content);
-							if(block.offset().top < $(window).scrollTop()) {
-								wptheme.smoothScrollToElement(block);
+							var infiniteLoaderContainer = $('.ajax-content .infinite-loader-container', block);
+							if(infiniteLoaderContainer.length && response.url.match(/\/page\/\d+\//)) {
+								infiniteLoaderContainer.append($('.infinite-loader-container', content).children());
+								$('.pagination-wrapper', block).remove();
+								if($('.pagination-wrapper.infinite', content).length) {
+									$('.ajax-content', block).append($('.pagination-wrapper.infinite', content));
+								}
+							} else {
+								$('.ajax-content', block).html(content.html());
+								if(block.offset().top < $(window).scrollTop()) {
+									wptheme.smoothScrollToElement(block);
+								}
 							}
 							block.trigger('setArticleColors');
 						}
