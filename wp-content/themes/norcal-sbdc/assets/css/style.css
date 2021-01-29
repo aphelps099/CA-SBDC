@@ -19789,10 +19789,46 @@ nav.pagination {
         font-style: normal;
         font-weight: 700;
         font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; } }
-  @media (min-width: 992px) {
-    .wp-block-crown-blocks-testimonial .testimonial-source {
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-testimonial .testimonial-source-container {
       font-size: 1.25rem;
       margin-top: 1rem; } }
+  .wp-block-crown-blocks-testimonial.is-style-simple.has-featured-image .testimonial-source-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+    .wp-block-crown-blocks-testimonial.is-style-simple.has-featured-image .testimonial-source-container .image {
+      display: block; }
+    .wp-block-crown-blocks-testimonial.is-style-simple.has-featured-image .testimonial-source-container .testimonial-source {
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto; }
+  .wp-block-crown-blocks-testimonial.is-style-simple > .inner {
+    display: block; }
+  .wp-block-crown-blocks-testimonial.is-style-simple .testimonial-featured-image {
+    display: none; }
+  .wp-block-crown-blocks-testimonial.is-style-simple .testimonial-contents {
+    margin-left: 0; }
+  .wp-block-crown-blocks-testimonial.is-style-simple .testimonial-quote:before {
+    display: none; }
+  .wp-block-crown-blocks-testimonial.is-style-simple .testimonial-source-container .image {
+    width: 4rem;
+    height: 4rem;
+    margin-right: 1rem;
+    -webkit-box-flex: 0;
+        -ms-flex: 0 0 4rem;
+            flex: 0 0 4rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-testimonial.is-style-simple .testimonial-source-container .image {
+        width: 7.5rem;
+        height: 7.5rem;
+        margin-right: 1.5rem;
+        -webkit-box-flex: 0;
+            -ms-flex: 0 0 7.5rem;
+                flex: 0 0 7.5rem; } }
 
 /*	Testimonial Slider
 ---------------------------------------------------------*/

@@ -121,14 +121,25 @@ registerBlockType('crown-blocks/testimonial', {
 									</div>
 								</div>
 
-								<RichText
-									tagName="cite"
-									className="testimonial-source"
-									onChange={ (value) => setAttributes({ source: value }) } 
-									value={ source }
-									placeholder="Optional Source"
-									allowedFormats={ [] }
-								/>
+								<cite class="testimonial-source-container">
+
+									{ featuredImageUrl && <div className={ 'image' } style={ {
+										backgroundImage: 'url(' + featuredImageUrl + ')',
+										backgroundPosition: `${ featuredImageFocalPoint.x * 100 }% ${ featuredImageFocalPoint.y * 100 }%`,
+									} }>
+										<img src={ featuredImageUrl } />
+									</div> }
+
+									<RichText
+										tagName="div"
+										className="testimonial-source"
+										onChange={ (value) => setAttributes({ source: value }) } 
+										value={ source }
+										placeholder="Optional Source"
+										allowedFormats={ [ 'core/bold' ] }
+									/>
+
+								</cite>
 
 							</div>
 						</div>
@@ -189,7 +200,18 @@ registerBlockType('crown-blocks/testimonial', {
 								</div>
 							</div>
 
-							{ source != '' && <RichText.Content tagName="cite" className="testimonial-source" value={ source } /> }
+							{ source != '' && <cite class="testimonial-source-container">
+
+								{ featuredImageUrl && <div className={ 'image' } style={ {
+									backgroundImage: 'url(' + featuredImageUrl + ')',
+									backgroundPosition: `${ featuredImageFocalPoint.x * 100 }% ${ featuredImageFocalPoint.y * 100 }%`,
+								} }>
+									<img src={ featuredImageUrl } />
+								</div> }
+
+								<RichText.Content tagName="div" className="testimonial-source" value={ source } />
+								
+							</cite> }
 
 						</div>
 					</div>
@@ -199,6 +221,78 @@ registerBlockType('crown-blocks/testimonial', {
 
 		);
 	},
+
+	deprecated: [
+
+		{
+			attributes: {
+				featuredImageId: { type: 'number' },
+				featuredImageData: { type: 'object' },
+				featuredImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
+				title: { selector: '.testimonial-title', source: 'children' },
+				source: { selector: '.testimonial-source', source: 'children' }
+			},
+			
+			save: ({ attributes, className }) => {
+				
+				const {
+					featuredImageId,
+					featuredImageData,
+					featuredImageFocalPoint,
+					title,
+					source
+				} = attributes;
+		
+				let blockClasses = [
+					className
+				];
+		
+				let featuredImageUrl = null;
+				if(featuredImageId) {
+					featuredImageUrl = featuredImageData.sizes.medium_large ? featuredImageData.sizes.medium_large.url : featuredImageData.url;
+					blockClasses.push('has-featured-image');
+				}
+		
+				return (
+		
+					<blockquote className={ blockClasses.join(' ') } key="testimonial">
+						<div className="inner">
+		
+							<div className="testimonial-featured-image">
+								<div class="inner">
+									{ featuredImageUrl && <div className={ 'image' } style={ {
+										backgroundImage: 'url(' + featuredImageUrl + ')',
+										backgroundPosition: `${ featuredImageFocalPoint.x * 100 }% ${ featuredImageFocalPoint.y * 100 }%`,
+									} }>
+										<img src={ featuredImageUrl } />
+									</div> }
+								</div>
+							</div>
+		
+							<div className="testimonial-contents">
+								<div className="inner">
+		
+									{ title != '' && <RichText.Content tagName="h3" className="testimonial-title" value={ title } /> }
+		
+									<div class="testimonial-quote">
+										<div className="inner">
+											<InnerBlocks.Content />
+										</div>
+									</div>
+		
+									{ source != '' && <RichText.Content tagName="cite" className="testimonial-source" value={ source } /> }
+		
+								</div>
+							</div>
+		
+						</div>
+					</blockquote>
+		
+				);
+			}
+		}
+
+	]
 
 
 } );

@@ -57,6 +57,11 @@ wp.domReady(function() {
 		{ name: 'mosaic-8', label: 'Mosaic (8 photos)' }
 	]);
 
+	wp.blocks.registerBlockStyle('crown-blocks/testimonial', [ 
+		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'simple', label: 'Simple' }
+	]);
+
 	// wp.blocks.registerBlockStyle('crown-blocks/container', [ 
 	// 	{ name: 'default', label: 'Default', isDefault: true },
 	// 	{ name: 'panel', label: 'Panel' }
