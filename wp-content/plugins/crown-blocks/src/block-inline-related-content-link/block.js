@@ -28,7 +28,7 @@ registerBlockType('crown-blocks/inline-related-content-link', {
 		title: { type: 'string', default: '', selector: '.cta-title', source: 'html' },
 		linkUrl: { type: 'string', default: '' },
 		linkPost: { type: 'object' },
-		color: { type: 'string', default: '#108DBC' },
+		color: { type: 'string', default: '#0381C3' },
 		colorSlug: { type: 'string', default: 'blue' },
 		openNewWindow: { type: 'boolean', default: false }
 	},

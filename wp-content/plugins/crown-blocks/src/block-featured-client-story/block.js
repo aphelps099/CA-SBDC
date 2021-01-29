@@ -26,8 +26,8 @@ registerBlockType('crown-blocks/featured-client-story', {
 
 	attributes: {
 		label:  { type: 'string', default: 'Featured Client' },
-		backgroundColor: { type: 'string', default: '#108DBC' },
-		borderColor: { type: 'string', default: '#E60045' },
+		backgroundColor: { type: 'string', default: '#0381C3' },
+		borderColor: { type: 'string', default: '#F7024D' },
 		textColor: { type: 'string', default: 'auto' }
 	},
 

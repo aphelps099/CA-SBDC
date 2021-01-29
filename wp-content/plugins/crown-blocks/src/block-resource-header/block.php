@@ -26,7 +26,7 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 			
 			$block_class = array( 'wp-block-crown-blocks-resource-header', $atts['className'] );
 
-			$color = '#108DBC';
+			$color = '#0381C3';
 			$is_dark_color = true;
 			if ( class_exists( 'Crown_Resources' ) ) {
 				$type_color = Crown_Resources::get_resource_primary_type_color( get_the_ID() );

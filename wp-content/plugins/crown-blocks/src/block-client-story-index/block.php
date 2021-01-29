@@ -199,7 +199,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 											<?php $query->the_post(); ?>
 
 											<?php $color = get_post_meta( get_the_ID(), 'client_story_color', true ); ?>
-											<?php if ( empty( $color ) ) $color = '#F1F4F7'; ?>
+											<?php if ( empty( $color ) ) $color = '#E0E0E0'; ?>
 
 											<article <?php post_class(); ?>>
 												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo get_the_ID(); ?>" class="text-color-<?php echo self::is_dark_color( $color ) ? 'light' : 'dark'; ?>" style="background-color: <?php echo $color; ?>;">

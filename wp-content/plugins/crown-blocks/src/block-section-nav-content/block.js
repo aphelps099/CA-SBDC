@@ -32,9 +32,9 @@ const TEMPLATE = [
 		paddingTopXs:      5,
 		paddingBottomXs:   5,
 		paddingXXs:        2,
-		backgroundColor: '#108DBC',
+		backgroundColor: '#0381C3',
 		backgroundColorSlug: 'blue',
-		backgroundColorSecondary: '#108DBC',
+		backgroundColorSecondary: '#0381C3',
 		backgroundColorSecondarySlug: 'blue',
 	}, [] ]
 ];
