@@ -39,15 +39,28 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 				$type = Crown_Resources::get_resource_primary_type( get_the_ID() );
 			}
 
+			$bg_color = '#eee';
 			$index_page_url = '';
-			if ( ( $index_page_id = get_option( 'theme_config_index_page_resource' ) ) ) $index_page_url = get_permalink( $index_page_id );
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_resource' ) ) && ( $index_page = get_post( $index_page_id ) ) ) {
+				$index_page_url = get_permalink( $index_page_id );
+				$index_page_blocks = parse_blocks( $index_page->post_content );
+				if ( ! empty( $index_page_blocks ) ) {
+					if ( $index_page_blocks[0]['blockName'] == 'crown-blocks/container' && isset( $index_page_blocks[0]['attrs']['backgroundColor'] ) && ! empty( $index_page_blocks[0]['attrs']['backgroundColor'] ) ) {
+						$bg_color = $index_page_blocks[0]['attrs']['backgroundColor'];
+					}
+				}
+			}
+
+			if ( class_exists( 'Crown_Resources' ) ) {
+				$block_class[] = ! empty( $bg_color ) && Crown_Resources::is_dark_color( $bg_color ) ? 'text-color-light' : 'text-color-dark';
+			}
 
 			ob_start();
 			// print_r($atts);
 			?>
 
 				<header class="<?php echo implode( ' ', $block_class); ?>">
-					<div class="header-bg"></div>
+					<div class="header-bg" style="background-color: <?php echo $bg_color; ?>;"></div>
 					<div class="inner">
 						<div class="header-contents">
 							<div class="inner">

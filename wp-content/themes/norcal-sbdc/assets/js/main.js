@@ -114,6 +114,7 @@
 			var first_section = $('#main-content').children().first();
 			if(first_section.is('.wp-block-crown-blocks-container.text-color-light.alignfull')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-post-header.text-color-light')) header.addClass('text-color-light');
+			if(first_section.is('.wp-block-crown-blocks-resource-header.text-color-light')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-event-header')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-client-story-header')) header.addClass('text-color-light');
 			header.addClass('loaded');

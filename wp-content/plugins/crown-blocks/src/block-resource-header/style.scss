@@ -7,6 +7,13 @@
 	@media (min-width: 1200px) {
 		margin-bottom: 4rem;
 	}
+
+	&.text-color-light {
+		color: #fff;
+	}
+	&.text-color-dark {
+		color: #333;
+	}
 	
 	> .header-bg {
 		position: absolute;

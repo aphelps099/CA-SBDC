@@ -8770,6 +8770,10 @@
   @media (min-width: 1200px) {
     .wp-block-crown-blocks-resource-header {
       margin-bottom: 4rem; } }
+  .wp-block-crown-blocks-resource-header.text-color-light {
+    color: #fff; }
+  .wp-block-crown-blocks-resource-header.text-color-dark {
+    color: #333; }
   .wp-block-crown-blocks-resource-header > .header-bg {
     position: absolute;
     left: 0;
