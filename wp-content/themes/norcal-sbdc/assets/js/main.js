@@ -33,6 +33,7 @@
 
 		$.wptheme.initBranchMapShortcodes();
 
+		$.wptheme.initHeaders();
 		$.wptheme.initOdometers();
 
 	});
@@ -1104,6 +1105,31 @@
 			$('.branch-map > .google-map').each(function(i, el) {
 				wptheme.initMap($(el));
 			});
+		};
+
+		
+		wptheme.initHeaders = function() {
+			$('.wp-block-crown-blocks-header .hr-container').each(function(i, el) {
+				$(el).addClass('reveal-right');
+			});
+			var animateHeaderHrs = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('.wp-block-crown-blocks-header .hr-container.reveal-right:not(.animated)').each(function(i, el) {
+					if($(el).offset().top <= scrollTop + (windowHeight * .9)) {
+						var container = $(el);
+						var hr = $('hr', container);
+						container.css({ width: '100%' });
+						hr.css({ width: hr.width() });
+						container.css({ width: 0 });
+						setTimeout(function() { container.addClass('animated'); }, 0);
+						setTimeout(function() { container.css({ width: '100%' }); }, 00);
+						setTimeout(function() { hr.css({ width: '100%' }); }, 1000);
+					}
+				});
+			};
+			animateHeaderHrs();
+			$(window).on('load scroll', animateHeaderHrs);
 		};
 
 

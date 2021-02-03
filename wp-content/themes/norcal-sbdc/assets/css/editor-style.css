@@ -20513,7 +20513,9 @@ nav.pagination {
 /*	Header
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-header > hr {
-  background-color: #D11141; }
+  background-color: #D11141;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(209, 17, 65, 0)), to(#D11141));
+  background: linear-gradient(to right, rgba(209, 17, 65, 0), #D11141); }
 
 /*	Stat Table
 ---------------------------------------------------------*/

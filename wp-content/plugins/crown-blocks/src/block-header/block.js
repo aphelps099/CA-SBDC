@@ -45,7 +45,9 @@ registerBlockType('crown-blocks/header', {
 
 		let hrStyle = {};
 		if(borderColor) {
+			let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 			hrStyle.backgroundColor = borderColor;
+			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
 		}
 
 		return [
@@ -93,7 +95,9 @@ registerBlockType('crown-blocks/header', {
 
 		let hrStyle = {};
 		if(borderColor) {
+			let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 			hrStyle.backgroundColor = borderColor;
+			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
 		}
 
 		return (
@@ -104,11 +108,48 @@ registerBlockType('crown-blocks/header', {
 					<InnerBlocks.Content />
 
 				</div>
-				<hr style={ hrStyle } />
+				<div class="hr-container"><hr style={ hrStyle } /></div>
 			</div>
 
 		);
 	},
+
+
+	deprecated: [
+
+		{
+			attributes: {
+				borderColor: { type: 'string', default: '#D11141' }
+			},
+			save: ({ attributes, className }) => {
+		
+				const {
+					borderColor
+				} = attributes;
+		
+				let blockClasses = [ className ];
+		
+				let hrStyle = {};
+				if(borderColor) {
+					hrStyle.backgroundColor = borderColor;
+				}
+		
+				return (
+		
+					<div className={ blockClasses.join(' ') } key="header">
+						<div className="inner">
+		
+							<InnerBlocks.Content />
+		
+						</div>
+						<hr style={ hrStyle } />
+					</div>
+		
+				);
+			}
+		}
+
+	]
 
 
 } );

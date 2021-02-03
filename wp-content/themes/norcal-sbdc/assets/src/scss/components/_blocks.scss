@@ -1529,8 +1529,19 @@
 ---------------------------------------------------------*/
 
 .wp-block-crown-blocks-header {
+	> .hr-container {
+		width: 0;
+		&.reveal-right {
+			width: 0;
+			&.animated {
+				transition: width 1s ease-out;
+			}
+		}
+	}
+	> .hr-container > hr,
 	> hr {
 		background-color: $red;
+		background: linear-gradient(to right, rgba($red, 0), $red);
 	}
 }
 

@@ -11,6 +11,7 @@
 		<noscript>
 			<style>
 				#header { opacity: 1 !important; transform: none !important; position: relative !important; }
+				.wp-block-crown-blocks-header > .hr-container { width: 0 !important; }
 			</style>
 		</noscript>
 
