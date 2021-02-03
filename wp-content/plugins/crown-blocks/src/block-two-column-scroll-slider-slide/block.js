@@ -54,9 +54,9 @@ const TEMPLATE = [
 		paddingTopXs:      5,
 		paddingBottomXs:   5,
 		paddingXXs:        2,
-		backgroundColor: '#233053',
+		backgroundColor: '#032040',
 		backgroundColorSlug: 'dark-blue',
-		backgroundColorSecondary: '#233053',
+		backgroundColorSecondary: '#032040',
 		backgroundColorSecondarySlug: 'dark-blue',
 	}, [] ]
 ];

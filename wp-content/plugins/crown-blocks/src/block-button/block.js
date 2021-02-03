@@ -48,7 +48,7 @@ registerBlockType('crown-blocks/button', {
 		linkPost: { type: 'object' },
 		alignment: { type: 'string', default: 'none' },
 		type: { type: 'string', default: 'default' },
-		color: { type: 'string', default: '#F7024D' },
+		color: { type: 'string', default: '#D11141' },
 		colorSlug: { type: 'string', default: 'red' },
 		size: { type: 'string', default: 'md' },
 		displayWithArrowIcon: { type: 'boolean', default: false },

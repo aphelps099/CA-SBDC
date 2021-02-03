@@ -31,7 +31,7 @@ registerBlockType('crown-blocks/portal-link', {
 		linkPost: { type: 'object' },
 		linkOpenInNewWindow: { type: 'boolean', default: false },
 		isStyleOutline: { type: 'boolean', default: false },
-		backgroundColor: { type: 'string', default: '#233053' },
+		backgroundColor: { type: 'string', default: '#032040' },
 		backgroundImageId: { type: 'number' },
 		backgroundImageData: { type: 'object' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },

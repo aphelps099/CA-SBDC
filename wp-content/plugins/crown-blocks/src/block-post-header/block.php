@@ -17,8 +17,8 @@ if(!class_exists('Crown_Block_Post_Header')) {
 				'className' => array( 'type' => 'string', 'default' => '' ),
 				'backgroundGradientEnabled' => array( 'type' => 'boolean', 'default' => false ),
 				'backgroundGradientAngle' => array( 'type' => 'number', 'default' => 180 ),
-				'backgroundColor' => array( 'type' => 'string', 'default' => '#233053' ),
-				'backgroundColorSecondary' => array( 'type' => 'string', 'default' => '#233053' ),
+				'backgroundColor' => array( 'type' => 'string', 'default' => '#032040' ),
+				'backgroundColorSecondary' => array( 'type' => 'string', 'default' => '#032040' ),
 				'backgroundImageId' => array( 'type' => 'number', 'default' => 0 ),
 				'backgroundImagePreviewSrc' => array( 'type' => 'string', 'default' => '' ),
 				'backgroundImageFocalPoint' => array( 'type' => 'object', 'default' => array( 'x' => 0.5, 'y' => 0.5 ) ),
@@ -39,7 +39,7 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			
 			$block_class = array( 'wp-block-crown-blocks-post-header', $atts['className'] );
 
-			$atts['backgroundColor'] = ! empty( $atts['backgroundColor'] ) ? $atts['backgroundColor'] : '#233053';
+			$atts['backgroundColor'] = ! empty( $atts['backgroundColor'] ) ? $atts['backgroundColor'] : '#032040';
 			if ( $atts['textColor'] == 'auto' && ! empty( $atts['backgroundColor'] ) ) {
 				$block_class[] = 'text-color-' . ( self::is_dark_color( $atts['backgroundColor'] ) ? 'light' : 'dark' );
 			} else if ( $atts['textColor'] != 'auto' ) {
