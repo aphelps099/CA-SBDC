@@ -408,6 +408,9 @@ body {
 	.logo {
 		margin: 0.5rem;
 		max-width: 100px;
+		&.sbdc-accredited-member {
+			max-width: 200px;
+		}
 	}
 }
 

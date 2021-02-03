@@ -24124,6 +24124,8 @@ body {
   #site-footer-meta .logos .logo {
     margin: 0.5rem;
     max-width: 100px; }
+    #site-footer-meta .logos .logo.sbdc-accredited-member {
+      max-width: 200px; }
 
 /*	Site Copyright
 ---------------------------------------------------------*/

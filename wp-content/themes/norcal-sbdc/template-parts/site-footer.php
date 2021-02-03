@@ -51,12 +51,12 @@
 						<div class="accreditations">
 							<div class="inner">
 
-								<div class="logo ca-gobed">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development">
+								<div class="logo powered-by-sba">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association">
 								</div>
 
-								<div class="logo sbdc-accredited-member">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member.png" alt="America's SBDC Accredited Member">
+								<div class="logo ca-gobed">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development">
 								</div>
 
 							</div>
@@ -65,8 +65,8 @@
 						<div class="logos">
 							<div class="inner">
 
-								<div class="logo powered-by-sba">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association">
+								<div class="logo sbdc-accredited-member">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-alt.png" alt="America's SBDC Accredited Member">
 								</div>
 
 							</div>
