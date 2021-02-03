@@ -111,6 +111,38 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 									<p class="phone"><a href="<?php echo self::get_tel_link( $branch['phone'] ); ?>"><?php echo $branch['phone']; ?></a></p>
 								<?php } ?>
 
+							<?php } else if ( $atts['context'] == 'phone-hours' ) { ?>
+
+								<?php if ( ! empty( $branch['phone'] ) ) { ?>
+									<p class="phone"><a href="<?php echo self::get_tel_link( $branch['phone'] ); ?>"><?php echo $branch['phone']; ?></a></p>
+								<?php } ?>
+
+								<?php if ( ! empty( $branch['hours'] ) ) { ?>
+									<?php
+										$search = array(
+											'/\r\n/',
+											'/monday/i',
+											'/tuesday/i',
+											'/wednesday/i',
+											'/thursday/i',
+											'/friday/i',
+											'/saturday/i',
+											'/sunday/i'
+										);
+										$replace = array(
+											', ',
+											'Mon',
+											'Tue',
+											'Wed',
+											'Thu',
+											'Fri',
+											'Sat',
+											'Sun'
+										);
+									?>
+									<p class="hours"><?php echo preg_replace( $search, $replace, $branch['hours'] ); ?></p>
+								<?php } ?>
+
 							<?php } else { ?>
 
 								<div class="columns">

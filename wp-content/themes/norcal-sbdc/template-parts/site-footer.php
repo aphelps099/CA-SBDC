@@ -5,6 +5,36 @@
 			<div class="upper">
 				<div class="inner">
 
+					<div id="site-footer-regional-info">
+
+						<div class="contact">
+							<h3><?php _e( 'Questions?', 'crown_theme' ) ?> <span class="bubble"><?php _e( 'Call us.', 'crown_theme' ) ?></span></h3>
+							<?php echo do_shortcode( '[contact_info context="phone-hours"]' ); ?>
+						</div>
+
+						<?php $excluded_center_ids = get_posts( array( 'post_type' => 'center', 'posts_per_page' => -1, 'fields' => 'ids', 'meta_query' => array( array( 'key' => '__center_options', 'value' => 'hide-from-index' ) ) ) ); ?>
+						<?php $centers = get_posts( array( 'post_type' => 'center', 'posts_per_page' => -1, 'post__not_in' => $excluded_center_ids, 'orderby' => 'title', 'order' => 'ASC' ) ); ?>
+						<?php if ( ! empty( $centers ) ) { ?>
+							<div class="regional-offices">
+								<h3><?php _e( 'Regional Offices', 'crown_theme' ) ?>:</h3>
+								<ul>
+									<?php foreach ( $centers as $center ) { ?>
+										<li>
+											<?php if ( ( $website = get_post_meta( $center->ID, 'center_website', true ) ) ) { ?>
+												<a href="<?php echo $website; ?>" target="_blank"><?php echo $center->post_title; ?></a>
+											<?php } else { ?>
+												<?php echo $center->post_title; ?>
+											<?php } ?>
+										</li>
+									<?php } ?>
+								</ul>
+							</div>
+						<?php } ?>
+
+					</div>
+
+					<?php /* to be used in center sites ?>
+
 					<div id="site-footer-branding">
 						<div id="site-footer-title">
 							<a href="<?php echo home_url( '/' ); ?>"><?php echo get_bloginfo( 'name' ); ?></a>
@@ -33,7 +63,25 @@
 						</div>
 					</div>
 
-					<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
+					<?php */ ?>
+
+					<div class="social-ctas">
+
+						<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
+
+						<nav id="footer-primary-cta-links">
+							<?php
+								wp_nav_menu( array(
+									'theme_location' => 'footer_cta_links',
+									'container' => '',
+									'menu_id' => 'footer-primary-cta-links-menu',
+									'depth' => 1,
+									'fallback_cb' => false
+								) );
+							?>
+						</nav>
+
+					</div>
 
 				</div>
 			</div>
