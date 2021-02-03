@@ -22,14 +22,17 @@ $colors: () !default;
 $colors: map-merge(
 	(
 		'dark-blue': $dark-blue,
+		'dark-med-blue': $dark-med-blue,
 		'blue': $blue,
+		'light-med-blue': $light-med-blue,
 		'light-blue': $light-blue,
 		'x-light-blue': $x-light-blue,
 		'red': $red,
 		'green': $green,
-		'light-gray': $light-gray,
 		'gray': $gray,
+		'rain': $rain,
 		'dark-gray': $dark-gray,
+		'light-gray': $light-gray,
 		'ghost': $ghost,
 		'white': $white
 	),
