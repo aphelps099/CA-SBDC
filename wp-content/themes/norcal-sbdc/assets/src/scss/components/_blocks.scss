@@ -1450,11 +1450,15 @@
 		.slick-list {
 			margin: 0 -1rem;
 		}
+		.slick-slide {
+			display: flex;
+		}
 	}
 	article {
 		padding: 1rem 1rem;
 		outline: none;
 		a {
+			outline: none;
 			> * {
 				outline: none;
 				box-shadow: none;

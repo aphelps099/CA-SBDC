@@ -883,7 +883,12 @@
 						{ breakpoint: 992 - 1,  settings: { slidesToShow: 3, slidesToScroll: 3 } }
 					]
 				};
-				slider.slick(slickSettings);
+				slider.on('setPosition', function(event, slick) {
+					var track = $('.slick-track', slick.$slider);
+					var slides = $('.slick-slide', slick.$slider);
+					slides.css({ height: 'auto' });
+					slides.css({ height: track.height() });
+				}).slick(slickSettings);
 			});
 		};
 
