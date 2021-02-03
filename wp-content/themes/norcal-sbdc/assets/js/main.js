@@ -1124,7 +1124,7 @@
 						container.css({ width: 0 });
 						setTimeout(function() { container.addClass('animated'); }, 0);
 						setTimeout(function() { container.css({ width: '100%' }); }, 00);
-						setTimeout(function() { hr.css({ width: '100%' }); }, 1000);
+						setTimeout(function() { hr.css({ width: '100%' }); }, 500);
 					}
 				});
 			};
