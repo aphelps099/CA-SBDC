@@ -14,6 +14,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 			add_action( 'admin_menu', array( __CLASS__, 'cleanup_admin' ) );
 			add_action( 'admin_bar_menu', array( __CLASS__, 'cleanup_admin_bar' ), 999 );
 
+			add_action( 'admin_menu', array( __CLASS__, 'add_blocks_menu_item' ), 10 );
+
 		}
 
 
@@ -76,6 +78,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 			// $adminBar->remove_node( 'customize' );
 			// $adminBar->remove_node( 'new-post' );
 			$adminBar->remove_node( 'comments' );
+		}
+
+
+		public static function add_blocks_menu_item() {
+			add_theme_page( 'Reusable Blocks', 'Reusable Blocks', 'read', 'edit.php?post_type=wp_block', '', null );
 		}
 
 
