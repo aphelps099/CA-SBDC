@@ -18,7 +18,7 @@
 
 					<div id="site-footer-logo">
 						<a href="<?php echo home_url( '/' ); ?>">
-							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-california-448x270.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-400w.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 						</a>
 					</div>
 

@@ -8,8 +8,8 @@
 
 					<div id="site-logo">
 						<a href="<?php echo home_url( '/' ); ?>">
-							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-california-180h.png" class="dark" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-california-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-180h.png" class="dark" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 						</a>
 					</div>
 
