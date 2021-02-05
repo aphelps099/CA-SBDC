@@ -54,7 +54,11 @@ registerBlockType('crown-blocks/button', {
 		displayWithArrowIcon: { type: 'boolean', default: false },
 		displayAsBlock: { type: 'boolean', default: false },
 		disabledDisplayAsBlockBreakpoint: { type: 'string', default: 'none' },
-		openNewWindow: { type: 'boolean', default: false }
+		openNewWindow: { type: 'boolean', default: false },
+		openModal: { type: 'boolean', default: false },
+		linkModalType: { type: 'string', default: '' },
+		linkModalFormId: { type: 'string', default: '' },
+		linkModalVideoEmbed: { type: 'string', default: '' }
 	},
 
 
@@ -72,7 +76,11 @@ registerBlockType('crown-blocks/button', {
 			displayWithArrowIcon,
 			displayAsBlock,
 			disabledDisplayAsBlockBreakpoint,
-			openNewWindow
+			openNewWindow,
+			openModal,
+			linkModalType,
+			linkModalFormId,
+			linkModalVideoEmbed
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -188,6 +196,36 @@ registerBlockType('crown-blocks/button', {
 						onChange={ (value) => { setAttributes({ openNewWindow: value }); } }
 					/>
 
+					<ToggleControl
+						label={ 'Link opens modal window' }
+						checked={ openModal }
+						onChange={ (value) => { setAttributes({ openModal: value }); } }
+					/>
+
+					{ !! openModal && <SelectControl
+						label="Modal Type"
+						value={ linkModalType }
+						onChange={ (value) => setAttributes({ linkModalType: value }) }
+						options={ [
+							{ label: 'Select Option...', value: '' },
+							{ label: 'Form', value: 'form' },
+							{ label: 'Subscribe', value: 'subscribe' },
+							{ label: 'Video', value: 'video' }
+						] }
+					/> }
+
+					{ !! (openModal && linkModalType == 'form') && <TextControl
+						label="Form ID"
+						value={ linkModalFormId }
+						onChange={ (value) => setAttributes({ linkModalFormId: value }) }
+					/> }
+
+					{ !! (openModal && linkModalType == 'video') && <TextControl
+						label="Video Embed URL"
+						value={ linkModalVideoEmbed }
+						onChange={ (value) => setAttributes({ linkModalVideoEmbed: value }) }
+					/> }
+
 				</PanelBody>
 
 			</InspectorControls>,
@@ -243,7 +281,11 @@ registerBlockType('crown-blocks/button', {
 			displayWithArrowIcon,
 			displayAsBlock,
 			disabledDisplayAsBlockBreakpoint,
-			openNewWindow
+			openNewWindow,
+			openModal,
+			linkModalType,
+			linkModalFormId,
+			linkModalVideoEmbed
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -275,14 +317,46 @@ registerBlockType('crown-blocks/button', {
 			}
 		}
 
-		return (
+		if(openModal) {
 
+			if(linkModalType == 'subscribe') {
+				return (
+					<p className={ blockClasses.join(' ') }>
+						<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target="#subscribe-modal">
+							<span class="btn-label">{ label }</span>
+						</button>
+					</p>
+				);
+			}
+
+			if(linkModalType == 'form' && linkModalFormId != '') {
+				return (
+					<p className={ blockClasses.join(' ') }>
+						<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target={ '#form-' + parseInt(linkModalFormId) + '-modal' }>
+							<span class="btn-label">{ label }</span>
+						</button>
+					</p>
+				);
+			}
+
+			if(linkModalType == 'video' && linkModalVideoEmbed != '') {
+				return (
+					<p className={ blockClasses.join(' ') }>
+						<a href={ linkModalVideoEmbed } className={ buttonClasses.join(' ') } target="_blank" rel="noopener noreferrer" data-toggle="modal" data-target={ '#video-modal' }>
+							<span class="btn-label">{ label }</span>
+						</a>
+					</p>
+				);
+			}
+
+		}
+
+		return (
 			<p className={ blockClasses.join(' ') }>
 				<a href={ linkUrl } className={ buttonClasses.join(' ') } target={ openNewWindow && '_blank' } rel={ openNewWindow && 'noopener noreferrer' }>
 					<span class="btn-label">{ label }</span>
 				</a>
 			</p>
-
 		);
 	}
 

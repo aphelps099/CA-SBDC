@@ -48,9 +48,14 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'deps' => array( 'google-maps-api' )
 				),
 				array(
+					'handle' => 'jquery-oembed',
+					'local_path' => '/lib/jquery-oembed/jquery.oembed.js',
+					'deps' => array( 'jquery' )
+				),
+				array(
 					'handle' => 'crown-theme-main',
 					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
-					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer' )
+					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed' )
 				)
 			);
 

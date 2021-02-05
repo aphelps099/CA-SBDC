@@ -306,6 +306,32 @@
 				return false;
 			});
 
+			$('#video-modal').on('show.bs.modal', function(e) {
+				var modal = $(this);
+				var relatedTarget = $(e.relatedTarget);
+				var oembedUrl = relatedTarget.attr('href');
+				var oembedLink = $('<a target="_blank" class="oembed-link"></a>');
+				oembedLink.text(oembedUrl);
+				oembedLink.attr('href', oembedUrl);
+				$('.modal-body', modal).html(oembedLink);
+				oembedLink.oembed(null, {
+					afterEmbed: function(container, data) {
+						var iframe = $('#video-modal iframe');
+						if(iframe.length) {
+							var iframeSrc = iframe.attr('src');
+							if(iframeSrc.match(/youtube\.com/) && !iframeSrc.match('autoplay=1')) {
+								iframeSrc += (iframeSrc.match(/\?/) ? '&' : '?') + 'autoplay=1';
+								iframe.attr('src', iframeSrc);
+							}
+						}
+					}
+				});
+				
+			}).on('hidden.bs.modal', function(e) {
+				var modal = $(this);
+				$('.modal-body', modal).html('');
+			});
+
 		};
 
 

@@ -61,6 +61,14 @@
 }
 
 
+.modal.form {
+	.modal-dialog {
+		width: 600px;
+		max-width: calc(100vw - 1rem);
+	}
+}
+
+
 .modal.contact-form {
 	.disclaimer {
 		font-size: 0.75rem;
@@ -70,6 +78,37 @@
 		a {
 			color: inherit;
 			text-decoration: underline;
+		}
+	}
+}
+
+
+#video-modal {
+	.modal-dialog {
+		width: 600px;
+		max-width: calc(100vw - 1rem);
+	}
+	.modal-body {
+		padding: 0;
+		background-color: #000;
+	}
+	.oembedall-container {
+		margin: 0;
+		position: relative;
+		height: 0;
+		overflow: hidden;
+		padding-top: percentage(9 / 16);
+		.oembedall-closehide,
+		.oembed-link {
+			display: none;
+		}
+		iframe {
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100% !important;
+			height: 100% !important;
 		}
 	}
 }

@@ -18651,6 +18651,10 @@ nav.pagination {
     .modal-header {
       min-height: 6rem; } }
 
+.modal.form .modal-dialog {
+  width: 600px;
+  max-width: calc(100vw - 1rem); }
+
 .modal.contact-form .disclaimer {
   font-size: 0.75rem;
   line-height: 1.2;
@@ -18659,6 +18663,31 @@ nav.pagination {
   .modal.contact-form .disclaimer a {
     color: inherit;
     text-decoration: underline; }
+
+#video-modal .modal-dialog {
+  width: 600px;
+  max-width: calc(100vw - 1rem); }
+
+#video-modal .modal-body {
+  padding: 0;
+  background-color: #000; }
+
+#video-modal .oembedall-container {
+  margin: 0;
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  padding-top: 56.25%; }
+  #video-modal .oembedall-container .oembedall-closehide,
+  #video-modal .oembedall-container .oembed-link {
+    display: none; }
+  #video-modal .oembedall-container iframe {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: 100% !important; }
 
 #subscribe-modal .modal-dialog {
   width: 880px;

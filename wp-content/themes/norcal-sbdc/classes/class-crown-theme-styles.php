@@ -45,9 +45,13 @@ if ( ! class_exists( 'Crown_Theme_Styles' ) ) {
 					'local_path' => '/lib/odometer/odometer-theme-default.css'
 				),
 				array(
+					'handle' => 'jquery-oembed',
+					'local_path' => '/lib/jquery-oembed/jquery.oembed.css'
+				),
+				array(
 					'handle' => 'crown-theme-style',
 					'local_path' => '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
-					'deps' => array( 'crown-theme-typekit', 'slick', 'blueimp-gallery', 'odometer-theme-default' )
+					'deps' => array( 'crown-theme-typekit', 'slick', 'blueimp-gallery', 'odometer-theme-default', 'jquery-oembed' )
 				)
 			);
 
