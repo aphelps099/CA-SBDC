@@ -18693,7 +18693,7 @@ nav.pagination {
     text-decoration: underline; }
 
 #video-modal .modal-dialog {
-  width: 600px;
+  width: 960px;
   max-width: calc(100vw - 1rem); }
 
 #video-modal .modal-body {
