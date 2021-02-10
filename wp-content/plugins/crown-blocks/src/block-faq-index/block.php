@@ -283,9 +283,8 @@ if(!class_exists('Crown_Block_Faq_Index')) {
 	
 					<div class="entry-sidebar">
 
-						<?php $index_page_id = get_option( 'theme_config_index_page_faq' ); ?>
-						<?php if ( $index_page_id && ( $index_page = get_post( $index_page_id ) ) ) { ?>
-							<a href="<?php echo get_permalink( $index_page->ID ); ?>" class="return-to-index"><?php _e( 'All FAQs', 'crown_blocks' ); ?></a>
+						<?php if ( ! empty( $index_page_url ) ) { ?>
+							<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All FAQs', 'crown_blocks' ); ?></a>
 						<?php } ?>
 
 						<?php if ( ! empty( $topic_faqs ) && count( $topic_faqs ) > 0 ) { ?>
