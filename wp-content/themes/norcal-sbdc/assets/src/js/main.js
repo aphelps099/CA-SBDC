@@ -171,6 +171,16 @@
 				$('#header-primary-navigation .menu-item.active').removeClass('active');
 			});
 
+			$('#header-search button.toggle').on('click', function(e) {
+				var header = $('#header');
+				header.toggleClass('search-active');
+				if(header.hasClass('search-active')) {
+					setTimeout(function() {
+						$('#header-search input[type=search]').select();
+					}, 350);
+				}
+			});
+
 			var updateHeaderStatus = function() {
 				var header = $('#header');
 				var scrollTop = $(window).scrollTop();

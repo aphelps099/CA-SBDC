@@ -54,6 +54,14 @@
 					?>
 				</nav>
 
+				<div id="header-search">
+					<button class="toggle">
+						<span class="icon"><?php ct_icon( 'search' ); ?></span>
+						<span class="label">Search</span>
+					</button>
+					<?php echo get_search_form(); ?>
+				</div>
+
 				<button id="mobile-menu-toggle" type="button">
 					<span class="label">Menu</span>
 					<span class="icon"></span>

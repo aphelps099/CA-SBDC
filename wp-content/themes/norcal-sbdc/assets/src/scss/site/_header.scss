@@ -22,6 +22,16 @@
 			transition: opacity .4s .4s, transform .4s .4s ease-out, background-color .4s, box-shadow .4s, visibility 0s .8s;
 		}
 	}
+	&.search-active {
+		> .inner > .container > .inner:after {
+			content: '';
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+		}
+	}
 	body.admin-bar & {
 		@media (min-width: 601px) {
 			top: 46px;
@@ -198,6 +208,7 @@
 	font-size: 0.875rem;
 	height: 30px;
 	background-color: transparent;
+	z-index: 1;
 	@include media-breakpoint-up(md) {
 		display: none;
 	}
@@ -268,6 +279,7 @@
 	display: flex;
 	justify-content: flex-start;
 	position: relative;
+	z-index: 1;
 	@include media-breakpoint-up(lg) {
 		margin-right: 2rem;
 	}
@@ -386,6 +398,7 @@
 #header-primary-cta-links {
 	margin-right: 1rem;
 	display: none;
+	transition: opacity .3s .3s;
 	@include media-breakpoint-up(md) {
 		margin-right: 0;
 		margin-left: 1rem;
@@ -393,6 +406,10 @@
 	}
 	@include media-breakpoint-up(lg) {
 		margin-left: 2rem;
+	}
+	#header.search-active & {
+		opacity: 0;
+		transition-delay: 0s;
 	}
 	ul {
 		list-style: none;
@@ -440,12 +457,17 @@
 	margin-bottom: -10px;
 	align-self: stretch;
 	justify-content: flex-end;
+	transition: opacity .3s .3s;
 	@include media-breakpoint-up(md) {
 		display: flex;
 	}
 	@include media-breakpoint-up(lg) {
 		margin-top: -20px;
 		margin-bottom: -20px;
+	}
+	#header.search-active & {
+		opacity: 0;
+		transition-delay: 0s;
 	}
 }
 #header-primary-navigation-menu {
@@ -837,6 +859,149 @@
 		.social-links {
 			.menu {
 				margin: -.4rem;
+			}
+		}
+	}
+}
+
+
+/*	Search Form
+---------------------------------------------------------*/
+
+#header-search {
+	display: none;
+	margin-left: 1rem;
+	position: relative;
+	z-index: 1;
+	@include media-breakpoint-up(md) {
+		display: block;
+	}
+	@include media-breakpoint-up(lg) {
+		margin-left: 2rem;
+	}
+	#header.search-active & {
+		button.toggle {
+			.icon { opacity: 0; }
+			&:after { opacity: 1; }
+		}
+		.search-form {
+			opacity: 1;
+			visibility: visible;
+			transform: none;
+			transition: opacity .3s .3s, visibility 0s .3s, transform .3s .3s ease-out;
+		}
+	}
+	button.toggle {
+		padding: 0;
+		border: none;
+		outline: none;
+		box-shadow: none;
+		background-color: transparent;
+		width: 2rem;
+		height: 2rem;
+		position: relative;
+		display: block;
+		transition: color .15s, opacity .15s;
+		color: $primary;
+		overflow: hidden;
+		#header.text-color-light & {
+			color: #fff;
+			&:hover {
+				opacity: .75;
+			}
+		}
+		#header.is-sticky & {
+			color: $primary;
+			&:hover {
+				opacity: 1;
+				color: $blue;
+			}
+		}
+		&:hover {
+			color: $blue;
+		}
+		&:after {
+			opacity: 0;
+			content: '×';
+			width: 3rem;
+			height: 3rem;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			font-weight: 400;
+			line-height: 1;
+			font-size: 3rem;
+			font-family: $font-family-sans-serif-alt;
+			transition: opacity .3s, color .15s;
+			margin-top: -.05rem;
+		}
+		.icon {
+			width: 2rem;
+			height: 2rem;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			transition: opacity .3s;
+			svg {
+				width: 100%;
+				height: 100%;
+				transition: fill .15s;
+			}
+		}
+		.label {
+			display: none;
+		}
+	}
+	.search-form {
+		opacity: 0;
+		visibility: hidden;
+		transform: translateX(1rem);
+		transition: opacity .3s, visibility 0s .3s, transform 0s .3s ease-out;
+		position: absolute;
+		right: 100%;
+		margin-right: 1rem;
+		top: -.4rem;
+		width: 20rem;
+		.icon {
+			width: 1.25rem;
+			height: 1.25rem;
+			left: .75rem;
+			top: .75rem;
+			margin-top: 0;
+			transition: color .15s;
+			#header.text-color-light & {
+				color: #fff;
+			}
+			#header.is-sticky & {
+				color: $primary;
+			}
+		}
+		input[type=search] {
+			padding: .75rem 1.25rem;
+			box-shadow: none;
+			border: 1px solid $primary;
+			border-radius: 10rem;
+			height: auto;
+			padding-left: 2.5rem;
+			transition: border-color .15s, color .15s;
+			#header.text-color-light & {
+				border-color: #fff;
+				color: #fff;
+			}
+			#header.is-sticky & {
+				border-color: $primary;
+				color: $input-color;
+			}
+			&::placeholder {
+				transition: color .15s;
+				#header.text-color-light & {
+					color: rgba(#fff, .3);
+				}
+				#header.is-sticky & {
+					color: $input-placeholder-color;
+				}
 			}
 		}
 	}

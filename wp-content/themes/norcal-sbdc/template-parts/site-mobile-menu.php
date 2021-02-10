@@ -38,6 +38,8 @@
 
 					</div>
 				</header>
+
+				<?php echo get_search_form(); ?>
 	
 				<nav id="mobile-menu-primary-navigation">
 					<?php
