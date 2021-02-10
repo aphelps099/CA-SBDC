@@ -237,6 +237,11 @@ if(!class_exists('Crown_Block_Faq_Index')) {
 				) );
 			}
 
+			$index_page_url = '';
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_faq' ) ) && ( $index_page = get_post( $index_page_id ) ) ) {
+				$index_page_url = get_permalink( $index_page_id );
+			}
+
 			ob_start();
 			?>
 
@@ -245,6 +250,19 @@ if(!class_exists('Crown_Block_Faq_Index')) {
 					<div class="entry-contents">
 	
 						<header class="entry-header">
+
+							<?php $topics = get_the_terms( get_the_ID(), 'faq_topic' ); ?>
+							<?php if ( ! empty( $topics ) ) { ?>
+								<p class="entry-topic">
+									<?php foreach ( $topics as $term ) { ?>
+										<?php if ( ! empty( $index_page_url ) ) { ?>
+											<a class="topic" href="<?php echo add_query_arg( 'f_topic', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+										<?php } else { ?>
+											<span class="topic"><?php echo $term->name; ?></span>
+										<?php } ?>
+									<?php } ?>
+								</p>
+							<?php } ?>
 	
 							<h2 class="entry-title"><?php the_title(); ?></h2>
 	

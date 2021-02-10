@@ -23029,6 +23029,24 @@ nav.pagination {
   @media (min-width: 768px) {
     .wp-block-crown-blocks-faq-index-single .entry-contents .entry-header {
       margin-bottom: 3rem; } }
+  .wp-block-crown-blocks-faq-index-single .entry-contents .entry-header .entry-topic {
+    margin-bottom: 1rem; }
+    .wp-block-crown-blocks-faq-index-single .entry-contents .entry-header .entry-topic .topic {
+      -webkit-transition: background-color .2s, color .2s, boder-color .2s;
+      transition: background-color .2s, color .2s, boder-color .2s;
+      display: inline-block;
+      line-height: 1.2;
+      font-weight: 700;
+      font-size: 0.625rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border-radius: 10rem;
+      border: 1px solid #032040;
+      padding: .5rem .75rem;
+      color: #032040; }
+    .wp-block-crown-blocks-faq-index-single .entry-contents .entry-header .entry-topic a.topic:hover {
+      background-color: #032040;
+      color: #fff; }
 
 .wp-block-crown-blocks-faq-index-single .entry-contents .entry-title {
   font-weight: 400;
