@@ -1,0 +1,601 @@
+form.feed-filters .filters-header button.filters-toggle {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    line-height: 1.2;
+    font-family: semplicitapro,proxima-nova,Helvetica Neue,Arial,Noto Sans,sans-serif;
+    font-size: 1.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    text-align: left;
+    outline:none;
+    color: #032040;
+    transition: opactity .15s,color .15s;
+}
+
+.jumpercase {text-transform: uppercase !important; font-family:'proxima-nova', sans-serif; font-weight:900;}
+
+#site-announcement p {color:#eee !important;
+font-family:'georgia', serif;
+font-style: italic;
+text-transform: lowercase;}
+#site-announcement .message+.link {
+    padding: 1px 9px;
+    border: 2px solid #5ac8fa;
+    color: #5ac8fa !important;
+	font-family:proxima-nova, sans-serif !important;
+}
+
+#site-announcement {
+	background-color: #032040 !important;
+}
+
+
+#site-announcement button.dismiss {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    line-height: 1;
+    overflow: hidden;
+    text-indent: -100000px;
+    width: 1.5rem;
+    height: 1.5rem;
+    position: relative;
+    color: inherit;
+    position: absolute;
+    right: .5rem;
+    top: calc(50% - .75rem);
+    outline: none;
+    transition: opacity .15s;
+    opacity: .8;
+	color:#fff;
+}
+
+
+/* TEXT LINE HEIGHT CHANGES */
+body {
+    line-height: 1.46;
+}
+
+h1, .h1{
+	line-height: .89;!important
+}
+
+h2, .h2 {
+	line-height: 1;
+}
+
+.has-extra-extra-large-font-size {
+    font-size: 3rem;
+    line-height: .9;
+}
+
+
+/*quote font*/
+.wp-block-crown-blocks-client-story-header .entry-intro {
+    font-family: 'semplicitapro';
+font-style: normal !important; 
+opacity:0.89 !important;}
+
+/* NOTE TO CAMERON:
+// I wanted to update the style for the "hr" tag and animated lines for blog and client stories archive lists... 
+// Changes made:
+// 1. increased line height and changed to a transparent-to-color gradient... 
+// 2. I also changed the arrow with circle bg to text that reads "view"
+// Can you help incorporate this into the "master CSS" so we can keep this customizer clean?
+//Thank you
+*/
+
+.wp-block-crown-blocks-header > hr {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 15px;
+
+    border: none;
+    margin: 0;
+	background: linear-gradient(to right, transparent, white) !important;}
+	       
+
+.wp-block-crown-blocks-client-story-index article.type-client_story .entry-link>span:first-child:before {
+    content: "";
+    display: block;
+    height: 15px;
+    transition: max-width .3s;
+    background: linear-gradient(
+90deg
+,rgba(35,48,83,0),#233053);
+}
+
+
+
+.wp-block-crown-blocks-post-index article.type-post .entry-link>span:first-child:before {
+    content: "";
+    display: block;
+    height: 15px;
+    transition: max-width .3s,background .3s;
+    background: linear-gradient(
+90deg
+,hsla(0,0%,100%,0),#fff);
+}
+/* end of blog posts */
+/* end of animated line */
+
+
+/* arrow button to "view" */
+/*blog arrows*/
+.wp-block-crown-blocks-post-index article.type-post .entry-link>span:nth-child(2) {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 10rem;
+    background-color: transparent;
+    overflow: hidden;
+    position: relative;
+    transition: opacity .2s,transform .2s ease-out;
+}
+.wp-block-crown-blocks-post-index article.type-post .entry-link>span:nth-child(2):before {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    line-height: 1;
+	font-size:1.86rem;
+       font-family: 'semplicitapro', sans-serif;
+    font-style: italic;
+    content: "view"; 
+	 /*font-family: icomoon;
+	content:"icon-eye"; */
+    color: #fff;
+    position: absolute;
+    display: -ms-flexbox;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    transition: left .2s ease-out,opacity .2s;
+    transition-delay: .2s;
+}
+/*end of blog arrows*/
+/*start of stories arrows*/
+.wp-block-crown-blocks-client-story-index article.type-client_story .entry-link>span:nth-child(2):before { 
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    line-height: 1;
+	font-size:1.86rem;
+    font-family: 'proxima-nova';
+    font-style: italic;
+    content: "view"; 
+	color:inherit;
+}
+.wp-block-crown-blocks-client-story-index article.type-client_story .entry-link>span:nth-child(2) {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0px;
+    background-color: transparent;
+    overflow: hidden;
+    position: relative;
+    transition: opacity .2s,transform .2s ease-out;
+}
+
+/* end of arrow button to "view" */
+
+
+/* arrow button - featured clients card */
+
+.wp-block-crown-blocks-featured-client-story a>.inner:after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 1;
+    /*font-family: icomoon;
+    content: ""; 
+	font-size:1.86rem;*/
+    font-family: 'proxima-nova';
+    font-style: italic;
+    content: "view"; 
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    right: .5rem;
+    opacity: 0;
+    transition: right .2s ease-out,opacity .2s;
+}
+/* end of animated lines */
+
+
+
+
+
+
+
+
+/* A HREF COLOR */
+h2 a {
+    color: rgba(0, 126, 190, .9);
+    background-color: transparent;
+}
+
+ h2 a:hover {
+    text-decoration: underline;
+	  color: rgba(0, 126, 190, .79);
+}
+/*end - "a" class edits */
+
+
+
+/*  - - - ———— - - -  */
+/* XXL H2 line-height */
+/*  - - - ———— - - -  */
+
+.has-extra-extra-large-font-size {
+    font-size: 3rem;
+    line-height: 0.99;
+}
+
+/*  - - - ———— - - -  */
+/* END H2 line-height */
+/*  - - - ———— - - -  */
+
+/*  - - ———- - -  */
+/*  NEW H1 STYLE  */
+/*  - - ———- - -  */
+
+h1 {
+    font-family: 'proxi-black',proxima-nova,Helvetica Neue,Arial,Noto Sans,sans-serif;
+    text-transform: uppercase;
+    font-weight: 800;
+    line-height: .99;
+}
+
+#resource-template-default h1 
+{
+	    font-family: 'proxi-light',proxima-nova,Helvetica Neue,Arial,Noto Sans,sans-serif;
+    text-transform: uppercase;
+    font-weight: 100;
+
+}
+/*  - - ———- - -  */
+/*  END H1 STYLE  */
+/*  - - ———- - -  */
+
+#header-primary-navigation-menu .mega-sub-menu .container {
+    padding-top: 2rem;
+    padding-bottom: 3.19rem;
+}
+
+#header-primary-navigation-menu .mega-sub-menu h3 {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+#header-primary-navigation-menu .mega-sub-menu .sub-menu-menus h4 {
+	       font-family: 'semplicitapro', sans-serif;
+
+	font-weight:500;
+	text-transform:capitalize;
+  letter-spacing: .0165em;
+  margin-bottom: 0.95rem;
+	margin-top:0.3rem;
+	font-size: 1.018rem;
+  color: rgb(3,32,64);	
+}
+.wp-block-crown-blocks-section-nav .section-nav-nav {
+	background-color: #1d406e;}
+
+/*
+#header-primary-navigation-menu>.menu-item>a {
+	color: #1c406f;}*/
+
+#header-primary-navigation-menu .mega-sub-menu .sub-menu-menus .menu a {
+    padding: 0;
+    color: #2b3e67;
+    display: block;
+    font-weight: 500;
+}
+
+#header-primary-navigation-menu .mega-sub-menu .sub-menu-content {
+	 
+	font-weight:100;
+    line-height: 1.34;
+    font-size: 1.124rem;
+    color: rgba(28,64,111,.49);
+}
+
+#header-primary-navigation-menu .mega-sub-menu .sub-menu-section.secondary {
+    -ms-flex: 0 0 41.66667%;
+    flex: 0 0 41.66667%;
+	  background-color: #E9EFF4;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+	
+#zaroo a:after {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 1;
+    font-family: icomoon;
+    content: "";
+    position: relative;
+    margin-left: .5em;
+    margin-right: -.5em;
+    top: .08em;
+    right: .5em;
+    opacity: 0;
+    transition: right .15s ease-out,opacity .15s;
+}
+
+.simple-subscribe-form_wrapper input[type=text] {
+    box-shadow: inset 0 -2px #1B406F;
+}
+
+#subscribe-modal .gform_footer button[type=submit], .btn-secondary, .simple-subscribe-form_wrapper .gform_footer button[type=submit] {
+    color: #fff;
+    background-color: #0381c3;
+    border-color: #0381c3;
+}
+
+
+/*  - - - ———— - - -  */
+/* FIND - YOUR - SBDC */
+/*  - - - ———— - - -  */
+
+/*
+.btn-blue, .wp-block-crown-blocks-center-finder .location-search-form .form-footer button, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, nav.pagination .nav-links .page-numbers.current {
+    color: #fff;
+    background-color: #012d61;
+    border-color: #012d61;
+}
+*/
+
+.wp-block-crown-blocks-center-finder article.location {
+    background-color: #fff;
+		       font-family: 'semplicitapro', sans-serif;
+
+}
+
+
+.wp-block-crown-blocks-center-finder .locations article.location.active {
+    background-color: #012d61;
+    color: #fff;
+		       font-family: 'semplicitapro', sans-serif;
+
+}
+
+.wp-block-crown-blocks-center-finder article.location + article.location {
+    margin-top: 1rem;
+	border-top: 2px solid #012d61;);
+}
+
+.wp-block-crown-blocks-center-finder .location-search-form .field input {
+    padding-left: 2.25rem;
+    box-shadow: inset 0 -2px #012d61;
+}
+
+.wp-block-crown-blocks-center-finder .locations article.location.active:after {
+    background-color: #012d61;
+    color: #fff;
+    opacity: 1;
+	text-indent: 0;}
+	
+	
+	/* events title spacing  - line height */
+	.wp-block-crown-blocks-event-header .index-title {
+    font-weight: 800;
+    text-transform: uppercase;
+		line-height: 0.89;}
+
+.wp-block-crown-blocks-event-header .index-title {
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    padding-bottom: .5rem;
+    border-bottom: 0.8975rem solid #fff;
+    -ms-flex-item-align: start;
+    align-self: flex-start;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+}
+
+
+.wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow.slick-prev {
+    right: 5rem;
+    transform: rotateY(
+180deg
+);
+}
+
+.wp-block-crown-blocks-section-nav .section-nav-nav {
+    background-color: #012d61;
+}
+
+
+
+.wp-block-quote.is-style-large p, blockquote.is-style-large p {
+    font-size: inherit;
+    line-height: inherit;
+    font-family: 'semplicitapro';
+}
+
+blockquote, em {
+    font-family: 'semplicitapro' !important;
+}
+
+/*homepage edits */
+.action-subject-link .action {
+    display: block;
+    font-size: 1.625rem;
+    font-family: 'semplicitapro';
+	font-style: normal;
+	color: rgba(0, 38, 73, 0.4)
+}
+
+
+/* HOMEPAGE - BLOG POST CAROUSEL  */
+.wp-block-crown-blocks-featured-post-slider article .entry-date .line {
+    display: block;
+    margin-left: 1rem;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    border-top: 12px solid #f7024d;
+}
+/*
+.btn-link.btn-link-blue, .wp-block-crown-blocks-featured-post-slider article .entry-link a {
+    color: #007ebe;
+    border-color: #007ebe;
+}
+*/
+
+
+
+/*Footer edits */
+
+#site-footer-regional-info .regional-offices ul {
+    font-size: 0.925rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 0.992;
+    max-width: 800px;
+    color: #273a64;
+    font-family: 'semplicitapro';
+}
+
+#footer .social-links h4 {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-family: 'semplicitapro';
+    color: #032040;
+}
+
+
+#footer {
+	background-color: #edeff2;
+}
+
+#site-footer-header {
+    background-color: #002649;
+}
+
+#site-footer-regional-info .regional-offices ul {
+    font-size: 0.925rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 0.992;
+    max-width: 800px;
+    color:#273a64;
+}
+
+#site-footer-regional-info .contact .branch {
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+	font-weight:400;
+	opacity:.85;
+}
+
+
+#site-footer-regional-info .regional-offices h3 {
+    margin-bottom: .5rem;
+    font-weight: 700;
+		opacity:.85;
+
+}
+
+
+#footer-subscribe-form .form-overtitle {
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: 1.125rem;
+	font-weight:600;
+    color: #0381c3;
+}
+
+#footer-subscribe-form .gform_title {
+    margin-top: -.5rem;
+    font-size: 1.75rem;
+    font-weight: 500;
+    font-family: 'semplicitapro';
+}
+
+
+
+/*resources */
+.wp-block-crown-blocks-resource-header .entry-breadcrumbs .crumb a {
+    color: inherit;
+    font-family: 'semplicitapro';
+	font-weight: 400;
+}
+
+.wp-block-crown-blocks-resource-header .entry-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    text-transform: none;
+    font-weight: 400;
+    letter-spacing: 0;
+    font-family: 'semplicitapro';
+    max-width: 100%;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    margin-bottom: 0;
+}
+
+
+/* portal links style */
+
+.wp-block-crown-blocks-portal-link {
+    padding-left: 0rem;
+    padding-bottom: 0rem;
+    max-height: 400px !important;
+}
+
+.wp-block-crown-blocks-portal-link, .200 {
+    padding-left: 0rem;
+    padding-bottom: 0rem;
+    max-height: 200px !important;
+}
+
+.wp-block-crown-blocks-portal-link .link-title {
+    font-size: 2.15rem;
+	  font-weight: 400;
+    letter-spacing: 0;
+    font-family: 'semplicitapro';
+}
+
+
+/*services-stage-of-business-border-top */
+.bred-top{
+border-top: 15px solid #DA0246;}
