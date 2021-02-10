@@ -15,7 +15,7 @@
 		) );
 	?>
 
-	<?php if ( is_singular( array( 'post' ) ) ) { ?>
+	<?php if ( is_singular( array( 'post', 'client_story' ) ) ) { ?>
 		<?php get_template_part( 'template-parts/entry-footer', get_post_type() ); ?>
 	<?php } ?>
 
