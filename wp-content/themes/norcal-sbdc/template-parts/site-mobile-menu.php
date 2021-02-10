@@ -18,6 +18,11 @@
 							?>
 						</nav>
 
+						<button id="mobile-menu-search-toggle">
+							<span class="icon"><?php ct_icon( 'search' ); ?></span>
+							<span class="label">Search</span>
+						</button>
+
 						<button id="mobile-menu-close" type="button">
 							<span class="label">Close</span>
 							<span class="icon"></span>

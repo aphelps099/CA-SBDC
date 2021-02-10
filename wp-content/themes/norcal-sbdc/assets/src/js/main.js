@@ -263,6 +263,16 @@
 				$('> .toggle', el).trigger('click');
 			});
 
+			$('#mobile-menu-search-toggle').on('click', function(e) {
+				var form = $('#mobile-menu .search-form');
+				form.toggleClass('active');
+				if(form.hasClass('active')) {
+					setTimeout(function() {
+						$('input[type=search]', form).select();
+					}, 10);
+				}
+			});
+
 		};
 
 
