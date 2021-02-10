@@ -114,6 +114,8 @@ form.feed-filters {
 			outline: none;
 			color: $primary;
 			transition: opactity .15s, color .15s;
+			font-family: $font-family-sans-serif-alt;
+			outline: none;
 			@include media-breakpoint-up(lg) {
 				flex: 0 0 auto;
 				margin-right: 3rem;

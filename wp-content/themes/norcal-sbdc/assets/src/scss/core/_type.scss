@@ -21,11 +21,25 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
-h1 {
+h1, .h1 {
 	font-family: $font-family-sans-serif;
 	text-transform: uppercase;
-	font-weight: 800;
-	line-height: 1.1;
+	font-weight: 900;
+	line-height: .925;
+	#resource-template-default & {
+		font-weight: 100;
+	}
+}
+h2, .h2 {
+	line-height: 1;
+	a {
+		color: rgba($blue, .9);
+		background-color: transparent;
+		&:hover {
+			text-decoration: underline;
+			color: rgba($blue, .8);
+		}
+	}
 }
 
 
@@ -43,7 +57,7 @@ h1 {
 .has-large-font-size { font-size: 1.5rem; }
 .has-extra-large-font-size { font-size: 1.875rem; line-height: $line-height-base; }
 .has-extra-extra-large-font-size { font-size: 3rem; line-height: $line-height-sm; @include media-breakpoint-up(lg) { font-size: 3.75rem; } }
-.has-extra-extra-extra-large-font-size { font-size: 3rem; line-height: $line-height-sm; @include media-breakpoint-up(lg) { font-size: 5rem; } }
+.has-extra-extra-extra-large-font-size { font-size: 3rem; line-height: .95; @include media-breakpoint-up(lg) { font-size: 5rem; } }
 
 .is-style-sans-serif {
 	font-family: $font-family-sans-serif;
@@ -56,6 +70,16 @@ h1 {
 .is-style-serif {
 	font-family: $font-family-serif;
 	.revslider & { font-family: $font-family-serif !important; }
+}
+.jumpercase {
+	text-transform: uppercase !important;
+	font-family: $font-family-sans-serif;
+	font-weight: 900;
+	letter-spacing: -0.25px;
+}
+.has-extra-extra-large-font-size {
+	font-size: 3rem;
+	line-height: 1;
 }
 
 .font-weight-black { font-weight: $font-weight-black; }
@@ -73,7 +97,7 @@ h1 {
 blockquote,
 .wp-block-quote {
 	font-style: italic;
-	font-family: $font-family-serif;
+	font-family: $font-family-sans-serif-alt;
 	padding-left: 0;
 	border-left: none;
 	line-height: $line-height-base;
@@ -87,6 +111,7 @@ blockquote,
 		p {
 			font-size: inherit;
 			line-height: inherit;
+			font-family: $font-family-sans-serif-alt;
 		}
 		.wp-block-quote__citation,
 		cite {

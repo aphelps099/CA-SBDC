@@ -68,6 +68,9 @@
 	// opacity: 0;
 	margin-top: auto;
 	transition: opacity .2s, margin-top .2s ease-out;
+	font-family: $font-family-serif;
+	font-style: italic;
+	text-transform: lowercase;
 	@include media-breakpoint-up(md) {
 		font-size: 1.375rem;
 	}
@@ -80,7 +83,13 @@
 		margin-top: 0 !important;
 	}
 	&.text-color-light {
-		color: #fff;
+		color: #eee;
+		.message + .link {
+			border-color: #eee;
+		}
+		.link a {
+			border-color: #eee;
+		}
 	}
 	> .inner {
 		padding-right: 2rem;
@@ -151,7 +160,7 @@
 		+ .link {
 			@include media-breakpoint-up(lg) {
 				padding-left: 1rem;
-				border-left: 2px solid #fff;
+				border-left: 2px solid $body-color;
 			}
 		}
 	}
@@ -160,6 +169,12 @@
 			font-weight: 700;
 			color: inherit;
 			transition: opacity .15s;
+			padding: .35rem .5rem;
+			border: 2px solid $body-color;
+			font-family: $font-family-sans-serif;
+			font-style: normal;
+			font-size: 0.875rem;
+			display: inline-block;
 			&:hover {
 				opacity: .8;
 			}
@@ -648,8 +663,8 @@
 				}
 			}
 			&.secondary {
-				flex: 0 0 percentage(5 / 12);
-				background-color: $x-light-blue;
+				flex: 0 0 42%;
+				background-color: #E9EFF4;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 				.container {
@@ -685,11 +700,11 @@
 		}
 		.container {
 			padding-top: 2rem;
-			padding-bottom: 2rem;
+			padding-bottom: 3.25rem;
 		}
 		h3 {
-			font-weight: 400;
-			margin-bottom: 2.5rem;
+			font-weight: 700;
+			margin-bottom: 1.5rem;
 			+ .sub-menu-cta-links {
 				margin-top: 2rem;
 			}
@@ -702,11 +717,14 @@
 				padding: 0 1rem;
 			}
 			h4 {
-				font-weight: 700;
-				letter-spacing: .05em;
-				margin-bottom: 1.5rem;
-				font-size: 1.5rem;
-				text-transform: uppercase;
+				font-family: $font-family-sans-serif-alt;
+				font-weight: 500;
+				text-transform: capitalize;
+				letter-spacing: .0165em;
+				margin-bottom: 0.95rem;
+				margin-top: 0.3rem;
+				font-size: 1.018rem;
+				color: $dark-blue;
 				a {
 					padding: 0;
 					color: inherit;
@@ -729,9 +747,9 @@
 				}
 				a {
 					padding: 0;
-					color: $primary;
+					color: rgba(#002649, .85);
 					display: block;
-					font-weight: 700;
+					font-weight: 500;
 					&:hover {
 						color: $blue;
 						&:after {
@@ -756,11 +774,12 @@
 			}
 		}
 		.sub-menu-content {
-			line-height: $line-height-base;
+			line-height: 1.34;
 			font-size: 1rem;
-			color: rgba($dark, .8);
+			color: rgba(#1c406f, .5);
+			font-weight: 300;
 			@include media-breakpoint-up(lg) {
-				font-size: 1.25rem;
+				font-size: 1.124rem;
 			}
 			+ .sub-menu-cta-links {
 				margin-top: 2rem;

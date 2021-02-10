@@ -1,10 +1,14 @@
 
 body {
-	line-height: $line-height-lg;
+	line-height: 1.46;
 }
 
 a {
 	transition: color .15s;
+}
+
+em {
+	font-family: $font-family-sans-serif-alt;
 }
 
 img {
