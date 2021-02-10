@@ -74,7 +74,15 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 
 										</div>
 
-										<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+										<div class="entry-header-links">
+
+											<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+											<?php if ( ! empty( $index_page_url ) ) { ?>
+												<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Client Stories', 'crown_blocks' ); ?></a>
+											<?php } ?>
+
+										</div>
 
 									</div>
 								</div>

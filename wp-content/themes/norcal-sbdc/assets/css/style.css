@@ -22760,6 +22760,52 @@ nav.pagination {
     font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
     font-style: normal;
     opacity: 0.89; }
+  @media (min-width: 992px) {
+    .wp-block-crown-blocks-client-story-header .entry-header-links {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: end;
+          -ms-flex-align: end;
+              align-items: flex-end; } }
+  .wp-block-crown-blocks-client-story-header .social-sharing-links {
+    -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto; }
+  .wp-block-crown-blocks-client-story-header .return-to-index {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    -webkit-transition: opacity .15s;
+    transition: opacity .15s; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-client-story-header .return-to-index {
+        margin-bottom: 0; } }
+    @media (min-width: 992px) {
+      .wp-block-crown-blocks-client-story-header .return-to-index {
+        margin-left: 2rem;
+        margin-bottom: .4rem; } }
+    .wp-block-crown-blocks-client-story-header .return-to-index:hover {
+      opacity: .75; }
+    .wp-block-crown-blocks-client-story-header .return-to-index:before {
+      content: '';
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      margin-right: .5em;
+      background-image: url(s);
+      background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%230381C3" class="bi bi-grid-3x3-gap-fill" viewBox="0 0 16 16"%3e%3cpath d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/%3e%3c/svg%3e');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      vertical-align: top;
+      margin-top: 0.075em; }
 
 /*	Client Story Index
 ---------------------------------------------------------*/
