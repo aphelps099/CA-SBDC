@@ -710,7 +710,7 @@ registerBlockType('crown-blocks/container', {
 							onChange={ ( url, post ) => setAttributes({ linkUrl: url }) }
 						/>
 					</ToolbarGroup>
-				</BlockControls>,
+				</BlockControls>
 
 				<div className={ blockClasses.join(' ') } key="container">
 					<div className="container-bg" style={ bgStyle }>

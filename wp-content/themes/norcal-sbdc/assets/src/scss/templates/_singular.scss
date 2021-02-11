@@ -23,8 +23,22 @@ body.single-client_story {
 					flex: 1 1 auto;
 					color: $primary;
 					transition: background-color .2s;
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
 					@include media-breakpoint-up(md) {
 						padding: 2rem;
+					}
+					&[rel=prev] {
+						&:hover:after {
+							transform: rotate(180deg);
+						}
+						&:after {
+							transform: rotate(180deg);
+							@include media-breakpoint-up(sm) {
+								transform: rotate(180deg) translateX(-1rem);
+							}
+						}
 					}
 					&:hover {
 						background-color: $light-gray;
@@ -38,6 +52,7 @@ body.single-client_story {
 						width: calc(50% + 1px);
 						border-left: 2px solid $primary;
 						text-align: right;
+						align-items: flex-end;
 					}
 					&:after {
 						@include icon(map-get($icomoon-icons, arrow-right-display), icomoon);
@@ -46,8 +61,10 @@ body.single-client_story {
 						font-size: 2rem;
 						line-height: 1;
 						transition: opacity .2s, transform .2s ease-out;
+						width: 2rem;
 						@include media-breakpoint-up(sm) {
 							font-size: 2.5rem;
+							width: 2.5rem;
 							opacity: 0;
 							transform: translateX(-1rem);
 						}
