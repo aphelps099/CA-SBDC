@@ -8,8 +8,8 @@ import './style.scss';
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const { InnerBlocks, RichText, Editable, MediaUpload, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, URLInput } = wp.blockEditor;
-const { PanelBody, RadioControl, ColorPicker, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl, AnglePickerControl } = wp.components;
+const { InnerBlocks, RichText, Editable, MediaUpload, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, URLInputButton, URLInput } = wp.blockEditor;
+const { PanelBody, RadioControl, ColorPicker, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl, AnglePickerControl, ToolbarGroup } = wp.components;
 const { getColorObjectByColorValue } = wp.blockEditor;
 
 const spacingProfiles = [
@@ -142,7 +142,9 @@ registerBlockType('crown-blocks/container', {
 		backgroundImageGrayscale: { type: 'number', default: 0 },
 		backgroundImageBlendMode: { type: 'string', default: 'normal' },
 		backgroundImageContain: { type: 'boolean', default: false },
-		textColor: { type: 'string', default: 'auto' }
+		textColor: { type: 'string', default: 'auto' },
+
+		linkUrl: { type: 'string', default: '' }
 	},
 
 
@@ -194,7 +196,9 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
 			backgroundImageContain,
-			textColor
+			textColor,
+
+			linkUrl
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -699,6 +703,15 @@ registerBlockType('crown-blocks/container', {
 
 			<div class="crown-block-editor-container">
 
+				<BlockControls>
+					<ToolbarGroup class="components-toolbar components-toolbar-group crown-block-button-toolbar">
+						<URLInputButton
+							url={ linkUrl }
+							onChange={ ( url, post ) => setAttributes({ linkUrl: url }) }
+						/>
+					</ToolbarGroup>
+				</BlockControls>,
+
 				<div className={ blockClasses.join(' ') } key="container">
 					<div className="container-bg" style={ bgStyle }>
 						{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
@@ -770,7 +783,8 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
 			backgroundImageContain,
-			textColor
+			textColor,
+			linkUrl
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -865,6 +879,7 @@ registerBlockType('crown-blocks/container', {
 						</div>
 					</div>
 				</div>
+				{ linkUrl && <a href={ linkUrl } class="container-link"></a> }
 			</div>
 
 		);

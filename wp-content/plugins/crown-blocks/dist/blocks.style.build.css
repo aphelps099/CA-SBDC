@@ -6055,6 +6055,13 @@
       z-index: 1; }
       .wp-block-crown-blocks-container > .inner > .container-contents > .inner > *:last-child {
         margin-bottom: 0; }
+  .wp-block-crown-blocks-container > .container-link {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: block; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }
