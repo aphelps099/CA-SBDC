@@ -294,10 +294,10 @@ registerBlockType('crown-blocks/container', {
 				label: 'Background Color',
 				value: backgroundColor,
 				onChange: (value) => {
-					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colors = CrownBlocks.getThemeColorPalette();
 					let colorSlug = '';
-					if(settings.colors) {
-						let colorObject = getColorObjectByColorValue(settings.colors, value);
+					if(colors) {
+						let colorObject = getColorObjectByColorValue(colors, value);
 						if(colorObject) colorSlug = colorObject.slug;
 					}
 					setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug, backgroundColorSecondary: value, backgroundColorSecondarySlug: colorSlug });
@@ -308,10 +308,10 @@ registerBlockType('crown-blocks/container', {
 				label: 'Background Gradient Start Color',
 				value: backgroundColor,
 				onChange: (value) => {
-					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colors = CrownBlocks.getThemeColorPalette();
 					let colorSlug = '';
-					if(settings.colors) {
-						let colorObject = getColorObjectByColorValue(settings.colors, value);
+					if(colors) {
+						let colorObject = getColorObjectByColorValue(colors, value);
 						if(colorObject) colorSlug = colorObject.slug;
 					}
 					setAttributes({ backgroundColor: value, backgroundColorSlug: colorSlug });
@@ -321,10 +321,10 @@ registerBlockType('crown-blocks/container', {
 				label: 'Background Gradient End Color',
 				value: backgroundColorSecondary,
 				onChange: (value) => {
-					let settings = wp.data.select('core/editor').getEditorSettings();
+					let colors = CrownBlocks.getThemeColorPalette();
 					let colorSlug = '';
-					if(settings.colors) {
-						let colorObject = getColorObjectByColorValue(settings.colors, value);
+					if(colors) {
+						let colorObject = getColorObjectByColorValue(colors, value);
 						if(colorObject) colorSlug = colorObject.slug;
 					}
 					setAttributes({ backgroundColorSecondary: value, backgroundColorSecondarySlug: colorSlug });

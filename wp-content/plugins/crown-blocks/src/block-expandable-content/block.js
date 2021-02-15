@@ -84,10 +84,10 @@ registerBlockType('crown-blocks/expandable-content', {
 							label: 'Button Color',
 							value: color,
 							onChange: (value) => {
-								let settings = wp.data.select('core/editor').getEditorSettings();
+								let colors = CrownBlocks.getThemeColorPalette();
 								let colorSlug = '';
-								if(settings.colors) {
-									let colorObject = getColorObjectByColorValue(settings.colors, value);
+								if(colors) {
+									let colorObject = getColorObjectByColorValue(colors, value);
 									if(colorObject) colorSlug = colorObject.slug;
 								}
 								setAttributes({ color: value, colorSlug: colorSlug });
