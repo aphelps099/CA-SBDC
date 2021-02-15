@@ -15947,7 +15947,8 @@ readers do not read off random characters that represent icons */
   content: ""; }
 
 body {
-  line-height: 1.46; }
+  line-height: 1.46;
+  overflow-x: hidden; }
 
 a {
   -webkit-transition: color .15s;
