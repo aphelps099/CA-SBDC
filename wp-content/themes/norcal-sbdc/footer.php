@@ -20,6 +20,10 @@
 			<?php get_template_part( 'template-parts/modal-form', null, array( 'form_id' => $modal_form_id ) ); ?>
 		<?php } ?>
 
+		<script>
+			ctSetVw();
+		</script>
+
 		<?php wp_footer(); ?>
 
 	</body>

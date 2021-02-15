@@ -61,8 +61,8 @@
 			margin-right: -#{map-get($container-padding-x, md)};
 		}
 		@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-			margin-left: calc((100vw - 900px) / -2);
-			margin-right: calc((100vw - 900px) / -2);
+			margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+			margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 		}
 		> .inner > .container-contents {
 			@each $breakpoint, $padding-x in $container-padding-x {
@@ -149,8 +149,8 @@
 			margin-right: -#{map-get($container-padding-x, md)};
 		}
 		@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-			margin-left: calc((100vw - 900px) / -2);
-			margin-right: calc((100vw - 900px) / -2);
+			margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+			margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 		}
 	}
 	.section-nav-title {
@@ -2591,8 +2591,8 @@
 		margin-right: -#{map-get($container-padding-x, md)};
 	}
 	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-		margin-left: calc((100vw - 900px) / -2);
-		margin-right: calc((100vw - 900px) / -2);
+		margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+		margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 	}
 	> .header-bg {
 		background-color: $primary;
@@ -2682,8 +2682,8 @@
 		margin-right: -#{map-get($container-padding-x, md)};
 	}
 	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-		margin-left: calc((100vw - 900px) / -2);
-		margin-right: calc((100vw - 900px) / -2);
+		margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+		margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 	}
 	&.text-color-light {
 		color: #fff;
@@ -2867,8 +2867,8 @@
 		margin-right: -#{map-get($container-padding-x, md)};
 	}
 	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-		margin-left: calc((100vw - 900px) / -2);
-		margin-right: calc((100vw - 900px) / -2);
+		margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+		margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 	}
 	> .header-bg {
 		background-color: $primary;
@@ -2997,8 +2997,8 @@
 		margin-right: -#{map-get($container-padding-x, md)};
 	}
 	@media (min-width: #{(900px + map-get($container-padding-x-px, md) * 2)}) {
-		margin-left: calc((100vw - 900px) / -2);
-		margin-right: calc((100vw - 900px) / -2);
+		margin-left: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
+		margin-right: calc(((var(--ct-vw, 1vw) * 100) - 900px) / -2);
 	}
 	> .header-bg {
 		background-color: $primary;

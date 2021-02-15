@@ -15,6 +15,15 @@
 			</style>
 		</noscript>
 
+		<script>
+			function ctSetVw() {
+				let vw = document.documentElement.clientWidth / 100;
+				document.documentElement.style.setProperty('--ct-vw', `${vw}px`);
+			}
+			ctSetVw();
+			window.addEventListener('resize', ctSetVw);
+		</script>
+
 		<?php wp_head(); ?>
 
 	</head>
