@@ -58,6 +58,8 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed' )
 				)
 			);
+			
+			$scripts = apply_filters( 'crown_theme_scripts', $scripts );
 
 			foreach ( $scripts as $script ) {
 

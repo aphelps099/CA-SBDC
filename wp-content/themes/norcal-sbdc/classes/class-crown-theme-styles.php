@@ -55,6 +55,8 @@ if ( ! class_exists( 'Crown_Theme_Styles' ) ) {
 				)
 			);
 
+			$styles = apply_filters( 'crown_theme_styles', $styles );
+
 			foreach ( $styles as $style ) {
 
 				$style = array_merge( array(
