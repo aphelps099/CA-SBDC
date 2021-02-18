@@ -4,7 +4,7 @@
  * Description: Allows multiple instances of the same form to be run on a single page when using AJAX.
  * Author: Nikunj
  * Author URI: #
- * Version: 1.0
+ * Version: 100.0
  * License: GPL2
  * Requires at least: 4.5
  * Tested up to: 5.4.1
@@ -52,8 +52,10 @@ class Gravity_Forms_Multiple_Form_Instances {
         // define all occurences of the original form ID that wont hurt the form input 
         $strings = array( 
             ' gform_wrapper ' => ' gform_wrapper gform_wrapper_original_id_' . $form['id'] . ' ',  
-            "for='choice_" => "for='choice_" . $random_id . '_',  
-            "id='choice_" => "id='choice_" . $random_id . '_',  
+            // "for='choice_" => "for='choice_" . $random_id . '_',  
+            "for='choice_" . $form['id'] => "for='choice_" . $random_id,  
+            // "id='choice_" => "id='choice_" . $random_id . '_',  
+            "id='choice_" . $form['id'] => "id='choice_" . $random_id,
             "id='gform_target_page_number_" => "id='gform_target_page_number_" . $random_id . '_',
             "id='gform_source_page_number_" => "id='gform_source_page_number_" . $random_id . '_',
             "#gform_target_page_number_"  => "#gform_target_page_number_" . $random_id . '_',
