@@ -54,6 +54,113 @@ label {
 }
 
 
+/*	Datepicker
+---------------------------------------------------------*/
+
+.ui-datepicker {
+	display: none;
+	background-color: #fff;
+	width: 250px;
+	border: 1px solid #888;
+	border-radius: $input-border-radius;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+	font-size: $font-size-base;
+	line-height: $line-height-base;
+	overflow: hidden;
+	margin-top: 4px;
+	.ui-datepicker-header {
+		position: relative;
+		height: 50px;
+		text-align: center;
+	}
+	.ui-datepicker-prev,
+	.ui-datepicker-next {
+		position: absolute;
+		top: 0;
+		font-size: 16px;
+		line-height: 50px;
+		cursor: pointer;
+		width: 30px;
+		height: 50px;
+		text-align: center;
+		&:before {
+			@include icon('', 'icomoon');
+		}
+		span {
+			display: none;
+		}
+	}
+	.ui-datepicker-prev {
+		left: 0;
+		&:before { content: map-get($icomoon-icons, arrow-right); transform: rotate(180deg); }
+	}
+	.ui-datepicker-next {
+		right: 0;
+		&:before { content: map-get($icomoon-icons, arrow-right); }
+	}
+	.ui-datepicker-title {
+		padding-top: 8px;
+		line-height: 26px;
+		select {
+			height: $input-height-sm;
+			padding: $input-padding-y-sm $input-padding-x-sm;
+			@include font-size($input-font-size-sm);
+			line-height: $input-line-height-sm;
+			@include border-radius($input-border-radius-sm);
+			display: inline-block;
+			width: 90px;
+			margin-left: 2px;
+			&:first-child {
+				margin-left: 0;
+			}
+		}
+	}
+	table.ui-datepicker-calendar {
+		margin: 0;
+		> thead {
+			> tr {
+				> th {
+					font-weight: 300;
+					text-transform: uppercase;
+					color: #aaa;
+					font-size: 10px;
+					border-bottom: 1px solid #eee;
+					padding: 6px 8px 4px;
+					line-height: $line-height-sm;
+				}
+			}
+		}
+		> tbody {
+			> tr {
+				> td {
+					border-top: none;
+					padding: 0;
+					line-height: $line-height-sm;
+					> span,
+					> a {
+						display: block;
+						padding: 6px 8px;
+						transition: background-color 0.15s linear, color 0.15s linear;
+						&.ui-state-active {
+							background-color: $link-color;
+							color: #fff;
+						}
+					}
+					> a {
+						&:hover {
+							background-color: tint($link-color, 90%);
+						}
+					}
+				}
+			}
+		}
+		th, td {
+			text-align: center;
+		}
+	}
+}
+
+
 form.feed-filters {
 	margin: 0 -.5rem 2rem;
 	padding: 1rem .5rem;
