@@ -17,6 +17,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			self::$init = true;
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_shortcodes') );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_scripts' ), 10 );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_styles' ), 10 );
 
 		}
 
@@ -53,6 +55,29 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 					'zoom' => 11
 				)
 			));
+
+			self::$shortcodes['data_chart'] = new Shortcode(array(
+				'tag' => 'data_chart',
+				'getOutputCb' => array( __CLASS__, 'get_data_chart_shortcode' ),
+				'defaultAtts' => array(
+					'name' => ''
+				)
+			));
+
+		}
+
+
+		public static function register_scripts() {
+
+			wp_register_script( 'chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js', array(), '2.9.4', true );
+			wp_register_script( 'chart-js-bundle', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js', array(), '2.9.4', true );
+
+		}
+
+
+		public static function register_styles() {
+
+			wp_register_style( 'chart-js', 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css', array(), '2.9.4' );
 
 		}
 
@@ -230,6 +255,156 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			if ( empty( $map_args['points'] ) ) return '';
 
 			return '<div class="' . implode( ' ', $wrapper_classes ) . '">' . GoogleMaps::getMap( $map_args ) . '</div>';
+
+		}
+
+
+		public static function get_data_chart_shortcode( $atts, $content ) {
+
+			$name = ! empty( $atts['name'] ) ? $atts['name'] : null;
+			if ( ! $name ) return '';
+			if ( ! in_array( $name, array( 'tfg-client-capital-infusion' ) ) ) return '';
+
+			wp_enqueue_script( 'chart-js' );
+			wp_enqueue_style( 'chart-js' );
+
+			ob_start();
+			?>
+
+				<div class="data-chart-container <?php echo $name; ?>"><canvas id="data-chart-<?php echo $name; ?>" width="1200" height="800"></canvas>
+				<script>
+					window.onload = function() {
+						var ctx = document.getElementById('data-chart-<?php echo $name; ?>').getContext('2d');
+						var chartData = {
+							labels: ['2016', '2017', '2018', '2019'],
+							datasets: [
+								// {
+								// 	type: 'line',
+								// 	label: 'Trendline for SBIR/STTR Grants R² = 0.037',
+								// 	borderColor: '#F700FF',
+								// 	borderWidth: 2,
+								// 	pointRadius: 0,
+								// 	fill: false,
+								// 	data: [
+								// 		62,
+								// 		54.6667,
+								// 		47.3333,
+								// 		40
+								// 	]
+								// },
+								// {
+								// 	type: 'line',
+								// 	label: 'Trendline for Investment R² = 0.085',
+								// 	borderColor: '#F700FF',
+								// 	borderWidth: 2,
+								// 	pointRadius: 0,
+								// 	fill: false,
+								// 	data: [
+								// 		24,
+								// 		26.3333,
+								// 		28.6667,
+								// 		31
+								// 	]
+								// },
+								{
+									type: 'line',
+									label: 'Trendline for SBIR/STTR Grants R² = 0.018',
+									borderColor: '#F700FF',
+									borderWidth: 2,
+									pointRadius: 0,
+									fill: false,
+									data: [
+										4.700000,
+										4.499058,
+										4.298116,
+										4.097174,
+									]
+								},
+								{
+									type: 'line',
+									label: 'Trendline for Investment R² = 0.587',
+									borderColor: '#F700FF',
+									borderWidth: 2,
+									pointRadius: 0,
+									fill: false,
+									data: [
+										15.000000,
+										38.100000,
+										61.200000,
+										84.300000
+									]
+								},
+								{
+									type: 'bar',
+									label: 'SBIR/STTR Grants',
+									backgroundColor: '#84C318',
+									borderWidth: 0,
+									data: [
+										5.852886,
+										4.006929,
+										1.802963,
+										5.917734
+									]
+								},
+								{
+									type: 'bar',
+									label: 'Investment',
+									backgroundColor: '#A4E535',
+									borderWidth: 0,
+									data: [
+										33.453619,
+										24.748504,
+										32.823271,
+										107.820898
+									]
+								}
+							]
+						};
+						var myChart = new Chart(ctx, {
+							type: 'bar',
+							data: chartData,
+							options: {
+								responsive: true,
+								title: {
+									display: true,
+									text: 'TFG Client Capital Infusion'
+								},
+								legend: {
+									onClick: function(e, legendItem) {},
+									labels: {
+										filter: function(legendItem, data) {
+											return legendItem.text.match(/^trendline/i) ? false : true;
+										}
+									}
+								},
+								scales: {
+									xAxes: [{
+										display: true,
+										gridLines: {
+											display: false
+										}
+									}],
+									yAxes: [{
+										display: true,
+										ticks: {
+											// min: 100000,
+											callback: function(value, index, values) {
+												return '$' + value + 'M';
+											}
+										}
+									}]
+								},
+								tooltips: {
+									mode: 'index',
+									intersect: true
+								}
+							}
+						});
+					};
+				</script>
+
+			<?php
+			return ob_get_clean();
 
 		}
 
