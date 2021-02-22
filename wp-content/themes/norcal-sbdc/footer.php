@@ -15,9 +15,9 @@
 		<?php get_template_part( 'template-parts/modal-subscribe' ); ?>
 		<?php get_template_part( 'template-parts/modal-video' ); ?>
 
-		<?php $modal_form_ids = apply_filters( 'ct_footer_modal_form_ids', array() ); ?>
-		<?php foreach( $modal_form_ids as $modal_form_id ) { ?>
-			<?php get_template_part( 'template-parts/modal-form', null, array( 'form_id' => $modal_form_id ) ); ?>
+		<?php $modal_forms = apply_filters( 'ct_footer_modal_forms', array() ); ?>
+		<?php foreach( $modal_forms as $modal_form ) { ?>
+			<?php get_template_part( 'template-parts/modal-form', null, array( 'form' => $modal_form ) ); ?>
 		<?php } ?>
 
 		<script>

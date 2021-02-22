@@ -6,7 +6,7 @@ if(!class_exists('Crown_Block_Button')) {
 
 		public static $name = 'button';
 
-		protected static $modal_form_ids = array();
+		protected static $modal_forms = array();
 
 
 		public static function init() {
@@ -14,7 +14,7 @@ if(!class_exists('Crown_Block_Button')) {
 
 			add_action( 'render_block', array( get_called_class(), 'filter_render_block' ), 10, 2 );
 
-			add_filter( 'ct_footer_modal_form_ids', array( get_called_class(), 'filter_ct_footer_modal_form_ids' ) );
+			add_filter( 'ct_footer_modal_forms', array( get_called_class(), 'filter_ct_footer_modal_forms' ) );
 
 		}
 
@@ -25,15 +25,19 @@ if(!class_exists('Crown_Block_Button')) {
 				$type = isset( $block['attrs']['linkModalType'] ) ? $block['attrs']['linkModalType'] : '';
 				if ( $type == 'form' ) {
 					$form_id = isset( $block['attrs']['linkModalFormId'] ) ? intval($block['attrs']['linkModalFormId']) : 0;
-					if ( ! empty( $form_id ) ) self::$modal_form_ids[] = $form_id;
+					if ( ! empty( $form_id ) ) self::$modal_forms[] = array( 'id' => $form_id );
+				} else if ( $type == 'zoom_meeting_registration' ) {
+					$form_id = get_option( 'theme_config_events_zoom_meeting_registration_form' );
+					$meeting_id = isset( $block['attrs']['linkModalMeetingId'] ) ? intval($block['attrs']['linkModalMeetingId']) : 0;
+					if ( ! empty( $form_id ) && ! empty( $meeting_id ) ) self::$modal_forms[] = array( 'id' => $form_id, 'type' => 'event-registration-zoom-meeting', 'field_values' => array( 'meeting_id' => $meeting_id ) );
 				}
 			}
 			return $block_content;
 		}
 
 
-		public static function filter_ct_footer_modal_form_ids( $form_ids ) {
-			return array_merge( $form_ids, self::$modal_form_ids );
+		public static function filter_ct_footer_modal_forms( $forms ) {
+			return array_merge( $forms, self::$modal_forms );
 		}
 
 

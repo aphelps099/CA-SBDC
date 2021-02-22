@@ -58,7 +58,8 @@ registerBlockType('crown-blocks/button', {
 		openModal: { type: 'boolean', default: false },
 		linkModalType: { type: 'string', default: '' },
 		linkModalFormId: { type: 'string', default: '' },
-		linkModalVideoEmbed: { type: 'string', default: '' }
+		linkModalVideoEmbed: { type: 'string', default: '' },
+		linkModalMeetingId: { type: 'string', default: '' },
 	},
 
 
@@ -80,7 +81,8 @@ registerBlockType('crown-blocks/button', {
 			openModal,
 			linkModalType,
 			linkModalFormId,
-			linkModalVideoEmbed
+			linkModalVideoEmbed,
+			linkModalMeetingId
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -210,7 +212,8 @@ registerBlockType('crown-blocks/button', {
 							{ label: 'Select Option...', value: '' },
 							{ label: 'Form', value: 'form' },
 							{ label: 'Subscribe', value: 'subscribe' },
-							{ label: 'Video', value: 'video' }
+							{ label: 'Video', value: 'video' },
+							{ label: 'Zoom Meeting Registration', value: 'zoom_meeting_registration' }
 						] }
 					/> }
 
@@ -224,6 +227,12 @@ registerBlockType('crown-blocks/button', {
 						label="Video Embed URL"
 						value={ linkModalVideoEmbed }
 						onChange={ (value) => setAttributes({ linkModalVideoEmbed: value }) }
+					/> }
+
+					{ !! (openModal && linkModalType == 'zoom_meeting_registration') && <TextControl
+						label="Meeting ID"
+						value={ linkModalMeetingId }
+						onChange={ (value) => setAttributes({ linkModalMeetingId: value }) }
 					/> }
 
 				</PanelBody>
@@ -285,7 +294,8 @@ registerBlockType('crown-blocks/button', {
 			openModal,
 			linkModalType,
 			linkModalFormId,
-			linkModalVideoEmbed
+			linkModalVideoEmbed,
+			linkModalMeetingId
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -345,6 +355,16 @@ registerBlockType('crown-blocks/button', {
 						<a href={ linkModalVideoEmbed } className={ buttonClasses.join(' ') } target="_blank" rel="noopener noreferrer" data-toggle="modal" data-target={ '#video-modal' }>
 							<span class="btn-label">{ label }</span>
 						</a>
+					</p>
+				);
+			}
+
+			if(linkModalType == 'zoom_meeting_registration' && linkModalMeetingId != '') {
+				return (
+					<p className={ blockClasses.join(' ') }>
+						<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target={ '#form-event-registration-zoom-meeting-' + parseInt(linkModalMeetingId) + '-modal' }>
+							<span class="btn-label">{ label }</span>
+						</button>
 					</p>
 				);
 			}
