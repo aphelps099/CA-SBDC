@@ -60,7 +60,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				'tag' => 'data_chart',
 				'getOutputCb' => array( __CLASS__, 'get_data_chart_shortcode' ),
 				'defaultAtts' => array(
-					'name' => ''
+					'name' => '',
+					'width' => '100',
+					'height' => '100'
 				)
 			));
 
@@ -271,7 +273,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			ob_start();
 			?>
 
-				<div class="data-chart-container <?php echo $name; ?>"><canvas id="data-chart-<?php echo $name; ?>" width="1200" height="800"></canvas>
+				<div class="data-chart-container <?php echo $name; ?>">
+					<canvas id="data-chart-<?php echo $name; ?>" width="<?php echo $atts['width']; ?>" height="<?php echo $atts['height']; ?>"></canvas>
+				</div>
 				<script>
 					window.onload = function() {
 						var ctx = document.getElementById('data-chart-<?php echo $name; ?>').getContext('2d');
