@@ -21,6 +21,15 @@
 	&.cell-vertical-align-top #{$column-cell-selector} > .inner { align-items: flex-start; }
 	&.cell-vertical-align-center #{$column-cell-selector} > .inner { align-items: center; }
 	&.cell-vertical-align-bottom #{$column-cell-selector} > .inner { align-items: flex-end; }
+	&.cell-vertical-align-stretch #{$column-cell-selector} > .inner { align-items: stretch; }
+	&.cell-vertical-align-stretch #{$column-cell-selector} > .inner > .grid-cell-contents > .inner {
+		display: flex;
+		flex-direction: column;
+		> .wp-block-crown-blocks-container,
+		> .wp-block-crown-blocks-hover-container {
+			flex: 1 1 auto;
+		}
+	}
 
 	&.cell-horizontal-align-left #{$column-container-selector} { justify-content: flex-start; }
 	&.cell-horizontal-align-center #{$column-container-selector} { justify-content: center; }

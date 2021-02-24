@@ -30,6 +30,7 @@
 		$.wptheme.initCenterFinderBlocks();
 		$.wptheme.initSectionNavBlocks();
 		$.wptheme.initTeamMemberIndexBlocks();
+		$.wptheme.initHoverContainerBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
 
@@ -1147,6 +1148,40 @@
 						drawerContent.removeClass('flipped');
 					}
 				});
+			});
+
+		};
+
+
+		wptheme.initHoverContainerBlocks = function() {
+
+			var resizeHoverContainerBlocks = function() {
+				$('.wp-block-crown-blocks-hover-container').each(function(i, el) {
+					var block = $(el);
+					if(block.hasClass('hover')) return;
+					var details = $('.details', block);
+					var innerContainerContents = $('.container-contents > .inner', block);
+					innerContainerContents.css({ minHeight: 0 });
+					details.css({ height: 'auto' });
+					innerContainerContents.css({ minHeight: innerContainerContents.height() });
+					details.css({ height: 0 });
+				});
+			};
+			resizeHoverContainerBlocks();
+			$(window).on('load resize', resizeHoverContainerBlocks);
+
+			$(document).on('mouseenter', '.wp-block-crown-blocks-hover-container', function(e) {
+				var block = $(this);
+				block.addClass('hover');
+				var details = $('.details', block);
+				details.css({ height: $('> .inner', details).outerHeight() });
+				setTimeout(function() { details.css({ height: 'auto' }); }, 200);
+			}).on('mouseleave', '.wp-block-crown-blocks-hover-container', function(e) {
+				var block = $(this);
+				block.removeClass('hover');
+				var details = $('.details', block);
+				details.css({ height: $('> .inner', details).outerHeight() });
+				setTimeout(function() { details.css({ height: 0 }); }, 0);
 			});
 
 		};

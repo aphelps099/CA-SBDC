@@ -406,6 +406,7 @@ registerBlockType('crown-blocks/grid', {
 							<Button isPrimary={ cellVerticalAlignment == 'top' } isSecondary={ cellVerticalAlignment != 'top' } onClick={ (e) => setAttributes({ cellVerticalAlignment: 'top' }) }>Top</Button>
 							<Button isPrimary={ cellVerticalAlignment == 'center' } isSecondary={ cellVerticalAlignment != 'center' } onClick={ (e) => setAttributes({ cellVerticalAlignment: 'center' }) }>Center</Button>
 							<Button isPrimary={ cellVerticalAlignment == 'bottom' } isSecondary={ cellVerticalAlignment != 'bottom' } onClick={ (e) => setAttributes({ cellVerticalAlignment: 'bottom' }) }>Bottom</Button>
+							<Button isPrimary={ cellVerticalAlignment == 'stretch' } isSecondary={ cellVerticalAlignment != 'stretch' } onClick={ (e) => setAttributes({ cellVerticalAlignment: 'stretch' }) }>Stretch</Button>
 						</ButtonGroup>
 					</BaseControl>
 

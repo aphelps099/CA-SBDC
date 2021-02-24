@@ -30,10 +30,12 @@ $spacer: 1rem;
 				width: 100%;
 				display: flex;
 				flex-direction: column;
-				> .wp-block-crown-blocks-container:first-child:last-child {
+				> .wp-block-crown-blocks-container,
+				> .wp-block-crown-blocks-hover-container {
 					flex: 1 1 auto;
 					display: flex;
 					align-items: center;
+					margin: 0;
 					> .inner {
 						width: 100%;
 					}

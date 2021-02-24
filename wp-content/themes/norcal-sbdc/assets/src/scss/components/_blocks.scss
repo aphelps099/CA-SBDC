@@ -3444,3 +3444,94 @@
 		}
 	}
 }
+
+
+/*	Hover Container
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-hover-container {
+	&:hover {
+		.content,
+		.cta-label {
+			right: 0;
+			opacity: 1;
+			transition: opacity .2s .2s, right .2s .2s ease-out;
+		}
+	}
+	> .inner > .container-contents > .inner {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	.title {
+		font-family: $font-family-sans-serif;
+	}
+	.details {
+		transition: height .2s ease-out;
+		@include media-breakpoint-up(lg) {
+			overflow: hidden;
+			height: 0;
+		}
+		@include media-breakpoint-down(md) {
+			height: auto !important;
+		}
+		> .inner {
+			padding-top: 1rem;
+		}
+	}
+	.content {
+		transition: opacity .2s;
+		@include media-breakpoint-up(lg) {
+			opacity: 0;
+		}
+	}
+	.cta-label {
+		transition: opacity .2s, right .2s 0s ease-out;
+		position: relative;
+		@include media-breakpoint-up(lg) {
+			right: 1em;
+			opacity: 0;
+		}
+		&:after {
+			@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+			position: relative;
+			margin-left: .5em;
+			margin-right: -.5em;
+			top: .15em;
+			right: 0;
+		}
+	}
+	&.hover-type-left-aligned {
+		&:hover {
+			.details:after {
+				left: calc(100% - 1.5rem);
+			}
+		}
+		> .inner > .container-contents > .inner {
+			min-height: 0 !important;
+		}
+		.details {
+			overflow: visible;
+			height: auto !important;
+			padding-bottom: 3rem;
+			position: relative;
+			&:after {
+				@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				font-size: 1.5rem;
+				line-height: 1;
+				transition: left .4s ease-out;
+			}
+		}
+		.content {
+			// opacity: 1;
+			transition: opacity .4s, transform .4s ease-out;
+		}
+		.cta-label {
+			right: 0;
+			opacity: 1;
+		}
+	}
+}

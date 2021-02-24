@@ -391,3 +391,24 @@ body {
 		margin-right: 0;
 	}
 }
+
+.wp-block[data-type="crown-blocks/hover-container"] {
+	.wp-block-crown-blocks-hover-container {
+		.details {
+			height: auto;
+			overflow: visible;
+		}
+		.content {
+			opacity: 1;
+		}
+		.cta-label {
+			opacity: 1;
+			right: 0;
+		}
+		&.hover-type-left-aligned {
+			.content {
+				transform: none;
+			}
+		}
+	}
+}

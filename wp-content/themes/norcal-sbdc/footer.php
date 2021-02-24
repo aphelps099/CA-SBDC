@@ -15,7 +15,7 @@
 		<?php get_template_part( 'template-parts/modal-subscribe' ); ?>
 		<?php get_template_part( 'template-parts/modal-video' ); ?>
 
-		<?php $modal_forms = apply_filters( 'ct_footer_modal_forms', array() ); ?>
+		<?php $modal_forms = ct_get_footer_modal_forms(); ?>
 		<?php foreach( $modal_forms as $modal_form ) { ?>
 			<?php get_template_part( 'template-parts/modal-form', null, array( 'form' => $modal_form ) ); ?>
 		<?php } ?>

@@ -9,5 +9,9 @@ $spacer: 1rem;
 	}
 	.grid-cell-contents {
 		flex: 0 0 100%;
+		display: flex;
+		> .inner {
+			width: 100%;
+		}
 	}
 }

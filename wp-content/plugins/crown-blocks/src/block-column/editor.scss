@@ -33,17 +33,20 @@
 							> .wp-block {
 								width: 100%;
 							}
-							> .wp-block[data-type="crown-blocks/container"]:first-child {
+							> .wp-block[data-type="crown-blocks/container"]:first-child,
+							> .wp-block[data-type="crown-blocks/hover-container"]:first-child {
 								flex: 1 1 auto;
 								display: flex;
 								> .crown-block-editor-container {
 									width: 100%;
 									display: flex;
 									flex-direction: column;
-									> .wp-block-crown-blocks-container {
+									> .wp-block-crown-blocks-container,
+									> .wp-block-crown-blocks-hover-container {
 										flex: 1 1 auto;
 										display: flex;
 										align-items: center;
+										margin: 0;
 										> .inner {
 											width: 100%;
 										}

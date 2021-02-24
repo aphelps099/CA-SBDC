@@ -165,3 +165,15 @@ if ( ! function_exists( 'ct_get_related_posts' ) ) {
 
 	}
 }
+
+
+if ( ! function_exists( 'ct_get_footer_modal_forms' ) ) {
+	function ct_get_footer_modal_forms() {
+		$forms = apply_filters( 'ct_footer_modal_forms', array() );
+		$unique_forms = array();
+		foreach ( $forms as $form ) {
+			$unique_forms[ md5( json_encode( $form ) ) ] = $form;
+		}
+		return array_values( $unique_forms );
+	}
+}
