@@ -26020,6 +26020,30 @@ body.mobile-menu-active {
 .gfield.no-label .gfield_label, .gfield.hidden_label .gfield_label {
   display: none; }
 
+.gfield.field_description_above .gfield_description {
+  margin: 0 0 5px; }
+  .gfield.field_description_above .gfield_description.validation_message {
+    margin-top: 5px;
+    margin-bottom: 10px; }
+
+.gfield.signature .ginput_container_text {
+  position: relative; }
+  .gfield.signature .ginput_container_text:before {
+    content: '×';
+    position: absolute;
+    line-height: 1;
+    font-size: 2rem;
+    left: 0;
+    bottom: .4rem;
+    font-weight: 300;
+    opacity: .5; }
+  .gfield.signature .ginput_container_text input[type="text"] {
+    padding: .5rem 0;
+    padding-left: 1.5rem;
+    height: auto;
+    font-family: Brush Script MT, Brush Script Std, cursive;
+    font-size: 2rem; }
+
 .gfield_required {
   color: #D11141;
   margin-left: 1px; }
