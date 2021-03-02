@@ -66,6 +66,16 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['qp_placeholder'] = new Shortcode(array(
+				'tag' => 'qp_placeholder',
+				'getOutputCb' => array( __CLASS__, 'get_query_parameter_placeholder_shortcode' ),
+				'defaultAtts' => array(
+					'parameter' => '',
+					'template' => '',
+					'fallback' => ''
+				)
+			));
+
 		}
 
 
@@ -410,6 +420,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			<?php
 			return ob_get_clean();
 
+		}
+
+
+		public static function get_query_parameter_placeholder_shortcode( $atts, $content ) {
+			$value = isset( $_GET[ $atts['parameter'] ] ) ? trim( $_GET[ $atts['parameter'] ] ) : '';
+			$value = wp_unslash( strip_tags( $value ) );
+			if ( empty( $value ) ) return $atts['fallback'];
+			return sprintf( $atts['template'], $value );
 		}
 
 
