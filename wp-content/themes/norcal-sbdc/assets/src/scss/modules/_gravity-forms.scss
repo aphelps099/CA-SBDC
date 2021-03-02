@@ -215,6 +215,17 @@ $gform-gutter-width: 10px;
 				flex: 1 1 auto;
 			}
 		}
+		&.field_description_above {
+			.gfield_description {
+				margin-bottom: 1rem;
+				&.validation_message {
+					margin-bottom: 10px;
+				}
+			}
+			.ginput_container_radio {
+				flex: 1 1 auto;
+			}
+		}
 		.gfield_label {
 			text-align: center;
 			font-size: 1.5rem;

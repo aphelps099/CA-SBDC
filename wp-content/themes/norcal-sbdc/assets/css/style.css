@@ -26045,6 +26045,16 @@ body.mobile-menu-active {
       -ms-flex: 1 1 auto;
           flex: 1 1 auto; }
 
+.gfield.toggle.field_description_above .gfield_description {
+  margin-bottom: 1rem; }
+  .gfield.toggle.field_description_above .gfield_description.validation_message {
+    margin-bottom: 10px; }
+
+.gfield.toggle.field_description_above .ginput_container_radio {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto; }
+
 .gfield.toggle .gfield_label {
   text-align: center;
   font-size: 1.5rem;
