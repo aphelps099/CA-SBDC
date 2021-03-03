@@ -578,6 +578,12 @@
 				wptheme.updatePostFeedBlock($(this).closest('.post-feed-block'), $(this).attr('href'));
 			});
 
+			var filter = getQueryStringValue('filter');
+			if(filter) {
+				$('form.feed-filters button.filters-toggle').trigger('click');
+				$('form.feed-filters .filters-nav button').filter(function(i, el) { return $(el).data('tab') == filter; }).trigger('click');
+			}
+
 		};
 		wptheme.updatePostFeedBlock = function(block, url) {
 			if(url.match(/^\//)) url = crownThemeData.baseUrl + url;
