@@ -34,6 +34,9 @@ registerBlockType('crown-blocks/hover-container', {
 		backgroundImageId: { type: 'number' },
 		backgroundImageData: { type: 'object' },
 		backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
+		backgroundImageOpacity: { type: 'number', default: 100 },
+		backgroundImageGrayscale: { type: 'number', default: 0 },
+		backgroundImageBlendMode: { type: 'string', default: 'normal' },
 		openNewWindow: { type: 'boolean', default: false },
 		openModal: { type: 'boolean', default: false },
 		linkModalType: { type: 'string', default: '' },
@@ -59,6 +62,9 @@ registerBlockType('crown-blocks/hover-container', {
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
+			backgroundImageOpacity,
+			backgroundImageGrayscale,
+			backgroundImageBlendMode,
 			openNewWindow,
 			openModal,
 			linkModalType,
@@ -143,6 +149,38 @@ registerBlockType('crown-blocks/hover-container', {
 							</div>
 						) }
 					/>
+
+					{ !! backgroundImageId && <RangeControl
+						label="Opacity"
+						value={ backgroundImageOpacity }
+						onChange={ (value) => setAttributes({ backgroundImageOpacity: value }) }
+						min={ 0 }
+						max={ 100 }
+					/> }
+
+					{ !! backgroundImageId && <RangeControl
+						label="Grayscale"
+						value={ backgroundImageGrayscale }
+						onChange={ (value) => setAttributes({ backgroundImageGrayscale: value }) }
+						min={ 0 }
+						max={ 100 }
+					/> }
+
+					{ !! backgroundImageId && <SelectControl
+						label="Blend Mode"
+						value={ backgroundImageBlendMode }
+						onChange={ (value) => setAttributes({ backgroundImageBlendMode: value }) }
+						options={ [
+							{ label: 'Normal', value: 'normal' },
+							{ label: 'Multiply', value: 'multiply' },
+							{ label: 'Screen', value: 'screen' },
+							{ label: 'Overlay', value: 'overlay' },
+							{ label: 'Soft Light', value: 'soft-light' },
+							{ label: 'Hard Light', value: 'hard-light' },
+							{ label: 'Darken', value: 'darken' },
+							{ label: 'Lighten', value: 'lighten' }
+						] }
+					/> }
 
 				</PanelBody>
 
@@ -248,7 +286,10 @@ registerBlockType('crown-blocks/hover-container', {
 					<div className="container-bg" style={ bgStyle }>
 						{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
 							backgroundImage: 'url(' + backgroundImageUrl + ')',
-							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`
+							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+							opacity: (backgroundImageOpacity / 100),
+							filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+							mixBlendMode: backgroundImageBlendMode
 						} }></div> }
 					</div>
 					<div className="container-bg hover" style={ bgHoverStyle }></div>
@@ -315,6 +356,9 @@ registerBlockType('crown-blocks/hover-container', {
 			backgroundImageId,
 			backgroundImageData,
 			backgroundImageFocalPoint,
+			backgroundImageOpacity,
+			backgroundImageGrayscale,
+			backgroundImageBlendMode,
 			openNewWindow,
 			openModal,
 			linkModalType,
@@ -392,7 +436,10 @@ registerBlockType('crown-blocks/hover-container', {
 				<div className="container-bg" style={ bgStyle }>
 					{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
 						backgroundImage: 'url(' + backgroundImageUrl + ')',
-						backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`
+						backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+						opacity: (backgroundImageOpacity / 100),
+						filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+						mixBlendMode: backgroundImageBlendMode
 					} }></div> }
 				</div>
 				<div className="container-bg hover" style={ bgHoverStyle }></div>
@@ -421,7 +468,157 @@ registerBlockType('crown-blocks/hover-container', {
 				></a>
 			</div>
 		);
-	}
+	},
+
+
+	deprecated: [
+
+		{
+			attributes: {
+				title: { type: 'string', selector: '.title', source: 'html' },
+				content: { type: 'string', selector: '.content', source: 'html' },
+				ctaLabel: { type: 'string', default: 'view', selector: '.cta-label', source: 'html' },
+				linkUrl: { type: 'string', default: '' },
+				linkPost: { type: 'object' },
+				hoverType: { type: 'string', default: 'default' },
+				backgroundColor: { type: 'string', default: '#012D61' },
+				backgroundColorHover: { type: 'string', default: '#0381C3' },
+				backgroundImageId: { type: 'number' },
+				backgroundImageData: { type: 'object' },
+				backgroundImageFocalPoint: { type: 'object', default: { x: 0.5, y: 0.5 } },
+				openNewWindow: { type: 'boolean', default: false },
+				openModal: { type: 'boolean', default: false },
+				linkModalType: { type: 'string', default: '' },
+				linkModalFormId: { type: 'string', default: '' },
+				linkModalVideoEmbed: { type: 'string', default: '' },
+				linkModalMeetingId: { type: 'string', default: '' },
+				textColor: { type: 'string', default: 'auto' },
+				textColorHover: { type: 'string', default: 'auto' }
+			},
+			save: ({ attributes, className }) => {
+
+				const {
+					title,
+					content,
+					ctaLabel,
+					linkUrl,
+					linkPost,
+					hoverType,
+					backgroundColor,
+					backgroundColorHover,
+					backgroundImageId,
+					backgroundImageData,
+					backgroundImageFocalPoint,
+					openNewWindow,
+					openModal,
+					linkModalType,
+					linkModalFormId,
+					linkModalVideoEmbed,
+					linkModalMeetingId,
+					textColor,
+					textColorHover
+				} = attributes;
+		
+				let blockClasses = [ className ];
+				blockClasses.push('hover-type-' + hoverType);
+		
+				if(textColor == 'auto' && backgroundColor) {
+					blockClasses.push('text-color-' + (CrownBlocks.isDarkColor(backgroundColor) ? 'light' : 'dark'));
+				} else if(textColor != 'auto') {
+					blockClasses.push('text-color-' + textColor);
+				}
+		
+				if(textColorHover == 'auto' && backgroundColorHover) {
+					blockClasses.push('text-color-hover-' + (CrownBlocks.isDarkColor(backgroundColorHover) ? 'light' : 'dark'));
+				} else if(textColorHover != 'auto') {
+					blockClasses.push('text-color-hover-' + textColorHover);
+				}
+		
+				let bgStyle = {};
+				if(backgroundColor) {
+					bgStyle.backgroundColor = backgroundColor;
+				}
+		
+				let bgHoverStyle = {};
+				if(backgroundColorHover) {
+					bgHoverStyle.backgroundColor = backgroundColorHover;
+				}
+		
+				let backgroundImageUrl = null;
+				if(backgroundImageId) {
+					backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+					blockClasses.push('has-bg-image');
+				}
+		
+				let linkHref = linkUrl;
+				let linkOpenNewWindow = openNewWindow;
+				let linkDataToggle = null;
+				let linkDataTarget = null;
+				if(openModal) {
+					if(linkModalType == 'subscribe') {
+						linkHref = '#';
+						linkOpenNewWindow = false;
+						linkDataToggle = 'modal';
+						linkDataTarget = '#subscribe-modal';
+					}
+					if(linkModalType == 'form' && linkModalFormId != '') {
+						linkHref = '#';
+						linkOpenNewWindow = false;
+						linkDataToggle = 'modal';
+						linkDataTarget = '#form-' + parseInt(linkModalFormId) + '-modal';
+					}
+					if(linkModalType == 'video' && linkModalVideoEmbed != '') {
+						linkHref = linkModalVideoEmbed;
+						linkOpenNewWindow = true;
+						linkDataToggle = 'modal';
+						linkDataTarget = '#video-modal';
+					}
+					if(linkModalType == 'zoom_meeting_registration' && linkModalMeetingId != '') {
+						linkHref = '#';
+						linkOpenNewWindow = false;
+						linkDataToggle = 'modal';
+						linkDataTarget = '#form-event-registration-zoom-meeting-' + parseInt(linkModalMeetingId) + '-modal';
+					}
+				}
+		
+				return (
+					<div className={ blockClasses.join(' ') } key="container">
+						<div className="container-bg" style={ bgStyle }>
+							{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
+								backgroundImage: 'url(' + backgroundImageUrl + ')',
+								backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`
+							} }></div> }
+						</div>
+						<div className="container-bg hover" style={ bgHoverStyle }></div>
+						<div className="inner">
+							<div className="container-contents">
+								<div className="inner">
+									<RichText.Content tagName="h3" className="title" value={ title } />
+									<div class="details">
+										<div class="inner">
+											<RichText.Content tagName="p" className="content" value={ content } />
+											<div class="cta-label-container">
+												<RichText.Content tagName="p" className="cta-label" value={ ctaLabel } />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<a
+							class="container-link"
+							href={ linkHref }
+							target={ linkOpenNewWindow && '_blank' }
+							rel={ linkOpenNewWindow && 'noopener noreferrer' }
+							data-toggle={ linkDataToggle && linkDataToggle }
+							data-target={ linkDataTarget && linkDataTarget }
+						></a>
+					</div>
+				);
+			}
+		}
+
+	]
 
 
 } );
