@@ -90,6 +90,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			if ( ! GFCommon::current_user_can_any( 'gravityforms_export_entries' ) ) {
 				wp_die( 'You do not have permission to access this page' );
 			}
+
+			$add_on = Gravity_Forms_Neoserra_Add_On::get_instance();
 	
 			GFExport::page_header( __( 'Export to Neoserra', 'gfneoserra' ) );
 
@@ -234,6 +236,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 									$forms = apply_filters( 'gform_export_entries_forms', $forms );
 
 									foreach ( $forms as $form ) {
+
+										$form_object = GFAPI::get_form( $form->id );
+
+										$settings = $add_on->get_form_settings( $form_object );
+										// print_r($settings);
+										if ( ! isset( $settings['active'] ) || ! boolval( $settings['active'] ) ) continue;
+
 										?>
 										<option value="<?php echo absint( $form->id ) ?>" <?php selected( rgget( 'id' ), $form->id ); ?>><?php echo esc_html( $form->title ) ?></option>
 										<?php

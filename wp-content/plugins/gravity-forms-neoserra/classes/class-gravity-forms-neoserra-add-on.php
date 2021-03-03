@@ -32,9 +32,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Add_On' ) ) {
 					'title'  => esc_html__( 'Neoserra Settings', 'gfneoserra' ),
 					'fields' => array(
 						array(
-							'label'   => esc_html__( 'Active', 'gfneoserra' ),
+							'label'   => esc_html__( 'Options', 'gfneoserra' ),
 							'type'    => 'checkbox',
-							'name'    => 'export_enabled',
+							'name'    => 'options',
 							// 'tooltip' => esc_html__( 'This is the tooltip', 'gfneoserra' ),
 							'choices' => array(
 								array(
@@ -84,7 +84,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Add_On' ) ) {
 					'label' => esc_html__( 'Last Name', 'gfneoserra' ),
 					'required' => true,
 					'field_type' => array( 'name', 'text', 'hidden' ),
-					'default_value' => $this->get_first_field_by_type( 'name', 3 )
+					'default_value' => $this->get_first_field_by_type( 'name', 5 )
 				),
 				array(
 					'name' => 'email',
