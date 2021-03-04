@@ -28,7 +28,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			'bd_field_map_description'        => 'Product or Service Description',
 			'bd_field_map_idea'               => 'Product or Service Description',
 			'other_field_map_referral'        => 'Referral From',
-			'other_field_map_privacy_release' => 'Privacy Release',
+			'other_field_map_privacy_release' => 'Permit SBA Survey',
 			'other_field_map_consent'         => '641 Agreement (Consent)'
 		);
 
