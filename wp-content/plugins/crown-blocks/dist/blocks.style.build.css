@@ -7453,11 +7453,13 @@
       -o-transition: opacity .4s, transform .4s ease-out;
       transition: opacity .4s, transform .4s ease-out;
       transition: opacity .4s, transform .4s ease-out, -webkit-transform .4s ease-out;
-      opacity: 0;
-      -webkit-transform: translateX(-1rem);
-          -ms-transform: translateX(-1rem);
-              transform: translateX(-1rem);
       font-size: 1.25rem; }
+      @media (min-width: 992px) {
+        .wp-block-crown-blocks-hover-container.hover-type-left-aligned .content {
+          opacity: 0;
+          -webkit-transform: translateX(-1rem);
+              -ms-transform: translateX(-1rem);
+                  transform: translateX(-1rem); } }
     .wp-block-crown-blocks-hover-container.hover-type-left-aligned .cta-label-container {
       display: none; }
 .crown-block-general-controls {
