@@ -13,6 +13,7 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 			add_filter( 'gform_submit_button', array( __CLASS__, 'filter_gravity_form_submit_button' ), 10, 2 );
 			add_filter( 'gform_next_button', array( __CLASS__, 'filter_gravity_form_next_button' ), 10, 2 );
 			add_filter( 'gform_previous_button', array( __CLASS__, 'filter_gravity_form_previous_button' ), 10, 2 );
+			add_filter( 'gform_field_validation', array( __CLASS__, 'filter_gravity_form_field_validation' ), 10, 4 );
 
 			add_filter( 'get_previous_post_join', array( __CLASS__, 'filter_get_adjacent_post_join' ), 10, 5 );
 			add_filter( 'get_next_post_join', array( __CLASS__, 'filter_get_adjacent_post_join' ), 10, 5 );
@@ -68,6 +69,30 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 				$button = preg_replace( array( '/^<input/', '/\/?>$/' ), array(' <button', '>' . $matches[1] . '</button>'), $button );
 			}
 			return $button;
+		}
+
+
+		public static function filter_gravity_form_field_validation( $result, $value, $form, $field ) {
+
+			if ( $result['is_valid'] && $field->type == 'name' ) {
+		 
+				$prefix = rgar( $value, $field->id . '.2' );
+				$first  = rgar( $value, $field->id . '.3' );
+				$middle = rgar( $value, $field->id . '.4' );
+				$last   = rgar( $value, $field->id . '.6' );
+				$suffix = rgar( $value, $field->id . '.8' );
+		 
+				if ( ( ! empty( $first ) && ! $field->get_input_property( '3', 'isHidden' ) && preg_match( '/[0-9]/', $first ) )
+					 || ( ! empty( $last ) && ! $field->get_input_property( '6', 'isHidden' ) && preg_match( '/[0-9]/', $last ) )
+				) {
+					$result['is_valid'] = false;
+					$result['message'] = empty( $field->errorMessage ) ? __( 'Please enter a valid name (no numbers).', 'crown_theme' ) : $field->errorMessage;
+				}
+
+			}
+		 
+			return $result;
+
 		}
 
 
