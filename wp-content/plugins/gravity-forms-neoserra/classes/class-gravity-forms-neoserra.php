@@ -8,6 +8,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 
 
 		protected static $export_column_map = array(
+			'center_id'                       => 'Center ID',
 			'date'                            => 'Date',
 			'pc_field_map_first_name'         => 'Primary Contact First Name',
 			'pc_field_map_last_name'          => 'Primary Contact Last Name',
@@ -360,9 +361,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			$settings = $add_on->get_form_settings( $form );
 			$fields = array_filter( $settings, function( $k ) { return preg_match( '/^(pc|bd|other)_field_map_/', $k ); }, ARRAY_FILTER_USE_KEY );
 			$fields = array_merge( array(
+				'center_id' => 'center_id',
 				'date' => 'date_created'
 			), $fields );
 			// print_r($fields); die;
+
+			$center_id = $settings['center_id'];
 	
 			$start_date = rgpost( 'export_date_start' );
 			$end_date   = rgpost( 'export_date_end' );
@@ -463,7 +467,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 				$leads = gf_apply_filters( array( 'gform_leads_before_export', $form_id ), $leads, $form, $paging );
 	
 				foreach ( $leads as $lead ) {
-					$line = self::get_entry_export_line( $lead, $form, $fields, $field_rows, $separator );
+					$line = self::get_entry_export_line( $lead, $form, $fields, $field_rows, $separator, $center_id );
 					/**
 					 * Filter the current line being exported.
 					 *
@@ -534,7 +538,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 		}
 
 
-		public static function get_entry_export_line( $entry, $form, $fields, $field_rows, $separator ) {
+		public static function get_entry_export_line( $entry, $form, $fields, $field_rows, $separator, $center_id = '' ) {
 			GFCommon::log_debug( __METHOD__ . '(): Processing entry #' . $entry['id'] );
 	
 			$line = '';
@@ -550,6 +554,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 							$lead_local_time = GFCommon::get_local_timestamp( $lead_gmt_time );
 							$value           = date_i18n( 'Y-m-d H:i:s', $lead_local_time, true );
 						}
+						break;
+					case 'center_id' :
+						$value = $center_id;
 						break;
 					default :
 

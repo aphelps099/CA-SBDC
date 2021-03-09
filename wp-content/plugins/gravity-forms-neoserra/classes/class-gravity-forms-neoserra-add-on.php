@@ -44,6 +44,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Add_On' ) ) {
 							)
 						),
 						array(
+							'label'   => esc_html__( 'Center ID', 'gfneoserra' ),
+							'type'    => 'text',
+							'name'    => 'center_id',
+							'tooltip' => esc_html__( 'Provide the center ID to send this Neoserra data to.', 'gfneoserra' ),
+							'required' => true
+						),
+						array(
 							'label' => esc_html__( 'Primary Contact Fields', 'gfneoserra' ),
 							'type' => 'field_map',
 							'name' => 'pc_field_map',
