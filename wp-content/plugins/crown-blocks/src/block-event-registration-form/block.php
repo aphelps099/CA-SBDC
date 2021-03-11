@@ -1,7 +1,7 @@
 <?php
 
-if(!class_exists('Crown_Block_Featured_Event')) {
-	class Crown_Block_Featured_Event extends Crown_Block {
+if(!class_exists('Crown_Block_Event_Registration_Form')) {
+	class Crown_Block_Event_Registration_Form extends Crown_Block {
 
 
 		public static $name = 'event-registration-form';
@@ -35,5 +35,5 @@ if(!class_exists('Crown_Block_Featured_Event')) {
 
 
 	}
-	Crown_Block_Featured_Event::init();
+	Crown_Block_Event_Registration_Form::init();
 }

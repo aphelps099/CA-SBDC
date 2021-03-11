@@ -9,7 +9,6 @@ if(!class_exists('Crown_Block_Featured_Event')) {
 
 		public static function init() {
 			parent::init();
-
 		}
 
 
