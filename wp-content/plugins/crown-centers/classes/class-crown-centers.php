@@ -99,6 +99,8 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 
 		public static function register_center_post_type() {
+			$is_regional_site = apply_filters( 'is_sbdc_regional_site', false );
+			if ( ! $is_regional_site ) return;
 
 			self::$center_post_type = new PostType( array(
 				'name' => 'center',
@@ -300,6 +302,8 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 
 		public static function register_post_center_taxonomy() {
+			$is_regional_site = apply_filters( 'is_sbdc_regional_site', false );
+			if ( ! $is_regional_site ) return;
 
 			self::$post_center_taxonomy = new Taxonomy( array(
 				'name' => 'post_center',

@@ -6,6 +6,8 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 
 		public static function init() {
 
+			add_filter( 'is_sbdc_regional_site', array( __CLASS__, 'filter_is_sbdc_regional_site' ), 10, 2 );
+
 			add_filter( 'body_class', array( __CLASS__, 'filter_body_class' ) );
 			add_filter( 'excerpt_length', array( __CLASS__, 'filter_excerpt_length' ) );
 			add_filter( 'excerpt_more', array( __CLASS__, 'filter_excerpt_more' ) );
@@ -20,6 +22,12 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 			add_filter( 'get_previous_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
 			add_filter( 'get_next_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
 
+		}
+
+
+		public static function filter_is_sbdc_regional_site( $is_regional_site, $blog_id = 0 ) {
+			$blog_id = empty( $blog_id ) ? get_current_blog_id() : $blog_id;
+			return $blog_id == 1;
 		}
 
 
