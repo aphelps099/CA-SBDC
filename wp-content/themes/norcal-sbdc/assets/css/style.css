@@ -24789,6 +24789,24 @@ body {
     height: 3rem;
     fill: rgba(91, 109, 128, 0.5); }
 
+/*	Translate
+---------------------------------------------------------*/
+#google-translate {
+  position: relative;
+  overflow: hidden;
+  height: 48px;
+  margin-top: 2rem; }
+  #google-translate > * {
+    margin-left: -100vw; }
+  #google-translate select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1rem; }
+
 /*	Footer CTA Links
 ---------------------------------------------------------*/
 #footer-primary-cta-links ul {
