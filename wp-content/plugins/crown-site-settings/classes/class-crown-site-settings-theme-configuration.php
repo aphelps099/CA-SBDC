@@ -60,6 +60,22 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 						'fieldGroups' => array(
 
 							new FieldGroup( array(
+								'label' => 'Site Logo',
+								'fields' => array(
+									new Field( array(
+										'label' => 'Full Color Logo',
+										'description' => 'This logo will be displayed on lighter backgrounds',
+										'input' => new MediaInput( array( 'name' => 'theme_config_site_logo_color', 'mimeType' => 'image', 'buttonLabel' => 'Select Image', 'class' => 'logo dark' ) )
+									) ),
+									new Field( array(
+										'label' => 'Light Logo',
+										'description' => 'This logo will be displayed on darker backgrounds',
+										'input' => new MediaInput( array( 'name' => 'theme_config_site_logo_light', 'mimeType' => 'image', 'buttonLabel' => 'Select Image', 'class' => 'logo light' ) )
+									) )
+								)
+							) ),
+
+							new FieldGroup( array(
 								'label' => 'Site Footer',
 								'fields' => array(
 									new FieldGroup( array(
@@ -276,6 +292,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 				?>
 					<style>
 						.crown-media-input.logo .media-input-preview img { width: 100%; height: 100px; object-fit: contain; object-position: left center; }
+						.crown-media-input.logo.dark .media-input-preview { max-width: 400px; padding: 10px; background-color: #eee; border: 1px dashed #ccc; border-radius: 4px; }
+						.crown-media-input.logo.light .media-input-preview { max-width: 400px; padding: 10px; background-color: #222; border: 1px solid #222; border-radius: 4px; }
 					</style>
 				<?php
 				$css = trim( ob_get_clean() );

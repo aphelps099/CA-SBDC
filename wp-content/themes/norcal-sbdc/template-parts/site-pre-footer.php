@@ -18,7 +18,12 @@
 
 					<div id="site-footer-logo">
 						<a href="<?php echo home_url( '/' ); ?>">
-							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-400w.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+							<?php $logo = get_option( 'theme_config_site_logo_color' ); ?>
+							<?php if ( ! empty( $logo ) ) { ?>
+								<?php echo wp_get_attachment_image( $logo, 'medium_large', false ); ?>
+							<?php } else { ?>
+								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-400w.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+							<?php } ?>
 						</a>
 					</div>
 
