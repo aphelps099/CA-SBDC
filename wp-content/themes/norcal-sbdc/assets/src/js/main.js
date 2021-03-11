@@ -353,6 +353,16 @@
 				$('.modal-body', modal).html('');
 			});
 
+			$(document).on('click', 'a', function(e) {
+				var link = $(this);
+				var href = link.attr('href');
+				href = href ? href : '';
+				if(href.match(/^https?:\/\/calendly\.com\/.+/) && typeof(Calendly) !== 'undefined') {
+					e.preventDefault();
+					Calendly.initPopupWidget({ url: href });
+				}
+			});
+
 		};
 
 
