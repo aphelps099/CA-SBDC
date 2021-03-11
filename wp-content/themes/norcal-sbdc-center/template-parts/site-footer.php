@@ -49,6 +49,14 @@
 							?>
 						</nav>
 
+						<div id="google-translate"></div>
+						<script>
+							function googleTranslateElementInit() {
+								new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google-translate');
+							}
+						</script>
+						<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 					</div>
 
 				</div>
