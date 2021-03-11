@@ -100,7 +100,6 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 		public static function register_center_post_type() {
 			$is_regional_site = apply_filters( 'is_sbdc_regional_site', false );
-			if ( ! $is_regional_site ) return;
 
 			self::$center_post_type = new PostType( array(
 				'name' => 'center',
@@ -114,6 +113,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 					'publicly_queryable' => true,
 					'show_in_rest' => true,
 					'show_in_nav_menus' => false,
+					'show_ui' => $is_regional_site,
 					'capability_type' => array( 'center', 'centers' ),
 					'map_meta_cap' => true,
 					'menu_position' => 40
@@ -303,7 +303,6 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 		public static function register_post_center_taxonomy() {
 			$is_regional_site = apply_filters( 'is_sbdc_regional_site', false );
-			if ( ! $is_regional_site ) return;
 
 			self::$post_center_taxonomy = new Taxonomy( array(
 				'name' => 'post_center',
@@ -315,7 +314,8 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 					'rewrite' => array( 'slug' => 'post-centers', 'with_front' => false ),
 					'show_in_nav_menus' => false,
 					'show_in_menu' => false,
-					'show_admin_column' => true,
+					'show_admin_column' => $is_regional_site,
+					'show_ui' => $is_regional_site,
 					'publicly_queryable' => false,
 					'show_in_rest' => true,
 					'labels' => array(
