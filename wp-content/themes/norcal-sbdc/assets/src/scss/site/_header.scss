@@ -780,14 +780,16 @@
 						}
 					}
 					&:after {
-						@include icon(map-get($icomoon-icons, arrow-right), icomoon);
-						position: relative;
-						margin-left: .5em;
-						margin-right: -.5em;
-						top: .08em;
-						right: .5em;
-						opacity: 0;
-						transition: right ease-out .15s, opacity .15s;
+						@include media-breakpoint-up(xl) {
+							@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+							position: relative;
+							margin-left: .5em;
+							margin-right: -.5em;
+							top: .08em;
+							right: .5em;
+							opacity: 0;
+							transition: right ease-out .15s, opacity .15s;
+						}
 					}
 				}
 			}
