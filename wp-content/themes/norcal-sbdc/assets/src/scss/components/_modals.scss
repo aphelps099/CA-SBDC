@@ -217,3 +217,12 @@
 		}
 	}
 }
+
+
+.calendly-overlay {
+	background-color: rgba(#000, .8) !important;
+	cursor: pointer;
+	.calendly-popup {
+		cursor: default;
+	}
+}

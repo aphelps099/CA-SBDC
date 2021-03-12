@@ -18937,6 +18937,12 @@ nav.pagination {
   #subscribe-modal .gform_footer .gform_ajax_spinner {
     display: none !important; }
 
+.calendly-overlay {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  cursor: pointer; }
+  .calendly-overlay .calendly-popup {
+    cursor: default; }
+
 .odometer-statistic.fade-in {
   opacity: 0; }
   .odometer-statistic.fade-in.animated {
