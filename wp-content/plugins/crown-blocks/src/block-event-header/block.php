@@ -59,17 +59,21 @@ if(!class_exists('Crown_Block_Event_Header')) {
 										<div class="container-contents">
 											<div class="inner">
 												
-												<?php $centers = get_the_terms( $post_id, 'post_center' ); ?>
-												<?php if ( ! empty( $centers ) ) { ?>
-													<p class="entry-centers">
-														<?php foreach ( $centers as $term ) { ?>
-															<?php if ( ! empty( $index_page_url ) ) { ?>
-																<a class="center" href="<?php echo add_query_arg( 'e_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
-															<?php } else { ?>
-																<span class="center"><?php echo $term->name; ?></span>
+												<?php if ( ! is_main_site() ) { ?>
+													<p class="entry-centers"><span class="center"><?php echo get_bloginfo( 'name' ); ?></span></p>
+												<?php } else { ?>
+													<?php $centers = get_the_terms( $post_id, 'post_center' ); ?>
+													<?php if ( ! empty( $centers ) ) { ?>
+														<p class="entry-centers">
+															<?php foreach ( $centers as $term ) { ?>
+																<?php if ( ! empty( $index_page_url ) ) { ?>
+																	<a class="center" href="<?php echo add_query_arg( 'e_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+																<?php } else { ?>
+																	<span class="center"><?php echo $term->name; ?></span>
+																<?php } ?>
 															<?php } ?>
-														<?php } ?>
-													</p>
+														</p>
+													<?php } ?>
 												<?php } ?>
 
 												<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( $post_id ); ?>

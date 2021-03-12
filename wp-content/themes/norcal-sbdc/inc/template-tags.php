@@ -300,7 +300,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 
 													<?php if ( $menu_item->type == 'events' ) { ?>
 														<div class="sub-menu-events">
-															<?php $events = class_exists( 'Crown_Events' ) ? Crown_Events::get_upcoming_events( 2 ) : array(); ?>
+															<?php $events = class_exists( 'Crown_Events' ) ? Crown_Events::get_upcoming_events( 2, array(), false, true ) : array(); ?>
 															<?php foreach ( $events as $event ) { ?>
 																<div class="event-container">
 																	<?php ct_event_teaser( $event->ID ); ?>
@@ -409,15 +409,22 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 		global $post;
 
 		$post = get_post( $post_id );
-		if ( ! $post || ! in_array( $post->post_type, array( 'event' ) ) ) return;
+		if ( ! $post || ! in_array( $post->post_type, array( 'event', 'event_s' ) ) ) return;
 		setup_postdata( $post );
+
+		if ( get_post_type() == 'event_s' ) {
+			$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+			switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+			$post = get_post( $original_post_id );
+			setup_postdata( $post );
+		}
 
 		?>
 			<article <?php post_class( array( 'event-teaser' ) ); ?>>
 				<a href="<?php the_permalink(); ?>">
 					<div class="inner">
 
-						<?php ct_event_date( $post_id ); ?>
+						<?php ct_event_date( get_the_ID() ); ?>
 	
 						<div class="entry-contents">
 	
@@ -432,6 +439,7 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 			</article>
 		<?php
 
+		restore_current_blog();
 		wp_reset_postdata();
 
 	}

@@ -33,7 +33,8 @@ if(!class_exists('Crown_Block_Event_Index')) {
 
 			$event_args = array(
 				'from' => date( 'Y-m-d H:i:s' ),
-				'tax_query' => array()
+				'tax_query' => array(),
+				'include_syndicated' => true
 			);
 
 			$filters->topic->queried = isset( $_GET[ $filters->topic->key ] ) ? ( is_array( $_GET[ $filters->topic->key ] ) ? $_GET[ $filters->topic->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->topic->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
@@ -193,6 +194,16 @@ if(!class_exists('Crown_Block_Event_Index')) {
 										
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
+											<?php
+												$event_site_title = null;
+												if ( get_post_type() == 'event_s' ) {
+													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+													$post = get_post( $original_post_id );
+													setup_postdata( $post );
+													$event_site_title = get_bloginfo( 'name' );
+												}
+											?>
 											<article <?php post_class(); ?>>
 												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo get_the_ID(); ?>">
 													<div class="inner">
@@ -205,13 +216,19 @@ if(!class_exists('Crown_Block_Event_Index')) {
 
 															<header class="entry-header">
 
-																<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-																<?php if ( ! empty( $centers ) ) { ?>
+																<?php if ( $event_site_title ) { ?>
 																	<p class="entry-centers">
-																		<?php foreach ( $centers as $term ) { ?>
-																			<span class="center"><?php echo $term->name; ?></span>
-																		<?php } ?>
+																		<span class="center"><?php echo $event_site_title; ?></span>
 																	</p>
+																<?php } else { ?>
+																	<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+																	<?php if ( ! empty( $centers ) ) { ?>
+																		<p class="entry-centers">
+																			<?php foreach ( $centers as $term ) { ?>
+																				<span class="center"><?php echo $term->name; ?></span>
+																			<?php } ?>
+																		</p>
+																	<?php } ?>
 																<?php } ?>
 
 																<h3 class="entry-title"><?php the_title(); ?></h3>
@@ -229,6 +246,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 													</div>
 												</a>
 											</article>
+											<?php restore_current_blog(); ?>
 										<?php } ?>
 										<?php wp_reset_postdata(); ?>
 	
