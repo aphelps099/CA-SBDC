@@ -201,7 +201,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
 													$post = get_post( $original_post_id );
 													setup_postdata( $post );
-													$event_site_title = get_bloginfo( 'name' );
+													if ( ! is_main_site() ) $event_site_title = get_bloginfo( 'name' );
 												}
 											?>
 											<article <?php post_class(); ?>>

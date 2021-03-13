@@ -44,12 +44,16 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			register_activation_hook( $plugin_file, array( __CLASS__, 'activate' ));
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
+			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
+			add_action( 'crown_sync_event_data', array( __CLASS__, 'sync_event_data' ) );
+			// add_action( 'init', array( __CLASS__, 'sync_event_data' ), 100, 0 );
+
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_series_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_weekly_event_count_shortcode' ) );
 
 			add_action( 'save_post', array( __CLASS__, 'update_shared_post_reference' ), 100 );
-			add_action( 'after_delete_post', array( __CLASS__, 'delete_shared_post_reference' ), 100 );
+			add_action( 'after_delete_post', array( __CLASS__, 'delete_syndicated_post' ), 100 );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
@@ -102,6 +106,84 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
+		public static function init_scheduled_events() {
+
+			// wp_clear_scheduled_hook( 'crown_sync_event_data' );
+			if ( ! wp_next_scheduled( 'crown_sync_event_data' ) ) {
+				wp_schedule_single_event( time() - 60, 'crown_sync_event_data' );
+			}
+
+		}
+
+
+		public static function sync_event_data( $sync_all = false ) {
+			global $wpdb;
+
+			$current_time = new DateTime();
+
+			if ( ! is_main_site() ) {
+
+				$query_modified_time = new DateTime( '@0' );
+				if ( ! $sync_all ) {
+					$query_modified_time = get_option( 'crown_event_data_last_synced' ) ? new DateTime( get_option( 'crown_event_data_last_synced', 0 ) ) : new DateTime();
+					$query_modified_time->modify( '-1 hour' );
+				}
+
+				$syn_post_ids = $wpdb->get_col( $wpdb->prepare( "
+					SELECT pm2.meta_value
+					FROM $wpdb->posts p
+					INNER JOIN $wpdb->postmeta pm1 ON (pm1.post_id = p.ID AND pm1.meta_key = '_original_site_id')
+					INNER JOIN $wpdb->postmeta pm2 ON (pm2.post_id = p.ID AND pm2.meta_key = '_original_post_id')
+					WHERE p.post_type = 'event_s'
+						AND pm1.meta_value = %s
+				", get_main_site_id() ) );
+
+				$dest_site = get_current_blog_id();
+				switch_to_blog( get_main_site_id() );
+
+				$update_post_ids = get_posts( array(
+					'post_type' => 'event',
+					'posts_per_page' => -1,
+					'fields' => 'ids',
+					'date_query' => array(
+						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+					),
+					'meta_query' => array(
+						array( 'key' => '__event_options', 'value' => 'post-to-center-sites' )
+					)
+				) );
+
+				foreach ( $update_post_ids as $post_id ) {
+					self::syndicate_post( $post_id, $dest_site );
+				}
+
+				$post_ids = get_posts( array(
+					'post_type' => 'event',
+					'posts_per_page' => -1,
+					'fields' => 'ids',
+					'meta_query' => array(
+						array( 'key' => '__event_options', 'value' => 'post-to-center-sites' )
+					)
+				) );
+				
+				$old_post_ids = array_diff( $syn_post_ids, $post_ids );
+				foreach ( $old_post_ids as $post_id ) {
+					self::delete_syndicated_post( $post_id, $dest_site );
+				}
+
+				restore_current_blog();
+
+			}
+
+			update_option( 'crown_event_data_last_synced', $current_time->format( 'Y-m-d H:i:s' ) );
+
+			$sync_interval = 30; // minutes
+			wp_clear_scheduled_hook( 'crown_sync_event_data' );
+			wp_schedule_single_event( time() + ( 60 * $sync_interval ), 'crown_sync_event_data' );
+
+		}
+
+
 		public static function register_event_post_type() {
 
 			$timezone_options = array();
@@ -128,7 +210,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			$event_options = array(
 				array( 'value' => 'featured-post', 'label' => 'Featured Event' )
 			);
-			if ( ! is_main_site() ) {
+			if ( is_main_site() ) {
+				$event_options[] = array( 'value' => 'post-to-center-sites', 'label' => 'Display on Center Sites' );
+			} else {
 				$event_options[] = array( 'value' => 'post-to-regional-site', 'label' => 'Display on Regional Site' );
 			}
 
@@ -279,7 +363,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						},
 						'sortCb' => function( $query_vars ) {
 							$query_vars['meta_key'] = 'event_start_timestamp_utc';
-							$query_vars['orderby'] = 'meta_key';
+							$query_vars['orderby'] = 'meta_value';
 							return $query_vars;
 						}
 					) )
@@ -408,16 +492,31 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			$options = get_post_meta( $post_id, '__event_options' );
 
-			if ( in_array( 'post-to-regional-site', $options ) && $post->post_status = 'publish' && ! is_main_site() ) {
+			if ( in_array( 'post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
+				self::syndicate_post( $post_id, get_main_site_id() );
+			} else {
+				self::delete_syndicated_post( $post_id, get_main_site_id() );
+			}
 
-				$post_title = get_the_title( $post_id );
+		}
 
-				$taxonomies = array(
-					'post_topic' => array(),
-					'event_series' => array()
-				);
-				foreach ( $taxonomies as $tax => $terms ) {
-					$taxonomies[ $tax ] = wp_get_object_terms( $post_id, $tax );
+
+		protected static function syndicate_post( $post_id, $dest_site ) {
+
+			$post_arr = array(
+				'post_title' => get_the_title( $post_id ),
+				'post_date' => get_the_time( 'Y-m-d H:i:s', $post_id )
+			);
+
+			$taxonomies = array(
+				'post_topic' => array(),
+				'event_series' => array()
+			);
+			foreach ( $taxonomies as $tax => $terms ) {
+				$taxonomies[ $tax ] = wp_get_object_terms( $post_id, $tax );
+				if ( is_wp_error( $taxonomies[ $tax ] ) ) {
+					$taxonomies[ $tax ] = array();
+				} else {
 					$taxonomies[ $tax ] = array_map( function( $n ) {
 						$branch = array( clone $n );
 						while( $branch[0]->parent != 0 ) {
@@ -427,96 +526,80 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						return $n;
 					}, $taxonomies[ $tax ] );
 				}
-
-				$meta = array(
-					'event_start_timestamp' => '',
-					'event_end_timestamp' => '',
-					'event_start_timestamp_utc' => '',
-					'event_end_timestamp_utc' => ''
-				);
-				foreach ( $meta as $k => $v ) {
-					$meta[ $k ] = get_post_meta( $post_id, $k, true );
-				}
-
-				$current_site_id = get_current_blog_id();
-				switch_to_blog( get_main_site_id() );
-				
-				$syn_id = get_posts( array(
-					'post_type' => 'event_s',
-					'posts_per_page' => 1,
-					'fields' => 'ids',
-					'meta_query' => array(
-						array( 'key' => '_original_site_id', 'value' => $current_site_id ),
-						array( 'key' => '_original_post_id', 'value' => $post_id )
-					)
-				) );
-				$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
-
-				if ( ! $syn_id ) {
-					$syn_id = wp_insert_post( array( 'post_type' => 'event_s' ) );
-				}
-
-				wp_update_post( array(
-					'ID' => $syn_id,
-					'post_title' => $post_title,
-					'post_status' => 'publish'
-				) );
-
-				foreach ( $taxonomies as $tax => $terms ) {
-					self::update_shared_post_terms( $syn_id, $tax, $terms );
-				}
-
-				foreach ( $meta as $k => $v ) {
-					update_post_meta( $syn_id, $k, $v );
-				}
-
-				update_post_meta( $syn_id, '_original_site_id', $current_site_id );
-				update_post_meta( $syn_id, '_original_post_id', $post_id );
-
-				restore_current_blog();
-
-			} else {
-
-				self::delete_shared_post_reference( $post_id );
-
 			}
 
-		}
+			$meta = array(
+				'event_start_timestamp' => '',
+				'event_end_timestamp' => '',
+				'event_start_timestamp_utc' => '',
+				'event_end_timestamp_utc' => ''
+			);
+			foreach ( $meta as $k => $v ) {
+				$meta[ $k ] = get_post_meta( $post_id, $k, true );
+			}
 
+			$src_site = get_current_blog_id();
+			switch_to_blog( $dest_site );
+			
+			$syn_id = get_posts( array(
+				'post_type' => 'event_s',
+				'posts_per_page' => 1,
+				'fields' => 'ids',
+				'meta_query' => array(
+					array( 'key' => '_original_site_id', 'value' => $src_site ),
+					array( 'key' => '_original_post_id', 'value' => $post_id )
+				)
+			) );
+			$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
 
-		protected static function update_shared_post_terms( $post_id, $taxonomy, $terms ) {
+			if ( ! $syn_id ) {
+				$syn_id = wp_insert_post( array( 'post_type' => 'event_s' ) );
+			}
 
-			$shared_term_ids = array();
-			foreach ( $terms as $term ) {
-				$shared_term_id = 0;
-				foreach ( $term->branch as $t ) {
-					$term_args = array( 'parent' => $shared_term_id );
-					if ( ( $result = term_exists( $t->name, $taxonomy, $shared_term_id ) ) ) {
-						$shared_term_id = intval( $result['term_id'] );
-					} else if ( ( $result = @wp_insert_term( $t->name, $taxonomy, $term_args ) ) ) {
-						if ( is_wp_error( $result ) ) break;
-						$shared_term_id = intval( $result['term_id'] );
+			wp_update_post( array_merge( $post_arr, array( 'ID' => $syn_id, 'post_status' => 'publish' ) ) );
+
+			foreach ( $taxonomies as $tax => $terms ) {
+				$syn_term_ids = array();
+				foreach ( $terms as $term ) {
+					$syn_term_id = 0;
+					foreach ( $term->branch as $t ) {
+						$term_args = array( 'parent' => $syn_term_id );
+						if ( ( $result = term_exists( $t->name, $tax, $syn_term_id ) ) ) {
+							$syn_term_id = intval( $result['term_id'] );
+						} else if ( ( $result = @wp_insert_term( $t->name, $tax, $term_args ) ) ) {
+							if ( is_wp_error( $result ) ) break;
+							$syn_term_id = intval( $result['term_id'] );
+						}
 					}
+					if ( $syn_term_id ) $syn_term_ids[] = $syn_term_id;
 				}
-				if ( $shared_term_id ) $shared_term_ids[] = $shared_term_id;
+				wp_set_object_terms( $syn_id, $syn_term_ids, $tax, false );
 			}
 
-			wp_set_object_terms( $post_id, $shared_term_ids, $taxonomy, false );
+			foreach ( $meta as $k => $v ) {
+				update_post_meta( $syn_id, $k, $v );
+			}
+
+			update_post_meta( $syn_id, '_original_site_id', $src_site );
+			update_post_meta( $syn_id, '_original_post_id', $post_id );
+
+			restore_current_blog();
 
 		}
 
 
-		public static function delete_shared_post_reference( $post_id ) {
+		public static function delete_syndicated_post( $post_id, $dest_site = 0 ) {
+			if ( empty( $dest_site ) ) $dest_site = get_main_site_id();
 
-			$current_site_id = get_current_blog_id();
-			switch_to_blog( get_main_site_id() );
+			$src_site = get_current_blog_id();
+			switch_to_blog( $dest_site );
 				
 			$syn_id = get_posts( array(
 				'post_type' => 'event_s',
 				'posts_per_page' => 1,
 				'fields' => 'ids',
 				'meta_query' => array(
-					array( 'key' => '_original_site_id', 'value' => $current_site_id ),
+					array( 'key' => '_original_site_id', 'value' => $src_site ),
 					array( 'key' => '_original_post_id', 'value' => $post_id )
 				)
 			) );
@@ -537,8 +620,11 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 
 		public static function filter_display_post_states( $post_states, $post ) {
-			if( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
+			if ( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
 				$post_states['post-featured'] = 'Featured';
+			}
+			if ( $post->post_type == 'event' && ! empty( array_intersect( array( 'post-to-center-sites', 'post-to-regional-site' ), get_post_meta( $post->ID, '__event_options' ) ) ) ) {
+				$post_states['post-syndicated'] = 'Syndicated';
 			}
 			return $post_states;
 		}
@@ -619,7 +705,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 
 		public static function get_events( $args = array() ) {
-			return get_posts( self::get_event_query_args( $args ) );
+			$query_args = self::get_event_query_args( $args );
+			return get_posts( $query_args );
 		}
 
 
