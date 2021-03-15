@@ -57,7 +57,15 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
+			add_action( 'admin_init', array( __CLASS__, 'process_action_publish_syndicated_event' ) );
+			add_action( 'admin_init', array( __CLASS__, 'process_action_unpublish_syndicated_event' ) );
+			add_action( 'admin_notices', array( __CLASS__, 'output_syndicated_event_admin_notices' ) );
+			// add_action( 'admin_menu', array( __CLASS__, 'add_pending_syndicated_event_count_admin_menu_badges' ), 100 );
+			add_filter( 'bulk_actions-edit-event_s', array( __CLASS__, 'filter_bulk_actions_edit_event_s'), 100, 2 );
+			add_filter( 'disable_months_dropdown', '__return_true' );
 			add_filter( 'display_post_states', array( __CLASS__, 'filter_display_post_states'), 10, 2 );
+			add_filter( 'post_row_actions', array( __CLASS__, 'filter_post_row_actions' ), 100, 2 );
+			add_filter( 'get_edit_post_link', array( __CLASS__, 'filter_get_edit_post_link' ), 10, 3 );
 
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
@@ -216,6 +224,29 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				$event_options[] = array( 'value' => 'post-to-regional-site', 'label' => 'Display on Regional Site' );
 			}
 
+			$event_date_list_table_column = new ListTableColumn( array(
+				'key' => 'event-date',
+				'title' => 'Event Date',
+				'position' => 2,
+				'outputCb' => function( $post_id, $args ) {
+					$output = array();
+					$start = strtotime( get_post_meta( $post_id, 'event_start_timestamp', true ) );
+					$end = strtotime( get_post_meta( $post_id, 'event_end_timestamp', true ) );
+					$tz = get_post_meta( $post_id, 'event_timezone', true );
+					if ( $start === false || $end === false ) return;
+					$start = new DateTime( get_post_meta( $post_id, 'event_start_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
+					$end = new DateTime( get_post_meta( $post_id, 'event_end_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
+					$output[] = '<strong>' . $start->format( 'D, M j, Y' ) . '</strong>';
+					$output[] = $start->format( 'g:ia' ) . ' - ' . $end->format( 'g:ia' ) . ' (' . $start->format( 'T' ) . ')';
+					echo implode( '<br>', $output );
+				},
+				'sortCb' => function( $query_vars ) {
+					$query_vars['meta_key'] = 'event_start_timestamp_utc';
+					$query_vars['orderby'] = 'meta_value';
+					return $query_vars;
+				}
+			) );
+
 			self::$event_post_type = new PostType( array(
 				'name' => 'event',
 				'singularLabel' => 'Event',
@@ -344,37 +375,23 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						)
 					) )
 				),
-				'listTableColumns' => array(
-					new ListTableColumn( array(
-						'key' => 'event-date',
-						'title' => 'Event Date',
-						'position' => 2,
-						'outputCb' => function( $post_id, $args ) {
-							$output = array();
-							$start = strtotime( get_post_meta( $post_id, 'event_start_timestamp', true ) );
-							$end = strtotime( get_post_meta( $post_id, 'event_end_timestamp', true ) );
-							$tz = get_post_meta( $post_id, 'event_timezone', true );
-							if ( $start === false || $end === false ) return;
-							$start = new DateTime( get_post_meta( $post_id, 'event_start_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
-							$end = new DateTime( get_post_meta( $post_id, 'event_end_timestamp', true ), ! empty( $tz ) ? new DateTimeZone( $tz ) : null );
-							$output[] = '<strong>' . $start->format( 'D, M j, Y' ) . '</strong>';
-							$output[] = $start->format( 'g:ia' ) . ' - ' . $end->format( 'g:ia' ) . ' (' . $start->format( 'T' ) . ')';
-							echo implode( '<br>', $output );
-						},
-						'sortCb' => function( $query_vars ) {
-							$query_vars['meta_key'] = 'event_start_timestamp_utc';
-							$query_vars['orderby'] = 'meta_value';
-							return $query_vars;
-						}
-					) )
-				)
+				'listTableColumns' => array( $event_date_list_table_column )
 			) );
-
+			
+			$count = count( get_posts( array( 'post_type' => 'event_s', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'pending' ) ) );
 			self::$syndicated_event_post_type = new PostType( array(
 				'name' => 'event_s',
+				'singularLabel' => 'Syndicated Event',
+				'pluralLabel' => 'Syndicated Events',
 				'settings' => array(
-					'public' => false
-				)
+					'public' => false,
+					'show_in_menu' => 'edit.php?post_type=event',
+					'show_ui' => true,
+					'labels' => array(
+						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
+					)
+				),
+				'listTableColumns' => array( $event_date_list_table_column )
 			) );
 
 		}
@@ -553,10 +570,10 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
 
 			if ( ! $syn_id ) {
-				$syn_id = wp_insert_post( array( 'post_type' => 'event_s' ) );
+				$syn_id = wp_insert_post( array( 'post_type' => 'event_s', 'post_status' => is_main_site() ? 'pending' : 'publish' ) );
 			}
 
-			wp_update_post( array_merge( $post_arr, array( 'ID' => $syn_id, 'post_status' => 'publish' ) ) );
+			wp_update_post( array_merge( $post_arr, array( 'ID' => $syn_id ) ) );
 
 			foreach ( $taxonomies as $tax => $terms ) {
 				$syn_term_ids = array();
@@ -619,6 +636,86 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
+		public static function process_action_publish_syndicated_event() {
+			
+			$post_id = isset( $_GET['publish_event_s'] ) ? intval( $_GET['publish_event_s'] ) : 0;
+			if ( ! $post_id ) return;
+			if ( ! check_admin_referer( 'publish-event-s-' . $post_id ) ) return;
+
+			wp_update_post( array( 'ID' => $post_id, 'post_status' => 'publish' ) );
+
+			$sendback = admin_url( 'edit.php?post_type=event_s' );
+			$sendback = add_query_arg( array( 'published_event_s' => $post_id ), $sendback );
+			wp_redirect( $sendback );
+			die;
+
+		}
+
+
+		public static function process_action_unpublish_syndicated_event() {
+			
+			$post_id = isset( $_GET['unpublish_event_s'] ) ? intval( $_GET['unpublish_event_s'] ) : 0;
+			if ( ! $post_id ) return;
+			if ( ! check_admin_referer( 'unpublish-event-s-' . $post_id ) ) return;
+
+			wp_update_post( array( 'ID' => $post_id, 'post_status' => 'pending' ) );
+
+			$sendback = admin_url( 'edit.php?post_type=event_s' );
+			$sendback = add_query_arg( array( 'unpublished_event_s' => $post_id ), $sendback );
+			wp_redirect( $sendback );
+			die;
+
+		}
+
+
+		public static function output_syndicated_event_admin_notices() {
+			$notices = array();
+
+			$post_id = isset( $_GET['published_event_s'] ) ? intval( $_GET['published_event_s'] ) : 0;
+			if ( $post_id ) {
+				$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated event, "' . get_the_title( $post_id ) . '", has been published!', 'crown-events' ) );
+			}
+
+			$post_id = isset( $_GET['unpublished_event_s'] ) ? intval( $_GET['unpublished_event_s'] ) : 0;
+			if ( $post_id ) {
+				$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated event, "' . get_the_title( $post_id ) . '", has been unpublished and updated to "pending".', 'crown-events' ) );
+			}
+
+			foreach ( $notices as $notice ) {
+				$notice = array_merge( array(
+					'type' => 'info',
+					'dismissible' => true,
+					'message' => ''
+				), $notice );
+				?>
+					<div class="notice notice-<?php echo $notice['type']; ?> <?php echo $notice['dismissable'] ? 'is-dismissible' : ''; ?>">
+						<p><?php echo $notice['message']; ?></p>
+					</div>
+				<?php
+			}
+
+		}
+
+
+		public static function add_pending_syndicated_event_count_admin_menu_badges() {
+			global $menu;
+
+			$menu_item = wp_list_filter( $menu, array( 2 => 'edit.php?post_type=event' ) );
+
+			if ( ! empty( $menu_item )  ) {
+				$menu_item_position = key( $menu_item );
+				$menu[ $menu_item_position ][0] .= ' <span class="awaiting-mod">' . 4 . '</span>';
+			}
+
+		}
+
+
+		public static function filter_bulk_actions_edit_event_s( $actions ) {
+			$actions = array();
+			return $actions;
+		}
+
+
 		public static function filter_display_post_states( $post_states, $post ) {
 			if ( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
 				$post_states['post-featured'] = 'Featured';
@@ -627,6 +724,46 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				$post_states['post-syndicated'] = 'Syndicated';
 			}
 			return $post_states;
+		}
+
+
+		public static function filter_post_row_actions( $actions, $post ) {
+			if ( $post->post_type == 'event_s' ) {
+				$actions = array();
+				if ( is_main_site() ) {
+					if ( $post->post_status == 'publish' ) {
+						$actions = array(
+							'unpublish' => sprintf(
+								'<a href="%s" class="submitunpublish" aria-label="%s">%s</a>',
+								wp_nonce_url( add_query_arg( array( 'unpublish_event_s' => $post->ID ) ), 'unpublish-event-s-' . $post->ID ),
+								esc_attr( sprintf( __( 'Unpublish &#8220;%s&#8221;' ), $post->post_title ) ),
+								_x( 'Unpublish', 'verb' )
+							)
+						);
+					} else {
+						$actions = array(
+							'publish' => sprintf(
+								'<a href="%s" class="submitpublish" aria-label="%s">%s</a>',
+								wp_nonce_url( add_query_arg( array( 'publish_event_s' => $post->ID ) ), 'publish-event-s-' . $post->ID ),
+								esc_attr( sprintf( __( 'Publish &#8220;%s&#8221;' ), $post->post_title ) ),
+								_x( 'Publish', 'verb' )
+							)
+						);
+					}
+				}
+			}
+			return $actions;
+		}
+		
+
+		public static function filter_get_edit_post_link( $link, $post_id, $context ) {
+			if ( get_post_type( $post_id ) == 'event_s' ) {
+				$original_post_id = get_post_meta( $post_id, '_original_post_id', true );
+				switch_to_blog( get_post_meta( $post_id, '_original_site_id', true ) );
+				$link = get_permalink( $original_post_id );
+				restore_current_blog();
+			}
+			return $link;
 		}
 
 
