@@ -377,7 +377,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'listTableColumns' => array( $event_date_list_table_column )
 			) );
 			
-			$count = count( get_posts( array( 'post_type' => 'event_s', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'pending' ) ) );
+			// $count = count( get_posts( array( 'post_type' => 'event_s', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'pending' ) ) );
+			$count = 0;
 			self::$syndicated_event_post_type = new PostType( array(
 				'name' => 'event_s',
 				'singularLabel' => 'Syndicated Event',
@@ -582,7 +583,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
 
 			if ( ! $syn_id ) {
-				$syn_id = wp_insert_post( array( 'post_type' => 'event_s', 'post_status' => is_main_site() ? 'pending' : 'publish' ) );
+				// $syn_id = wp_insert_post( array( 'post_type' => 'event_s', 'post_status' => is_main_site() ? 'pending' : 'publish' ) );
+				$syn_id = wp_insert_post( array( 'post_type' => 'event_s', 'post_status' => 'publish' ) );
 			}
 
 			wp_update_post( array_merge( $post_arr, array( 'ID' => $syn_id ) ) );
