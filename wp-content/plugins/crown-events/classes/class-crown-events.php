@@ -339,39 +339,45 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				),
 				'metaBoxes' => array(
 					new MetaBox( array(
-						'id' => 'event-date',
-						'title' => 'Event Date',
-						'context' => 'side',
+						'id' => 'event-details',
+						'title' => 'Event Details',
 						'priority' => 'high',
 						'fields' => array(
-							new Field( array(
-								'label' => 'Date',
-								'input' => new DateInput( array( 'name' => 'event_date' ) )
-							) ),
-							new Field( array(
-								'label' => 'Start Time',
-								'input' => new TimeInput( array( 'name' => 'event_start_time', 'defaultValue' => '12:00:00' ) )
-							) ),
-							new Field( array(
-								'label' => 'End Time',
-								'input' => new TimeInput( array( 'name' => 'event_end_time', 'defaultValue' => '13:00:00' ) )
-							) ),
-							new Field( array(
-								'label' => 'Timezone',
-								'input' => new Select( array( 'name' => 'event_timezone', 'defaultValue' => 'America/Los_Angeles', 'options' => $timezone_options ) )
-							) )
+							new FieldGroupSet(array(
+								'fieldGroups' => array(
+									new FieldGroup( array(
+										'label' => 'Date & Time',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Date',
+												'input' => new DateInput( array( 'name' => 'event_date', 'class' => 'input-small' ) )
+											) ),
+											new Field( array(
+												'label' => 'Start Time',
+												'input' => new TimeInput( array( 'name' => 'event_start_time', 'defaultValue' => '12:00:00', 'class' => 'input-small' ) )
+											) ),
+											new Field( array(
+												'label' => 'End Time',
+												'input' => new TimeInput( array( 'name' => 'event_end_time', 'defaultValue' => '13:00:00', 'class' => 'input-small' ) )
+											) ),
+											new Field( array(
+												'label' => 'Timezone',
+												'input' => new Select( array( 'name' => 'event_timezone', 'defaultValue' => 'America/Los_Angeles', 'class' => 'input-small', 'options' => $timezone_options ) )
+											) )
+										)
+									) ),
+									new FieldGroup( array(
+										'label' => 'Options',
+										'fields' => array(
+											new Field( array(
+												'input' => new CheckboxSet( array( 'name' => 'event_options', 'options' => $event_options ) )
+											) )
+										)
+									) )
+								)
+							))
 						),
-						'saveMetaCb' => array( __CLASS__, 'save_event_date_meta_box' )
-					) ),
-					new MetaBox( array(
-						'id' => 'event-options',
-						'title' => 'Event Options',
-						'context' => 'side',
-						'fields' => array(
-							new Field( array(
-								'input' => new CheckboxSet( array( 'name' => 'event_options', 'options' => $event_options ) )
-							) )
-						)
+						'saveMetaCb' => array( __CLASS__, 'save_event_details_meta_box' )
 					) )
 				),
 				'listTableColumns' => array( $event_date_list_table_column )
@@ -409,7 +415,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
-		public static function save_event_date_meta_box($post, $input, $args, $fields) {
+		public static function save_event_details_meta_box($post, $input, $args, $fields) {
 
 			$date = isset( $input['event_date'])  ? $input['event_date'] : '';
 			$start_time = isset( $input['event_start_time'] ) ? $input['event_start_time'] : '';
