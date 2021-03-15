@@ -76,11 +76,11 @@
 							<div class="inner">
 
 								<div class="logo powered-by-sba">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association">
+									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
 								</div>
 
 								<div class="logo ca-gobed">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development">
+									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development"></a>
 								</div>
 
 							</div>
