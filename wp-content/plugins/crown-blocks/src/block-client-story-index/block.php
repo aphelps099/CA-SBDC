@@ -123,6 +123,8 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
 								<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
 
+								<button type="button" class="search-field-toggle"><span><?php _e( 'Search', 'crown_blocks' ); ?></span></button>
+								<div class="search-field-spacer"></div>
 								<div class="search-field">
 									<input type="text" name="<?php echo $filters->search->key; ?>" value="<?php echo esc_attr( $filters->search->queried ); ?>" placeholder="<?php echo esc_attr( __( 'Search' ), 'crown_blocks' ); ?>">
 								</div>
