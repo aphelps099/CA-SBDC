@@ -573,6 +573,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'post_type' => 'event_s',
 				'posts_per_page' => 1,
 				'fields' => 'ids',
+				'post_status' => 'any',
 				'meta_query' => array(
 					array( 'key' => '_original_site_id', 'value' => $src_site ),
 					array( 'key' => '_original_post_id', 'value' => $post_id )
@@ -626,6 +627,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'post_type' => 'event_s',
 				'posts_per_page' => 1,
 				'fields' => 'ids',
+				'post_status' => 'any',
 				'meta_query' => array(
 					array( 'key' => '_original_site_id', 'value' => $src_site ),
 					array( 'key' => '_original_post_id', 'value' => $post_id )
