@@ -60,7 +60,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			add_action( 'admin_init', array( __CLASS__, 'process_action_publish_syndicated_event' ) );
 			add_action( 'admin_init', array( __CLASS__, 'process_action_unpublish_syndicated_event' ) );
 			add_action( 'admin_notices', array( __CLASS__, 'output_syndicated_event_admin_notices' ) );
-			// add_action( 'admin_menu', array( __CLASS__, 'add_pending_syndicated_event_count_admin_menu_badges' ), 100 );
 			add_filter( 'bulk_actions-edit-event_s', array( __CLASS__, 'filter_bulk_actions_edit_event_s'), 100, 2 );
 			add_filter( 'disable_months_dropdown', '__return_true' );
 			add_filter( 'display_post_states', array( __CLASS__, 'filter_display_post_states'), 10, 2 );
@@ -391,7 +390,19 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
 					)
 				),
-				'listTableColumns' => array( $event_date_list_table_column )
+				'listTableColumns' => array(
+					$event_date_list_table_column,
+					new ListTableColumn( array(
+						'key' => 'event-site',
+						'title' => 'SBDC',
+						'position' => 3,
+						'outputCb' => function( $post_id, $args ) {
+							$site_id = get_post_meta( $post_id, '_original_site_id', true );
+							$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
+							echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
+						}
+					) )
+				)
 			) );
 
 		}
@@ -692,19 +703,6 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						<p><?php echo $notice['message']; ?></p>
 					</div>
 				<?php
-			}
-
-		}
-
-
-		public static function add_pending_syndicated_event_count_admin_menu_badges() {
-			global $menu;
-
-			$menu_item = wp_list_filter( $menu, array( 2 => 'edit.php?post_type=event' ) );
-
-			if ( ! empty( $menu_item )  ) {
-				$menu_item_position = key( $menu_item );
-				$menu[ $menu_item_position ][0] .= ' <span class="awaiting-mod">' . 4 . '</span>';
 			}
 
 		}
