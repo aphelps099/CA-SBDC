@@ -6474,6 +6474,27 @@
   -ms-flex-pack: end;
       justify-content: flex-end; }
 
+.wp-block-crown-blocks-featured-event .entry-centers {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-featured-event .entry-centers .center {
+    display: inline-block;
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border-radius: 10rem;
+    border: 1px solid #fff;
+    padding: .5rem .75rem;
+    color: inherit; }
+  .wp-block-crown-blocks-featured-event .entry-centers a {
+    -webkit-transition: background-color .2s, color .2s, boder-color .2s;
+    -o-transition: background-color .2s, color .2s, boder-color .2s;
+    transition: background-color .2s, color .2s, boder-color .2s; }
+    .wp-block-crown-blocks-featured-event .entry-centers a:hover {
+      background-color: #fff;
+      color: #333; }
+
 .wp-block-crown-blocks-featured-event .entry-title {
   font-size: 2.5rem;
   margin-top: 0;

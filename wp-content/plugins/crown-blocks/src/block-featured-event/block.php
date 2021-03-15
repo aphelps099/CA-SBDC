@@ -70,8 +70,20 @@ if(!class_exists('Crown_Block_Featured_Event')) {
 							<?php } ?>
 
 							<div class="entry-contents">
+								
+								<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+								<?php if ( ! empty( $centers ) ) { ?>
+									<p class="entry-centers">
+										<?php foreach ( $centers as $term ) { ?>
+											<span class="center"><?php echo $term->name; ?></span>
+										<?php } ?>
+									</p>
+								<?php } ?>
+
 								<h3 class="entry-title"><?php the_title(); ?></h3>
+
 								<div class="entry-excerpt"><?php the_excerpt(); ?></div>
+
 							</div>
 
 						</div>

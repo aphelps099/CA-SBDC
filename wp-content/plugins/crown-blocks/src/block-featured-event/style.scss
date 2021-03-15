@@ -76,6 +76,28 @@ $spacer: 1rem;
 		flex-direction: column;
 		justify-content: flex-end;
 	}
+	.entry-centers {
+		margin-bottom: 1rem;
+		.center {
+			display: inline-block;
+			line-height: 1.2;
+			font-weight: 700;
+			font-size: 0.625rem;
+			letter-spacing: .05em;
+			text-transform: uppercase;
+			border-radius: 10rem;
+			border: 1px solid #fff;
+			padding: .5rem .75rem;
+			color: inherit;
+		}
+		a {
+			transition: background-color .2s, color .2s, boder-color .2s;
+			&:hover {
+				background-color: #fff;
+				color: #333;
+			}
+		}
+	}
 	.entry-title {
 		font-size: 2.5rem;
 		margin-top: 0;
