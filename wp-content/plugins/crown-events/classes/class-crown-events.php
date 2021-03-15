@@ -220,7 +220,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			if ( is_main_site() ) {
 				$event_options[] = array( 'value' => 'post-to-center-sites', 'label' => 'Display on Center Sites' );
 			} else {
-				$event_options[] = array( 'value' => 'post-to-regional-site', 'label' => 'Display on Regional Site' );
+				$event_options[] = array( 'value' => 'do-not-post-to-regional-site', 'label' => 'Don\'t Display on Regional Site' );
 			}
 
 			$event_date_list_table_column = new ListTableColumn( array(
@@ -520,7 +520,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			$options = get_post_meta( $post_id, '__event_options' );
 
-			if ( in_array( 'post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
+			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
 				self::syndicate_post( $post_id, get_main_site_id() );
 			} else {
 				self::delete_syndicated_post( $post_id, get_main_site_id() );
@@ -720,7 +720,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			if ( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
 				$post_states['post-featured'] = 'Featured';
 			}
-			if ( $post->post_type == 'event' && ! empty( array_intersect( array( 'post-to-center-sites', 'post-to-regional-site' ), get_post_meta( $post->ID, '__event_options' ) ) ) ) {
+			if ( $post->post_type == 'event' && is_main_site() && in_array( 'post-to-center-sites', get_post_meta( $post->ID, '__event_options' ) ) ) {
+				$post_states['post-syndicated'] = 'Syndicated';
+			} else if ( $post->post_type == 'event' && ! is_main_site() && ! in_array( 'do-not-post-to-regional-site', get_post_meta( $post->ID, '__event_options' ) ) ) {
 				$post_states['post-syndicated'] = 'Syndicated';
 			}
 			return $post_states;
