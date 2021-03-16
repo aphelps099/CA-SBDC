@@ -1,0 +1,67 @@
+
+
+.wp-block-crown-blocks-dropdown-nav-menu {
+	margin-bottom: 1rem;
+	&.active {
+		.menu-toggle {
+			&:before {
+				transform: none;
+			}
+		}
+		.menu {
+			opacity: 1;
+			visibility: visible;
+			height: auto;
+			transition-delay: 0s;
+		}
+	}
+	> .inner {
+		position: relative;
+	}
+	.menu-toggle {
+		position: relative;
+		z-index: 101;
+		padding: .8rem 1.5rem .75rem;
+		padding-left: 3rem;
+		font-size: 1.5rem;
+		// font-weight: 400;
+		// letter-spacing: 0;
+		&:before {
+			content: '×';
+			transform: rotate(-135deg);
+			transition: transform .2s ease-out;
+			left: 0;
+			top: 0;
+			width: 2.5rem;
+			height: 2.5rem;
+			text-indent: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			line-height: 1;
+			font-size: 2.5rem;
+			font-weight: 300;
+			position: absolute;
+			left: .5rem;
+			top: calc(50% - (2.5rem / 2));
+		}
+	}
+	.menu {
+		opacity: 0;
+		visibility: hidden;
+		height: 0;
+		position: absolute;
+		left: 0;
+		top: 100%;
+		background-color: #fff;
+		box-shadow: 0 2px 8px rgba(#000, .2);
+		overflow: hidden;
+		transition: opacity .2s, visibility 0s .2s, height .2s ease-out;
+		z-index: 100;
+		max-width: 100%;
+		min-width: 16rem;
+		> .inner {
+			padding: .5rem 0;
+		}
+	}
+}

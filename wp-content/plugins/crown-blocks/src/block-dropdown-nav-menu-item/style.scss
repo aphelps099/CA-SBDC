@@ -1,0 +1,11 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-dropdown-nav-menu-item {
+	line-height: 1.4;
+	.menu-item-link {
+		display: block;
+		padding: .25rem 1rem;
+		min-height: 2.25rem;
+	}
+}

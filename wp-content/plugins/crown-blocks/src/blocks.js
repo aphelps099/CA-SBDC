@@ -25,6 +25,8 @@ import './block-content-slider/block.js';
 import './block-content-slider-slide/block.js';
 // import './block-core-values/block.js';
 // import './block-core-values-item/block.js';
+import './block-dropdown-nav-menu/block.js';
+import './block-dropdown-nav-menu-item/block.js';
 import './block-event-header/block.js';
 import './block-event-index/block.js';
 import './block-event-registration-form/block.js';

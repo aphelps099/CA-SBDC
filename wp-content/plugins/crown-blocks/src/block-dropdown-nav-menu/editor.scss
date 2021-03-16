@@ -1,0 +1,19 @@
+
+
+.wp-block[data-type="crown-blocks/dropdown-nav-menu"] {
+	.wp-block-crown-blocks-dropdown-nav-menu {
+		.menu-toggle {
+			padding: .8rem 1.5rem .75rem;
+			padding-left: 3rem;
+			font-size: 1.5rem;
+		}
+		.menu {
+			margin: 0;
+			padding: 0;
+			opacity: 1;
+			height: auto;
+			visibility: visible;
+			position: static;
+		}
+	}
+}

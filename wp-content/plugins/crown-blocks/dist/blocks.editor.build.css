@@ -291,6 +291,53 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/dropdown-nav-menu"] .wp-block-crown-blocks-dropdown-nav-menu .menu-toggle {
+  padding: .8rem 1.5rem .75rem;
+  padding-left: 3rem;
+  font-size: 1.5rem; }
+
+.wp-block[data-type="crown-blocks/dropdown-nav-menu"] .wp-block-crown-blocks-dropdown-nav-menu .menu {
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  height: auto;
+  visibility: visible;
+  position: static; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block[data-type="crown-blocks/dropdown-nav-menu-item"] {
+  margin: 0; }
+  .wp-block[data-type="crown-blocks/dropdown-nav-menu-item"] .menu-item-link {
+    -webkit-user-select: auto;
+       -moz-user-select: auto;
+        -ms-user-select: auto;
+            user-select: auto; }
+  .wp-block[data-type="crown-blocks/dropdown-nav-menu-item"] .menu-item-label {
+    display: inline-block; }
+
+.crown-block-button-toolbar .block-editor-url-input__button {
+  position: relative; }
+  .crown-block-button-toolbar .block-editor-url-input__button .block-editor-url-input__button-modal {
+    position: absolute;
+    left: 0;
+    top: 100%; }
+    .crown-block-button-toolbar .block-editor-url-input__button .block-editor-url-input__button-modal .block-editor-url-input__button-modal-line {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: stretch;
+          align-items: stretch; }
+    .crown-block-button-toolbar .block-editor-url-input__button .block-editor-url-input__button-modal .block-editor-url-input__back {
+      display: none; }
+    .crown-block-button-toolbar .block-editor-url-input__button .block-editor-url-input__button-modal .block-editor-url-input .components-base-control__field {
+      margin-bottom: 0; }
+    .crown-block-button-toolbar .block-editor-url-input__button .block-editor-url-input__button-modal button[type=submit] {
+      height: auto; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/event-header"] .wp-block-crown-blocks-event-header {
   margin-bottom: 0; }
   .wp-block[data-type="crown-blocks/event-header"] .wp-block-crown-blocks-event-header a {

@@ -31,6 +31,7 @@
 		$.wptheme.initSectionNavBlocks();
 		$.wptheme.initTeamMemberIndexBlocks();
 		$.wptheme.initHoverContainerBlocks();
+		$.wptheme.initDropdownNavMenuBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
 
@@ -1211,6 +1212,33 @@
 				var details = $('.details', block);
 				details.css({ height: $('> .inner', details).outerHeight() });
 				setTimeout(function() { details.css({ height: 0 }); }, 0);
+			});
+
+		};
+
+
+		wptheme.initDropdownNavMenuBlocks = function() {
+
+			$(document).on('click', '.wp-block-crown-blocks-dropdown-nav-menu .menu-toggle', function(e) {
+				var block = $(this).closest('.wp-block-crown-blocks-dropdown-nav-menu');
+				var menu = $('.menu', block);
+				var startHeight = menu.height();
+				var endHeight = 0;
+				menu.css({ height: startHeight });
+				block.toggleClass('active');
+				if(block.hasClass('active')) {
+					endHeight = $('> .inner', menu).outerHeight();
+				}
+				setTimeout(function() { menu.css({ height: endHeight }); }, 10);
+				if(block.hasClass('active')) {
+					setTimeout(function() { menu.css({ height: 'auto' }); }, 210);
+				}
+			});
+
+			$(document).on('click', function(e) {
+				var targetBlock = $(e.target).closest('.menu-toggle').closest('.wp-block-crown-blocks-dropdown-nav-menu');
+				targetBlock = !targetBlock.length ? $(e.target).closest('.menu').closest('.wp-block-crown-blocks-dropdown-nav-menu') : targetBlock;
+				$('.wp-block-crown-blocks-dropdown-nav-menu.active').not(targetBlock).find('.menu-toggle').trigger('click');
 			});
 
 		};
