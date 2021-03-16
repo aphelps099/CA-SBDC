@@ -6148,7 +6148,8 @@
     transition: opacity .2s, visibility 0s .2s, height .2s ease-out;
     z-index: 100;
     max-width: 100%;
-    min-width: 16rem; }
+    min-width: 16rem;
+    color: #222; }
     .wp-block-crown-blocks-dropdown-nav-menu .menu > .inner {
       padding: .5rem 0; }
 .crown-block-general-controls {

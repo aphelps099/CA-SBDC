@@ -47,7 +47,14 @@ if(!class_exists('Crown_Block_Faq_Index')) {
 			$filters->search->queried = isset( $_GET[ $filters->search->key ] ) ? trim( $_GET[ $filters->search->key ] ) : '';
 			if ( ! empty( $filters->search->queried ) ) $query_args['s'] = $filters->search->queried;
 
-			$query = new WP_Query( $query_args );
+			$query = null;
+			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
+				$query = new WP_Query();
+				$query->parse_query( $query_args );
+				relevanssi_do_query( $query );
+			} else {
+				$query = new WP_Query( $query_args );
+			}
 
 			$filters_action = remove_query_arg( array(
 				$filters->topic->key,
@@ -63,7 +70,7 @@ if(!class_exists('Crown_Block_Faq_Index')) {
 			$block_id = 'post-feed-block-' . md5( json_encode( array( 'faq-index', $atts ) ) );
 
 			ob_start();
-			// print_r($query_args);
+			// print_r($query);
 			?>
 
 				<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $block_class ); ?>">

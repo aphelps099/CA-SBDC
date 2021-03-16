@@ -78,7 +78,14 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 			}
 
-			$query = new WP_Query( $query_args );
+			$query = null;
+			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
+				$query = new WP_Query();
+				$query->parse_query( $query_args );
+				relevanssi_do_query( $query );
+			} else {
+				$query = new WP_Query( $query_args );
+			}
 
 			$filters_action = remove_query_arg( array(
 				$filters->category->key,

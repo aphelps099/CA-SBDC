@@ -59,7 +59,14 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
 			if ( ! empty( $filters->center->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
 
-			$query = new WP_Query( $query_args );
+			$query = null;
+			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
+				$query = new WP_Query();
+				$query->parse_query( $query_args );
+				relevanssi_do_query( $query );
+			} else {
+				$query = new WP_Query( $query_args );
+			}
 
 			$filters_action = remove_query_arg( array(
 				$filters->industry->key,
