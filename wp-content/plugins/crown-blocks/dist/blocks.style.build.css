@@ -6054,8 +6054,7 @@
     .wp-block-crown-blocks-container > .inner > .container-contents > .inner {
       max-width: 100%;
       margin: 0 auto;
-      position: relative;
-      z-index: 1; }
+      position: relative; }
       .wp-block-crown-blocks-container > .inner > .container-contents > .inner > *:last-child {
         margin-bottom: 0; }
   .wp-block-crown-blocks-container > .container-link {
