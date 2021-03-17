@@ -1,0 +1,3220 @@
+# Copyright (C) 2021 nK
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ghost Kit 2.18.1\n"
+"Report-Msgid-Bugs-To: https://github.com/nk-o/ghostkit/issues\n"
+"Last-Translator: nK\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-03-04T08:24:50+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: ghostkit\n"
+
+#. Plugin Name of the plugin
+#: class-ghost-kit.php:221
+#: settings/index.php:137
+#: settings/index.php:138
+#: gutenberg/plugins/ghostkit/index.js:51
+#: gutenberg/plugins/ghostkit/index.js:55
+msgid "Ghost Kit"
+msgstr ""
+
+#. Description of the plugin
+msgid "Blocks collection and extensions for Gutenberg"
+msgstr ""
+
+#. Author of the plugin
+msgid "nK"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://nkdev.info"
+msgstr ""
+
+#: class-ghost-kit.php:359
+#: settings/index.php:192
+msgid "Go Pro"
+msgstr ""
+
+#: classes/class-assets.php:246
+#: classes/class-assets.php:257
+msgid "This value seems to be invalid."
+msgstr ""
+
+#: classes/class-assets.php:248
+msgid "This value should be a valid email."
+msgstr ""
+
+#: classes/class-assets.php:249
+msgid "This value should be a valid url."
+msgstr ""
+
+#: classes/class-assets.php:250
+msgid "This value should be a valid number."
+msgstr ""
+
+#: classes/class-assets.php:251
+msgid "This value should be a valid integer."
+msgstr ""
+
+#: classes/class-assets.php:252
+msgid "This value should be digits."
+msgstr ""
+
+#: classes/class-assets.php:253
+msgid "This value should be alphanumeric."
+msgstr ""
+
+#: classes/class-assets.php:255
+msgid "This value should not be blank."
+msgstr ""
+
+#: classes/class-assets.php:256
+msgid "This value is required."
+msgstr ""
+
+#: classes/class-assets.php:258
+msgid "This value should be greater than or equal to %s."
+msgstr ""
+
+#: classes/class-assets.php:259
+msgid "This value should be lower than or equal to %s."
+msgstr ""
+
+#: classes/class-assets.php:260
+msgid "This value should be between %s and %s."
+msgstr ""
+
+#: classes/class-assets.php:261
+msgid "This value is too short. It should have %s characters or more."
+msgstr ""
+
+#: classes/class-assets.php:262
+msgid "This value is too long. It should have %s characters or fewer."
+msgstr ""
+
+#: classes/class-assets.php:263
+msgid "This value length is invalid. It should be between %s and %s characters long."
+msgstr ""
+
+#: classes/class-assets.php:264
+msgid "You must select at least %s choices."
+msgstr ""
+
+#: classes/class-assets.php:265
+msgid "You must select %s choices or fewer."
+msgstr ""
+
+#: classes/class-assets.php:266
+msgid "You must select between %s and %s choices."
+msgstr ""
+
+#: classes/class-assets.php:267
+msgid "This value should be the same."
+msgstr ""
+
+#: classes/class-assets.php:268
+msgid "It's not a valid VAT Identification Number."
+msgstr ""
+
+#: classes/class-assets.php:269
+msgid "These emails should match."
+msgstr ""
+
+#: classes/class-assets.php:299
+#: classes/class-shapes.php:29
+#: gutenberg/blocks/form/field-attributes/index.js:141
+#: gutenberg/blocks/form/fields/date/edit.js:66
+#: gutenberg/blocks/form/fields/email/edit.js:97
+#: gutenberg/blocks/form/fields/number/edit.js:67
+#: gutenberg/blocks/form/fields/textarea/edit.js:63
+#: gutenberg/blocks/google-maps/map-styles/index.js:21
+#: gutenberg/components/typography/index.js:85
+#: gutenberg/extend/display/index.js:60
+msgid "Default"
+msgstr ""
+
+#: classes/class-fonts.php:297
+msgid "Default Fonts Site"
+msgstr ""
+
+#: classes/class-rest.php:249
+msgid "User don't have permissions to change Customizer options."
+msgstr ""
+
+#: classes/class-rest.php:265
+msgid "Provide image ID."
+msgstr ""
+
+#: classes/class-rest.php:281
+#: classes/class-rest.php:297
+msgid "Provide Instagram Access Token."
+msgstr ""
+
+#: classes/class-rest.php:317
+#: classes/class-rest.php:350
+msgid "Provide Twitter Consumer Key."
+msgstr ""
+
+#: classes/class-rest.php:320
+#: classes/class-rest.php:353
+msgid "Provide Twitter Consumer Secret."
+msgstr ""
+
+#: classes/class-rest.php:323
+#: classes/class-rest.php:356
+msgid "Provide Twitter Access Token."
+msgstr ""
+
+#: classes/class-rest.php:326
+#: classes/class-rest.php:359
+msgid "Provide Twitter Access Token Secret."
+msgstr ""
+
+#: classes/class-rest.php:329
+#: classes/class-rest.php:362
+msgid "Provide Username."
+msgstr ""
+
+#: classes/class-rest.php:375
+#: classes/class-rest.php:387
+#: classes/class-rest.php:399
+#: classes/class-rest.php:411
+#: classes/class-rest.php:423
+#: classes/class-rest.php:435
+#: classes/class-rest.php:447
+#: classes/class-rest.php:459
+#: classes/class-rest.php:471
+msgid "User don't have permissions to change options."
+msgstr ""
+
+#: classes/class-rest.php:487
+msgid "Options not found."
+msgstr ""
+
+#: classes/class-rest.php:560
+msgid "Image not found."
+msgstr ""
+
+#: classes/class-rest.php:612
+#: classes/class-rest.php:662
+msgid "Instagram data failed to load."
+msgstr ""
+
+#: classes/class-rest.php:752
+#: classes/class-rest.php:882
+msgid "Twitter data failed to load."
+msgstr ""
+
+#. translators: %d - seconds.
+#: classes/class-rest.php:1045
+msgid "%ds"
+msgstr ""
+
+#. translators: %d - minutes.
+#: classes/class-rest.php:1049
+msgid "%dm"
+msgstr ""
+
+#. translators: %d - hours.
+#: classes/class-rest.php:1053
+msgid "%dh"
+msgstr ""
+
+#: classes/class-rest.php:1056
+msgid "M j"
+msgstr ""
+
+#: classes/class-rest.php:1059
+msgid "Y M j"
+msgstr ""
+
+#: classes/class-rest.php:1508
+msgid "Templates not found."
+msgstr ""
+
+#: classes/class-rest.php:1598
+msgid "Template data not found."
+msgstr ""
+
+#: classes/class-rest.php:1613
+msgid "Custom code not found."
+msgstr ""
+
+#: classes/class-rest.php:1663
+msgid "Typography not found."
+msgstr ""
+
+#: classes/class-reusable-widget.php:18
+msgid "Reusable Block"
+msgstr ""
+
+#: classes/class-reusable-widget.php:21
+msgid "Display Gutenberg Reusable Blocks."
+msgstr ""
+
+#: classes/class-reusable-widget.php:82
+msgid "Title:"
+msgstr ""
+
+#: classes/class-reusable-widget.php:90
+msgid "Select Block:"
+msgstr ""
+
+#: classes/class-reusable-widget.php:92
+msgid "--- Select block ---"
+msgstr ""
+
+#: classes/class-reusable-widget.php:107
+msgid "No reusable blocks found."
+msgstr ""
+
+#: classes/class-reusable-widget.php:112
+msgid "Edit:"
+msgstr ""
+
+#: classes/class-reusable-widget.php:115
+msgid "Edit Reusable Block"
+msgstr ""
+
+#: classes/class-shapes.php:32
+msgid "Wave"
+msgstr ""
+
+#: classes/class-shapes.php:39
+msgid "Waves"
+msgstr ""
+
+#: classes/class-shapes.php:46
+msgid "Tilt"
+msgstr ""
+
+#: classes/class-shapes.php:53
+msgid "Tilts"
+msgstr ""
+
+#: classes/class-shapes.php:60
+msgid "Triangle"
+msgstr ""
+
+#: classes/class-shapes.php:67
+msgid "Triangles"
+msgstr ""
+
+#: classes/class-shapes.php:74
+msgid "Triangle Asymm"
+msgstr ""
+
+#: classes/class-shapes.php:81
+msgid "Triangles Asymm"
+msgstr ""
+
+#: classes/class-shapes.php:88
+msgid "Ellipse"
+msgstr ""
+
+#: classes/class-shapes.php:95
+msgid "Ellipses"
+msgstr ""
+
+#: classes/class-shapes.php:102
+msgid "Arrow"
+msgstr ""
+
+#: classes/class-shapes.php:109
+msgid "Arrow Curve"
+msgstr ""
+
+#: classes/class-templates.php:28
+msgctxt "Post Type General Name"
+msgid "Templates"
+msgstr ""
+
+#: classes/class-templates.php:29
+msgctxt "Post Type Singular Name"
+msgid "Template"
+msgstr ""
+
+#: classes/class-templates.php:30
+#: classes/class-templates.php:32
+#: gutenberg/plugins/ghostkit/index.js:67
+#: gutenberg/plugins/templates/index.js:191
+#: gutenberg/plugins/templates/index.js:526
+msgid "Templates"
+msgstr ""
+
+#: classes/class-templates.php:31
+msgid "Parent Template"
+msgstr ""
+
+#: classes/class-templates.php:33
+msgid "View Template"
+msgstr ""
+
+#: classes/class-templates.php:34
+msgid "Add New Template"
+msgstr ""
+
+#: classes/class-templates.php:35
+msgid "Add New"
+msgstr ""
+
+#: classes/class-templates.php:36
+msgid "Edit Template"
+msgstr ""
+
+#: classes/class-templates.php:37
+msgid "Update Template"
+msgstr ""
+
+#: classes/class-templates.php:38
+msgid "Search Template"
+msgstr ""
+
+#: classes/class-templates.php:39
+msgid "Not Found"
+msgstr ""
+
+#: classes/class-templates.php:40
+msgid "Not found in Trash"
+msgstr ""
+
+#: classes/class-templates.php:72
+#: classes/class-templates.php:74
+msgid "Categories"
+msgstr ""
+
+#: classes/class-typography.php:227
+msgid "Body"
+msgstr ""
+
+#: classes/class-typography.php:247
+#: gutenberg/blocks/button/index.js:23
+msgid "Buttons"
+msgstr ""
+
+#: classes/class-typography.php:267
+msgid "Headings"
+msgstr ""
+
+#: classes/class-typography.php:286
+msgid "H1"
+msgstr ""
+
+#: classes/class-typography.php:304
+msgid "H2"
+msgstr ""
+
+#: classes/class-typography.php:322
+msgid "H3"
+msgstr ""
+
+#: classes/class-typography.php:340
+msgid "H4"
+msgstr ""
+
+#: classes/class-typography.php:358
+msgid "H5"
+msgstr ""
+
+#: classes/class-typography.php:376
+msgid "H6"
+msgstr ""
+
+#: gutenberg/blocks/form/block.php:131
+msgid "Thank you for contacting us! We will be in touch with you shortly."
+msgstr ""
+
+#: gutenberg/blocks/form/block.php:296
+msgid "Google reCaptcha form verification failed."
+msgstr ""
+
+#: gutenberg/blocks/form/block.php:312
+#: gutenberg/blocks/form/block.php:316
+msgid "Something went wrong while trying to send the form."
+msgstr ""
+
+#. translators: %s - redirect link.
+#: gutenberg/blocks/form/block.php:346
+msgid "Your form is successfully submitted. Redirecting to %s..."
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.php:29
+msgid "Field Label"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/checkbox/block.php:39
+#: gutenberg/blocks/form/fields/checkbox/index.js:21
+msgid "Checkbox"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/date/block.php:39
+#: gutenberg/blocks/form/fields/date/index.js:21
+msgid "Date"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/email/block.php:39
+#: gutenberg/blocks/form/fields/email/edit.js:83
+#: gutenberg/blocks/form/fields/email/index.js:21
+msgid "Email"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/hidden/block.php:39
+#: gutenberg/blocks/form/fields/hidden/index.js:21
+msgid "Hidden"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/block.php:39
+#: gutenberg/blocks/form/fields/name/index.js:21
+#: gutenberg/plugins/color-palette/index.js:139
+msgid "Name"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/number/block.php:39
+#: gutenberg/blocks/form/fields/number/index.js:21
+msgid "Number"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/phone/block.php:39
+#: gutenberg/blocks/form/fields/phone/index.js:21
+msgid "Phone"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/radio/block.php:39
+#: gutenberg/blocks/form/fields/radio/index.js:21
+msgid "Radio"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/select/block.php:39
+#: gutenberg/blocks/form/fields/select/index.js:21
+msgid "Select"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/select/block.php:91
+#: gutenberg/blocks/form/fields/select/edit.js:152
+msgid "--- Select ---"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/text/block.php:39
+#: gutenberg/blocks/button-single/edit.js:289
+#: gutenberg/blocks/form/fields/text/index.js:21
+msgid "Text"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/textarea/block.php:39
+#: gutenberg/blocks/form/fields/textarea/index.js:21
+msgid "Textarea"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/url/block.php:39
+#: gutenberg/blocks/form/fields/url/index.js:21
+#: gutenberg/blocks/gist/edit.js:194
+msgid "URL"
+msgstr ""
+
+#. translators: %2$s - current page link.
+#: gutenberg/blocks/form/mail-template/index.php:319
+msgid "This e-mail was sent from a contact form on %1$s. (%2$s)"
+msgstr ""
+
+#: gutenberg/blocks/instagram/block.php:157
+#: gutenberg/blocks/instagram/edit.js:194
+msgid "Posts"
+msgstr ""
+
+#: gutenberg/blocks/instagram/block.php:160
+#: gutenberg/blocks/twitter/block.php:190
+#: gutenberg/blocks/instagram/edit.js:199
+#: gutenberg/blocks/twitter/edit.js:309
+msgid "Followers"
+msgstr ""
+
+#: gutenberg/blocks/instagram/block.php:163
+#: gutenberg/blocks/twitter/block.php:187
+#: gutenberg/blocks/instagram/edit.js:204
+#: gutenberg/blocks/twitter/edit.js:304
+msgid "Following"
+msgstr ""
+
+#: gutenberg/blocks/twitter/block.php:173
+#: gutenberg/blocks/twitter/block.php:257
+#: gutenberg/blocks/twitter/edit.js:283
+#: gutenberg/blocks/twitter/edit.js:371
+msgid "Verified account"
+msgstr ""
+
+#: gutenberg/blocks/twitter/block.php:184
+#: gutenberg/blocks/twitter/edit.js:299
+msgid "Tweets"
+msgstr ""
+
+#: gutenberg/blocks/twitter/block.php:247
+#: gutenberg/blocks/twitter/edit.js:360
+msgid "Retweeted"
+msgstr ""
+
+#: settings/index.php:150
+#: gutenberg/plugins/templates/index.js:230
+#: settings/pages/index.js:23
+msgid "Blocks"
+msgstr ""
+
+#: settings/index.php:157
+#: settings/pages/index.js:27
+msgid "Icons"
+msgstr ""
+
+#: settings/index.php:164
+#: gutenberg/plugins/ghostkit/index.js:78
+#: gutenberg/plugins/typography/index.js:615
+#: gutenberg/plugins/typography/index.js:803
+#: settings/pages/index.js:31
+msgid "Typography"
+msgstr ""
+
+#: settings/index.php:171
+#: settings/pages/index.js:35
+msgid "Fonts"
+msgstr ""
+
+#: settings/index.php:178
+#: settings/pages/index.js:39
+msgid "Breakpoints"
+msgstr ""
+
+#: settings/index.php:185
+#: gutenberg/plugins/custom-code/index.js:93
+#: gutenberg/plugins/custom-code/index.js:283
+#: gutenberg/plugins/ghostkit/index.js:89
+#: settings/pages/index.js:43
+msgid "CSS & JavaScript"
+msgstr ""
+
+#: settings/index.php:199
+#: settings/index.php:200
+msgid "Reusable Blocks"
+msgstr ""
+
+#: gutenberg/blocks/accordion-item/edit.js:109
+msgid "Collapse"
+msgstr ""
+
+#: gutenberg/blocks/accordion-item/edit.js:121
+#: gutenberg/blocks/form/field-label/index.js:40
+#: gutenberg/blocks/form/field-options/index.js:50
+msgid "Write label…"
+msgstr ""
+
+#: gutenberg/blocks/accordion-item/index.js:22
+msgid "Item"
+msgstr ""
+
+#: gutenberg/blocks/accordion-item/index.js:23
+msgid "A single item within a accordion block."
+msgstr ""
+
+#: gutenberg/blocks/accordion/edit.js:127
+msgid "Collapse one item only"
+msgstr ""
+
+#: gutenberg/blocks/accordion/edit.js:148
+msgid "Add Accordion Item"
+msgstr ""
+
+#: gutenberg/blocks/accordion/index.js:22
+msgid "Accordion"
+msgstr ""
+
+#: gutenberg/blocks/accordion/index.js:23
+msgid "Toggle the visibility of content across your project."
+msgstr ""
+
+#: gutenberg/blocks/accordion/index.js:26
+msgid "accordion"
+msgstr ""
+
+#: gutenberg/blocks/accordion/index.js:27
+msgid "collapsible"
+msgstr ""
+
+#: gutenberg/blocks/accordion/index.js:28
+msgid "collapse"
+msgstr ""
+
+#: gutenberg/blocks/accordion/transforms.js:29
+msgid "Accordion Item"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:68
+#: gutenberg/blocks/divider/edit.js:76
+#: gutenberg/blocks/divider/edit.js:101
+#: gutenberg/blocks/form/edit.js:158
+msgid "Type"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:71
+msgid "Primary"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:76
+msgid "Success"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:81
+msgid "Danger"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:86
+msgid "Warning"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:91
+msgid "Info"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:102
+#: gutenberg/blocks/button-single/edit.js:206
+#: gutenberg/blocks/divider/edit.js:132
+#: gutenberg/blocks/divider/edit.js:191
+#: gutenberg/blocks/icon-box/edit.js:80
+#: gutenberg/blocks/icon-box/edit.js:162
+#: gutenberg/blocks/testimonial/edit.js:135
+#: gutenberg/blocks/testimonial/edit.js:225
+#: gutenberg/style-variants/core-list/index.js:65
+#: gutenberg/style-variants/core-list/index.js:332
+msgid "Icon"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:108
+#: gutenberg/blocks/divider/edit.js:138
+#: gutenberg/blocks/icon-box/edit.js:87
+msgid "Icon Size"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:122
+msgid "Dismiss button"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:130
+#: gutenberg/blocks/button-single/edit.js:237
+#: gutenberg/blocks/counter-box/edit.js:142
+#: gutenberg/blocks/divider/edit.js:151
+#: gutenberg/blocks/icon-box/edit.js:135
+#: gutenberg/blocks/progress/edit.js:130
+msgid "Colors"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:141
+#: gutenberg/blocks/button-single/edit.js:141
+#: gutenberg/blocks/counter-box/edit.js:153
+#: gutenberg/blocks/divider/edit.js:165
+#: gutenberg/blocks/icon-box/edit.js:146
+#: gutenberg/blocks/progress/edit.js:142
+#: gutenberg/extend/frame/index.js:225
+msgid "Normal"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:146
+#: gutenberg/blocks/button-single/edit.js:146
+#: gutenberg/blocks/counter-box/edit.js:158
+#: gutenberg/blocks/divider/edit.js:170
+#: gutenberg/blocks/icon-box/edit.js:151
+#: gutenberg/blocks/progress/edit.js:147
+#: gutenberg/extend/frame/index.js:230
+msgid "Hover"
+msgstr ""
+
+#: gutenberg/blocks/alert/edit.js:160
+#: gutenberg/blocks/counter-box/edit.js:169
+#: gutenberg/blocks/shape-divider/edit.js:315
+#: gutenberg/extend/frame/index.js:363
+#: gutenberg/style-variants/core-list/index.js:337
+msgid "Color"
+msgstr ""
+
+#: gutenberg/blocks/alert/index.js:23
+msgid "Alert"
+msgstr ""
+
+#: gutenberg/blocks/alert/index.js:24
+msgid "Provide contextual feedback messages for user actions."
+msgstr ""
+
+#: gutenberg/blocks/alert/index.js:27
+msgid "alert"
+msgstr ""
+
+#: gutenberg/blocks/alert/index.js:28
+msgid "notification"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:154
+msgid "Focus"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:164
+#: gutenberg/blocks/divider/edit.js:121
+#: gutenberg/blocks/grid-column/edit.js:160
+#: gutenberg/blocks/shape-divider/edit.js:271
+#: gutenberg/blocks/testimonial/edit.js:195
+msgid "Size"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:183
+#: gutenberg/blocks/progress/edit.js:89
+#: gutenberg/extend/frame/index.js:442
+msgid "Corner Radius"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:190
+#: gutenberg/extend/frame/index.js:341
+#: gutenberg/extend/frame/index.js:346
+msgid "Border Size"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:197
+msgid "Focus Outline Size"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:212
+msgid "Show Icon Only"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:219
+#: gutenberg/blocks/icon-box/edit.js:96
+msgid "Icon Position"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:224
+#: gutenberg/blocks/counter-box/edit.js:104
+#: gutenberg/blocks/icon-box/edit.js:108
+msgid "Left"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:227
+#: gutenberg/blocks/counter-box/edit.js:110
+#: gutenberg/blocks/icon-box/edit.js:114
+msgid "Right"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:268
+msgid "Outline"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:281
+#: gutenberg/blocks/progress/edit.js:167
+msgid "Background"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:298
+#: gutenberg/extend/frame/index.js:287
+msgid "Border"
+msgstr ""
+
+#: gutenberg/blocks/button-single/edit.js:331
+msgid "Write text…"
+msgstr ""
+
+#: gutenberg/blocks/button-single/index.js:22
+msgid "Button"
+msgstr ""
+
+#: gutenberg/blocks/button-single/index.js:23
+msgid "A single button within a buttons wrapper block."
+msgstr ""
+
+#: gutenberg/blocks/button/edit.js:155
+#: gutenberg/blocks/form/fields/submit/edit.js:94
+msgid "Align"
+msgstr ""
+
+#: gutenberg/blocks/button/edit.js:173
+msgid "Add Button"
+msgstr ""
+
+#: gutenberg/blocks/button/index.js:25
+msgid "Change important links to buttons to get more click rate."
+msgstr ""
+
+#: gutenberg/blocks/button/index.js:30
+msgid "btn"
+msgstr ""
+
+#: gutenberg/blocks/button/index.js:31
+msgid "button"
+msgstr ""
+
+#: gutenberg/blocks/carousel-slide/index.js:21
+#: gutenberg/blocks/carousel/edit.js:147
+msgid "Slide"
+msgstr ""
+
+#: gutenberg/blocks/carousel-slide/index.js:22
+msgid "A single slide within a carousel block."
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:132
+msgid "Slides"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:140
+#: gutenberg/blocks/carousel/edit.js:142
+msgid "Effect"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:150
+msgid "Coverflow"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:153
+#: gutenberg/extend/scroll-reveal/index.js:260
+msgid "Fade"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:173
+msgid "Speed (seconds)"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:174
+msgid "sec"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:182
+msgid "Autoplay (seconds)"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:190
+msgid "Slides per view"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:197
+#: gutenberg/components/gap-settings/index.js:37
+msgid "Gap"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:206
+msgid "Centered slides"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:211
+msgid "Loop"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:216
+msgid "Free scroll"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:221
+msgid "Show arrows"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:228
+msgid "Prev arrow icon"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:233
+msgid "Next arrow icon"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:240
+msgid "Show bullets"
+msgstr ""
+
+#: gutenberg/blocks/carousel/edit.js:246
+msgid "Dynamic bullets"
+msgstr ""
+
+#: gutenberg/blocks/carousel/index.js:22
+msgid "Carousel"
+msgstr ""
+
+#: gutenberg/blocks/carousel/index.js:23
+msgid "Carousel for any type of content – images or other blocks."
+msgstr ""
+
+#: gutenberg/blocks/carousel/index.js:26
+msgid "carousel"
+msgstr ""
+
+#: gutenberg/blocks/carousel/index.js:27
+msgid "slider"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:49
+msgid "1.0.0"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:57
+msgid "18 September 2019"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:68
+#: gutenberg/blocks/changelog/index.js:50
+msgid "Added"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:69
+#: gutenberg/blocks/changelog/edit.js:73
+#: gutenberg/blocks/changelog/edit.js:77
+#: gutenberg/blocks/changelog/index.js:51
+#: gutenberg/blocks/changelog/index.js:55
+#: gutenberg/blocks/changelog/index.js:59
+msgid "Something"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:72
+#: gutenberg/blocks/changelog/index.js:54
+msgid "Fixed"
+msgstr ""
+
+#: gutenberg/blocks/changelog/edit.js:76
+msgid "Improved"
+msgstr ""
+
+#: gutenberg/blocks/changelog/index.js:21
+msgid "Changelog"
+msgstr ""
+
+#: gutenberg/blocks/changelog/index.js:22
+msgid "Show the changes log of your product."
+msgstr ""
+
+#: gutenberg/blocks/changelog/index.js:25
+msgid "changelog"
+msgstr ""
+
+#: gutenberg/blocks/changelog/index.js:26
+msgid "log"
+msgstr ""
+
+#: gutenberg/blocks/changelog/index.js:58
+msgid "Changed"
+msgstr ""
+
+#: gutenberg/blocks/countdown/api.js:689
+msgid "Year"
+msgid_plural "Years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:692
+msgid "Month"
+msgid_plural "Months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:695
+msgid "Week"
+msgid_plural "Weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:698
+msgid "Day"
+msgid_plural "Days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:701
+msgid "Hour"
+msgid_plural "Hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:704
+msgid "Minute"
+msgid_plural "Minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/api.js:707
+msgid "Second"
+msgid_plural "Seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: gutenberg/blocks/countdown/edit.js:187
+msgid "End Date"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:192
+msgid "Display Units"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:201
+msgid "Years"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:204
+msgid "Months"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:207
+msgid "Weeks"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:210
+msgid "Days"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:213
+msgid "Hours"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:216
+msgid "Minutes"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:219
+msgid "Seconds"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:227
+msgid "Number Font Size"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:234
+msgid "Label Font Size"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:241
+msgid "Number Color"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:247
+msgid "Label Color"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:258
+msgid "Units Align Left"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:264
+msgid "Units Align Center"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:270
+msgid "Units Align Right"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:305
+msgid "Display content after expiration:"
+msgstr ""
+
+#: gutenberg/blocks/countdown/edit.js:310
+msgid "This countdown has been ended already!"
+msgstr ""
+
+#: gutenberg/blocks/countdown/index.js:22
+msgid "Countdown"
+msgstr ""
+
+#: gutenberg/blocks/countdown/index.js:23
+msgid "Countdown timer for upcoming event."
+msgstr ""
+
+#: gutenberg/blocks/countdown/index.js:26
+msgid "timer"
+msgstr ""
+
+#: gutenberg/blocks/countdown/index.js:27
+msgid "count"
+msgstr ""
+
+#: gutenberg/blocks/countdown/index.js:28
+#: gutenberg/blocks/counter-box/index.js:27
+msgid "number"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:83
+msgid "Number Size"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:92
+msgid "Number Position"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:98
+#: gutenberg/blocks/grid-column/edit.js:236
+#: gutenberg/blocks/icon-box/edit.js:102
+msgid "Top"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:121
+#: gutenberg/blocks/progress/edit.js:122
+msgid "Animate in viewport"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:126
+#: gutenberg/blocks/icon-box/edit.js:126
+msgid "Show Content"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:132
+msgid "Animate from"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:196
+msgid "Number Position Top"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:202
+msgid "Number Position Left"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:208
+msgid "Number Position Right"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/edit.js:220
+msgid "Write number…"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/index.js:23
+msgid "Number Box"
+msgstr ""
+
+#: gutenberg/blocks/counter-box/index.js:24
+msgid "Show your progress and rewards using counting numbers."
+msgstr ""
+
+#: gutenberg/blocks/counter-box/index.js:28
+msgid "counter"
+msgstr ""
+
+#: gutenberg/blocks/divider/edit.js:79
+#: gutenberg/blocks/divider/edit.js:106
+msgid "Line"
+msgstr ""
+
+#: gutenberg/blocks/divider/edit.js:83
+#: gutenberg/blocks/divider/edit.js:109
+#: gutenberg/extend/frame/index.js:237
+msgid "Dashed"
+msgstr ""
+
+#: gutenberg/blocks/divider/edit.js:87
+#: gutenberg/blocks/divider/edit.js:112
+#: gutenberg/extend/frame/index.js:238
+msgid "Dotted"
+msgstr ""
+
+#: gutenberg/blocks/divider/edit.js:91
+#: gutenberg/blocks/divider/edit.js:115
+#: gutenberg/extend/frame/index.js:239
+msgid "Double"
+msgstr ""
+
+#: gutenberg/blocks/divider/edit.js:182
+#: gutenberg/blocks/divider/index.js:25
+#: gutenberg/blocks/image-compare/edit.js:164
+msgid "Divider"
+msgstr ""
+
+#: gutenberg/blocks/divider/index.js:26
+msgid "Divide your long texts and blocks."
+msgstr ""
+
+#: gutenberg/blocks/divider/index.js:29
+msgid "divider"
+msgstr ""
+
+#: gutenberg/blocks/divider/index.js:30
+#: gutenberg/blocks/shape-divider/index.js:28
+msgid "spacer"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:50
+#: gutenberg/blocks/form/edit.js:125
+msgid "Subject"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:51
+#: gutenberg/blocks/form/edit.js:140
+#: gutenberg/blocks/form/edit.js:164
+#: gutenberg/blocks/form/edit.js:195
+#: gutenberg/blocks/form/index.js:57
+msgid "Message"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:116
+msgid "Mail"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:120
+msgid "Send To Email Address"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:130
+msgid "From"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:135
+msgid "Reply To"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:147
+msgid "Send Email"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:151
+#: gutenberg/blocks/form/fields/email/edit.js:75
+msgid "Yes"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:157
+msgid "Confirmation"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:168
+msgid "Redirect"
+msgstr ""
+
+#: gutenberg/blocks/form/edit.js:202
+msgid "Redirect URL"
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:104
+msgid "Hide Label"
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:114
+msgid "Hide Description"
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:125
+msgid "Slug"
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:126
+msgid "Slug is used in form field [name] attribute."
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:134
+#: gutenberg/blocks/form/fields/email/edit.js:92
+msgid "Placeholder"
+msgstr ""
+
+#: gutenberg/blocks/form/field-attributes/index.js:148
+msgid "Required"
+msgstr ""
+
+#: gutenberg/blocks/form/field-description/index.js:39
+#: gutenberg/blocks/form/fields/email/edit.js:131
+#: gutenberg/blocks/form/fields/name/edit.js:169
+#: gutenberg/blocks/form/fields/name/edit.js:190
+msgid "Write description…"
+msgstr ""
+
+#: gutenberg/blocks/form/field-options/index.js:94
+msgid "Add Option"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/checkbox/edit.js:89
+#: gutenberg/blocks/form/fields/radio/edit.js:97
+msgid "Inline"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/checkbox/index.js:22
+msgid "Form field checkbox."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/date/edit.js:83
+msgid "Date Settings"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/date/edit.js:86
+#: gutenberg/blocks/form/fields/number/edit.js:88
+msgid "Min"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/date/edit.js:93
+#: gutenberg/blocks/form/fields/number/edit.js:96
+msgid "Max"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/date/index.js:22
+msgid "Form field date."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/email/edit.js:73
+msgid "Email Confirmation"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/email/edit.js:84
+msgid "Confirm Email"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/email/index.js:22
+msgid "Form field email."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/hidden/edit.js:64
+msgid "Value"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/hidden/index.js:22
+msgid "Form field hidden."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:78
+msgid "Name Fields"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:97
+#: gutenberg/blocks/form/fields/name/edit.js:103
+#: gutenberg/blocks/form/index.js:51
+#: gutenberg/blocks/grid-column/edit.js:82
+msgid "First"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:98
+#: gutenberg/blocks/form/fields/name/edit.js:104
+#: gutenberg/blocks/form/index.js:52
+#: gutenberg/blocks/grid-column/edit.js:95
+msgid "Last"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:105
+msgid "Middle"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:115
+msgid "Middle Placeholder"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:120
+msgid "Middle Default"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:129
+msgid "Last Placeholder"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/edit.js:134
+msgid "Last Default"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/name/index.js:22
+msgid "Form field name."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/number/edit.js:85
+msgid "Number Settings"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/number/edit.js:104
+msgid "Step"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/number/index.js:22
+msgid "Form field number."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/phone/index.js:22
+msgid "Form field phone."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/radio/index.js:22
+msgid "Form field radio."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/select/edit.js:98
+msgid "Multiple"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/select/index.js:22
+msgid "Form field select."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/submit/edit.js:109
+msgid "Submit"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/submit/index.js:21
+msgid "Submit Button"
+msgstr ""
+
+#: gutenberg/blocks/form/fields/submit/index.js:22
+msgid "Form submit button."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/text/index.js:22
+msgid "Form field text."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/textarea/index.js:22
+msgid "Form field textarea."
+msgstr ""
+
+#: gutenberg/blocks/form/fields/url/index.js:22
+msgid "Form field url."
+msgstr ""
+
+#: gutenberg/blocks/form/index.js:21
+msgid "Form"
+msgstr ""
+
+#: gutenberg/blocks/form/index.js:22
+msgid "Add contact form to your page with reCaptcha."
+msgstr ""
+
+#: gutenberg/blocks/form/index.js:25
+msgid "form"
+msgstr ""
+
+#: gutenberg/blocks/form/index.js:26
+msgid "contact"
+msgstr ""
+
+#: gutenberg/blocks/form/index.js:58
+msgid "Write your message here..."
+msgstr ""
+
+#: gutenberg/blocks/form/recaptcha/index.js:76
+msgid "Google reCAPTCHA"
+msgstr ""
+
+#: gutenberg/blocks/form/recaptcha/index.js:80
+msgid "Site Key"
+msgstr ""
+
+#: gutenberg/blocks/form/recaptcha/index.js:89
+msgid "Secret Key"
+msgstr ""
+
+#: gutenberg/blocks/form/recaptcha/index.js:97
+msgid "Protect your form from spam using Google reCAPTCHA v3."
+msgstr ""
+
+#: gutenberg/blocks/form/recaptcha/index.js:100
+msgid "Generate Keys"
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:226
+msgid "Enter search terms, e.g. cat..."
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:231
+msgid "Search"
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:278
+msgid "Image settings"
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:287
+#: gutenberg/blocks/image-compare/edit.js:183
+#: gutenberg/blocks/image-compare/edit.js:213
+msgid "Describe the purpose of the image"
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:289
+#: gutenberg/blocks/image-compare/edit.js:185
+#: gutenberg/blocks/image-compare/edit.js:215
+msgid "Leave empty if the image is purely decorative."
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:300
+#: gutenberg/blocks/gif/index.js:21
+msgid "GIF"
+msgstr ""
+
+#: gutenberg/blocks/gif/edit.js:301
+msgid "Search for a term or paste a Giphy URL"
+msgstr ""
+
+#: gutenberg/blocks/gif/index.js:22
+msgid "Search for and insert an animated image."
+msgstr ""
+
+#: gutenberg/blocks/gif/index.js:25
+msgid "animated"
+msgstr ""
+
+#: gutenberg/blocks/gif/index.js:26
+msgid "giphy"
+msgstr ""
+
+#: gutenberg/blocks/gif/index.js:27
+#: gutenberg/blocks/image-compare/edit.js:251
+#: gutenberg/blocks/image-compare/edit.js:271
+#: gutenberg/blocks/image-compare/index.js:26
+msgid "image"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:86
+msgid "Gist Simple plugin is not defined."
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:168
+#: gutenberg/blocks/gist/edit.js:234
+msgid "Gist URL"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:182
+#: gutenberg/blocks/gist/edit.js:205
+msgid "File"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:213
+msgid "Caption"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:218
+msgid "Show footer"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:223
+msgid "Show line numbers"
+msgstr ""
+
+#: gutenberg/blocks/gist/edit.js:247
+msgid "Visit GitHub Gist Site"
+msgstr ""
+
+#: gutenberg/blocks/gist/file-select.js:125
+#: gutenberg/blocks/gist/file-select.js:137
+msgid "Show all files"
+msgstr ""
+
+#: gutenberg/blocks/gist/index.js:22
+msgid "GitHub Gist"
+msgstr ""
+
+#: gutenberg/blocks/gist/index.js:23
+msgid "Embed code parts form GitHub Gist to your site or documentation."
+msgstr ""
+
+#: gutenberg/blocks/gist/index.js:26
+msgid "github"
+msgstr ""
+
+#: gutenberg/blocks/gist/index.js:27
+msgid "gist"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:178
+msgid "Enter Style JSON"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:184
+msgid "You can use custom styles presets from the"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:186
+msgid "Snazzy Maps"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:326
+#: gutenberg/blocks/google-maps/edit.js:378
+msgid "Full Height"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:336
+msgid "Add Marker"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:354
+#: gutenberg/blocks/google-maps/edit.js:469
+#: gutenberg/blocks/shape-divider/edit.js:268
+msgid "Style"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:383
+msgid "Minimal Height"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:383
+#: gutenberg/blocks/progress/edit.js:76
+#: gutenberg/blocks/shape-divider/edit.js:286
+msgid "Height"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:390
+#: gutenberg/extend/scroll-reveal/index.js:264
+msgid "Zoom"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:397
+msgid "Markers"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:405
+msgid "Enter address"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:446
+msgid "Remove Marker"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:466
+msgid "+ Add Marker"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:472
+msgid "Options"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:474
+msgid "Zoom Buttons"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:479
+msgid "Map Type Buttons"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:484
+msgid "Street View Button"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:489
+msgid "Fullscreen Button"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:494
+msgid "Scroll Wheel"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:499
+msgid "Draggable"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:507
+msgid "Better Scroll & Draggable"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:510
+msgid "Better Scroll"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:513
+msgid "Better Draggable"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:519
+msgid "Scroll with pressed Ctrl or ⌘ key to zoom. Draggable with two fingers."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:522
+msgid "Scroll with pressed Ctrl or ⌘ key to zoom."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:525
+msgid "Draggable with two fingers."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:538
+msgid "API Key"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:540
+msgid "Enter API Key"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:550
+msgid "A valid API key is required to use Google Maps. How to get API key"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:552
+msgid "read here"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:556
+msgid "This key will be used in all Google Maps blocks on your site."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:592
+msgid "Center Map"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:593
+msgid "Enter search query"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:605
+msgid "You can also drag the map to change the center coordinates."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:617
+msgid "Google Maps API Key Required"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/edit.js:618
+msgid "Add an API key in block settings."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/index.js:22
+msgid "Google Maps"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/index.js:23
+msgid "Show maps with custom styles, markers and settings."
+msgstr ""
+
+#: gutenberg/blocks/google-maps/index.js:26
+msgid "maps"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/index.js:27
+msgid "google"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/map-styles/index.js:28
+msgid "Bright"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/map-styles/index.js:135
+#: gutenberg/components/typography/index.js:100
+msgid "Light"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/map-styles/index.js:281
+msgid "Dark"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/map-styles/index.js:472
+msgid "Pale Dawn"
+msgstr ""
+
+#: gutenberg/blocks/google-maps/map-styles/index.js:569
+#: gutenberg/components/gap-settings/index.js:59
+msgid "Custom"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:49
+#: gutenberg/blocks/grid-column/edit.js:76
+msgid "Inherit from larger"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:52
+#: gutenberg/blocks/grid-column/edit.js:79
+msgid "Auto"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:59
+msgid "%d Column (%s)"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:59
+msgid "%d Columns (%s)"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:170
+msgid "Order"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:180
+#: gutenberg/blocks/grid/edit.js:334
+msgid "Vertical alignment"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:186
+#: gutenberg/blocks/grid/edit.js:340
+#: gutenberg/blocks/grid/edit.js:367
+#: gutenberg/blocks/tabs-legacy/index.js:108
+msgid "Start"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:196
+#: gutenberg/blocks/grid/edit.js:346
+#: gutenberg/blocks/grid/edit.js:373
+#: gutenberg/blocks/tabs-legacy/index.js:111
+msgid "Center"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:206
+#: gutenberg/blocks/grid/edit.js:352
+#: gutenberg/blocks/grid/edit.js:379
+#: gutenberg/blocks/tabs-legacy/index.js:114
+msgid "End"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:226
+msgid "Sticky Content"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:232
+msgid "No"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:240
+msgid "Bottom"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:263
+msgid "Sticky Offset"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/edit.js:275
+msgid "Select Column"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/index.js:32
+msgid "Column"
+msgstr ""
+
+#: gutenberg/blocks/grid-column/index.js:33
+msgid "A single column within a grid block."
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:166
+#: gutenberg/blocks/grid/index.js:29
+msgid "Grid"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:167
+msgid "Select one layout to get started."
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:200
+msgid "Select Template"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:297
+msgid "Content Vertical Start"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:303
+msgid "Content Vertical Center"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:309
+msgid "Content Vertical End"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:321
+#: gutenberg/blocks/instagram/edit.js:96
+msgid "Columns"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:361
+msgid "Horizontal alignment"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:385
+msgid "Around"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:391
+msgid "Between"
+msgstr ""
+
+#: gutenberg/blocks/grid/edit.js:420
+msgid "Select Grid"
+msgstr ""
+
+#: gutenberg/blocks/grid/index.js:30
+msgid "Responsive grid block to build layouts of all shapes and sizes thanks to a twelve column system. Visual columns size and order change."
+msgstr ""
+
+#: gutenberg/blocks/grid/index.js:33
+msgid "row"
+msgstr ""
+
+#: gutenberg/blocks/grid/index.js:34
+msgid "columns"
+msgstr ""
+
+#: gutenberg/blocks/grid/index.js:35
+msgid "section"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/edit.js:190
+msgid "Icon Position Top"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/edit.js:196
+msgid "Icon Position Left"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/edit.js:202
+msgid "Icon Position Right"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/index.js:23
+msgid "Icon Box"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/index.js:24
+msgid "Icons are one of the best visual replacement for text descriptions."
+msgstr ""
+
+#: gutenberg/blocks/icon-box/index.js:27
+msgid "icon"
+msgstr ""
+
+#: gutenberg/blocks/icon-box/index.js:28
+msgid "icon-box"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:166
+msgid "Start Position"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:175
+msgid "Before Image Settings"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:191
+#: gutenberg/blocks/image-compare/edit.js:221
+msgid "Image Size"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:205
+msgid "After Image Settings"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:239
+#: gutenberg/blocks/image-compare/index.js:22
+msgid "Image Compare"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:240
+msgid "Select images to compare"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:250
+msgid "Image Before"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/edit.js:270
+msgid "Image After"
+msgstr ""
+
+#: gutenberg/blocks/image-compare/index.js:23
+msgid "Compare two images with a slider."
+msgstr ""
+
+#: gutenberg/blocks/image-compare/index.js:27
+msgid "compare"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:89
+msgid "Photos Number"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:112
+msgid "Profile Info"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:114
+msgid "Show Profile Info"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:121
+#: gutenberg/blocks/twitter/edit.js:126
+#: gutenberg/blocks/twitter/edit.js:195
+msgid "Show Avatar"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:127
+#: gutenberg/blocks/twitter/edit.js:132
+#: gutenberg/blocks/twitter/edit.js:201
+msgid "Avatar Size"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:135
+#: gutenberg/blocks/twitter/edit.js:140
+#: gutenberg/blocks/twitter/edit.js:209
+msgid "Show Name"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:140
+#: gutenberg/blocks/twitter/edit.js:214
+msgid "Show Stats"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:145
+msgid "Show BIO"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:150
+#: gutenberg/blocks/twitter/edit.js:224
+msgid "Show Website"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:160
+#: gutenberg/blocks/twitter/edit.js:239
+msgid "API Data"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:162
+#: gutenberg/blocks/twitter/edit.js:251
+msgid "Access Token"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:168
+msgid "A valid Access Token is required to use Instagram feed. How to get token"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:250
+#: gutenberg/blocks/instagram/index.js:21
+msgid "Instagram"
+msgstr ""
+
+#: gutenberg/blocks/instagram/edit.js:251
+msgid "A valid Access Token is required to use Instagram feed. You can fill it in the block settings in Inspector."
+msgstr ""
+
+#: gutenberg/blocks/instagram/index.js:22
+msgid "Show Instagram feed and user data."
+msgstr ""
+
+#: gutenberg/blocks/instagram/index.js:25
+msgid "instagram"
+msgstr ""
+
+#: gutenberg/blocks/markdown/edit.js:75
+msgid "Write your _Markdown_ **here**..."
+msgstr ""
+
+#: gutenberg/blocks/markdown/edit.js:89
+#: gutenberg/blocks/markdown/edit.js:116
+#: gutenberg/blocks/markdown/index.js:21
+msgid "Markdown"
+msgstr ""
+
+#: gutenberg/blocks/markdown/edit.js:96
+#: settings/pages/blocks.js:233
+msgid "Preview"
+msgstr ""
+
+#: gutenberg/blocks/markdown/index.js:22
+msgid "Lightweight markup language with plain-text-formatting syntax."
+msgstr ""
+
+#: gutenberg/blocks/markdown/index.js:25
+msgid "formatting"
+msgstr ""
+
+#: gutenberg/blocks/markdown/index.js:26
+msgid "markup"
+msgstr ""
+
+#: gutenberg/blocks/markdown/index.js:27
+msgid "md"
+msgstr ""
+
+#: gutenberg/blocks/markdown/render.js:37
+msgid "Are you sure you wish to leave this page?"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:72
+msgid "Show Popular Badge"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:77
+msgid "Show Title"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:82
+msgid "Show Price"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:89
+msgid "Show Price Currency"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:94
+msgid "Show Price Repeat"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:101
+#: gutenberg/blocks/twitter/edit.js:219
+msgid "Show Description"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:106
+msgid "Show Features"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:111
+msgid "Show Button"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:125
+msgid "Plan"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:138
+msgid "$"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:160
+msgid "/mo"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:174
+msgid "Description"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:186
+msgid "Add features"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/edit.js:212
+msgid "Popular"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/index.js:21
+msgid "Pricing Table Item"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table-item/index.js:22
+msgid "A single item within a pricing table block."
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:156
+#: gutenberg/blocks/pricing-table/edit.js:183
+msgid "ItemsVertical Start"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:162
+#: gutenberg/blocks/pricing-table/edit.js:189
+msgid "ItemsVertical Center"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:168
+#: gutenberg/blocks/pricing-table/edit.js:195
+msgid "ItemsVertical End"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:178
+msgid "Vertical align"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:203
+msgid "Horizontal align"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/edit.js:242
+msgid "Add Pricing Table"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/index.js:22
+msgid "Pricing Table"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/index.js:23
+msgid "Sell your products or services and show all features."
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/index.js:26
+msgid "pricing"
+msgstr ""
+
+#: gutenberg/blocks/pricing-table/index.js:27
+msgid "table"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:82
+msgid "Percent"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:98
+msgid "Show Count"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:105
+msgid "Count Prefix"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:110
+msgid "Count Suffix"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:117
+msgid "Striped"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:159
+msgid "Bar"
+msgstr ""
+
+#: gutenberg/blocks/progress/edit.js:185
+msgid "Write caption…"
+msgstr ""
+
+#: gutenberg/blocks/progress/index.js:24
+msgid "Progress"
+msgstr ""
+
+#: gutenberg/blocks/progress/index.js:25
+msgid "Show the progress of your work, skills or earnings."
+msgstr ""
+
+#: gutenberg/blocks/progress/index.js:28
+msgid "progress"
+msgstr ""
+
+#: gutenberg/blocks/progress/index.js:29
+msgid "bar"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:171
+msgid "PRO Shapes"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:172
+msgid "Additional 30 shapes available for Pro users only"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:174
+msgid "Read More"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:205
+msgid "Vertical Flip"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:213
+msgid "Horizontal Flip"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:248
+msgid "Shapes"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/edit.js:297
+msgid "Width"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/index.js:22
+msgid "Shape Divider"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/index.js:23
+msgid "Decorations for section shapes."
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/index.js:26
+msgid "shape"
+msgstr ""
+
+#: gutenberg/blocks/shape-divider/index.js:27
+msgid "svg"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:81
+msgid "Allowed Headers"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:86
+msgid "Heading 1"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:89
+msgid "Heading 2"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:92
+msgid "Heading 3"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:95
+msgid "Heading 4"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:98
+msgid "Heading 5"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:101
+msgid "Heading 6"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:112
+msgid "List Style"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:117
+msgid "Numbered List"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:120
+msgid "Dotted List"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:123
+msgid "Numbered List Styled"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:126
+msgid "Dotted List Styled"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:136
+#: gutenberg/blocks/table-of-contents/index.js:21
+msgid "Table of Contents"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:137
+msgid "No headings found."
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/edit.js:147
+msgid "Write title…"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/index.js:22
+msgid "Automatically generate a table of contents by parsing page headers in content."
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/index.js:25
+msgid "table of contents"
+msgstr ""
+
+#: gutenberg/blocks/table-of-contents/index.js:26
+msgid "toc"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/deprecated.js:23
+#: gutenberg/blocks/tabs-legacy/index.js:51
+msgid "Tab %d"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:90
+msgid "This Tabs block has a legacy structure. To use new tabs, add it again from blocks inserter."
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:96
+#: gutenberg/blocks/tabs/index.js:22
+#: gutenberg/blocks/tabs/index.js:42
+msgid "Tabs"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:103
+msgid "Tabs align"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:132
+#: gutenberg/blocks/tabs/edit.js:257
+msgid "Tab label"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:168
+msgid "Tabs (legacy)"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:169
+msgid "Tabs."
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:173
+#: gutenberg/blocks/tabs/index.js:26
+msgid "tabs"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/index.js:174
+#: gutenberg/blocks/tabs/index.js:27
+msgid "tab"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/tab.js:38
+#: gutenberg/blocks/tabs-tab/index.js:21
+msgid "Tab"
+msgstr ""
+
+#: gutenberg/blocks/tabs-legacy/tab.js:40
+#: gutenberg/blocks/tabs-tab/index.js:22
+msgid "A single tab within a tabs block."
+msgstr ""
+
+#: gutenberg/blocks/tabs/edit.js:212
+msgid "Vertical Tabs"
+msgstr ""
+
+#: gutenberg/blocks/tabs/edit.js:216
+msgid "Tabs Align"
+msgstr ""
+
+#: gutenberg/blocks/tabs/edit.js:268
+msgid "Remove tab?"
+msgstr ""
+
+#: gutenberg/blocks/tabs/edit.js:278
+msgid "Add Tab"
+msgstr ""
+
+#: gutenberg/blocks/tabs/index.js:23
+msgid "Separate content on the tabs with titles."
+msgstr ""
+
+#: gutenberg/blocks/tabs/index.js:47
+msgid "Pills"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:140
+msgid "Photo"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:150
+msgid "Select Image"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:165
+msgid "Click the image to edit or update"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:190
+msgid "Remove Image"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:213
+msgid "Stars"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:311
+msgid "Write name…"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/edit.js:318
+msgid "Write source…"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/index.js:23
+msgid "Testimonial"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/index.js:24
+msgid "Show how your users love your products and what saying."
+msgstr ""
+
+#: gutenberg/blocks/testimonial/index.js:27
+msgid "testimonial"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/index.js:28
+msgid "blockquote"
+msgstr ""
+
+#: gutenberg/blocks/testimonial/index.js:29
+msgid "quote"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:102
+msgid "Username"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:107
+msgid "Feed"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:109
+msgid "Tweets Number"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:116
+msgid "Show Replies"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:121
+msgid "Show Retweets"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:145
+msgid "Show Date"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:150
+msgid "Show Actions"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:155
+msgid "Text Mode"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:160
+msgid "Short"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:163
+msgid "Full"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:169
+msgid "Convert Text Links"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:174
+msgid "Links + Media"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:177
+msgid "Links"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:180
+msgid "No Convert"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:186
+msgid "Profile"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:188
+msgid "Show Profile"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:229
+msgid "Show Location"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:241
+msgid "Consumer Key"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:246
+msgid "Consumer Secret"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:256
+msgid "Access Token Secret"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:262
+msgid "A valid API data is required to use Twitter feed. How to get it"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:429
+#: gutenberg/blocks/twitter/index.js:21
+msgid "Twitter"
+msgstr ""
+
+#: gutenberg/blocks/twitter/edit.js:430
+msgid "A valid API data is required to use Twitter feed. You can fill it in the block settings in Inspector."
+msgstr ""
+
+#: gutenberg/blocks/twitter/index.js:22
+msgid "Show Twitter feed and user data."
+msgstr ""
+
+#: gutenberg/blocks/twitter/index.js:25
+msgid "twitter"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:23
+msgid "Video"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:24
+msgid "Plain and Fullscreen YouTube, Vimeo and Self-Hosted videos."
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:27
+msgid "video"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:28
+msgid "youtube"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:29
+msgid "vimeo"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:51
+msgid "Plain"
+msgstr ""
+
+#: gutenberg/blocks/video/index.js:56
+msgid "Icon Only"
+msgstr ""
+
+#: gutenberg/blocks/widgetized-area/edit.js:52
+#: gutenberg/blocks/widgetized-area/index.js:21
+msgid "Widgetized Area"
+msgstr ""
+
+#: gutenberg/blocks/widgetized-area/edit.js:60
+msgid "--- Select Sidebar ---"
+msgstr ""
+
+#: gutenberg/blocks/widgetized-area/index.js:22
+msgid "Select registered sidebars and put it in any place."
+msgstr ""
+
+#: gutenberg/blocks/widgetized-area/index.js:25
+msgid "widget"
+msgstr ""
+
+#: gutenberg/blocks/widgetized-area/index.js:26
+msgid "sidebar"
+msgstr ""
+
+#: gutenberg/components/color-picker/index.js:46
+msgid "Custom Color Picker"
+msgstr ""
+
+#: gutenberg/components/color-picker/index.js:99
+#: gutenberg/plugins/color-palette/index.js:88
+#: gutenberg/plugins/color-palette/index.js:263
+#: gutenberg/plugins/ghostkit/index.js:100
+msgid "Color Palette"
+msgstr ""
+
+#: gutenberg/components/date-time-picker/index.js:61
+msgid "Select Date"
+msgstr ""
+
+#: gutenberg/components/gap-settings/index.js:43
+#: gutenberg/extend/frame/index.js:240
+#: gutenberg/extend/scroll-reveal/index.js:256
+#: gutenberg/style-variants/core-list/index.js:69
+msgid "None"
+msgstr ""
+
+#: gutenberg/components/gap-settings/index.js:47
+msgid "S"
+msgstr ""
+
+#: gutenberg/components/gap-settings/index.js:51
+msgid "M"
+msgstr ""
+
+#: gutenberg/components/gap-settings/index.js:55
+msgid "L"
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:140
+msgid "Search Icon"
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:145
+msgid "Type to Search..."
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:152
+#: gutenberg/components/icon-picker/index.js:157
+msgid "Icon Output"
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:169
+msgid "Customize Icon"
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:178
+msgid "Reset"
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:305
+msgid "No icons found."
+msgstr ""
+
+#: gutenberg/components/icon-picker/index.js:404
+msgid "Icon Picker"
+msgstr ""
+
+#: gutenberg/components/remove-button/index.js:37
+msgid "Remove Block?"
+msgstr ""
+
+#: gutenberg/components/remove-button/index.js:38
+#: gutenberg/plugins/color-palette/index.js:163
+msgid "Remove"
+msgstr ""
+
+#: gutenberg/components/remove-button/index.js:39
+msgid "Cancel"
+msgstr ""
+
+#: gutenberg/components/responsive-tab-panel/index.js:34
+msgid "No media sizes found."
+msgstr ""
+
+#: gutenberg/components/responsive-tab-panel/index.js:56
+msgid "All devices"
+msgstr ""
+
+#: gutenberg/components/responsive-tab-panel/index.js:57
+msgid "Devices with screen width <= %s"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:38
+msgid "Default Site Font"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:88
+msgid "Thin"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:91
+msgid "Thin Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:94
+msgid "Extra Light"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:97
+msgid "Extra Light Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:103
+msgid "Light Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:106
+msgid "Regular"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:109
+msgid "Regular Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:112
+msgid "Medium"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:115
+msgid "Medium Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:118
+msgid "Semi Bold"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:121
+msgid "Semi Bold Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:124
+msgid "Bold"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:127
+msgid "Bold Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:130
+msgid "Extra Bold"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:133
+msgid "Extra Bold Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:136
+msgid "Black"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:139
+msgid "Black Italic"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:232
+msgid "Font Family Category"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:255
+msgid "Google Fonts"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:268
+msgid "Adobe Fonts"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:269
+#: gutenberg/components/typography/index.js:283
+msgid "PRO"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:282
+msgid "Custom Fonts"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:292
+msgid "Adobe Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - "
+msgstr ""
+
+#: gutenberg/components/typography/index.js:298
+msgid "Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - "
+msgstr ""
+
+#: gutenberg/components/typography/index.js:305
+msgid "Font Family"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:316
+msgid "--- Select Font Family ---"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:326
+msgid "Font Weight"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:336
+msgid "--- Select Weight ---"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:347
+msgid "Font Size"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:367
+msgid "Line Height"
+msgstr ""
+
+#: gutenberg/components/typography/index.js:387
+msgid "Letter Spacing"
+msgstr ""
+
+#: gutenberg/extend/custom-css/index.js:91
+msgid "Use %s rule to change block styles."
+msgstr ""
+
+#: gutenberg/extend/custom-css/index.js:92
+msgid "Example:"
+msgstr ""
+
+#: gutenberg/extend/custom-css/index.js:149
+#: gutenberg/extend/custom-css/index.js:170
+msgid "Custom CSS"
+msgstr ""
+
+#: gutenberg/extend/custom-css/index.js:166
+msgid "Open in Modal"
+msgstr ""
+
+#: gutenberg/extend/display/index.js:60
+msgid "Inherit"
+msgstr ""
+
+#: gutenberg/extend/display/index.js:63
+msgid "Show"
+msgstr ""
+
+#: gutenberg/extend/display/index.js:66
+msgid "Hide"
+msgstr ""
+
+#: gutenberg/extend/display/index.js:205
+msgid "Display"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:236
+msgid "Solid"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:252
+msgid "Frame"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:328
+msgid "Border Color"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:359
+msgid "Shadow"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:376
+#: gutenberg/extend/frame/index.js:381
+msgid "X"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:392
+#: gutenberg/extend/frame/index.js:397
+msgid "Y"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:408
+#: gutenberg/extend/frame/index.js:413
+msgid "Blur"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:424
+#: gutenberg/extend/frame/index.js:429
+msgid "Spread"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:446
+msgid "Top Left"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:461
+msgid "Top Right"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:476
+msgid "Bottom Right"
+msgstr ""
+
+#: gutenberg/extend/frame/index.js:491
+msgid "Bottom Left"
+msgstr ""
+
+#: gutenberg/extend/scroll-reveal/index.js:241
+msgid "Animate on Scroll"
+msgstr ""
+
+#: gutenberg/extend/scroll-reveal/index.js:337
+msgid "Distance"
+msgstr ""
+
+#: gutenberg/extend/scroll-reveal/index.js:347
+msgid "Scale"
+msgstr ""
+
+#: gutenberg/extend/scroll-reveal/index.js:364
+msgid "Duration"
+msgstr ""
+
+#: gutenberg/extend/scroll-reveal/index.js:372
+msgid "Delay"
+msgstr ""
+
+#: gutenberg/extend/spacings/index.js:218
+msgid "Spacings"
+msgstr ""
+
+#: gutenberg/extend/spacings/index.js:243
+msgid "Margin"
+msgstr ""
+
+#: gutenberg/extend/spacings/index.js:278
+msgid "Padding"
+msgstr ""
+
+#: gutenberg/extend/toolbar-templates/index.js:41
+#: gutenberg/extend/toolbar-templates/index.js:53
+#: gutenberg/plugins/templates/index.js:285
+#: gutenberg/plugins/templates/index.js:374
+msgid "Add Template"
+msgstr ""
+
+#: gutenberg/extend/variants/index.js:120
+msgid "Variants"
+msgstr ""
+
+#: gutenberg/formats/badge/index.js:39
+#: gutenberg/formats/badge/index.js:159
+msgid "Badge"
+msgstr ""
+
+#: gutenberg/formats/mark/index.js:28
+#: gutenberg/formats/mark/index.js:67
+msgid "Highlight"
+msgstr ""
+
+#: gutenberg/formats/uppercase/index.js:28
+#: gutenberg/formats/uppercase/index.js:67
+msgid "Uppercase"
+msgstr ""
+
+#: gutenberg/plugins/color-palette/index.js:95
+msgid "Default Colors"
+msgstr ""
+
+#: gutenberg/plugins/color-palette/index.js:114
+msgid "Custom Colors"
+msgstr ""
+
+#: gutenberg/plugins/color-palette/index.js:174
+msgid "Add Custom Color"
+msgstr ""
+
+#: gutenberg/plugins/color-palette/index.js:184
+msgid "Blue"
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:139
+#: gutenberg/plugins/typography/index.js:650
+msgid "All changes will be applied on the current page only."
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:141
+#: gutenberg/plugins/typography/index.js:652
+msgid "Local"
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:150
+#: gutenberg/plugins/typography/index.js:661
+msgid "All changes will be applied site wide."
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:152
+#: gutenberg/plugins/typography/index.js:663
+msgid "Global"
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:166
+#: settings/pages/css-js.js:105
+msgid "CSS"
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:180
+#: settings/pages/css-js.js:120
+msgid "JavaScript"
+msgstr ""
+
+#: gutenberg/plugins/custom-code/index.js:181
+#: settings/pages/css-js.js:123
+msgid "Add custom JavaScript code in <head> section or in the end of <body> tag. Insert Google Analytics, Tag Manager or other JavaScript code snippets."
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:75
+msgid "Uncategorized"
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:248
+#: gutenberg/plugins/customizer/index.js:467
+#: gutenberg/plugins/ghostkit/index.js:111
+msgid "Customizer"
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:260
+msgid "Override Customizer options for the current post."
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:269
+msgid "--- Select Option ---"
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:277
+msgid "No customizer options found. You can manually open "
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:278
+msgid "Appearance > Customize"
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:279
+msgid ", and the list will be available here."
+msgstr ""
+
+#: gutenberg/plugins/customizer/index.js:396
+msgid "Default:"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:140
+msgid "-- Select Category --"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:216
+msgid "Templates from the theme."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:218
+msgid "Theme"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:228
+msgid "Simple blocks to construct your page."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:239
+msgid "Pre-designed ready to use pages."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:241
+msgid "Pages"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:250
+msgid "My Templates."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:252
+msgid "My Templates"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:267
+msgid "Coming Soon..."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:283
+#: gutenberg/plugins/templates/index.js:288
+msgid "No templates found."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:299
+msgid "Templates: %s"
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:408
+msgid "<strong>Advanced Backgrounds</strong> plugin is required to use background image and video blocks."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:412
+msgid "<strong>Visual Portfolio</strong> plugin is required to show portfolio layouts."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:424
+msgid "%s block is missing."
+msgstr ""
+
+#: gutenberg/plugins/templates/index.js:433
+msgid "Install Plugin"
+msgstr ""
+
+#: gutenberg/plugins/typography/index.js:681
+#: settings/pages/typography.js:190
+msgid "Hide Advanced"
+msgstr ""
+
+#: gutenberg/plugins/typography/index.js:681
+#: settings/pages/typography.js:190
+msgid "Show Advanced"
+msgstr ""
+
+#: gutenberg/style-variants/core-heading/index.js:10
+msgid "Numbered"
+msgstr ""
+
+#: gutenberg/style-variants/core-list/index.js:61
+msgid "Styled"
+msgstr ""
+
+#: gutenberg/style-variants/core-list/index.js:191
+msgid "Columns Settings"
+msgstr ""
+
+#: gutenberg/style-variants/core-list/index.js:198
+msgid "Columns Count"
+msgstr ""
+
+#: gutenberg/style-variants/core-list/index.js:328
+msgid "Icon Settings"
+msgstr ""
+
+#: settings/pages/blocks.js:236
+msgid "Enable Block"
+msgstr ""
+
+#: settings/pages/blocks.js:236
+msgid "Disable Block"
+msgstr ""
+
+#: settings/pages/blocks.js:277
+msgid "Disabled Blocks: %s"
+msgstr ""
+
+#: settings/pages/blocks.js:292
+msgid "No blocks in selected category."
+msgstr ""
+
+#: settings/pages/blocks.js:308
+msgid "Blocks: %s"
+msgstr ""
+
+#: settings/pages/blocks.js:310
+msgid "Disable All Blocks"
+msgstr ""
+
+#: settings/pages/blocks.js:310
+msgid "Enable All Blocks"
+msgstr ""
+
+#: settings/pages/breakpoints.js:20
+msgid "Breakpoints available for Pro users only. Read more about Ghost Kit Pro plugin here - "
+msgstr ""
+
+#: settings/pages/fonts.js:20
+msgid "Adobe and Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - "
+msgstr ""

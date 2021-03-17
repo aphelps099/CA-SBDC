@@ -11,7 +11,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 			if( self::$init ) return;
 			self::$init = true;
 
-			add_action( 'admin_menu', array( __CLASS__, 'cleanup_admin' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'cleanup_admin' ), 100 );
 			add_action( 'admin_bar_menu', array( __CLASS__, 'cleanup_admin_bar' ), 999 );
 
 			add_action( 'admin_menu', array( __CLASS__, 'add_blocks_menu_item' ), 10 );
@@ -57,6 +57,12 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 			// 		}
 			// 	}
 			// }
+
+			if ( get_current_user_id() != 1 ) {
+				remove_menu_page( 'ghostkit' );
+				remove_menu_page( 'edit.php?post_type=ghostkit_template' );
+				remove_menu_page( 'edit.php?post_type=wp_block' );
+			}
 
 		}
 
