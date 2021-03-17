@@ -270,6 +270,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 																	</div>
 																	<div class="image overlay" style="background-image: url(<?php echo $image_src; ?>);"></div>
 																<?php } ?>
+																<span class="overlay-label"><?php _e( 'View Bio', 'crown_blocks' ); ?></span>
 															</div>
 														</div>
 	
@@ -299,9 +300,9 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 															</div>
 	
-															<p class="entry-link">
+															<!-- <p class="entry-link">
 																<span><?php _e( 'View My Bio', 'crown_blocks' ); ?></span>
-															</p>
+															</p> -->
 	
 														</div>
 
