@@ -43,6 +43,7 @@ import './block-grid-cell/block.js';
 import './block-header/block.js';
 import './block-hover-container/block.js';
 import './block-inline-related-content-link/block.js';
+import './block-job-index/block.js';
 // import './block-locations-map/block.js';
 import './block-multi-column/block.js';
 import './block-portal-link/block.js';

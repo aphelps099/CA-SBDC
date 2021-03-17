@@ -2010,6 +2010,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/job-index"] .wp-block-crown-blocks-job-index form.feed-filters,
+.wp-block[data-type="crown-blocks/job-index"] .wp-block-crown-blocks-job-index a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/multi-column"] > .crown-block-editor-container > .wp-block-crown-blocks-multi-column > .inner > .multi-column-columns > .inner {
   display: block; }
   .editor-styles-wrapper .wp-block[data-type="crown-blocks/multi-column"] > .crown-block-editor-container > .wp-block-crown-blocks-multi-column > .inner > .multi-column-columns > .inner > .block-editor-inner-blocks > .block-editor-block-list__layout {

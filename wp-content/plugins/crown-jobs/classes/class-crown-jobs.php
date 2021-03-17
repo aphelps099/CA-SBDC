@@ -42,7 +42,7 @@ if ( ! class_exists( 'Crown_Jobs' ) ) {
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_job_post_type' ) );
 
-			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
+			add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
 			// add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
@@ -102,6 +102,7 @@ if ( ! class_exists( 'Crown_Jobs' ) ) {
 					'publicly_queryable' => true,
 					'show_in_rest' => true,
 					'show_in_nav_menus' => false,
+					'show_ui' => is_main_site(),
 					'capability_type' => array( 'job', 'jobs' ),
 					'map_meta_cap' => true,
 					'menu_position' => 33
