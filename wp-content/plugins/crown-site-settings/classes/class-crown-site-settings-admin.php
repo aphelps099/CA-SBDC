@@ -16,6 +16,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 
 			add_action( 'admin_menu', array( __CLASS__, 'add_blocks_menu_item' ), 10 );
 
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
+
 		}
 
 
@@ -89,6 +91,21 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 
 		public static function add_blocks_menu_item() {
 			add_theme_page( 'Reusable Blocks', 'Reusable Blocks', 'read', 'edit.php?post_type=wp_block', '', null );
+		}
+
+
+		public static function register_admin_styles( $hook ) {
+			
+			ob_start();
+			?>
+				<style>
+					.ghostkit-toolbar-templates { display: none; }
+				</style>
+			<?php
+			$css = trim( ob_get_clean() );
+			$css = trim( preg_replace( array( '/^<style>/', '/<\/style>$/' ), '', $css ) );
+			wp_add_inline_style( 'common', $css );
+
 		}
 
 
