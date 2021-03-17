@@ -130,6 +130,84 @@
 }
 
 
+/*	Grid
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-grid {
+	&.is-style-dividers {
+		$column-cell-selector: '> .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell';
+		#{$column-cell-selector} > .inner {
+			position: relative;
+			&:before {
+				content: '';
+				position: absolute;
+				display: block;
+				left: 0;
+				top: .4rem;
+				bottom: .4rem;
+				border-left: 6px solid $primary;
+				opacity: .2;
+				margin-left: -3px;
+				.text-color-light & {
+					border-left-color: #fff;
+				}
+				.text-color-dark & {
+					border-left-color: $primary;
+				}
+			}
+		}
+		&.column-breakpoint-xs {
+			@for $i from 1 through 6 {
+				&.column-count-xs-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+			}
+			@for $i from 0 through 16 {
+				&.column-spacing-xs-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+			}
+		}
+		@media (min-width: 576px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm {
+				@for $i from 1 through 6 {
+					&.column-count-sm-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-sm-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 768px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md {
+				@for $i from 1 through 6 {
+					&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-md-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 992px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg {
+				@for $i from 1 through 6 {
+					&.column-count-lg-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-lg-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 1200px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl {
+				@for $i from 1 through 6 {
+					&.column-count-xl-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-xl-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+	}
+}
+
+
 /*	Section Nav
 ---------------------------------------------------------*/
 

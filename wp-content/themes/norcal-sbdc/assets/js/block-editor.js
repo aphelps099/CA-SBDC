@@ -67,6 +67,11 @@ wp.domReady(function() {
 	// 	{ name: 'panel', label: 'Panel' }
 	// ]);
 
+	wp.blocks.registerBlockStyle('crown-blocks/grid', [ 
+		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'dividers', label: 'Dividers' }
+	]);
+
 
 	// wp.hooks.addFilter('blocks.getSaveElement', 'crown-theme/block-editor', function(el, type, attr) {
 	// 	if(type.name !== 'core/heading') return el;
