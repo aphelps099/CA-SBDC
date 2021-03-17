@@ -405,7 +405,7 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 
 
 if ( ! function_exists( 'ct_event_teaser' ) ) {
-	function ct_event_teaser( $post_id ) {
+	function ct_event_teaser( $post_id, $center_label_override = '' ) {
 		global $post;
 
 		$post = get_post( $post_id );
@@ -415,8 +415,9 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 		if ( get_post_type() == 'event_s' ) {
 			$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
 			switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
-			$post = get_post( $original_post_id );
-			setup_postdata( $post );
+			ct_event_teaser( $original_post_id, ! is_main_site() ? get_bloginfo( 'name' ) : '' );
+			restore_current_blog();
+			return;
 		}
 
 		?>
@@ -429,8 +430,20 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 						<div class="entry-contents">
 	
 							<h3 class="entry-title"><?php the_title(); ?></h3>
-		
-							<p class="entry-cta"><?php _e( 'Read what\'s happening', 'crown_theme' ); ?></p>
+
+							<?php if ( ! empty( $center_label_override ) ) { ?>
+								<p class="entry-centers">
+									<span class="center"><?php echo $center_label_override; ?></span>
+								</p>
+							<?php } else if ( ( $centers = get_the_terms( get_the_ID(), 'post_center' ) ) && ! empty( $centers ) ) { ?>
+								<p class="entry-centers">
+									<?php foreach ( $centers as $term ) { ?>
+										<span class="center"><?php echo $term->name; ?></span>
+									<?php } ?>
+								</p>
+							<?php } else { ?>
+								<p class="entry-cta"><?php _e( 'Learn more', 'crown_theme' ); ?></p>
+							<?php } ?>
 	
 						</div>
 
@@ -439,7 +452,6 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 			</article>
 		<?php
 
-		restore_current_blog();
 		wp_reset_postdata();
 
 	}

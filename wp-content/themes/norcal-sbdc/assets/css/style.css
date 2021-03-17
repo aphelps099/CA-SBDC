@@ -19261,6 +19261,16 @@ nav.pagination {
     color: rgba(52, 58, 64, 0.8);
     -webkit-transition: color .15s;
     transition: color .15s; }
+  .event-teaser .entry-centers span {
+    display: inline-block;
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border-radius: 10rem;
+    border: 1px solid #032040;
+    padding: .5rem .75rem; }
 
 .entry-event-date {
   line-height: 1.2; }

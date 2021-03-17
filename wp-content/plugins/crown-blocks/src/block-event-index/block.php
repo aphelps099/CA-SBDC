@@ -203,6 +203,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
 											<?php
+												$switched_site = false;
 												$event_site_title = null;
 												if ( get_post_type() == 'event_s' ) {
 													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
@@ -210,6 +211,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 													$post = get_post( $original_post_id );
 													setup_postdata( $post );
 													if ( ! is_main_site() ) $event_site_title = get_bloginfo( 'name' );
+													$switched_site = true;
 												}
 											?>
 											<article <?php post_class(); ?>>
@@ -254,7 +256,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 													</div>
 												</a>
 											</article>
-											<?php restore_current_blog(); ?>
+											<?php if ( $switched_site ) restore_current_blog(); ?>
 										<?php } ?>
 										<?php wp_reset_postdata(); ?>
 	
