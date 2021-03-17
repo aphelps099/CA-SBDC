@@ -60,9 +60,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Admin' ) ) {
 
 			if ( get_current_user_id() != 1 ) {
 				remove_menu_page( 'ghostkit' );
-				remove_menu_page( 'edit.php?post_type=ghostkit_template' );
-				remove_menu_page( 'edit.php?post_type=wp_block' );
 			}
+			remove_menu_page( 'edit.php?post_type=ghostkit_template' );
+			remove_menu_page( 'edit.php?post_type=wp_block' );
 
 		}
 
