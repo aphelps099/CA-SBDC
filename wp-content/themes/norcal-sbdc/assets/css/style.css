@@ -21686,7 +21686,8 @@ nav.pagination {
       .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
         margin: 0 -1rem; }
   .wp-block-crown-blocks-featured-post-slider .post-feed-nav {
-    position: relative; }
+    position: relative;
+    z-index: 1; }
     .wp-block-crown-blocks-featured-post-slider .post-feed-nav .slick-arrow {
       position: absolute;
       top: 100%;
