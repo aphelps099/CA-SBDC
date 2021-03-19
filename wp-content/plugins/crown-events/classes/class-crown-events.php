@@ -323,8 +323,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 										'paddingTopXs' => 4,
 										'paddingBottomXs' => 4,
 										'paddingXXs' => 4,
-										'backgroundColor' => '#E0E0E0',
-										'backgroundColorSlug' => 'ghost',
+										'backgroundColor' => '#ECEFF2',
+										'backgroundColorSlug' => '',
 										'className' => 'bg-flush-right position-lg-sticky'
 									), array(
 										array( 'core/heading', array(
