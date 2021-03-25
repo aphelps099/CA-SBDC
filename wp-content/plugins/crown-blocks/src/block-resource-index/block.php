@@ -31,7 +31,7 @@ if(!class_exists('Crown_Block_Resource_Index')) {
 
 			// $atts['postsPerPage'] = 1;
 			$query_args = array(
-				'post_type' => 'resource',
+				'post_type' => array( 'resource', 'resource_s' ),
 				'posts_per_page' => $atts['postsPerPage'],
 				'paged' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'tax_query' => array(),

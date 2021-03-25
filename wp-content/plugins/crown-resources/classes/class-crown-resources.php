@@ -632,8 +632,19 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 			if ( ! empty( $post_id ) ) {
 				$post = get_post( $post_id );
-				if ( ! $post || ! in_array( $post->post_type, array( 'resource' ) ) ) return;
+				if ( ! $post || ! in_array( $post->post_type, array( 'resource', 'resource_s' ) ) ) return;
 				setup_postdata( $post );
+			}
+
+			$switched_site = false;
+			$resource_site_title = null;
+			if ( get_post_type() == 'resource_s' ) {
+				$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+				switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+				$post = get_post( $original_post_id );
+				setup_postdata( $post );
+				if ( ! is_main_site() ) $resource_site_title = get_bloginfo( 'name' );
+				$switched_site = true;
 			}
 
 			$color = self::get_resource_primary_type_color( get_the_ID() );
@@ -681,6 +692,11 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					</a>
 				</article>
 			<?php
+
+			if ( $switched_site ) {
+				restore_current_blog();
+				wp_reset_postdata();
+			}
 
 			if ( ! empty( $post_id ) ) {
 				wp_reset_postdata();

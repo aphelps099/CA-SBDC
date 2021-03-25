@@ -36,7 +36,7 @@ if(!class_exists('Crown_Block_Featured_Resource_Slider')) {
 			if ( ! class_exists( 'Crown_Resources' ) ) return '';
 
 			$queryArgs = array(
-				'post_type' => 'resource',
+				'post_type' => array( 'resource', 'resource_s' ),
 				'posts_per_page' => $atts['maxPostCount'],
 				'tax_query' => array(),
 				'post__not_in' => array(),
