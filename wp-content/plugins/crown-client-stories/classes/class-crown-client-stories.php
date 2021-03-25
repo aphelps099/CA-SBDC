@@ -356,7 +356,9 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				}
 			}
 
-			$meta = array();
+			$meta = array(
+				'client_story_initial_lc' => ''
+			);
 			foreach ( $meta as $k => $v ) {
 				$meta[ $k ] = get_post_meta( $post_id, $k, true );
 			}

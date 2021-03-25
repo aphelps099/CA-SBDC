@@ -40,7 +40,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 			// $atts['postsPerPage'] = 1;
 			$query_args = array(
-				'post_type' => 'team_member',
+				'post_type' => array( 'team_member', 'team_member_s' ),
 				'posts_per_page' => $atts['postsPerPage'],
 				'orderby' => 'meta_value',
 				'order' => 'ASC',
@@ -257,8 +257,22 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 										
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
-											<article <?php post_class(); ?>>
-												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo get_the_ID(); ?>">
+											<?php
+												$switched_site = false;
+												$team_member_site_title = null;
+												$syn_id = null;
+												if ( get_post_type() == 'team_member_s' ) {
+													$syn_id = get_the_ID();
+													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+													$post = get_post( $original_post_id );
+													setup_postdata( $post );
+													if ( ! is_main_site() ) $team_member_site_title = get_bloginfo( 'name' );
+													$switched_site = true;
+												}
+											?>
+											<article <?php post_class( $syn_id ? 'post-' . $syn_id : '' ); ?>>
+												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo $syn_id ? $syn_id : get_the_ID(); ?>">
 													<div class="inner">
 	
 														<div class="entry-headshot-photo">
@@ -288,14 +302,24 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 																	<?php } ?>
 		
 																</header>
-		
-																<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-																<?php if ( ! empty( $centers ) ) { ?>
+																
+																<?php if ( $team_member_site_title ) { ?>
 																	<p class="entry-centers">
-																		<?php foreach ( $centers as $term ) { ?>
-																			<span class="center"><?php echo $term->name; ?></span>
-																		<?php } ?>
+																		<span class="center"><?php echo $team_member_site_title; ?></span>
 																	</p>
+																<?php } else { ?>
+																	<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+																	<?php if ( ! empty( $centers ) ) { ?>
+																		<p class="entry-centers">
+																			<?php foreach ( $centers as $term ) { ?>
+																				<span class="center"><?php echo $term->name; ?></span>
+																			<?php } ?>
+																		</p>
+																	<?php } else if ( ! is_main_site() ) { ?>
+																		<!-- <p class="entry-centers">
+																			<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+																		</p> -->
+																	<?php } ?>
 																<?php } ?>
 
 															</div>
@@ -309,7 +333,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 													</div>
 												</a>
 											</article>
-
+											<?php if ( $switched_site ) restore_current_blog(); ?>
 										<?php } ?>
 										<?php wp_reset_postdata(); ?>
 	
@@ -334,9 +358,22 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 		public static function get_member_details( $post_id ) {
 			global $post;
+
 			$post = get_post( $post_id );
-			if ( ! $post || $post->post_type != 'team_member') return '';
+			if ( ! $post || ! in_array( $post->post_type, array( 'team_member', 'team_member_s' ) ) ) return '';
 			setup_postdata( $post );
+
+			$switched_site = false;
+			$team_member_site_title = null;
+			if ( get_post_type() == 'team_member_s' ) {
+				$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+				switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+				$post = get_post( $original_post_id );
+				setup_postdata( $post );
+				if ( ! is_main_site() ) $team_member_site_title = get_bloginfo( 'name' );
+				$switched_site = true;
+			}
+
 			ob_start();
 			?>
 				<article <?php post_class(); ?>>
@@ -379,13 +416,23 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 									</ul>
 								<?php } ?>
 
-								<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-								<?php if ( ! empty( $centers ) ) { ?>
+								<?php if ( $team_member_site_title ) { ?>
 									<p class="entry-centers">
-										<?php foreach ( $centers as $term ) { ?>
-											<span class="center"><?php echo $term->name; ?></span>
-										<?php } ?>
+										<span class="center"><?php echo $team_member_site_title; ?></span>
 									</p>
+								<?php } else { ?>
+									<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+									<?php if ( ! empty( $centers ) ) { ?>
+										<p class="entry-centers">
+											<?php foreach ( $centers as $term ) { ?>
+												<span class="center"><?php echo $term->name; ?></span>
+											<?php } ?>
+										</p>
+									<?php } else if ( ! is_main_site() ) { ?>
+										<!-- <p class="entry-centers">
+											<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+										</p> -->
+									<?php } ?>
 								<?php } ?>
 
 							</div>
@@ -419,7 +466,12 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 					</div>
 				</div>
 			<?php
-			return ob_get_clean();
+			$output = ob_get_clean();
+
+			if ( $switched_site ) restore_current_blog();
+			wp_reset_postdata();
+
+			return $output;
 		}
 
 

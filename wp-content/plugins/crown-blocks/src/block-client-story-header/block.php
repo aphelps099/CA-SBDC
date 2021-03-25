@@ -64,6 +64,10 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 														<?php } ?>
 													<?php } ?>
 												</p>
+											<?php } else if ( ! is_main_site() ) { ?>
+												<p class="entry-centers">
+													<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+												</p>
 											<?php } ?>
 	
 											<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>

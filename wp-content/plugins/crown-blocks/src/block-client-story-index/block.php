@@ -36,7 +36,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 
 			// $atts['postsPerPage'] = 1;
 			$query_args = array(
-				'post_type' => 'client_story',
+				'post_type' => array( 'client_story', 'client_story_s' ),
 				'posts_per_page' => $atts['postsPerPage'],
 				'paged' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'tax_query' => array(),
@@ -207,6 +207,19 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
 
+											<?php
+												$switched_site = false;
+												$client_story_site_title = null;
+												if ( get_post_type() == 'client_story_s' ) {
+													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+													$post = get_post( $original_post_id );
+													setup_postdata( $post );
+													if ( ! is_main_site() ) $client_story_site_title = get_bloginfo( 'name' );
+													$switched_site = true;
+												}
+											?>
+
 											<?php $color = get_post_meta( get_the_ID(), 'client_story_color', true ); ?>
 											<?php if ( empty( $color ) ) $color = '#E0E0E0'; ?>
 
@@ -227,13 +240,23 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 		
 															<header class="entry-header">
 
-																<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-																<?php if ( ! empty( $centers ) ) { ?>
+																<?php if ( $client_story_site_title ) { ?>
 																	<p class="entry-centers">
-																		<?php foreach ( $centers as $term ) { ?>
-																			<span class="center"><?php echo $term->name; ?></span>
-																		<?php } ?>
+																		<span class="center"><?php echo $client_story_site_title; ?></span>
 																	</p>
+																<?php } else { ?>
+																	<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+																	<?php if ( ! empty( $centers ) ) { ?>
+																		<p class="entry-centers">
+																			<?php foreach ( $centers as $term ) { ?>
+																				<span class="center"><?php echo $term->name; ?></span>
+																			<?php } ?>
+																		</p>
+																	<?php } else if ( ! is_main_site() ) { ?>
+																		<p class="entry-centers">
+																			<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+																		</p>
+																	<?php } ?>
 																<?php } ?>
 	
 																<h3 class="entry-title"><?php the_title(); ?></h3>
@@ -251,6 +274,8 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 													</div>
 												</a>
 											</article>
+
+											<?php if ( $switched_site ) restore_current_blog(); ?>
 
 											<?php if ( $query->current_post + 1 == $pull_quote_position ) { ?>
 												<?php echo $pull_quote; ?>
