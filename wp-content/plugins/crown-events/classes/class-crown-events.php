@@ -529,7 +529,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
 				self::syndicate_post( $post_id, get_main_site_id() );
-			} else {
+			} else if ( ! is_main_site() ) {
 				self::delete_syndicated_post( $post_id, get_main_site_id() );
 			}
 
