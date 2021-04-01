@@ -181,6 +181,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
 									) ),
 									new Field( array(
+										'label' => 'Webinars',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_webinar' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
 										'label' => 'Client Stories',
 										'input' => new Select( array( 'name' => 'theme_config_index_page_client_story' ) ),
 										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )

@@ -27,6 +27,7 @@
 		$.wptheme.initTwoColumnScrollSliderBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
 		$.wptheme.initFeaturedResourceSliderBlocks();
+		$.wptheme.initFeaturedWebinarSliderBlocks();
 		$.wptheme.initCenterFinderBlocks();
 		$.wptheme.initSectionNavBlocks();
 		$.wptheme.initTeamMemberIndexBlocks();
@@ -120,6 +121,7 @@
 			if(first_section.is('.wp-block-crown-blocks-resource-header.text-color-light')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-event-header')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-client-story-header')) header.addClass('text-color-light');
+			if(first_section.is('.wp-block-crown-blocks-webinar-header')) header.addClass('text-color-light');
 			header.addClass('loaded');
 
 			var adjustSubMenus = function() {
@@ -945,6 +947,33 @@
 
 		wptheme.initFeaturedResourceSliderBlocks = function() {
 			$('.wp-block-crown-blocks-featured-resource-slider').each(function(i, el) {
+				var slider = $('.post-feed > .inner', el);
+				if(slider.hasClass('slick-initialized')) return;
+				var slickSettings = {
+					mobileFirst: true,
+					draggable: true,
+					dots: false,
+					arrows: true,
+					fade: false,
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					responsive: [
+						{ breakpoint: 768 - 1,  settings: { slidesToShow: 2, slidesToScroll: 2 } },
+						{ breakpoint: 992 - 1,  settings: { slidesToShow: 3, slidesToScroll: 3 } }
+					]
+				};
+				slider.on('setPosition', function(event, slick) {
+					var track = $('.slick-track', slick.$slider);
+					var slides = $('.slick-slide', slick.$slider);
+					slides.css({ height: 'auto' });
+					slides.css({ height: track.height() });
+				}).slick(slickSettings);
+			});
+		};
+
+
+		wptheme.initFeaturedWebinarSliderBlocks = function() {
+			$('.wp-block-crown-blocks-featured-webinar-slider').each(function(i, el) {
 				var slider = $('.post-feed > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
 				var slickSettings = {

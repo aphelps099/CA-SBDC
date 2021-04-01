@@ -1,0 +1,37 @@
+
+
+.wp-block[data-type="crown-blocks/webinar-header"] {
+	margin-bottom: 4rem;
+	.wp-block-crown-blocks-webinar-header {
+		margin-bottom: 0;
+		a {
+			pointer-events: none !important;
+		}
+		.sticky-share-links {
+			display: none;
+		}
+	}
+}
+
+.edit-post-sidebar {
+	.components-panel__body {
+		&.crown-blocks-background-image {
+			.components-focal-point-picker_position-display-container {
+				display: none;
+			}
+		}
+	}
+	.crown-blocks-media-upload {
+		margin-bottom: 8px;
+		button.image-preview {
+			border-radius: 2px;
+			overflow: hidden;
+			padding: 0;
+			height: auto;
+			margin-bottom: 10px;
+		}
+		button.is-destructive {
+			margin-left: 10px;
+		}
+	}
+}

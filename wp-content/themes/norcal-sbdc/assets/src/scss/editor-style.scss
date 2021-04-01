@@ -486,3 +486,11 @@ body {
 		}
 	}
 }
+
+.wp-block[data-type="crown-blocks/webinar-header"] {
+	max-width: none;
+	.wp-block-crown-blocks-webinar-header {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}

@@ -155,7 +155,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Posts' ) ) {
 				'name' => 'post_topic',
 				'singularLabel' => 'Topic',
 				'pluralLabel' => 'Topics',
-				'postTypes' => array( 'post', 'event', 'event_s', 'resource', 'resource_s' ),
+				'postTypes' => array( 'post', 'event', 'event_s', 'resource', 'resource_s', 'webinar', 'webinar_s' ),
 				'settings' => array(
 					'hierarchical' => true,
 					'rewrite' => array( 'slug' => 'topics', 'with_front' => false ),
