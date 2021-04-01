@@ -59,11 +59,20 @@
             &::before {
                 content: counter(li);
                 position: absolute;
+                display: -webkit-box;
+                display: -ms-flexbox;
                 display: flex;
-                flex: 0 0 var(--gkt-styled-lists-numbered--decoration__width);
-                align-items: center;
-                align-self: flex-start;
-                justify-content: center;
+                -webkit-box-flex: 0;
+                    -ms-flex: 0 0 var(--gkt-styled-lists-numbered--decoration__width);
+                        flex: 0 0 var(--gkt-styled-lists-numbered--decoration__width);
+                -webkit-box-align: center;
+                    -ms-flex-align: center;
+                        align-items: center;
+                -ms-flex-item-align: start;
+                    align-self: flex-start;
+                -webkit-box-pack: center;
+                    -ms-flex-pack: center;
+                        justify-content: center;
                 top: var(--gkt-styled-lists-numbered--decoration__top);
                 left: var(--gkt-styled-lists-numbered--decoration__left);
                 width: var(--gkt-styled-lists-numbered--decoration__width);
@@ -118,11 +127,17 @@
             &::before {
                 content: "";
                 position: absolute;
-                mask-image: var(--gkt-icon-lists--decoration);
-                mask-position: 50%;
-                mask-repeat: no-repeat;
-                mask-size: 100%;
-                flex: 0 0 var(--gkt-icon-lists--decoration__width);
+                -webkit-mask-image: var(--gkt-icon-lists--decoration);
+                        mask-image: var(--gkt-icon-lists--decoration);
+                -webkit-mask-position: 50%;
+                        mask-position: 50%;
+                -webkit-mask-repeat: no-repeat;
+                        mask-repeat: no-repeat;
+                -webkit-mask-size: 100%;
+                        mask-size: 100%;
+                -webkit-box-flex: 0;
+                    -ms-flex: 0 0 var(--gkt-icon-lists--decoration__width);
+                        flex: 0 0 var(--gkt-icon-lists--decoration__width);
                 top: var(--gkt-icon-lists--decoration__top);
                 left: var(--gkt-icon-lists--decoration__left);
                 width: var(--gkt-icon-lists--decoration__width);
@@ -152,7 +167,9 @@
 
             @for $i from 1 through $list_columns_max {
                 .ghostkit-list-columns#{$infix}-#{ $i } {
-                    column-count: $i;
+                    -webkit-column-count: $i;
+                       -moz-column-count: $i;
+                            column-count: $i;
                 }
             }
         }

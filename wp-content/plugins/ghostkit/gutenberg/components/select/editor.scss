@@ -11,7 +11,8 @@
         min-height: 20px;
 
         &:focus {
-            box-shadow: none;
+            -webkit-box-shadow: none;
+                    box-shadow: none;
         }
     }
 }

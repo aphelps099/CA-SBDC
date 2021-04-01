@@ -2,16 +2,28 @@
 
 .ghostkit-component-icon-picker-wrapper {
     > .components-base-control__field {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
         margin-top: 16px;
     }
 }
 .ghostkit-component-icon-picker-button {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     width: 34px;
     height: 34px;
     padding: 0;
@@ -22,6 +34,8 @@
     &.ghostkit-component-icon-picker-preview {
         cursor: pointer;
         border: 1px solid transparent;
+        -webkit-transition: .15s background-color, .15s border-color;
+        -o-transition: .15s background-color, .15s border-color;
         transition: .15s background-color, .15s border-color;
 
         &:hover,
@@ -69,8 +83,11 @@
         }
     }
     .ghostkit-component-icon-picker-list {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         margin-left: -10px;
 
         > * {

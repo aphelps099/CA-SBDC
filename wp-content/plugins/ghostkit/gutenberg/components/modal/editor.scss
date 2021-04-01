@@ -7,7 +7,9 @@
 
         // fix for Ace editor tooltips
         margin-left: -300px;
-        transform: none;
+        -webkit-transform: none;
+            -ms-transform: none;
+                transform: none;
 
         // position
         &.ghostkit-component-modal-position-top {
@@ -23,7 +25,9 @@
 
             // fix for Ace editor tooltips
             margin-left: -400px;
-            transform: none;
+            -webkit-transform: none;
+                -ms-transform: none;
+                    transform: none;
         }
     }
 

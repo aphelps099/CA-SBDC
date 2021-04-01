@@ -6,6 +6,8 @@
 
 .ghostkit-button-wrapper {
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     margin-top: 0;
 
@@ -17,10 +19,17 @@
 
         > .block-editor-block-list__layout {
             // we need to use inline-flex because of bug with selecting wrapper block in editor.
+            display: -webkit-inline-box;
+            display: -ms-inline-flexbox;
             display: inline-flex;
-            flex-wrap: wrap;
-            align-items: var(--gkt-button__align-items);
-            justify-content: var(--gkt-button__justify-content);
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+            -webkit-box-align: var(--gkt-button__align-items);
+                -ms-flex-align: var(--gkt-button__align-items);
+                    align-items: var(--gkt-button__align-items);
+            -webkit-box-pack: var(--gkt-button__justify-content);
+                -ms-flex-pack: var(--gkt-button__justify-content);
+                    justify-content: var(--gkt-button__justify-content);
             width: 100%;
             margin-right: 0;
             margin-left: 0;
@@ -49,10 +58,12 @@
 
     // add new button
     .components-icon-button {
-        align-self: center;
+        -ms-flex-item-align: center;
+            align-self: center;
 
         &:not(:disabled):not([aria-disabled="true"]):not(.is-default):hover {
-            box-shadow: none;
+            -webkit-box-shadow: none;
+                    box-shadow: none;
         }
     }
 }
@@ -70,19 +81,22 @@
         color: var(--gkt-button__color);
         background-color: var(--gkt-button__background-color);
         border: var(--gkt-button__border-width) solid var(--gkt-button__border-color);
-        box-shadow: var(--gkt-button__box-shadow);
+        -webkit-box-shadow: var(--gkt-button__box-shadow);
+                box-shadow: var(--gkt-button__box-shadow);
     }
     &.ghostkit-button-is-hover-state {
         color: var(--gkt-button-hover__color);
         background-color: var(--gkt-button-hover__background-color);
         border: var(--gkt-button-hover__border-width) solid var(--gkt-button-hover__border-color);
-        box-shadow: var(--gkt-button-hover__box-shadow);
+        -webkit-box-shadow: var(--gkt-button-hover__box-shadow);
+                box-shadow: var(--gkt-button-hover__box-shadow);
     }
     &.ghostkit-button-is-focus-state {
         color: var(--gkt-button-focus__color);
         background-color: var(--gkt-button-focus__background-color);
         border: var(--gkt-button-focus__border-width) solid var(--gkt-button-focus__border-color);
-        box-shadow: var(--gkt-button-focus__box-shadow);
+        -webkit-box-shadow: var(--gkt-button-focus__box-shadow);
+                box-shadow: var(--gkt-button-focus__box-shadow);
     }
 }
 

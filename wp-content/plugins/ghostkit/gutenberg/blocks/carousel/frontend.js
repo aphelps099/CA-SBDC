@@ -110,6 +110,21 @@ $doc.on( 'initBlocks.ghostkit', ( e, self ) => {
         // So we need to keep it as a fallback.
         options.breakpoints.breakpointsInverse = true;
 
+        // Events.
+        options.on = {
+            // These events used to add fixes for
+            // conflict with custom cursor movement.
+            touchStart( swiper, evt ) {
+                GHOSTKIT.triggerEvent( 'swiperTouchStart', self, swiper, evt );
+            },
+            touchMove( swiper, evt ) {
+                GHOSTKIT.triggerEvent( 'swiperTouchMove', self, swiper, evt );
+            },
+            touchEnd( swiper, evt ) {
+                GHOSTKIT.triggerEvent( 'swiperTouchEnd', self, swiper, evt );
+            },
+        };
+
         // init swiper
         // eslint-disable-next-line no-new
         new window.Swiper( $carousel[ 0 ], options );

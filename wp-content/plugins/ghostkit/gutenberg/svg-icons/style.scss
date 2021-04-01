@@ -24,14 +24,16 @@ svg.ghostkit-svg-icon {
 
     position: relative;
     display: block;
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
     width: var(--gkt-icon-spinner__size);
     height: var(--gkt-icon-spinner__size);
     text-indent: -9999em;
     border: var(--gkt-icon-spinner__border-size) solid transparent;
     border-left: var(--gkt-icon-spinner__border-size) solid var(--gkt-icon-spinner__color);
     border-radius: 50%;
-    animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
+    -webkit-animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
+            animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
 
     &::after {
         content: "";
@@ -46,8 +48,15 @@ svg.ghostkit-svg-icon {
         opacity: var(--gkt-icon-spinner--background__opacity);
     }
 }
+@-webkit-keyframes ghostkit-icon-spinner {
+    100% {
+        -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+    }
+}
 @keyframes ghostkit-icon-spinner {
     100% {
-        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
     }
 }

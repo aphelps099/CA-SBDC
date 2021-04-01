@@ -30,6 +30,8 @@
         background: none;
         border: none;
         outline: none;
+        -webkit-transition: var(--gkt-accordion__transition-duration) transform var(--gkt-accordion__transition-easing);
+        -o-transition: var(--gkt-accordion__transition-duration) transform var(--gkt-accordion__transition-easing);
         transition: var(--gkt-accordion__transition-duration) transform var(--gkt-accordion__transition-easing);
         will-change: trasnform;
     }
@@ -44,7 +46,9 @@
         opacity: 1;
     }
     &-active &-collapse {
-        transform: var(--gkt-accordion--heading-collapse-icon-active__transform);
+        -webkit-transform: var(--gkt-accordion--heading-collapse-icon-active__transform);
+            -ms-transform: var(--gkt-accordion--heading-collapse-icon-active__transform);
+                transform: var(--gkt-accordion--heading-collapse-icon-active__transform);
     }
     &-active &-content {
         display: block;

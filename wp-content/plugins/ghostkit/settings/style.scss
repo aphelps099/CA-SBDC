@@ -33,7 +33,10 @@ body.toplevel_page_ghostkit {
         padding: 25px;
         background-color: #fff;
         border-radius: 4px;
-        box-shadow: 0 0 0 1px $light-gray-400;
+        -webkit-box-shadow: 0 0 0 1px $light-gray-400;
+                box-shadow: 0 0 0 1px $light-gray-400;
+        -webkit-transition: .2s opacity;
+        -o-transition: .2s opacity;
         transition: .2s opacity;
         will-change: opacity;
 
@@ -46,12 +49,18 @@ body.toplevel_page_ghostkit {
     // Inputs.
     .components-text-control__input {
         border-radius: 4px;
-        box-shadow: 0 0 0 transparent;
+        -webkit-box-shadow: 0 0 0 transparent;
+                box-shadow: 0 0 0 transparent;
+        -webkit-transition: -webkit-box-shadow .1s linear;
+        transition: -webkit-box-shadow .1s linear;
+        -o-transition: box-shadow .1s linear;
         transition: box-shadow .1s linear;
+        transition: box-shadow .1s linear, -webkit-box-shadow .1s linear;
     }
 
     &,
     * {
-        box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+                box-sizing: border-box;
     }
 }

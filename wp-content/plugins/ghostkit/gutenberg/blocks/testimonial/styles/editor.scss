@@ -7,9 +7,15 @@
 .ghostkit-testimonial {
     // Photo.
     &-photo button {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         width: 100%;
         height: var(--gkt-testimonial--photo__width);
         background-color: $light-gray-200;
@@ -18,7 +24,8 @@
         &:focus,
         &:not(:disabled):not([aria-disabled="true"]):focus {
             background-color: $light-gray-300;
-            box-shadow: none;
+            -webkit-box-shadow: none;
+                    box-shadow: none;
         }
     }
 

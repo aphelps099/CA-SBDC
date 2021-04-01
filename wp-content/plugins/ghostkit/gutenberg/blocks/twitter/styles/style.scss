@@ -32,8 +32,11 @@
 
     // Profile.
     &-profile {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         margin-bottom: var(--gkt-twitter--profile__margin-bottom);
 
         // Avatar.
@@ -47,7 +50,9 @@
 
         // Side.
         &-side {
-            flex: 1;
+            -webkit-box-flex: 1;
+                -ms-flex: 1;
+                    flex: 1;
             max-width: 100%;
         }
         &-avatar + .ghostkit-twitter-profile-side {
@@ -80,8 +85,11 @@
 
         // Stats.
         &-stats {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
 
             > div {
                 margin-right: var(--gkt-twitter--profile-stats__gap);
@@ -108,6 +116,8 @@
 
     // Items.
     &-item {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
         margin-bottom: var(--gkt-twitter--tweet__margin-bottom);
 
@@ -117,7 +127,9 @@
 
         // Content.
         &-content {
-            flex: 1;
+            -webkit-box-flex: 1;
+                -ms-flex: 1;
+                    flex: 1;
 
             img {
                 max-width: 100%;
@@ -164,20 +176,27 @@
 
         // Meta.
         &-meta {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
 
             // Meta Name.
             &-name {
                 a {
                     color: inherit;
-                    text-decoration: var(--gkt-twitter--tweet-name__text-decoration);
+                    -webkit-text-decoration: var(--gkt-twitter--tweet-name__text-decoration);
+                            text-decoration: var(--gkt-twitter--tweet-name__text-decoration);
                     border-bottom: none;
 
                     &:hover strong,
                     &:focus strong {
-                        text-decoration: var(--gkt-twitter--tweet-name-hover__text-decoration);
+                        -webkit-text-decoration: var(--gkt-twitter--tweet-name-hover__text-decoration);
+                                text-decoration: var(--gkt-twitter--tweet-name-hover__text-decoration);
                     }
                 }
                 span:last-child {
@@ -194,18 +213,24 @@
 
             // Meta Date.
             &-date {
+                display: -webkit-box;
+                display: -ms-flexbox;
                 display: flex;
-                align-items: center;
+                -webkit-box-align: center;
+                    -ms-flex-align: center;
+                        align-items: center;
                 opacity: var(--gkt-twitter--tweet-date__opacity);
 
                 a {
                     color: inherit;
-                    text-decoration: var(--gkt-twitter--tweet-date__text-decoration);
+                    -webkit-text-decoration: var(--gkt-twitter--tweet-date__text-decoration);
+                            text-decoration: var(--gkt-twitter--tweet-date__text-decoration);
                     border-bottom: none;
 
                     &:hover,
                     &:focus {
-                        text-decoration: var(--gkt-twitter--tweet-date-hover__text-decoration);
+                        -webkit-text-decoration: var(--gkt-twitter--tweet-date-hover__text-decoration);
+                                text-decoration: var(--gkt-twitter--tweet-date-hover__text-decoration);
                     }
                 }
             }
@@ -213,9 +238,14 @@
 
         // Actions.
         &-actions {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
             font-size: var(--gkt-twitter--tweet-actions__font-size);
 
             > div {

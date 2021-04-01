@@ -1,5 +1,7 @@
 @import "../../variables";
 
 .ghostkit-has-frame {
+    -webkit-transition: var(--gkt-transition-duration) border var(--gkt-transition-easing), var(--gkt-transition-duration) border-radius var(--gkt-transition-easing), var(--gkt-transition-duration) box-shadow var(--gkt-transition-easing);
+    -o-transition: var(--gkt-transition-duration) border var(--gkt-transition-easing), var(--gkt-transition-duration) border-radius var(--gkt-transition-easing), var(--gkt-transition-duration) box-shadow var(--gkt-transition-easing);
     transition: var(--gkt-transition-duration) border var(--gkt-transition-easing), var(--gkt-transition-duration) border-radius var(--gkt-transition-easing), var(--gkt-transition-duration) box-shadow var(--gkt-transition-easing);
 }

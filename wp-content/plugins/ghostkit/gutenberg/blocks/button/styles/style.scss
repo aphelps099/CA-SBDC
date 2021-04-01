@@ -4,10 +4,17 @@
 @import "./variables";
 
 .ghostkit-button-wrapper-inner {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
-    align-items: var(--gkt-button__align-items);
-    justify-content: var(--gkt-button__justify-content);
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: var(--gkt-button__align-items);
+        -ms-flex-align: var(--gkt-button__align-items);
+            align-items: var(--gkt-button__align-items);
+    -webkit-box-pack: var(--gkt-button__justify-content);
+        -ms-flex-pack: var(--gkt-button__justify-content);
+            justify-content: var(--gkt-button__justify-content);
     margin-top: calc(-1 * var(--gkt-button__gap));
     margin-left: calc(-1 * var(--gkt-button__gap));
 
@@ -16,9 +23,15 @@
 }
 
 .ghostkit-button {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     padding: var(--gkt-button__padding-v) var(--gkt-button__padding-h);
     margin: 0;
     margin-top: var(--gkt-button__gap);
@@ -34,21 +47,26 @@
     border: var(--gkt-button__border-width) solid var(--gkt-button__border-color);
     border-radius: var(--gkt-button__border-radius);
     outline: var(--gkt-button__outline);
-    box-shadow: var(--gkt-button__box-shadow);
+    -webkit-box-shadow: var(--gkt-button__box-shadow);
+            box-shadow: var(--gkt-button__box-shadow);
+    -webkit-transition: var(--gkt-button__transition-duration) background-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) border-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) opacity var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) box-shadow var(--gkt-button__transition-easing);
+    -o-transition: var(--gkt-button__transition-duration) background-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) border-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) opacity var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) box-shadow var(--gkt-button__transition-easing);
     transition: var(--gkt-button__transition-duration) background-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) border-color var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) opacity var(--gkt-button__transition-easing), var(--gkt-button__transition-duration) box-shadow var(--gkt-button__transition-easing);
 
     &:hover {
         color: var(--gkt-button-hover__color);
         background-color: var(--gkt-button-hover__background-color);
         border: var(--gkt-button-hover__border-width) solid var(--gkt-button-hover__border-color);
-        box-shadow: var(--gkt-button-hover__box-shadow);
+        -webkit-box-shadow: var(--gkt-button-hover__box-shadow);
+                box-shadow: var(--gkt-button-hover__box-shadow);
     }
     &:focus,
     &:active {
         color: var(--gkt-button-focus__color);
         background-color: var(--gkt-button-focus__background-color);
         border: var(--gkt-button-focus__border-width) solid var(--gkt-button-focus__border-color);
-        box-shadow: var(--gkt-button-focus__box-shadow);
+        -webkit-box-shadow: var(--gkt-button-focus__box-shadow);
+                box-shadow: var(--gkt-button-focus__box-shadow);
     }
 
     // Icon.
@@ -56,7 +74,9 @@
         margin-right: var(--gkt-button--icon__offset);
     }
     &-icon-right {
-        order: 2;
+        -webkit-box-ordinal-group: 3;
+            -ms-flex-order: 2;
+                order: 2;
         margin-left: var(--gkt-button--icon__offset);
     }
     &-icon-only {

@@ -4,23 +4,34 @@
 @import "./variables";
 
 .ghostkit-countdown {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
 
     // Align.
     &-units-align-left {
-        justify-content: flex-start;
+        -webkit-box-pack: start;
+            -ms-flex-pack: start;
+                justify-content: flex-start;
     }
     &-units-align-center {
-        justify-content: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
     }
     &-units-align-right {
-        justify-content: flex-end;
+        -webkit-box-pack: end;
+            -ms-flex-pack: end;
+                justify-content: flex-end;
     }
 
     // Single unit.
     &-unit {
-        flex: 0 0 auto;
+        -webkit-box-flex: 0;
+            -ms-flex: 0 0 auto;
+                flex: 0 0 auto;
         min-width: var(--gkt-countdown--unit__min-width);
         padding: var(--gkt-countdown--unit__padding-v) var(--gkt-countdown--unit__padding-h);
         text-align: center;

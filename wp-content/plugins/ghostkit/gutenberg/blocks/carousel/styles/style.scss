@@ -7,9 +7,15 @@
     // Arrows.
     &-arrow {
         position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         top: 50%;
         width: var(--gkt-carousel--arrows__width);
         height: var(--gkt-carousel--arrows__height);
@@ -19,8 +25,11 @@
         cursor: pointer;
         background-color: var(--gkt-carousel--arrows__background-color);
         border-radius: var(--gkt-carousel--arrows__border-radius);
-        box-shadow: var(--gkt-carousel--arrows__box-shadow);
+        -webkit-box-shadow: var(--gkt-carousel--arrows__box-shadow);
+                box-shadow: var(--gkt-carousel--arrows__box-shadow);
         opacity: var(--gkt-carousel--arrows__opacity);
+        -webkit-transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) box-shadow var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) transform var(--gkt-carousel__transition-easing);
+        -o-transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) box-shadow var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) transform var(--gkt-carousel__transition-easing);
         transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) box-shadow var(--gkt-carousel__transition-easing), var(--gkt-carousel__transition-duration) transform var(--gkt-carousel__transition-easing);
         will-change: opacity, box-shadow, transform;
         z-index: 1;
@@ -38,9 +47,12 @@
 
         &:hover,
         &:focus {
-            box-shadow: var(--gkt-carousel--arrows-hover__box-shadow);
+            -webkit-box-shadow: var(--gkt-carousel--arrows-hover__box-shadow);
+                    box-shadow: var(--gkt-carousel--arrows-hover__box-shadow);
             opacity: var(--gkt-carousel--arrows-hover__opacity);
-            transform: var(--gkt-carousel--arrows-hover__transform);
+            -webkit-transform: var(--gkt-carousel--arrows-hover__transform);
+                -ms-transform: var(--gkt-carousel--arrows-hover__transform);
+                    transform: var(--gkt-carousel--arrows-hover__transform);
         }
     }
     &-arrow-prev {
@@ -61,13 +73,21 @@
         padding-bottom: var(--gkt-carousel--bullets__margin-top);
     }
     [data-show-bullets="true"] &-arrow {
-        transform: translateY(calc(var(--gkt-carousel--bullets__margin-top) / -2));
+        -webkit-transform: translateY(calc(var(--gkt-carousel--bullets__margin-top) / -2));
+            -ms-transform: translateY(calc(var(--gkt-carousel--bullets__margin-top) / -2));
+                transform: translateY(calc(var(--gkt-carousel--bullets__margin-top) / -2));
     }
     &-bullets {
         position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: flex-end;
-        justify-content: center;
+        -webkit-box-align: end;
+            -ms-flex-align: end;
+                align-items: flex-end;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         bottom: 0;
         text-align: center;
         z-index: 1;
@@ -85,6 +105,8 @@
             background-color: var(--gkt-carousel--bullets__background-color);
             border-radius: var(--gkt-carousel--bullets__border-radius);
             opacity: var(--gkt-carousel--bullets__opacity);
+            -webkit-transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing);
+            -o-transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing);
             transition: var(--gkt-carousel__transition-duration) opacity var(--gkt-carousel__transition-easing);
             will-change: opacity;
 

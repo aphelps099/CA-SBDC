@@ -1,15 +1,23 @@
 @import "../../gutenberg/variables";
 
 .ghostkit-settings-blocks {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    align-items: flex-start;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
 }
 .ghostkit-settings-blocks-left {
-    flex: 1;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
     max-width: 190px;
 }
 .ghostkit-settings-blocks-right {
-    flex: 3;
+    -webkit-box-flex: 3;
+        -ms-flex: 3;
+            flex: 3;
     padding-left: 40px;
 }
 
@@ -34,6 +42,8 @@
         border: none;
         border-radius: 4px;
         outline: none;
+        -webkit-transition: .2s color, .2s background-color;
+        -o-transition: .2s color, .2s background-color;
         transition: .2s color, .2s background-color;
 
         &:hover {
@@ -60,9 +70,14 @@
 }
 
 .ghostkit-settings-blocks-items-head {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
     padding: 0 25px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -96,7 +111,10 @@
         margin-bottom: 20px;
         background-color: #fff;
         border-radius: 4px;
-        box-shadow: 0 0 0 1px $light-gray-400;
+        -webkit-box-shadow: 0 0 0 1px $light-gray-400;
+                box-shadow: 0 0 0 1px $light-gray-400;
+        -webkit-transition: .2s opacity;
+        -o-transition: .2s opacity;
         transition: .2s opacity;
         will-change: opacity;
 
@@ -105,8 +123,12 @@
         }
 
         h3 {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            align-items: center;
+            -webkit-box-align: center;
+                -ms-flex-align: center;
+                    align-items: center;
             margin-top: 0;
             margin-bottom: 10px;
             margin-bottom: 0;

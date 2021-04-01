@@ -14,8 +14,11 @@
 
     // Profile.
     &-profile {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         margin-bottom: var(--gkt-instagram--profile__margin-bottom);
 
         // Avatar.
@@ -27,7 +30,9 @@
             border-radius: var(--gkt-instagram--profile-avatar__border-radius);
         }
         &-side {
-            flex: 1;
+            -webkit-box-flex: 1;
+                -ms-flex: 1;
+                    flex: 1;
             max-width: 100%;
         }
         &-avatar + &-side {
@@ -51,8 +56,11 @@
 
         // Stats.
         &-stats {
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
-            flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
 
             > div {
                 margin-right: var(--gkt-instagram--profile-stats__gap);
@@ -80,17 +88,24 @@
 
     // Items.
     &-items {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
         margin-top: calc(-1 * var(--gkt-instagram--photos__gap));
         margin-left: calc(-1 * var(--gkt-instagram--photos__gap));
     }
     &-item {
         // We can't use flex + calc
         // https://github.com/nk-crew/ghostkit/issues/103
-        flex-basis: calc(100% / var(--gkt-instagram--photos__columns) - var(--gkt-instagram--photos__gap));
-        flex-shrink: 0;
-        flex-grow: 0;
+        -ms-flex-preferred-size: calc(100% / var(--gkt-instagram--photos__columns) - var(--gkt-instagram--photos__gap));
+            flex-basis: calc(100% / var(--gkt-instagram--photos__columns) - var(--gkt-instagram--photos__gap));
+        -ms-flex-negative: 0;
+            flex-shrink: 0;
+        -webkit-box-flex: 0;
+            -ms-flex-positive: 0;
+                flex-grow: 0;
         max-width: calc(100% / var(--gkt-instagram--photos__columns) - var(--gkt-instagram--photos__gap));
         margin-top: var(--gkt-instagram--photos__gap);
         margin-left: var(--gkt-instagram--photos__gap);

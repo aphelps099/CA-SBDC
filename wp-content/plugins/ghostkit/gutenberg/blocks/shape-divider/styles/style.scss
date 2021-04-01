@@ -13,17 +13,25 @@
         display: block;
         min-width: 100%;
         margin-left: 50%;
-        transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+                transform: translateX(-50%);
     }
 
     // Rotate
     &-flip-vertical svg {
-        transform: translateX(-50%) scaleY(-1);
+        -webkit-transform: translateX(-50%) scaleY(-1);
+            -ms-transform: translateX(-50%) scaleY(-1);
+                transform: translateX(-50%) scaleY(-1);
     }
     &-flip-horizontal svg {
-        transform: translateX(-50%) scaleX(-1);
+        -webkit-transform: translateX(-50%) scaleX(-1);
+            -ms-transform: translateX(-50%) scaleX(-1);
+                transform: translateX(-50%) scaleX(-1);
     }
     &-flip-vertical.ghostkit-shape-divider-flip-horizontal svg {
-        transform: translateX(-50%) scaleY(-1) scaleX(-1);
+        -webkit-transform: translateX(-50%) scaleY(-1) scaleX(-1);
+            -ms-transform: translateX(-50%) scaleY(-1) scaleX(-1);
+                transform: translateX(-50%) scaleY(-1) scaleX(-1);
     }
 }

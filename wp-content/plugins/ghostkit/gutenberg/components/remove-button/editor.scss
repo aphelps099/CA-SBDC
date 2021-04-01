@@ -2,8 +2,12 @@
 
 .ghostkit-component-remove-button {
     position: absolute;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     top: 0;
     right: 0;
     width: 20px;
@@ -16,6 +20,8 @@
     background-color: $dark-gray-500;
     border-radius: 50%;
     opacity: .7;
+    -webkit-transition: .2s opacity, .2s background-color;
+    -o-transition: .2s opacity, .2s background-color;
     transition: .2s opacity, .2s background-color;
 
     &:hover,
@@ -26,7 +32,9 @@
     }
 
     svg {
-        flex: 0 0 auto;
+        -webkit-box-flex: 0;
+            -ms-flex: 0 0 auto;
+                flex: 0 0 auto;
         width: auto;
         height: .8em;
     }
@@ -46,7 +54,8 @@
         &,
         &:focus {
             background: none;
-            box-shadow: none;
+            -webkit-box-shadow: none;
+                    box-shadow: none;
         }
     }
     .ghostkit-component-remove-button-confirm-yep,

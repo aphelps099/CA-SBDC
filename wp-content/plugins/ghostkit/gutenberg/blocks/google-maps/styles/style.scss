@@ -29,7 +29,9 @@
         top: 50%;
         left: 50%;
         opacity: var(--gkt-google-maps--placeholder-icon__opacity);
-        transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+            -ms-transform: translateX(-50%) translateY(-50%);
+                transform: translateX(-50%) translateY(-50%);
     }
 
     &::before {

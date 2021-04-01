@@ -29,7 +29,7 @@ class GhostKit_Assets {
      *
      * @var boolean
      */
-    private $already_added_custom_assets = false;
+    private static $already_added_custom_assets = false;
 
     /**
      * List with assets to skip from Autoptimize when CSS generated.
@@ -291,7 +291,7 @@ class GhostKit_Assets {
             'ghostkit-helper',
             ghostkit()->plugin_url . 'assets/js/helper.min.js',
             array( 'jquery' ),
-            '2.18.1',
+            '2.19.0',
             true
         );
         $default_variant = array(
@@ -382,7 +382,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'gutenberg/style.min.css',
             $css_deps,
-            '2.18.1'
+            '2.19.0'
         );
         wp_style_add_data( 'ghostkit', 'rtl', 'replace' );
         wp_style_add_data( 'ghostkit', 'suffix', '.min' );
@@ -391,7 +391,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'assets/js/main.min.js',
             $js_deps,
-            '2.18.1',
+            '2.19.0',
             true
         );
 
@@ -446,7 +446,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_script_url,
                 array_unique( $block_js_deps ),
-                '2.18.1',
+                '2.19.0',
                 true
             );
         }
@@ -471,7 +471,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_style_url,
                 array_unique( $block_css_deps ),
-                '2.18.1'
+                '2.19.0'
             );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'rtl', 'replace' );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'suffix', '.min' );
@@ -517,7 +517,7 @@ class GhostKit_Assets {
      * @param array $location - blocks location [content,widget].
      */
     public function maybe_enqueue_blocks_assets( $blocks, $location ) {
-        if ( $this->already_added_custom_assets ) {
+        if ( self::$already_added_custom_assets ) {
             $location = 'widget';
         }
 
@@ -599,7 +599,7 @@ class GhostKit_Assets {
             }
         }
 
-        $this->already_added_custom_assets = true;
+        self::$already_added_custom_assets = true;
     }
 
     /**
@@ -611,7 +611,7 @@ class GhostKit_Assets {
      * @return string
      */
     public static function autoptimize_filter_css_exclude( $result ) {
-        // By default in Autoptimize excluded folder `wp-content/cache/`.
+        // By default in Autoptimize excluded folder `wp-content/uploads/`.
         // We need to check, if this folder is not excluded, then we
         // don't need to use our hack.
         if ( $result && strpos( $result, 'wp-content/uploads/' ) === false ) {
@@ -638,12 +638,31 @@ class GhostKit_Assets {
      * @param String $css - code.
      */
     public static function add_custom_css( $name, $css ) {
-        $css = wp_kses( $css, array( '\'', '\"' ) );
-        $css = str_replace( '&gt;', '>', $css );
+        if ( ! wp_style_is( $name, 'enqueued' ) ) {
+            $css = wp_kses( $css, array( '\'', '\"' ) );
+            $css = str_replace( '&gt;', '>', $css );
 
-        wp_register_style( $name, false, array(), '2.18.1' );
-        wp_enqueue_style( $name );
-        wp_add_inline_style( $name, $css );
+            // Enqueue custom CSS.
+            if ( ! self::$already_added_custom_assets ) {
+                wp_register_style( $name, false, array(), '2.19.0' );
+                wp_enqueue_style( $name );
+                wp_add_inline_style( $name, $css );
+
+                // Enqueue JS instead of CSS when rendering in <body> to prevent W3C errors.
+            } elseif ( ! wp_script_is( $name, 'enqueued' ) ) {
+                wp_register_script( $name, false, array(), '2.19.0', true );
+                wp_enqueue_script( $name );
+                wp_add_inline_script(
+                    $name,
+                    '(function(){
+                        var styleTag = document.createElement("style");
+                        styleTag.id = "' . esc_attr( $name ) . '-inline-css";
+                        styleTag.innerHTML = "' . preg_replace( "/[\r\n]+/", ' ', $css ) . '";
+                        document.body.appendChild(styleTag);
+                    }());'
+                );
+            }
+        }
 
         self::$stored_assets[] = $name;
     }
@@ -656,7 +675,7 @@ class GhostKit_Assets {
      * @param Boolean $footer - print in footer.
      */
     public static function add_custom_js( $name, $js, $footer = false ) {
-        wp_register_script( $name, '', array(), '2.18.1', $footer );
+        wp_register_script( $name, '', array(), '2.19.0', $footer );
         wp_enqueue_script( $name );
         wp_add_inline_script( $name, $js );
     }

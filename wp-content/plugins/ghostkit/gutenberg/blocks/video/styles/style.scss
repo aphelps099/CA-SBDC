@@ -50,7 +50,8 @@
         img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            -o-object-fit: cover;
+               object-fit: cover;
             // object-fit polyfill
             // stylelint-disable-next-line
             font-family: "object-fit: cover;";
@@ -60,9 +61,15 @@
     // play icon
     &-play-icon {
         position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         top: 50%;
         left: 50%;
         width: var(--gkt-video--play-icon__width);
@@ -73,16 +80,22 @@
         color: var(--gkt-video--play-icon__color);
         background-color: var(--gkt-video--play-icon__background-color);
         border-radius: var(--gkt-video--play-icon__border-radius);
-        box-shadow: var(--gkt-video--play-icon__box-shadow);
+        -webkit-box-shadow: var(--gkt-video--play-icon__box-shadow);
+                box-shadow: var(--gkt-video--play-icon__box-shadow);
         opacity: 1;
+        -webkit-transition: var(--gkt-video__transition-duration) transform var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) box-shadow var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
+        -o-transition: var(--gkt-video__transition-duration) transform var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) box-shadow var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
         transition: var(--gkt-video__transition-duration) transform var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) box-shadow var(--gkt-video__transition-easing), var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
         will-change: box-shadow, transform, opacity;
         z-index: 2;
     }
     &:hover &-play-icon,
     &:focus &-play-icon {
-        box-shadow: var(--gkt-video--play-icon-hover__box-shadow);
-        transform: var(--gkt-video--play-icon-hover__transform);
+        -webkit-box-shadow: var(--gkt-video--play-icon-hover__box-shadow);
+                box-shadow: var(--gkt-video--play-icon-hover__box-shadow);
+        -webkit-transform: var(--gkt-video--play-icon-hover__transform);
+            -ms-transform: var(--gkt-video--play-icon-hover__transform);
+                transform: var(--gkt-video--play-icon-hover__transform);
     }
     &-loading &-play-icon,
     &-playing &-play-icon {
@@ -92,9 +105,15 @@
     // loading icon
     &-loading-icon {
         position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         top: 50%;
         left: 50%;
         width: var(--gkt-video--loading-icon__width);
@@ -105,8 +124,11 @@
         color: var(--gkt-video--loading-icon__color);
         background-color: var(--gkt-video--loading-icon__background-color);
         border-radius: var(--gkt-video--loading-icon__border-radius);
-        box-shadow: var(--gkt-video--loading-icon__box-shadow);
+        -webkit-box-shadow: var(--gkt-video--loading-icon__box-shadow);
+                box-shadow: var(--gkt-video--loading-icon__box-shadow);
         opacity: 0;
+        -webkit-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
+        -o-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
         transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing);
         will-change: opacity;
         z-index: 3;
@@ -116,7 +138,8 @@
     }
     // prevent animation when hidden.
     &:not(&-loading) &-spinner {
-        animation: none;
+        -webkit-animation: none;
+                animation: none;
     }
 
     // Fullscreen close icon
@@ -132,6 +155,8 @@
         width: 100%;
         height: 100%;
         opacity: 0;
+        -webkit-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s var(--gkt-video__transition-duration) left;
+        -o-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s var(--gkt-video__transition-duration) left;
         transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s var(--gkt-video__transition-duration) left;
         // we can't use will-change because of conflict with Safari fullscreen https://wordpress.org/support/topic/video-block-issue-in-safari/#post-12966010
         // will-change: opacity;
@@ -149,6 +174,8 @@
     &-playing &-frame {
         left: 0;
         opacity: 1;
+        -webkit-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s left;
+        -o-transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s left;
         transition: var(--gkt-video__transition-duration) opacity var(--gkt-video__transition-easing), 0s left;
     }
 
@@ -205,6 +232,8 @@
             text-align: center;
             cursor: pointer;
             opacity: var(--gkt-video-fullscreen--close-button__opacity);
+            -webkit-transition: var(--gkt-video-fullscreen__transition-duration) opacity var(--gkt-video-fullscreen__transition-easing);
+            -o-transition: var(--gkt-video-fullscreen__transition-duration) opacity var(--gkt-video-fullscreen__transition-easing);
             transition: var(--gkt-video-fullscreen__transition-duration) opacity var(--gkt-video-fullscreen__transition-easing);
             z-index: 2;
 

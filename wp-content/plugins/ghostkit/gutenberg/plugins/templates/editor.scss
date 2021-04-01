@@ -4,7 +4,9 @@
 @import "../../variables";
 
 .ghostkit-toolbar-templates {
-    flex: 100%;
+    -webkit-box-flex: 100%;
+        -ms-flex: 100%;
+            flex: 100%;
 }
 
 .ghostkit-plugin-templates-modal {
@@ -42,10 +44,17 @@
 
     // row.
     .ghostkit-plugin-templates-categories-row {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: justify;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
     }
 
     // categories.
@@ -90,26 +99,35 @@
 }
 
 .ghostkit-plugin-templates-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
     padding: 0;
     margin-top: -15px;
     margin-left: -15px;
     list-style: none;
 
     > .ghostkit-plugin-templates-list-item {
-        flex: 0 0 33.33%;
+        -webkit-box-flex: 0;
+            -ms-flex: 0 0 33.33%;
+                flex: 0 0 33.33%;
         width: 33.33%;
         padding-top: 15px;
         padding-left: 15px;
 
         @media screen and (max-width: 840px) {
-            flex: 0 0 50%;
+            -webkit-box-flex: 0;
+                -ms-flex: 0 0 50%;
+                    flex: 0 0 50%;
             width: 50%;
         }
 
         @media screen and (max-width: 450px) {
-            flex: 0 0 100%;
+            -webkit-box-flex: 0;
+                -ms-flex: 0 0 100%;
+                    flex: 0 0 100%;
             width: 100%;
         }
 
@@ -122,13 +140,17 @@
             background-color: #fff;
             border: none;
             border-radius: 4px;
-            box-shadow: 0 0 0 1px $light-gray-300;
+            -webkit-box-shadow: 0 0 0 1px $light-gray-300;
+                    box-shadow: 0 0 0 1px $light-gray-300;
+            -webkit-transition: .2s border-color, .2s box-shadow;
+            -o-transition: .2s border-color, .2s box-shadow;
             transition: .2s border-color, .2s box-shadow;
 
             &:hover,
             &:focus,
             &:active {
-                box-shadow: 0 0 0 2px $blue-medium-focus;
+                -webkit-box-shadow: 0 0 0 2px $blue-medium-focus;
+                        box-shadow: 0 0 0 2px $blue-medium-focus;
             }
 
             .ghostkit-plugin-templates-list-item-image {

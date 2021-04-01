@@ -6,20 +6,29 @@
 
 // Tabs buttons.
 .ghostkit-tabs-buttons {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
     margin-bottom: var(--gkt-tabs--buttons__offset);
     border-bottom: var(--gkt-tabs--button__border-width) solid var(--gkt-tabs--button__border-color);
 
     // Align.
     &-align-start {
-        justify-content: flex-start;
+        -webkit-box-pack: start;
+            -ms-flex-pack: start;
+                justify-content: flex-start;
     }
     &-align-center {
-        justify-content: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
     }
     &-align-end {
-        justify-content: flex-end;
+        -webkit-box-pack: end;
+            -ms-flex-pack: end;
+                justify-content: flex-end;
     }
 
     // Items.
@@ -34,6 +43,8 @@
         border-top-left-radius: var(--gkt-tabs--button__border-radius);
         border-top-right-radius: var(--gkt-tabs--button__border-radius);
         opacity: var(--gkt-tabs--button__opacity);
+        -webkit-transition: var(--gkt-tabs__transition-duration) border-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) background-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
+        -o-transition: var(--gkt-tabs__transition-duration) border-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) background-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
         transition: var(--gkt-tabs__transition-duration) border-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) background-color var(--gkt-tabs__transition-easing), var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
         will-change: border-color, background-color, opacity;
 
@@ -66,6 +77,8 @@
     clip: rect(0 0 0 0);
     border: 0;
     opacity: 0;
+    -webkit-transition: var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
+    -o-transition: var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
     transition: var(--gkt-tabs__transition-duration) opacity var(--gkt-tabs__transition-easing);
     will-change: opacity;
 
@@ -83,12 +96,20 @@
 // Vertical tabs
 @include media-breakpoint-up(md) {
     .ghostkit-tabs-buttons-vertical {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
 
         .ghostkit-tabs-buttons {
             @include make-col(3, 10);
 
-            flex-direction: column;
+            -webkit-box-orient: vertical;
+
+            -webkit-box-direction: normal;
+
+                -ms-flex-direction: column;
+
+                    flex-direction: column;
             margin-bottom: 0;
             border-right: var(--gkt-tabs--button__border-width) solid var(--gkt-tabs--button__border-color);
             border-bottom: none;

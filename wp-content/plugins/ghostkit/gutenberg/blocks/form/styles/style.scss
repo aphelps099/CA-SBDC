@@ -90,8 +90,14 @@
         --gkt-button__align-items: flex-start;
         --gkt-button__justify-content: flex-start;
 
+        display: -webkit-box;
+
+        display: -ms-flexbox;
+
         display: flex;
-        justify-content: var(--gkt-button__align-items);
+        -webkit-box-pack: var(--gkt-button__align-items);
+            -ms-flex-pack: var(--gkt-button__align-items);
+                justify-content: var(--gkt-button__align-items);
     }
     &-submit-button-align-left {
         --gkt-button__align-items: flex-start;
@@ -134,6 +140,8 @@
         color: var(--gkt-form--errors__color);
         list-style-type: none;
         opacity: 0;
+        -webkit-transition: var(--gkt-form__transition-duration) all var(--gkt-form__transition-easing);
+        -o-transition: var(--gkt-form__transition-duration) all var(--gkt-form__transition-easing);
         transition: var(--gkt-form__transition-duration) all var(--gkt-form__transition-easing);
 
         li {

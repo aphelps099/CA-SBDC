@@ -5,9 +5,14 @@
 
 .ghostkit-testimonial {
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start;
     padding: 0;
 
     // With link.
@@ -37,7 +42,9 @@
 
     // Content.
     &-content {
-        flex: 100%;
+        -webkit-box-flex: 100%;
+            -ms-flex: 100%;
+                flex: 100%;
         padding: var(--gkt-testimonial--content__padding-v) var(--gkt-testimonial--content__padding-h);
         margin-bottom: var(--gkt-testimonial--content__margin-bottom);
         background-color: var(--gkt-testimonial--content__background-color);
@@ -64,9 +71,16 @@
 
     // Meta.
     &-meta {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
-        flex: 1;
-        flex-direction: column;
+        -webkit-box-flex: 1;
+            -ms-flex: 1;
+                flex: 1;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+                flex-direction: column;
 
         + .ghostkit-testimonial-stars {
             margin-left: var(--gkt-testimonial--meta__offset);
@@ -110,7 +124,9 @@
 
     @include media-breakpoint-down(md) {
         &-stars {
-            flex: 100%;
+            -webkit-box-flex: 100%;
+                -ms-flex: 100%;
+                    flex: 100%;
             margin-top: var(--gkt-testimonial--stars-mobile__margin-top);
         }
         &-meta + &-stars,

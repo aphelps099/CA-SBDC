@@ -2,7 +2,7 @@
 /**
  * Plugin Name:  Ghost Kit
  * Description:  Blocks collection and extensions for Gutenberg
- * Version:      2.18.1
+ * Version:      2.19.0
  * Author:       nK
  * Author URI:   https://nkdev.info
  * License:      GPLv2 or later
@@ -138,6 +138,9 @@ class GhostKit {
 
         // scss compiler.
         require_once $this->plugin_path . 'classes/class-scss-compiler.php';
+
+        // breakpoints background.
+        require_once $this->plugin_path . 'classes/class-breakpoints-background.php';
 
         // breakpoints.
         require_once $this->plugin_path . 'classes/class-breakpoints.php';

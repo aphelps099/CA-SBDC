@@ -19,11 +19,14 @@
 
     &-image-before,
     &-image-after {
+        -webkit-transition: var(--gkt-image-compare__transition-duration) clip-path var(--gkt-image-compare__transition-easing);
+        -o-transition: var(--gkt-image-compare__transition-duration) clip-path var(--gkt-image-compare__transition-easing);
         transition: var(--gkt-image-compare__transition-duration) clip-path var(--gkt-image-compare__transition-easing);
     }
 
     &-image-before {
-        clip-path: polygon(var(--gkt-image-compare__position) 0, var(--gkt-image-compare__position) 100%, 0 100%, 0 0);
+        -webkit-clip-path: polygon(var(--gkt-image-compare__position) 0, var(--gkt-image-compare__position) 100%, 0 100%, 0 0);
+                clip-path: polygon(var(--gkt-image-compare__position) 0, var(--gkt-image-compare__position) 100%, 0 100%, 0 0);
     }
     &-image-after {
         position: absolute;
@@ -31,7 +34,8 @@
         right: 0;
         bottom: 0;
         left: 0;
-        clip-path: polygon(100% 0, 100% 100%, var(--gkt-image-compare__position) 100%, var(--gkt-image-compare__position) 0);
+        -webkit-clip-path: polygon(100% 0, 100% 100%, var(--gkt-image-compare__position) 100%, var(--gkt-image-compare__position) 0);
+                clip-path: polygon(100% 0, 100% 100%, var(--gkt-image-compare__position) 100%, var(--gkt-image-compare__position) 0);
         overflow: hidden;
 
         img {
@@ -40,7 +44,8 @@
 
             /* support for plugin https://github.com/bfred-it/object-fit-images */
             font-family: "object-fit: cover;"; // stylelint-disable-line
-            object-fit: cover;
+            -o-object-fit: cover;
+               object-fit: cover;
         }
     }
 
@@ -52,6 +57,8 @@
         height: 100%;
         margin-left: calc(var(--gkt-image-compare--divider__width) / -2);
         background-color: var(--gkt-image-compare--divider__background-color);
+        -webkit-transition: var(--gkt-image-compare__transition-duration) left var(--gkt-image-compare__transition-easing);
+        -o-transition: var(--gkt-image-compare__transition-duration) left var(--gkt-image-compare__transition-easing);
         transition: var(--gkt-image-compare__transition-duration) left var(--gkt-image-compare__transition-easing);
 
         &:hover,
@@ -69,7 +76,9 @@
             height: var(--gkt-image-compare--divider-button__height);
             background-color: var(--gkt-image-compare--divider-button__background-color);
             border-radius: var(--gkt-image-compare--divider-button__width);
-            transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+                -ms-transform: translateX(-50%) translateY(-50%);
+                    transform: translateX(-50%) translateY(-50%);
         }
         &::after {
             content: "";
@@ -80,7 +89,9 @@
             left: 50%;
             width: var(--gkt-image-compare--divider-button__width);
             cursor: col-resize;
-            transform: translateX(-50%);
+            -webkit-transform: translateX(-50%);
+                -ms-transform: translateX(-50%);
+                    transform: translateX(-50%);
         }
 
         &-button-arrow-left,
@@ -90,8 +101,12 @@
             left: 50%;
             font-size: var(--gkt-image-compare--divider-icons__font-size);
             color: var(--gkt-image-compare--divider-icons__color);
+            -webkit-transition: var(--gkt-image-compare__transition-duration) margin-left var(--gkt-image-compare__transition-easing);
+            -o-transition: var(--gkt-image-compare__transition-duration) margin-left var(--gkt-image-compare__transition-easing);
             transition: var(--gkt-image-compare__transition-duration) margin-left var(--gkt-image-compare__transition-easing);
-            transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+                -ms-transform: translateX(-50%) translateY(-50%);
+                    transform: translateX(-50%) translateY(-50%);
 
             svg {
                 display: block;

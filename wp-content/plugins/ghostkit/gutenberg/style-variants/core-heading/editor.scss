@@ -39,9 +39,15 @@
 
     // Styled h2
     h2.is-style-numbered::before {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
         display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
         width: var(--gkt-numbered-headings--h2-number__width);
         height: var(--gkt-numbered-headings--h2-number__height);
         line-height: var(--gkt-numbered-headings--h2-number__line-height);

@@ -12,6 +12,8 @@
     color: $color-success;
 
     .dashicons {
+        -webkit-transition: none;
+        -o-transition: none;
         transition: none;
     }
 
