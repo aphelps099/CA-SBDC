@@ -296,7 +296,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 														<?php while ( $sub_query->have_posts() ) { ?>
 															<?php $output_team_member_ids[] = get_the_ID(); ?>
 															<?php $sub_query->the_post(); ?>
-															<?php self::render_team_member(); ?>
+															<?php self::render_team_member( false ); ?>
 														<?php } ?>
 														<?php wp_reset_postdata(); ?>
 
@@ -337,7 +337,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 		}
 
 
-		protected static function render_team_member() {
+		protected static function render_team_member( $display_centers = true ) {
 			global $post;
 
 			$switched_site = false;
@@ -375,7 +375,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 								<div class="push">
 
-									<header class="entry-header">
+									<header class="entry-header <?php echo ! $display_centers ? 'no-border' : ''; ?>">
 
 										<h3 class="entry-title"><?php the_title(); ?></h3>
 
@@ -386,22 +386,24 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 									</header>
 									
-									<?php if ( $team_member_site_title ) { ?>
-										<p class="entry-centers">
-											<span class="center"><?php echo $team_member_site_title; ?></span>
-										</p>
-									<?php } else { ?>
-										<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-										<?php if ( ! empty( $centers ) ) { ?>
+									<?php if ( $display_centers ) { ?>
+										<?php if ( $team_member_site_title ) { ?>
 											<p class="entry-centers">
-												<?php foreach ( $centers as $term ) { ?>
-													<span class="center"><?php echo $term->name; ?></span>
-												<?php } ?>
+												<span class="center"><?php echo $team_member_site_title; ?></span>
 											</p>
-										<?php } else if ( ! is_main_site() ) { ?>
-											<!-- <p class="entry-centers">
-												<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
-											</p> -->
+										<?php } else { ?>
+											<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+											<?php if ( ! empty( $centers ) ) { ?>
+												<p class="entry-centers">
+													<?php foreach ( $centers as $term ) { ?>
+														<span class="center"><?php echo $term->name; ?></span>
+													<?php } ?>
+												</p>
+											<?php } else if ( ! is_main_site() ) { ?>
+												<!-- <p class="entry-centers">
+													<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+												</p> -->
+											<?php } ?>
 										<?php } ?>
 									<?php } ?>
 

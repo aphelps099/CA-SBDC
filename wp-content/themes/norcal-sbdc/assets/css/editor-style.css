@@ -21740,6 +21740,10 @@ nav.pagination {
       .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header {
         padding-bottom: .75rem;
         border-bottom-width: 6px; } }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-header.no-border {
+      padding-bottom: 0;
+      border-bottom: none;
+      margin-bottom: 0; }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-title {
     font-size: 1rem;
     margin-bottom: .25rem; }
