@@ -121,7 +121,7 @@
 			if(first_section.is('.wp-block-crown-blocks-resource-header.text-color-light')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-event-header')) header.addClass('text-color-light');
 			if(first_section.is('.wp-block-crown-blocks-client-story-header')) header.addClass('text-color-light');
-			if(first_section.is('.wp-block-crown-blocks-webinar-header')) header.addClass('text-color-light');
+			if(first_section.is('.wp-block-crown-blocks-webinar-header.text-color-light')) header.addClass('text-color-light');
 			header.addClass('loaded');
 
 			var adjustSubMenus = function() {
