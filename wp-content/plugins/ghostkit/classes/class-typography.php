@@ -33,7 +33,7 @@ class GhostKit_Typography {
                 $css = $typography_css['editor'];
             }
         }
-        wp_register_style( 'ghostkit-typography', false, array(), '2.19.0' );
+        wp_register_style( 'ghostkit-typography', false, array(), '2.19.1' );
         wp_enqueue_style( 'ghostkit-typography' );
         wp_add_inline_style( 'ghostkit-typography', $css );
     }

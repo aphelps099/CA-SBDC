@@ -5,7 +5,7 @@
 * Requires at least: 5.5
 * Tested up to: 5.7
 * Requires PHP: 5.5.9
-* Stable tag: 2.19.0
+* Stable tag: 2.19.1
 * License: GPLv2 or later
 * License URI: <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -260,6 +260,10 @@ You can extend Gutenberg blocks save attributes using core hooks. Read more here
 21. Blocks Extensions
 
 ## Changelog ##
+
+= 2.19.1 =
+
+* fixed warning a non-numeric value encountered conflict with Give plugin
 
 = 2.19.0 =
 

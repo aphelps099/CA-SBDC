@@ -76,7 +76,7 @@ if ( ! class_exists( 'GhostKit_Breakpoints' ) ) {
          *
          * @var string
          */
-        protected $plugin_version = '2.19.0';
+        protected $plugin_version = '2.19.1';
 
         /**
          * Scss Configurations.
