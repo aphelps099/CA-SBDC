@@ -51,6 +51,9 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_category_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_expertise_taxonomy' ) );
 
+			add_action( 'save_post', array( __CLASS__, 'update_shared_post_reference' ), 100 );
+			add_action( 'after_delete_post', array( __CLASS__, 'delete_syndicated_post' ), 100 );
+
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
 			add_action( 'admin_init', array( __CLASS__, 'process_action_publish_syndicated_team_member' ) );
@@ -176,6 +179,27 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 				restore_current_blog();
 
+			} else {
+
+				// $post_ids = get_posts( array(
+				// 	'post_type' => 'team_member_s',
+				// 	'posts_per_page' => -1,
+				// 	'fields' => 'ids'
+				// ) );
+
+				// foreach ( $post_ids as $post_id ) {
+				// 	$site_id = get_post_meta( $post_id, '_original_site_id', true );
+				// 	$center_term_ids = get_terms( array(
+				// 		'taxonomy' => 'post_center',
+				// 		'fields' => 'ids',
+				// 		'hide_empty' => false,
+				// 		'meta_query' => array(
+				// 			array( 'key' => 'center_site_id', 'value' => $site_id )
+				// 		)
+				// 	) );
+				// 	wp_set_object_terms( $post_id, $center_term_ids, 'post_center', false );
+				// }
+
 			}
 
 			update_option( 'crown_team_member_data_last_synced', $current_time->format( 'Y-m-d H:i:s' ) );
@@ -195,7 +219,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			if ( is_main_site() ) {
 				$team_member_options[] = array( 'value' => 'post-to-center-sites', 'label' => 'Display on Center Sites' );
 			} else {
-				// $team_member_options[] = array( 'value' => 'do-not-post-to-regional-site', 'label' => 'Don\'t Display on Regional Site' );
+				$team_member_options[] = array( 'value' => 'do-not-post-to-regional-site', 'label' => 'Don\'t Display on Regional Site' );
 			}
 
 			self::$team_member_post_type = new PostType( array(
@@ -317,7 +341,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				'settings' => array(
 					'public' => false,
 					'show_in_menu' => 'edit.php?post_type=team_member',
-					'show_ui' => ! is_main_site(),
+					// 'show_ui' => ! is_main_site(),
+					'show_ui' => true,
 					'labels' => array(
 						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
 					)
@@ -341,16 +366,16 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 							echo $job_title;
 						}
 					) ),
-					new ListTableColumn( array(
-						'key' => 'team-member-site',
-						'title' => 'SBDC',
-						'position' => 4,
-						'outputCb' => function( $post_id, $args ) {
-							$site_id = get_post_meta( $post_id, '_original_site_id', true );
-							$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
-							echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
-						}
-					) )
+					// new ListTableColumn( array(
+					// 	'key' => 'team-member-site',
+					// 	'title' => 'SBDC',
+					// 	'position' => 4,
+					// 	'outputCb' => function( $post_id, $args ) {
+					// 		$site_id = get_post_meta( $post_id, '_original_site_id', true );
+					// 		$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
+					// 		echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
+					// 	}
+					// ) )
 				)
 			) );
 
@@ -449,13 +474,13 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			if ( ! $post || $post->post_type != 'team_member' ) return $post_id;
 			if ( $post->post_title == 'Auto Draft' ) return $post_id;
 
-			// $options = get_post_meta( $post_id, '__team_member_options' );
+			$options = get_post_meta( $post_id, '__team_member_options' );
 
-			// if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
-			// 	self::syndicate_post( $post_id, get_main_site_id() );
-			// } else if ( ! is_main_site() ) {
-			// 	self::delete_syndicated_post( $post_id, get_main_site_id() );
-			// }
+			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
+				self::syndicate_post( $post_id, get_main_site_id() );
+			} else if ( ! is_main_site() ) {
+				self::delete_syndicated_post( $post_id, get_main_site_id() );
+			}
 
 		}
 
@@ -558,6 +583,18 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 			update_post_meta( $syn_id, '_original_site_id', $src_site );
 			update_post_meta( $syn_id, '_original_post_id', $post_id );
+
+			if ( is_main_site() ) {
+				$center_term_ids = get_terms( array(
+					'taxonomy' => 'post_center',
+					'fields' => 'ids',
+					'hide_empty' => false,
+					'meta_query' => array(
+						array( 'key' => 'center_site_id', 'value' => $src_site )
+					)
+				) );
+				wp_set_object_terms( $syn_id, $center_term_ids, 'post_center', false );
+			}
 
 			restore_current_blog();
 

@@ -49,7 +49,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_center_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_post_center_taxonomy' ) );
 
-			add_action( 'save_post', array( __CLASS__, 'update_post_center_term' ) );
+			add_action( 'save_post', array( __CLASS__, 'update_post_center_term' ), 100 );
 			add_action( 'after_delete_post', array( __CLASS__, 'delete_post_center_term' ) );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
@@ -134,6 +134,11 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 							new Field(array(
 								'label' => 'Email Address',
 								'input' => new TextInput( array( 'name' => 'center_email', 'class' => 'input-medium' ) )
+							) ),
+							new Field(array(
+								'label' => 'Network Site',
+								'input' => new Select( array( 'name' => 'center_site_id', 'class' => 'input-medium' ) ),
+								'getOutputCb' => array( __CLASS__, 'set_network_site_id_select_field_options' )
 							) ),
 							new Field(array(
 								'input' => new CheckboxSet( array( 'name' => 'center_options', 'options' => array(
@@ -225,6 +230,23 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 		}
 
 
+		public static function set_network_site_id_select_field_options( $field, $args ) {
+			$sites = get_sites( array( 'site__not_in' => array( get_current_blog_id() ) ) );
+			$site_options = array_map( function ( $n ) {
+				$site_details = get_blog_details( array( 'blog_id' => $n->blog_id ) );
+				return array(
+					'value' => $n->blog_id,
+					'label' => $site_details->blogname
+				);
+			}, $sites );
+			usort( $site_options, function ( $a, $b ) { return strcmp( $a['label'], $b['label'] ); } );
+			$options = array_merge( array(
+				array( 'value' => '', 'label' => '&mdash;' )
+			), $site_options );
+			$field->getInput()->setOptions( $options );
+		}
+
+
 		public static function get_address_components_field_output( $field, $args ) {
 			$object_id = isset( $args['entryId'] ) ? $args['entryId'] : 0;
 
@@ -306,7 +328,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 				'name' => 'post_center',
 				'singularLabel' => 'SBDC',
 				'pluralLabel' => 'SBDCs',
-				'postTypes' => array( 'event', 'job', 'team_member', 'client_story' ),
+				'postTypes' => array( 'event', 'job', 'team_member', 'team_member_s', 'client_story' ),
 				'settings' => array(
 					'hierarchical' => true,
 					'rewrite' => array( 'slug' => 'post-centers', 'with_front' => false ),
@@ -355,6 +377,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 				wp_update_term( $term->term_id, 'post_center', array( 'name' => $post->post_title, 'slug' => sanitize_title( $post->post_title ) ) );
 				update_term_meta( $term->term_id, 'center_post_id', $post_id );
+				update_term_meta( $term->term_id, 'center_site_id', get_post_meta( $post_id, 'center_site_id', true ) );
 
 			}
 

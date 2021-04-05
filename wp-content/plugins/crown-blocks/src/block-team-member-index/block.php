@@ -19,6 +19,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
+				'groupByCenter' => array( 'type' => 'boolean', 'default' => false ),
 				'postsPerPage' => array( 'type' => 'string', 'default' => '10' ),
 				'filterCenters' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) )
 			);
@@ -50,7 +51,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'meta_query' => array()
 			);
 
-			if ( ! empty( $atts['filterCenters'] ) ) {
+			if ( ! $atts['groupByCenter'] && ! empty( $atts['filterCenters'] ) ) {
 
 				$prefiltered = true;
 
@@ -76,6 +77,11 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				// $queried_search = isset( $_GET['keywords'] ) ? trim( $_GET['keywords'] ) : '';
 				// if ( ! empty( $queried_search ) ) $query_args['s'] = $queried_search;
 
+			}
+
+			if ( $atts['groupByCenter'] ) {
+				$query_args['posts_per_page'] = -1;
+				$query_args['fields'] = 'ids';
 			}
 
 			$query = null;
@@ -126,7 +132,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 			$block_id = 'post-feed-block-' . md5( json_encode( array( 'team-member-index', $atts ) ) );
 
 			ob_start();
-			// print_r($query_args);
+			// print_r($centers);
 			?>
 
 				<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $block_class ); ?>">
@@ -247,101 +253,76 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 									<div class="inner infinite-loader-container">
 	
 										<?php if ( ! $query->have_posts() ) { ?>
+
 											<div class="alert-wrapper">
 												<div class="alert alert-info no-results">
 													<h4>No Team Members Found</h4>
 													<p>Please try adjusting your selected filters above.</p>
 												</div>
 											</div>
-										<?php } ?>
+
+										<?php } else { ?>
 										
-										<?php while ( $query->have_posts() ) { ?>
-											<?php $query->the_post(); ?>
-											<?php
-												$switched_site = false;
-												$team_member_site_title = null;
-												$syn_id = null;
-												if ( get_post_type() == 'team_member_s' ) {
-													$syn_id = get_the_ID();
-													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
-													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
-													$post = get_post( $original_post_id );
-													setup_postdata( $post );
-													if ( ! is_main_site() ) $team_member_site_title = get_bloginfo( 'name' );
-													$switched_site = true;
-												}
-											?>
-											<article <?php post_class( $syn_id ? 'post-' . $syn_id : '' ); ?>>
-												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo $syn_id ? $syn_id : get_the_ID(); ?>">
-													<div class="inner">
-	
-														<div class="entry-headshot-photo">
-															<div class="inner">
-																<?php $image_src = wp_get_attachment_image_url( get_post_meta( get_the_ID(), 'team_member_headshot_photo', true ), 'medium_large' ); ?>
-																<?php if ( ! empty( $image_src ) ) { ?>
-																	<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
-																		<?php echo wp_get_attachment_image( get_post_meta( get_the_ID(), 'team_member_headshot_photo', true ), 'medium_large' ) ?>
-																	</div>
-																	<div class="image overlay" style="background-image: url(<?php echo $image_src; ?>);"></div>
-																<?php } ?>
-																<span class="overlay-label"><?php _e( 'View Bio', 'crown_blocks' ); ?></span>
-															</div>
-														</div>
-	
-														<div class="entry-teaser">
-	
-															<div class="push">
+											<?php if ( $atts['groupByCenter'] ) { ?>
+												
+												<?php $output_team_member_ids = array(); ?>
 
-																<header class="entry-header">
-		
-																	<h3 class="entry-title"><?php the_title(); ?></h3>
-		
-																	<?php $job_title = get_post_meta( get_the_ID(), 'team_member_job_title', true ); ?>
-																	<?php if ( ! empty( $job_title ) ) { ?>
-																		<p class="entry-job-title"><?php echo $job_title; ?></p>
-																	<?php } ?>
-		
-																</header>
-																
-																<?php if ( $team_member_site_title ) { ?>
-																	<p class="entry-centers">
-																		<span class="center"><?php echo $team_member_site_title; ?></span>
-																	</p>
-																<?php } else { ?>
-																	<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-																	<?php if ( ! empty( $centers ) ) { ?>
-																		<p class="entry-centers">
-																			<?php foreach ( $centers as $term ) { ?>
-																				<span class="center"><?php echo $term->name; ?></span>
-																			<?php } ?>
-																		</p>
-																	<?php } else if ( ! is_main_site() ) { ?>
-																		<!-- <p class="entry-centers">
-																			<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
-																		</p> -->
-																	<?php } ?>
-																<?php } ?>
+												<?php foreach ( get_terms( array( 'taxonomy' => 'post_center' ) ) as $center ) { ?>
 
-															</div>
-	
-															<!-- <p class="entry-link">
-																<span><?php _e( 'View My Bio', 'crown_blocks' ); ?></span>
-															</p> -->
-	
-														</div>
+													<?php
+														$sub_query_args = array(
+															'post_type' => array( 'team_member', 'team_member_s' ),
+															'posts_per_page' => -1,
+															'orderby' => 'meta_value',
+															'order' => 'ASC',
+															'meta_key' => 'team_member_name_last_comma_first_lc',
+															'tax_query' => array( array( 'taxonomy' => 'post_center', 'terms' => $center->term_id ) ),
+															'post__in' => $query->get_posts()
+														);
+														$sub_query = null;
+														if ( function_exists( 'relevanssi_do_query' ) && isset( $sub_query_args['s'] ) && ! empty( $sub_query_args['s'] ) ) {
+															$sub_query = new WP_Query();
+															$sub_query->parse_query( $sub_query_args );
+															relevanssi_do_query( $query );
+														} else {
+															$sub_query = new WP_Query( $sub_query_args );
+														}
+													?>
 
-													</div>
-												</a>
-											</article>
-											<?php if ( $switched_site ) restore_current_blog(); ?>
+													<?php if ( $sub_query->have_posts() ) { ?>
+
+														<h2 class="team-group-title"><span><?php echo $center->name; ?></span></h2>
+
+														<?php while ( $sub_query->have_posts() ) { ?>
+															<?php $output_team_member_ids[] = get_the_ID(); ?>
+															<?php $sub_query->the_post(); ?>
+															<?php self::render_team_member(); ?>
+														<?php } ?>
+														<?php wp_reset_postdata(); ?>
+
+													<?php } ?>
+
+												<?php } ?>
+
+											<?php } else { ?>
+
+												<?php while ( $query->have_posts() ) { ?>
+													<?php $query->the_post(); ?>
+													<?php self::render_team_member(); ?>
+												<?php } ?>
+												<?php wp_reset_postdata(); ?>
+
+											<?php } ?>
+
 										<?php } ?>
-										<?php wp_reset_postdata(); ?>
 	
 									</div>
 								</div>
-	
-								<?php //self::render_pagination( $query, 5 ); ?>
-								<?php self::render_pagination_infinite( $query ); ?>
+								
+								<?php if ( ! $atts['groupByCenter'] ) { ?>
+									<?php //self::render_pagination( $query, 5 ); ?>
+									<?php self::render_pagination_infinite( $query ); ?>
+								<?php } ?>
 
 							</div>
 						</div>
@@ -353,6 +334,91 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 			$output = ob_get_clean();
 
 			return $output;
+		}
+
+
+		protected static function render_team_member() {
+			global $post;
+
+			$switched_site = false;
+			$team_member_site_title = null;
+			$syn_id = null;
+			if ( get_post_type() == 'team_member_s' ) {
+				$syn_id = get_the_ID();
+				$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+				switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+				$post = get_post( $original_post_id );
+				setup_postdata( $post );
+				if ( ! is_main_site() ) $team_member_site_title = get_bloginfo( 'name' );
+				$switched_site = true;
+			}
+
+			?>
+				<article <?php post_class( $syn_id ? 'post-' . $syn_id : '' ); ?>>
+					<a href="<?php the_permalink(); ?>" data-post-id="<?php echo $syn_id ? $syn_id : get_the_ID(); ?>">
+						<div class="inner">
+
+							<div class="entry-headshot-photo">
+								<div class="inner">
+									<?php $image_src = wp_get_attachment_image_url( get_post_meta( get_the_ID(), 'team_member_headshot_photo', true ), 'medium_large' ); ?>
+									<?php if ( ! empty( $image_src ) ) { ?>
+										<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
+											<?php echo wp_get_attachment_image( get_post_meta( get_the_ID(), 'team_member_headshot_photo', true ), 'medium_large' ) ?>
+										</div>
+										<div class="image overlay" style="background-image: url(<?php echo $image_src; ?>);"></div>
+									<?php } ?>
+									<span class="overlay-label"><?php _e( 'View Bio', 'crown_blocks' ); ?></span>
+								</div>
+							</div>
+
+							<div class="entry-teaser">
+
+								<div class="push">
+
+									<header class="entry-header">
+
+										<h3 class="entry-title"><?php the_title(); ?></h3>
+
+										<?php $job_title = get_post_meta( get_the_ID(), 'team_member_job_title', true ); ?>
+										<?php if ( ! empty( $job_title ) ) { ?>
+											<p class="entry-job-title"><?php echo $job_title; ?></p>
+										<?php } ?>
+
+									</header>
+									
+									<?php if ( $team_member_site_title ) { ?>
+										<p class="entry-centers">
+											<span class="center"><?php echo $team_member_site_title; ?></span>
+										</p>
+									<?php } else { ?>
+										<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+										<?php if ( ! empty( $centers ) ) { ?>
+											<p class="entry-centers">
+												<?php foreach ( $centers as $term ) { ?>
+													<span class="center"><?php echo $term->name; ?></span>
+												<?php } ?>
+											</p>
+										<?php } else if ( ! is_main_site() ) { ?>
+											<!-- <p class="entry-centers">
+												<span class="center"><?php echo get_bloginfo( 'name' ); ?></span>
+											</p> -->
+										<?php } ?>
+									<?php } ?>
+
+								</div>
+
+								<!-- <p class="entry-link">
+									<span><?php _e( 'View My Bio', 'crown_blocks' ); ?></span>
+								</p> -->
+
+							</div>
+
+						</div>
+					</a>
+				</article>
+			<?php
+
+			if ( $switched_site ) restore_current_blog();
 		}
 
 

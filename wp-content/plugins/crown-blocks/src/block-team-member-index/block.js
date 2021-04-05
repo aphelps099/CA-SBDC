@@ -25,8 +25,9 @@ registerBlockType('crown-blocks/team-member-index', {
 	supports: {},
 
 	attributes: {
+		groupByCenter: { type: 'boolean', default: false },
 		postsPerPage: { type: 'string', default: '10' },
-		filterCenters: { type: 'array', default: [] },
+		filterCenters: { type: 'array', default: [] }
 	},
 
 
@@ -38,6 +39,7 @@ registerBlockType('crown-blocks/team-member-index', {
 		if(!centers) return '';
 
 		const {
+			groupByCenter,
 			postsPerPage,
 			filterCenters
 		} = attributes;
@@ -63,16 +65,22 @@ registerBlockType('crown-blocks/team-member-index', {
 
 				<PanelBody title={ 'Appearance' } initialOpen={ true }>
 
-					<SelectControl
+					<ToggleControl
+						label={ 'Group by Center (display all)' }
+						checked={ groupByCenter }
+						onChange={ (value) => { setAttributes({ groupByCenter: value }); } }
+					/>
+
+					{ !! !groupByCenter && <SelectControl
 						label="Number of team members to display per page"
 						value={ postsPerPage }
 						onChange={ (value) => setAttributes({ postsPerPage: value }) }
 						options={ postsPerPageOptions }
-					/>
+					/> }
 
 				</PanelBody>
 
-				<PanelBody title={ 'Filtering Options' } initialOpen={ true }>
+				{ !! !groupByCenter && <PanelBody title={ 'Filtering Options' } initialOpen={ true }>
 
 					<FormTokenField 
 						label="Filter by SBDC"
@@ -97,7 +105,7 @@ registerBlockType('crown-blocks/team-member-index', {
 						placeholder="Search centers..."
 					/>
 
-				</PanelBody>
+				</PanelBody> }
 
 			</InspectorControls>,
 
