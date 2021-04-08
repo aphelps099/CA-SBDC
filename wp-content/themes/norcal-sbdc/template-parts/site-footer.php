@@ -112,7 +112,7 @@
 								</div>
 
 								<div class="logo ca-gobed">
-									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="California Governor's Office of Business and Economic Development"></a>
+									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-osba.png" alt="California Governor's Office of Business and Economic Development"></a>
 								</div>
 
 							</div>
