@@ -129,7 +129,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 											) ),
 											new Field( array(
 												'label' => 'Description',
-												'input' => new TextInput( array( 'name' => 'theme_config_modal_subscribe_description' ) )
+												'input' => new Textarea( array( 'name' => 'theme_config_modal_subscribe_description', 'rows' => 6 ) )
 											) ),
 											new Field( array(
 												'label' => 'Form',

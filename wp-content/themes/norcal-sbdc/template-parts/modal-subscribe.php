@@ -17,7 +17,7 @@
 
 						<?php $description = get_option( 'theme_config_modal_subscribe_description' ); ?>
 						<?php if ( ! empty( $description ) ) { ?>
-							<p class="subscribe-description"><?php echo $description; ?></p>
+							<div class="subscribe-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
 						<?php } ?>
 
 					</div>
