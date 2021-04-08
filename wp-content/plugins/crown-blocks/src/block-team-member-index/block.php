@@ -112,11 +112,9 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->expertise->queried ) );
 				}, get_terms( array( 'taxonomy' => 'team_member_expertise' ) ) );
 
-				if ( is_main_site() ) {
-					$filters->center->options = array_map( function( $n ) use ( $filters ) {
-						return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->center->queried ) );
-					}, get_terms( array( 'taxonomy' => 'post_center' ) ) );
-				}
+				$filters->center->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->center->queried ) );
+				}, get_terms( array( 'taxonomy' => 'post_center' ) ) );
 
 				$filters->letter->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
