@@ -3041,7 +3041,8 @@
 			}
 		}
 	}
-	article.type-resource {
+	article.type-resource,
+	article.type-resource_s {
 		width: 100%;
 		padding: 0 1rem 2rem;
 		@include media-breakpoint-up(md) {

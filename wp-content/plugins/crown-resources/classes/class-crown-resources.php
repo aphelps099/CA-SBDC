@@ -44,7 +44,9 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
 			add_action( 'crown_sync_resource_data', array( __CLASS__, 'sync_resource_data' ) );
-			// add_action( 'init', array( __CLASS__, 'sync_resource_data' ), 100, 0 );
+			if ( isset( $_GET['sync_resources'] ) && boolval( $_GET['sync_resources'] ) ) {
+				add_action( 'init', function() { self::sync_resource_data( true ); }, 100, 0 );
+			}
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_resource_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_resource_type_taxonomy' ) );
@@ -235,17 +237,20 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				'singularLabel' => 'Syndicated Resource',
 				'pluralLabel' => 'Syndicated Resources',
 				'settings' => array(
-					'public' => false,
+					'rewrite' => array( 'slug' => 'resource-s', 'with_front' => false ),
 					'show_in_menu' => 'edit.php?post_type=resource',
-					'show_ui' => true,
+					'has_archive' => false,
+					'publicly_queryable' => true,
+					'show_in_rest' => true,
+					'show_in_nav_menus' => false,
 					'labels' => array(
 						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
 					)
 				),
 				'listTableColumns' => array(
 					new ListTableColumn( array(
-						'key' => 'resource-site',
-						'title' => 'SBDC',
+						'key' => 'resource-source-site',
+						'title' => 'Source Site',
 						'position' => 2,
 						'outputCb' => function( $post_id, $args ) {
 							$site_id = get_post_meta( $post_id, '_original_site_id', true );
@@ -330,10 +335,18 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
+			global $wpdb;
 
+			$post = get_post( $post_id );
 			$post_arr = array(
-				'post_title' => get_the_title( $post_id ),
-				'post_date' => get_the_time( 'Y-m-d H:i:s', $post_id )
+				'post_title' => $post->post_title,
+				'post_date' => $post->post_date,
+				'post_content' => $post->post_content,
+				'post_excerpt' => $post->post_excerpt,
+				'comment_status' => $post->comment_status,
+				'ping_status' => $post->ping_status,
+				'post_password' => $post->post_password,
+				'post_name' => $post->post_name
 			);
 
 			$taxonomies = array(
@@ -356,10 +369,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				}
 			}
 
-			$meta = array();
-			foreach ( $meta as $k => $v ) {
-				$meta[ $k ] = get_post_meta( $post_id, $k, true );
-			}
+			$meta = get_post_meta( $post_id );
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
@@ -401,8 +411,12 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				wp_set_object_terms( $syn_id, $syn_term_ids, $tax, false );
 			}
 
-			foreach ( $meta as $k => $v ) {
-				update_post_meta( $syn_id, $k, $v );
+			$post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d", $syn_id ) );
+			foreach ( $post_meta_ids as $mid ) delete_metadata_by_mid( 'post', $mid );
+			foreach ( $meta as $key => $values ) {
+				foreach ( $values as $value ) {
+					add_post_meta( $syn_id, $key, $value );
+				}
 			}
 
 			update_post_meta( $syn_id, '_original_site_id', $src_site );
@@ -553,10 +567,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 
 		public static function filter_get_edit_post_link( $link, $post_id, $context ) {
 			if ( get_post_type( $post_id ) == 'resource_s' ) {
-				$original_post_id = get_post_meta( $post_id, '_original_post_id', true );
-				switch_to_blog( get_post_meta( $post_id, '_original_site_id', true ) );
-				$link = get_permalink( $original_post_id );
-				restore_current_blog();
+				$link = get_permalink( $post_id );
 			}
 			return $link;
 		}
@@ -636,17 +647,6 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				setup_postdata( $post );
 			}
 
-			$switched_site = false;
-			$resource_site_title = null;
-			if ( get_post_type() == 'resource_s' ) {
-				$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
-				switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
-				$post = get_post( $original_post_id );
-				setup_postdata( $post );
-				if ( ! is_main_site() ) $resource_site_title = get_bloginfo( 'name' );
-				$switched_site = true;
-			}
-
 			$color = self::get_resource_primary_type_color( get_the_ID() );
 
 			?>
@@ -692,11 +692,6 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					</a>
 				</article>
 			<?php
-
-			if ( $switched_site ) {
-				restore_current_blog();
-				wp_reset_postdata();
-			}
 
 			if ( ! empty( $post_id ) ) {
 				wp_reset_postdata();
