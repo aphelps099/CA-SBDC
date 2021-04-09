@@ -374,9 +374,9 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
 			
-			$syn_id = get_posts( array(
+			$syn_ids = get_posts( array(
 				'post_type' => 'resource_s',
-				'posts_per_page' => 1,
+				'posts_per_page' => -1,
 				'fields' => 'ids',
 				'post_status' => 'any',
 				'meta_query' => array(
@@ -384,7 +384,13 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					array( 'key' => '_original_post_id', 'value' => $post_id )
 				)
 			) );
-			$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
+			$syn_id = ! empty( $syn_ids ) ? $syn_ids[0] : null;
+			if ( count( $syn_ids ) > 1 ) {
+				foreach ( $syn_ids as $i => $id ) {
+					if ( $i == 0 ) continue;
+					wp_delete_post( $id, true );
+				}
+			}
 
 			if ( ! $syn_id ) {
 				// $syn_id = wp_insert_post( array( 'post_type' => 'resource_s', 'post_status' => is_main_site() ? 'pending' : 'publish' ) );
@@ -647,11 +653,22 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				setup_postdata( $post );
 			}
 
+			$permalink = get_the_permalink();
+
+			$switched_site = false;
+			if ( get_post_type() == 'resource_s' ) {
+				$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
+				switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
+				$post = get_post( $original_post_id );
+				setup_postdata( $post );
+				$switched_site = true;
+			}
+
 			$color = self::get_resource_primary_type_color( get_the_ID() );
 
 			?>
 				<article <?php post_class( 'resource-teaser' ); ?>>
-					<a href="<?php the_permalink(); ?>">
+					<a href="<?php echo $permalink; ?>">
 
 						<div class="entry-featured-image">
 							<div class="inner <?php echo ! empty( $color ) ? ( self::is_dark_color( $color ) ? 'dark' : 'light' ) : 'dark'; ?>" <?php echo ! empty( $color ) ? 'style="background-color: ' . $color . ';"' : ''; ?>>
@@ -692,6 +709,11 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					</a>
 				</article>
 			<?php
+
+			if ( $switched_site ) {
+				restore_current_blog();
+				wp_reset_postdata();
+			}
 
 			if ( ! empty( $post_id ) ) {
 				wp_reset_postdata();
