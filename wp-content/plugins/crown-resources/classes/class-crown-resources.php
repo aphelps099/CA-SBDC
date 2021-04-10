@@ -237,7 +237,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 				'singularLabel' => 'Syndicated Resource',
 				'pluralLabel' => 'Syndicated Resources',
 				'settings' => array(
-					'rewrite' => array( 'slug' => 'resource-s', 'with_front' => false ),
+					'rewrite' => array( 'slug' => 'shared/resource', 'with_front' => false ),
 					'show_in_menu' => 'edit.php?post_type=resource',
 					'has_archive' => false,
 					'publicly_queryable' => true,
