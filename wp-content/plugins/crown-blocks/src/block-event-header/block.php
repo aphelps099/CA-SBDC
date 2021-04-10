@@ -35,7 +35,9 @@ if(!class_exists('Crown_Block_Event_Header')) {
 			}
 
 			$index_page_url = '';
-			if ( ( $index_page_id = get_option( 'theme_config_index_page_event' ) ) ) $index_page_url = get_permalink( $index_page_id );
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_event' ) ) ) {
+				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_event' );
+			}
 
 			ob_start();
 			// print_r($atts);

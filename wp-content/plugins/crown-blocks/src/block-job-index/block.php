@@ -139,7 +139,7 @@ if(!class_exists('Crown_Block_Job_Index')) {
 
 			$index_page_url = '';
 			if ( ( $index_page_id = get_option( 'theme_config_index_page_job' ) ) && ( $index_page = get_post( $index_page_id ) ) ) {
-				$index_page_url = get_permalink( $index_page_id );
+				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_job' );
 			}
 
 			ob_start();

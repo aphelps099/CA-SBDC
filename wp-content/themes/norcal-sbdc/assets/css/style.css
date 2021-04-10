@@ -27757,29 +27757,37 @@ body.single-resource_s #related-content {
   body.single-resource_s #related-content .wp-block-crown-blocks-featured-resource-slider {
     margin-bottom: 0; }
 
-body.single-webinar #related-content {
+body.single-webinar #related-content,
+body.single-webinar_s #related-content {
   margin-top: 4rem; }
   @media (min-width: 768px) {
-    body.single-webinar #related-content {
+    body.single-webinar #related-content,
+    body.single-webinar_s #related-content {
       margin-top: 6rem; } }
   @media (min-width: 948px) {
-    body.single-webinar #related-content {
+    body.single-webinar #related-content,
+    body.single-webinar_s #related-content {
       margin-left: calc((100vw - 900px - (1.5rem * 2)) / -2);
       margin-right: calc((100vw - 900px - (1.5rem * 2)) / -2); } }
   @media (min-width: 992px) {
-    body.single-webinar #related-content {
+    body.single-webinar #related-content,
+    body.single-webinar_s #related-content {
       margin-left: calc((100vw - 900px - (2rem * 2)) / -2);
       margin-right: calc((100vw - 900px - (2rem * 2)) / -2); } }
   @media (min-width: 1200px) {
-    body.single-webinar #related-content {
+    body.single-webinar #related-content,
+    body.single-webinar_s #related-content {
       margin-left: calc((100vw - 900px - (2.5rem * 2)) / -2);
       margin-right: calc((100vw - 900px - (2.5rem * 2)) / -2); } }
   @media (min-width: 1340px) {
-    body.single-webinar #related-content {
+    body.single-webinar #related-content,
+    body.single-webinar_s #related-content {
       margin-left: calc((1260px - 900px) / -2);
       margin-right: calc((1260px - 900px) / -2); } }
-  body.single-webinar #related-content .related-content-title {
+  body.single-webinar #related-content .related-content-title,
+  body.single-webinar_s #related-content .related-content-title {
     margin-bottom: 2rem;
     text-align: center; }
-  body.single-webinar #related-content .wp-block-crown-blocks-featured-webinar-slider {
+  body.single-webinar #related-content .wp-block-crown-blocks-featured-webinar-slider,
+  body.single-webinar_s #related-content .wp-block-crown-blocks-featured-webinar-slider {
     margin-bottom: 0; }
