@@ -30,6 +30,17 @@ function content_resource_s_filter_crown_localized_index_url( $url, $option_key 
 }
 add_filter( 'crown_localized_index_url', 'content_resource_s_filter_crown_localized_index_url', 100, 2 );
 
+function content_resource_s_filter_crown_localized_index_blocks( $blocks, $option_key ) {
+	$current_site_id = get_current_blog_id();
+	restore_current_blog();
+	if ( ( $index_page_id = get_option( $option_key ) ) && ( $index_page = get_post( $index_page_id ) ) ) {
+		$blocks = parse_blocks( $index_page->post_content );
+	}
+	switch_to_blog( $current_site_id );
+	return $blocks;
+}
+add_filter( 'crown_localized_index_blocks', 'content_resource_s_filter_crown_localized_index_blocks', 100, 2 );
+
 
 $original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
 switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
@@ -44,3 +55,4 @@ wp_reset_postdata();
 
 remove_filter( 'crown_localized_post_url', 'content_resource_s_filter_crown_localized_post_url' );
 remove_filter( 'crown_resource_index_url', 'content_resource_s_filter_crown_localized_index_url' );
+remove_filter( 'crown_localized_index_blocks', 'content_resource_s_filter_crown_localized_index_blocks' );

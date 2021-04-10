@@ -2857,11 +2857,18 @@
 		}
 	}
 	.sticky-share-links {
+		color: $primary;
 		.social-sharing-links {
 			.menu-item {
 				a {
+					border-color: $blue;
 					&:hover {
 						background-color: mix($blue, #fff, 20%);
+					}
+				}
+				.icon {
+					svg {
+						fill: $primary;
 					}
 				}
 			}
@@ -3013,6 +3020,7 @@
 		}
 	}
 	.sticky-share-links {
+		color: $primary;
 		.social-sharing-links {
 			.menu-item {
 				a {
@@ -3990,6 +3998,7 @@
 		}
 	}
 	.sticky-share-links {
+		color: $primary;
 		.social-sharing-links {
 			.menu-item {
 				a {

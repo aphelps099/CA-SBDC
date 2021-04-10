@@ -23232,8 +23232,14 @@ nav.pagination {
       background-color: rgba(3, 32, 64, 0.2); }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-post-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a {
+      border-color: #0381C3; }
+      .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+        background-color: #cde6f3; }
+    .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item .icon svg {
+      fill: #032040; }
 
 /*	Resource Header
 ---------------------------------------------------------*/
@@ -23348,8 +23354,10 @@ nav.pagination {
       background-color: rgba(3, 129, 195, 0.2); }
   .wp-block-crown-blocks-resource-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-resource-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-resource-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-resource-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+      background-color: #cde6f3; }
 
 /*	Resource Index
 ---------------------------------------------------------*/
@@ -24271,8 +24279,10 @@ nav.pagination {
       background-color: rgba(3, 129, 195, 0.2); }
   .wp-block-crown-blocks-webinar-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-webinar-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-webinar-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-webinar-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+      background-color: #cde6f3; }
 
 /*	Webinar Index
 ---------------------------------------------------------*/

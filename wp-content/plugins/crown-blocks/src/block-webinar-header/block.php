@@ -43,7 +43,7 @@ if(!class_exists('Crown_Block_Webinar_Header')) {
 			$index_page_url = '';
 			if ( ( $index_page_id = get_option( 'theme_config_index_page_webinar' ) ) && ( $index_page = get_post( $index_page_id ) ) ) {
 				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_webinar' );
-				$index_page_blocks = parse_blocks( $index_page->post_content );
+				$index_page_blocks = apply_filters( 'crown_localized_index_blocks', parse_blocks( $index_page->post_content ), 'theme_config_index_page_webinar' );
 				if ( ! empty( $index_page_blocks ) ) {
 					if ( $index_page_blocks[0]['blockName'] == 'crown-blocks/container' && isset( $index_page_blocks[0]['attrs']['backgroundColor'] ) && ! empty( $index_page_blocks[0]['attrs']['backgroundColor'] ) ) {
 						$bg_color = $index_page_blocks[0]['attrs']['backgroundColor'];
