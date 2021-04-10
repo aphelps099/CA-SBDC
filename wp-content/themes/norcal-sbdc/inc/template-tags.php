@@ -106,7 +106,7 @@ if ( ! function_exists( 'ct_social_sharing_links' ) ) {
 		if ( ! $post ) return;
 
 		$content = (object) array(
-			'url' => get_permalink( $post ),
+			'url' => apply_filters( 'crown_localized_post_url', get_permalink( $post ), get_the_ID() ),
 			'text' => get_the_title( $post ),
 			'img' => ct_get_image_src( get_post_thumbnail_id(), 'medium_large' ),
 			'via' => '',

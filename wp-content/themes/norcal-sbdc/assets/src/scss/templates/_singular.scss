@@ -318,7 +318,8 @@ body.single-team_member {
 }
 
 
-body.single-resource {
+body.single-resource,
+body.single-resource_s {
 	#related-content {
 		margin-top: 4rem;
 		@include media-breakpoint-up(md) {
