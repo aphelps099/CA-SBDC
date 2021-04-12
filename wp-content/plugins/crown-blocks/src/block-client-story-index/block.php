@@ -207,6 +207,8 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
 
+											<?php $permalink = get_the_permalink(); ?>
+
 											<?php
 												$switched_site = false;
 												$client_story_site_title = null;
@@ -224,7 +226,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 											<?php if ( empty( $color ) ) $color = '#E0E0E0'; ?>
 
 											<article <?php post_class(); ?>>
-												<a href="<?php the_permalink(); ?>" data-post-id="<?php echo get_the_ID(); ?>" class="text-color-<?php echo self::is_dark_color( $color ) ? 'light' : 'dark'; ?>" style="background-color: <?php echo $color; ?>;">
+												<a href="<?php echo $permalink; ?>" data-post-id="<?php echo get_the_ID(); ?>" class="text-color-<?php echo self::is_dark_color( $color ) ? 'light' : 'dark'; ?>" style="background-color: <?php echo $color; ?>;">
 													<div class="inner">
 
 														<?php $image_src = has_post_thumbnail() ? wp_get_attachment_image_url( get_post_thumbnail_id(), 'medium_large' ) : false; ?>
