@@ -328,7 +328,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 				'name' => 'post_center',
 				'singularLabel' => 'SBDC',
 				'pluralLabel' => 'SBDCs',
-				'postTypes' => array( 'event', 'job', 'team_member', 'team_member_s', 'client_story' ),
+				'postTypes' => array( 'event', 'job', 'team_member', 'team_member_s', 'client_story', 'client_story_s' ),
 				'settings' => array(
 					'hierarchical' => true,
 					'rewrite' => array( 'slug' => 'post-centers', 'with_front' => false ),

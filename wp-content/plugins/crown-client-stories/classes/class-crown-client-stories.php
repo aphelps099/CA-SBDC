@@ -44,10 +44,14 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
 			add_action( 'crown_sync_client_story_data', array( __CLASS__, 'sync_client_story_data' ) );
-			// add_action( 'init', array( __CLASS__, 'sync_client_story_data' ), 100, 0 );
+			if ( isset( $_GET['sync_client_stories'] ) && boolval( $_GET['sync_client_stories'] ) ) {
+				add_action( 'init', function() { self::sync_client_story_data( true ); }, 100, 0 );
+			}
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_client_story_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_client_story_industry_taxonomy' ) );
+
+			add_action( 'save_post', array( __CLASS__, 'update_post_center_terms' ), 90 );
 
 			add_action( 'save_post', array( __CLASS__, 'update_shared_post_reference' ), 100 );
 			add_action( 'after_delete_post', array( __CLASS__, 'delete_syndicated_post' ), 100 );
@@ -256,24 +260,27 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				'singularLabel' => 'Syndicated Client Story',
 				'pluralLabel' => 'Syndicated Client Stories',
 				'settings' => array(
-					'public' => false,
+					'rewrite' => array( 'slug' => 'shared/client-stories', 'with_front' => false ),
 					'show_in_menu' => 'edit.php?post_type=client_story',
-					'show_ui' => true,
+					'has_archive' => false,
+					'publicly_queryable' => true,
+					'show_in_rest' => true,
+					'show_in_nav_menus' => false,
 					'labels' => array(
 						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
 					)
 				),
 				'listTableColumns' => array(
-					new ListTableColumn( array(
-						'key' => 'client-story-site',
-						'title' => 'SBDC',
-						'position' => 2,
-						'outputCb' => function( $post_id, $args ) {
-							$site_id = get_post_meta( $post_id, '_original_site_id', true );
-							$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
-							echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
-						}
-					) )
+					// new ListTableColumn( array(
+					// 	'key' => 'client-story-source-site',
+					// 	'title' => 'Source Site',
+					// 	'position' => 2,
+					// 	'outputCb' => function( $post_id, $args ) {
+					// 		$site_id = get_post_meta( $post_id, '_original_site_id', true );
+					// 		$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
+					// 		echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
+					// 	}
+					// ) )
 				)
 			) );
 
@@ -310,6 +317,51 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 		}
 
 
+		public static function update_post_center_terms( $post_id ) {
+
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $post_id;
+			// if ( defined( 'DOING_CRON' ) && DOING_CRON ) return $post_id;
+
+			$post = get_post( $post_id );
+			if ( ! $post || $post->post_type != 'client_story' ) return $post_id;
+			if ( $post->post_title == 'Auto Draft' ) return $post_id;
+
+			if ( ! is_main_site() ) {
+
+				$src_site = get_current_blog_id();
+				switch_to_blog( get_main_site_id() );
+
+				$center_terms = get_terms( array(
+					'taxonomy' => 'post_center',
+					'hide_empty' => false,
+					'meta_query' => array(
+						array( 'key' => 'center_site_id', 'value' => $src_site )
+					)
+				) );
+
+				restore_current_blog();
+				
+				if ( ! empty( $center_terms ) ) {
+					$term_ids = array();
+					foreach ( $center_terms as $t ) {
+						$term_id = 0;
+						if ( ( $result = term_exists( $t->name, 'post_center' ) ) ) {
+							$term_id = intval( $result['term_id'] );
+						} else if ( ( $result = @wp_insert_term( $t->name, 'post_center', array() ) ) ) {
+							if ( ! is_wp_error( $result ) ) {
+								$term_id = intval( $result['term_id'] );
+							}
+						}
+						if ( $term_id ) $term_ids[] = $term_id;
+					}
+					wp_set_object_terms( $post_id, $term_ids, 'post_center', false );
+				}
+
+			}
+
+		}
+
+
 		public static function update_shared_post_reference( $post_id ) {
 
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $post_id;
@@ -331,14 +383,23 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
+			global $wpdb;
 
+			$post = get_post( $post_id );
 			$post_arr = array(
-				'post_title' => get_the_title( $post_id ),
-				'post_date' => get_the_time( 'Y-m-d H:i:s', $post_id )
+				'post_title' => $post->post_title,
+				'post_date' => $post->post_date,
+				'post_content' => $post->post_content,
+				'post_excerpt' => $post->post_excerpt,
+				'comment_status' => $post->comment_status,
+				'ping_status' => $post->ping_status,
+				'post_password' => $post->post_password,
+				'post_name' => $post->post_name
 			);
 
 			$taxonomies = array(
-				'client_story_industry' => array()
+				'client_story_industry' => array(),
+				'post_center' => array()
 			);
 			foreach ( $taxonomies as $tax => $terms ) {
 				$taxonomies[ $tax ] = wp_get_object_terms( $post_id, $tax );
@@ -356,19 +417,14 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				}
 			}
 
-			$meta = array(
-				'client_story_initial_lc' => ''
-			);
-			foreach ( $meta as $k => $v ) {
-				$meta[ $k ] = get_post_meta( $post_id, $k, true );
-			}
+			$meta = get_post_meta( $post_id );
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
 			
-			$syn_id = get_posts( array(
+			$syn_ids = get_posts( array(
 				'post_type' => 'client_story_s',
-				'posts_per_page' => 1,
+				'posts_per_page' => -1,
 				'fields' => 'ids',
 				'post_status' => 'any',
 				'meta_query' => array(
@@ -376,7 +432,13 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 					array( 'key' => '_original_post_id', 'value' => $post_id )
 				)
 			) );
-			$syn_id = ! empty( $syn_id ) ? $syn_id[0] : null;
+			$syn_id = ! empty( $syn_ids ) ? $syn_ids[0] : null;
+			if ( count( $syn_ids ) > 1 ) {
+				foreach ( $syn_ids as $i => $id ) {
+					if ( $i == 0 ) continue;
+					wp_delete_post( $id, true );
+				}
+			}
 
 			if ( ! $syn_id ) {
 				// $syn_id = wp_insert_post( array( 'post_type' => 'client_story_s', 'post_status' => is_main_site() ? 'pending' : 'publish' ) );
@@ -403,12 +465,28 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				wp_set_object_terms( $syn_id, $syn_term_ids, $tax, false );
 			}
 
-			foreach ( $meta as $k => $v ) {
-				update_post_meta( $syn_id, $k, $v );
+			$post_meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d", $syn_id ) );
+			foreach ( $post_meta_ids as $mid ) delete_metadata_by_mid( 'post', $mid );
+			foreach ( $meta as $key => $values ) {
+				foreach ( $values as $value ) {
+					add_post_meta( $syn_id, $key, $value );
+				}
 			}
 
 			update_post_meta( $syn_id, '_original_site_id', $src_site );
 			update_post_meta( $syn_id, '_original_post_id', $post_id );
+
+			if ( is_main_site() ) {
+				$center_term_ids = get_terms( array(
+					'taxonomy' => 'post_center',
+					'fields' => 'ids',
+					'hide_empty' => false,
+					'meta_query' => array(
+						array( 'key' => 'center_site_id', 'value' => $src_site )
+					)
+				) );
+				wp_set_object_terms( $syn_id, $center_term_ids, 'post_center', false );
+			}
 
 			restore_current_blog();
 
@@ -558,10 +636,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 		public static function filter_get_edit_post_link( $link, $post_id, $context ) {
 			if ( get_post_type( $post_id ) == 'client_story_s' ) {
-				$original_post_id = get_post_meta( $post_id, '_original_post_id', true );
-				switch_to_blog( get_post_meta( $post_id, '_original_site_id', true ) );
-				$link = get_permalink( $original_post_id );
-				restore_current_blog();
+				$link = get_permalink( $post_id );
 			}
 			return $link;
 		}
