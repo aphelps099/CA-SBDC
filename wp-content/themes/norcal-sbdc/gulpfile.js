@@ -45,6 +45,20 @@ gulp.task('css:editor-style', function() {
 		.pipe($.notify({ title: 'CSS Compiled Successfully', message: '<%= file.relative %>', onLast: true }))
 });
 
+gulp.task('css:login', function() {
+	return gulp.src(assetsPath + '/src/scss/login.scss')
+		.pipe($.sourcemaps.init())
+		.pipe($.sass({ includePaths: assetsSassIncludePaths })
+			.on('error', $.notify.onError({ title: 'SASS Compilation Error', message: '<%= error.message %>' })))
+		.pipe($.autoprefixer({ overrideBrowserslist: [ 'last 2 versions', 'ie >= 9' ] }))
+		.pipe(gulp.dest(assetsPath + '/css/'))
+		.pipe($.cssnano())
+		.pipe($.rename({ extname: '.min.css' }))
+		.pipe($.sourcemaps.write('./'))
+		.pipe(gulp.dest(assetsPath + '/css/'))
+		.pipe($.notify({ title: 'CSS Compiled Successfully', message: '<%= file.relative %>', onLast: true }))
+});
+
 gulp.task('js:main', function() {
 	return gulp.src([ assetsPath + '/src/js/main.js' ])
 		.pipe(gulp.dest(assetsPath + '/js/'))
@@ -72,6 +86,7 @@ gulp.task('watch', function() {
 	gulp.watch(assetsPath + '/src/scss/*/*.scss', gulp.series('css:style'));
 	gulp.watch(assetsPath + '/src/scss/style.scss', gulp.series('css:style'));
 	gulp.watch(assetsPath + '/src/scss/editor-style.scss', gulp.series('css:editor-style'));
+	gulp.watch(assetsPath + '/src/scss/login.scss', gulp.series('css:login'));
 	gulp.watch(assetsPath + '/src/js/main.js', gulp.series('js:main'));
 	gulp.watch(assetsPath + '/src/js/block-editor.js', gulp.series('js:block-editor'));
 });

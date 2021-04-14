@@ -20,6 +20,9 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 			add_filter( 'get_previous_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
 			add_filter( 'get_next_post_where', array( __CLASS__, 'filter_get_adjacent_post_where' ), 10, 5 );
 
+			add_filter( 'login_headerurl', array( __CLASS__, 'filter_login_headerurl' ) );
+			add_filter( 'login_headertext', array( __CLASS__, 'filter_login_headertext' ) );
+
 		}
 
 
@@ -110,6 +113,22 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 				$where .= " AND (pm_pf.meta_value IS NULL OR pm_pf.meta_value NOT IN ('tweet', 'facebook-update'))";
 			}
 			return $where;
+		}
+
+
+		public static function filter_login_headerurl( $url ) {
+			$url = get_site_url();
+			return $url;
+		}
+
+
+		public static function filter_login_headertext( $text ) {
+			$text = '<img src="' . Crown_Theme::get_uri() . '/assets/img/logos/americas-sbdc-norcal-180h.png" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '">';
+			$logo = get_option( 'theme_config_site_logo_color' );
+			if ( ! empty( $logo ) ) {
+				$text = wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'dark' ) );
+			}
+			return $text;
 		}
 
 

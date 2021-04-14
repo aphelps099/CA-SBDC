@@ -8,6 +8,9 @@ if ( ! class_exists( 'Crown_Theme_Styles' ) ) {
 
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_styles' ), 10 );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_styles' ), 12 );
+
+			add_action( 'login_enqueue_scripts', array( __CLASS__, 'register_login_styles' ), 10 );
+			add_action( 'login_enqueue_scripts', array( __CLASS__, 'enqueue_login_styles' ), 12 );
 			
 			add_action( 'wp_head', array( __CLASS__, 'output_head_styles' ) );
 			add_action( 'wp_body_open', array( __CLASS__, 'output_body_open_styles' ) );
@@ -83,6 +86,47 @@ if ( ! class_exists( 'Crown_Theme_Styles' ) ) {
 		public static function enqueue_styles() {
 
 			wp_enqueue_style( 'crown-theme-style' );
+
+		}
+
+
+		public static function register_login_styles() {
+
+			$styles = array(
+				array(
+					'handle' => 'crown-theme-login',
+					'local_path' => '/assets/css/login' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
+				)
+			);
+
+			$styles = apply_filters( 'crown_theme_login_styles', $styles );
+
+			foreach ( $styles as $style ) {
+
+				$style = array_merge( array(
+					'handle' => '',
+					'local_path' => '',
+					'src' => '',
+					'ver' => '',
+					'deps' => array(),
+					'media' => 'all'
+				), $style);
+
+				if ( ! empty( $style['local_path'] ) ) {
+					$style['src'] = empty( $style['src'] ) ? Crown_Theme::get_uri() . $style['local_path'] : $style['src'];
+					$style['ver'] = empty( $style['ver'] ) ? filemtime( Crown_Theme::get_dir() . $style['local_path'] ) : $style['ver'];
+				}
+
+				wp_register_style( $style['handle'], $style['src'], $style['deps'], $style['ver'], $style['media'] );
+
+			}
+
+		}
+
+
+		public static function enqueue_login_styles() {
+
+			wp_enqueue_style( 'crown-theme-login' );
 
 		}
 
