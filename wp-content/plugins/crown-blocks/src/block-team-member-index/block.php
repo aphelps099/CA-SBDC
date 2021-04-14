@@ -265,7 +265,36 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 												
 												<?php $output_team_member_ids = array(); ?>
 
-												<?php foreach ( get_terms( array( 'taxonomy' => 'post_center' ) ) as $center ) { ?>
+												<?php $centers = get_terms( array( 'taxonomy' => 'post_center' ) ); ?>
+												<?php
+													if ( ! is_main_site() ) {
+
+														$src_site = get_current_blog_id();
+														switch_to_blog( get_main_site_id() );
+														$center_terms = get_terms( array(
+															'taxonomy' => 'post_center',
+															'hide_empty' => false,
+															'meta_query' => array(
+																array( 'key' => 'center_site_id', 'value' => $src_site )
+															)
+														) );
+														restore_current_blog();
+
+														if ( ! empty( $center_terms ) ) {
+															$current_center_term = null;
+															foreach ( $centers as $i => $center ) {
+																if ( $center->name == $center_terms[0]->name ) {
+																	$current_center_term = $center;
+																	unset($centers[$i]);
+																	break;
+																}
+															}
+															if ( $current_center_term ) array_unshift( $centers, $current_center_term );
+														}
+
+													}
+												?>
+												<?php foreach ( $centers as $center ) { ?>
 
 													<?php
 														$sub_query_args = array(
