@@ -23,6 +23,7 @@ class JVM_Richtext_icons {
     private function __construct() {
         add_filter( 'block_editor_settings', array( $this, 'block_editor_settings' ), 10, 2 );
         add_action( 'init', array( $this, 'load_assets') );
+        add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets') );
     }
 
     /**
@@ -56,11 +57,10 @@ class JVM_Richtext_icons {
 
 
     /**
-     * Enqueue Gutenberg block assets for both frontend + backend.
+     * Enqueue Gutenberg block assets for both admin backend.
      */
-    public function load_assets() {
-
-        if (is_admin()) {
+    public function load_admin_assets($hook_suffix) {
+        if( 'post.php' == $hook_suffix || 'post-new.php' == $hook_suffix ) {
             // Register block editor script for backend.
             wp_enqueue_script(
                 'jvm-richhtext-icons-js', // Handle.
@@ -99,7 +99,12 @@ class JVM_Richtext_icons {
                 ]
             );
         }
+    }
 
+    /**
+     * Enqueue Gutenberg block assets for both frontend + backend.
+     */
+    public function load_assets() {
         // Icon set CSS (font awesome 4.7 is shipped by default).
         $fontCssFile = plugins_url( 'dist/fa-4.7/font-awesome.min.css', dirname( __FILE__ ) );
         $fontCssFile = apply_filters('jvm_richtext_icons_css_file', $fontCssFile);
@@ -107,7 +112,7 @@ class JVM_Richtext_icons {
         if (!empty($fontCssFile)) {
             wp_enqueue_style(
                 'jvm-richhtext-icons-icon-font-css', // Handle.
-                $fontCssFile, 
+                $fontCssFile
             );
         }
     }

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: gutenberg, editor, icons, icon set, font awesome
 Requires at least: 5.4
 Tested up to: 5.7
-Stable tag: 1.0
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,12 @@ add_filter( 'jvm_richtext_icons_base_class', 'my_icon_class');
 `
 
 == Changelog ==
+
+= 1.0.2 =
+Bugfix: Changed backend asset loading to load only on new posts and edit post pages. In version 1.0.1 scripts for this plugin loaded on all backend pages and kept breaking the widget text editor.
+
+= 1.0.1 =
+Php error fix for some php versions on plugin activation.
 
 = 1.0.0 =
 Initial release
