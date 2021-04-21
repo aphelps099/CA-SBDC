@@ -39,11 +39,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			self::$init = true;
 
 			add_action( 'gform_loaded', array( __CLASS__, 'register_add_ons' ), 5 );
-			add_filter( 'gform_export_menu', array( __CLASS__, 'add_export_menu_items' ) );
-			add_action( 'gform_export_page_neoserra_export', array( __CLASS__, 'neoserra_export_page' ) );
+			// add_filter( 'gform_export_menu', array( __CLASS__, 'add_export_menu_items' ) );
+			// add_action( 'gform_export_page_neoserra_export', array( __CLASS__, 'neoserra_export_page' ) );
 
-			add_action( 'wp_ajax_gf_process_export_neoserra', array( __CLASS__, 'ajax_process_export' ) );
-			add_action( 'wp_ajax_gf_download_export_neoserra', array( __CLASS__, 'ajax_download_export' ) );
+			// add_action( 'wp_ajax_gf_process_export_neoserra', array( __CLASS__, 'ajax_process_export' ) );
+			// add_action( 'wp_ajax_gf_download_export_neoserra', array( __CLASS__, 'ajax_download_export' ) );
 
 		}
 
@@ -54,8 +54,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			define( 'GRAVITY_FORMS_NEOSERRA_ADD_ON_VERSION', self::get_version() );
 			define( 'GRAVITY_FORMS_NEOSERRA_ADD_ON_PATH_DIR', preg_replace( '/^' . preg_quote( WP_PLUGIN_DIR, '/' ) . '\/?/', '', dirname( __FILE__ ) ) );
 
-			include_once( 'class-gravity-forms-neoserra-add-on.php' );
-			GFAddOn::register( 'Gravity_Forms_Neoserra_Add_On' );
+			// include_once( 'class-gravity-forms-neoserra-add-on.php' );
+			include_once( 'class-gravity-forms-neoserra-feed-add-on.php' );
+
+			// GFAddOn::register( 'Gravity_Forms_Neoserra_Add_On' );
+			GFAddOn::register( 'Gravity_Forms_Neoserra_Feed_Add_On' );
 
 		}
 
@@ -65,6 +68,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra' ) ) {
 			$data = get_plugin_data( $plugin_file );
 			return isset( $data['Version'] ) ? $data['Version'] : '';
 		}
+
+
+
+
+
 
 
 		public static function add_export_menu_items( $menu_items ) {
