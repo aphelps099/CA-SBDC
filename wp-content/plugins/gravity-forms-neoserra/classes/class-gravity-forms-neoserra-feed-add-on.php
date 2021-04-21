@@ -43,6 +43,17 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 
 	
 		private static $_instance = null;
+
+
+		public function init() {
+			parent::init();
+	
+			add_filter( 'gform_notification_events', array( &$this, 'add_neoserra_api_error_event' ) );
+
+			add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
+			add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
+
+		}
 	
 
 		public static function get_instance() {
@@ -316,19 +327,27 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			$statuses = $this->export_to_neoserra( $file );
 
 			// handle errors
+			$error_messages = array();
 			if ( empty( $statuses ) ) {
 				$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
 				$message = 'Unable to add contact: ' . $name;
 				$message .= ' (API: No response.)';
-				$this->add_feed_error( $message, $feed, $entry, $form );
+				$error_messages[] = $message;
 			}
 			foreach ( $statuses as $status ) {
 				if ( ! isset( $status['Status'] ) || $status['Status'] != 'P' ) {
 					$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
 					$message = 'Unable to add contact: ' . $name;
 					if ( isset( $status['Message'] ) ) $message .= ' (' . $status['Message'] . ')';
-					$this->add_feed_error( $message, $feed, $entry, $form );
+					$error_messages[] = $message;
 				}
+			}
+			foreach ( $error_messages as $error_message ) {
+				$this->add_feed_error( $error_message, $feed, $entry, $form );
+			}
+			if ( ! empty( $error_messages ) ) {
+				gform_update_meta( $entry['id'], 'neoserra_api_errors', $error_messages );
+				GFAPI::send_notifications( $form, $entry, 'neoserra_api_error' );
 			}
 
 			unlink( $file );
@@ -393,6 +412,32 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			}
 			return $statuses;
 
+		}
+
+
+		public function add_neoserra_api_error_event( $notification_events ) {
+			$notification_events['neoserra_api_error'] = __( 'Neoserra API Error', 'gfneoserra' );
+			return $notification_events;
+		}
+
+		
+		public function add_custom_merge_tags( $merge_tags, $form_id, $fields, $element_id ) {
+			$merge_tags[] = array( 'label' => 'Neoserra API Errors', 'tag' => '{neoserra_api_errors}' );
+			return $merge_tags;
+		}
+
+
+		public function replace_custom_merge_tags( $text, $form, $entry, $url_encode, $esc_html, $nl2br, $format ) {
+			$merge_tag = '{neoserra_api_errors}';
+			if ( strpos( $text, $merge_tag ) === false ) {
+				return $text;
+			} else {
+				$errors = gform_get_meta( $entry['id'], 'neoserra_api_errors' );
+				if ( ! empty( $errors ) ) {
+					$text = str_replace( $merge_tag, implode( "\n", $errors ), $text );
+				}
+			}
+			return $text;
 		}
 
 
