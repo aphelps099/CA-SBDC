@@ -211,11 +211,11 @@ registerBlockType('crown-blocks/multi-column', {
 							showTooltip={ true }
 							withInputField={ false }
 							marks={ [
-								{ value: 2, label: '1:3' },
-								{ value: 3, label: '1:2' },
-								{ value: 5, label: '1:1' },
-								{ value: 7, label: '2:1' },
-								{ value: 8, label: '3:1' }
+								{ value: 3, label: '1:3' },
+								{ value: 4, label: '1:2' },
+								{ value: 6, label: '1:1' },
+								{ value: 8, label: '2:1' },
+								{ value: 9, label: '3:1' }
 							] }
 							renderTooltipContent={ (value) => {
 								let fraction = CrownBlocks.reduce(parseInt(value), 12)
@@ -250,6 +250,19 @@ registerBlockType('crown-blocks/multi-column', {
 							onChange={ (value) => setAttributes({ columnLayoutLg: value }) }
 							min={ 1 }
 							max={ 11 }
+							showTooltip={ true }
+							withInputField={ false }
+							marks={ [
+								{ value: 3, label: '1:3' },
+								{ value: 4, label: '1:2' },
+								{ value: 6, label: '1:1' },
+								{ value: 8, label: '2:1' },
+								{ value: 9, label: '3:1' }
+							] }
+							renderTooltipContent={ (value) => {
+								let fraction = CrownBlocks.reduce(parseInt(value), 12)
+								return fraction[0] + ':' + (fraction[1] - fraction[0]);
+							} }
 						/> }
 
 						{ !! overrideColumnLayoutLg && <RangeControl
@@ -259,6 +272,8 @@ registerBlockType('crown-blocks/multi-column', {
 							min={ 0 }
 							max={ 16 }
 							step={ 1 }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '0' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }, { value: 8, label: '8' }, { value: 10, label: '10' }, { value: 12, label: '12' }, { value: 14, label: '14' }, { value: 16, label: '16' }] }
 						/> }
 						
 					</div> }
@@ -277,6 +292,19 @@ registerBlockType('crown-blocks/multi-column', {
 							onChange={ (value) => setAttributes({ columnLayoutMd: value }) }
 							min={ 1 }
 							max={ 11 }
+							showTooltip={ true }
+							withInputField={ false }
+							marks={ [
+								{ value: 3, label: '1:3' },
+								{ value: 4, label: '1:2' },
+								{ value: 6, label: '1:1' },
+								{ value: 8, label: '2:1' },
+								{ value: 9, label: '3:1' }
+							] }
+							renderTooltipContent={ (value) => {
+								let fraction = CrownBlocks.reduce(parseInt(value), 12)
+								return fraction[0] + ':' + (fraction[1] - fraction[0]);
+							} }
 						/> }
 
 						{ !! overrideColumnLayoutMd && <RangeControl
@@ -286,6 +314,8 @@ registerBlockType('crown-blocks/multi-column', {
 							min={ 0 }
 							max={ 16 }
 							step={ 1 }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '0' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }, { value: 8, label: '8' }, { value: 10, label: '10' }, { value: 12, label: '12' }, { value: 14, label: '14' }, { value: 16, label: '16' }] }
 						/> }
 						
 					</div> }
@@ -304,6 +334,19 @@ registerBlockType('crown-blocks/multi-column', {
 							onChange={ (value) => setAttributes({ columnLayoutSm: value }) }
 							min={ 1 }
 							max={ 11 }
+							showTooltip={ true }
+							withInputField={ false }
+							marks={ [
+								{ value: 3, label: '1:3' },
+								{ value: 4, label: '1:2' },
+								{ value: 6, label: '1:1' },
+								{ value: 8, label: '2:1' },
+								{ value: 9, label: '3:1' }
+							] }
+							renderTooltipContent={ (value) => {
+								let fraction = CrownBlocks.reduce(parseInt(value), 12)
+								return fraction[0] + ':' + (fraction[1] - fraction[0]);
+							} }
 						/> }
 
 						{ !! overrideColumnLayoutSm && <RangeControl
@@ -313,6 +356,8 @@ registerBlockType('crown-blocks/multi-column', {
 							min={ 0 }
 							max={ 16 }
 							step={ 1 }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '0' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }, { value: 8, label: '8' }, { value: 10, label: '10' }, { value: 12, label: '12' }, { value: 14, label: '14' }, { value: 16, label: '16' }] }
 						/> }
 						
 					</div> }
@@ -331,6 +376,19 @@ registerBlockType('crown-blocks/multi-column', {
 							onChange={ (value) => setAttributes({ columnLayoutXs: value }) }
 							min={ 1 }
 							max={ 11 }
+							showTooltip={ true }
+							withInputField={ false }
+							marks={ [
+								{ value: 3, label: '1:3' },
+								{ value: 4, label: '1:2' },
+								{ value: 6, label: '1:1' },
+								{ value: 8, label: '2:1' },
+								{ value: 9, label: '3:1' }
+							] }
+							renderTooltipContent={ (value) => {
+								let fraction = CrownBlocks.reduce(parseInt(value), 12)
+								return fraction[0] + ':' + (fraction[1] - fraction[0]);
+							} }
 						/> }
 
 						{ !! overrideColumnLayoutXs && <RangeControl
@@ -340,6 +398,8 @@ registerBlockType('crown-blocks/multi-column', {
 							min={ 0 }
 							max={ 16 }
 							step={ 1 }
+							withInputField={ false }
+							marks={ [{ value: 0, label: '0' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 6, label: '6' }, { value: 8, label: '8' }, { value: 10, label: '10' }, { value: 12, label: '12' }, { value: 14, label: '14' }, { value: 16, label: '16' }] }
 						/> }
 						
 					</div> }

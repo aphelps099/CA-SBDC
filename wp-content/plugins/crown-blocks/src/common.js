@@ -6,17 +6,22 @@ const CrownBlocks = {
 	getThemeColorPalette: () => {
 		return [
 			{ "name": "Dark Blue", "slug": "dark-blue", "color": "#032040" },
+			{ "name": "Dark Blue", "slug": "dark-blue", "color": "#1D2F3C" },
 			{ "name": "Dark Medium Blue", "slug": "dark-med-blue", "color": "#012D61" },
 			{ "name": "Blue", "slug": "blue", "color": "#0381C3" },
+			{ "name": "Blue", "slug": "blue", "color": "#0081B7" },
 			{ "name": "Light Medium Blue", "slug": "light-med-blue", "color": "#98DBF9" },
 			{ "name": "Light Blue", "slug": "light-blue", "color": "#D0E4F8" },
 			{ "name": "Extra Light Blue", "slug": "x-light-blue", "color": "#F4F8FD" },
 			{ "name": "Red", "slug": "red", "color": "#D11141" },
 			{ "name": "Green", "slug": "green", "color": "#84C318" },
+			{ "name": "Magenta", "slug": "magenta", "color": "#D50679" },
+			{ "name": "Yellow", "slug": "yellow", "color": "#FEC403" },
 			{ "name": "Light Gray", "slug": "light-gray", "color": "#CFD2D8" },
 			{ "name": "Gray", "slug": "gray", "color": "#696D7D" },
 			{ "name": "Rain", "slug": "rain", "color": "#6A8EAE" },
 			{ "name": "Dark Gray", "slug": "dark-gray", "color": "#343a40" },
+			{ "name": "Dark Gray", "slug": "dark-gray", "color": "#2C3E4B" },
 			{ "name": "Ghost", "slug": "ghost", "color": "#E0E0E0" },
 			{ "name": "White", "slug": "white", "color": "#FFFFFF" }
 		];
