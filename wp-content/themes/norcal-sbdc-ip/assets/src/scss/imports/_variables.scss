@@ -1,0 +1,24 @@
+
+
+$blue:           #0081B7 !default;
+$magenta:        #D50679 !default;
+$yellow:         #FEC403 !default;
+$dark-gray:      #2C3E4B !default;
+
+$colors: () !default;
+$colors: map-merge(
+	(
+		'magenta': $magenta,
+		'yellow': $yellow
+	),
+	$colors
+);
+
+$font-family-sans-serif: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-mono: 'Roboto Mono', monospace !default;
+$headings-font-weight: 700 !default;
+
+$btn-font-family: $font-family-mono !default;
+$btn-font-weight: 600 !default;
+$btn-letter-spacing: .2em !default;
+$btn-text-transform: uppercase !default;

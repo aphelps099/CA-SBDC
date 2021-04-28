@@ -165,7 +165,7 @@
 				var menuItem = $(this).closest('.menu-item');
 				var subMenu = $('> .sub-menu', menuItem);
 				$('#header-primary-navigation .menu-item.active').not($(this).parents('.menu-item.active')).removeClass('active');
-				if(subMenu.length && !menuItem.hasClass('active')) {
+				if(subMenu.length && !menuItem.hasClass('active') && $('#header-primary-navigation-menu').hasClass('mega-menu')) {
 					e.preventDefault();
 					menuItem.addClass('active');
 				}

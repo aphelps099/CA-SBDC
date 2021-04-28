@@ -1,0 +1,12 @@
+{
+
+	"color_palette": [
+		{ "name": "Blue", "slug": "blue", "color": "#0081B7" },
+		{ "name": "Magenta", "slug": "magenta", "color": "#D50679" },
+		{ "name": "Yellow", "slug": "yellow", "color": "#FEC403" },
+		{ "name": "Dark Gray", "slug": "dark-gray", "color": "#2C3E4B" },
+		{ "name": "Ghost", "slug": "ghost", "color": "#E0E0E0" },
+		{ "name": "White", "slug": "white", "color": "#FFFFFF" }
+	]
+
+}

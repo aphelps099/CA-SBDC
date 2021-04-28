@@ -54,6 +54,21 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 		}
 
 
+		public static function get_child_dir() {
+			return get_stylesheet_directory();
+		}
+
+
+		public static function get_child_uri() {
+			return get_stylesheet_directory_uri();
+		}
+
+
+		public static function is_child() {
+			return self::get_dir() != self::get_child_dir();
+		}
+
+
 	}
 }
 

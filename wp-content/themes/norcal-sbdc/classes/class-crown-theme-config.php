@@ -221,7 +221,12 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 		public static function get( $key = null ) {
 			if ( self::$config === null ) {
 				$path = Crown_Theme::get_dir() . '/config.json';
-				self::$config = file_exists( $path ) ? json_decode( file_get_contents( $path) )  : new stdClass();
+				self::$config = file_exists( $path ) ? json_decode( file_get_contents( $path ) ) : new stdClass();
+				if ( Crown_Theme::is_child() ) {
+					$path = Crown_Theme::get_child_dir() . '/config.json';
+					$child_config = file_exists( $path ) ? json_decode( file_get_contents( $path ) ) : new stdClass();
+					self::$config = (object) array_merge( (array) self::$config, (array) $child_config );
+				}
 			}
 			if ( ! empty( $key ) ) {
 				if ( property_exists( self::$config, $key ) ) {
