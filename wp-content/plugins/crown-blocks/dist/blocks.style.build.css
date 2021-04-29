@@ -6027,6 +6027,12 @@
     right: 0;
     bottom: 0;
     overflow: hidden; }
+    .wp-block-crown-blocks-container > .container-bg > .inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0; }
     .wp-block-crown-blocks-container > .container-bg .bg-image {
       position: absolute;
       left: 0;

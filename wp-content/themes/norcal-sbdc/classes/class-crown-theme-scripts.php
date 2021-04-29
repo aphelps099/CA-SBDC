@@ -53,9 +53,13 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'deps' => array( 'jquery' )
 				),
 				array(
+					'handle' => 'rellax',
+					'local_path' => '/lib/rellax/rellax.min.js'
+				),
+				array(
 					'handle' => 'crown-theme-main',
 					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
-					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed' )
+					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed', 'rellax' )
 				)
 			);
 			

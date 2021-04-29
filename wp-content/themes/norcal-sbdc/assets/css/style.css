@@ -20116,6 +20116,9 @@ nav.pagination {
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }
 
+.wp-block-crown-blocks-container > .container-bg .bg-image.rellax {
+  min-height: 100vh; }
+
 /*	Multi-Column
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-multi-column.relative-to-container-width > .inner > .multi-column-columns {

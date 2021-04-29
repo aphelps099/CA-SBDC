@@ -10,14 +10,10 @@ function ctc_filter_styles( $styles ) {
 		}
 	}
 	$styles[] = array(
-		'handle' => 'google-fonts-child',
-		'src' => 'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;600;700&display=swap'
-	);
-	$styles[] = array(
 		'handle' => 'crown-child-theme-style',
 		'src' => Crown_Theme::get_child_uri() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
 		'ver' => filemtime( Crown_Theme::get_child_dir() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css' ),
-		'deps' => array( 'crown-theme-typekit', 'google-fonts-child', 'slick', 'blueimp-gallery', 'odometer-theme-default', 'jquery-oembed' )
+		'deps' => array( 'crown-theme-typekit', 'slick', 'blueimp-gallery', 'odometer-theme-default', 'jquery-oembed' )
 	);
 	return $styles;
 }

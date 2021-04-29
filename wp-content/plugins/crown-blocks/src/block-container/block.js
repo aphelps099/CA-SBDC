@@ -141,6 +141,7 @@ registerBlockType('crown-blocks/container', {
 		backgroundImageOpacity: { type: 'number', default: 100 },
 		backgroundImageGrayscale: { type: 'number', default: 0 },
 		backgroundImageBlendMode: { type: 'string', default: 'normal' },
+		backgroundImageParallaxEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeAngle: { type: 'number', default: 180 },
 		backgroundImageContain: { type: 'boolean', default: false },
@@ -197,6 +198,7 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageOpacity,
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
+			backgroundImageParallaxEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
 			backgroundImageContain,
@@ -212,6 +214,9 @@ registerBlockType('crown-blocks/container', {
 		} else if(textColor != 'auto') {
 			blockClasses.push('text-color-' + textColor);
 		}
+
+		let bgMediaClasses = [];
+		let bgInnerStyles = {};
 
 		let bgStyle = {};
 		if(!backgroundGradientEnabled) {
@@ -275,6 +280,15 @@ registerBlockType('crown-blocks/container', {
 		if(backgroundImageId) {
 			backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 			blockClasses.push('has-bg-image');
+			bgMediaClasses.push('bg-image');
+			if(backgroundImageParallaxEnabled) {
+				bgMediaClasses.push('rellax');
+			}
+		}
+
+		if(backgroundImageGradientFadeEnabled) {
+			bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
 		}
 
 		let setSpacingProfile = (value) => {
@@ -692,9 +706,15 @@ registerBlockType('crown-blocks/container', {
 					/> }
 
 					{ !! backgroundImageId && backgroundImageGradientFadeEnabled && <AnglePickerControl
-						label={ 'Gradient Angle' }
+						label={ 'Fade Angle' }
 						value={ backgroundImageGradientFadeAngle }
 						onChange={ (value) => { setAttributes({ backgroundImageGradientFadeAngle: value }); } }
+					/> }
+
+					{ !! backgroundImageId && <ToggleControl
+						label={ 'Enable Parallax Scrolling Effect' }
+						checked={ backgroundImageParallaxEnabled }
+						onChange={ (value) => { setAttributes({ backgroundImageParallaxEnabled: value }); } }
 					/> }
 
 					{/* { !! backgroundImageId && <ToggleControl
@@ -730,16 +750,16 @@ registerBlockType('crown-blocks/container', {
 
 				<div className={ blockClasses.join(' ') } key="container">
 					<div className="container-bg" style={ bgStyle }>
-						{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
-							backgroundImage: 'url(' + backgroundImageUrl + ')',
-							opacity: (backgroundImageOpacity / 100),
-							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
-							filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
-							mixBlendMode: backgroundImageBlendMode,
-							backgroundSize: backgroundImageContain ? 'contain' : 'cover',
-							WebkitMaskImage: backgroundImageGradientFadeEnabled ? 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)' : 'none',
-							maskImage: backgroundImageGradientFadeEnabled ? 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)' : 'none'
-						} }></div> }
+						<div class="inner" style={ bgInnerStyles }>
+							{ backgroundImageUrl && <div className={ bgMediaClasses.join(' ') } style={ {
+								backgroundImage: 'url(' + backgroundImageUrl + ')',
+								opacity: (backgroundImageOpacity / 100),
+								backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+								filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+								mixBlendMode: backgroundImageBlendMode,
+								backgroundSize: backgroundImageContain ? 'contain' : 'cover'
+							} }></div> }
+						</div>
 					</div>
 					<div className="inner">
 						<div className="container-contents">
@@ -800,6 +820,7 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageOpacity,
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
+			backgroundImageParallaxEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
 			backgroundImageContain,
@@ -814,6 +835,9 @@ registerBlockType('crown-blocks/container', {
 		} else if(textColor != 'auto') {
 			blockClasses.push('text-color-' + textColor);
 		}
+
+		let bgMediaClasses = [];
+		let bgInnerStyles = {};
 
 		let bgStyle = {};
 		if(!backgroundGradientEnabled) {
@@ -877,22 +901,31 @@ registerBlockType('crown-blocks/container', {
 		if(backgroundImageId) {
 			backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 			blockClasses.push('has-bg-image');
+			bgMediaClasses.push('bg-image');
+			if(backgroundImageParallaxEnabled) {
+				bgMediaClasses.push('rellax');
+			}
+		}
+
+		if(backgroundImageGradientFadeEnabled) {
+			bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
 		}
 
 		return (
 
 			<div className={ blockClasses.join(' ') } key="container">
 				<div className="container-bg" style={ bgStyle }>
-					{ backgroundImageUrl && <div className={ 'bg-image' } style={ {
-						backgroundImage: 'url(' + backgroundImageUrl + ')',
-						opacity: (backgroundImageOpacity / 100),
-						backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
-						filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
-						mixBlendMode: backgroundImageBlendMode,
-						backgroundSize: backgroundImageContain ? 'contain' : 'cover',
-						WebkitMaskImage: backgroundImageGradientFadeEnabled ? 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)' : 'none',
-						maskImage: backgroundImageGradientFadeEnabled ? 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)' : 'none'
-					} }></div> }
+					<div class="inner" style={ bgInnerStyles }>
+						{ backgroundImageUrl && <div className={ bgMediaClasses.join(' ') } style={ {
+							backgroundImage: 'url(' + backgroundImageUrl + ')',
+							opacity: (backgroundImageOpacity / 100),
+							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+							filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+							mixBlendMode: backgroundImageBlendMode,
+							backgroundSize: backgroundImageContain ? 'contain' : 'cover'
+						} }></div> }
+					</div>
 				</div>
 				<div className="inner">
 					<div className="container-contents">

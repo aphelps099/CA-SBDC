@@ -23,7 +23,7 @@
 							</div>
 
 							<div class="logo sbdc-accredited-member">
-								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member.png" alt="America's SBDC Accredited Member">
+								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-light.png" alt="America's SBDC Accredited Member">
 							</div>
 
 						</div>
@@ -37,7 +37,7 @@
 				</div>
 
 				<div class="logo powered-by-sba">
-					<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
+					<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba-light.png" alt="Powered by U.S. Small Business Association"></a>
 				</div>
 
 			</div>

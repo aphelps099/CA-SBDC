@@ -1,5 +1,12 @@
 
 
+h1, .h1 {
+	font-family: $font-family-sans-serif-ext;
+	font-weight: 700;
+}
+
+
+
 .wp-block-crown-blocks-header {
 	padding-bottom: 1.25rem;
 	> .hr-container {

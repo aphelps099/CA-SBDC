@@ -22,9 +22,9 @@
 }
 #header-primary-navigation-menu {
 	font-family: $font-family-mono;
-	letter-spacing: .2em;
+	letter-spacing: .1em;
 	text-transform: uppercase;
-	font-weight: 600;
+	font-weight: 500;
 	> .menu-item {
 		&:hover,
 		&.active {
@@ -51,6 +51,15 @@
 			color: rgba(#fff, .8);
 		}
 	}
+}
+#header-search {
+	button.toggle:after {
+		margin-top: 0.2rem;
+		font-family: $font-family-sans-serif;
+	}
+}
+#mobile-menu-toggle .label {
+	font-family: $font-family-sans-serif-alt;
 }
 
 
@@ -180,8 +189,11 @@
 
 #site-copyright {
 	font-size: 1.5rem;
-	font-weight: 900;
+	font-weight: 700;
+	font-family: $font-family-sans-serif-ext;
 	margin-bottom: 2rem;
+	text-transform: none;
+	letter-spacing: 0;
 	@include media-breakpoint-up(md) {
 		flex: 1 1 auto;
 		margin-bottom: 1rem;
@@ -191,8 +203,10 @@
 }
 
 #footer-legal-links {
-	font-size: 1.25rem;
-	font-weight: 900;
+	font-size: 1rem;
+	font-weight: 700;
+	font-family: $font-family-sans-serif-ext;
+	letter-spacing: 0;
 	@include media-breakpoint-up(md) {
 		padding: 0;
 	}
@@ -226,6 +240,17 @@
 	background-color: $dark-blue;
 }
 
+#mobile-menu-close {
+	.icon {
+		overflow: hidden;
+		&:before {
+			position: relative;
+			top: .25rem;
+			font-family: $font-family-sans-serif;
+		}
+	}
+}
+
 #mobile-menu-primary-cta-links {
 	a {
 		@extend .btn;
@@ -242,9 +267,16 @@
 		}
 		> a {
 			padding: .75rem 1rem;
+			font-family: $font-family-sans-serif-ext;
+			font-weight: 700;
+			text-transform: uppercase;
 		}
 		> .toggle {
 			height: 45px;
+			&:before {
+				padding-top: 0.5rem;
+				font-family: $font-family-sans-serif;
+			}
 		}
 	}
 	.sub-menu {

@@ -5,6 +5,7 @@
 	var stickyHeaderScrollTracker = 0;
 	var keepStickyHeaderHidden = false;
 	var mapSettings = null;
+	var rellax = {};
 
 
 	$(document).ready(function() {
@@ -18,6 +19,7 @@
 		$.wptheme.initModals();
 		$.wptheme.initSocialSharingLinks();
 		$.wptheme.initPostFeeds();
+		$.wptheme.initParallax();
 		
 		$.wptheme.initContainerBlocks();
 		// $.wptheme.initExpandableContentBlocks();
@@ -392,7 +394,7 @@
 			});
 
 			var adjustStickyShareLinks = function() {
-				var footerTop = $('#pre-footer').offset().top;
+				var footerTop = $('#pre-footer').length ? $('#pre-footer').offset().top : $('#footer').offset().top;
 				$('.wp-block-crown-blocks-post-header .sticky-share-links').each(function(i, el) { $(el).height(footerTop - $(el).offset().top - 200); });
 				$('.wp-block-crown-blocks-resource-header .sticky-share-links').each(function(i, el) { $(el).height(footerTop - $(el).offset().top - 200); });
 			}
@@ -644,6 +646,17 @@
 					$('.ajax-loader', block).removeClass('loading loading-page');
 				}
 			}, 'json');
+		};
+
+
+		wptheme.initParallax = function() {
+
+			$('.bg-image.rellax').attr('data-rellax-speed', -10);
+
+			rellax.bgImages = new Rellax('.bg-image.rellax', {
+				center: true
+			});
+
 		};
 
 
