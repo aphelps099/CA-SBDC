@@ -16123,8 +16123,8 @@ readers do not read off random characters that represent icons */
 
 @font-face {
   font-family: 'icomoon';
-  src: url("../fonts/icomoon/icomoon.eot?y3hcw8");
-  src: url("../fonts/icomoon/icomoon.eot?y3hcw8#iefix") format("embedded-opentype"), url("../fonts/icomoon/icomoon.ttf?y3hcw8") format("truetype"), url("../fonts/icomoon/icomoon.woff?y3hcw8") format("woff"), url("../fonts/icomoon/icomoon.svg?y3hcw8#icomoon") format("svg");
+  src: url("../../../norcal-sbdc/assets/fonts/icomoon/icomoon.eot?y3hcw8");
+  src: url("../../../norcal-sbdc/assets/fonts/icomoon/icomoon.eot?y3hcw8#iefix") format("embedded-opentype"), url("../../../norcal-sbdc/assets/fonts/icomoon/icomoon.ttf?y3hcw8") format("truetype"), url("../../../norcal-sbdc/assets/fonts/icomoon/icomoon.woff?y3hcw8") format("woff"), url("../../../norcal-sbdc/assets/fonts/icomoon/icomoon.svg?y3hcw8#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block; }

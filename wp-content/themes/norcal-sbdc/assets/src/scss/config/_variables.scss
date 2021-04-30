@@ -125,6 +125,8 @@ $font-family-sans-serif:      "proxima-nova", "Helvetica Neue", Arial, "Noto San
 $font-family-sans-serif-alt:  "semplicitapro", #{$font-family-sans-serif} !default;
 $font-family-serif:           "utopia-std", serif;
 
+$icomoon-font-folder-path:    "../fonts/icomoon" !default;
+
 $font-size-base:              1.25rem !default; // Assumes the browser default, typically `16px`
 $font-size-lg:                1.875rem !default;
 $font-size-sm:                1rem !default;

@@ -16516,7 +16516,8 @@ form.feed-filters {
 .btn, nav.pagination .nav-links .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .gform_footer button[type=submit], .gform_page_footer .gform_next_button,
 .gform_page_footer .gform_previous_button,
 .gform_page_footer button[type=submit] {
-  letter-spacing: 0.05em; }
+  letter-spacing: 0.05em;
+  text-transform: none; }
 
 .btn-md {
   padding: 0.8rem 1.3rem;
@@ -19279,6 +19280,9 @@ nav.pagination {
   border-radius: 3px;
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }
+
+.wp-block-crown-blocks-container > .container-bg .bg-image.rellax {
+  min-height: 100vh; }
 
 /*	Multi-Column
 ---------------------------------------------------------*/
@@ -22397,8 +22401,14 @@ nav.pagination {
       background-color: rgba(3, 32, 64, 0.2); }
   .wp-block-crown-blocks-post-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-post-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a {
+      border-color: #0381C3; }
+      .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+        background-color: #cde6f3; }
+    .wp-block-crown-blocks-post-header .sticky-share-links .social-sharing-links .menu-item .icon svg {
+      fill: #032040; }
 
 /*	Resource Header
 ---------------------------------------------------------*/
@@ -22513,8 +22523,10 @@ nav.pagination {
       background-color: rgba(3, 129, 195, 0.2); }
   .wp-block-crown-blocks-resource-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-resource-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-resource-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-resource-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+      background-color: #cde6f3; }
 
 /*	Resource Index
 ---------------------------------------------------------*/
@@ -23436,8 +23448,10 @@ nav.pagination {
       background-color: rgba(3, 129, 195, 0.2); }
   .wp-block-crown-blocks-webinar-header .social-sharing-links .menu-item .icon svg {
     fill: #032040; }
-  .wp-block-crown-blocks-webinar-header .sticky-share-links .social-sharing-links .menu-item a:hover {
-    background-color: #cde6f3; }
+  .wp-block-crown-blocks-webinar-header .sticky-share-links {
+    color: #032040; }
+    .wp-block-crown-blocks-webinar-header .sticky-share-links .social-sharing-links .menu-item a:hover {
+      background-color: #cde6f3; }
 
 /*	Webinar Index
 ---------------------------------------------------------*/
