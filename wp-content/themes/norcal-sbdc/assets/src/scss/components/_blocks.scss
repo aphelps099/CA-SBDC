@@ -96,7 +96,8 @@
 	}
 	> .container-bg {
 		.bg-image.rellax {
-			min-height: 100vh;
+			min-height: calc(100% + 8vh);
+			top: -4vh;
 		}
 	}
 }

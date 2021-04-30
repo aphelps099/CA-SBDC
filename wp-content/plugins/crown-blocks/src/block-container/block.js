@@ -144,7 +144,12 @@ registerBlockType('crown-blocks/container', {
 		backgroundImageParallaxEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeAngle: { type: 'number', default: 180 },
+		backgroundImageGradientFadeStart: { type: 'number', default: 0 },
 		backgroundImageContain: { type: 'boolean', default: false },
+
+		backgroundVideoEnabled: { type: 'boolean', default: false },
+		backgroundVideoUrl: { type: 'string', default: '' },
+
 		textColor: { type: 'string', default: 'auto' },
 
 		linkUrl: { type: 'string', default: '' }
@@ -201,7 +206,12 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageParallaxEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
+			backgroundImageGradientFadeStart,
 			backgroundImageContain,
+
+			backgroundVideoEnabled,
+			backgroundVideoUrl,
+
 			textColor,
 
 			linkUrl
@@ -287,8 +297,13 @@ registerBlockType('crown-blocks/container', {
 		}
 
 		if(backgroundImageGradientFadeEnabled) {
-			bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
-			bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			if(backgroundImageGradientFadeStart > 0) {
+				bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black ' + backgroundImageGradientFadeStart + '%, transparent)';
+				bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black ' + backgroundImageGradientFadeStart + '%, transparent)';
+			} else {
+				bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+				bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			}
 		}
 
 		let setSpacingProfile = (value) => {
@@ -646,6 +661,19 @@ registerBlockType('crown-blocks/container', {
 
 				{ responsiveDeviceMode == 'xl' && <PanelBody title={ 'Background Image' } className={ 'crown-blocks-background-image' } initialOpen={ true }>
 
+					<ToggleControl
+						label={ 'Enable Video Background' }
+						checked={ backgroundVideoEnabled }
+						onChange={ (value) => { setAttributes({ backgroundVideoEnabled: value }); } }
+					/>
+
+					{ !! backgroundVideoEnabled && <TextControl
+						label="Video File URL"
+						help="Provide the URL to the video's MP4 file. The image below will be displayed until the video can be loaded."
+						value={ backgroundVideoUrl }
+						onChange={ (value) => setAttributes({ backgroundVideoUrl: value }) }
+					/> }
+
 					{ !! backgroundImageId && <FocalPointPicker 
 						label="Focal Point"
 						url={ backgroundImageData.sizes.medium ? backgroundImageData.sizes.medium.url : backgroundImageData.sizes.thumbnail.url }
@@ -709,6 +737,14 @@ registerBlockType('crown-blocks/container', {
 						label={ 'Fade Angle' }
 						value={ backgroundImageGradientFadeAngle }
 						onChange={ (value) => { setAttributes({ backgroundImageGradientFadeAngle: value }); } }
+					/> }
+
+					{ !! backgroundImageId && backgroundImageGradientFadeEnabled && <RangeControl
+						label="Fade Start"
+						value={ backgroundImageGradientFadeStart }
+						onChange={ (value) => setAttributes({ backgroundImageGradientFadeStart: value }) }
+						min={ 0 }
+						max={ 100 }
 					/> }
 
 					{ !! backgroundImageId && <ToggleControl
@@ -823,7 +859,12 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageParallaxEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
+			backgroundImageGradientFadeStart,
 			backgroundImageContain,
+
+			backgroundVideoEnabled,
+			backgroundVideoUrl,
+
 			textColor,
 			linkUrl
 		} = attributes;
@@ -908,8 +949,13 @@ registerBlockType('crown-blocks/container', {
 		}
 
 		if(backgroundImageGradientFadeEnabled) {
-			bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
-			bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			if(backgroundImageGradientFadeStart > 0) {
+				bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black ' + backgroundImageGradientFadeStart + '%, transparent)';
+				bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black ' + backgroundImageGradientFadeStart + '%, transparent)';
+			} else {
+				bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+				bgInnerStyles.maskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black, transparent)';
+			}
 		}
 
 		return (

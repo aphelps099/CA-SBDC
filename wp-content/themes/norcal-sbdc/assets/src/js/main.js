@@ -651,7 +651,7 @@
 
 		wptheme.initParallax = function() {
 
-			$('.bg-image.rellax').attr('data-rellax-speed', -10);
+			// $('.bg-image.rellax').attr('data-rellax-speed', -10);
 
 			rellax.bgImages = new Rellax('.bg-image.rellax', {
 				center: true
