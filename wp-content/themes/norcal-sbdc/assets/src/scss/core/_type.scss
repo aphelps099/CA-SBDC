@@ -138,6 +138,46 @@ blockquote,
 	}
 }
 
+mark,
+.mark {
+	color: inherit;
+	padding: 0;
+	background-color: transparent;
+	position: relative;
+	display: inline-block;
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		height: 1em;
+		bottom: 0;
+		left: -.2em;
+		width: calc(100% + .4em);
+		background-color: $primary;
+		opacity: .5;
+	}
+	> .inner {
+		position: relative;
+	}
+	@each $color, $value in map-merge($colors, $theme-colors) {
+		&.#{$color}:before {
+			background-color: $value;
+		}
+	}
+	&.reveal-right {
+		&:before {
+			width: 0;
+			opacity: 1;
+		}
+		&.animated {
+			&:before {
+				transition: width .5s ease-out;
+				width: calc(100% + .4em);
+			}
+		}
+	}
+}
+
 
 
 ul.is-style-dashed {

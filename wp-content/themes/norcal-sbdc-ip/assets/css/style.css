@@ -16487,6 +16487,130 @@ blockquote,
     font-style: normal;
     text-transform: uppercase; }
 
+mark,
+.mark {
+  color: inherit;
+  padding: 0;
+  background-color: transparent;
+  position: relative;
+  display: inline-block; }
+  mark:before,
+  .mark:before {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 1em;
+    bottom: 0;
+    left: -.2em;
+    width: calc(100% + .4em);
+    background-color: #032040;
+    opacity: .5; }
+  mark > .inner,
+  .mark > .inner {
+    position: relative; }
+  mark.blue:before,
+  .mark.blue:before {
+    background-color: #0381C3; }
+  mark.indigo:before,
+  .mark.indigo:before {
+    background-color: #6610f2; }
+  mark.purple:before,
+  .mark.purple:before {
+    background-color: #6f42c1; }
+  mark.pink:before,
+  .mark.pink:before {
+    background-color: #e83e8c; }
+  mark.red:before,
+  .mark.red:before {
+    background-color: #D11141; }
+  mark.orange:before,
+  .mark.orange:before {
+    background-color: #fd7e14; }
+  mark.yellow:before,
+  .mark.yellow:before {
+    background-color: #FEC403; }
+  mark.green:before,
+  .mark.green:before {
+    background-color: #84C318; }
+  mark.teal:before,
+  .mark.teal:before {
+    background-color: #20c997; }
+  mark.cyan:before,
+  .mark.cyan:before {
+    background-color: #17a2b8; }
+  mark.white:before,
+  .mark.white:before {
+    background-color: #FFFFFF; }
+  mark.gray:before,
+  .mark.gray:before {
+    background-color: #696D7D; }
+  mark.gray-dark:before,
+  .mark.gray-dark:before {
+    background-color: #343a40; }
+  mark.dark-blue:before,
+  .mark.dark-blue:before {
+    background-color: #032040; }
+  mark.dark-med-blue:before,
+  .mark.dark-med-blue:before {
+    background-color: #012D61; }
+  mark.light-med-blue:before,
+  .mark.light-med-blue:before {
+    background-color: #98DBF9; }
+  mark.light-blue:before,
+  .mark.light-blue:before {
+    background-color: #D0E4F8; }
+  mark.x-light-blue:before,
+  .mark.x-light-blue:before {
+    background-color: #F4F8FD; }
+  mark.rain:before,
+  .mark.rain:before {
+    background-color: #6A8EAE; }
+  mark.dark-gray:before,
+  .mark.dark-gray:before {
+    background-color: #343a40; }
+  mark.light-gray:before,
+  .mark.light-gray:before {
+    background-color: #CFD2D8; }
+  mark.ghost:before,
+  .mark.ghost:before {
+    background-color: #E0E0E0; }
+  mark.magenta:before,
+  .mark.magenta:before {
+    background-color: #D50679; }
+  mark.primary:before,
+  .mark.primary:before {
+    background-color: #032040; }
+  mark.secondary:before,
+  .mark.secondary:before {
+    background-color: #0381C3; }
+  mark.success:before,
+  .mark.success:before {
+    background-color: #84C318; }
+  mark.info:before,
+  .mark.info:before {
+    background-color: #17a2b8; }
+  mark.warning:before,
+  .mark.warning:before {
+    background-color: #FEC403; }
+  mark.danger:before,
+  .mark.danger:before {
+    background-color: #D11141; }
+  mark.light:before,
+  .mark.light:before {
+    background-color: #FFFFFF; }
+  mark.dark:before,
+  .mark.dark:before {
+    background-color: #343a40; }
+  mark.reveal-right:before,
+  .mark.reveal-right:before {
+    width: 0;
+    opacity: 1; }
+  mark.reveal-right.animated:before,
+  .mark.reveal-right.animated:before {
+    -webkit-transition: width .5s ease-out;
+    transition: width .5s ease-out;
+    width: calc(100% + .4em); }
+
 ul.is-style-dashed {
   list-style: none;
   padding-left: 30px; }

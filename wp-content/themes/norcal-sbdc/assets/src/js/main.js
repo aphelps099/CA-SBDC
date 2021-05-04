@@ -11,6 +11,8 @@
 
 	$(document).ready(function() {
 
+		$.wptheme.initType();
+
 		$.wptheme.initSiteAnnouncement();
 		$.wptheme.initHeader();
 		$.wptheme.initMobileMenu();
@@ -80,6 +82,29 @@
 			mapSettings.markerImages.red = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-red.png' });
 			mapSettings.markerImages.gray = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-gray.png' });
 			mapSettings.markerImages.white = $.extend(true, {}, mapSettings.markerImages.darkBlue, { url: crownThemeData.themeUrl + '/assets/img/icons/map-marker-white.png' });
+		};
+
+
+		wptheme.initType = function() {
+
+			$('mark, .mark').each(function(i, el) {
+				$(el).addClass('reveal-right');
+				$(el).html('<span class="inner">' + $(el).html() + '</span>');
+			});
+
+			var animateMarks = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('mark:not(.animated), .mark:not(.animated)').each(function(i, el) {
+					if($(el).offset().top <= scrollTop + (windowHeight * .9)) {
+						var mark = $(el);
+						mark.addClass('animated');
+					}
+				});
+			};
+			animateMarks();
+			$(window).on('load scroll', animateMarks);
+
 		};
 
 
