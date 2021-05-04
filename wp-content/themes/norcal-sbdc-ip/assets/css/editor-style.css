@@ -15875,8 +15875,8 @@ mark,
     content: '';
     display: block;
     position: absolute;
-    height: 1em;
-    bottom: 0;
+    height: .6em;
+    bottom: .2em;
     left: -.2em;
     width: calc(100% + .4em);
     background-color: #032040;
