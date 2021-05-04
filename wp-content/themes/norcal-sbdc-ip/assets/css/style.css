@@ -28293,6 +28293,26 @@ h1, .h1 {
   font-family: "Helvetica Neue Extended", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700; }
 
+.btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link a {
+  font-family: "Helvetica Neue Extended", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0; }
+  .btn-link, .wp-block-crown-blocks-featured-post-slider article .entry-link a, .btn-link:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link a:hover {
+    color: #032040; }
+  .text-color-light .btn-link, .text-color-light .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link .text-color-light a, .text-color-light .btn-link:hover, .text-color-light .wp-block-crown-blocks-featured-post-slider article .entry-link a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link .text-color-light a:hover {
+    color: #fff; }
+  .text-color-dark .btn-link, .text-color-dark .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link .text-color-dark a, .text-color-dark .btn-link:hover, .text-color-dark .wp-block-crown-blocks-featured-post-slider article .entry-link a:hover, .wp-block-crown-blocks-featured-post-slider article .entry-link .text-color-dark a:hover {
+    color: #032040; }
+  .btn-link.btn-has-arrow-icon, .wp-block-crown-blocks-featured-post-slider article .entry-link a, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a {
+    margin-right: 2em; }
+    .btn-link.btn-has-arrow-icon:after, .wp-block-crown-blocks-featured-post-slider article .entry-link a:after, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link:after, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a:after, .wp-block-crown-blocks-featured-post-slider article .entry-link #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a:after, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link:after, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a:after, .wp-block-crown-blocks-featured-post-slider article .entry-link #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a:after {
+      margin-right: -1.55em;
+      content: '>>>';
+      font-family: "Helvetica Neue Extended", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-weight: 700;
+      top: -.1em; }
+
 .wp-block-crown-blocks-header {
   padding-bottom: 1.25rem; }
   .wp-block-crown-blocks-header > .hr-container {

@@ -7,6 +7,38 @@ h1, .h1 {
 
 
 
+.btn-link {
+	font-family: $font-family-sans-serif-ext;
+	font-weight: 700;
+	text-transform: none;
+	letter-spacing: 0;
+	&, &:hover {
+		color: $body-color;
+	}
+	.text-color-light & {
+		&, &:hover {
+			color: #fff;
+		}
+	}
+	.text-color-dark & {
+		&, &:hover {
+			color: $body-color;
+		}
+	}
+	&.btn-has-arrow-icon {
+		margin-right: 2em;
+		&:after {
+			margin-right: -1.55em;
+			content: '>>>';
+			font-family: $font-family-sans-serif-ext;
+			font-weight: 700;
+			top: -.1em;
+		}
+	}
+}
+
+
+
 .wp-block-crown-blocks-header {
 	padding-bottom: 1.25rem;
 	> .hr-container {
