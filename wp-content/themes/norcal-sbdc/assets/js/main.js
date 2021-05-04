@@ -4,6 +4,7 @@
 
 	var stickyHeaderScrollTracker = 0;
 	var keepStickyHeaderHidden = false;
+	var stickyScrollTracker = 0;
 	var mapSettings = null;
 	var rellax = {};
 
@@ -22,6 +23,7 @@
 		$.wptheme.initParallax();
 		
 		$.wptheme.initContainerBlocks();
+		$.wptheme.initMultiColumnBlocks();
 		// $.wptheme.initExpandableContentBlocks();
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
@@ -675,6 +677,89 @@
 			};
 			adjustContainerBGs();
 			$(window).on('load resize', adjustContainerBGs);
+
+		};
+
+
+		wptheme.initMultiColumnBlocks = function() {
+
+			var initStickyScrollColumns = function() {
+				$('.wp-block-crown-blocks-multi-column.sticky-scroll:not(.sticky-scrolled)').each(function(i, el) {
+					var columns = $('> .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column', el);
+					columns.removeClass('sticky-column scroll-column').css({
+						maskImage: 'none',
+						maskSize: '100% 200%',
+						maskPositionY: 0
+					});
+					$('> .inner', columns).css({
+						alignSelf: 'flex-start',
+						position: 'static',
+						top: 0,
+						height: 'auto',
+						overflow: 'visible',
+						marginBottom: 0
+					});
+					var stickyColumn = null;
+					var scrollColumn = null;
+					if(columns.first().find('> .inner').height() < columns.last().find('> .inner').height()) {
+						stickyColumn = columns.first();
+						scrollColumn = columns.last();
+					} else {
+						scrollColumn = columns.first();
+						stickyColumn = columns.last();
+					}
+					stickyColumn.addClass('sticky-column');
+					scrollColumn.addClass('scroll-column');
+					$('> .inner', stickyColumn).css({
+						position: 'sticky',
+						top: Math.max(0, ($(window).height() - $('> .inner', stickyColumn).height()) / 2)
+					});
+					scrollColumn.data('sticky-scroll-max-height', $('> .inner', scrollColumn).height());
+					$('> .inner', scrollColumn).css({
+						height: $('> .inner', stickyColumn).height(),
+						overflow: 'hidden',
+						marginBottom: 1
+					});
+					scrollColumn.css({
+						maskImage: 'linear-gradient(#000 75%, transparent)',
+						maskSize: '100% 200%',
+						maskPositionY: -$('> .inner', stickyColumn).height()
+					});
+				});
+			};
+			initStickyScrollColumns();
+			$(window).on('load resize', initStickyScrollColumns);
+
+			var updateStickyScrollColumns = function() {
+				var scrollTop = $(window).scrollTop();
+				if(stickyScrollTracker < scrollTop) {
+					var diff = scrollTop - stickyScrollTracker;
+					$('.wp-block-crown-blocks-multi-column.sticky-scroll:not(.sticky-scrolled)').each(function(i, el) {
+						var stickyColumn = $('> .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.sticky-column', el);
+						var scrollColumn = $('> .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.scroll-column', el);
+						if($('> .inner', stickyColumn).offset().top + $('> .inner', stickyColumn).height() == stickyColumn.offset().top + stickyColumn.height()) {
+							var maxHeight = scrollColumn.data('sticky-scroll-max-height');
+							var newHeight = Math.min(maxHeight, $('> .inner', scrollColumn).height() + diff)
+							$('> .inner', scrollColumn).height(newHeight);
+							scrollColumn.css({
+								maskImage: 'linear-gradient(#000 ' + ((1 - (($('> .inner', stickyColumn).height() / 4) / newHeight)) * 100) + '%, transparent)',
+								maskPositionY: -newHeight
+							});
+							if(maxHeight == newHeight) {
+								$(el).addClass('sticky-scrolled');
+								setTimeout(function() {
+									scrollColumn.css({
+										maskPositionY: -newHeight + ($('> .inner', stickyColumn).height() / 2)
+									});
+								}, 10);
+								
+							}
+						}
+					});
+				}
+				stickyScrollTracker = scrollTop;
+			};
+			$(window).on('scroll', updateStickyScrollColumns);
 
 		};
 
