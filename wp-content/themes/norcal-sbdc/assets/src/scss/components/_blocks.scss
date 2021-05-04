@@ -133,13 +133,6 @@
 			}
 		}
 	}
-	&.sticky-scroll.sticky-scrolled {
-		> .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column {
-			&.scroll-column {
-				transition: mask-position .5s;
-			}
-		}
-	}
 }
 
 

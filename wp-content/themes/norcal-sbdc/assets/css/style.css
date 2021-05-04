@@ -20258,12 +20258,6 @@ nav.pagination {
       .wp-block-crown-blocks-multi-column.relative-to-container-width > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column:nth-child(2) > .inner > .column-contents > .inner > .wp-block-crown-blocks-container > .inner > .container-contents {
         padding-right: 0 !important; } }
 
-.wp-block-crown-blocks-multi-column.sticky-scroll.sticky-scrolled > .inner > .multi-column-columns > .inner > .wp-block-crown-blocks-column.scroll-column {
-  -webkit-transition: -webkit-mask-position .5s;
-  transition: -webkit-mask-position .5s;
-  transition: mask-position .5s;
-  transition: mask-position .5s, -webkit-mask-position .5s; }
-
 /*	Grid
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-grid.is-style-dividers > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner {
