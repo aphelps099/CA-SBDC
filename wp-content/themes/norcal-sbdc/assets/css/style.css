@@ -20265,7 +20265,7 @@ nav.pagination {
   .wp-block-crown-blocks-grid.is-style-dividers > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
     content: '';
     position: absolute;
-    display: block;
+    display: none;
     left: 0;
     top: .4rem;
     bottom: .4rem;
@@ -20276,6 +20276,9 @@ nav.pagination {
       border-left-color: #fff; }
     .text-color-dark .wp-block-crown-blocks-grid.is-style-dividers > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
       border-left-color: #032040; }
+
+.wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+  display: block; }
 
 .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xs-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
   display: none; }
@@ -20347,6 +20350,8 @@ nav.pagination {
   left: -8rem; }
 
 @media (min-width: 576px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-sm-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-sm-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-sm-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-sm-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -20395,6 +20400,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 768px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -20443,6 +20450,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 992px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -20491,6 +20500,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 1200px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {

@@ -147,7 +147,7 @@
 			&:before {
 				content: '';
 				position: absolute;
-				display: block;
+				display: none;
 				left: 0;
 				top: .4rem;
 				bottom: .4rem;
@@ -163,6 +163,7 @@
 			}
 		}
 		&.column-breakpoint-xs {
+			#{$column-cell-selector} > .inner:before { display: block; }
 			@for $i from 1 through 6 {
 				&.column-count-xs-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
 			}
@@ -172,6 +173,7 @@
 		}
 		@media (min-width: 576px) {
 			&.column-breakpoint-xs, &.column-breakpoint-sm {
+				#{$column-cell-selector} > .inner:before { display: block; }
 				@for $i from 1 through 6 {
 					&.column-count-sm-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
 				}
@@ -182,6 +184,7 @@
 		}
 		@media (min-width: 768px) {
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md {
+				#{$column-cell-selector} > .inner:before { display: block; }
 				@for $i from 1 through 6 {
 					&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
 				}
@@ -192,6 +195,7 @@
 		}
 		@media (min-width: 992px) {
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg {
+				#{$column-cell-selector} > .inner:before { display: block; }
 				@for $i from 1 through 6 {
 					&.column-count-lg-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
 				}
@@ -202,6 +206,7 @@
 		}
 		@media (min-width: 1200px) {
 			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl {
+				#{$column-cell-selector} > .inner:before { display: block; }
 				@for $i from 1 through 6 {
 					&.column-count-xl-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
 				}
