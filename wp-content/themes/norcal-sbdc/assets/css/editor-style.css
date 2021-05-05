@@ -22292,7 +22292,8 @@ nav.pagination {
         display: none; }
   .wp-block-crown-blocks-post-index article.type-post .entry-teaser {
     width: 100%;
-    padding-bottom: 2.5rem;
+    padding: 1rem;
+    padding-bottom: 4rem;
     position: relative; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-index article.type-post .entry-teaser {
@@ -22311,8 +22312,8 @@ nav.pagination {
       font-family: icomoon;
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
+      left: 1rem;
+      bottom: 1rem;
       line-height: 1;
       font-size: 2rem; }
       @media (min-width: 768px) {
@@ -22729,13 +22730,6 @@ nav.pagination {
     margin-top: 1.5rem;
     -webkit-transition: opacity .15s;
     transition: opacity .15s; }
-    @media (min-width: 768px) {
-      .wp-block-crown-blocks-event-header .return-to-index {
-        margin-bottom: 0; } }
-    @media (min-width: 992px) {
-      .wp-block-crown-blocks-event-header .return-to-index {
-        margin-left: 2rem;
-        margin-bottom: .4rem; } }
     .wp-block-crown-blocks-event-header .return-to-index:hover {
       opacity: .75; }
     .wp-block-crown-blocks-event-header .return-to-index:before {
@@ -22750,7 +22744,7 @@ nav.pagination {
       background-position: center;
       background-size: contain;
       vertical-align: top;
-      margin-top: 0.075em; }
+      margin-top: 0.05em; }
   .wp-block-crown-blocks-event-header .article-header > .container-bg {
     background-color: #0381C3; }
   .wp-block-crown-blocks-event-header .entry-categories span {

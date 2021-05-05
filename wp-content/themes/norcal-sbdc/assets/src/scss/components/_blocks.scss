@@ -2616,7 +2616,8 @@
 		}
 		.entry-teaser {
 			width: 100%;
-			padding-bottom: 2.5rem;
+			padding: 1rem;
+			padding-bottom: 4rem;
 			position: relative;
 			@include media-breakpoint-up(md) {
 				padding: 2rem;
@@ -2627,8 +2628,8 @@
 			&:after {
 				@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
 				position: absolute;
-				left: 0;
-				bottom: 0;
+				left: 1rem;
+				bottom: 1rem;
 				line-height: 1;
 				font-size: 2rem;
 				@include media-breakpoint-up(md) {
