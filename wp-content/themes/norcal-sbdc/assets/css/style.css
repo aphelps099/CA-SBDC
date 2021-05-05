@@ -23607,6 +23607,12 @@ nav.pagination {
 
 /*	Event Index
 ---------------------------------------------------------*/
+@media (min-width: 992px) {
+  .wp-block-crown-blocks-event-index article.type-event {
+    margin-top: 2rem; }
+    .wp-block-crown-blocks-event-index article.type-event:first-child {
+      margin-top: 0; } }
+
 .wp-block-crown-blocks-event-index article.type-event:nth-child(2n-1) a {
   background-color: #F4F8FD; }
 

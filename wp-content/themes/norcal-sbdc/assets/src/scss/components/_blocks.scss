@@ -3168,6 +3168,12 @@
 
 .wp-block-crown-blocks-event-index {
 	article.type-event {
+		@include media-breakpoint-up(lg) {
+			margin-top: 2rem;
+			&:first-child {
+				margin-top: 0;
+			}
+		}
 		&:nth-child(2n-1) {
 			a {
 				background-color: $x-light-blue;
