@@ -16007,7 +16007,11 @@ h1, .h1 {
   font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   text-transform: uppercase;
   font-weight: 900;
-  line-height: .925; }
+  line-height: .925;
+  font-size: 3rem; }
+  @media (min-width: 576px) {
+    h1, .h1 {
+      font-size: 3.75rem; } }
   #resource-template-default h1, #resource-template-default .h1 {
     font-weight: 100; }
 

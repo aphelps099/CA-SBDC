@@ -26,6 +26,10 @@ h1, .h1 {
 	text-transform: uppercase;
 	font-weight: 900;
 	line-height: .925;
+	font-size: floor($h1-font-size * .85);
+	@include media-breakpoint-up(sm) {
+		font-size: $h1-font-size;
+	}
 	#resource-template-default & {
 		font-weight: 100;
 	}
