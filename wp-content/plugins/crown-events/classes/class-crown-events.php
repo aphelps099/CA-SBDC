@@ -915,14 +915,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 					$meeting_type = $feed['meta']['meetingtype'];
 					$meeting_type_override_field_id = isset( $feed['meta']['mappedFields_meeting_type'] ) ? $feed['meta']['mappedFields_meeting_type'] : '';
-					if ( ! empty( $meeting_type_override_field_id ) && isset( $entry[ $meeting_type_override_field_id ] ) ) {
+					if ( ! empty( $meeting_type_override_field_id ) && isset( $entry[ $meeting_type_override_field_id ] ) && ! empty( $entry[ $meeting_type_override_field_id ] ) ) {
 						$meeting_type = $entry[ $meeting_type_override_field_id ];
 					}
 					$feeds[ $feed_index ]['meta']['meetingtype'] = $meeting_type;
 
 					$meeting_id = $feed['meta']['zoomWebinarID'];
 					$meeting_id_override_field_id = isset( $feed['meta']['mappedFields_meeting_id'] ) ? $feed['meta']['mappedFields_meeting_id'] : '';
-					if ( ! empty( $meeting_id_override_field_id ) && isset( $entry[ $meeting_id_override_field_id ] ) ) {
+					if ( ! empty( $meeting_id_override_field_id ) && isset( $entry[ $meeting_id_override_field_id ] ) && ! empty( intval( $entry[ $meeting_id_override_field_id ] ) ) ) {
 						$meeting_id = $entry[ $meeting_id_override_field_id ];
 					}
 					$feeds[ $feed_index ]['meta']['zoomWebinarID'] = $meeting_id;
