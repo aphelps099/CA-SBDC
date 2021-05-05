@@ -25306,8 +25306,9 @@ nav.pagination {
       #header-primary-navigation-menu .mega-sub-menu .sub-menu-events .event-teaser a {
         display: block; }
       #header-primary-navigation-menu .mega-sub-menu .sub-menu-events .event-teaser .entry-title {
-        font-weight: 500;
-        margin-bottom: 0.5rem; }
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem; }
     #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links li {
       margin-bottom: .5rem; }
     @media (min-width: 992px) {
