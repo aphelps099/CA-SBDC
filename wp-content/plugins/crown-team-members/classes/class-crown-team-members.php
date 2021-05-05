@@ -33,6 +33,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 		public static $syndicated_team_member_post_type = null;
 		public static $team_member_category_taxonomy = null;
 		public static $team_member_expertise_taxonomy = null;
+		public static $team_member_options_admin_page = null;
 
 
 		public static function init() {
@@ -50,6 +51,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_category_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_expertise_taxonomy' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_options_admin_page' ) );
 
 			add_action( 'save_post', array( __CLASS__, 'update_post_center_terms' ), 90 );
 
@@ -461,6 +463,43 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 						'delete_terms' => 'delete_team_member_expertise',
 						'assign_terms' => 'assign_team_member_expertise'
 					)
+				)
+			) );
+
+		}
+
+
+		public static function register_team_member_options_admin_page() {
+			if ( is_main_site() ) return;
+
+			self::$team_member_options_admin_page = new AdminPage( array(
+				'key' => 'team-member-options',
+				'parent' => 'edit.php?post_type=team_member',
+				'title' => 'Team Member Options',
+				'menuTitle' => 'Options',
+				'capability' => 'edit_others_pages',
+				'fields' => array(
+					new FieldGroupSet( array(
+						'fieldGroups' => array(
+							new FieldGroup( array(
+								'label' => 'Center Filters',
+								'description' => 'Select which center filtering options to display for team member index:',
+								'fields' => array(
+									new Field( array(
+										'input' => new CheckboxSet( array( 'name' => 'team_member_options_center_filters' ) ),
+										'getOutputCb' => function( $field, $args ) {
+											$options = array();
+											$terms = get_terms( array( 'taxonomy' => 'post_center', 'hide_empty' => false ) );
+											foreach ( $terms as $term ) {
+												$options[] = array( 'value' => $term->term_id, 'label' => $term->name );
+											}
+											$field->getInput()->setOptions( $options );
+										}
+									) )
+								)
+							) )
+						)
+					) )
 				)
 			) );
 

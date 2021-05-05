@@ -125,6 +125,10 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				$filters->center->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->center->queried ) );
 				}, get_terms( array( 'taxonomy' => 'post_center' ) ) );
+				$center_filters = get_option( 'team_member_options_center_filters', array() );
+				if ( ! empty( $center_filters ) ) {
+					$filters->center->options = array_filter( $filters->center->options, function( $n ) use ( $center_filters ) { return in_array( $n->value, $center_filters ); } );
+				}
 
 				$filters->letter->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
