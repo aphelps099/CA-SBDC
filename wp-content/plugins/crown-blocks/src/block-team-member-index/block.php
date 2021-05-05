@@ -29,6 +29,8 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 		public static function render( $atts, $content ) {
 			global $post;
 
+			$group_by_center = $atts['groupByCenter'];
+
 			$filters = (object) array(
 				'category' => (object) array( 'key' => 'tm_category', 'queried' => null, 'options' => array() ),
 				'expertise' => (object) array( 'key' => 'tm_expertise', 'queried' => null, 'options' => array() ),
@@ -51,7 +53,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'meta_query' => array()
 			);
 
-			if ( ! $atts['groupByCenter'] && ! empty( $atts['filterCenters'] ) ) {
+			if ( ! $group_by_center && ! empty( $atts['filterCenters'] ) ) {
 
 				$prefiltered = true;
 
@@ -60,7 +62,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 			} else {
 
 				$filters->category->queried = isset( $_GET[ $filters->category->key ] ) ? ( is_array( $_GET[ $filters->category->key ] ) ? $_GET[ $filters->category->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->category->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-				if ( ! empty( $filters->category->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_category', 'terms' => $filters->category->queried );
+				if ( ! empty( $filters->category->queried ) && ! in_array( -1, $filters->category->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_category', 'terms' => $filters->category->queried );
 
 				$filters->expertise->queried = isset( $_GET[ $filters->expertise->key ] ) ? ( is_array( $_GET[ $filters->expertise->key ] ) ? $_GET[ $filters->expertise->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->expertise->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
 				if ( ! empty( $filters->expertise->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'team_member_expertise', 'terms' => $filters->expertise->queried );
@@ -79,9 +81,14 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 			}
 
-			if ( $atts['groupByCenter'] ) {
+			if ( $group_by_center ) {
 				$query_args['posts_per_page'] = -1;
 				$query_args['fields'] = 'ids';
+			}
+
+			if ( ! in_array( -1, $filters->category->queried ) && ! is_main_site() ) {
+				$query_args['post_type'] = array( 'team_member' );
+				$group_by_center = false;
 			}
 
 			$query = null;
@@ -107,6 +114,9 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				$filters->category->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->category->queried ) );
 				}, get_terms( array( 'taxonomy' => 'team_member_category' ) ) );
+				if ( ! empty( $filters->category->options ) && ! is_main_site() ) {
+					$filters->category->options[] = (object) array( 'value' => -1, 'label' => 'All', 'selected' => in_array( -1, $filters->category->queried ) );
+				}
 
 				$filters->expertise->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->expertise->queried ) );
@@ -261,7 +271,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 										<?php } else { ?>
 										
-											<?php if ( $atts['groupByCenter'] ) { ?>
+											<?php if ( $group_by_center ) { ?>
 												
 												<?php $output_team_member_ids = array(); ?>
 
@@ -346,7 +356,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 									</div>
 								</div>
 								
-								<?php if ( ! $atts['groupByCenter'] ) { ?>
+								<?php if ( ! $group_by_center ) { ?>
 									<?php //self::render_pagination( $query, 5 ); ?>
 									<?php self::render_pagination_infinite( $query ); ?>
 								<?php } ?>
