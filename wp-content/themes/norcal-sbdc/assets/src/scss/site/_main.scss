@@ -92,7 +92,8 @@
 				}
 			}
 			body.single-post &,
-			body.single-resource & {
+			body.single-resource &,
+			body.single-event & {
 				margin-bottom: 0;
 				padding-bottom: 0;
 			}
