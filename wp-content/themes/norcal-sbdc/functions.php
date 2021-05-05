@@ -11,6 +11,19 @@ if( ! class_exists( 'Crown_Theme' ) ) {
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'load' ), 0 );
 
+			add_filter('terms_clauses', function( $clauses, $taxonomy, $args ) {
+				global $wpdb;
+				if ( isset( $args['post_types'] ) && ! empty( $args['post_types'] ) ) {
+					$post_types = implode( "','", array_map( 'esc_sql', (array) $args['post_types'] ) );
+					if ( is_array( $args['post_types'] ) ) {
+						$post_types = implode( "','", $args['post_types'] );
+					}
+					$clauses['join'] .= " INNER JOIN $wpdb->term_relationships AS r ON r.term_taxonomy_id = tt.term_taxonomy_id INNER JOIN $wpdb->posts AS p ON p.ID = r.object_id";
+					$clauses['where'] .= " AND p.post_type IN ('". $post_types. "') GROUP BY t.term_id";
+				}
+				return $clauses;
+			}, 99999, 3);
+
 		}
 
 
