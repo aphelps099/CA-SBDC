@@ -53,7 +53,15 @@ if(!class_exists('Crown_Block_Event_Header')) {
 						<div class="header-contents">
 							<div class="inner">
 
-								<h2 class="index-title"><span><?php _e( 'SBDC', 'crown_blocks' ); ?></span><span><?php _e( 'Events', 'crown_blocks' ); ?></span></h2>
+								<div class="index-header">
+
+									<h2 class="index-title"><span><?php _e( 'SBDC', 'crown_blocks' ); ?></span><span><?php _e( 'Events', 'crown_blocks' ); ?></span></h2>
+								
+									<?php if ( ! empty( $index_page_url ) ) { ?>
+										<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Events', 'crown_blocks' ); ?></a>
+									<?php } ?>
+
+								</div>
 
 								<div class="article-header wp-block-crown-blocks-container bg-flush-right">
 									<div class="container-bg"></div>
