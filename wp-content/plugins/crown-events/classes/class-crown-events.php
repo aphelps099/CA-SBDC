@@ -886,6 +886,13 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			if ( $feed->get_slug() == 'gravity-forms-zoom-webinar-registration' ) {
 				if ( isset( $fields[1]['fields'][0]['field_map'] ) ) {
 					$fields[1]['fields'][0]['field_map'] = array_merge( array(
+						'meeting_type' => array(
+							'name' => 'meeting_type',
+							'label' => 'Meeting Type',
+							'required' => false,
+							'field_type' => array( 'hidden', 'text', 'select', 'radio' ),
+							'tooltip' => 'Dynamically override Zoom meeting type by passing in a field value.'
+						),
 						'meeting_id' => array(
 							'name' => 'meeting_id',
 							'label' => 'Meeting ID',
@@ -905,12 +912,21 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			foreach ( $feeds as $feed_index => $feed ) {
 				if ( $feed['addon_slug'] == 'gravity-forms-zoom-webinar-registration' && isset( $feed['meta']['zoomWebinarID'] ) ) {
+
+					$meeting_type = $feed['meta']['meetingtype'];
+					$meeting_type_override_field_id = isset( $feed['meta']['mappedFields_meeting_type'] ) ? $feed['meta']['mappedFields_meeting_type'] : '';
+					if ( ! empty( $meeting_type_override_field_id ) && isset( $entry[ $meeting_type_override_field_id ] ) ) {
+						$meeting_type = $entry[ $meeting_type_override_field_id ];
+					}
+					$feeds[ $feed_index ]['meta']['meetingtype'] = $meeting_type;
+
 					$meeting_id = $feed['meta']['zoomWebinarID'];
 					$meeting_id_override_field_id = isset( $feed['meta']['mappedFields_meeting_id'] ) ? $feed['meta']['mappedFields_meeting_id'] : '';
 					if ( ! empty( $meeting_id_override_field_id ) && isset( $entry[ $meeting_id_override_field_id ] ) ) {
 						$meeting_id = $entry[ $meeting_id_override_field_id ];
 					}
 					$feeds[ $feed_index ]['meta']['zoomWebinarID'] = $meeting_id;
+
 				}
 			}
 

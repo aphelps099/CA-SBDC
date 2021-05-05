@@ -25,6 +25,7 @@ registerBlockType('crown-blocks/event-registration-form', {
 	supports: {},
 
 	attributes: {
+		meetingType: { type: 'string', default: 'meetings' },
 		meetingId: { type: 'string', default: '' }
 	},
 
@@ -32,7 +33,8 @@ registerBlockType('crown-blocks/event-registration-form', {
 	edit: ({ attributes, className, isSelected, setAttributes }) => {
 
 		const {
-			meetingId
+			meetingId,
+			meetingType
 		} = attributes;
 
 		return [
@@ -40,6 +42,16 @@ registerBlockType('crown-blocks/event-registration-form', {
 			<InspectorControls key="inspector-controls">
 
 				<PanelBody title={ 'Zoom Configuration' } initialOpen={ true }>
+
+					<SelectControl
+						label="Meeting Type"
+						value={ meetingType }
+						onChange={ (value) => setAttributes({ meetingType: value }) }
+						options={ [
+							{ value: 'meetings', label: 'Meeting' },
+							{ value: 'webinars', label: 'Webinar' }
+						] }
+					/>
 
 					<TextControl
 						label="Meeting ID"

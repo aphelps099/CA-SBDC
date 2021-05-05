@@ -16,6 +16,7 @@ if(!class_exists('Crown_Block_Event_Registration_Form')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
+				'meetingType' => array( 'type' => 'string', 'default' => 'webinars' ),
 				'meetingId' => array( 'type' => 'string', 'default' => '' )
 			);
 		}
@@ -27,7 +28,8 @@ if(!class_exists('Crown_Block_Event_Registration_Form')) {
 			if ( empty( $form_id ) ) return '';
 
 			$field_values = array(
-				'meeting_id' => $atts['meetingId']
+				'meeting_id' => $atts['meetingId'],
+				'meeting_type' => $atts['meetingType']
 			);
 
 			return gravity_form( $form_id, false, false, false, $field_values, true, -1, false );
