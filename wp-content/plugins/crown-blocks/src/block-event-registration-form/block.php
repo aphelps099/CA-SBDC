@@ -16,7 +16,7 @@ if(!class_exists('Crown_Block_Event_Registration_Form')) {
 		public static function get_attributes() {
 			return array(
 				'className' => array( 'type' => 'string', 'default' => '' ),
-				'meetingType' => array( 'type' => 'string', 'default' => 'webinars' ),
+				'meetingType' => array( 'type' => 'string', 'default' => 'meetings' ),
 				'meetingId' => array( 'type' => 'string', 'default' => '' )
 			);
 		}
