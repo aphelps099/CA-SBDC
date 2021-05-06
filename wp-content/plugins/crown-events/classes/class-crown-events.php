@@ -68,6 +68,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'register_admin_styles' ) );
 
+			add_action( 'gform_loaded', array( __CLASS__, 'register_gf_addons' ) );
 			add_filter( 'gform_addon_feed_settings_fields', array( __CLASS__, 'filter_gform_addon_feed_settings_fields' ), 10, 2 );
 			add_filter( 'gform_addon_pre_process_feeds', array( __CLASS__, 'filter_gform_addon_pre_process_feeds' ), 10, 3 );
 
@@ -878,6 +879,20 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'include_syndicated' => $include_syndicated
 			);
 			return self::get_events( $args );
+		}
+
+
+		public static function register_gf_addons() {
+
+			if ( ! method_exists( 'GFForms', 'include_feed_addon_framework' ) ) {
+				return;
+			}
+
+			include_once( dirname( __FILE__ ) . '/class-crown-events-gravity-zwr.php' );
+			GFAddOn::register( 'Crown_Events_Gravity_ZWR', 'GravityZWR' );
+
+			// print_r(GFAddOn::get_registered_addons()); die;
+
 		}
 
 
