@@ -28838,6 +28838,24 @@ h1, .h1 {
   .wp-block-crown-blocks-header > .hr-container > hr {
     height: 1.25rem; }
 
+.wp-block-crown-blocks-nav-menu {
+  font-family: "Founders Grotesk Mono", monospace; }
+  .wp-block-crown-blocks-nav-menu .menu-title {
+    font-family: "Founders Grotesk Mono", monospace;
+    font-weight: 500; }
+  .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item {
+    padding-left: 1.5rem;
+    position: relative; }
+    .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item:before {
+      content: '\2014';
+      position: absolute;
+      left: 0;
+      top: 0; }
+    .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item.current-menu-item {
+      font-weight: 500; }
+    .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item .menu-item-link {
+      color: inherit; }
+
 .wp-block-crown-blocks-champion-finder .location-search-form input[type=text] {
   font-family: "Founders Grotesk Mono", monospace; }
 

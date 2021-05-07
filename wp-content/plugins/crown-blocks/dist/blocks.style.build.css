@@ -549,7 +549,8 @@
     display: -ms-flexbox;
     display: flex; }
     .wp-block-crown-blocks-column.vertical-alignment-top > .inner > .column-contents {
-      width: 100%;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
       display: -ms-flexbox;
       display: flex; }
       .wp-block-crown-blocks-column.vertical-alignment-top > .inner > .column-contents > .inner {
@@ -558,7 +559,8 @@
     display: -ms-flexbox;
     display: flex; }
     .wp-block-crown-blocks-column.vertical-alignment-stretch > .inner > .column-contents {
-      width: 100%;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
       display: -ms-flexbox;
       display: flex; }
       .wp-block-crown-blocks-column.vertical-alignment-stretch > .inner > .column-contents > .inner {
@@ -8248,6 +8250,22 @@
     grid-gap: 15rem; }
   .wp-block-crown-blocks-multi-column.column-breakpoint-xs.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-sm.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-md.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-lg.column-spacing-xl-16 > .inner > .multi-column-columns > .inner, .wp-block-crown-blocks-multi-column.column-breakpoint-xl.column-spacing-xl-16 > .inner > .multi-column-columns > .inner {
     grid-gap: 16rem; } }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-nav-menu {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-nav-menu .menu-title {
+    font-size: 1.5rem;
+    border-bottom: 2px solid #444;
+    padding-bottom: .5rem; }
+  .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item {
+    margin-bottom: .25rem; }
+    .wp-block-crown-blocks-nav-menu .menu .wp-block-crown-blocks-dropdown-nav-menu-item .menu-item-link {
+      padding: 0;
+      min-height: 0;
+      display: inline; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

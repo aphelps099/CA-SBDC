@@ -50,6 +50,32 @@ h1, .h1 {
 	}
 }
 
+.wp-block-crown-blocks-nav-menu {
+	font-family: $font-family-mono;
+	.menu-title {
+		font-family: $font-family-mono;
+		font-weight: 500;
+	}
+	.menu {
+		.wp-block-crown-blocks-dropdown-nav-menu-item {
+			padding-left: 1.5rem;
+			position: relative;
+			&:before {
+				content: '\2014';
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			&.current-menu-item {
+				font-weight: 500;
+			}
+			.menu-item-link {
+				color: inherit;
+			}
+		}
+	}
+}
+
 .wp-block-crown-blocks-champion-finder {
 	.location-search-form {
 		input[type=text] {

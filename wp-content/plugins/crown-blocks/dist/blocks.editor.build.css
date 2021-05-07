@@ -2490,6 +2490,9 @@
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
 
 .editor-styles-wrapper .wp-block[data-type="crown-blocks/portal-link"] {
   display: -ms-flexbox;

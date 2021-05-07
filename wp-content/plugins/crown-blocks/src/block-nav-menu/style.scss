@@ -1,0 +1,20 @@
+
+
+.wp-block-crown-blocks-nav-menu {
+	margin-bottom: 1rem;
+	.menu-title {
+		font-size: 1.5rem;
+		border-bottom: 2px solid #444;
+		padding-bottom: .5rem;
+	}
+	.menu {
+		.wp-block-crown-blocks-dropdown-nav-menu-item {
+			margin-bottom: .25rem;
+			.menu-item-link {
+				padding: 0;
+				min-height: 0;
+				display: inline;
+			}
+		}
+	}
+}

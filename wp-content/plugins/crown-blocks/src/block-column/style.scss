@@ -14,7 +14,7 @@ $spacer: 1rem;
 	&.vertical-alignment-top > .inner {
 		display: flex;
 		> .column-contents {
-			width: 100%;
+			flex: 1 1 auto;
 			display: flex;
 			> .inner {
 				width: 100%;
@@ -24,7 +24,7 @@ $spacer: 1rem;
 	&.vertical-alignment-stretch > .inner {
 		display: flex;
 		> .column-contents {
-			width: 100%;
+			flex: 1 1 auto;
 			display: flex;
 			> .inner {
 				width: 100%;

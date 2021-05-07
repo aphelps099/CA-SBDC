@@ -38,6 +38,7 @@
 		$.wptheme.initTeamMemberIndexBlocks();
 		$.wptheme.initHoverContainerBlocks();
 		$.wptheme.initDropdownNavMenuBlocks();
+		$.wptheme.initNavMenuBlocks();
 		$.wptheme.initChampionFinderBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
@@ -1362,6 +1363,21 @@
 				var targetBlock = $(e.target).closest('.menu-toggle').closest('.wp-block-crown-blocks-dropdown-nav-menu');
 				targetBlock = !targetBlock.length ? $(e.target).closest('.menu').closest('.wp-block-crown-blocks-dropdown-nav-menu') : targetBlock;
 				$('.wp-block-crown-blocks-dropdown-nav-menu.active').not(targetBlock).find('.menu-toggle').trigger('click');
+			});
+
+		};
+
+
+		wptheme.initNavMenuBlocks = function() {
+
+			var currentUrl = document.location.href;
+
+			$('.wp-block-crown-blocks-nav-menu .wp-block-crown-blocks-dropdown-nav-menu-item').each(function(i, el) {
+				var menuItem = $(this);
+				var menuLinkHref = $('a', menuItem).attr('href');
+				if(currentUrl == menuLinkHref) {
+					menuItem.addClass('current-menu-item');
+				}
 			});
 
 		};
