@@ -288,7 +288,7 @@ registerBlockType('crown-blocks/container', {
 
 		let backgroundImageUrl = null;
 		if(backgroundImageId) {
-			backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+			backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 			blockClasses.push('has-bg-image');
 			bgMediaClasses.push('bg-image');
 			if(backgroundImageParallaxEnabled) {
@@ -940,7 +940,7 @@ registerBlockType('crown-blocks/container', {
 
 		let backgroundImageUrl = null;
 		if(backgroundImageId) {
-			backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+			backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 			blockClasses.push('has-bg-image');
 			bgMediaClasses.push('bg-image');
 			if(backgroundImageParallaxEnabled) {
@@ -1153,7 +1153,7 @@ registerBlockType('crown-blocks/container', {
 		
 				let backgroundImageUrl = null;
 				if(backgroundImageId) {
-					backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+					backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 					blockClasses.push('has-bg-image');
 				}
 		
@@ -1346,7 +1346,7 @@ registerBlockType('crown-blocks/container', {
 		
 				let backgroundImageUrl = null;
 				if(backgroundImageId) {
-					backgroundImageUrl = backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+					backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
 					blockClasses.push('has-bg-image');
 				}
 		
