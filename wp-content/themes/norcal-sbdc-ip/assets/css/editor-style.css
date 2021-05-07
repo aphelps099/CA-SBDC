@@ -25737,6 +25737,10 @@ h1, .h1 {
   .text-color-light .simple-subscribe-form_wrapper input[type=text]::placeholder {
     color: rgba(255, 255, 255, 0.5); }
 
+.text-color-light .simple-subscribe-form_wrapper .gfield.gfield_error label,
+.text-color-light .simple-subscribe-form_wrapper .gfield.gfield_error .validation_message {
+  color: #fff; }
+
 .text-color-dark .simple-subscribe-form_wrapper input[type=text] {
   -webkit-box-shadow: inset 0 -2px #1D2F3C;
           box-shadow: inset 0 -2px #1D2F3C;
@@ -25799,8 +25803,8 @@ h1, .h1 {
   right: 0;
   bottom: 4px;
   width: 1.5rem; }
-  .simple-subscribe-form_wrapper .gform_footer button[type=submit], .simple-subscribe-form_wrapper .gform_footer button[type=submit]:hover {
-    background-color: transparent;
+  .simple-subscribe-form_wrapper .gform_footer button[type=submit], .simple-subscribe-form_wrapper .gform_footer button[type=submit]:hover, .simple-subscribe-form_wrapper .gform_footer button[type=submit]:active, .simple-subscribe-form_wrapper .gform_footer button[type=submit]:focus {
+    background-color: transparent !important;
     border: none; }
   .simple-subscribe-form_wrapper .gform_footer button[type=submit]:after {
     -webkit-font-smoothing: antialiased;
