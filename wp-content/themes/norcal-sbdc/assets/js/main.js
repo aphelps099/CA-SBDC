@@ -346,7 +346,7 @@
 
 		wptheme.initModals = function() {
 
-			$(document).on('submit', '#footer-subscribe-form form', function(e) {
+			$(document).on('submit', 'form.simple-subscribe-form', function(e) {
 				e.preventDefault();
 				var form = $(this);
 				var formId = form.attr('id').replace(/^gform_/, '');

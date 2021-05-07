@@ -39,6 +39,91 @@ h1, .h1 {
 
 
 
+.simple-subscribe-form_wrapper {
+	.text-color-light & {
+		input[type=text] {
+			box-shadow: inset 0 -2px #fff;
+			color: #fff;
+			&::placeholder {
+				color: rgba(#fff, .5);
+			}
+		}
+		.gfield.gfield_error label,
+		.gfield.gfield_error .validation_message {
+			color: #fff;
+		}
+	}
+	.text-color-dark & {
+		input[type=text] {
+			box-shadow: inset 0 -2px $dark-blue;
+			color: $dark-gray;
+			&::placeholder {
+				color: rgba($dark-gray, .5);
+			}
+		}
+	}
+	form {
+		display: block;
+		position: relative;
+	}
+	input[type=text] {
+		box-shadow: inset 0 -2px $dark-blue;
+		color: $dark-gray;
+		font-size: 1.5rem;
+		height: auto;
+		&::placeholder {
+			color: rgba($dark-gray, .5);
+		}
+	}
+	.gfield:last-child {
+		input[type=text] {
+			padding-right: 2.5rem;
+		}
+	}
+	.ginput_container_email {
+		position: relative;
+		&:before {
+			content: '';
+			background-image: escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#{#ffffff}" class="bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/></svg>'));
+			background-position: center;
+			background-size: contain;
+			background-repeat: no-repeat;
+			width: 2rem;
+			height: 2rem;
+			display: block;
+			position: absolute;
+			left: 0;
+			top: .6rem;
+		}
+		input[type=text] {
+			padding-left: 3rem;
+		}
+	}
+	.gform_footer {
+		padding-top: 0;
+		position: absolute;
+		right: 0;
+		bottom: 4px;
+		width: 1.5rem;
+		button[type=submit] {
+			&, &:hover, &:active, &:focus {
+				background-color: transparent !important;
+				border: none;
+			}
+			&:after {
+				@include icon(map-get($icomoon-icons, arrow-right-display), icomoon);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				line-height: 1;
+				font-size: 1.5rem;
+			}
+		}
+	}
+}
+
+
+
 .wp-block-crown-blocks-header {
 	padding-bottom: 1.25rem;
 	> .hr-container {
