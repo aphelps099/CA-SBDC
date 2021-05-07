@@ -50,3 +50,46 @@ h1, .h1 {
 		height: 1.25rem;
 	}
 }
+
+.wp-block-crown-blocks-champion-finder {
+	.location-search-form {
+		input[type=text] {
+			font-family: $font-family-mono;
+		}
+		.form-footer {
+			button[type=submit] {
+				&:before {
+					content: '';
+					background-image: escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#{$bright-blue}" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>'));
+					background-size: 1.5rem;
+					background-position: center;
+					background-repeat: no-repeat;
+				}
+				&:after {
+					color: $bright-blue;
+				}
+			}
+		}
+	}
+	.results {
+		.champion {
+			font-family: $font-family-mono;
+			line-height: 1.1;
+			&.active {
+				.email a {
+					color: $bright-blue;
+					&:hover {
+						color: lighten($bright-blue, 15%);
+					}
+				}
+			}
+			h4 {
+				font-weight: 500;
+			}
+			.email a {
+				color: rgba($bright-blue, .75);
+				text-decoration: underline;
+			}
+		}
+	}
+}

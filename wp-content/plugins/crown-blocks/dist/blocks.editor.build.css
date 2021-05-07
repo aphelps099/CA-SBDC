@@ -79,6 +79,14 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/champion-finder"] .wp-block-crown-blocks-champion-finder a,
+.wp-block[data-type="crown-blocks/champion-finder"] .wp-block-crown-blocks-champion-finder input,
+.wp-block[data-type="crown-blocks/champion-finder"] .wp-block-crown-blocks-champion-finder button {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/client-story-header"] .wp-block-crown-blocks-client-story-header a {
   pointer-events: none !important; }
 

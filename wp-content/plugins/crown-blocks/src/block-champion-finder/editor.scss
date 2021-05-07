@@ -1,0 +1,11 @@
+
+
+.wp-block[data-type="crown-blocks/champion-finder"] {
+	.wp-block-crown-blocks-champion-finder {
+		a,
+		input,
+		button {
+			pointer-events: none;
+		}
+	}
+}

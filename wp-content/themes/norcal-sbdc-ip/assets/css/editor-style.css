@@ -15634,7 +15634,11 @@ h1, .h1 {
   font-family: "Founders Grotesk", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   text-transform: uppercase;
   font-weight: 900;
-  line-height: .925; }
+  line-height: .925;
+  font-size: 3rem; }
+  @media (min-width: 576px) {
+    h1, .h1 {
+      font-size: 3.75rem; } }
   #resource-template-default h1, #resource-template-default .h1 {
     font-weight: 100; }
 
@@ -19815,7 +19819,7 @@ nav.pagination {
   .wp-block-crown-blocks-grid.is-style-dividers > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
     content: '';
     position: absolute;
-    display: block;
+    display: none;
     left: 0;
     top: .4rem;
     bottom: .4rem;
@@ -19826,6 +19830,9 @@ nav.pagination {
       border-left-color: #fff; }
     .text-color-dark .wp-block-crown-blocks-grid.is-style-dividers > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
       border-left-color: #032040; }
+
+.wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+  display: block; }
 
 .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xs-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
   display: none; }
@@ -19897,6 +19904,8 @@ nav.pagination {
   left: -8rem; }
 
 @media (min-width: 576px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-sm-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-sm-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-sm-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-sm-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -19945,6 +19954,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 768px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-md-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-md-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -19993,6 +20004,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 992px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-lg-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-lg-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -20041,6 +20054,8 @@ nav.pagination {
     left: -8rem; } }
 
 @media (min-width: 1200px) {
+  .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell > .inner:before {
+    display: block; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl.column-count-xl-1 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(1n + 1) > .inner:before {
     display: none; }
   .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xs.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-sm.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-md.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-lg.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before, .wp-block-crown-blocks-grid.is-style-dividers.column-breakpoint-xl.column-count-xl-2 > .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell:nth-child(2n + 1) > .inner:before {
@@ -22677,7 +22692,8 @@ nav.pagination {
         display: none; }
   .wp-block-crown-blocks-post-index article.type-post .entry-teaser {
     width: 100%;
-    padding-bottom: 2.5rem;
+    padding: 1rem;
+    padding-bottom: 4rem;
     position: relative; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-post-index article.type-post .entry-teaser {
@@ -22696,8 +22712,8 @@ nav.pagination {
       font-family: icomoon;
       content: "";
       position: absolute;
-      left: 0;
-      bottom: 0;
+      left: 1rem;
+      bottom: 1rem;
       line-height: 1;
       font-size: 2rem; }
       @media (min-width: 768px) {
@@ -23103,6 +23119,32 @@ nav.pagination {
         padding-right: 2.5rem; } }
   .wp-block-crown-blocks-event-header .index-title {
     font-family: "Founders Grotesk", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
+  .wp-block-crown-blocks-event-header .return-to-index {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    line-height: 1.2;
+    color: #fff;
+    margin-top: 1.5rem;
+    -webkit-transition: opacity .15s;
+    transition: opacity .15s; }
+    .wp-block-crown-blocks-event-header .return-to-index:hover {
+      opacity: .75; }
+    .wp-block-crown-blocks-event-header .return-to-index:before {
+      content: '';
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      margin-right: .5em;
+      background-image: url(s);
+      background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%230081B7" class="bi bi-grid-3x3-gap-fill" viewBox="0 0 16 16"%3e%3cpath d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/%3e%3c/svg%3e');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      vertical-align: top;
+      margin-top: 0.05em; }
   .wp-block-crown-blocks-event-header .article-header > .container-bg {
     background-color: #0081B7; }
   .wp-block-crown-blocks-event-header .entry-categories span {
@@ -23115,6 +23157,12 @@ nav.pagination {
 
 /*	Event Index
 ---------------------------------------------------------*/
+@media (min-width: 992px) {
+  .wp-block-crown-blocks-event-index article.type-event {
+    margin-top: 2rem; }
+    .wp-block-crown-blocks-event-index article.type-event:first-child {
+      margin-top: 0; } }
+
 .wp-block-crown-blocks-event-index article.type-event:nth-child(2n-1) a {
   background-color: #F4F8FD; }
 

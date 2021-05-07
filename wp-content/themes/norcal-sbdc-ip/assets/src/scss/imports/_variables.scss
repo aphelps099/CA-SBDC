@@ -2,6 +2,7 @@
 
 $dark-blue:      #1D2F3C;
 $blue:           #0081B7;
+$bright-blue:    #59CEFF;
 $magenta:        #D50679;
 $yellow:         #FEC403;
 $dark-gray:      #2C3E4B;
@@ -9,7 +10,8 @@ $dark-gray:      #2C3E4B;
 $colors: map-merge(
 	(
 		'magenta': $magenta,
-		'yellow': $yellow
+		'yellow': $yellow,
+		'bright-blue': $bright-blue
 	),
 	$colors
 );

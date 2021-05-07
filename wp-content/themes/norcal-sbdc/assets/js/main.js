@@ -38,6 +38,7 @@
 		$.wptheme.initTeamMemberIndexBlocks();
 		$.wptheme.initHoverContainerBlocks();
 		$.wptheme.initDropdownNavMenuBlocks();
+		$.wptheme.initChampionFinderBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
 
@@ -1358,6 +1359,50 @@
 				var targetBlock = $(e.target).closest('.menu-toggle').closest('.wp-block-crown-blocks-dropdown-nav-menu');
 				targetBlock = !targetBlock.length ? $(e.target).closest('.menu').closest('.wp-block-crown-blocks-dropdown-nav-menu') : targetBlock;
 				$('.wp-block-crown-blocks-dropdown-nav-menu.active').not(targetBlock).find('.menu-toggle').trigger('click');
+			});
+
+		};
+
+
+		wptheme.initChampionFinderBlocks = function() {
+
+			var selectChampionState = function(state, scrollTo) {
+				$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
+					var block = $(this);
+					$('.map svg .active', block).removeClass('active');
+					$('.results .state.active', block).removeClass('active');
+					$('.map svg #' + state, block).addClass('active');
+					var stateResult = $('.results .state.state-' + state.toLowerCase(), block);
+					if(stateResult.length) {
+						stateResult.addClass('active');
+						if(scrollTo) {
+							wptheme.smoothScrollToElement(stateResult, 1000, $('body').width() >= 992 ? -150 : -32);
+						}
+					}
+				});
+			};
+
+			$(document).on('click', '.wp-block-crown-blocks-champion-finder .map svg #us > *', function(e) {
+				var state = $(this).attr('id');
+				selectChampionState(state, true);
+			});
+
+			$(document).on('click', '.wp-block-crown-blocks-champion-finder .results .state', function(e) {
+				var state = $(this).data('state');
+				selectChampionState(state, false);
+			});
+
+			$(document).on('submit', '.wp-block-crown-blocks-champion-finder .location-search-form', function(e) {
+				e.preventDefault();
+				var form = $(this);
+				form.addClass('submitted');
+				$.get(crownThemeData.ajaxUrl, { action: 'get_champion_state_from_zip', zip: $('input[name=zip]', form).val() }, function(response) {
+					if(response.success) {
+						selectChampionState(response.state.abbreviation, true);
+					}
+					form.removeClass('submitted');
+				}, 'json');
+				return false;
 			});
 
 		};

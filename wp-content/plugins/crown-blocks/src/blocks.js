@@ -16,6 +16,7 @@ import './block-button-group/block.js';
 // import './block-callout/block.js';
 // import './block-case-study-index/block.js';
 import './block-center-finder/block.js';
+import './block-champion-finder/block.js';
 import './block-client-story-header/block.js';
 import './block-client-story-index/block.js';
 import './block-column/block.js';
