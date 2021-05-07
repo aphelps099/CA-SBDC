@@ -777,7 +777,7 @@
 
 		wptheme.initTabbedContentBlocks = function() {
 
-			$('.wp-block-crown-blocks-tabbed-content:not(.type-grid)').each(function(i, el) {
+			$('.wp-block-crown-blocks-tabbed-content:not(.type-grid):not(.type-accordion)').each(function(i, el) {
 				var slider = $('.tabbed-content-tabs > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
 				var sliderNavContainer = $('<div class="slick-slider-nav"></div>');
@@ -889,6 +889,53 @@
 					$('> .inner > .wp-block-crown-blocks-tabbed-content-tab > .inner').css({ maxWidth: menu.parent().width() });
 				});
 			});
+
+			$(document).on('click', '.wp-block-crown-blocks-tabbed-content.type-accordion > .inner > .tabbed-content-tabs > .inner > .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title', function(e) {
+				var tab = $(this).closest('.wp-block-crown-blocks-tabbed-content-tab');
+				var tabContents = $('> .inner > .tab-contents', tab);
+				if(!tab.hasClass('active')) {
+					tab.addClass('active');
+					var startHeight = tabContents.outerHeight();
+					tabContents.css({ height: 'auto' });
+					var endHeight = tabContents.outerHeight();
+					tabContents.css({ height: startHeight });
+					setTimeout(function() { tabContents.css({ height: endHeight }); }, 10);
+					setTimeout(function() { tabContents.css({ height: 'auto' }); }, 210);
+				} else {
+					tab.removeClass('active');
+					var startHeight = tabContents.outerHeight();
+					var endHeight = 0;
+					tabContents.css({ height: startHeight });
+					setTimeout(function() { tabContents.css({ height: endHeight }); }, 10);
+				}
+			});
+
+			// $('.wp-block-crown-blocks-tabbed-content:not(.type-grid):not(.type-accordion)').each(function(i, el) {
+			// 	var slider = $('.tabbed-content-tabs > .inner', el);
+			// 	if(slider.hasClass('slick-initialized')) return;
+			// 	var sliderNavContainer = $('<div class="slick-slider-nav"></div>');
+			// 	$('.tabbed-content-tabs', el).before(sliderNavContainer);
+			// 	slider.children().wrap('<div></div>');
+			// 	var slickSettings = {
+			// 		mobileFirst: true,
+			// 		draggable: false,
+			// 		dots: true,
+			// 		arrows: false,
+			// 		fade: true,
+			// 		appendDots: sliderNavContainer,
+			// 		adaptiveHeight: true,
+			// 		customPaging: function(slider, pageIndex) {
+			// 			var tabTitleEl = $('> .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title', slider.$slides[pageIndex]);
+			// 			var title = tabTitleEl ? tabTitleEl.text() : '';
+			// 			var tab = $('<button type="button"></button');
+			// 			tab.append('<span class="index">' + padNumber(pageIndex + 1, 2) + '<span>');
+			// 			if(title != '') tab.append(' <span class="label">' + title + '<span>');
+			// 			tab.append(' <span class="indicator"><span></span></span>');
+			// 			return tab;
+			// 		}
+			// 	};
+			// 	slider.slick(slickSettings);
+			// });
 
 		};
 

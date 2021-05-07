@@ -58,7 +58,8 @@ registerBlockType('crown-blocks/tabbed-content', {
 						onChange={ (value) => setAttributes({ type: value }) }
 						options={ [
 							{ label: 'Default', value: '' },
-							{ label: 'Grid', value: 'grid' }
+							{ label: 'Grid', value: 'grid' },
+							{ label: 'Accordion', value: 'accordion' }
 						] }
 					/>
 
