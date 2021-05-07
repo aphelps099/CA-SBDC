@@ -684,7 +684,7 @@ registerBlockType('crown-blocks/container', {
 
 					<MediaUpload
 						onSelect={ (media) => { setAttributes({ backgroundImageId: media.id, backgroundImageData: media, backgroundImageFocalPoint: { x: 0.5, y: 0.5 } }); } }
-						type="image"
+						allowedTypes="image"
 						value={ backgroundImageId }
 						render={ ({ open }) => (
 							<div className={ 'crown-blocks-media-upload' }>
