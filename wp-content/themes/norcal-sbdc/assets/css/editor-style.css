@@ -19406,7 +19406,8 @@ nav.pagination {
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }
 
-.wp-block-crown-blocks-container > .container-bg .bg-image.rellax {
+.wp-block-crown-blocks-container > .container-bg .bg-image.rellax,
+.wp-block-crown-blocks-container > .container-bg .bg-video.rellax {
   min-height: calc(100% + 8vh);
   top: -4vh; }
 
@@ -23645,6 +23646,104 @@ nav.pagination {
   @media (min-width: 992px) {
     .wp-block-crown-blocks-webinar-index article.type-webinar {
       width: 33.33333%; } }
+
+/*	Champion Finder
+---------------------------------------------------------*/
+.wp-block-crown-blocks-champion-finder .location-search-form {
+  position: relative;
+  max-width: 300px; }
+  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:before {
+    display: none; }
+  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:after {
+    display: block; }
+  .wp-block-crown-blocks-champion-finder .location-search-form input[type=text] {
+    border: none;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 1000px;
+    padding: 1rem 1.5rem;
+    font-size: 1.25rem;
+    height: auto;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    color: #fff;
+    padding-right: 3rem; }
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-webkit-input-placeholder {
+      color: rgba(255, 255, 255, 0.8); }
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-moz-placeholder {
+      color: rgba(255, 255, 255, 0.8); }
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]:-ms-input-placeholder {
+      color: rgba(255, 255, 255, 0.8); }
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-ms-input-placeholder {
+      color: rgba(255, 255, 255, 0.8); }
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::placeholder {
+      color: rgba(255, 255, 255, 0.8); }
+  .wp-block-crown-blocks-champion-finder .location-search-form .form-footer {
+    margin: 0; }
+    .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit] {
+      position: absolute;
+      right: .75rem;
+      top: calc(50% - 1rem);
+      padding: 0;
+      overflow: hidden;
+      text-indent: -10000px;
+      width: 2rem;
+      height: 2rem;
+      background-color: transparent;
+      border: none; }
+      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        line-height: 1;
+        font-family: icomoon;
+        content: "";
+        position: absolute;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 1.5rem;
+        line-height: 1;
+        text-indent: 0;
+        color: #fff; }
+      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:after {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        line-height: 1;
+        font-family: FontAwesome;
+        content: "\f1ce";
+        position: absolute;
+        display: none;
+        text-align: center;
+        left: calc((2rem - 24px) / 2);
+        top: calc((2rem - 24px) / 2);
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+        line-height: 1;
+        text-indent: 0;
+        color: #fff;
+        -webkit-animation: fa-spin 2s infinite linear;
+                animation: fa-spin 2s infinite linear; }
+
+.wp-block-crown-blocks-champion-finder .map-container > .inner {
+  padding-top: 130px; }
 
 .gform_wrapper {
   margin-bottom: 1rem;

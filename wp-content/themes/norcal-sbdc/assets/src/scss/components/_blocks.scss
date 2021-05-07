@@ -95,7 +95,8 @@
 		box-shadow: 0 0 20px fade-out(#000, .85);
 	}
 	> .container-bg {
-		.bg-image.rellax {
+		.bg-image.rellax,
+		.bg-video.rellax {
 			min-height: calc(100% + 8vh);
 			top: -4vh;
 		}

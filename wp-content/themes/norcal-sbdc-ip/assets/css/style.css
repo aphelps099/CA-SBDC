@@ -20822,7 +20822,8 @@ nav.pagination {
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }
 
-.wp-block-crown-blocks-container > .container-bg .bg-image.rellax {
+.wp-block-crown-blocks-container > .container-bg .bg-image.rellax,
+.wp-block-crown-blocks-container > .container-bg .bg-video.rellax {
   min-height: calc(100% + 8vh);
   top: -4vh; }
 
@@ -28835,8 +28836,6 @@ h1, .h1 {
     height: 1.25rem; }
   .wp-block-crown-blocks-header > hr,
   .wp-block-crown-blocks-header > .hr-container > hr {
-    -webkit-transform: rotateY(180deg);
-            transform: rotateY(180deg);
     height: 1.25rem; }
 
 .wp-block-crown-blocks-champion-finder .location-search-form input[type=text] {

@@ -683,6 +683,9 @@
 			rellax.bgImages = new Rellax('.bg-image.rellax', {
 				center: true
 			});
+			rellax.bgVideos = new Rellax('.bg-video.rellax', {
+				center: true
+			});
 
 		};
 

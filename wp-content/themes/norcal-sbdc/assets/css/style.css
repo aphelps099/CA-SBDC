@@ -20241,7 +20241,8 @@ nav.pagination {
   -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
           box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }
 
-.wp-block-crown-blocks-container > .container-bg .bg-image.rellax {
+.wp-block-crown-blocks-container > .container-bg .bg-image.rellax,
+.wp-block-crown-blocks-container > .container-bg .bg-video.rellax {
   min-height: calc(100% + 8vh);
   top: -4vh; }
 
