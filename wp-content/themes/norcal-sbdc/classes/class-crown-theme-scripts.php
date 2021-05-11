@@ -93,7 +93,8 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 			wp_localize_script( 'crown-theme-main', 'crownThemeData', array(
 				'baseUrl' => get_home_url(),
 				'themeUrl' => Crown_Theme::get_uri(),
-				'ajaxUrl' => admin_url( 'admin-ajax.php' )
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'siteName' => get_bloginfo( 'name' )
 			) );
 
 		}

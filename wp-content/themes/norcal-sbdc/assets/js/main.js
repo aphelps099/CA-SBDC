@@ -392,7 +392,16 @@
 				href = href ? href : '';
 				if(href.match(/^https?:\/\/calendly\.com\/.+/) && typeof(Calendly) !== 'undefined') {
 					e.preventDefault();
-					Calendly.initPopupWidget({ url: href });
+					var utmData = {
+						utmCampaign: "Signup",
+						utmSource: crownThemeData.siteName,
+						utmMedium: "Organic"
+					};
+					if(getQueryStringValue('program')) utmData.utmContent = getQueryStringValue('program');
+					Calendly.initPopupWidget({
+						url: href,
+						utm: utmData
+					});
 				}
 			});
 
