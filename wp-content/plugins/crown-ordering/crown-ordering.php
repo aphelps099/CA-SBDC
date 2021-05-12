@@ -259,6 +259,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 			if(empty($terms)) return;
 
 			$isHierarchical = is_taxonomy_hierarchical($taxonomy);
+			if ( $taxonomy == 'post_center' ) $isHierarchical = false;
 
 			?>
 				<ol>
