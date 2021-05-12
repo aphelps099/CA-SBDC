@@ -143,13 +143,13 @@
 		@media (min-width: 992px) {
 			display: block;
 		}
+		&:before {
+			content: '';
+			display: block;
+			height: 0;
+			padding-top: percentage(532 / 883);
+		}
 		&.repositioned {
-			&:before {
-				content: '';
-				display: block;
-				height: 0;
-				padding-top: percentage(532 / 883);
-			}
 			> .inner {
 				position: absolute;
 				left: 0;
@@ -167,10 +167,6 @@
 					mask-image: linear-gradient(rgba(0, 0, 0, 0.05) 0, black 30%);
 				}
 			}
-			.map {
-				padding-top: 0;
-				position: absolute;
-			}
 		}
 		> .inner {
 			align-items: center;
@@ -180,10 +176,11 @@
 		}
 	}
 	.map {
+		position: absolute;
 		width: 100%;
-		position: relative;
-		height: 0;
-		padding-top: percentage(532 / 883);
+		height: 100%;
+		left: 0;
+		top: 0;
 		svg {
 			display: block;
 			position: absolute;
