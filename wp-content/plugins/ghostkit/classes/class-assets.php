@@ -291,7 +291,7 @@ class GhostKit_Assets {
             'ghostkit-helper',
             ghostkit()->plugin_url . 'assets/js/helper.min.js',
             array( 'jquery' ),
-            '2.19.1',
+            '2.19.2',
             true
         );
         $default_variant = array(
@@ -382,7 +382,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'gutenberg/style.min.css',
             $css_deps,
-            '2.19.1'
+            '2.19.2'
         );
         wp_style_add_data( 'ghostkit', 'rtl', 'replace' );
         wp_style_add_data( 'ghostkit', 'suffix', '.min' );
@@ -391,7 +391,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'assets/js/main.min.js',
             $js_deps,
-            '2.19.1',
+            '2.19.2',
             true
         );
 
@@ -446,7 +446,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_script_url,
                 array_unique( $block_js_deps ),
-                '2.19.1',
+                '2.19.2',
                 true
             );
         }
@@ -471,7 +471,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_style_url,
                 array_unique( $block_css_deps ),
-                '2.19.1'
+                '2.19.2'
             );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'rtl', 'replace' );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'suffix', '.min' );
@@ -644,13 +644,13 @@ class GhostKit_Assets {
 
             // Enqueue custom CSS.
             if ( ! self::$already_added_custom_assets ) {
-                wp_register_style( $name, false, array(), '2.19.1' );
+                wp_register_style( $name, false, array(), '2.19.2' );
                 wp_enqueue_style( $name );
                 wp_add_inline_style( $name, $css );
 
                 // Enqueue JS instead of CSS when rendering in <body> to prevent W3C errors.
             } elseif ( ! wp_script_is( $name, 'enqueued' ) ) {
-                wp_register_script( $name, false, array(), '2.19.1', true );
+                wp_register_script( $name, false, array(), '2.19.2', true );
                 wp_enqueue_script( $name );
                 wp_add_inline_script(
                     $name,
@@ -675,7 +675,7 @@ class GhostKit_Assets {
      * @param Boolean $footer - print in footer.
      */
     public static function add_custom_js( $name, $js, $footer = false ) {
-        wp_register_script( $name, '', array(), '2.19.1', $footer );
+        wp_register_script( $name, '', array(), '2.19.2', $footer );
         wp_enqueue_script( $name );
         wp_add_inline_script( $name, $js );
     }

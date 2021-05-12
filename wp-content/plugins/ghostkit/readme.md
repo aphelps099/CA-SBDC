@@ -5,7 +5,7 @@
 * Requires at least: 5.5
 * Tested up to: 5.7
 * Requires PHP: 5.5.9
-* Stable tag: 2.19.1
+* Stable tag: 2.19.2
 * License: GPLv2 or later
 * License URI: <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -260,6 +260,11 @@ You can extend Gutenberg blocks save attributes using core hooks. Read more here
 21. Blocks Extensions
 
 ## Changelog ##
+
+= 2.19.2 =
+
+* fixed carousel block initial slides count in editor
+* fixed possible error with nested reusable blocks while parse page blocks
 
 = 2.19.1 =
 
