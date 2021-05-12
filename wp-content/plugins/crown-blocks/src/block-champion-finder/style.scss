@@ -38,6 +38,8 @@
 			margin-top: 1.5rem;
 			color: rgba(#fff, .75);
 			cursor: pointer;
+			opacity: 0;
+			transform: translateY(2rem);
 			&:first-child {
 				margin-top: 0;
 			}
@@ -55,6 +57,11 @@
 				+ .state {
 					border-top-color: #fff;
 				}
+			}
+			&.animated {
+				opacity: 1;
+				transform: none;
+				transition: opacity .4s, transform .4s ease-out;
 			}
 		}
 		.champion {

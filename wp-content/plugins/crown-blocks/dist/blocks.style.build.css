@@ -217,7 +217,11 @@
     border-top: 2px solid rgba(255, 255, 255, 0.6);
     margin-top: 1.5rem;
     color: rgba(255, 255, 255, 0.75);
-    cursor: pointer; }
+    cursor: pointer;
+    opacity: 0;
+    -webkit-transform: translateY(2rem);
+        -ms-transform: translateY(2rem);
+            transform: translateY(2rem); }
     .wp-block-crown-blocks-champion-finder .results .state:first-child {
       margin-top: 0; }
     .wp-block-crown-blocks-champion-finder .results .state.active {
@@ -226,6 +230,16 @@
       color: #fff; }
       .wp-block-crown-blocks-champion-finder .results .state.active + .state {
         border-top-color: #fff; }
+    .wp-block-crown-blocks-champion-finder .results .state.animated {
+      opacity: 1;
+      -webkit-transform: none;
+          -ms-transform: none;
+              transform: none;
+      -webkit-transition: opacity .4s, -webkit-transform .4s ease-out;
+      transition: opacity .4s, -webkit-transform .4s ease-out;
+      -o-transition: opacity .4s, transform .4s ease-out;
+      transition: opacity .4s, transform .4s ease-out;
+      transition: opacity .4s, transform .4s ease-out, -webkit-transform .4s ease-out; }
   .wp-block-crown-blocks-champion-finder .results .champion {
     margin-top: 1.5rem;
     padding-left: 5rem;

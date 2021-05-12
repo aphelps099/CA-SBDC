@@ -1470,8 +1470,10 @@
 			var selectChampionState = function(state, scrollTo) {
 				$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
 					var block = $(this);
+					var stateResult = $('.results .state.state-' + state.toLowerCase(), block);
+					if(stateResult.hasClass('active')) return;
 					$('.map svg .active', block).removeClass('active');
-					$('.results .state.active', block).removeClass('active');
+					$('.results .state.active', block).removeClass('active').removeClass('animated');
 					var statePath = $('.map svg #' + state, block);
 					if(statePath.length) {
 						statePath.addClass('active');
@@ -1484,9 +1486,10 @@
 						var scale = Math.min(3, (Math.min(svgBBox.width / stateBBox.width, svgBBox.height / stateBBox.height)) * .8);
 						svg.css({ transform: 'translate3d(' + (tranX * scale) + '%, ' + (tranY * scale) + '%, 0) scale(' + scale + ')' });
 					}
-					var stateResult = $('.results .state.state-' + state.toLowerCase(), block);
+					
 					if(stateResult.length) {
 						stateResult.addClass('active');
+						setTimeout(function() { stateResult.addClass('animated'); }, 10);
 						if(scrollTo) {
 							// wptheme.smoothScrollToElement(stateResult, 1000, $('body').width() >= 992 ? -150 : -32);
 						}
