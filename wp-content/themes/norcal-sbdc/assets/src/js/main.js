@@ -1441,17 +1441,54 @@
 
 		wptheme.initChampionFinderBlocks = function() {
 
+			$('.wp-block-crown-blocks-champion-finder').closest('.wp-block-crown-blocks-container.alignfull').addClass('champion-finder-map-container');
+
+			var adjustChampionMap = function() {
+				$('.wp-block-crown-blocks-champion-finder .map-container').each(function(i, el) {
+					var mapContainer = $(el);
+					var blockContainer = mapContainer.closest('.champion-finder-map-container');
+					var map = $('.map', mapContainer);
+					if($('> .inner > .map', mapContainer).length) map.wrap('<div class="inner"></div>');
+					map.css({
+						left: mapContainer.offset().left - blockContainer.offset().left,
+						top: mapContainer.offset().top - blockContainer.offset().top,
+						width: mapContainer.width(),
+						height: mapContainer.height()
+					});
+					mapContainer.addClass('repositioned');
+				});
+			};
+			adjustChampionMap();
+			$(window).on('load resize', adjustChampionMap);
+
+			var colors = [ 'color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6' ];
+			$('.wp-block-crown-blocks-champion-finder .map svg #us > *').each(function(i, el) {
+				$(el).addClass(colors[Math.floor(Math.random() * Math.floor(colors.length))]);
+			});
+			$('.wp-block-crown-blocks-champion-finder .map svg').addClass('active');
+
 			var selectChampionState = function(state, scrollTo) {
 				$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
 					var block = $(this);
 					$('.map svg .active', block).removeClass('active');
 					$('.results .state.active', block).removeClass('active');
-					$('.map svg #' + state, block).addClass('active');
+					var statePath = $('.map svg #' + state, block);
+					if(statePath.length) {
+						statePath.addClass('active');
+						var svg = $('.map svg');
+						var svgBBox = svg[0].getBBox();
+						var stateBBox = statePath[0].getBBox();
+						console.log(svgBBox, stateBBox);
+						var tranX = ((-stateBBox.x - (stateBBox.width / 2) + (svgBBox.width / 2)) / svgBBox.width) * 100;
+						var tranY = ((-stateBBox.y - (stateBBox.height / 2) + (svgBBox.height / 2)) / svgBBox.height) * 100;
+						var scale = Math.min(3, (Math.min(svgBBox.width / stateBBox.width, svgBBox.height / stateBBox.height)) * .8);
+						svg.css({ transform: 'translate(' + (tranX * scale) + '%, ' + (tranY * scale) + '%) scale(' + scale + ')' });
+					}
 					var stateResult = $('.results .state.state-' + state.toLowerCase(), block);
 					if(stateResult.length) {
 						stateResult.addClass('active');
 						if(scrollTo) {
-							wptheme.smoothScrollToElement(stateResult, 1000, $('body').width() >= 992 ? -150 : -32);
+							// wptheme.smoothScrollToElement(stateResult, 1000, $('body').width() >= 992 ? -150 : -32);
 						}
 					}
 				});
