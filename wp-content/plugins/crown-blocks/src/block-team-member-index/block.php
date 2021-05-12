@@ -279,7 +279,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 												
 												<?php $output_team_member_ids = array(); ?>
 
-												<?php $centers = get_terms( array( 'taxonomy' => 'post_center' ) ); ?>
+												<?php $centers = get_terms( array( 'taxonomy' => 'post_center', 'orderby' => 'menu_order', 'order' => 'ASC' ) ); ?>
 												<?php
 													if ( ! is_main_site() ) {
 

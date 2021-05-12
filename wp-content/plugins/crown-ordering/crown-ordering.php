@@ -20,7 +20,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 	class CrownOrdering {
 
 		public static $sortablePostTypes = array(false); // replace with post types to make sortable
-		public static $sortableTaxonomies = array(false); // replace with taxonomies to make terms sortable
+		public static $sortableTaxonomies = array( 'post_center' ); // replace with taxonomies to make terms sortable
 		public static $sortableTermPostsTaxonomies = array( 'faq_topic' ); // replace with taxonomies to make term posts sortable
 
 		public static $init = false;
@@ -138,6 +138,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 				$taxonomy = get_taxonomy($taxonomy);
 				if($taxonomy && property_exists($taxonomy, 'object_type')) {
 					$objectTypes = (array)$taxonomy->object_type;
+					if ( $taxonomy->name == 'post_center' ) $objectTypes = array( 'team_member' );
 					foreach($objectTypes as $objectType) {
 						$parentSlug = $objectType == 'post' ? 'edit.php' : 'edit.php?post_type='.$objectType;
 						self::$termOrderingAdminPages[$taxonomy->name.'-'.$objectType] = new AdminPage(array(
