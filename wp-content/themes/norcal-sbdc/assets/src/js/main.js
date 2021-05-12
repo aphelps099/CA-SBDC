@@ -1465,7 +1465,7 @@
 			$('.wp-block-crown-blocks-champion-finder .map svg #us > *').each(function(i, el) {
 				$(el).addClass(colors[Math.floor(Math.random() * Math.floor(colors.length))]);
 			});
-			$('.wp-block-crown-blocks-champion-finder .map svg').addClass('active');
+			setTimeout(function() { $('.wp-block-crown-blocks-champion-finder .map').addClass('active'); }, 200);
 
 			var selectChampionState = function(state, scrollTo) {
 				$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
@@ -1476,13 +1476,13 @@
 					if(statePath.length) {
 						statePath.addClass('active');
 						var svg = $('.map svg');
+						var map = $('.map');
 						var svgBBox = svg[0].getBBox();
 						var stateBBox = statePath[0].getBBox();
-						console.log(svgBBox, stateBBox);
 						var tranX = ((-stateBBox.x - (stateBBox.width / 2) + (svgBBox.width / 2)) / svgBBox.width) * 100;
 						var tranY = ((-stateBBox.y - (stateBBox.height / 2) + (svgBBox.height / 2)) / svgBBox.height) * 100;
 						var scale = Math.min(3, (Math.min(svgBBox.width / stateBBox.width, svgBBox.height / stateBBox.height)) * .8);
-						svg.css({ transform: 'translate(' + (tranX * scale) + '%, ' + (tranY * scale) + '%) scale(' + scale + ')' });
+						svg.css({ transform: 'translate3d(' + (tranX * scale) + '%, ' + (tranY * scale) + '%, 0) scale(' + scale + ')' });
 					}
 					var stateResult = $('.results .state.state-' + state.toLowerCase(), block);
 					if(stateResult.length) {
