@@ -1524,6 +1524,9 @@
 				}, 'json');
 				return false;
 			});
+			if($('.wp-block-crown-blocks-champion-finder .location-search-form input[name=zip]').val().trim() != '') {
+				$('.wp-block-crown-blocks-champion-finder .location-search-form').trigger('submit');
+			}
 
 		};
 
