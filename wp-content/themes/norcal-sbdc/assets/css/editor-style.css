@@ -23680,14 +23680,18 @@ nav.pagination {
 
 /*	Champion Finder
 ---------------------------------------------------------*/
-.wp-block-crown-blocks-champion-finder .location-search-form {
+.wp-block-crown-blocks-champion-finder .location-search-form,
+.wp-block-crown-blocks-champion-zip-search .location-search-form {
   position: relative;
   max-width: 300px; }
-  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:before {
+  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:before,
+  .wp-block-crown-blocks-champion-zip-search .location-search-form.submitted .form-footer button[type=submit]:before {
     display: none; }
-  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:after {
+  .wp-block-crown-blocks-champion-finder .location-search-form.submitted .form-footer button[type=submit]:after,
+  .wp-block-crown-blocks-champion-zip-search .location-search-form.submitted .form-footer button[type=submit]:after {
     display: block; }
-  .wp-block-crown-blocks-champion-finder .location-search-form input[type=text] {
+  .wp-block-crown-blocks-champion-finder .location-search-form input[type=text],
+  .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text] {
     border: none;
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 1000px;
@@ -23698,19 +23702,22 @@ nav.pagination {
             box-shadow: none;
     color: #fff;
     padding-right: 3rem; }
-    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-webkit-input-placeholder {
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-webkit-input-placeholder, .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text]::-webkit-input-placeholder {
       color: rgba(255, 255, 255, 0.8); }
-    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-moz-placeholder {
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-moz-placeholder, .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text]::-moz-placeholder {
       color: rgba(255, 255, 255, 0.8); }
-    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]:-ms-input-placeholder {
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]:-ms-input-placeholder, .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text]:-ms-input-placeholder {
       color: rgba(255, 255, 255, 0.8); }
-    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-ms-input-placeholder {
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::-ms-input-placeholder, .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text]::-ms-input-placeholder {
       color: rgba(255, 255, 255, 0.8); }
-    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::placeholder {
+    .wp-block-crown-blocks-champion-finder .location-search-form input[type=text]::placeholder,
+    .wp-block-crown-blocks-champion-zip-search .location-search-form input[type=text]::placeholder {
       color: rgba(255, 255, 255, 0.8); }
-  .wp-block-crown-blocks-champion-finder .location-search-form .form-footer {
+  .wp-block-crown-blocks-champion-finder .location-search-form .form-footer,
+  .wp-block-crown-blocks-champion-zip-search .location-search-form .form-footer {
     margin: 0; }
-    .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit] {
+    .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit],
+    .wp-block-crown-blocks-champion-zip-search .location-search-form .form-footer button[type=submit] {
       position: absolute;
       right: .75rem;
       top: calc(50% - 1rem);
@@ -23721,7 +23728,8 @@ nav.pagination {
       height: 2rem;
       background-color: transparent;
       border: none; }
-      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:before {
+      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:before,
+      .wp-block-crown-blocks-champion-zip-search .location-search-form .form-footer button[type=submit]:before {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         display: inline-block;
@@ -23749,7 +23757,8 @@ nav.pagination {
         line-height: 1;
         text-indent: 0;
         color: #fff; }
-      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:after {
+      .wp-block-crown-blocks-champion-finder .location-search-form .form-footer button[type=submit]:after,
+      .wp-block-crown-blocks-champion-zip-search .location-search-form .form-footer button[type=submit]:after {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         display: inline-block;
@@ -23772,9 +23781,6 @@ nav.pagination {
         color: #fff;
         -webkit-animation: fa-spin 2s infinite linear;
                 animation: fa-spin 2s infinite linear; }
-
-.wp-block-crown-blocks-champion-finder .map-container > .inner {
-  padding-top: 130px; }
 
 .gform_wrapper {
   margin-bottom: 1rem;

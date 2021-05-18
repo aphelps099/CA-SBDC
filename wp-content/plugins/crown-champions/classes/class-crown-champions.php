@@ -445,7 +445,7 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 
 						<form class="location-search-form" method="get" action="<?php echo esc_attr( $search_action ); ?>">
 							<div class="field">
-								<input type="text" name="zip" value="<?php echo esc_attr( $queried_zip ); ?>" placeholder="<?php echo esc_attr( __( 'Enter Zipcode' ), 'crown_centers' ); ?>">
+								<input type="text" name="zip" value="<?php echo esc_attr( $queried_zip ); ?>" placeholder="<?php echo esc_attr( __( 'Enter Zipcode' ), 'crown_champions' ); ?>">
 							</div>
 							<footer class="form-footer">
 								<button type="submit" class="btn btn-primary">Search</button>
@@ -497,6 +497,32 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 							</div>
 						</div>
 					</div>
+
+				</div>
+			<?php
+		}
+
+
+		public static function champion_zip_search( $is_editor = false ) {
+
+			$search_action = remove_query_arg( array( 'zip' ) );
+
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_champion' ) ) ) {
+				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_champion' );
+				$search_action = $index_page_url;
+			}
+
+			?>
+				<div class="champion-zip-search">
+
+					<form class="location-search-form" method="get" action="<?php echo esc_attr( $search_action ); ?>">
+						<div class="field">
+							<input type="text" name="zip" value="" placeholder="<?php echo esc_attr( __( 'Enter Zipcode' ), 'crown_champions' ); ?>">
+						</div>
+						<footer class="form-footer">
+							<button type="submit" class="btn btn-primary">Search</button>
+						</footer>
+					</form>
 
 				</div>
 			<?php

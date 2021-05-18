@@ -87,6 +87,14 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/champion-zip-search"] .wp-block-crown-blocks-champion-zip-search a,
+.wp-block[data-type="crown-blocks/champion-zip-search"] .wp-block-crown-blocks-champion-zip-search input,
+.wp-block[data-type="crown-blocks/champion-zip-search"] .wp-block-crown-blocks-champion-zip-search button {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/client-story-header"] .wp-block-crown-blocks-client-story-header a {
   pointer-events: none !important; }
 

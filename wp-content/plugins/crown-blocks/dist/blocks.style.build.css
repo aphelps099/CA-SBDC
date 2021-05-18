@@ -422,6 +422,21 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-champion-zip-search {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-champion-zip-search .location-search-form {
+    max-width: 360px;
+    display: -ms-flexbox;
+    display: flex; }
+    .wp-block-crown-blocks-champion-zip-search .location-search-form .field {
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto; }
+    .wp-block-crown-blocks-champion-zip-search .location-search-form .form-footer {
+      margin-left: 0.25rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-client-story-header {
   position: relative;
   margin-bottom: 4rem;

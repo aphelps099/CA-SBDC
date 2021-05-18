@@ -199,6 +199,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										'label' => 'SBDCs',
 										'input' => new Select( array( 'name' => 'theme_config_index_page_center' ) ),
 										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
+									) ),
+									new Field( array(
+										'label' => 'Champions',
+										'input' => new Select( array( 'name' => 'theme_config_index_page_champion' ) ),
+										'getOutputCb' => array( __CLASS__, 'set_page_select_input_options' )
 									) )
 								)
 							) )
