@@ -24,7 +24,7 @@ class Gravity_Forms_Multiple_Form_Instances {
      */ 
     public function __construct() { 
         // hook the HTML ID string find & replace functionality 
-        add_filter( 'gform_get_form_filter', array( $this, 'gform_get_form_filter_multiple' ), 10, 2 ); 
+        // add_filter( 'gform_get_form_filter', array( $this, 'gform_get_form_filter_multiple' ), 10, 2 ); 
     } 
  
     /** 
