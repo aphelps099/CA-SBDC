@@ -1,6 +1,6 @@
 <?php
 
-if ( ! class_exists( 'Crown_Events_Gravity_ZWR' ) ) {
+if ( ! class_exists( 'Crown_Events_Gravity_ZWR' ) && class_exists( 'GravityZWR' ) ) {
 	class Crown_Events_Gravity_ZWR extends GravityZWR {
 
 
