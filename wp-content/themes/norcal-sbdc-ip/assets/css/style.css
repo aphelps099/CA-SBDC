@@ -28858,62 +28858,69 @@ h1, .h1 {
       font-weight: 700;
       top: -.1em; }
 
-.text-color-light .simple-subscribe-form_wrapper input[type=text] {
+.text-color-light .simple-subscribe-form_wrapper input[type=text],
+.text-color-light .simple-subscribe-form_wrapper input[type=email] {
   -webkit-box-shadow: inset 0 -2px #fff;
           box-shadow: inset 0 -2px #fff;
   color: #fff; }
-  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder {
+  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder, .text-color-light .simple-subscribe-form_wrapper input[type=email]::-webkit-input-placeholder {
     color: rgba(255, 255, 255, 0.5); }
-  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder {
+  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder, .text-color-light .simple-subscribe-form_wrapper input[type=email]::-moz-placeholder {
     color: rgba(255, 255, 255, 0.5); }
-  .text-color-light .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder {
+  .text-color-light .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder, .text-color-light .simple-subscribe-form_wrapper input[type=email]:-ms-input-placeholder {
     color: rgba(255, 255, 255, 0.5); }
-  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder {
+  .text-color-light .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder, .text-color-light .simple-subscribe-form_wrapper input[type=email]::-ms-input-placeholder {
     color: rgba(255, 255, 255, 0.5); }
-  .text-color-light .simple-subscribe-form_wrapper input[type=text]::placeholder {
+  .text-color-light .simple-subscribe-form_wrapper input[type=text]::placeholder,
+  .text-color-light .simple-subscribe-form_wrapper input[type=email]::placeholder {
     color: rgba(255, 255, 255, 0.5); }
 
 .text-color-light .simple-subscribe-form_wrapper .gfield.gfield_error label,
 .text-color-light .simple-subscribe-form_wrapper .gfield.gfield_error .validation_message {
   color: #fff; }
 
-.text-color-dark .simple-subscribe-form_wrapper input[type=text] {
+.text-color-dark .simple-subscribe-form_wrapper input[type=text],
+.text-color-dark .simple-subscribe-form_wrapper input[type=email] {
   -webkit-box-shadow: inset 0 -2px #1D2F3C;
           box-shadow: inset 0 -2px #1D2F3C;
   color: #2C3E4B; }
-  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder {
+  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder, .text-color-dark .simple-subscribe-form_wrapper input[type=email]::-webkit-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder {
+  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder, .text-color-dark .simple-subscribe-form_wrapper input[type=email]::-moz-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .text-color-dark .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder {
+  .text-color-dark .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder, .text-color-dark .simple-subscribe-form_wrapper input[type=email]:-ms-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder {
+  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder, .text-color-dark .simple-subscribe-form_wrapper input[type=email]::-ms-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::placeholder {
+  .text-color-dark .simple-subscribe-form_wrapper input[type=text]::placeholder,
+  .text-color-dark .simple-subscribe-form_wrapper input[type=email]::placeholder {
     color: rgba(44, 62, 75, 0.5); }
 
 .simple-subscribe-form_wrapper form {
   display: block;
   position: relative; }
 
-.simple-subscribe-form_wrapper input[type="text"] {
+.simple-subscribe-form_wrapper input[type=text],
+.simple-subscribe-form_wrapper input[type=email] {
   -webkit-box-shadow: inset 0 -2px #1D2F3C;
           box-shadow: inset 0 -2px #1D2F3C;
   color: #2C3E4B;
   font-size: 1.5rem;
   height: auto; }
-  .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder {
+  .simple-subscribe-form_wrapper input[type=text]::-webkit-input-placeholder, .simple-subscribe-form_wrapper input[type=email]::-webkit-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder {
+  .simple-subscribe-form_wrapper input[type=text]::-moz-placeholder, .simple-subscribe-form_wrapper input[type=email]::-moz-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder {
+  .simple-subscribe-form_wrapper input[type=text]:-ms-input-placeholder, .simple-subscribe-form_wrapper input[type=email]:-ms-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder {
+  .simple-subscribe-form_wrapper input[type=text]::-ms-input-placeholder, .simple-subscribe-form_wrapper input[type=email]::-ms-input-placeholder {
     color: rgba(44, 62, 75, 0.5); }
-  .simple-subscribe-form_wrapper input[type=text]::placeholder {
+  .simple-subscribe-form_wrapper input[type=text]::placeholder,
+  .simple-subscribe-form_wrapper input[type=email]::placeholder {
     color: rgba(44, 62, 75, 0.5); }
 
-.simple-subscribe-form_wrapper .gfield:last-child input[type=text] {
+.simple-subscribe-form_wrapper .gfield:last-child input[type=text],
+.simple-subscribe-form_wrapper .gfield:last-child input[type=email] {
   padding-right: 2.5rem; }
 
 .simple-subscribe-form_wrapper .ginput_container_email {
@@ -28930,7 +28937,8 @@ h1, .h1 {
     position: absolute;
     left: 0;
     top: .6rem; }
-  .simple-subscribe-form_wrapper .ginput_container_email input[type=text] {
+  .simple-subscribe-form_wrapper .ginput_container_email input[type=text],
+  .simple-subscribe-form_wrapper .ginput_container_email input[type=email] {
     padding-left: 3rem; }
 
 .simple-subscribe-form_wrapper .gform_footer {
