@@ -690,12 +690,17 @@
 
 			// $('.bg-image.rellax').attr('data-rellax-speed', -10);
 
-			rellax.bgImages = new Rellax('.bg-image.rellax', {
-				center: true
-			});
-			rellax.bgVideos = new Rellax('.bg-video.rellax', {
-				center: true
-			});
+			if($('.bg-image.rellax').length) {
+				rellax.bgImages = new Rellax('.bg-image.rellax', {
+					center: true
+				});
+			}
+			
+			if($('.bg-video.rellax').length) {
+				rellax.bgVideos = new Rellax('.bg-video.rellax', {
+					center: true
+				});
+			}
 
 		};
 
