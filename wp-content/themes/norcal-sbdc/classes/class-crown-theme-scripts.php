@@ -90,12 +90,22 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 
 		public static function localize_script_data() {
 
-			wp_localize_script( 'crown-theme-main', 'crownThemeData', array(
+			$data = array(
 				'baseUrl' => get_home_url(),
 				'themeUrl' => Crown_Theme::get_uri(),
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'siteName' => get_bloginfo( 'name' )
-			) );
+				'siteName' => get_bloginfo( 'name' ),
+				'calendlyUrlOverride' => false
+			);
+
+			if ( isset( $_GET['program'] ) && ! empty( $_GET['program'] ) && class_exists( 'Crown_Site_Settings_Signup' ) ) {
+				$program = Crown_Site_Settings_Signup::get_program( $_GET['program'] );
+				if ( $program && !empty( $program->calendly_url ) ) {
+					$data['calendlyUrlOverride'] = $program->calendly_url;
+				}
+			}
+
+			wp_localize_script( 'crown-theme-main', 'crownThemeData', $data );
 
 		}
 

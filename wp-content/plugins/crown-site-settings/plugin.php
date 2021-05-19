@@ -26,6 +26,7 @@ Crown_Site_Settings_Pages::init();
 Crown_Site_Settings_Posts::init();
 Crown_Site_Settings_Scripts::init();
 Crown_Site_Settings_Shortcodes::init();
+Crown_Site_Settings_Signup::init();
 Crown_Site_Settings_Social_Media::init();
 Crown_Site_Settings_Site_Announcement::init();
 Crown_Site_Settings_Theme_Configuration::init();

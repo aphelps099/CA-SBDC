@@ -399,7 +399,7 @@
 					};
 					if(getQueryStringValue('program')) utmData.utmContent = getQueryStringValue('program');
 					Calendly.initPopupWidget({
-						url: href,
+						url: crownThemeData.calendlyUrlOverride ? crownThemeData.calendlyUrlOverride : href,
 						utm: utmData
 					});
 				}

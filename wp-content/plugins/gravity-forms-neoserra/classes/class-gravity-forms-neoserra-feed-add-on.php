@@ -247,6 +247,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 		public static function get_other_field_map() {
 			return array(
 				array(
+					'name' => 'program',
+					'label' => esc_html__( 'Program', 'gfneoserra' ),
+					'required' => true,
+					'field_type' => array( 'text', 'select', 'hidden' ),
+					'tooltip' => esc_html__( 'Use this field to map to a Neoserra center ID to override the default one provided above.', 'gfneoserra' ),
+				),
+				array(
 					'name' => 'referral',
 					'label' => esc_html__( 'Referral', 'gfneoserra' ),
 					'required' => true,
@@ -287,6 +294,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			unset( $headers['bd_field_map_idea'] );
 			$csv_rows[] = array_values( $headers );
 
+			$center_id = $feed['meta']['center_id'];
+			$queried_program = $this->get_field_value( $form, $entry, $feed['meta']['other_field_map_program'] );
+			if ( ! empty( $queried_program ) && class_exists( 'Crown_Site_Settings_Signup' ) ) {
+				$program = Crown_Site_Settings_Signup::get_program( $queried_program );
+				if ( $program && !empty( trim( $program->neoserra_center_id ) ) ) {
+					$center_id = trim( $program->neoserra_center_id );
+				}
+			}
+
 			$row = array();
 			foreach ( self::$export_column_map as $key => $label ) {
 				$k = $key;
@@ -294,7 +310,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 				if ( in_array( $k, array( 'bd_field_map_idea' ) ) ) {
 					continue;
 				} else if ( $k == 'center_id' ) {
-					$v = $feed['meta']['center_id'];
+					$v = $center_id;
 				} else if ( $k == 'date' ) {
 					$v = $entry['date_created'];
 				} else if ( array_key_exists( $k, $feed['meta'] ) ) {
