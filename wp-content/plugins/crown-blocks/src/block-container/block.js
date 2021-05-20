@@ -963,40 +963,6 @@ registerBlockType('crown-blocks/container', {
 			bgMediaClasses.push('rellax');
 		}
 
-		let bgMedia = null;
-		let backgroundImageUrl = null;
-		if(backgroundVideoEnabled && backgroundVideoUrl) {
-			let posterImageUrl = backgroundImageId ? (backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url) : '';
-			blockClasses.push('has-bg-image');
-			blockClasses.push('has-bg-video');
-			bgMediaClasses.push('bg-video');
-			bgMedia = (
-				<div className={ bgMediaClasses.join(' ') } style={ {
-					opacity: (backgroundImageOpacity / 100),
-					filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
-					mixBlendMode: backgroundImageBlendMode
-				} }>
-					<video autoplay muted loop poster={ posterImageUrl }>
-						<source src={ backgroundVideoUrl } type="video/mp4"/>
-					</video>
-				</div>
-			);
-		} else if(backgroundImageId) {
-			backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
-			blockClasses.push('has-bg-image');
-			bgMediaClasses.push('bg-image');
-			bgMedia = (
-				<div className={ bgMediaClasses.join(' ') } style={ {
-					backgroundImage: 'url(' + backgroundImageUrl + ')',
-					opacity: (backgroundImageOpacity / 100),
-					backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
-					filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
-					mixBlendMode: backgroundImageBlendMode,
-					backgroundSize: backgroundImageContain ? 'contain' : 'cover'
-				} }></div>
-			);
-		}
-
 		if(backgroundImageGradientFadeEnabled) {
 			if(backgroundImageGradientFadeStart > 0) {
 				bgInnerStyles.WebkitMaskImage = 'linear-gradient(' + backgroundImageGradientFadeAngle + 'deg, black ' + backgroundImageGradientFadeStart + '%, transparent)';
@@ -1007,12 +973,61 @@ registerBlockType('crown-blocks/container', {
 			}
 		}
 
+		let backgroundImageUrl = null;
+		if(backgroundImageId) {
+			blockClasses.push('has-bg-image');
+			backgroundImageUrl = backgroundImageData.sizes && backgroundImageData.sizes.fullscreen ? backgroundImageData.sizes.fullscreen.url : backgroundImageData.url;
+		}
+		
+		if(backgroundVideoEnabled && backgroundVideoUrl) {
+			let posterImageUrl = backgroundImageUrl ? backgroundImageUrl : '';
+			blockClasses.push('has-bg-video');
+			bgMediaClasses.push('bg-video');
+
+			return (
+
+				<div className={ blockClasses.join(' ') } key="container">
+					<div className="container-bg" style={ bgStyle }>
+						<div class="inner" style={ bgInnerStyles }>
+							<div className={ bgMediaClasses.join(' ') } style={ {
+								opacity: (backgroundImageOpacity / 100),
+								filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+								mixBlendMode: backgroundImageBlendMode
+							} }>
+								<video autoplay muted loop poster={ posterImageUrl }>
+									<source src={ backgroundVideoUrl } type="video/mp4"/>
+								</video>
+							</div>
+						</div>
+					</div>
+					<div className="inner">
+						<div className="container-contents">
+							<div className="inner">
+								<InnerBlocks.Content />
+							</div>
+						</div>
+					</div>
+					{ linkUrl && <a href={ linkUrl } class="container-link"></a> }
+				</div>
+	
+			);
+		}
+
+		bgMediaClasses.push('bg-image');
+
 		return (
 
 			<div className={ blockClasses.join(' ') } key="container">
 				<div className="container-bg" style={ bgStyle }>
 					<div class="inner" style={ bgInnerStyles }>
-						{ bgMedia }
+						{ backgroundImageUrl && <div className={ bgMediaClasses.join(' ') } style={ {
+							backgroundImage: 'url(' + backgroundImageUrl + ')',
+							opacity: (backgroundImageOpacity / 100),
+							backgroundPosition: `${ backgroundImageFocalPoint.x * 100 }% ${ backgroundImageFocalPoint.y * 100 }%`,
+							filter: `grayscale(${ backgroundImageGrayscale / 100 })`,
+							mixBlendMode: backgroundImageBlendMode,
+							backgroundSize: backgroundImageContain ? 'contain' : 'cover'
+						} }></div> }
 					</div>
 				</div>
 				<div className="inner">
