@@ -531,7 +531,11 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 			if ( ! $post_id ) return;
 			if ( ! check_admin_referer( 'publish-client-story-s-' . $post_id ) ) return;
 
-			wp_update_post( array( 'ID' => $post_id, 'post_status' => 'publish' ) );
+			if ( is_main_site() ) {
+				wp_update_post( array( 'ID' => $post_id, 'post_status' => 'publish' ) );
+			} else {
+				update_post_meta( $post_id, 'hide_from_index', false );
+			}
 
 			$sendback = admin_url( 'edit.php?post_type=client_story_s' );
 			$sendback = add_query_arg( array( 'published_client_story_s' => $post_id ), $sendback );
@@ -547,7 +551,11 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 			if ( ! $post_id ) return;
 			if ( ! check_admin_referer( 'unpublish-client-story-s-' . $post_id ) ) return;
 
-			wp_update_post( array( 'ID' => $post_id, 'post_status' => 'pending' ) );
+			if ( is_main_site() ) {
+				wp_update_post( array( 'ID' => $post_id, 'post_status' => 'pending' ) );
+			} else {
+				update_post_meta( $post_id, 'hide_from_index', true );
+			}
 
 			$sendback = admin_url( 'edit.php?post_type=client_story_s' );
 			$sendback = add_query_arg( array( 'unpublished_client_story_s' => $post_id ), $sendback );
@@ -562,12 +570,20 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			$post_id = isset( $_GET['published_client_story_s'] ) ? intval( $_GET['published_client_story_s'] ) : 0;
 			if ( $post_id ) {
-				$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been published!', 'crown-client-stories' ) );
+				if ( is_main_site() ) {
+					$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been published!', 'crown-client-stories' ) );
+				} else {
+					$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been added to the client story index.', 'crown-client-stories' ) );
+				}
 			}
 
 			$post_id = isset( $_GET['unpublished_client_story_s'] ) ? intval( $_GET['unpublished_client_story_s'] ) : 0;
 			if ( $post_id ) {
-				$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been unpublished and updated to "pending".', 'crown-client-stories' ) );
+				if ( is_main_site() ) {
+					$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been unpublished and updated to "pending".', 'crown-client-stories' ) );
+				} else {
+					$notices[] = array( 'type' => 'success', 'message' => __( 'The syndicated client story, "' . get_the_title( $post_id ) . '", has been hidden from the client story index.', 'crown-client-stories' ) );
+				}
 			}
 
 			foreach ( $notices as $notice ) {
@@ -601,6 +617,12 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 			} else if ( $post->post_type == 'client_story' && ! is_main_site() && ! in_array( 'do-not-post-to-regional-site', get_post_meta( $post->ID, '__client_story_options' ) ) ) {
 				$post_states['post-syndicated'] = 'Syndicated';
 			}
+			if ( $post->post_type == 'client_story_s' && ! is_main_site() ) {
+				$hide_from_index = get_post_meta( $post->ID, 'hide_from_index', true );
+				if ( $hide_from_index ) {
+					$post_states['post-syndicated-hidden'] = 'Hidden';
+				}
+			}
 			return $post_states;
 		}
 
@@ -610,6 +632,27 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				$actions = array();
 				if ( is_main_site() ) {
 					if ( $post->post_status == 'publish' ) {
+						$actions = array(
+							'unpublish' => sprintf(
+								'<a href="%s" class="submitunpublish" aria-label="%s">%s</a>',
+								wp_nonce_url( add_query_arg( array( 'unpublish_client_story_s' => $post->ID ) ), 'unpublish-client-story-s-' . $post->ID ),
+								esc_attr( sprintf( __( 'Unpublish &#8220;%s&#8221;' ), $post->post_title ) ),
+								_x( 'Unpublish', 'verb' )
+							)
+						);
+					} else {
+						$actions = array(
+							'publish' => sprintf(
+								'<a href="%s" class="submitpublish" aria-label="%s">%s</a>',
+								wp_nonce_url( add_query_arg( array( 'publish_client_story_s' => $post->ID ) ), 'publish-client-story-s-' . $post->ID ),
+								esc_attr( sprintf( __( 'Publish &#8220;%s&#8221;' ), $post->post_title ) ),
+								_x( 'Publish', 'verb' )
+							)
+						);
+					}
+				} else {
+					$hide_from_index = get_post_meta( $post->ID, 'hide_from_index', true );
+					if ( empty( $hide_from_index ) || ! $hide_from_index ) {
 						$actions = array(
 							'unpublish' => sprintf(
 								'<a href="%s" class="submitunpublish" aria-label="%s">%s</a>',

@@ -40,7 +40,13 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 				'posts_per_page' => $atts['postsPerPage'],
 				'paged' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'tax_query' => array(),
-				'meta_query' => array()
+				'meta_query' => array(
+					array(
+						'relation' => 'OR',
+						array( 'key' => 'hide_from_index', 'value' => true, 'compare' => '!=' ),
+						array( 'key' => 'hide_from_index', 'compare' => 'NOT EXISTS' )
+					)
+				)
 			);
 
 			$filters->industry->queried = isset( $_GET[ $filters->industry->key ] ) ? ( is_array( $_GET[ $filters->industry->key ] ) ? $_GET[ $filters->industry->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->industry->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
@@ -108,7 +114,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 				$pull_quote = ob_get_clean();
 			}
 			$pull_quote_position = -1;
-			if ( ! empty( $pull_quote ) && ! $query->is_paged && empty( $query_args['tax_query'] ) && empty( $query_args['meta_query'] ) && ! isset( $query_args['s'] ) ) {
+			if ( ! empty( $pull_quote ) && ! $query->is_paged && empty( $query_args['tax_query'] ) && empty( $filters->letter->queried ) && ! isset( $query_args['s'] ) ) {
 				$pull_quote_position = ceil( $query->post_count / 2 );
 			}
 
