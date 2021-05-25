@@ -38,6 +38,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 
 
 		public static function register_admin_pages() {
+			if ( ! is_main_site() ) return;
 
 			self::$signup_admin_page = new AdminPage( array(
 				'key' => 'signup',
@@ -85,7 +86,15 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 			$queried_program = trim( strtolower( $queried_program ) );
 			$program = null;
 
-			$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+			$programs = array();
+			if ( is_main_site() ) {
+				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+			} else {
+				switch_to_blog( get_main_site_id() );
+				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+				restore_current_blog();
+			}
+
 			foreach ( $programs as $p ) {
 				if ( trim( strtolower( $p['parameter_value'] ) ) == $queried_program ) {
 					$program = (object) $p;
