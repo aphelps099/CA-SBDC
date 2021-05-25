@@ -4337,8 +4337,11 @@ class GFFormDisplay {
 			$error_messages_list = '';
 		}
 
+		$wrapper_class = GFCommon::is_legacy_markup_enabled( $form ) ? 'gform_validation_errors validation_error' : 'gform_validation_errors';
+
 		$validation_errors_markup = sprintf(
-			'<div id="gf_form_focus" tabindex="-1" ></div><div class="gform_validation_errors" id="%s">%s%s</div>',
+			'<div id="gf_form_focus" tabindex="-1" ></div><div class="%s" id="%s">%s%s</div>',
+			$wrapper_class,
 			$validation_container_id,
 			$validation_message_markup,
 			$error_messages_list
