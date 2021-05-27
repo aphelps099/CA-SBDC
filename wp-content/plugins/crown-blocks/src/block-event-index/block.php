@@ -210,7 +210,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
 													$post = get_post( $original_post_id );
 													setup_postdata( $post );
-													if ( ! is_main_site() ) $event_site_title = get_bloginfo( 'name' );
+													$event_site_title = get_bloginfo( 'name' );
 													$switched_site = true;
 												}
 											?>
@@ -226,19 +226,17 @@ if(!class_exists('Crown_Block_Event_Index')) {
 
 															<header class="entry-header">
 
-																<?php if ( $event_site_title ) { ?>
+																<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
+																<?php if ( ! empty( $centers ) ) { ?>
+																	<p class="entry-centers">
+																		<?php foreach ( $centers as $term ) { ?>
+																			<span class="center"><?php echo $term->name; ?></span>
+																		<?php } ?>
+																	</p>
+																<?php } else if ( $event_site_title ) { ?>
 																	<p class="entry-centers">
 																		<span class="center"><?php echo $event_site_title; ?></span>
 																	</p>
-																<?php } else { ?>
-																	<?php $centers = get_the_terms( get_the_ID(), 'post_center' ); ?>
-																	<?php if ( ! empty( $centers ) ) { ?>
-																		<p class="entry-centers">
-																			<?php foreach ( $centers as $term ) { ?>
-																				<span class="center"><?php echo $term->name; ?></span>
-																			<?php } ?>
-																		</p>
-																	<?php } ?>
 																<?php } ?>
 
 																<h3 class="entry-title"><?php the_title(); ?></h3>
