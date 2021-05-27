@@ -191,6 +191,10 @@ $gform-gutter-width: 10px;
 		}
 	}
 
+	&.gform_hidden {
+		display: none;
+	}
+
 	&.field_description_above {
 		.gfield_description {
 			margin: 0 0 5px;

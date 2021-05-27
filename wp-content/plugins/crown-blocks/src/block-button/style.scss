@@ -6,3 +6,12 @@ $spacer: 1rem;
 	&.text-alignment-center { text-align: center; }
 	&.text-alignment-right { text-align: right; }
 }
+
+.collapse.form-event-registration-zoom-meeting {
+	> .inner {
+		padding-top: 1rem;
+	}
+	.gform_wrapper {
+		margin: 0;
+	}
+}

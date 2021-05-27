@@ -60,6 +60,9 @@ registerBlockType('crown-blocks/button', {
 		linkModalFormId: { type: 'string', default: '' },
 		linkModalVideoEmbed: { type: 'string', default: '' },
 		linkModalMeetingId: { type: 'string', default: '' },
+		openEventRegistration: { type: 'boolean', default: false },
+		meetingType: { type: 'string', default: 'meetings' },
+		meetingId: { type: 'string', default: '' }
 	},
 
 
@@ -82,7 +85,10 @@ registerBlockType('crown-blocks/button', {
 			linkModalType,
 			linkModalFormId,
 			linkModalVideoEmbed,
-			linkModalMeetingId
+			linkModalMeetingId,
+			openEventRegistration,
+			meetingId,
+			meetingType
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -117,6 +123,75 @@ registerBlockType('crown-blocks/button', {
 		return [
 
 			<InspectorControls key="inspector-controls">
+
+				<PanelBody title={ 'Link Settings' } initialOpen={ true }>
+
+					<ToggleControl
+						label={ 'Open link in new window' }
+						checked={ openNewWindow }
+						onChange={ (value) => { setAttributes({ openNewWindow: value }); } }
+					/>
+
+					<ToggleControl
+						label={ 'Link opens modal window' }
+						checked={ openModal }
+						onChange={ (value) => { setAttributes({ openModal: value }); } }
+					/>
+
+					{ !! openModal && <SelectControl
+						label="Modal Type"
+						value={ linkModalType }
+						onChange={ (value) => setAttributes({ linkModalType: value }) }
+						options={ [
+							{ label: 'Select Option...', value: '' },
+							{ label: 'Form', value: 'form' },
+							{ label: 'Subscribe', value: 'subscribe' },
+							{ label: 'Video', value: 'video' },
+							{ label: 'Zoom Meeting Registration', value: 'zoom_meeting_registration' }
+						] }
+					/> }
+
+					{ !! (openModal && linkModalType == 'form') && <TextControl
+						label="Form ID"
+						value={ linkModalFormId }
+						onChange={ (value) => setAttributes({ linkModalFormId: value }) }
+					/> }
+
+					{ !! (openModal && linkModalType == 'video') && <TextControl
+						label="Video Embed URL"
+						value={ linkModalVideoEmbed }
+						onChange={ (value) => setAttributes({ linkModalVideoEmbed: value }) }
+					/> }
+
+					{ !! (openModal && linkModalType == 'zoom_meeting_registration') && <TextControl
+						label="Meeting ID"
+						value={ linkModalMeetingId }
+						onChange={ (value) => setAttributes({ linkModalMeetingId: value }) }
+					/> }
+
+					<ToggleControl
+						label={ 'Link opens event registration' }
+						checked={ openEventRegistration }
+						onChange={ (value) => { setAttributes({ openEventRegistration: value }); } }
+					/>
+
+					{ !! openEventRegistration && <SelectControl
+						label="Meeting Type"
+						value={ meetingType }
+						onChange={ (value) => setAttributes({ meetingType: value }) }
+						options={ [
+							{ value: 'meetings', label: 'Meeting' },
+							{ value: 'webinars', label: 'Webinar' }
+						] }
+					/> }
+
+					{ !! openEventRegistration && <TextControl
+						label="Meeting ID"
+						value={ meetingId }
+						onChange={ (value) => setAttributes({ meetingId: value }) }
+					/> }
+
+				</PanelBody>
 
 				<PanelColorSettings
 					title={ 'Color' }
@@ -190,53 +265,6 @@ registerBlockType('crown-blocks/button', {
 
 				</PanelBody>
 
-				<PanelBody title={ 'Link Settings' } initialOpen={ true }>
-
-					<ToggleControl
-						label={ 'Open link in new window' }
-						checked={ openNewWindow }
-						onChange={ (value) => { setAttributes({ openNewWindow: value }); } }
-					/>
-
-					<ToggleControl
-						label={ 'Link opens modal window' }
-						checked={ openModal }
-						onChange={ (value) => { setAttributes({ openModal: value }); } }
-					/>
-
-					{ !! openModal && <SelectControl
-						label="Modal Type"
-						value={ linkModalType }
-						onChange={ (value) => setAttributes({ linkModalType: value }) }
-						options={ [
-							{ label: 'Select Option...', value: '' },
-							{ label: 'Form', value: 'form' },
-							{ label: 'Subscribe', value: 'subscribe' },
-							{ label: 'Video', value: 'video' },
-							{ label: 'Zoom Meeting Registration', value: 'zoom_meeting_registration' }
-						] }
-					/> }
-
-					{ !! (openModal && linkModalType == 'form') && <TextControl
-						label="Form ID"
-						value={ linkModalFormId }
-						onChange={ (value) => setAttributes({ linkModalFormId: value }) }
-					/> }
-
-					{ !! (openModal && linkModalType == 'video') && <TextControl
-						label="Video Embed URL"
-						value={ linkModalVideoEmbed }
-						onChange={ (value) => setAttributes({ linkModalVideoEmbed: value }) }
-					/> }
-
-					{ !! (openModal && linkModalType == 'zoom_meeting_registration') && <TextControl
-						label="Meeting ID"
-						value={ linkModalMeetingId }
-						onChange={ (value) => setAttributes({ linkModalMeetingId: value }) }
-					/> }
-
-				</PanelBody>
-
 			</InspectorControls>,
 
 			<div class="crown-block-editor-container">
@@ -295,7 +323,10 @@ registerBlockType('crown-blocks/button', {
 			linkModalType,
 			linkModalFormId,
 			linkModalVideoEmbed,
-			linkModalMeetingId
+			linkModalMeetingId,
+			openEventRegistration,
+			meetingId,
+			meetingType
 		} = attributes;
 
 		let blockClasses = [ className ];
@@ -368,6 +399,16 @@ registerBlockType('crown-blocks/button', {
 					</p>
 				);
 			}
+
+		} else if(openEventRegistration) {
+
+			return (
+				<p className={ blockClasses.join(' ') }>
+					<button className={ buttonClasses.join(' ') } data-toggle="collapse" data-target={ '#form-event-registration-zoom-meeting-' + parseInt(meetingId) }>
+						<span class="btn-label">{ label }</span>
+					</button>
+				</p>
+			);
 
 		}
 

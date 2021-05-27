@@ -25025,6 +25025,9 @@ nav.pagination {
 .gfield.no-label .gfield_label, .gfield.hidden_label .gfield_label {
   display: none; }
 
+.gfield.gform_hidden {
+  display: none; }
+
 .gfield.field_description_above .gfield_description {
   margin: 0 0 5px; }
   .gfield.field_description_above .gfield_description.validation_message {
