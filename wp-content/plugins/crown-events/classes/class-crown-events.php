@@ -741,7 +741,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		public static function filter_post_row_actions( $actions, $post ) {
 			if ( $post->post_type == 'event_s' ) {
 				$actions = array();
-				if ( is_main_site() ) {
+				// if ( is_main_site() ) {
 					if ( $post->post_status == 'publish' ) {
 						$actions = array(
 							'unpublish' => sprintf(
@@ -761,7 +761,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 							)
 						);
 					}
-				}
+				// }
 			}
 			return $actions;
 		}
