@@ -15326,6 +15326,996 @@ readers do not read off random characters that represent icons */
 .icomoon-icon-arrow-right-display:before {
   content: ""; }
 
+@font-face {
+  font-family: 'ss-gizmo';
+  src: url("../fonts/ss-gizmo/ss-gizmo.eot?y3hcw8");
+  src: url("../fonts/ss-gizmo/ss-gizmo.eot?y3hcw8#iefix") format("embedded-opentype"), url("../fonts/ss-gizmo/ss-gizmo.ttf?y3hcw8") format("truetype"), url("../fonts/ss-gizmo/ss-gizmo.woff?y3hcw8") format("woff"), url("../fonts/ss-gizmo/ss-gizmo.svg?y3hcw8#ss-gizmo") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; }
+
+.gizmo-icon {
+  font-family: 'ss-gizmo' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+  .gizmo-icon.primary {
+    color: #032040; }
+  .gizmo-icon.secondary {
+    color: #0381C3; }
+  .gizmo-icon.success {
+    color: #84C318; }
+  .gizmo-icon.info {
+    color: #17a2b8; }
+  .gizmo-icon.warning {
+    color: #ffc107; }
+  .gizmo-icon.danger {
+    color: #D11141; }
+  .gizmo-icon.light {
+    color: #FFFFFF; }
+  .gizmo-icon.dark {
+    color: #343a40; }
+  .gizmo-icon.dark-blue {
+    color: #032040; }
+  .gizmo-icon.dark-med-blue {
+    color: #012D61; }
+  .gizmo-icon.blue {
+    color: #0381C3; }
+  .gizmo-icon.light-med-blue {
+    color: #98DBF9; }
+  .gizmo-icon.light-blue {
+    color: #D0E4F8; }
+  .gizmo-icon.x-light-blue {
+    color: #F4F8FD; }
+  .gizmo-icon.red {
+    color: #D11141; }
+  .gizmo-icon.green {
+    color: #84C318; }
+  .gizmo-icon.gray {
+    color: #696D7D; }
+  .gizmo-icon.rain {
+    color: #6A8EAE; }
+  .gizmo-icon.dark-gray {
+    color: #343a40; }
+  .gizmo-icon.light-gray {
+    color: #CFD2D8; }
+  .gizmo-icon.ghost {
+    color: #E0E0E0; }
+  .gizmo-icon.white {
+    color: #FFFFFF; }
+
+.gizmo-icon-cursor:before {
+  content: ""; }
+
+.gizmo-icon-crosshair:before {
+  content: ""; }
+
+.gizmo-icon-search:before {
+  content: ""; }
+
+.gizmo-icon-zoomin:before {
+  content: ""; }
+
+.gizmo-icon-zoomout:before {
+  content: ""; }
+
+.gizmo-icon-view:before {
+  content: ""; }
+
+.gizmo-icon-attach:before {
+  content: ""; }
+
+.gizmo-icon-link:before {
+  content: ""; }
+
+.gizmo-icon-unlink:before {
+  content: ""; }
+
+.gizmo-icon-move:before {
+  content: ""; }
+
+.gizmo-icon-write:before {
+  content: ""; }
+
+.gizmo-icon-writingdisabled:before {
+  content: ""; }
+
+.gizmo-icon-erase:before {
+  content: ""; }
+
+.gizmo-icon-compose:before {
+  content: ""; }
+
+.gizmo-icon-lock:before {
+  content: ""; }
+
+.gizmo-icon-unlock:before {
+  content: ""; }
+
+.gizmo-icon-key:before {
+  content: ""; }
+
+.gizmo-icon-backspace:before {
+  content: ""; }
+
+.gizmo-icon-ban:before {
+  content: ""; }
+
+.gizmo-icon-smoking:before {
+  content: ""; }
+
+.gizmo-icon-nosmoking:before {
+  content: ""; }
+
+.gizmo-icon-trash:before {
+  content: ""; }
+
+.gizmo-icon-target:before {
+  content: ""; }
+
+.gizmo-icon-tag:before {
+  content: ""; }
+
+.gizmo-icon-bookmark:before {
+  content: ""; }
+
+.gizmo-icon-flag:before {
+  content: ""; }
+
+.gizmo-icon-like:before {
+  content: ""; }
+
+.gizmo-icon-dislike:before {
+  content: ""; }
+
+.gizmo-icon-heart:before {
+  content: ""; }
+
+.gizmo-icon-star:before {
+  content: ""; }
+
+.gizmo-icon-sample:before {
+  content: ""; }
+
+.gizmo-icon-crop:before {
+  content: ""; }
+
+.gizmo-icon-layers:before {
+  content: ""; }
+
+.gizmo-icon-layergroup:before {
+  content: ""; }
+
+.gizmo-icon-pen:before {
+  content: ""; }
+
+.gizmo-icon-bezier:before {
+  content: ""; }
+
+.gizmo-icon-pixels:before {
+  content: ""; }
+
+.gizmo-icon-phone:before {
+  content: ""; }
+
+.gizmo-icon-phonedisabled:before {
+  content: ""; }
+
+.gizmo-icon-touchtonephone:before {
+  content: ""; }
+
+.gizmo-icon-mail:before {
+  content: ""; }
+
+.gizmo-icon-inbox:before {
+  content: ""; }
+
+.gizmo-icon-outbox:before {
+  content: ""; }
+
+.gizmo-icon-chat:before {
+  content: ""; }
+
+.gizmo-icon-user:before {
+  content: ""; }
+
+.gizmo-icon-users:before {
+  content: ""; }
+
+.gizmo-icon-usergroup:before {
+  content: ""; }
+
+.gizmo-icon-businessuser:before {
+  content: ""; }
+
+.gizmo-icon-man:before {
+  content: ""; }
+
+.gizmo-icon-male:before {
+  content: ""; }
+
+.gizmo-icon-woman:before {
+  content: ""; }
+
+.gizmo-icon-female:before {
+  content: ""; }
+
+.gizmo-icon-raisedhand:before {
+  content: ""; }
+
+.gizmo-icon-hand:before {
+  content: ""; }
+
+.gizmo-icon-pointup:before {
+  content: ""; }
+
+.gizmo-icon-pointupright:before {
+  content: ""; }
+
+.gizmo-icon-pointright:before {
+  content: ""; }
+
+.gizmo-icon-pointdownright:before {
+  content: ""; }
+
+.gizmo-icon-pointdown:before {
+  content: ""; }
+
+.gizmo-icon-pointdownleft:before {
+  content: ""; }
+
+.gizmo-icon-pointleft:before {
+  content: ""; }
+
+.gizmo-icon-pointupleft:before {
+  content: ""; }
+
+.gizmo-icon-cart:before {
+  content: ""; }
+
+.gizmo-icon-creditcard:before {
+  content: ""; }
+
+.gizmo-icon-calculator:before {
+  content: ""; }
+
+.gizmo-icon-barchart:before {
+  content: ""; }
+
+.gizmo-icon-piechart:before {
+  content: ""; }
+
+.gizmo-icon-box:before {
+  content: ""; }
+
+.gizmo-icon-home:before {
+  content: ""; }
+
+.gizmo-icon-globe:before {
+  content: ""; }
+
+.gizmo-icon-navigate:before {
+  content: ""; }
+
+.gizmo-icon-compass:before {
+  content: ""; }
+
+.gizmo-icon-signpost:before {
+  content: ""; }
+
+.gizmo-icon-location:before {
+  content: ""; }
+
+.gizmo-icon-floppydisk:before {
+  content: ""; }
+
+.gizmo-icon-database:before {
+  content: ""; }
+
+.gizmo-icon-hdd:before {
+  content: ""; }
+
+.gizmo-icon-microchip:before {
+  content: ""; }
+
+.gizmo-icon-music:before {
+  content: ""; }
+
+.gizmo-icon-headphones:before {
+  content: ""; }
+
+.gizmo-icon-discdrive:before {
+  content: ""; }
+
+.gizmo-icon-volume:before {
+  content: ""; }
+
+.gizmo-icon-lowvolume:before {
+  content: ""; }
+
+.gizmo-icon-mediumvolume:before {
+  content: ""; }
+
+.gizmo-icon-highvolume:before {
+  content: ""; }
+
+.gizmo-icon-airplay:before {
+  content: ""; }
+
+.gizmo-icon-camera:before {
+  content: ""; }
+
+.gizmo-icon-picture:before {
+  content: ""; }
+
+.gizmo-icon-video:before {
+  content: ""; }
+
+.gizmo-icon-webcam:before {
+  content: ""; }
+
+.gizmo-icon-film:before {
+  content: ""; }
+
+.gizmo-icon-playvideo:before {
+  content: ""; }
+
+.gizmo-icon-videogame:before {
+  content: ""; }
+
+.gizmo-icon-play:before {
+  content: ""; }
+
+.gizmo-icon-pause:before {
+  content: ""; }
+
+.gizmo-icon-stop:before {
+  content: ""; }
+
+.gizmo-icon-record:before {
+  content: ""; }
+
+.gizmo-icon-rewind:before {
+  content: ""; }
+
+.gizmo-icon-fastforward:before {
+  content: ""; }
+
+.gizmo-icon-skipback:before {
+  content: ""; }
+
+.gizmo-icon-skipforward:before {
+  content: ""; }
+
+.gizmo-icon-eject:before {
+  content: ""; }
+
+.gizmo-icon-repeat:before {
+  content: ""; }
+
+.gizmo-icon-replay:before {
+  content: ""; }
+
+.gizmo-icon-shuffle:before {
+  content: ""; }
+
+.gizmo-icon-index:before {
+  content: ""; }
+
+.gizmo-icon-storagebox:before {
+  content: ""; }
+
+.gizmo-icon-book:before {
+  content: ""; }
+
+.gizmo-icon-notebook:before {
+  content: ""; }
+
+.gizmo-icon-newspaper:before {
+  content: ""; }
+
+.gizmo-icon-gridlines:before {
+  content: ""; }
+
+.gizmo-icon-rows:before {
+  content: ""; }
+
+.gizmo-icon-columns:before {
+  content: ""; }
+
+.gizmo-icon-thumbnails:before {
+  content: ""; }
+
+.gizmo-icon-mouse:before {
+  content: ""; }
+
+.gizmo-icon-usb:before {
+  content: ""; }
+
+.gizmo-icon-desktop:before {
+  content: ""; }
+
+.gizmo-icon-laptop:before {
+  content: ""; }
+
+.gizmo-icon-tablet:before {
+  content: ""; }
+
+.gizmo-icon-smartphone:before {
+  content: ""; }
+
+.gizmo-icon-cell:before {
+  content: ""; }
+
+.gizmo-icon-battery:before {
+  content: ""; }
+
+.gizmo-icon-highbattery:before {
+  content: ""; }
+
+.gizmo-icon-mediumbattery:before {
+  content: ""; }
+
+.gizmo-icon-lowbattery:before {
+  content: ""; }
+
+.gizmo-icon-chargingbattery:before {
+  content: ""; }
+
+.gizmo-icon-lightbulb:before {
+  content: ""; }
+
+.gizmo-icon-washer:before {
+  content: ""; }
+
+.gizmo-icon-downloadcloud:before {
+  content: ""; }
+
+.gizmo-icon-download:before {
+  content: ""; }
+
+.gizmo-icon-downloadbox:before {
+  content: ""; }
+
+.gizmo-icon-uploadcloud:before {
+  content: ""; }
+
+.gizmo-icon-upload:before {
+  content: ""; }
+
+.gizmo-icon-uploadbox:before {
+  content: ""; }
+
+.gizmo-icon-fork:before {
+  content: ""; }
+
+.gizmo-icon-merge:before {
+  content: ""; }
+
+.gizmo-icon-refresh:before {
+  content: ""; }
+
+.gizmo-icon-sync:before {
+  content: ""; }
+
+.gizmo-icon-loading:before {
+  content: ""; }
+
+.gizmo-icon-file:before {
+  content: ""; }
+
+.gizmo-icon-files:before {
+  content: ""; }
+
+.gizmo-icon-addfile:before {
+  content: ""; }
+
+.gizmo-icon-removefile:before {
+  content: ""; }
+
+.gizmo-icon-checkfile:before {
+  content: ""; }
+
+.gizmo-icon-deletefile:before {
+  content: ""; }
+
+.gizmo-icon-exe:before {
+  content: ""; }
+
+.gizmo-icon-zip:before {
+  content: ""; }
+
+.gizmo-icon-doc:before {
+  content: ""; }
+
+.gizmo-icon-pdf:before {
+  content: ""; }
+
+.gizmo-icon-jpg:before {
+  content: ""; }
+
+.gizmo-icon-png:before {
+  content: ""; }
+
+.gizmo-icon-mpthree:before {
+  content: ""; }
+
+.gizmo-icon-rar:before {
+  content: ""; }
+
+.gizmo-icon-gif:before {
+  content: ""; }
+
+.gizmo-icon-folder:before {
+  content: ""; }
+
+.gizmo-icon-openfolder:before {
+  content: ""; }
+
+.gizmo-icon-downloadfolder:before {
+  content: ""; }
+
+.gizmo-icon-uploadfolder:before {
+  content: ""; }
+
+.gizmo-icon-quote:before {
+  content: ""; }
+
+.gizmo-icon-unquote:before {
+  content: ""; }
+
+.gizmo-icon-print:before {
+  content: ""; }
+
+.gizmo-icon-copier:before {
+  content: ""; }
+
+.gizmo-icon-fax:before {
+  content: ""; }
+
+.gizmo-icon-scanner:before {
+  content: ""; }
+
+.gizmo-icon-printregistration:before {
+  content: ""; }
+
+.gizmo-icon-shredder:before {
+  content: ""; }
+
+.gizmo-icon-expand:before {
+  content: ""; }
+
+.gizmo-icon-contract:before {
+  content: ""; }
+
+.gizmo-icon-help:before {
+  content: ""; }
+
+.gizmo-icon-info:before {
+  content: ""; }
+
+.gizmo-icon-alert:before {
+  content: ""; }
+
+.gizmo-icon-caution:before {
+  content: ""; }
+
+.gizmo-icon-logout:before {
+  content: ""; }
+
+.gizmo-icon-login:before {
+  content: ""; }
+
+.gizmo-icon-scaleup:before {
+  content: ""; }
+
+.gizmo-icon-scaledown:before {
+  content: ""; }
+
+.gizmo-icon-plus:before {
+  content: ""; }
+
+.gizmo-icon-hyphen:before {
+  content: ""; }
+
+.gizmo-icon-check:before {
+  content: ""; }
+
+.gizmo-icon-delete:before {
+  content: ""; }
+
+.gizmo-icon-notifications:before {
+  content: ""; }
+
+.gizmo-icon-notificationsdisabled:before {
+  content: ""; }
+
+.gizmo-icon-clock:before {
+  content: ""; }
+
+.gizmo-icon-stopwatch:before {
+  content: ""; }
+
+.gizmo-icon-alarmclock:before {
+  content: ""; }
+
+.gizmo-icon-egg:before {
+  content: ""; }
+
+.gizmo-icon-eggs:before {
+  content: ""; }
+
+.gizmo-icon-cheese:before {
+  content: ""; }
+
+.gizmo-icon-chickenleg:before {
+  content: ""; }
+
+.gizmo-icon-pizzapie:before {
+  content: ""; }
+
+.gizmo-icon-pizza:before {
+  content: ""; }
+
+.gizmo-icon-cheesepizza:before {
+  content: ""; }
+
+.gizmo-icon-frenchfries:before {
+  content: ""; }
+
+.gizmo-icon-apple:before {
+  content: ""; }
+
+.gizmo-icon-carrot:before {
+  content: ""; }
+
+.gizmo-icon-broccoli:before {
+  content: ""; }
+
+.gizmo-icon-cucumber:before {
+  content: ""; }
+
+.gizmo-icon-orange:before {
+  content: ""; }
+
+.gizmo-icon-lemon:before {
+  content: ""; }
+
+.gizmo-icon-onion:before {
+  content: ""; }
+
+.gizmo-icon-bellpepper:before {
+  content: ""; }
+
+.gizmo-icon-peas:before {
+  content: ""; }
+
+.gizmo-icon-grapes:before {
+  content: ""; }
+
+.gizmo-icon-strawberry:before {
+  content: ""; }
+
+.gizmo-icon-bread:before {
+  content: ""; }
+
+.gizmo-icon-mug:before {
+  content: ""; }
+
+.gizmo-icon-mugs:before {
+  content: ""; }
+
+.gizmo-icon-espresso:before {
+  content: ""; }
+
+.gizmo-icon-macchiato:before {
+  content: ""; }
+
+.gizmo-icon-cappucino:before {
+  content: ""; }
+
+.gizmo-icon-latte:before {
+  content: ""; }
+
+.gizmo-icon-icedcoffee:before {
+  content: ""; }
+
+.gizmo-icon-coffeebean:before {
+  content: ""; }
+
+.gizmo-icon-coffeemilk:before {
+  content: ""; }
+
+.gizmo-icon-coffeefoam:before {
+  content: ""; }
+
+.gizmo-icon-coffeesugar:before {
+  content: ""; }
+
+.gizmo-icon-sugarpackets:before {
+  content: ""; }
+
+.gizmo-icon-capsule:before {
+  content: ""; }
+
+.gizmo-icon-capsulerecycling:before {
+  content: ""; }
+
+.gizmo-icon-insertcapsule:before {
+  content: ""; }
+
+.gizmo-icon-tea:before {
+  content: ""; }
+
+.gizmo-icon-teabag:before {
+  content: ""; }
+
+.gizmo-icon-jug:before {
+  content: ""; }
+
+.gizmo-icon-pitcher:before {
+  content: ""; }
+
+.gizmo-icon-kettle:before {
+  content: ""; }
+
+.gizmo-icon-wineglass:before {
+  content: ""; }
+
+.gizmo-icon-sugar:before {
+  content: ""; }
+
+.gizmo-icon-oven:before {
+  content: ""; }
+
+.gizmo-icon-stove:before {
+  content: ""; }
+
+.gizmo-icon-vent:before {
+  content: ""; }
+
+.gizmo-icon-exhaust:before {
+  content: ""; }
+
+.gizmo-icon-steam:before {
+  content: ""; }
+
+.gizmo-icon-steamplate:before {
+  content: ""; }
+
+.gizmo-icon-steamglass:before {
+  content: ""; }
+
+.gizmo-icon-steampot:before {
+  content: ""; }
+
+.gizmo-icon-dishwasher:before {
+  content: ""; }
+
+.gizmo-icon-toaster:before {
+  content: ""; }
+
+.gizmo-icon-microwave:before {
+  content: ""; }
+
+.gizmo-icon-electrickettle:before {
+  content: ""; }
+
+.gizmo-icon-refrigerator:before {
+  content: ""; }
+
+.gizmo-icon-freezer:before {
+  content: ""; }
+
+.gizmo-icon-utensils:before {
+  content: ""; }
+
+.gizmo-icon-cookingutensils:before {
+  content: ""; }
+
+.gizmo-icon-whisk:before {
+  content: ""; }
+
+.gizmo-icon-pizzacutter:before {
+  content: ""; }
+
+.gizmo-icon-measuringcup:before {
+  content: ""; }
+
+.gizmo-icon-colander:before {
+  content: ""; }
+
+.gizmo-icon-eggtimer:before {
+  content: ""; }
+
+.gizmo-icon-platter:before {
+  content: ""; }
+
+.gizmo-icon-plates:before {
+  content: ""; }
+
+.gizmo-icon-cups:before {
+  content: ""; }
+
+.gizmo-icon-pot:before {
+  content: ""; }
+
+.gizmo-icon-chef:before {
+  content: ""; }
+
+.gizmo-icon-weathervane:before {
+  content: ""; }
+
+.gizmo-icon-thermometer:before {
+  content: ""; }
+
+.gizmo-icon-thermometerup:before {
+  content: ""; }
+
+.gizmo-icon-thermometerdown:before {
+  content: ""; }
+
+.gizmo-icon-droplet:before {
+  content: ""; }
+
+.gizmo-icon-sunrise:before {
+  content: ""; }
+
+.gizmo-icon-sunset:before {
+  content: ""; }
+
+.gizmo-icon-sun:before {
+  content: ""; }
+
+.gizmo-icon-cloud:before {
+  content: ""; }
+
+.gizmo-icon-clouds:before {
+  content: ""; }
+
+.gizmo-icon-partlycloudy:before {
+  content: ""; }
+
+.gizmo-icon-rain:before {
+  content: ""; }
+
+.gizmo-icon-rainheavy:before {
+  content: ""; }
+
+.gizmo-icon-lightning:before {
+  content: ""; }
+
+.gizmo-icon-thunderstorm:before {
+  content: ""; }
+
+.gizmo-icon-umbrella:before {
+  content: ""; }
+
+.gizmo-icon-rainumbrella:before {
+  content: ""; }
+
+.gizmo-icon-rainbow:before {
+  content: ""; }
+
+.gizmo-icon-rainbowclouds:before {
+  content: ""; }
+
+.gizmo-icon-fog:before {
+  content: ""; }
+
+.gizmo-icon-wind:before {
+  content: ""; }
+
+.gizmo-icon-tornado:before {
+  content: ""; }
+
+.gizmo-icon-snowflake:before {
+  content: ""; }
+
+.gizmo-icon-snowcrystal:before {
+  content: ""; }
+
+.gizmo-icon-lightsnow:before {
+  content: ""; }
+
+.gizmo-icon-snow:before {
+  content: ""; }
+
+.gizmo-icon-heavysnow:before {
+  content: ""; }
+
+.gizmo-icon-hail:before {
+  content: ""; }
+
+.gizmo-icon-crescentmoon:before {
+  content: ""; }
+
+.gizmo-icon-waxingcrescentmoon:before {
+  content: ""; }
+
+.gizmo-icon-firstquartermoon:before {
+  content: ""; }
+
+.gizmo-icon-waxinggibbousmoon:before {
+  content: ""; }
+
+.gizmo-icon-waninggibbousmoon:before {
+  content: ""; }
+
+.gizmo-icon-lastquartermoon:before {
+  content: ""; }
+
+.gizmo-icon-waningcrescentmoon:before {
+  content: ""; }
+
+.gizmo-icon-fan:before {
+  content: ""; }
+
+.gizmo-icon-bike:before {
+  content: ""; }
+
+.gizmo-icon-wheelchair:before {
+  content: ""; }
+
+.gizmo-icon-briefcase:before {
+  content: ""; }
+
+.gizmo-icon-hanger:before {
+  content: ""; }
+
+.gizmo-icon-comb:before {
+  content: ""; }
+
+.gizmo-icon-medicalcross:before {
+  content: ""; }
+
+.gizmo-icon-up:before {
+  content: ""; }
+
+.gizmo-icon-upright:before {
+  content: ""; }
+
+.gizmo-icon-right:before {
+  content: ""; }
+
+.gizmo-icon-downright:before {
+  content: ""; }
+
+.gizmo-icon-down:before {
+  content: ""; }
+
+.gizmo-icon-downleft:before {
+  content: ""; }
+
+.gizmo-icon-left:before {
+  content: ""; }
+
+.gizmo-icon-upleft:before {
+  content: ""; }
+
+.gizmo-icon-navigateup:before {
+  content: ""; }
+
+.gizmo-icon-navigateright:before {
+  content: ""; }
+
+.gizmo-icon-navigatedown:before {
+  content: ""; }
+
+.gizmo-icon-navigateleft:before {
+  content: ""; }
+
+.gizmo-icon-retweet:before {
+  content: ""; }
+
+.gizmo-icon-share:before {
+  content: ""; }
+
 body {
   line-height: 1.46; }
 

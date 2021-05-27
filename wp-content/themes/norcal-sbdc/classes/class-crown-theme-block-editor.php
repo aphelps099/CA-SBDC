@@ -8,6 +8,7 @@ if ( ! class_exists( 'Crown_Theme_Block_Editor' ) ) {
 
 			add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_scripts' ) );
 			add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_styles' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_styles' ) );
 
 		}
 
@@ -40,6 +41,23 @@ if ( ! class_exists( 'Crown_Theme_Block_Editor' ) ) {
 				array(),
 				null
 			);
+
+		}
+
+
+		public static function enqueue_admin_styles( $hook ) {
+			
+			$screen = get_current_screen();
+			if ( $screen->base == 'post' ) {
+
+				wp_enqueue_style(
+					'crown-theme-icons-ss-gizmo',
+					Crown_Theme::get_uri() . '/assets/fonts/ss-gizmo/ss-gizmo.css',
+					array(),
+					null
+				);
+
+			}
 
 		}
 

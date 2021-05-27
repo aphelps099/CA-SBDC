@@ -26,6 +26,8 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			add_filter( 'crown_theme_colors', array( __CLASS__, 'filter_crown_theme_colors' ), 10, 2 );
 			add_filter( 'crown_google_map_styles', array( __CLASS__, 'filter_crown_google_map_styles' ) );
 
+			add_filter( 'jvm_richtext_icons_iconset_file', array( __CLASS__, 'filter_jvm_richtext_icons_iconset_file' ) );
+
 		}
 
 
@@ -211,6 +213,13 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 			$path = Crown_Theme::get_dir() . '/assets/data/google-map-styles.json';
 			if ( ! file_exists( $path ) ) return $styles;
 			return json_decode( file_get_contents( $path ) );
+		}
+
+
+		public static function filter_jvm_richtext_icons_iconset_file( $file ) {
+			$path = Crown_Theme::get_dir() . '/assets/data/font-icon-classes.json';
+			if ( file_exists( $path ) ) $file = $path;
+			return $file;
 		}
 
 
