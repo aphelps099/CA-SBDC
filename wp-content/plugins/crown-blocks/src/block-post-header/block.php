@@ -69,7 +69,7 @@ if(!class_exists('Crown_Block_Post_Header')) {
 			ob_start();
 			?>
 
-				<header class="<?php echo implode( ' ', $block_class); ?>">
+				<div class="<?php echo implode( ' ', $block_class); ?>">
 					<div class="header-bg" style="<?php echo implode( ' ', $bg_style ); ?>">
 						<?php if ( ! empty( $background_image_url ) ) { ?>
 							<?php $bg_image_style = array(
@@ -121,7 +121,7 @@ if(!class_exists('Crown_Block_Post_Header')) {
 							<?php ct_social_sharing_links(); ?>
 						</div>
 					<?php } ?>
-				</header>
+				</div>
 
 			<?php
 			$output = ob_get_clean();

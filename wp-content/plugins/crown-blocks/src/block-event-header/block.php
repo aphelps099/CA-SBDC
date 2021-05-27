@@ -43,7 +43,7 @@ if(!class_exists('Crown_Block_Event_Header')) {
 			// print_r($atts);
 			?>
 
-				<header class="<?php echo implode( ' ', $block_class); ?>">
+				<div class="<?php echo implode( ' ', $block_class); ?>">
 					<div class="header-bg">
 						<?php if ( ! empty( $background_image_url ) ) { ?>
 							<div class="bg-image" style="background-image: url(<?php echo $background_image_url; ?>); background-position: <?php echo floatval( $atts['backgroundImageFocalPoint']['x'] ) * 100; ?>% <?php echo floatval( $atts['backgroundImageFocalPoint']['y'] ) * 100; ?>%;"></div>
@@ -119,7 +119,7 @@ if(!class_exists('Crown_Block_Event_Header')) {
 							</div>
 						</div>
 					</div>
-				</header>
+				</div>
 
 			<?php
 			$output = ob_get_clean();

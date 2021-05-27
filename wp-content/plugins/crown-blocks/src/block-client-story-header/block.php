@@ -44,7 +44,7 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 			// print_r($atts);
 			?>
 
-				<header class="<?php echo implode( ' ', $block_class); ?>">
+				<div class="<?php echo implode( ' ', $block_class); ?>">
 					<div class="header-bg"></div>
 					<div class="inner">
 						<div class="header-contents">
@@ -104,7 +104,7 @@ if(!class_exists('Crown_Block_Client_Story_Header')) {
 							</div>
 						</div>
 					</div>
-				</header>
+				</div>
 
 			<?php
 			$output = ob_get_clean();

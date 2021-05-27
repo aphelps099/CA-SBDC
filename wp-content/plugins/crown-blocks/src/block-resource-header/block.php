@@ -59,7 +59,7 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 			// print_r($atts);
 			?>
 
-				<header class="<?php echo implode( ' ', $block_class); ?>">
+				<div class="<?php echo implode( ' ', $block_class); ?>">
 					<div class="header-bg" style="background-color: <?php echo $bg_color; ?>;"></div>
 					<div class="inner">
 						<div class="header-contents">
@@ -107,7 +107,7 @@ if(!class_exists('Crown_Block_Resource_Header')) {
 							<?php ct_social_sharing_links(); ?>
 						</div>
 					<?php } ?>
-				</header>
+				</div>
 
 			<?php
 			$output = ob_get_clean();
