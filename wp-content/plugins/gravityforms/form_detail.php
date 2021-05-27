@@ -2696,8 +2696,6 @@ case 'invalid_json' :
 	 */
 	private static function display_buttons( $buttons ) {
 		foreach ( $buttons as $button ) {
-			unset( $button['class'] );
-
 			$button['data-icon']        = empty( $button['data-icon'] ) ? 'gform-icon--cog' : $button['data-icon'];
 			$button['data-description'] = empty( $button['data-description'] ) ? sprintf( esc_attr__( 'Add a %s field to your form.', 'gravityforms' ), $button['value'] ) : $button['data-description'];
 			?>

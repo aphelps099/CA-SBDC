@@ -5765,51 +5765,40 @@ div.settings_control_container div.gfield_admin_header_title, div.gfield_admin_i
 
 /* visible value field with price */
 
-.choice_with_value_and_price li input.field-choice-text {
-	width: 103px !important;
-}
-
 .choice_with_value_and_price li input.field-choice-value {
-	display: inline !important;
-	width: 103px !important;
+	display: flex !important;
 }
 
 .choice_with_value_and_price li input.field-choice-price {
-	display: inline !important;
-	width: 103px !important;
+	display: flex !important;
 }
 
 .choice_with_value_and_price .gfield_choice_header_label {
-	display: inline !important;
+	display: inline-block !important;
 }
 
 .choice_with_value_and_price .gfield_choice_header_value {
-	display: inline !important;
+	display: inline-block !important;
 	padding-left: 70px;
 }
 
 .choice_with_value_and_price .gfield_choice_header_price {
-	display: inline !important;
+	display: inline-block !important;
 	padding-left: 70px;
 }
 
 /* visible price and no value */
 
-.choice_with_price li input.field-choice-text {
-	width: 155px !important;
-}
-
 .choice_with_price li input.field-choice-price {
-	display: inline !important;
-	width: 155px !important;
+	display: flex !important;
 }
 
 .choice_with_price .gfield_choice_header_label {
-	display: inline !important;
+	display: inline-block !important;
 }
 
 .choice_with_price .gfield_choice_header_price {
-	display: inline !important;
+	display: inline-block !important;
 	padding-left: 120px;
 }
 
@@ -9080,8 +9069,10 @@ div .gfield_repeater_cell {
 .gform-settings__content #poststuff .postbox h2 {
 
 	border: none;
+	color: #242748;
 	flex-grow: 0;
 	font-size: 0.875rem;
+	font-weight: 500;
 	justify-content: space-around;
 	line-height: 2.875rem;
 	padding-bottom: 0;

@@ -91,7 +91,10 @@ abstract class GFFeedAddOn extends GFAddOn {
 	 */
 	public function bootstrap() {
 		parent::bootstrap();
-		add_action( 'init', array( $this, 'feed_settings_init' ), 20 );
+
+		if ( $this->is_feed_edit_page() ) {
+			add_action( 'init', array( $this, 'feed_settings_init' ), 20 );
+		}
 	}
 
 	/**
@@ -1247,10 +1250,6 @@ abstract class GFFeedAddOn extends GFAddOn {
 	 * @since 2.5
 	 */
 	public function feed_settings_init() {
-		if ( ! $this->is_feed_edit_page() ) {
-			return;
-		}
-
 		// Get current form.
 		$form = ( $this->get_current_form() ) ? $this->get_current_form() : array();
 		$form = gf_apply_filters( array( 'gform_admin_pre_render', rgar( $form, 'id', 0 ) ), $form );

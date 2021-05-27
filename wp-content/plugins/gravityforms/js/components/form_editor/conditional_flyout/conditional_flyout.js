@@ -302,7 +302,7 @@ function isValidFlyoutClick( e ) {
  * @return {boolean}
  */
 function ruleNeedsTextValue( rule ) {
-	return ['contains', 'starts_with', 'ends_with'].indexOf ( rule.operator ) !== -1;
+	return ['contains', 'starts_with', 'ends_with', '<', '>' ].indexOf ( rule.operator ) !== -1;
 }
 
 /**
@@ -678,7 +678,7 @@ GFConditionalLogic.prototype.renderRule = function( rule, idx ) {
 	var field = getFieldById( rule.fieldId );
 
 	// Field is select - if value doesn't exist, set it to the first choice.
-	if ( field && field.choices.length && ! ruleNeedsTextValue( rule ) ) {
+	if ( ! rule.value.length && field && field.choices.length && ! ruleNeedsTextValue( rule ) ) {
 		var found = field.choices.filter( function( choice ) { return rule.value == choice.value; } )[0];
 
 		if ( ! found && field.type !== 'multiselect' ) {

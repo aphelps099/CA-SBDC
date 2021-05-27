@@ -1128,7 +1128,7 @@ body .gform_wrapper.gravity-theme ul.chosen-results li {
 		display: none !important;
 	}
 
-.gform_wrapper.gravity-theme .gform_hidden {
+.gform_wrapper.gravity-theme .gf_hidden, .gform_wrapper.gravity-theme .gform_hidden {
 		display: none;
 	}
 
