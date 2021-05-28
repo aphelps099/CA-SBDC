@@ -6524,6 +6524,9 @@
       .wp-block-crown-blocks-event-header .article-header {
         width: 50%;
         min-height: 20rem; } }
+    @media (min-width: 1200px) {
+      .wp-block-crown-blocks-event-header .article-header {
+        width: 41.66667%; } }
     .wp-block-crown-blocks-event-header .article-header > .container-bg {
       background-color: #333; }
     .wp-block-crown-blocks-event-header .article-header > .inner {
@@ -6589,8 +6592,8 @@
         padding-right: 2rem; } }
     @media (min-width: 1200px) {
       .wp-block-crown-blocks-event-header .header-meta {
-        width: calc(100% + (3rem * 2));
-        left: calc(-100% - (3rem * 2) - 3rem);
+        width: calc((100% + (3rem * 2)) * (7 / 5));
+        left: calc((-100% - (3rem * 2)) * (7 / 5)  - 3rem);
         padding-right: 3rem;
         bottom: -1rem; } }
     .wp-block-crown-blocks-event-header .header-meta > .inner {

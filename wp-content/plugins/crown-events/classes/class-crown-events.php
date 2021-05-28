@@ -285,7 +285,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						), array(
 							array( 'crown-blocks/multi-column', array(
 								'columnBreakpoint' => 'lg',
-								'columnSpacingXl' => 0
+								'columnSpacingXl' => 0,
+								'columnLayoutXl' => 7
 							), array(
 								array( 'crown-blocks/column', array(
 									'paddingTopXs' => 2,
@@ -324,13 +325,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 										'paddingTopXs' => 4,
 										'paddingBottomXs' => 4,
 										'paddingXXs' => 4,
-										'backgroundColor' => '#ECEFF2',
+										'backgroundColor' => '#FFFFFF',
 										'backgroundColorSlug' => '',
 										'className' => 'bg-flush-right position-lg-sticky'
 									), array(
-										array( 'core/heading', array(
-											'level' => 3,
-											'placeholder' => 'Register for this Event'
+										array( 'crown-blocks/button', array(
+											'label' => 'Register Today',
+											'size' => 'lg',
+											'displayAsBlock' => true
 										) )
 									) )
 								) )
