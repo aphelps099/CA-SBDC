@@ -11,11 +11,10 @@
 .wp-block-crown-blocks-button.text-alignment-right {
   text-align: right; }
 
-.collapse.form-event-registration-zoom-meeting > .inner {
-  padding-top: 1rem; }
-
-.collapse.form-event-registration-zoom-meeting .gform_wrapper {
-  margin: 0; }
+.collapse.form-event-registration-zoom-meeting {
+  margin-bottom: 2rem; }
+  .collapse.form-event-registration-zoom-meeting .gform_wrapper {
+    margin: 0; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

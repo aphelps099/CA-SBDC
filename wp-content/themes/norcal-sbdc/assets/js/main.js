@@ -22,6 +22,7 @@
 		$.wptheme.initSocialSharingLinks();
 		$.wptheme.initPostFeeds();
 		$.wptheme.initParallax();
+		$.wptheme.initButtons();
 		
 		$.wptheme.initContainerBlocks();
 		$.wptheme.initMultiColumnBlocks();
@@ -701,6 +702,17 @@
 					center: true
 				});
 			}
+
+		};
+
+
+		wptheme.initButtons = function() {
+			
+			$(document).on('click', '.wp-block-crown-blocks-button .btn', function(e) {
+				if($(this).data('target') && $(this).data('target').match(/^#form-event-registration-zoom-meeting-[\d]*$/) && $($(this).data('target')).length) {
+					$(this).closest('.wp-block-crown-blocks-button').css({ display: 'none' });
+				}
+			});
 
 		};
 
