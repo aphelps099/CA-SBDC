@@ -330,7 +330,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 										'className' => 'bg-flush-right position-lg-sticky'
 									), array(
 										array( 'crown-blocks/button', array(
-											'label' => 'Register Today',
+											'label' => 'Register for Event',
 											'size' => 'lg',
 											'displayAsBlock' => true
 										) )
