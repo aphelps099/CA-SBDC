@@ -8581,7 +8581,7 @@ div .gfield_repeater_cell {
 				text-align: right;
 			}
 
-.gform-settings-panel__content#entry_list_form .tablenav .tablenav-pages.no-pages, .gform-settings-panel__content#entry_list_form .tablenav .tablenav-pages.one-page, .gform-settings-panel__content #form_list_form .tablenav .tablenav-pages.no-pages, .gform-settings-panel__content #form_list_form .tablenav .tablenav-pages.one-page {
+.gform-settings-panel__content#entry_list_form .tablenav .tablenav-pages.no-pages, .gform-settings-panel__content#entry_list_form .tablenav .tablenav-pages.one-page .pagination-links, .gform-settings-panel__content #form_list_form .tablenav .tablenav-pages.no-pages, .gform-settings-panel__content #form_list_form .tablenav .tablenav-pages.one-page .pagination-links {
 					display: none;
 				}
 

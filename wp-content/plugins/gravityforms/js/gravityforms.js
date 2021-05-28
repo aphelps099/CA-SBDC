@@ -1095,37 +1095,52 @@ var gformCalculateTotalPrice =  gform.tools.debounce(function(formId){
 
 	price = gform.applyFilters('gform_product_total', price, formId);
 
-	//updating total
-	var totalElement = jQuery(".ginput_total_" + formId);
-	if( totalElement.length > 0 ) {
-
-		var isLegacy = document.querySelector('#gform_wrapper_' + formId + '.gform_legacy_markup_wrapper'),
-			currentTotalTarget = isLegacy ? totalElement.next() : totalElement,
-		    formattedTotal = gformFormatMoney(price, true);
-
-		// Formatted total is the same as the current value, bail before updating.
-		if (formattedTotal === currentTotalTarget.val()) {
-			return;
-		}
-
-		if (isLegacy) {
-			if (currentTotalTarget.val() !== price) {
-				currentTotalTarget.val(price).change();
-			}
-
-			if (formattedTotal !== totalElement.text()) {
-				totalElement.html(formattedTotal);
-			}
-
-			return;
-		}
-
-		if (formattedTotal !== totalElement.val()) {
-			totalElement.val(formattedTotal);
-		}
-
-	}
+	gformUpdateTotalFieldPrice( formId, price );
 }, 50, false );
+
+/**
+ * Updates the value of the total field with a new price if it has changed.
+ *
+ * @since 2.5.5
+ *
+ * @param {string|number} formId The ID of the form with the total field.
+ * @param {int} newPrice The current value of the price.
+ *
+ * @return {void}
+ */
+function gformUpdateTotalFieldPrice( formId, newPrice ) {
+	var totalElement = jQuery( '.ginput_total_' + formId );
+	if ( !totalElement.length > 0 ) {
+		return;
+	}
+
+	var price = String( newPrice );
+	var isLegacy = document.querySelector( '#gform_wrapper_' + formId + '.gform_legacy_markup_wrapper' );
+	var currentTotalField = isLegacy ? totalElement.next() : totalElement;
+	var currentTotalPrice = String( currentTotalField.val() );
+	var formattedTotal = gformFormatMoney( price, true );
+
+	// Formatted total is the same as the current value, bail before updating.
+	if ( formattedTotal === currentTotalPrice ) {
+		return;
+	}
+
+	if ( isLegacy ) {
+		if ( currentTotalPrice !== price ) {
+			currentTotalField.val( price ).change();
+		}
+
+		if ( formattedTotal !== totalElement.text() ) {
+			totalElement.html( formattedTotal );
+		}
+
+		return;
+	}
+
+	if ( formattedTotal !== totalElement.val() ) {
+		totalElement.val( formattedTotal );
+	}
+}
 
 function gformGetShippingPrice(formId){
     var shippingField = jQuery(".gfield_shipping_" + formId + " input[readonly], .gfield_shipping_" + formId + " select, .gfield_shipping_" + formId + " input:checked");
@@ -1490,7 +1505,8 @@ function gformPasswordStrength( password1, password2 ) {
         return 'blank';
     }
 
-    var strength = wp.passwordStrength.meter( password1, wp.passwordStrength.userInputBlacklist(), password2 );
+	var disallowedList = wp.passwordStrength.hasOwnProperty( 'userInputDisallowedList' ) ? wp.passwordStrength.userInputDisallowedList() : wp.passwordStrength.userInputBlacklist(),
+	    strength = wp.passwordStrength.meter( password1, disallowedList, password2 );
 
     switch ( strength ) {
 
@@ -3379,4 +3395,8 @@ jQuery( document ).ready( function() {
 			jQuery( this ).addClass( 'gform-settings-field--multiple-inputs' );
 		}
 	} );
+} );
+
+jQuery( function() {
+	gform.tools.trigger( 'gform_main_scripts_loaded' );
 } );

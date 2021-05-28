@@ -1,5 +1,16 @@
-### 2.5.3.1
+### 2.5.4.1
+- Fixed an issue with reCAPTCHA field not rendering when in a multi page form with ajax enabled.
+- Fixed an issue with timing of loaded events in JavaScript which causes some forms to not render correctly or have console errors.
+- Fixed an issue where add and remove choice buttons were hidden when modifying Prefix choices on a Name field.
+- Fixed an issue where the number of items in the Entry and Form lists would not be displayed when there is only one page of items.
+- Fixed an issue where the password strength would not be preserved after a failed submission or when not on the last page of a form.
+- Fixed an issue that can cause forms to become unresponsive when legacy markup is used with a total field.
+
+### 2.5.4 | 2021-05-27
+- Added the gform_force_hooks_js_output filter to allow plugins to control whether to output the hooks js in the head; defaults to true.
+- Fixed an issue which causes reCaptcha field to log errors when there are none.
 - Fixed an issue which causes forms that rely on Javascript to not render in certain contexts.
+- Fixed an issue which causes Javascript markup to be injected into some AJAX responses.
 
 ### 2.5.3 | 2021-05-26
 - Added accessibility warnings to the datepicker and fields with hidden labels in the form editor.

@@ -2445,7 +2445,7 @@ class GFFormDisplay {
 		}
 
 		if ( self::has_password_strength( $form ) ) {
-			$assets[] = new GF_Script_Asset( 'gforms_zxcvbn' );
+			$assets[] = new GF_Script_Asset( 'gforms_zxcvbn', includes_url( '/js/zxcvbn.min.js' ) );
 			$assets[] = new GF_Script_Asset( 'password-strength-meter' );
 		}
 
