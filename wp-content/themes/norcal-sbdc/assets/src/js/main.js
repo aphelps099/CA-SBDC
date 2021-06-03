@@ -1625,7 +1625,7 @@
 					if(response) {
 						console.log(response);
 
-						var message = 'You are now viewing <strong>' + crownThemeData.siteName + '</strong>';
+						var message = 'You are now viewing the <strong>' + crownThemeData.siteName + '</strong> website.';
 
 						var notice = $('<div id="referrer-notice"><div class="inner"><div class="message"></div><div class="actions"></div></div></div>');
 						$('body').append(notice);
