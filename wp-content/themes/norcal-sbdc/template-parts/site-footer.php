@@ -31,6 +31,18 @@
 							</div>
 						<?php } ?>
 
+						<nav id="footer-primary-cta-links">
+							<?php
+								wp_nav_menu( array(
+									'theme_location' => 'footer_cta_links',
+									'container' => '',
+									'menu_id' => 'footer-primary-cta-links-menu',
+									'depth' => 1,
+									'fallback_cb' => false
+								) );
+							?>
+						</nav>
+
 					</div>
 
 					<?php /* to be used in center sites ?>
@@ -69,18 +81,6 @@
 
 						<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
 
-						<nav id="footer-primary-cta-links">
-							<?php
-								wp_nav_menu( array(
-									'theme_location' => 'footer_cta_links',
-									'container' => '',
-									'menu_id' => 'footer-primary-cta-links-menu',
-									'depth' => 1,
-									'fallback_cb' => false
-								) );
-							?>
-						</nav>
-						
 						<div id="google-translate"></div>
 						<script>
 							function googleTranslateElementInit() {

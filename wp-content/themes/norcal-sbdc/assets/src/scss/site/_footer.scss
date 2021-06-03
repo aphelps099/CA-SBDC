@@ -417,7 +417,7 @@ body {
 ---------------------------------------------------------*/
 
 #footer-primary-cta-links {
-	flex: 1 1 auto;
+	max-width: 18rem;
 	ul {
 		list-style: none;
 		margin: 0;
