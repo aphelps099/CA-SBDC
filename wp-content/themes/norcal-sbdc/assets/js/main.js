@@ -1640,6 +1640,10 @@
 				}, 'json');
 			}
 
+			$(document).on('click', '#referrer-notice .btn.dismiss', function(e) {
+				$('#referrer-notice').removeClass('active');
+			});
+
 		};
 
 

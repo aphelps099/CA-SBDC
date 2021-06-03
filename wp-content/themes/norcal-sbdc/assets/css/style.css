@@ -19970,9 +19970,9 @@ nav.pagination {
   transition: opacity .4s, visibility 0s .4s, transform .4s ease-out, -webkit-transform .4s ease-out;
   z-index: 9999999;
   opacity: 0;
-  -webkit-transform: translateY(1rem);
-      -ms-transform: translateY(1rem);
-          transform: translateY(1rem);
+  -webkit-transform: translateY(2rem);
+      -ms-transform: translateY(2rem);
+          transform: translateY(2rem);
   padding: 1rem 1rem;
   text-align: center; }
   @media (min-width: 576px) {

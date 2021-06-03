@@ -34,7 +34,7 @@
 	transition: opacity .4s, visibility 0s .4s, transform .4s ease-out;
 	z-index: 9999999;
 	opacity: 0;
-	transform: translateY(1rem);
+	transform: translateY(2rem);
 	padding: 1rem map-get($container-padding-x, xs);
 	text-align: center;
 	@include media-breakpoint-up(sm) { padding: 1rem map-get($container-padding-x, sm); }
