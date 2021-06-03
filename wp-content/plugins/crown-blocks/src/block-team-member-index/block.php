@@ -91,6 +91,20 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				$group_by_center = false;
 			}
 
+			$sticky_query = null;
+			if ( ! $group_by_center) {
+				$sticky_query_args = $query_args;
+				$sticky_query_args['meta_query'][] = array( 'key' => '__team_member_options', 'value' => 'sticky' );
+				if ( function_exists( 'relevanssi_do_query' ) && isset( $sticky_query_args['s'] ) && ! empty( $sticky_query_args['s'] ) ) {
+					$sticky_query = new WP_Query();
+					$sticky_query->parse_query( $sticky_query_args );
+					relevanssi_do_query( $sticky_query );
+				} else {
+					$sticky_query = new WP_Query( $sticky_query_args );
+				}
+				$query_args['post__not_in'] = array_map( function( $n ) { return is_int($n) ? $n : $n->ID; }, $sticky_query->get_posts() );
+			}
+
 			$query = null;
 			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
 				$query = new WP_Query();
@@ -377,10 +391,16 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 											<?php } else { ?>
 
+												<?php while ( $sticky_query->have_posts() ) { ?>
+													<?php $sticky_query->the_post(); ?>
+													<?php self::render_team_member(); ?>
+												<?php } ?>
+
 												<?php while ( $query->have_posts() ) { ?>
 													<?php $query->the_post(); ?>
 													<?php self::render_team_member(); ?>
 												<?php } ?>
+
 												<?php wp_reset_postdata(); ?>
 
 											<?php } ?>
