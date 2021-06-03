@@ -285,8 +285,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 						), array(
 							array( 'crown-blocks/multi-column', array(
 								'columnBreakpoint' => 'lg',
-								'columnSpacingXl' => 0,
-								'columnLayoutXl' => 7
+								'columnSpacingXl' => 0
 							), array(
 								array( 'crown-blocks/column', array(
 									'paddingTopXs' => 2,
