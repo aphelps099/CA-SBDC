@@ -293,6 +293,10 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 					new Field( array(
 						'label' => 'Color',
 						'input' => new ColorInput( array( 'name' => 'resource_type_color', 'colorpickerOptions' => array( 'palettes' => apply_filters( 'crown_theme_colors', array(), 'resource_type_color' ) ) ) )
+					) ),
+					new Field( array(
+						'label' => 'Default Featured Image',
+						'input' => new MediaInput( array( 'name' => 'resource_type_default_featured_image', 'mimeType' => 'image' ) )
 					) )
 				),
 				'listTableColumns' => array(
@@ -644,6 +648,24 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 		}
 
 
+		public static function get_resource_primary_type_default_featured_image( $post_id ) {
+			
+			$term_ids = wp_get_post_terms( $post_id, 'resource_type', array( 'fields' => 'ids' ) );
+
+			$primary_term_id = get_post_meta( $post_id, '_primary_term_resource_type', true );
+			
+			if ( ! empty( $primary_term_id ) && in_array( $primary_term_id, $term_ids ) ) array_unshift( $term_ids, $primary_term_id );
+			$term_ids = array_values( array_unique( $term_ids ) );
+
+			foreach( $term_ids as $term_id ) {
+				$image = get_term_meta( $term_id, 'resource_type_default_featured_image', true );
+				if ( ! empty( $image ) ) return $image;
+			}
+
+			return null;
+		}
+
+
 		public static function resource_teaser( $post_id = null ) {
 			global $post;
 
@@ -665,6 +687,7 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 			}
 
 			$color = self::get_resource_primary_type_color( get_the_ID() );
+			$default_featured_image = self::get_resource_primary_type_default_featured_image( get_the_ID() );
 
 			?>
 				<article <?php post_class( 'resource-teaser' ); ?>>
@@ -677,6 +700,13 @@ if ( ! class_exists( 'Crown_Resources' ) ) {
 									<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
 										<?php echo wp_get_attachment_image( get_post_thumbnail_id(), 'medium_large' ) ?>
 									</div>
+								<?php } else if ( $default_featured_image ) { ?>
+									<?php $image_src = wp_get_attachment_image_url( $default_featured_image, 'medium_large' ); ?>
+									<?php if ( ! empty( $image_src ) ) { ?>
+										<div class="image" style="background-image: url(<?php echo $image_src; ?>);">
+											<?php echo wp_get_attachment_image( get_post_thumbnail_id(), 'medium_large' ) ?>
+										</div>
+									<?php } ?>
 								<?php } ?>
 							</div>
 						</div>
