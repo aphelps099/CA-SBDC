@@ -311,6 +311,30 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 												<?php foreach ( $centers as $center ) { ?>
 
 													<?php
+
+														$sticky_sub_query_args = array(
+															'post_type' => array( 'team_member', 'team_member_s' ),
+															'posts_per_page' => -1,
+															'orderby' => 'meta_value',
+															'order' => 'ASC',
+															'meta_key' => 'team_member_name_last_comma_first_lc',
+															'tax_query' => array( array( 'taxonomy' => 'post_center', 'terms' => $center->term_id ) ),
+															'post__in' => $query->get_posts(),
+															'meta_query' => array(
+																array( 'key' => '__team_member_options', 'value' => 'sticky' )
+															)
+														);
+														$sticky_sub_query = null;
+														if ( function_exists( 'relevanssi_do_query' ) && isset( $sub_query_args['s'] ) && ! empty( $sub_query_args['s'] ) ) {
+															$sticky_sub_query = new WP_Query();
+															$sticky_sub_query->parse_query( $sticky_sub_query_args );
+															relevanssi_do_query( $sticky_sub_query );
+														} else {
+															$sticky_sub_query = new WP_Query( $sticky_sub_query_args );
+														}
+
+														$sticky_post_ids = array_map( function( $n ) { return $n->ID; }, $sticky_sub_query->get_posts() );
+
 														$sub_query_args = array(
 															'post_type' => array( 'team_member', 'team_member_s' ),
 															'posts_per_page' => -1,
@@ -318,27 +342,33 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 															'order' => 'ASC',
 															'meta_key' => 'team_member_name_last_comma_first_lc',
 															'tax_query' => array( array( 'taxonomy' => 'post_center', 'terms' => $center->term_id ) ),
-															'post__in' => $query->get_posts()
+															'post__in' => array_diff( $query->get_posts(), $sticky_post_ids )
 														);
 														$sub_query = null;
 														if ( function_exists( 'relevanssi_do_query' ) && isset( $sub_query_args['s'] ) && ! empty( $sub_query_args['s'] ) ) {
 															$sub_query = new WP_Query();
 															$sub_query->parse_query( $sub_query_args );
-															relevanssi_do_query( $query );
+															relevanssi_do_query( $sub_query );
 														} else {
 															$sub_query = new WP_Query( $sub_query_args );
 														}
+
 													?>
 
-													<?php if ( $sub_query->have_posts() ) { ?>
+													<?php if ( $sticky_sub_query->have_posts() || $sub_query->have_posts() ) { ?>
 
 														<h2 class="team-group-title"><span><?php echo $center->name; ?></span></h2>
 
+														<?php while ( $sticky_sub_query->have_posts() ) { ?>
+															<?php $sticky_sub_query->the_post(); ?>
+															<?php self::render_team_member( false ); ?>
+														<?php } ?>
+
 														<?php while ( $sub_query->have_posts() ) { ?>
-															<?php $output_team_member_ids[] = get_the_ID(); ?>
 															<?php $sub_query->the_post(); ?>
 															<?php self::render_team_member( false ); ?>
 														<?php } ?>
+
 														<?php wp_reset_postdata(); ?>
 
 													<?php } ?>

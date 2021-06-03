@@ -218,7 +218,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 		public static function register_team_member_post_type() {
 
 			$team_member_options = array(
-				array( 'value' => 'multilingual', 'label' => 'Multilingual' )
+				array( 'value' => 'multilingual', 'label' => 'Multilingual' ),
+				array( 'value' => 'sticky', 'label' => 'Display at beginning of list' )
 			);
 			if ( is_main_site() ) {
 				$team_member_options[] = array( 'value' => 'post-to-center-sites', 'label' => 'Display on Center Sites' );
