@@ -47,6 +47,8 @@
 		$.wptheme.initHeaders();
 		$.wptheme.initOdometers();
 
+		$.wptheme.initReferrerNotice();
+
 	});
 
 
@@ -1608,6 +1610,35 @@
 			};
 			animateStats();
 			$(window).on('load scroll', animateStats);
+
+		};
+
+
+		wptheme.initReferrerNotice = function() {
+
+			// var referrerDomain = document.referrer.replace(/^https?:\/\//, '').replace(/(\.[^\.\/]+)\/.*/, '$1');
+			var referrerDomain = document.referrer.replace(/^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+).*/, '$1');
+			var currentDomain = document.URL.replace(/^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+).*/, '$1');
+
+			if(referrerDomain !== currentDomain) {
+				$.get(crownThemeData.ajaxUrl, { action: 'get_site_by_domain', domain: referrerDomain }, function(response) {
+					if(response) {
+						console.log(response);
+
+						var message = 'You are now viewing <strong>' + crownThemeData.siteName + '</strong>';
+
+						var notice = $('<div id="referrer-notice"><div class="inner"><div class="message"></div><div class="actions"></div></div></div>');
+						$('body').append(notice);
+
+						$('.message', notice).append(message);
+						$('.actions', notice).append('<a href="' + (document.referrer != '' ? document.referrer : 'javascript:history.back()') + '" class="btn btn-outline-white">Return to ' + response.blogname + '</a>');
+						$('.actions', notice).append('<button type="button" class="btn btn-white dismiss">Dismiss</button>');
+						
+						setTimeout(function() { notice.addClass('active'); }, 0);
+
+					}
+				}, 'json');
+			}
 
 		};
 

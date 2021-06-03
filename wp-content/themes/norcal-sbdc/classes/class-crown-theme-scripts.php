@@ -14,6 +14,9 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 			add_action( 'wp_body_open', array( __CLASS__, 'output_body_open_scripts' ) );
 			add_action( 'wp_footer', array( __CLASS__, 'output_footer_scripts' ) );
 
+			add_action( 'wp_ajax_get_site_by_domain', array( __CLASS__, 'get_ajax_site_by_domain' ) );
+			add_action( 'wp_ajax_nopriv_get_site_by_domain', array( __CLASS__, 'get_ajax_site_by_domain' ) );
+
 		}
 
 
@@ -132,6 +135,17 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 
 
 		public static function output_footer_scripts() {}
+
+
+		public static function get_ajax_site_by_domain() {
+
+			$domain = isset( $_GET['domain'] ) ? $_GET['domain'] : '';
+			if ( empty( $domain ) ) wp_send_json( null );
+
+			$sites = get_sites( array( 'domain' => $domain, 'number' => 1 ) );
+			wp_send_json( get_blog_details( $sites[0]->blog_id ) );
+
+		}
 
 
 	}
