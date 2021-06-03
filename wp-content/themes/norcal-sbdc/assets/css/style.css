@@ -23715,6 +23715,16 @@ nav.pagination {
             -ms-transform: translateX(-0.5rem);
                 transform: translateX(-0.5rem);
         opacity: 0; }
+    .wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .overlay-languages {
+      text-transform: uppercase;
+      letter-spacing: .1;
+      font-weight: 500;
+      line-height: 1.2;
+      font-size: 1rem;
+      position: absolute;
+      right: 1rem;
+      bottom: .75rem;
+      color: #fff; }
   .wp-block-crown-blocks-team-member-index article.type-team_member .entry-teaser {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;

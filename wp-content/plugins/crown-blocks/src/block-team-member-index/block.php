@@ -439,6 +439,10 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 										<div class="image overlay" style="background-image: url(<?php echo $image_src; ?>);"></div>
 									<?php } ?>
 									<span class="overlay-label"><?php _e( 'View Bio', 'crown_blocks' ); ?></span>
+									<?php $languages = get_post_meta( get_the_ID(), 'team_member_languages', true ); ?>
+									<?php if ( !empty( $languages ) && is_array( $languages ) ) { ?>
+										<span class="overlay-languages"><?php echo implode( ' | ', $languages ); ?></span>
+									<?php } ?>
 								</div>
 							</div>
 

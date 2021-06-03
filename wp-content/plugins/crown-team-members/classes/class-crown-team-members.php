@@ -227,6 +227,19 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				$team_member_options[] = array( 'value' => 'do-not-post-to-regional-site', 'label' => 'Don\'t Display on Regional Site' );
 			}
 
+			$languages = array(
+				'zh' => 'Chinese',
+				'fr' => 'French',
+				'de' => 'German',
+				'ja' => 'Japanese',
+				'ko' => 'Korean',
+				'es' => 'Spanish'
+			);
+			$language_options = array();
+			foreach ( $languages as $k => $v ) {
+				$language_options[] = array( 'value' => $k, 'label' => $v );
+			}
+
 			self::$team_member_post_type = new PostType( array(
 				'name' => 'team_member',
 				'singularLabel' => 'Team Member',
@@ -283,6 +296,11 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 											) ),
 											new Field( array(
 												'input' => new CheckboxSet( array( 'name' => 'team_member_options', 'options' => $team_member_options ) )
+											) ),
+											new Field( array(
+												'label' => 'Languages',
+												'input' => new Select( array( 'name' => 'team_member_languages', 'options' => $language_options, 'multiple' => true, 'select2' => true ) ),
+												'uIRules' => array( new UIRule( array( 'property' => 'input', 'options' => array( 'inputName' => 'team_member_options' ), 'value' => array( 'multilingual' ) ) ) ),
 											) )
 										)
 									) ),
@@ -611,7 +629,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				'team_member_name_last_initial_lc' => '',
 				'team_member_name_first_initial_lc' => '',
 				'team_member_job_title' => '',
-				'team_member_options' => ''
+				'team_member_options' => '',
+				'team_member_languages' => ''
 			);
 			foreach ( $meta as $k => $v ) {
 				$meta[ $k ] = get_post_meta( $post_id, $k, true );
@@ -666,6 +685,11 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				foreach( $meta['team_member_options'] as $v ) {
 					if ( in_array( $v, array( 'post-to-center-sites', 'do-not-post-to-center-sites', 'post-to-regional-site', 'do-not-post-to-regional-site' ) ) ) continue;
 					add_post_meta( $syn_id, '__team_member_options', $v );
+				}
+			}
+			if ( is_array( $meta['team_member_languages'] ) ) {
+				foreach( $meta['team_member_languages'] as $v ) {
+					add_post_meta( $syn_id, '__team_member_languages', $v );
 				}
 			}
 
