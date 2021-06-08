@@ -215,6 +215,28 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 		}
 
 
+		public static function get_team_member_languages() {
+			$languages = array(
+				'zh' => 'Chinese',
+				'fr' => 'French',
+				'de' => 'German',
+				'ja' => 'Japanese',
+				'ko' => 'Korean',
+				'es' => 'Spanish'
+			);
+			return $languages;
+		}
+
+
+		public static function get_team_member_language( $abbr ) {
+			$languages = self::get_team_member_languages();
+			if ( array_key_exists( strtolower( $abbr ), $languages ) ) {
+				return $languages[ $abbr ];
+			}
+			return null;
+		}
+
+
 		public static function register_team_member_post_type() {
 
 			$team_member_options = array(
@@ -227,14 +249,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				$team_member_options[] = array( 'value' => 'do-not-post-to-regional-site', 'label' => 'Don\'t Display on Regional Site' );
 			}
 
-			$languages = array(
-				'zh' => 'Chinese',
-				'fr' => 'French',
-				'de' => 'German',
-				'ja' => 'Japanese',
-				'ko' => 'Korean',
-				'es' => 'Spanish'
-			);
+			$languages = self::get_team_member_languages();
 			$language_options = array();
 			foreach ( $languages as $k => $v ) {
 				$language_options[] = array( 'value' => $k, 'label' => $v );

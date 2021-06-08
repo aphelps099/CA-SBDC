@@ -24085,15 +24085,20 @@ nav.pagination {
       .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-bio .bio-heading {
         font-size: 1.25rem;
         font-style: normal; }
-    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise {
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise,
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages {
       margin-bottom: 0; }
-      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .label {
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .label,
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .label {
         display: block;
         font-size: 1.25rem;
         font-weight: 700;
         line-height: 1.2;
         margin-bottom: .5rem; }
-      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise {
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise,
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .language,
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .expertise,
+      .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .language {
         display: inline-block;
         line-height: 1.2;
         font-weight: 700;
@@ -24104,9 +24109,14 @@ nav.pagination {
         border: 1px solid #fff;
         padding: .5rem .75rem; }
         @media (min-width: 768px) {
-          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise {
+          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .expertise,
+          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise .language,
+          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .expertise,
+          .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .language {
             font-size: 0.75rem;
             border-width: 2px; } }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise + .entry-languages {
+      margin-top: 1rem; }
 
 .wp-block-crown-blocks-team-member-index .pagination-wrapper {
   margin-top: 3rem; }

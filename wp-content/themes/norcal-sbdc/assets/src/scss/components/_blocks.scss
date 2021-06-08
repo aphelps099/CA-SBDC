@@ -2489,7 +2489,8 @@
 					font-style: normal;
 				}
 			}
-			.entry-expertise {
+			.entry-expertise,
+			.entry-languages {
 				margin-bottom: 0;
 				.label {
 					display: block;
@@ -2498,7 +2499,8 @@
 					line-height: $line-height-sm;
 					margin-bottom: .5rem;
 				}
-				.expertise {
+				.expertise,
+				.language {
 					display: inline-block;
 					line-height: $line-height-sm;
 					font-weight: 700;
@@ -2513,6 +2515,9 @@
 						border-width: 2px;
 					}
 				}
+			}
+			.entry-expertise + .entry-languages {
+				margin-top: 1rem;
 			}
 		}
 	}

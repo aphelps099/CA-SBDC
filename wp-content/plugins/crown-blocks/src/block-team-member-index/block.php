@@ -624,6 +624,21 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 								</p>
 							<?php } ?>
 
+							<?php $languages = get_post_meta( get_the_ID(), 'team_member_languages', true ); ?>
+							<?php if ( ! empty( $languages ) ) { ?>
+								<p class="entry-languages">
+									<span class="label"><?php _e( 'I also speak:', 'crown_blocks' ); ?></span>
+									<?php foreach ( $languages as $abbr ) { ?>
+										<?php $language = Crown_Team_Members::get_team_member_language( $abbr ); ?>
+										<?php if ( $language ) { ?>
+											<span class="language"><?php echo $language; ?></span>
+										<?php } else { ?>
+											<span class="language"><?php echo strtoupper( $abbr ); ?></span>
+										<?php } ?>
+									<?php } ?>
+								</p>
+							<?php } ?>
+
 						</div>
 
 					</div>
