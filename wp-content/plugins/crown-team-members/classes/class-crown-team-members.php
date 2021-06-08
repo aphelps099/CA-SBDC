@@ -217,12 +217,18 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 		public static function get_team_member_languages() {
 			$languages = array(
-				'zh' => 'Chinese',
+				'zh-hk' => 'Cantonese',
+				'da' => 'Danish',
 				'fr' => 'French',
 				'de' => 'German',
+				'hi' => 'Hindi',
+				'it' => 'Italian',
 				'ja' => 'Japanese',
 				'ko' => 'Korean',
-				'es' => 'Spanish'
+				'zh' => 'Mandarin',
+				'pt' => 'Portuguese',
+				'es' => 'Spanish',
+				'vi' => 'Vietnamese'
 			);
 			return $languages;
 		}
@@ -252,7 +258,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			$languages = self::get_team_member_languages();
 			$language_options = array();
 			foreach ( $languages as $k => $v ) {
-				$language_options[] = array( 'value' => $k, 'label' => $v );
+				$language_options[] = array( 'value' => $k, 'label' => $v . ' (' . strtoupper( $k ) . ')' );
 			}
 
 			self::$team_member_post_type = new PostType( array(
