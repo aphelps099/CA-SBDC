@@ -191,7 +191,7 @@ registerBlockType('crown-blocks/button', {
 					/> }
 
 					<ToggleControl
-						label={ 'Link opens event registration' }
+						label={ 'Link opens Zoom registration' }
 						checked={ openEventRegistration }
 						onChange={ (value) => { setAttributes({ openEventRegistration: value }); } }
 					/>
