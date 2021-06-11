@@ -124,6 +124,27 @@ registerBlockType('crown-blocks/button', {
 
 			<InspectorControls key="inspector-controls">
 
+				<PanelColorSettings
+					title={ 'Color' }
+					initialOpen={ true }
+					colorSettings={ [
+						{
+							label: 'Button Color',
+							value: color,
+							onChange: (value) => {
+								let colors = CrownBlocks.getThemeColorPalette();
+								let colorSlug = '';
+								if(colors) {
+									let colorObject = getColorObjectByColorValue(colors, value);
+									if(colorObject) colorSlug = colorObject.slug;
+								}
+								setAttributes({ color: value, colorSlug: colorSlug });
+							},
+							disableCustomColors: true
+						}
+					] }
+				/>
+
 				<PanelBody title={ 'Link Settings' } initialOpen={ true }>
 
 					<ToggleControl
@@ -192,27 +213,6 @@ registerBlockType('crown-blocks/button', {
 					/> }
 
 				</PanelBody>
-
-				<PanelColorSettings
-					title={ 'Color' }
-					initialOpen={ true }
-					colorSettings={ [
-						{
-							label: 'Button Color',
-							value: color,
-							onChange: (value) => {
-								let colors = CrownBlocks.getThemeColorPalette();
-								let colorSlug = '';
-								if(colors) {
-									let colorObject = getColorObjectByColorValue(colors, value);
-									if(colorObject) colorSlug = colorObject.slug;
-								}
-								setAttributes({ color: value, colorSlug: colorSlug });
-							},
-							disableCustomColors: true
-						}
-					] }
-				/>
 
 				<PanelBody title={ 'Appearance' } initialOpen={ true }>
 
