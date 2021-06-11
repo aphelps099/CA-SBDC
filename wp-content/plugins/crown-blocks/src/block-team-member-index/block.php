@@ -74,7 +74,10 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				if ( ! empty( $filters->letter->queried ) ) $query_args['meta_query'][] = array( 'key' => 'team_member_name_last_initial_lc', 'value' => $filters->letter->queried );
 
 				$filters->lang->queried = isset( $_GET[ $filters->lang->key ] ) ? ( is_array( $_GET[ $filters->lang->key ] ) ? $_GET[ $filters->lang->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->lang->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-				if ( ! empty( $filters->lang->queried ) ) $query_args['meta_query'][] = array( 'key' => '__team_member_options', 'compare' => 'IN', 'value' => $filters->lang->queried );
+				if ( ! empty( $filters->lang->queried ) ) {
+					$query_args['meta_query'][] = array( 'key' => '__team_member_options', 'compare' => 'IN', 'value' => array( 'multilingual' ) );
+					$query_args['meta_query'][] = array( 'key' => '__team_member_languages', 'compare' => 'IN', 'value' => $filters->lang->queried );
+				}
 
 				// $queried_search = isset( $_GET['keywords'] ) ? trim( $_GET['keywords'] ) : '';
 				// if ( ! empty( $queried_search ) ) $query_args['s'] = $queried_search;
@@ -148,9 +151,14 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 					return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
 				}, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ) );
 
-				$filters->lang->options = array(
-					(object) array( 'value' => 'multilingual', 'label' => 'Multilingual', 'selected' => in_array( 'multilingual', $filters->lang->queried ) )
-				);
+				// $filters->lang->options = array(
+				// 	(object) array( 'value' => 'multilingual', 'label' => 'Multilingual', 'selected' => in_array( 'multilingual', $filters->lang->queried ) )
+				// );
+				
+				$languages = Crown_Team_Members::get_team_member_languages();
+				foreach ( $languages as $abbr => $language ) {
+					$filters->lang->options[] = (object) array( 'value' => $abbr, 'label' => $language, 'selected' => in_array( $abbr, $filters->lang->queried ) );
+				}
 
 			}
 
@@ -290,7 +298,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 										<?php } else { ?>
 										
 											<?php if ( $group_by_center ) { ?>
-												
+
 												<?php $output_team_member_ids = array(); ?>
 
 												<?php $centers = get_terms( array( 'taxonomy' => 'post_center', 'orderby' => 'menu_order', 'order' => 'ASC' ) ); ?>
@@ -359,12 +367,14 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 															'post__in' => array_diff( $query->get_posts(), $sticky_post_ids )
 														);
 														$sub_query = null;
-														if ( function_exists( 'relevanssi_do_query' ) && isset( $sub_query_args['s'] ) && ! empty( $sub_query_args['s'] ) ) {
-															$sub_query = new WP_Query();
-															$sub_query->parse_query( $sub_query_args );
-															relevanssi_do_query( $sub_query );
-														} else {
-															$sub_query = new WP_Query( $sub_query_args );
+														if ( ! empty( $sub_query_args['post__in'] ) ) {
+															if ( function_exists( 'relevanssi_do_query' ) && isset( $sub_query_args['s'] ) && ! empty( $sub_query_args['s'] ) ) {
+																$sub_query = new WP_Query();
+																$sub_query->parse_query( $sub_query_args );
+																relevanssi_do_query( $sub_query );
+															} else {
+																$sub_query = new WP_Query( $sub_query_args );
+															}
 														}
 
 													?>
@@ -378,7 +388,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 															<?php self::render_team_member( false ); ?>
 														<?php } ?>
 
-														<?php while ( $sub_query->have_posts() ) { ?>
+														<?php while ( $sub_query && $sub_query->have_posts() ) { ?>
 															<?php $sub_query->the_post(); ?>
 															<?php self::render_team_member( false ); ?>
 														<?php } ?>
