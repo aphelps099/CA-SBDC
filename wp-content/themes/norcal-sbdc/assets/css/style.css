@@ -24812,6 +24812,9 @@ nav.pagination {
     border-radius: 10rem;
     border: 1px solid #032040;
     padding: .5rem .75rem; }
+    .wp-block-crown-blocks-event-index article.type-event .entry-centers span.self {
+      background-color: #032040;
+      color: #fff; }
 
 .wp-block-crown-blocks-event-index article.type-event .entry-title {
   margin-bottom: 0; }

@@ -3297,6 +3297,10 @@
 				border-radius: 10rem;
 				border: 1px solid $primary;
 				padding: .5rem .75rem;
+				&.self {
+					background-color: $primary;
+					color: #fff;
+				}
 			}
 		}
 		.entry-title {

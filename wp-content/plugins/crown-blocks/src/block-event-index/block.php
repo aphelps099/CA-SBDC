@@ -204,7 +204,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 											<?php $query->the_post(); ?>
 											<?php
 												$switched_site = false;
-												$event_site_title = null;
+												$event_site_title = get_bloginfo( 'name' );
 												if ( get_post_type() == 'event_s' ) {
 													$original_post_id = get_post_meta( get_the_ID(), '_original_post_id', true );
 													switch_to_blog( get_post_meta( get_the_ID(), '_original_site_id', true ) );
@@ -235,7 +235,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 																	</p>
 																<?php } else if ( $event_site_title ) { ?>
 																	<p class="entry-centers">
-																		<span class="center"><?php echo $event_site_title; ?></span>
+																		<span class="center <?php echo ! $switched_site ? 'self' : ''; ?>"><?php echo $event_site_title; ?></span>
 																	</p>
 																<?php } ?>
 
