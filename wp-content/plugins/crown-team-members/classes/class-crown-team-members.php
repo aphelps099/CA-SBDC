@@ -217,18 +217,23 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 		public static function get_team_member_languages() {
 			$languages = array(
+				'ar'    => 'Arabic',
 				'zh-hk' => 'Cantonese',
-				'da' => 'Danish',
-				'fr' => 'French',
-				'de' => 'German',
-				'hi' => 'Hindi',
-				'it' => 'Italian',
-				'ja' => 'Japanese',
-				'ko' => 'Korean',
-				'zh' => 'Mandarin',
-				'pt' => 'Portuguese',
-				'es' => 'Spanish',
-				'vi' => 'Vietnamese'
+				'da'    => 'Danish',
+				'prs'   => 'Dari',
+				'fa'    => 'Farsi',
+				'fr'    => 'French',
+				'de'    => 'German',
+				'hi'    => 'Hindi',
+				'it'    => 'Italian',
+				'ja'    => 'Japanese',
+				'ko'    => 'Korean',
+				'lv'    => 'Latvian',
+				'zh'    => 'Mandarin',
+				'ps'    => 'Pashto',
+				'pt'    => 'Portuguese',
+				'es'    => 'Spanish',
+				'vi'    => 'Vietnamese'
 			);
 			return $languages;
 		}
