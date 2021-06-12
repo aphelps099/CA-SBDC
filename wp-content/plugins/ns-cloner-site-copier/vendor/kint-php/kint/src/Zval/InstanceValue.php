@@ -23,32 +23,56 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Object;
+namespace Kint\Zval;
 
-use Exception;
-use InvalidArgumentException;
-use Throwable;
-
-class ThrowableObject extends InstanceObject
+class InstanceValue extends Value
 {
-    public $message;
-    public $hints = array('object', 'throwable');
+    public $type = 'object';
+    public $classname;
+    public $spl_object_hash;
+    public $filename;
+    public $startline;
+    public $hints = ['object'];
 
-    public function __construct($throw)
+    public function getType()
     {
-        if (!$throw instanceof Exception && (!KINT_PHP70 || !$throw instanceof Throwable)) {
-            throw new InvalidArgumentException('ThrowableObject must be constructed with a Throwable');
-        }
-
-        parent::__construct();
-
-        $this->message = $throw->getMessage();
+        return $this->classname;
     }
 
-    public function getValueShort()
+    public function transplant(Value $old)
     {
-        if (\strlen($this->message)) {
-            return '"'.$this->message.'"';
+        parent::transplant($old);
+
+        if ($old instanceof self) {
+            $this->classname = $old->classname;
+            $this->spl_object_hash = $old->spl_object_hash;
+            $this->filename = $old->filename;
+            $this->startline = $old->startline;
         }
+    }
+
+    public static function sortByHierarchy($a, $b)
+    {
+        if (\is_string($a) && \is_string($b)) {
+            $aclass = $a;
+            $bclass = $b;
+        } elseif (!($a instanceof Value) || !($b instanceof Value)) {
+            return 0;
+        } elseif ($a instanceof self && $b instanceof self) {
+            $aclass = $a->classname;
+            $bclass = $b->classname;
+        } else {
+            return 0;
+        }
+
+        if (\is_subclass_of($aclass, $bclass)) {
+            return -1;
+        }
+
+        if (\is_subclass_of($bclass, $aclass)) {
+            return 1;
+        }
+
+        return 0;
     }
 }

@@ -23,49 +23,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Object\Representation;
+namespace Kint\Zval;
 
-class Representation
+use DateTime;
+
+class DateTimeValue extends InstanceValue
 {
-    public $label;
-    public $implicit_label = false;
-    public $hints = array();
-    public $contents = array();
+    public $dt;
 
-    protected $name;
+    public $hints = ['object', 'datetime'];
 
-    public function __construct($label, $name = null)
+    public function __construct(DateTime $dt)
     {
-        $this->label = $label;
+        parent::__construct();
 
-        if (null === $name) {
-            $name = $label;
+        $this->dt = clone $dt;
+    }
+
+    public function getValueShort()
+    {
+        $stamp = $this->dt->format('Y-m-d H:i:s');
+        if ((int) ($micro = $this->dt->format('u'))) {
+            $stamp .= '.'.$micro;
         }
+        $stamp .= $this->dt->format('P T');
 
-        $this->setName($name);
-    }
-
-    public function getLabel()
-    {
-        if (\is_array($this->contents) && \count($this->contents) > 1) {
-            return $this->label.' ('.\count($this->contents).')';
-        }
-
-        return $this->label;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = \preg_replace('/[^a-z0-9]+/', '_', \strtolower($name));
-    }
-
-    public function labelIsImplicit()
-    {
-        return $this->implicit_label;
+        return $stamp;
     }
 }

@@ -23,48 +23,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Renderer\Rich;
+namespace Kint\Zval;
 
-use Kint\Kint;
-use Kint\Zval\Representation\DocstringRepresentation;
-use Kint\Zval\Representation\Representation;
-
-class DocstringPlugin extends Plugin implements TabPluginInterface
+class ResourceValue extends Value
 {
-    public function renderTab(Representation $r)
+    public $resource_type;
+
+    public function getType()
     {
-        if (!($r instanceof DocstringRepresentation)) {
-            return false;
+        if ($this->resource_type) {
+            return $this->resource_type.' resource';
         }
 
-        $docstring = [];
-        foreach (\explode("\n", $r->contents) as $line) {
-            $docstring[] = \trim($line);
+        return 'resource';
+    }
+
+    public function transplant(Value $old)
+    {
+        parent::transplant($old);
+
+        if ($old instanceof self) {
+            $this->resource_type = $old->resource_type;
         }
-
-        $docstring = \implode("\n", $docstring);
-
-        $location = [];
-
-        if ($r->class) {
-            $location[] = 'Inherited from '.$this->renderer->escape($r->class);
-        }
-        if ($r->file && $r->line) {
-            $location[] = 'Defined in '.$this->renderer->escape(Kint::shortenPath($r->file)).':'.((int) $r->line);
-        }
-
-        $location = \implode("\n", $location);
-
-        if ($location) {
-            if (\strlen($docstring)) {
-                $docstring .= "\n\n";
-            }
-
-            $location = '<small>'.$location.'</small>';
-        } elseif (0 === \strlen($docstring)) {
-            return '';
-        }
-
-        return '<pre>'.$this->renderer->escape($docstring).$location.'</pre>';
     }
 }

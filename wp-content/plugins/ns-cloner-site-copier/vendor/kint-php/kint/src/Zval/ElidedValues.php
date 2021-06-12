@@ -23,46 +23,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Object;
+namespace Kint\Zval;
 
-class ClosureObject extends InstanceObject
+class ElidedValues extends Value
 {
-    public $parameters = array();
-    public $hints = array('object', 'callable', 'closure');
+    public $description = null;
+    public $hints = ['elide'];
 
-    private $paramcache;
+    /**
+     * @param int                  $size
+     * @param null|string|string[] $description
+     */
+    public function __construct($size, $description)
+    {
+        $this->description = $description;
+        $this->size = $size;
+        $this->value = null;
+    }
 
     public function getAccessPath()
     {
-        if (null !== $this->access_path) {
-            return parent::getAccessPath().'('.$this->getParams().')';
-        }
-    }
-
-    public function getSize()
-    {
-    }
-
-    public function getParams()
-    {
-        if (null !== $this->paramcache) {
-            return $this->paramcache;
-        }
-
-        $out = array();
-
-        foreach ($this->parameters as $p) {
-            $type = $p->getType();
-
-            $ref = $p->reference ? '&' : '';
-
-            if ($type) {
-                $out[] = $type.' '.$ref.$p->getName();
-            } else {
-                $out[] = $ref.$p->getName();
-            }
-        }
-
-        return $this->paramcache = \implode(', ', $out);
+        return null;
     }
 }

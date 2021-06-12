@@ -1138,7 +1138,7 @@ function gformUpdateTotalFieldPrice( formId, newPrice ) {
 	}
 
 	if ( formattedTotal !== totalElement.val() ) {
-		totalElement.val( formattedTotal );
+		totalElement.val( formattedTotal ).change();
 	}
 }
 

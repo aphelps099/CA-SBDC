@@ -23,23 +23,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Object;
+namespace Kint\Renderer\Text;
 
-class TraceObject extends BasicObject
+use Kint\Zval\Value;
+
+class ElidedPlugin extends Plugin
 {
-    public $hints = array('trace');
-
-    public function getType()
+    public function render(Value $o)
     {
-        return 'Debug Backtrace';
-    }
+        $out = '';
 
-    public function getSize()
-    {
-        if (!$this->size) {
-            return 'empty';
+        if (0 == $o->depth) {
+            $out .= $this->renderer->colorTitle($this->renderer->renderTitle($o)).PHP_EOL;
         }
 
-        return parent::getSize();
+        $out .= \str_repeat(' ', $o->depth * $this->renderer->indent_width);
+
+        if ($s = $o->getSize()) {
+            $out .= $this->renderer->colorValue('ELIDED '.$s.' VALUES').PHP_EOL;
+        } else {
+            $out .= $this->renderer->colorValue('ELIDED').PHP_EOL;
+        }
+
+        return $out;
     }
 }

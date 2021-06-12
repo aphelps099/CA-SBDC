@@ -25,46 +25,29 @@
 
 namespace Kint\Renderer\Rich;
 
-use Kint\Kint;
-use Kint\Zval\Representation\DocstringRepresentation;
-use Kint\Zval\Representation\Representation;
+use Kint\Zval\ElidedValues;
+use Kint\Zval\Value;
 
-class DocstringPlugin extends Plugin implements TabPluginInterface
+class ElidedPlugin extends Plugin implements ValuePluginInterface
 {
-    public function renderTab(Representation $r)
+    public function renderValue(Value $o)
     {
-        if (!($r instanceof DocstringRepresentation)) {
-            return false;
+        if ($s = $o->getSize()) {
+            $header = $this->renderer->renderHeaderWrapper(
+                $o,
+                true,
+                '<var>Elided</var> '.$s.' values'
+            );
+        } else {
+            $header = $this->renderer->renderHeaderWrapper($o, true, '<var>Elided</var>');
         }
 
-        $docstring = [];
-        foreach (\explode("\n", $r->contents) as $line) {
-            $docstring[] = \trim($line);
+        if ($o instanceof ElidedValues && null !== $o->description) {
+            $children = '<dd><pre>'.\implode('<br>', (array) $o->description).'</pre></dd>';
+        } else {
+            $children = '';
         }
 
-        $docstring = \implode("\n", $docstring);
-
-        $location = [];
-
-        if ($r->class) {
-            $location[] = 'Inherited from '.$this->renderer->escape($r->class);
-        }
-        if ($r->file && $r->line) {
-            $location[] = 'Defined in '.$this->renderer->escape(Kint::shortenPath($r->file)).':'.((int) $r->line);
-        }
-
-        $location = \implode("\n", $location);
-
-        if ($location) {
-            if (\strlen($docstring)) {
-                $docstring .= "\n\n";
-            }
-
-            $location = '<small>'.$location.'</small>';
-        } elseif (0 === \strlen($docstring)) {
-            return '';
-        }
-
-        return '<pre>'.$this->renderer->escape($docstring).$location.'</pre>';
+        return '<dl>'.$header.$children.'</dl>';
     }
 }

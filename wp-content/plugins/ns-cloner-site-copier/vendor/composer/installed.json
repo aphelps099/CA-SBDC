@@ -1,23 +1,26 @@
 [
     {
         "name": "a5hleyrich/wp-background-processing",
-        "version": "1.0.1",
-        "version_normalized": "1.0.1.0",
+        "version": "1.0.2",
+        "version_normalized": "1.0.2.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/A5hleyRich/wp-background-processing.git",
-            "reference": "1f070aab5058dbaf45d5435a343033ddd8a641b1"
+            "url": "https://github.com/deliciousbrains/wp-background-processing.git",
+            "reference": "2cbee1abd1b49e1133cd8f611df4d4fc5a8b9800"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/A5hleyRich/wp-background-processing/zipball/1f070aab5058dbaf45d5435a343033ddd8a641b1",
-            "reference": "1f070aab5058dbaf45d5435a343033ddd8a641b1",
+            "url": "https://api.github.com/repos/deliciousbrains/wp-background-processing/zipball/2cbee1abd1b49e1133cd8f611df4d4fc5a8b9800",
+            "reference": "2cbee1abd1b49e1133cd8f611df4d4fc5a8b9800",
             "shasum": ""
         },
         "require": {
             "php": ">=5.2"
         },
-        "time": "2018-02-12T09:24:05+00:00",
+        "suggest": {
+            "coenjacobs/mozart": "Easily wrap this library with your own prefix, to prevent collisions when multiple plugins use this library"
+        },
+        "time": "2020-07-31T07:00:11+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -27,12 +30,12 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "GPL-2.0-only"
+            "GPL-2.0-or-later"
         ],
         "authors": [
             {
-                "name": "Ashley Rich",
-                "email": "hello@ashleyrich.com"
+                "name": "Delicious Brains",
+                "email": "nom@deliciousbrains.com"
             }
         ],
         "description": "WP Background Processing can be used to fire off non-blocking asynchronous requests or as a background processing tool, allowing you to queue tasks."
@@ -90,28 +93,29 @@
     },
     {
         "name": "kint-php/kint",
-        "version": "3.3",
-        "version_normalized": "3.3.0.0",
+        "version": "4.0-alpha1",
+        "version_normalized": "4.0.0.0-alpha1",
         "source": {
             "type": "git",
             "url": "https://github.com/kint-php/kint.git",
-            "reference": "335ac1bcaf04d87df70d8aa51e8887ba2c6d203b"
+            "reference": "5dea34eb550f0dd1ef582f3b785158c13f9c4fd4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kint-php/kint/zipball/335ac1bcaf04d87df70d8aa51e8887ba2c6d203b",
-            "reference": "335ac1bcaf04d87df70d8aa51e8887ba2c6d203b",
+            "url": "https://api.github.com/repos/kint-php/kint/zipball/5dea34eb550f0dd1ef582f3b785158c13f9c4fd4",
+            "reference": "5dea34eb550f0dd1ef582f3b785158c13f9c4fd4",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.3.6"
+            "php": ">=5.6"
         },
         "require-dev": {
             "friendsofphp/php-cs-fixer": "^2.0",
-            "phpunit/phpunit": "^4.0",
+            "phpspec/prophecy-phpunit": "^2",
+            "phpunit/phpunit": "^9.0",
             "seld/phar-utils": "^1.0",
-            "symfony/finder": "^2.0 || ^3.0 || ^4.0",
-            "vimeo/psalm": "^3.0"
+            "symfony/finder": "^3.0 || ^4.0 || ^5.0",
+            "vimeo/psalm": "dev-master"
         },
         "suggest": {
             "ext-ctype": "Simple data type tests",
@@ -123,7 +127,7 @@
             "symfony/polyfill-iconv": "Replacement for ext-iconv if missing",
             "symfony/polyfill-mbstring": "Replacement for ext-mbstring if missing"
         },
-        "time": "2019-10-17T18:05:24+00:00",
+        "time": "2020-11-25T20:18:13+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

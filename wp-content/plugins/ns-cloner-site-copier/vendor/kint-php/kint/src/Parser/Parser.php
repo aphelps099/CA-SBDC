@@ -27,11 +27,11 @@ namespace Kint\Parser;
 
 use DomainException;
 use Exception;
-use Kint\Object\BasicObject;
-use Kint\Object\BlobObject;
-use Kint\Object\InstanceObject;
-use Kint\Object\Representation\Representation;
-use Kint\Object\ResourceObject;
+use Kint\Zval\BlobValue;
+use Kint\Zval\InstanceValue;
+use Kint\Zval\Representation\Representation;
+use Kint\Zval\ResourceValue;
+use Kint\Zval\Value;
 use ReflectionObject;
 use stdClass;
 
@@ -60,9 +60,9 @@ class Parser
     protected $caller_class;
     protected $depth_limit = false;
     protected $marker;
-    protected $object_hashes = array();
+    protected $object_hashes = [];
     protected $parse_break = false;
-    protected $plugins = array();
+    protected $plugins = [];
 
     /**
      * @param false|int   $depth_limit Maximum depth to parse data
@@ -118,12 +118,12 @@ class Parser
      *
      * This should not be used unless you know what you're doing!
      *
-     * @param mixed       $var The input variable
-     * @param BasicObject $o   The base object
+     * @param mixed $var The input variable
+     * @param Value $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    public function parseDeep(&$var, BasicObject $o)
+    public function parseDeep(&$var, Value $o)
     {
         $depth_limit = $this->depth_limit;
         $this->depth_limit = false;
@@ -138,12 +138,12 @@ class Parser
     /**
      * Parses a variable into a Kint object structure.
      *
-     * @param mixed       $var The input variable
-     * @param BasicObject $o   The base object
+     * @param mixed $var The input variable
+     * @param Value $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    public function parse(&$var, BasicObject $o)
+    public function parse(&$var, Value $o)
     {
         $o->type = \strtolower(\gettype($var));
 
@@ -165,8 +165,10 @@ class Parser
                 return $this->parseResource($var, $o);
             case 'string':
                 return $this->parseString($var, $o);
+            case 'unknown type':
+            case 'resource (closed)':
             default:
-                return $this->parseUnknown($var, $o);
+                return $this->parseResourceClosed($var, $o);
         }
     }
 
@@ -184,12 +186,12 @@ class Parser
 
         foreach ($types as $type) {
             if (!isset($this->plugins[$type])) {
-                $this->plugins[$type] = array(
-                    self::TRIGGER_BEGIN => array(),
-                    self::TRIGGER_SUCCESS => array(),
-                    self::TRIGGER_RECURSION => array(),
-                    self::TRIGGER_DEPTH_LIMIT => array(),
-                );
+                $this->plugins[$type] = [
+                    self::TRIGGER_BEGIN => [],
+                    self::TRIGGER_SUCCESS => [],
+                    self::TRIGGER_RECURSION => [],
+                    self::TRIGGER_DEPTH_LIMIT => [],
+                ];
             }
 
             foreach ($this->plugins[$type] as $trigger => &$pool) {
@@ -204,7 +206,7 @@ class Parser
 
     public function clearPlugins()
     {
-        $this->plugins = array();
+        $this->plugins = [];
     }
 
     public function haltParse()
@@ -212,18 +214,18 @@ class Parser
         $this->parse_break = true;
     }
 
-    public function childHasPath(InstanceObject $parent, BasicObject $child)
+    public function childHasPath(InstanceValue $parent, Value $child)
     {
         if ('object' === $parent->type && (null !== $parent->access_path || $child->static || $child->const)) {
-            if (BasicObject::ACCESS_PUBLIC === $child->access) {
+            if (Value::ACCESS_PUBLIC === $child->access) {
                 return true;
             }
 
-            if (BasicObject::ACCESS_PRIVATE === $child->access && $this->caller_class) {
+            if (Value::ACCESS_PRIVATE === $child->access && $this->caller_class) {
                 if ($this->caller_class === $child->owner_class) {
                     return true;
                 }
-            } elseif (BasicObject::ACCESS_PROTECTED === $child->access && $this->caller_class) {
+            } elseif (Value::ACCESS_PROTECTED === $child->access && $this->caller_class) {
                 if ($this->caller_class === $child->owner_class) {
                     return true;
                 }
@@ -262,9 +264,9 @@ class Parser
     {
         $bt = \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT | DEBUG_BACKTRACE_IGNORE_ARGS);
 
-        $caller_frame = array(
+        $caller_frame = [
             'function' => __FUNCTION__,
-        );
+        ];
 
         while (isset($bt[0]['object']) && $bt[0]['object'] === $this) {
             $caller_frame = \array_shift($bt);
@@ -277,7 +279,7 @@ class Parser
         }
     }
 
-    private function parseGeneric(&$var, BasicObject $o)
+    private function parseGeneric(&$var, Value $o)
     {
         $rep = new Representation('Contents');
         $rep->contents = $var;
@@ -291,19 +293,19 @@ class Parser
     }
 
     /**
-     * Parses a string into a Kint BlobObject structure.
+     * Parses a string into a Kint BlobValue structure.
      *
-     * @param string      $var The input variable
-     * @param BasicObject $o   The base object
+     * @param string $var The input variable
+     * @param Value  $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    private function parseString(&$var, BasicObject $o)
+    private function parseString(&$var, Value $o)
     {
-        $string = new BlobObject();
+        $string = new BlobValue();
         $string->transplant($o);
-        $string->encoding = BlobObject::detectEncoding($var);
-        $string->size = BlobObject::strlen($var, $string->encoding);
+        $string->encoding = BlobValue::detectEncoding($var);
+        $string->size = \strlen($var);
 
         $rep = new Representation('Contents');
         $rep->contents = $var;
@@ -320,14 +322,14 @@ class Parser
     /**
      * Parses an array into a Kint object structure.
      *
-     * @param array       $var The input variable
-     * @param BasicObject $o   The base object
+     * @param array $var The input variable
+     * @param Value $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    private function parseArray(array &$var, BasicObject $o)
+    private function parseArray(array &$var, Value $o)
     {
-        $array = new BasicObject();
+        $array = new Value();
         $array->transplant($o);
         $array->size = \count($var);
 
@@ -379,11 +381,11 @@ class Parser
                 continue;
             }
 
-            $child = new BasicObject();
+            $child = new Value();
             $child->name = $key;
             $child->depth = $array->depth + 1;
-            $child->access = BasicObject::ACCESS_NONE;
-            $child->operator = BasicObject::OPERATOR_ARRAY;
+            $child->access = Value::ACCESS_NONE;
+            $child->operator = Value::OPERATOR_ARRAY;
 
             if (null !== $array->access_path) {
                 if (\is_string($key) && (string) (int) $key === $key) {
@@ -411,22 +413,22 @@ class Parser
     }
 
     /**
-     * Parses an object into a Kint InstanceObject structure.
+     * Parses an object into a Kint InstanceValue structure.
      *
-     * @param object      $var The input variable
-     * @param BasicObject $o   The base object
+     * @param object $var The input variable
+     * @param Value  $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    private function parseObject(&$var, BasicObject $o)
+    private function parseObject(&$var, Value $o)
     {
         $hash = \spl_object_hash($var);
         $values = (array) $var;
 
-        $object = new InstanceObject();
+        $object = new InstanceValue();
         $object->transplant($o);
         $object->classname = \get_class($var);
-        $object->hash = $hash;
+        $object->spl_object_hash = $hash;
         $object->size = \count($values);
 
         if (isset($this->object_hashes[$hash])) {
@@ -470,20 +472,20 @@ class Parser
             // public properties show in the form "$property_name";
             // http://www.php.net/manual/en/language.types.array.php#language.types.array.casting
 
-            $child = new BasicObject();
+            $child = new Value();
             $child->depth = $object->depth + 1;
             $child->owner_class = $object->classname;
-            $child->operator = BasicObject::OPERATOR_OBJECT;
-            $child->access = BasicObject::ACCESS_PUBLIC;
+            $child->operator = Value::OPERATOR_OBJECT;
+            $child->access = Value::ACCESS_PUBLIC;
 
             $split_key = \explode("\0", $key, 3);
 
             if (3 === \count($split_key) && '' === $split_key[0]) {
                 $child->name = $split_key[2];
                 if ('*' === $split_key[1]) {
-                    $child->access = BasicObject::ACCESS_PROTECTED;
+                    $child->access = Value::ACCESS_PROTECTED;
                 } else {
-                    $child->access = BasicObject::ACCESS_PRIVATE;
+                    $child->access = Value::ACCESS_PRIVATE;
                     $child->owner_class = $split_key[1];
                 }
             } elseif (KINT_PHP72) {
@@ -524,16 +526,16 @@ class Parser
     }
 
     /**
-     * Parses a resource into a Kint ResourceObject structure.
+     * Parses a resource into a Kint ResourceValue structure.
      *
-     * @param resource    $var The input variable
-     * @param BasicObject $o   The base object
+     * @param resource $var The input variable
+     * @param Value    $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    private function parseResource(&$var, BasicObject $o)
+    private function parseResource(&$var, Value $o)
     {
-        $resource = new ResourceObject();
+        $resource = new ResourceValue();
         $resource->transplant($o);
         $resource->resource_type = \get_resource_type($var);
 
@@ -543,16 +545,16 @@ class Parser
     }
 
     /**
-     * Parses an unknown into a Kint object structure.
+     * Parses a closed resource into a Kint object structure.
      *
-     * @param mixed       $var The input variable
-     * @param BasicObject $o   The base object
+     * @param mixed $var The input variable
+     * @param Value $o   The base object
      *
-     * @return BasicObject
+     * @return Value
      */
-    private function parseUnknown(&$var, BasicObject $o)
+    private function parseResourceClosed(&$var, Value $o)
     {
-        $o->type = 'unknown';
+        $o->type = 'resource (closed)';
         $this->applyPlugins($var, $o, self::TRIGGER_SUCCESS);
 
         return $o;
@@ -561,20 +563,20 @@ class Parser
     /**
      * Applies plugins for an object type.
      *
-     * @param mixed       $var     variable
-     * @param BasicObject $o       Kint object parsed so far
-     * @param int         $trigger The trigger to check for the plugins
+     * @param mixed $var     variable
+     * @param Value $o       Kint object parsed so far
+     * @param int   $trigger The trigger to check for the plugins
      *
      * @return bool Continue parsing
      */
-    private function applyPlugins(&$var, BasicObject &$o, $trigger)
+    private function applyPlugins(&$var, Value &$o, $trigger)
     {
         $break_stash = $this->parse_break;
 
         /** @var bool Psalm bug workaround */
         $this->parse_break = false;
 
-        $plugins = array();
+        $plugins = [];
 
         if (isset($this->plugins[$o->type][$trigger])) {
             $plugins = $this->plugins[$o->type][$trigger];

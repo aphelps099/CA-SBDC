@@ -25,54 +25,79 @@
 
 namespace Kint\Parser;
 
-use Kint\Zval\Representation\Representation;
-use Kint\Zval\ResourceValue;
-use Kint\Zval\StreamValue;
+use InvalidArgumentException;
+use Kint\Utils;
+use Kint\Zval\ElidedValues;
 use Kint\Zval\Value;
 
-class StreamPlugin extends Plugin
+class ArrayLimitPlugin extends Plugin
 {
+    /**
+     * Maximum size of arrays before limiting.
+     *
+     * @var int
+     */
+    public static $trigger = 100;
+
+    /**
+     * Maximum amount of items to show in a limited array.
+     *
+     * @var int
+     */
+    public static $limit = 20;
+
+    /**
+     * Don't limit arrays with string keys.
+     *
+     * @var bool
+     */
+    public static $numeric_only = true;
+
     public function getTypes()
     {
-        return ['resource'];
+        return ['array'];
     }
 
     public function getTriggers()
     {
-        return Parser::TRIGGER_SUCCESS;
+        return Parser::TRIGGER_BEGIN;
     }
 
     public function parse(&$var, Value &$o, $trigger)
     {
-        if (!$o instanceof ResourceValue || 'stream' !== $o->resource_type) {
+        if (self::$limit >= self::$trigger) {
+            throw new InvalidArgumentException('ArrayLimitPlugin::$limit can not be lower than ArrayLimitPlugin::$trigger');
+        }
+
+        if (\count($var) < self::$trigger) {
             return;
         }
 
-        if (!$meta = \stream_get_meta_data($var)) {
+        if (self::$numeric_only && Utils::isAssoc($var)) {
             return;
         }
 
-        $rep = new Representation('Stream');
-        $rep->implicit_label = true;
+        $var2 = \array_slice($var, 0, self::$limit);
 
-        $base_obj = new Value();
-        $base_obj->depth = $o->depth;
+        $base = clone $o;
 
-        if ($o->access_path) {
-            $base_obj->access_path = 'stream_get_meta_data('.$o->access_path.')';
+        $obj = $this->parser->parse($var2, $base);
+
+        if (!$obj instanceof Value || 'array' != $obj->type) {
+            return;
         }
 
-        $rep->contents = $this->parser->parse($meta, $base_obj);
+        $sparekeys = \array_slice(\array_keys($var), self::$limit);
+        $skip = new ElidedValues(\count($sparekeys), $sparekeys);
+        $skip->depth = $obj->depth + 1;
 
-        if (!\in_array('depth_limit', $rep->contents->hints, true)) {
-            $rep->contents = $rep->contents->value->contents;
+        if (isset($obj->value->contents) && \is_array($obj->value->contents)) {
+            $obj->value->contents[] = $skip;
         }
 
-        $o->addRepresentation($rep, 0);
-        $o->value = $rep;
+        $obj->size = \count($var);
 
-        $stream = new StreamValue($meta);
-        $stream->transplant($o);
-        $o = $stream;
+        $o = $obj;
+        $this->parser->haltParse();
     }
 }

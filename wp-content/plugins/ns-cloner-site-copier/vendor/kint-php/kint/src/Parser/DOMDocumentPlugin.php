@@ -28,9 +28,9 @@ namespace Kint\Parser;
 use DOMNamedNodeMap;
 use DOMNode;
 use DOMNodeList;
-use Kint\Object\BasicObject;
-use Kint\Object\InstanceObject;
-use Kint\Object\Representation\Representation;
+use Kint\Zval\InstanceValue;
+use Kint\Zval\Representation\Representation;
+use Kint\Zval\Value;
 
 /**
  * The DOMDocument parser plugin is particularly useful as it is both the only
@@ -63,14 +63,14 @@ class DOMDocumentPlugin extends Plugin
      *
      * @var array
      */
-    public static $blacklist = array(
+    public static $blacklist = [
         'parentNode' => 'DOMNode',
         'firstChild' => 'DOMNode',
         'lastChild' => 'DOMNode',
         'previousSibling' => 'DOMNode',
         'nextSibling' => 'DOMNode',
         'ownerDocument' => 'DOMDocument',
-    );
+    ];
 
     /**
      * Show all properties and methods.
@@ -81,7 +81,7 @@ class DOMDocumentPlugin extends Plugin
 
     public function getTypes()
     {
-        return array('object');
+        return ['object'];
     }
 
     public function getTriggers()
@@ -89,9 +89,9 @@ class DOMDocumentPlugin extends Plugin
         return Parser::TRIGGER_SUCCESS;
     }
 
-    public function parse(&$var, BasicObject &$o, $trigger)
+    public function parse(&$var, Value &$o, $trigger)
     {
-        if (!$o instanceof InstanceObject) {
+        if (!$o instanceof InstanceValue) {
             return;
         }
 
@@ -104,7 +104,7 @@ class DOMDocumentPlugin extends Plugin
         }
     }
 
-    protected function parseList(&$var, InstanceObject &$o, $trigger)
+    protected function parseList(&$var, InstanceValue &$o, $trigger)
     {
         // Recursion should never happen, should always be stopped at the parent
         // DOMNode.  Depth limit on the other hand we're going to skip since
@@ -125,14 +125,14 @@ class DOMDocumentPlugin extends Plugin
         // Depth limit
         // Make empty iterator representation since we need it in DOMNode to point out depth limits
         if ($this->parser->getDepthLimit() && $o->depth + 1 >= $this->parser->getDepthLimit()) {
-            $b = new BasicObject();
+            $b = new Value();
             $b->name = $o->classname.' Iterator Contents';
             $b->access_path = 'iterator_to_array('.$o->access_path.')';
             $b->depth = $o->depth + 1;
             $b->hints[] = 'depth_limit';
 
             $r = new Representation('Iterator');
-            $r->contents = array($b);
+            $r->contents = [$b];
             $o->replaceRepresentation($r, 0);
 
             return;
@@ -144,7 +144,7 @@ class DOMDocumentPlugin extends Plugin
         $o->replaceRepresentation($r, 0);
 
         foreach ($data as $key => $item) {
-            $base_obj = new BasicObject();
+            $base_obj = new Value();
             $base_obj->depth = $o->depth + 1;
             $base_obj->name = $item->nodeName;
 
@@ -162,19 +162,19 @@ class DOMDocumentPlugin extends Plugin
         }
     }
 
-    protected function parseNode(&$var, InstanceObject &$o)
+    protected function parseNode(&$var, InstanceValue &$o)
     {
         // Fill the properties
         // They can't be enumerated through reflection or casting,
         // so we have to trust the docs and try them one at a time
-        $known_properties = array(
+        $known_properties = [
             'nodeValue',
             'childNodes',
             'attributes',
-        );
+        ];
 
         if (self::$verbose) {
-            $known_properties = array(
+            $known_properties = [
                 'nodeName',
                 'nodeValue',
                 'nodeType',
@@ -191,11 +191,11 @@ class DOMDocumentPlugin extends Plugin
                 'localName',
                 'baseURI',
                 'textContent',
-            );
+            ];
         }
 
-        $childNodes = array();
-        $attributes = array();
+        $childNodes = [];
+        $attributes = [];
 
         $rep = $o->value;
 
@@ -217,7 +217,7 @@ class DOMDocumentPlugin extends Plugin
 
         // Attributes and comments and text nodes don't
         // need children or attributes of their own
-        if (\in_array($o->classname, array('DOMAttr', 'DOMText', 'DOMComment'), true)) {
+        if (\in_array($o->classname, ['DOMAttr', 'DOMText', 'DOMComment'], true)) {
             return;
         }
 
@@ -235,11 +235,11 @@ class DOMDocumentPlugin extends Plugin
             $c = new Representation('Children');
 
             if (1 === \count($childNodes->contents) && ($node = \reset($childNodes->contents)) && \in_array('depth_limit', $node->hints, true)) {
-                $n = new InstanceObject();
+                $n = new InstanceValue();
                 $n->transplant($node);
                 $n->name = 'childNodes';
                 $n->classname = 'DOMNodeList';
-                $c->contents = array($n);
+                $c->contents = [$n];
             } else {
                 foreach ($childNodes->contents as $index => $node) {
                     // Shortcircuit text nodes to plain strings
@@ -268,15 +268,15 @@ class DOMDocumentPlugin extends Plugin
         }
     }
 
-    protected function parseProperty(InstanceObject $o, $prop, &$var)
+    protected function parseProperty(InstanceValue $o, $prop, &$var)
     {
         // Duplicating (And slightly optimizing) the Parser::parseObject() code here
-        $base_obj = new BasicObject();
+        $base_obj = new Value();
         $base_obj->depth = $o->depth + 1;
         $base_obj->owner_class = $o->classname;
         $base_obj->name = $prop;
-        $base_obj->operator = BasicObject::OPERATOR_OBJECT;
-        $base_obj->access = BasicObject::ACCESS_PUBLIC;
+        $base_obj->operator = Value::OPERATOR_OBJECT;
+        $base_obj->access = Value::ACCESS_PUBLIC;
 
         if (null !== $o->access_path) {
             $base_obj->access_path = $o->access_path;
@@ -291,7 +291,7 @@ class DOMDocumentPlugin extends Plugin
         if (!isset($var->{$prop})) {
             $base_obj->type = 'null';
         } elseif (isset(self::$blacklist[$prop])) {
-            $b = new InstanceObject();
+            $b = new InstanceValue();
             $b->transplant($base_obj);
             $base_obj = $b;
 
@@ -306,13 +306,13 @@ class DOMDocumentPlugin extends Plugin
         return $base_obj;
     }
 
-    protected static function textualNodeToString(InstanceObject $o)
+    protected static function textualNodeToString(InstanceValue $o)
     {
         if (empty($o->value) || empty($o->value->contents) || empty($o->classname)) {
             return;
         }
 
-        if (!\in_array($o->classname, array('DOMText', 'DOMAttr', 'DOMComment'), true)) {
+        if (!\in_array($o->classname, ['DOMText', 'DOMAttr', 'DOMComment'], true)) {
             return;
         }
 

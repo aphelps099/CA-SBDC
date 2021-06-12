@@ -25,9 +25,9 @@
 
 namespace Kint\Parser;
 
-use Kint\Object\BasicObject;
-use Kint\Object\BlobObject;
-use Kint\Object\Representation\Representation;
+use Kint\Zval\BlobValue;
+use Kint\Zval\Representation\Representation;
+use Kint\Zval\Value;
 use SimpleXMLElement;
 
 class SimpleXMLElementPlugin extends Plugin
@@ -41,7 +41,7 @@ class SimpleXMLElementPlugin extends Plugin
 
     public function getTypes()
     {
-        return array('object');
+        return ['object'];
     }
 
     public function getTriggers()
@@ -49,7 +49,7 @@ class SimpleXMLElementPlugin extends Plugin
         return Parser::TRIGGER_SUCCESS;
     }
 
-    public function parse(&$var, BasicObject &$o, $trigger)
+    public function parse(&$var, Value &$o, $trigger)
     {
         if (!$var instanceof SimpleXMLElement) {
             return;
@@ -66,7 +66,7 @@ class SimpleXMLElementPlugin extends Plugin
         // Attributes
         $a = new Representation('Attributes');
 
-        $base_obj = new BasicObject();
+        $base_obj = new Value();
         $base_obj->depth = $o->depth;
 
         if ($o->access_path) {
@@ -77,7 +77,7 @@ class SimpleXMLElementPlugin extends Plugin
             $attribs = \iterator_to_array($attribs);
             $attribs = \array_map('strval', $attribs);
         } else {
-            $attribs = array();
+            $attribs = [];
         }
 
         // XML attributes are by definition strings and don't have children,
@@ -107,7 +107,7 @@ class SimpleXMLElementPlugin extends Plugin
                     $i = 0;
 
                     while (isset($children->{$value->name}[$i])) {
-                        $base_obj = new BasicObject();
+                        $base_obj = new Value();
                         $base_obj->depth = $o->depth + 1;
                         $base_obj->name = $value->name;
                         if ($value->access_path) {
@@ -133,7 +133,7 @@ class SimpleXMLElementPlugin extends Plugin
                 $o->size = null;
 
                 if (\strlen((string) $var)) {
-                    $base_obj = new BlobObject();
+                    $base_obj = new BlobValue();
                     $base_obj->depth = $o->depth + 1;
                     $base_obj->name = $o->name;
                     if ($o->access_path) {
@@ -144,7 +144,7 @@ class SimpleXMLElementPlugin extends Plugin
 
                     $c = new Representation('Contents');
                     $c->implicit_label = true;
-                    $c->contents = array($this->parser->parseDeep($value, $base_obj));
+                    $c->contents = [$this->parser->parseDeep($value, $base_obj)];
                 }
             }
 

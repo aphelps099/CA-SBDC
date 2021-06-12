@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: https://gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 2.5.4.1
+Version: 2.5.5.1
 Requires at least: 4.0
 Requires PHP: 5.6
 Author: Gravity Forms
@@ -206,7 +206,7 @@ class GFForms {
 	 *
 	 * @var string $version The version number.
 	 */
-	public static $version = '2.5.4.1';
+	public static $version = '2.5.5.1';
 
 	/**
 	 * Handles background upgrade tasks.
@@ -989,7 +989,7 @@ class GFForms {
 				'buttons',
 			),
 			'gf_new_form'                => array( 'thickbox' ),
-			'gf_entries'                 => array( 'thickbox', 'gform_chosen' ),
+			'gf_entries'                 => array( 'thickbox', 'gform_chosen', 'gform_admin_theme' ),
 			'gf_settings'                => array(),
 			'gf_export'                  => array(),
 			'gf_help'                    => array(),
@@ -6405,7 +6405,7 @@ class GFForms {
 	 * @return string
 	 */
 	public static function ensure_hook_js_output( $content ) {
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		if ( ! self::should_inject_hooks_js( $content ) ) {
 			return $content;
 		}
 
@@ -6433,9 +6433,96 @@ class GFForms {
 		$content = str_replace( $hooks_javascript, '', $content );
 
 		$string  = '<script type="text/javascript">' . $hooks_javascript . '</script>';
-		$content = preg_replace('/(<[\s]*head[^>]*>)/', '$0 ' . $string, $content, 1 );
+		$content = preg_replace('/(<[\s]*head(?!e)[^>]*>)/', '$0 ' . $string, $content, 1 );
 
 		return $content;
+	}
+
+	/**
+	 * There are some contexts in which we do not want to inject our Hooks JS. This determines
+	 * whether we are in one of those contexts.
+	 *
+	 * @since 2.5.5
+	 *
+	 * @param string $content The buffer content.
+	 *
+	 * @return bool
+	 */
+	public static function should_inject_hooks_js( $content ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return false;
+		}
+
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return false;
+		}
+
+		if ( empty( $content ) ) {
+		    return false;
+		}
+
+		// If doc is XML, bail.
+		try {
+			$xdom = new DOMDocument();
+			@$xdom->loadXML( $content );
+
+			if ( ! is_null( $xdom->documentElement ) && $xdom->documentElement->tagName !== 'html' ) {
+				return false;
+			}
+		} catch ( \Exception $e ) {
+			return self::should_inject_hooks_js_regex( $content );
+		}
+
+		// Load DOMDocument to process elements as objects.
+		try {
+			$dom = new DOMDocument();
+			@$dom->loadHTML( $content );
+		} catch( \Exception $e ) {
+			return self::should_inject_hooks_js_regex( $content );
+		}
+
+		$html = $dom->getElementsByTagName( 'html' );
+		$head = $dom->getElementsByTagName( 'head' );
+
+		// No HTML tag or head tag - we shouldn't mess with this so we bail.
+		if ( empty( $head->length ) || empty( $html->length ) ) {
+			return false;
+		}
+
+		// Markup is AMP - bail.
+		if ( $html[0]->hasAttribute( 'amp' ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Use a couple regular expressions to parse the HTML and determine if we should inject our JS. Less-reliable
+	 * than the DOMDocument method, but useful for odd markup or a server which doesn't have the DOM extension.
+	 *
+	 * @since 2.5.5
+	 *
+	 * @param string $content The buffer content.
+	 *
+	 * @return bool
+	 */
+	public static function should_inject_hooks_js_regex( $content ) {
+		preg_match('/(<[\s]*head(?!e)[^>]*>)/', $content, $hmatches );
+
+		if ( empty( $hmatches ) ) {
+			return false;
+		}
+
+		// Bail if this markup is AMP'd
+		preg_match('/^<!DOCTYPE html>[\r\n]*<[\s]*html[\s]+[^>]*amp[=\s>]+/i', trim( $content ), $amatches );
+
+		if ( ! empty( $amatches ) ) {
+			return false;
+		}
+
+		return true;
+
 	}
 }
 

@@ -5,7 +5,7 @@ Tags: automate, duplicate, copy, copier, clone, cloner, multisite, network, temp
 Requires at least: 4.0.0
 Tested up to: 5.6
 Requires PHP: 7.0
-Stable tag: 4.1.5.3
+Stable tag: 4.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,16 +101,19 @@ You're in luck! NS Cloner V4 has new background cloning capability, so you shoul
 
 == Changelog ==
 
-= 4.1.5.3 - 2020.02.10 =
+= 4.1.6 - 2021.05.31 =
+* Update composer dependencies for PHP 8 compatibility
+
+= 4.1.5.3 - 2021.02.10 =
 * Fix compatibility error with SEO by Rank Math Pro
 
-= 4.1.5.2 - 2020.02.03 =
+= 4.1.5.2 - 2021.02.03 =
 * Fix bug with new site title not being applied after cloning
 
-= 4.1.5.1 - 2020.02.02 =
+= 4.1.5.1 - 2021.02.02 =
 * Fix slug change that broke compatibility with pro version
 
-= 4.1.5 - 2020.01.31 =
+= 4.1.5 - 2021.01.31 =
 * Add wp_cache_flush() call to resolve object caching issues
 * Add option to clear plugin data for stuck processes
 * Update internationalization to follow WP recommendations
