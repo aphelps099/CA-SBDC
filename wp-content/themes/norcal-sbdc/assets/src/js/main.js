@@ -1622,8 +1622,7 @@
 
 			if(referrerDomain !== currentDomain) {
 				$.get(crownThemeData.ajaxUrl, { action: 'get_site_by_domain', domain: referrerDomain }, function(response) {
-					if(response) {
-						console.log(response);
+					if(response && response.blogname) {
 
 						var message = 'You are now viewing the <strong>' + crownThemeData.siteName + '</strong> website.';
 

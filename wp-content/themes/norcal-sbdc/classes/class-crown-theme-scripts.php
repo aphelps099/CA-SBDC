@@ -143,7 +143,15 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 			if ( empty( $domain ) ) wp_send_json( null );
 
 			$sites = get_sites( array( 'domain' => $domain, 'number' => 1 ) );
-			wp_send_json( get_blog_details( $sites[0]->blog_id ) );
+			if ( empty( $sites ) && ! preg_match( '/^www\./', $domain ) ) {
+				$sites = get_sites( array( 'domain' => 'www.' . $domain, 'number' => 1 ) );
+			}
+
+			if ( ! empty( $sites ) ) {
+				wp_send_json( get_blog_details( $sites[0]->blog_id ) );
+			} else {
+				wp_send_json( null );
+			}
 
 		}
 
