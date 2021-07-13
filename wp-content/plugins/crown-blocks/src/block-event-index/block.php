@@ -25,6 +25,7 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			if ( ! class_exists( 'Crown_Events' ) ) return '';
 
 			$filters = (object) array(
+				'source' => (object) array( 'key' => 'e_source', 'queried' => null, 'options' => array() ),
 				'topic' => (object) array( 'key' => 'e_topic', 'queried' => null, 'options' => array() ),
 				'series' => (object) array( 'key' => 'e_series', 'queried' => null, 'options' => array() ),
 				'month' => (object) array( 'key' => 'e_month', 'queried' => null, 'options' => array() ),
@@ -36,6 +37,12 @@ if(!class_exists('Crown_Block_Event_Index')) {
 				'tax_query' => array(),
 				'include_syndicated' => true
 			);
+
+			$filters->source->queried = isset( $_GET[ $filters->source->key ] ) ? ( is_array( $_GET[ $filters->source->key ] ) ? $_GET[ $filters->source->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->source->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+			$filters->source->queried = in_array( 'local', $filters->source->queried ) ? array( 'local' ) : array();
+			if ( ! is_main_site() && ! isset( $_GET[ $filters->source->key ] ) ) {
+				$filters->source->queried = array( 'local' );
+			}
 
 			$filters->topic->queried = isset( $_GET[ $filters->topic->key ] ) ? ( is_array( $_GET[ $filters->topic->key ] ) ? $_GET[ $filters->topic->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->topic->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
 			if ( ! empty( $filters->topic->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_topic', 'terms' => $filters->topic->queried );
@@ -55,7 +62,12 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			}
 
 			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->center->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+			if ( ! empty( $filters->center->queried ) ) {
+				$event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+				$filters->source->queried = null;
+			} else if ( in_array( 'local', $filters->source->queried ) ) {
+				$event_args['include_syndicated'] = false;
+			}
 
 			// $atts['postsPerPage'] = 1;
 			$query_args = Crown_Events::get_event_query_args( $event_args );
@@ -74,12 +86,16 @@ if(!class_exists('Crown_Block_Event_Index')) {
 			}
 
 			$filters_action = remove_query_arg( array(
+				$filters->source->key,
 				$filters->topic->key,
 				$filters->series->key,
 				$filters->month->key,
 				$filters->center->key
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
+
+			$filters->source->options[] = (object) array( 'value' => 'local', 'label' => get_bloginfo( 'name' ) . ' Events', 'selected' => in_array( 'local', $filters->source->queried ) );
+			$filters->source->options[] = (object) array( 'value' => 'all', 'label' => 'All Events', 'selected' => empty( $filters->source->queried ) );
 
 			$filters->topic->options = array_map( function( $n ) use ( $filters ) {
 				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->topic->queried ) );
@@ -115,6 +131,19 @@ if(!class_exists('Crown_Block_Event_Index')) {
 								<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
 								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
 								<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
+
+								<?php if ( ! is_main_site() ) { ?>
+									<ul class="options singular quick-filters">
+										<?php foreach ( $filters->source->options as $option ) { ?>
+											<li class="option">
+												<label>
+													<input type="checkbox" name="<?php echo $filters->source->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+													<span class="label"><?php echo $option->label; ?></span>
+												</label>
+											</li>
+										<?php } ?>
+									</ul>
+								<?php } ?>
 
 								<nav class="filters-nav">
 									<ul>
