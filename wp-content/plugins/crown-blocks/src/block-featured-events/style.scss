@@ -1,0 +1,111 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-featured-events {
+	.post-feed {
+		article.event {
+			a {
+				color: inherit;
+			}
+			.entry-centers {
+				margin-bottom: 1rem;
+				.center {
+					display: inline-block;
+					line-height: 1.2;
+					font-weight: 700;
+					font-size: 0.625rem;
+					letter-spacing: .05em;
+					text-transform: uppercase;
+					border-radius: 10rem;
+					border: 1px solid #333;
+					padding: .5rem .75rem;
+					color: inherit;
+				}
+			}
+		}
+	}
+	&.configuration-slider {
+		.post-feed {
+			&.item-count-2 > .inner > article.event:nth-child(1):after { right: (20px + 6px) * (2 - 1); }
+			&.item-count-3 > .inner > article.event:nth-child(1):after { right: (20px + 6px) * (3 - 1); }
+			&.item-count-4 > .inner > article.event:nth-child(1):after { right: (20px + 6px) * (4 - 1); }
+			&.item-count-5 > .inner > article.event:nth-child(1):after { right: (20px + 6px) * (5 - 1); }
+			&.item-count-6 > .inner > article.event:nth-child(1):after { right: (20px + 6px) * (6 - 1); }
+			> .inner {
+				padding-bottom: 3rem;
+				position: relative;
+				> article.event {
+					&:after {
+						content: '';
+						display: block;
+						width: 14px;
+						height: 14px;
+						margin: 3px;
+						position: absolute;
+						right: 0;
+						bottom: 0;
+						border-radius: 100px;
+						background-color: #333;
+						opacity: .3;
+					}
+					> a { display: none; }
+					&:nth-child(1) {
+						> a { display: block; }
+						&:after {
+							width: 20px;
+							height: 20px;
+							margin: 0;
+							opacity: .6;
+						}
+					}
+					&:nth-child(3):after { right: (20px + 6px) * (3 - 2); }
+					&:nth-child(4):after { right: (20px + 6px) * (4 - 2); }
+					&:nth-child(5):after { right: (20px + 6px) * (5 - 2); }
+					&:nth-child(6):after { right: (20px + 6px) * (6 - 2); }
+				}
+				article.event {
+					.entry-title {
+						margin-top: 1.5rem;
+						margin-bottom: 0;
+					}
+				}
+			}
+		}
+	}
+	&.configuration-list {
+		.post-feed {
+			article.event {
+				margin-top: 2rem;
+				&:first-child {
+					margin-top: 0;
+				}
+				.entry-centers {
+					display: none;
+				}
+				.entry-event-date {
+					margin-bottom: .5rem;
+					.month,
+					.date,
+					.time {
+						display: inline;
+						font-size: 1rem;
+						line-height: 1.4;
+						font-style: normal;
+						font-weight: 700;
+						letter-spacing: 0;
+					}
+					.time {
+						display: block;
+					}
+				}
+				.entry-title {
+					margin-top: 0;
+					margin-bottom: 0;
+					font-weight: 500;
+					font-size: 1.5rem;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}

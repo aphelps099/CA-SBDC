@@ -6887,6 +6887,103 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-featured-events .post-feed article.event a {
+  color: inherit; }
+
+.wp-block-crown-blocks-featured-events .post-feed article.event .entry-centers {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-featured-events .post-feed article.event .entry-centers .center {
+    display: inline-block;
+    line-height: 1.2;
+    font-weight: 700;
+    font-size: 0.625rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border-radius: 10rem;
+    border: 1px solid #333;
+    padding: .5rem .75rem;
+    color: inherit; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed.item-count-2 > .inner > article.event:nth-child(1):after {
+  right: 26px; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed.item-count-3 > .inner > article.event:nth-child(1):after {
+  right: 52px; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed.item-count-4 > .inner > article.event:nth-child(1):after {
+  right: 78px; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed.item-count-5 > .inner > article.event:nth-child(1):after {
+  right: 104px; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed.item-count-6 > .inner > article.event:nth-child(1):after {
+  right: 130px; }
+
+.wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner {
+  padding-bottom: 3rem;
+  position: relative; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:after {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 14px;
+    margin: 3px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-radius: 100px;
+    background-color: #333;
+    opacity: .3; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event > a {
+    display: none; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(1) > a {
+    display: block; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(1):after {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    opacity: .6; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(3):after {
+    right: 26px; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(4):after {
+    right: 52px; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(5):after {
+    right: 78px; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner > article.event:nth-child(6):after {
+    right: 104px; }
+  .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner article.event .entry-title {
+    margin-top: 1.5rem;
+    margin-bottom: 0; }
+
+.wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event {
+  margin-top: 2rem; }
+  .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event:first-child {
+    margin-top: 0; }
+  .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-centers {
+    display: none; }
+  .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-event-date {
+    margin-bottom: .5rem; }
+    .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-event-date .month,
+    .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-event-date .date,
+    .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-event-date .time {
+      display: inline;
+      font-size: 1rem;
+      line-height: 1.4;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: 0; }
+    .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-event-date .time {
+      display: block; }
+  .wp-block-crown-blocks-featured-events.configuration-list .post-feed article.event .entry-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 1.5rem;
+    text-decoration: underline; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-featured-post-slider .post-feed > .inner {
   display: -ms-flexbox;
   display: flex;

@@ -4250,3 +4250,95 @@
 		transition: height .5s ease-out;
 	}
 }
+
+
+/*	Featured Events
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-featured-events {
+	.post-feed {
+		article.event {
+			.entry-centers {
+				.center {
+					border-color: $primary;
+					.text-color-light & {
+						border-color: #fff;
+					}
+					.text-color-dark & {
+						border-color: $primary;
+					}
+				}
+			}
+		}
+	}
+	&.configuration-slider {
+		.post-feed > .inner {
+			&.slick-initialized {
+				margin: 0 -10px;
+				padding-bottom: 0;
+				.slick-slide {
+					padding: 0 10px;
+					padding-bottom: 3rem;
+				}
+				.slick-dots {
+					position: absolute;
+					right: 10px;
+					bottom: 0;
+					display: flex;
+					margin: 0 -3px;
+					list-style: none;
+					padding: 0;
+					li {
+						width: 20px;
+						height: 20px;
+						margin: 0 3px;
+						padding: 3px;
+						transition: padding .2s ease-out;
+						display: flex;
+						&.slick-active {
+							padding: 0;
+							button,
+							button:hover {
+								opacity: .6;
+							}
+						}
+						button {
+							background-color: $primary;
+							opacity: .3;
+							border-radius: 100px;
+							padding: 0;
+							width: 100%;
+							height: 100%;
+							border: none;
+							display: block;
+							overflow: hidden;
+							text-indent: -10000px;
+							transition: opacity .2s;
+							outline: none;
+							.text-color-light & {
+								background-color: #fff;
+							}
+							.text-color-dark & {
+								background-color: $primary;
+							}
+							&:hover {
+								opacity: .4;
+							}
+						}
+					}
+				}
+			}
+			article.event {
+				&:after {
+					background-color: $primary;
+					.text-color-light & {
+						background-color: #fff;
+					}
+					.text-color-dark & {
+						background-color: $primary;
+					}
+				}
+			}
+		}
+	}
+}

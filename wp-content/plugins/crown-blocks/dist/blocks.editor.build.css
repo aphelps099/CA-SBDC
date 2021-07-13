@@ -425,6 +425,12 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/featured-events"] .wp-block-crown-blocks-featured-events a {
+  pointer-events: none; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/featured-post-slider"] .wp-block-crown-blocks-featured-post-slider a {
   pointer-events: none; }
 .crown-block-general-controls {

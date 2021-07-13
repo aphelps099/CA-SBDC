@@ -52,6 +52,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_series_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_weekly_event_count_shortcode' ) );
 
+			add_action( 'save_post', array( __CLASS__, 'update_post_center_terms' ), 90 );
+
 			add_action( 'save_post', array( __CLASS__, 'update_shared_post_reference' ), 100 );
 			add_action( 'after_delete_post', array( __CLASS__, 'delete_syndicated_post' ), 100 );
 
@@ -395,22 +397,23 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 					'public' => false,
 					'show_in_menu' => 'edit.php?post_type=event',
 					'show_ui' => true,
+					'show_in_rest' => true,
 					'labels' => array(
 						'all_items' => 'Syndicated' . ( $count ? ' <span class="awaiting-mod">' . $count . '</span>' : '' )
 					)
 				),
 				'listTableColumns' => array(
 					$event_date_list_table_column,
-					new ListTableColumn( array(
-						'key' => 'event-site',
-						'title' => 'SBDC',
-						'position' => 3,
-						'outputCb' => function( $post_id, $args ) {
-							$site_id = get_post_meta( $post_id, '_original_site_id', true );
-							$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
-							echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
-						}
-					) )
+					// new ListTableColumn( array(
+					// 	'key' => 'event-site',
+					// 	'title' => 'SBDC',
+					// 	'position' => 3,
+					// 	'outputCb' => function( $post_id, $args ) {
+					// 		$site_id = get_post_meta( $post_id, '_original_site_id', true );
+					// 		$site_details = get_blog_details( array( 'blog_id' => $site_id ) );
+					// 		echo '<a href="' . $site_details->siteurl . '">' . $site_details->blogname . '</a>';
+					// 	}
+					// ) )
 				)
 			) );
 
@@ -518,6 +521,51 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 		}
 
 
+		public static function update_post_center_terms( $post_id ) {
+
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $post_id;
+			// if ( defined( 'DOING_CRON' ) && DOING_CRON ) return $post_id;
+
+			$post = get_post( $post_id );
+			if ( ! $post || $post->post_type != 'event' ) return $post_id;
+			if ( $post->post_title == 'Auto Draft' ) return $post_id;
+
+			if ( ! is_main_site() ) {
+
+				$src_site = get_current_blog_id();
+				switch_to_blog( get_main_site_id() );
+
+				$center_terms = get_terms( array(
+					'taxonomy' => 'post_center',
+					'hide_empty' => false,
+					'meta_query' => array(
+						array( 'key' => 'center_site_id', 'value' => $src_site )
+					)
+				) );
+
+				restore_current_blog();
+				
+				if ( ! empty( $center_terms ) ) {
+					$term_ids = array();
+					foreach ( $center_terms as $t ) {
+						$term_id = 0;
+						if ( ( $result = term_exists( $t->name, 'post_center' ) ) ) {
+							$term_id = intval( $result['term_id'] );
+						} else if ( ( $result = @wp_insert_term( $t->name, 'post_center', array() ) ) ) {
+							if ( ! is_wp_error( $result ) ) {
+								$term_id = intval( $result['term_id'] );
+							}
+						}
+						if ( $term_id ) $term_ids[] = $term_id;
+					}
+					wp_set_object_terms( $post_id, $term_ids, 'post_center', false );
+				}
+
+			}
+
+		}
+
+
 		public static function update_shared_post_reference( $post_id ) {
 
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return $post_id;
@@ -547,7 +595,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			$taxonomies = array(
 				'post_topic' => array(),
-				'event_series' => array()
+				'event_series' => array(),
+				'post_center' => array()
 			);
 			foreach ( $taxonomies as $tax => $terms ) {
 				$taxonomies[ $tax ] = wp_get_object_terms( $post_id, $tax );

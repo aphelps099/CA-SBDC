@@ -31,6 +31,7 @@
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();
 		$.wptheme.initTwoColumnScrollSliderBlocks();
+		$.wptheme.initFeaturedEventsBlocks();
 		$.wptheme.initFeaturedPostSliderBlocks();
 		$.wptheme.initFeaturedResourceSliderBlocks();
 		$.wptheme.initFeaturedWebinarSliderBlocks();
@@ -1073,6 +1074,25 @@
 			};
 			adjustTwoColumnScrollSliderSlides();
 			$(window).on('load resize', adjustTwoColumnScrollSliderSlides);
+
+		};
+
+
+		wptheme.initFeaturedEventsBlocks = function() {
+
+			$('.wp-block-crown-blocks-featured-events.configuration-slider').each(function(i, el) {
+				var slider = $('.post-feed > .inner', el);
+				if(slider.hasClass('slick-initialized')) return;
+				var slickSettings = {
+					mobileFirst: true,
+					draggable: true,
+					dots: true,
+					arrows: false,
+					slidesToShow: 1,
+					slidesToScroll: 1
+				};
+				slider.slick(slickSettings);
+			});
 
 		};
 
