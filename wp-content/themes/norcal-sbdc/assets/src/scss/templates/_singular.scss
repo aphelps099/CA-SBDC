@@ -9,6 +9,26 @@ body.single-event {
 				@include media-breakpoint-up(md) {
 					margin-top: 6rem;
 				}
+				@media (min-width: (900px + 48px)) {
+					margin-left: calc((100vw - 900px - (1.5rem * 2)) / -2);
+					margin-right: calc((100vw - 900px - (1.5rem * 2)) / -2);
+				}
+				@include media-breakpoint-up(lg) {
+					margin-left: calc((100vw - 900px - (2rem * 2)) / -2);
+					margin-right: calc((100vw - 900px - (2rem * 2)) / -2);
+				}
+				@include media-breakpoint-up(xl) {
+					margin-left: calc((100vw - 900px - (2.5rem * 2)) / -2);
+					margin-right: calc((100vw - 900px - (2.5rem * 2)) / -2);
+				}
+				@media (min-width: (1260px + 80px)) {
+					margin-left: calc((1260px - 900px) / -2);
+					margin-right: calc((1260px - 900px) / -2);
+				}
+				@media (min-width: (1440px)) {
+					margin-left: calc((1356px - 900px) / -2);
+					margin-right: calc((1356px - 900px) / -2);
+				}
 				h4 {
 					font-size: 1.5rem;
 				}
@@ -17,6 +37,9 @@ body.single-event {
 				display: flex;
 				margin: 0 -1rem;
 				@include media-breakpoint-up(md) {
+					margin: 0 -1.5rem;
+				}
+				@include media-breakpoint-up(lg) {
 					margin: 0 -2rem;
 				}
 				a {
@@ -28,6 +51,9 @@ body.single-event {
 					flex-direction: column;
 					align-items: flex-start;
 					@include media-breakpoint-up(md) {
+						padding: 1.5rem;
+					}
+					@include media-breakpoint-up(lg) {
 						padding: 2rem;
 					}
 					&[rel=prev] {
