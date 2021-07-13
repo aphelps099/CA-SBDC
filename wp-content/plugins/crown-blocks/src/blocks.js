@@ -32,7 +32,7 @@ import './block-dropdown-nav-menu-item/block.js';
 import './block-event-header/block.js';
 import './block-event-index/block.js';
 import './block-event-registration-form/block.js';
-// import './block-expandable-content/block.js';
+import './block-expandable-content/block.js';
 import './block-faq-index/block.js';
 // import './block-featured-case-studies/block.js';
 // import './block-featured-case-study-logos/block.js';

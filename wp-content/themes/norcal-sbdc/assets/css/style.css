@@ -25743,6 +25743,16 @@ nav.pagination {
         -webkit-animation: fa-spin 2s infinite linear;
                 animation: fa-spin 2s infinite linear; }
 
+/*	Expandable Content
+---------------------------------------------------------*/
+.wp-block-crown-blocks-expandable-content {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-expandable-content.expanded .expandable-content-toggle {
+    display: none; }
+  .wp-block-crown-blocks-expandable-content .expandable-content-contents {
+    -webkit-transition: height .5s ease-out;
+    transition: height .5s ease-out; }
+
 #header {
   background-color: transparent;
   position: sticky;

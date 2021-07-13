@@ -26,7 +26,7 @@
 		
 		$.wptheme.initContainerBlocks();
 		$.wptheme.initMultiColumnBlocks();
-		// $.wptheme.initExpandableContentBlocks();
+		$.wptheme.initExpandableContentBlocks();
 		$.wptheme.initTabbedContentBlocks();
 		$.wptheme.initTestimonialSliderBlocks();
 		$.wptheme.initContentSliderBlocks();

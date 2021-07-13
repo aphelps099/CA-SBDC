@@ -19351,7 +19351,15 @@ nav.pagination {
       -ms-transform: translateY(2rem);
           transform: translateY(2rem);
   padding: 1rem 1rem;
-  text-align: center; }
+  text-align: center;
+  min-height: 25vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  visibility: hidden; }
   @media (min-width: 576px) {
     #referrer-notice {
       padding: 1rem 1rem; } }
@@ -19375,16 +19383,18 @@ nav.pagination {
     -webkit-transform: none;
         -ms-transform: none;
             transform: none; }
-  @media (min-width: 768px) {
-    #referrer-notice > .inner {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap; } }
+  #referrer-notice > .inner {
+    width: 100%; }
+    @media (min-width: 768px) {
+      #referrer-notice > .inner {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap; } }
   #referrer-notice .message {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
@@ -23280,6 +23290,8 @@ nav.pagination {
           .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-languages .language {
             font-size: 0.75rem;
             border-width: 2px; } }
+    .wp-block-crown-blocks-team-member-index .drawer article.type-team_member .entry-expertise + .entry-languages {
+      margin-top: 1rem; }
 
 .wp-block-crown-blocks-team-member-index .pagination-wrapper {
   margin-top: 3rem; }
@@ -23975,6 +23987,9 @@ nav.pagination {
     border-radius: 10rem;
     border: 1px solid #032040;
     padding: .5rem .75rem; }
+    .wp-block-crown-blocks-event-index article.type-event .entry-centers span.self {
+      background-color: #032040;
+      color: #fff; }
 
 .wp-block-crown-blocks-event-index article.type-event .entry-title {
   margin-bottom: 0; }
@@ -24892,6 +24907,16 @@ nav.pagination {
         color: #fff;
         -webkit-animation: fa-spin 2s infinite linear;
                 animation: fa-spin 2s infinite linear; }
+
+/*	Expandable Content
+---------------------------------------------------------*/
+.wp-block-crown-blocks-expandable-content {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-expandable-content.expanded .expandable-content-toggle {
+    display: none; }
+  .wp-block-crown-blocks-expandable-content .expandable-content-contents {
+    -webkit-transition: height .5s ease-out;
+    transition: height .5s ease-out; }
 
 .gform_wrapper {
   margin-bottom: 1rem;

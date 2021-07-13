@@ -390,6 +390,22 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/expandable-content"] .btn {
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto; }
+
+.wp-block[data-type="crown-blocks/expandable-content"] .btn-label {
+  display: inline-block; }
+
+.wp-block[data-type="crown-blocks/expandable-content"] .expandable-content-contents {
+  height: auto;
+  overflow: visible; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index form.feed-filters,
 .wp-block[data-type="crown-blocks/faq-index"] .wp-block-crown-blocks-faq-index a {
   pointer-events: none !important; }

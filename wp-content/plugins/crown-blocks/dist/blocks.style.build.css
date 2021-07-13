@@ -6679,6 +6679,21 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-expandable-content {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-expandable-content.toggle-align-left > .inner > .expandable-content-toggle {
+    text-align: left; }
+  .wp-block-crown-blocks-expandable-content.toggle-align-center > .inner > .expandable-content-toggle {
+    text-align: center; }
+  .wp-block-crown-blocks-expandable-content.toggle-align-right > .inner > .expandable-content-toggle {
+    text-align: right; }
+  .wp-block-crown-blocks-expandable-content .expandable-content-contents {
+    height: 0;
+    overflow: hidden; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block-crown-blocks-faq-index {
   margin-bottom: 1rem; }
 .crown-block-general-controls {

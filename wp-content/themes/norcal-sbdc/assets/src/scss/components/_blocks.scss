@@ -4234,3 +4234,19 @@
 		}
 	}
 }
+
+
+/*	Expandable Content
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-expandable-content {
+	margin-bottom: $paragraph-margin-bottom;
+	&.expanded {
+		.expandable-content-toggle {
+			display: none;
+		}
+	}
+	.expandable-content-contents {
+		transition: height .5s ease-out;
+	}
+}

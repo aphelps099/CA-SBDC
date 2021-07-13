@@ -25,11 +25,11 @@ registerBlockType('crown-blocks/expandable-content', {
 	supports: {},
 
 	attributes: {
-		align: { type: 'string', default: 'center' },
+		align: { type: 'string', default: 'left' },
 		label: { type: 'string', default: 'More', selector: '.btn-label', source: 'html' },
 		type: { type: 'string', default: 'default' },
-		color: { type: 'string', default: '#E12C2C' },
-		colorSlug: { type: 'string', default: 'red' },
+		color: { type: 'string', default: '#0381C3' },
+		colorSlug: { type: 'string', default: 'blue' },
 		size: { type: 'string', default: 'md' },
 		displayAsBlock: { type: 'boolean', default: false },
 		disabledDisplayAsBlockBreakpoint: { type: 'string', default: 'none' },
