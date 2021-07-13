@@ -728,16 +728,23 @@
 			.sub-menu-container {
 				flex: 1 1 auto;
 				padding: 0 1rem;
+				border-left: 2px solid transparent;
+				&:first-child {
+					border-left: none;
+					.menu:before {
+						display: none;
+					}
+				}
 			}
 			h4 {
 				font-family: $font-family-sans-serif-alt;
-				font-weight: 500;
+				font-weight: 600;
 				text-transform: capitalize;
 				letter-spacing: .0165em;
 				margin-bottom: 0.95rem;
 				margin-top: 0.3rem;
-				font-size: 1.018rem;
-				color: $dark-blue;
+				font-size: 1.32rem;
+				color: rgba($dark-blue, .5);
 				a {
 					padding: 0;
 					color: inherit;
@@ -752,6 +759,16 @@
 				display: block;
 				font-weight: 400;
 				font-size: 1rem;
+				position: relative;
+				&:before {
+					content: '';
+					display: block;
+					position: absolute;
+					left: calc(-1rem - 2px);
+					top: 0;
+					height: 100%;
+					border-left: 2px dotted #E9EFF3;
+				}
 				@include media-breakpoint-up(lg) {
 					font-size: 1.25rem;
 				}
