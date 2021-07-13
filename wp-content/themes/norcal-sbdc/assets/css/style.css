@@ -19974,7 +19974,15 @@ nav.pagination {
       -ms-transform: translateY(2rem);
           transform: translateY(2rem);
   padding: 1rem 1rem;
-  text-align: center; }
+  text-align: center;
+  min-height: 25vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  visibility: hidden; }
   @media (min-width: 576px) {
     #referrer-notice {
       padding: 1rem 1rem; } }
@@ -19998,16 +20006,18 @@ nav.pagination {
     -webkit-transform: none;
         -ms-transform: none;
             transform: none; }
-  @media (min-width: 768px) {
-    #referrer-notice > .inner {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap; } }
+  #referrer-notice > .inner {
+    width: 100%; }
+    @media (min-width: 768px) {
+      #referrer-notice > .inner {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap; } }
   #referrer-notice .message {
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
