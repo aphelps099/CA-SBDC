@@ -116,7 +116,7 @@
 								</div>
 
 								<div class="logo vboc">
-									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/vboc.png" alt=""></a>
+									<a href="https://vboc.org" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/vboc.png" alt="Veterans Business Outreach Centers"></a>
 								</div>
 
 							</div>
