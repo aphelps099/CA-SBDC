@@ -1,0 +1,29 @@
+
+
+
+#pre-footer {
+	.container {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}
+#site-footer-header {
+	margin-bottom: -3rem !important;
+	margin-top: -3rem !important;
+}
+#footer .container > .upper {
+	padding-top: 6rem;
+}
+
+#site-footer-meta .accreditations {
+	@include media-breakpoint-up(lg) {
+		width: calc((100px + (.5rem * 2)) + (208.5px + (.5rem * 2) + .5rem) - (.5rem * 2) + 1rem);
+		order: -1;
+	}
+	.logo {
+		&.vboc {
+			margin-left: 1rem;
+			max-width: 208.5px;
+		}
+	}
+}
