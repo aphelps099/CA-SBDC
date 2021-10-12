@@ -19,7 +19,7 @@ const { apiFetch } = wp;
 
 const { compose } = wp.compose;
 
-const { PluginMoreMenuItem } = wp.editPost;
+const { PluginMoreMenuItem } = wp.editPost || {};
 
 const {
     withSelect,
@@ -254,14 +254,16 @@ export class Plugin extends Component {
 
         return (
             <Fragment>
-                <PluginMoreMenuItem
-                    icon={ null }
-                    onClick={ () => {
-                        this.setState( { isModalOpen: true } );
-                    } }
-                >
-                    { __( 'Color Palette', 'ghostkit' ) }
-                </PluginMoreMenuItem>
+                { PluginMoreMenuItem ? (
+                    <PluginMoreMenuItem
+                        icon={ null }
+                        onClick={ () => {
+                            this.setState( { isModalOpen: true } );
+                        } }
+                    >
+                        { __( 'Color Palette', 'ghostkit' ) }
+                    </PluginMoreMenuItem>
+                ) : null }
                 { isModalOpen ? (
                     <ColorPaletteModalWithSelect
                         onRequestClose={ () => this.setState( { isModalOpen: false } ) }

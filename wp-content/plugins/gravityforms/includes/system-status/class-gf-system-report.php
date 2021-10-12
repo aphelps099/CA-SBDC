@@ -4,6 +4,8 @@ if ( ! class_exists( 'GFForms' ) ) {
 	die();
 }
 
+use Gravity_Forms\Gravity_Forms\TranslationsPress_Updater;
+
 /**
  * Class GF_System_Report
  *
@@ -425,6 +427,11 @@ class GF_System_Report {
 						'title'        => esc_html__( 'Database', 'gravityforms' ),
 						'title_export' => 'Database',
 						'items'        => self::get_database(),
+					),
+					array(
+						'title'        => esc_html__( 'Translations', 'gravityforms' ),
+						'title_export' => 'Translations',
+						'items'        => self::get_translations(),
 					),
 					array(
 						'title'        => esc_html__( 'Log Files', 'gravityforms' ),
@@ -873,8 +880,6 @@ class GF_System_Report {
 			$validation_message = sprintf( esc_html__( 'This site has not been registered. %1$sPlease register your site%2$s.', 'gravityforms' ), '<a class="thickbox" href="#TB_inline?width=400&inlineId=gform_register_site">', '</a>' );
 		}
 
-		$locale = apply_filters( 'plugin_locale', get_locale(), 'gravityforms' );
-
 		$web_api       = GFWebAPI::get_instance();
 		$is_v2_enabled = $web_api->is_v2_enabled( $web_api->get_plugin_settings() );
 
@@ -933,12 +938,6 @@ class GF_System_Report {
 				'label_export' => 'Background updates',
 				'value'        => $updates ? __( 'Yes', 'gravityforms' ) : __( 'No', 'gravityforms' ),
 				'value_export' => $updates ? 'Yes' : 'No',
-			),
-			array(
-				'label'        => esc_html__( 'Locale', 'gravityforms' ),
-				'label_export' => 'Locale',
-				'value'        => $locale,
-				'value_export' => $locale,
 			),
 			array(
 				'label'        => esc_html__( 'REST API v2', 'gravityforms' ),
@@ -1285,9 +1284,19 @@ class GF_System_Report {
 
 			// Prepare plugin value.
 			if ( rgar( $plugin, 'AuthorURI' ) ) {
-				$value = 'by <a href="' . esc_url( $plugin['AuthorURI'] ) . '">' . esc_html( $plugin['Author'] ) . '</a>' . ' - ' . $plugin['Version'];
+				$value = sprintf(
+					'%s <a href="%s">%s</a> - %s',
+					__( 'by', 'gravityforms' ),
+					esc_url( $plugin['AuthorURI'] ),
+					esc_html( $plugin['Author'] ),
+					$plugin['Version']
+				);
 			} else {
-				$value = 'by ' . $plugin['Author'] . ' - ' . $plugin['Version'];
+				$value = sprintf( '%s %s - %s',
+					__( 'by', 'gravityforms' ),
+					$plugin['Author'],
+					$plugin['Version']
+			    );
 			}
 
 			// Add plugin to active plugins.
@@ -1295,7 +1304,12 @@ class GF_System_Report {
 				'label'                     => $label,
 				'label_export'              => strip_tags( $plugin_name ),
 				'value'                     => $value,
-				'value_export'              => 'by ' . strip_tags( $plugin['Author'] ) . ' - ' . $plugin['Version'],
+				'value_export'              => sprintf(
+				'%s %s - %s',
+					__( 'by', 'gravityforms' ),
+					strip_tags( $plugin['Author'] ),
+					$plugin['Version']
+				),
 				'is_valid'                  => $is_valid,
 				'validation_message'        => $validation_message,
 				'validation_message_export' => $validation_message_export,
@@ -1353,9 +1367,20 @@ class GF_System_Report {
 
 			// Prepare plugin value.
 			if ( rgar( $plugin_data, 'AuthorURI' ) ) {
-				$value = 'by <a href="' . esc_url( $plugin_data['AuthorURI'] ) . '">' . $plugin_data['Author'] . '</a>' . ' - ' . $plugin_data['Version'];
+				$value = sprintf(
+					'%s <a href="%s">%s</a> - %s',
+					__( 'by', 'gravityforms' ),
+					esc_url( $plugin_data['AuthorURI'] ),
+					$plugin_data['Author'],
+					$plugin_data['Version']
+				);
 			} else {
-				$value = 'by ' . $plugin_data['Author'] . ' - ' . $plugin_data['Version'];
+				$value = sprintf(
+					'%s %s - %s',
+					__( 'by', 'gravityforms' ),
+					$plugin_data['Author'],
+					$plugin_data['Version']
+				);
 			}
 
 			// Replace plugin.
@@ -1524,8 +1549,8 @@ class GF_System_Report {
 		$theme_details = array(
 			array(
 				'label'        => $theme_name,
-				'value'        => sprintf( 'by <a href="%s">%s</a> - %s', $theme_author_uri, $theme_author, $theme_version ),
-				'value_export' => sprintf( 'by %s (%s) - %s', $theme_author, $theme_author_uri, $theme_version ),
+				'value'        => sprintf( '%s <a href="%s">%s</a> - %s', __( 'by', 'gravityforms' ), $theme_author_uri, $theme_author, $theme_version ),
+				'value_export' => sprintf( '%s %s (%s) - %s', __( 'by', 'gravityforms' ), $theme_author, $theme_author_uri, $theme_version ),
 				'is_valid'     => version_compare( $theme_version, rgar( $update_themes_versions, $active_theme->get_stylesheet() ), '>=' )
 			),
 		);
@@ -1540,8 +1565,8 @@ class GF_System_Report {
 			$theme_details[] = array(
 				'label'        => sprintf( '%s (%s)', $parent_name, esc_html__( 'Parent', 'gravityforms' ) ),
 				'label_export' => $parent_name . ' (Parent)',
-				'value'        => sprintf( 'by <a href="%s">%s</a> - %s', $parent_author_uri, $parent_author, $parent_version ),
-				'value_export' => sprintf( 'by %s (%s) - %s', $parent_author, $parent_author_uri, $parent_version ),
+				'value'        => sprintf( '%s <a href="%s">%s</a> - %s', __( 'by', 'gravityforms' ), $parent_author_uri, $parent_author, $parent_version ),
+				'value_export' => sprintf( '%s %s (%s) - %s', __( 'by', 'gravityforms' ), $parent_author, $parent_author_uri, $parent_version ),
 				'is_valid'     => version_compare( $parent_version, rgar( $update_themes_versions, $parent_theme->get_stylesheet() ), '>=' )
 			);
 		}
@@ -1647,6 +1672,58 @@ class GF_System_Report {
 		}
 
 		return $tzstring;
+	}
+
+	/**
+	 * Get translations info.
+	 *
+	 * @since  2.5.6
+	 *
+	 * @return array
+	 */
+	public static function get_translations() {
+		$items = array(
+			array(
+				'label'        => esc_html__( 'Site Locale', 'gravityforms' ),
+				'label_export' => 'Site Locale',
+				'value'        => get_locale(),
+			),
+		);
+
+		if ( function_exists( 'get_user_locale' ) ) {
+			$items[] = array(
+				// translators: %d: The ID of the currently logged in user.
+				'label'        => sprintf( esc_html__( 'User (ID: %d) Locale', 'gravityforms' ), get_current_user_id() ),
+				'label_export' => sprintf( 'User (ID: %d) Locale', get_current_user_id() ),
+				'value'        => get_user_locale(),
+			);
+		}
+
+		$items[] = array(
+			'label' => 'Gravity Forms',
+			'value' => implode( ', ', GFCommon::get_installed_translations() ),
+		);
+
+		if ( ! class_exists( 'GFAddOn' ) ) {
+			return $items;
+		}
+
+		$addons = GFAddOn::get_registered_addons( true );
+
+		foreach ( $addons as $addon ) {
+			$locales = $addon->get_installed_locales();
+
+			if ( empty( $locales ) ) {
+				continue;
+			}
+
+			$items[] = array(
+				'label' => $addon->get_short_title(),
+				'value' => implode( ', ', $locales ),
+			);
+		}
+
+		return $items;
 	}
 
 }

@@ -432,7 +432,7 @@
   display: flex !important;
 }
 
-.ns-repeater li.invisible {
+C .ns-repeater li.invisible {
   visibility: hidden;
   height: 0;
   overflow: hidden;
@@ -444,6 +444,14 @@
   flex: 1;
   margin-right: -2px;
   height: 35px;
+}
+
+.ns-repeater .chosen-container {
+  width: 100%;
+  flex-basis: 30%;
+  position: relative;
+  margin: 0 10px 0 15px;
+  bottom: 1px;
 }
 
 .ns-repeater-add {

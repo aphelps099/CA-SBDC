@@ -9,6 +9,7 @@ if ( ! class_exists( 'GFForms' ) ) {
 }
 
 use Gravity_Forms\Gravity_Forms\Settings\Settings;
+use Gravity_Forms\Gravity_Forms\TranslationsPress_Updater;
 
 /**
  * Class GFAddOn
@@ -171,30 +172,41 @@ abstract class GFAddOn {
 	/**
 	 * Gets all active, registered Add-Ons.
 	 *
-	 * @since  Unknown
-	 * @access public
+	 * @since Unknown
+	 * @since 2.5.6 Added the $return_instances param.
 	 *
-	 * @uses GFAddOn::$_registered_addons
+	 * @param bool $return_instances Indicates if the current instances of the add-ons should be returned. Default is false.
 	 *
-	 * @return array Active, registered Add-Ons.
+	 * @return string[]|GFAddOn[] An array of class names or instances.
 	 */
-	public static function get_registered_addons() {
-		return self::$_registered_addons['active'];
+	public static function get_registered_addons( $return_instances = false ) {
+		$active_addons = array_unique( self::$_registered_addons['active'] );
+
+		if ( ! $return_instances ) {
+			return $active_addons;
+		}
+
+		$instances = array();
+
+		foreach ( $active_addons as $addon ) {
+			$callback = array( $addon, 'get_instance' );
+			if ( ! is_callable( $callback ) ) {
+				continue;
+			}
+			$instances[] = call_user_func( $callback );
+		}
+
+		return $instances;
 	}
 
 	/**
 	 * Initializes all addons.
+	 *
+	 * @since Unknown
+	 * @since 2.5.6 Updated to use get_registered_addons().
 	 */
 	public static function init_addons() {
-
-		//Removing duplicate add-ons
-		$active_addons = array_unique( self::$_registered_addons['active'] );
-
-		foreach ( $active_addons as $addon ) {
-
-			call_user_func( array( $addon, 'get_instance' ) );
-
-		}
+		self::get_registered_addons( true );
 	}
 
 	/**
@@ -217,6 +229,7 @@ abstract class GFAddOn {
 	public function init() {
 
 		$this->load_text_domain();
+		$this->init_translations();
 
 		add_filter( 'gform_logging_supported', array( $this, 'set_logging_supported' ) );
 
@@ -683,7 +696,7 @@ abstract class GFAddOn {
 
 		//Upgrade if version has changed
 		if ( $installed_version != $this->_version ) {
-
+			$this->install_translations();
 			$this->upgrade( $installed_version );
 			update_option( 'gravityformsaddon_' . $this->_slug . '_version', $this->_version );
 		}
@@ -3871,7 +3884,7 @@ abstract class GFAddOn {
 			add_action( 'gform_form_settings_page_' . $this->_slug, array( $this, 'form_settings_page' ) );
 
 			// Let feed add-ons handle initializing their settings.
-			if ( ! $this->method_is_overridden( 'feed_settings_init' ) ) {
+			if ( $this->method_is_overridden( 'form_settings_fields' ) ) {
 
 				// Get current form.
 				$form = $this->get_current_form();
@@ -4941,6 +4954,20 @@ abstract class GFAddOn {
 	//--------------  Uninstall  ---------------
 
 	/**
+	 * Override this function to customize the uninstall message displayed on the uninstall page.
+	 *
+	 * @since 2.5.9.4
+	 *
+	 * @return string
+	 */
+	public function uninstall_message() {
+		return sprintf(
+				__( 'This operation deletes ALL %s settings.', 'gravityforms' ),
+				$this->get_short_title()
+		);
+	}
+
+	/**
 	 * Override this function to customize the markup for the uninstall section on the plugin settings page.
 	 *
 	 * @since Unknown
@@ -4963,7 +4990,7 @@ abstract class GFAddOn {
 					<div class="addon-logo dashicons"><?php echo $icon_markup; ?></div>
 					<div class="addon-uninstall-text">
 						<h4 class="gform-settings-panel__title"><?php printf( esc_html__( '%s', 'gravityforms' ), $this->get_short_title() ) ?></h4>
-						<div><?php printf( esc_html__( 'This operation deletes ALL %s settings.', 'gravityforms' ), $this->get_short_title() ) ?></div>
+						<div><?php echo esc_html( $this->uninstall_message() ); ?></div>
 					</div>
 					<div class="addon-uninstall-button">
 						<input id="addon" name="addon" type="hidden" value="<?php echo $this->get_short_title(); ?>">
@@ -6079,8 +6106,53 @@ abstract class GFAddOn {
 		GFCommon::load_gf_text_domain( $this->_slug, plugin_basename( dirname( $this->_full_path ) ) );
 	}
 
-	/***
-	 * Determines if the current user has the proper cabalities to uninstall this add-on
+	/**
+	 * Inits the TranslationsPress integration for official add-ons.
+	 *
+	 * @since 2.5.6
+	 */
+	public function init_translations() {
+		if ( ! $this->_enable_rg_autoupgrade ) {
+			return;
+		}
+
+		TranslationsPress_Updater::get_instance( $this->get_slug() );
+	}
+
+	/**
+	 * Uses TranslationsPress to install translations for the specified locale.
+	 *
+	 * @since 2.5.6
+	 *
+	 * @param string $locale The locale the translations are to be installed for.
+	 */
+	public function install_translations( $locale = '' ) {
+		if ( ! $this->_enable_rg_autoupgrade ) {
+			return;
+		}
+
+		TranslationsPress_Updater::download_package( $this->get_slug(), $locale );
+	}
+
+	/**
+	 * Returns an array of locales from the mo files found in the WP_LANG_DIR/plugins directory.
+	 *
+	 * Used to display the installed locales on the system report.
+	 *
+	 * @since 2.5.6
+	 *
+	 * @return array
+	 */
+	public function get_installed_locales() {
+		if ( ! $this->_enable_rg_autoupgrade ) {
+			return array();
+		}
+
+		return GFCommon::get_installed_translations( $this->get_slug() );
+	}
+
+	/**
+	 * Determines if the current user has the proper capabilities to uninstall this add-on
 	 * Add-ons that have been network activated can only be uninstalled by a network admin.
 	 *
 	 * @since 2.3.1.12
@@ -6097,33 +6169,31 @@ abstract class GFAddOn {
 	/**
 	 * Displays all installed addons with their uninstall buttons.
 	 *
-	 * @since  2.5
-	 * @param array $installed_addons array of installed addons to display.
+	 * Add-ons which override this method will display a button with a link instead. The add-on's overridden output
+	 * will be displayed on the settings page for that add-on.
 	 *
+	 * @see GFAddOn::uninstall_addon()
+	 *
+	 * @since  2.5
+	 *
+	 * @param array $uninstallable_addons Array of GFAddOn objects.
 	 */
-	public static function addons_for_uninstall( $installed_addons ) {
+	public static function addons_for_uninstall( $uninstallable_addons ) {
 		?>
 		<div class="gform-addons-uninstall-panel">
 			<?php
-			foreach ( $installed_addons as $addon ) {
+			/* @var GFAddOn $addon An add-on instance. */
+			foreach ( $uninstallable_addons as $addon ) {
+				ob_start();
+				$addon->render_uninstall();
+				$panel_markup = ob_get_clean();
 
-				$addon = call_user_func( array( $addon, 'get_instance' ) );
-
-				// If the render_uninstall method has been overridden, show the settings button instead.
-				if ( ! $addon->method_is_overridden( 'render_uninstall' ) ) {
-					$addon->render_uninstall();
-				} else {
-					ob_start();
-					$addon->render_uninstall();
-					$output = ob_get_contents();
-					ob_end_clean();
-					// If the render uninstall button was overridden to show nothing, default to the render_uninstall function.
-					if ( $output == '' ) {
-						$addon->render_uninstall();
-					} else {
-						$addon->render_settings_button();
-					}
+				if ( $addon->method_is_overridden( 'render_uninstall' ) && ! empty( $panel_markup ) ) {
+					$addon->render_settings_button();
+					continue;
 				}
+
+				echo $panel_markup; // @codingStandardsIgnoreLine - markup prepared in render_install.
 			}
 			?>
 		</div>

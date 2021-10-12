@@ -3,11 +3,11 @@
  * Plugin Name: NS Cloner - Site Copier
  * Plugin URI: https://neversettle.it
  * Description: The amazing NS Cloner creates a new site as an exact clone / duplicate / copy of an existing site with theme and all plugins and settings intact in just a few steps. Check out NS Cloner Pro for additional powerful add-ons and features!
- * Version: 4.1.6
+ * Version: 4.1.8
  * Author: Never Settle
  * Author URI: https://neversettle.it
  * Requires at least: 4.0.0
- * Tested up to: 5.6
+ * Tested up to: 5.8
  * License: GPLv2 or later
  *
  * Text Domain: ns-cloner-site-copier
@@ -67,7 +67,7 @@ final class NS_Cloner {
 	 *
 	 * @var string
 	 */
-	public $version = '4.1.6';
+	public $version = '4.1.8';
 
 	/**
 	 * Menu Slug
@@ -456,6 +456,13 @@ final class NS_Cloner {
 	 * @return array
 	 */
 	public function get_site_tables( $site_id, $exclude_global = true ) {
+		$wp_global_tables  = $this->db->tables( 'global', false, $site_id );
+		$all_global_tables = apply_filters( 'ns_cloner_global_tables', $wp_global_tables );
+		$global_pattern    = "/^{$this->db->base_prefix}(" . implode( '|', $all_global_tables ) . ')$/';
+		$subsite_pattern   = "/^{$this->db->base_prefix}\d+_/";
+		$temp_pattern      = '/^' . ns_cloner()->temp_prefix . '/';
+		$has_base_prefix   = $this->db->get_blog_prefix( $site_id ) === $this->db->base_prefix;
+
 		if ( empty( $site_id ) || ! is_multisite() ) {
 			// All tables - don't filter by any id.
 			$prefix = $this->db->esc_like( $this->db->base_prefix );
@@ -464,25 +471,41 @@ final class NS_Cloner {
 			// Sub site tables - a prefix like wp_2_ so we can get all matches without having to filter out global tables.
 			$prefix = $this->db->esc_like( $this->db->get_blog_prefix( $site_id ) );
 			$tables = $this->db->get_col( "SHOW TABLES LIKE '{$prefix}%'" );
+			// Handle special case of a site that USED to be a main site, but then the main site got changed.
+			// That means that it will have the base prefix and match everything, so we have to exclude tables
+			// from other subsites, from temp tables, and from the global table list.
+			if ( $has_base_prefix ) {
+				$tables = array_filter(
+					$tables,
+					function( $table ) use ( $global_pattern, $subsite_pattern, $temp_pattern ) {
+						return ! preg_match( $global_pattern, $table )
+							&& ! preg_match( $subsite_pattern, $table )
+							&& ! preg_match( $temp_pattern, $table );
+					}
+				);
+			}
 		} else {
 			// Root site tables - a main prefix like wp_ requires that we filter out both global and other subsites' tables.
-			// Define patterns for both subsites (eg wp_2_...) and global tables (eg wp_blogs) which should not be copied.
-			$wp_global_tables  = $this->db->tables( 'global', false, $site_id );
-			$all_global_tables = apply_filters( 'ns_cloner_global_tables', $wp_global_tables );
-			$global_pattern    = "/^{$this->db->base_prefix}(" . implode( '|', $all_global_tables ) . ')$/';
-			$subsite_pattern   = "/^{$this->db->base_prefix}\d+_/";
-			$temp_pattern      = '/^' . ns_cloner()->temp_prefix . '/';
-			$prefix            = $this->db->esc_like( $this->db->base_prefix );
-			$all_tables        = $this->db->get_col( "SHOW TABLES LIKE '{$prefix}%'" );
-			$tables            = [];
-			foreach ( $all_tables as $table ) {
-				$is_global_table  = preg_match( $global_pattern, $table );
-				$is_subsite_table = preg_match( $subsite_pattern, $table );
-				$is_temp_table    = preg_match( $temp_pattern, $table );
-				if ( ( ! $is_global_table || ! $exclude_global ) && ! $is_subsite_table && ! $is_temp_table ) {
-					array_push( $tables, $table );
+			$prefix     = $this->db->esc_like( $this->db->base_prefix );
+			$all_tables = $this->db->get_col( "SHOW TABLES LIKE '{$prefix}%'" );
+			$tables     = array_filter(
+				$all_tables,
+				function( $table ) use ( $global_pattern, $subsite_pattern, $temp_pattern, $site_id, $exclude_global ) {
+					if ( $this->db->base_prefix !== $this->db->get_blog_prefix( $site_id ) ) {
+						// For sites where main ID != 1 (example: base = wp_, main site prefix = wp_2_),
+						// anything that matches the prefix (example: wp_2_) counts as a site table.
+						return preg_match( '/^' . $this->db->get_blog_prefix( $site_id ) . '/', $table )
+							|| ( preg_match( $global_pattern, $table ) && ! $exclude_global );
+					} else {
+						// For normal WP sites where base prefix and main site prefix are the same (example: wp_ for both),
+						// we need to exclude all the other temp tables, subsite tables like wp_3_, and possibly global
+						// tables (depending on the $exclude_global parameter) that would get otherwise be included.
+						return ! preg_match( $subsite_pattern, $table )
+							&& ! preg_match( $temp_pattern, $table )
+							&& ( ! preg_match( $global_pattern, $table ) || ! $exclude_global );
+					}
 				}
-			}
+			);
 		}
 		// Apply optional filter and return.
 		return apply_filters( 'ns_cloner_site_tables', $tables, $site_id );

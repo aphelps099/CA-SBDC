@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ghost Kit 2.19.2\n"
+"Project-Id-Version: Ghost Kit 2.19.4\n"
 "Report-Msgid-Bugs-To: https://github.com/nk-o/ghostkit/issues\n"
 "Last-Translator: nK\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-05-06T10:23:41+00:00\n"
+"POT-Creation-Date: 2021-09-02T11:03:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: ghostkit\n"
@@ -18,8 +18,8 @@ msgstr ""
 #: class-ghost-kit.php:224
 #: settings/index.php:137
 #: settings/index.php:138
-#: gutenberg/plugins/ghostkit/index.js:51
-#: gutenberg/plugins/ghostkit/index.js:55
+#: gutenberg/plugins/ghostkit/index.js:52
+#: gutenberg/plugins/ghostkit/index.js:58
 msgid "Ghost Kit"
 msgstr ""
 
@@ -35,7 +35,7 @@ msgstr ""
 msgid "https://nkdev.info"
 msgstr ""
 
-#: class-ghost-kit.php:362
+#: class-ghost-kit.php:373
 #: settings/index.php:192
 msgid "Go Pro"
 msgstr ""
@@ -346,9 +346,9 @@ msgstr ""
 
 #: classes/class-templates.php:30
 #: classes/class-templates.php:32
-#: gutenberg/plugins/ghostkit/index.js:67
+#: gutenberg/plugins/ghostkit/index.js:70
 #: gutenberg/plugins/templates/index.js:191
-#: gutenberg/plugins/templates/index.js:526
+#: gutenberg/plugins/templates/index.js:527
 msgid "Templates"
 msgstr ""
 
@@ -574,8 +574,8 @@ msgid "Icons"
 msgstr ""
 
 #: settings/index.php:164
-#: gutenberg/plugins/ghostkit/index.js:78
-#: gutenberg/plugins/typography/index.js:615
+#: gutenberg/plugins/ghostkit/index.js:81
+#: gutenberg/plugins/typography/index.js:614
 #: gutenberg/plugins/typography/index.js:803
 #: settings/pages/index.js:31
 msgid "Typography"
@@ -593,8 +593,8 @@ msgstr ""
 
 #: settings/index.php:185
 #: gutenberg/plugins/custom-code/index.js:93
-#: gutenberg/plugins/custom-code/index.js:283
-#: gutenberg/plugins/ghostkit/index.js:89
+#: gutenberg/plugins/custom-code/index.js:284
+#: gutenberg/plugins/ghostkit/index.js:92
 #: settings/pages/index.js:43
 msgid "CSS & JavaScript"
 msgstr ""
@@ -892,44 +892,44 @@ msgstr ""
 msgid "Autoplay (seconds)"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:190
+#: gutenberg/blocks/carousel/edit.js:192
 msgid "Slides per view"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:197
+#: gutenberg/blocks/carousel/edit.js:199
 #: gutenberg/components/gap-settings/index.js:37
 msgid "Gap"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:206
+#: gutenberg/blocks/carousel/edit.js:210
 msgid "Centered slides"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:211
+#: gutenberg/blocks/carousel/edit.js:215
 msgid "Loop"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:216
+#: gutenberg/blocks/carousel/edit.js:220
 msgid "Free scroll"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:221
+#: gutenberg/blocks/carousel/edit.js:225
 msgid "Show arrows"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:228
+#: gutenberg/blocks/carousel/edit.js:232
 msgid "Prev arrow icon"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:233
+#: gutenberg/blocks/carousel/edit.js:237
 msgid "Next arrow icon"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:240
+#: gutenberg/blocks/carousel/edit.js:244
 msgid "Show bullets"
 msgstr ""
 
-#: gutenberg/blocks/carousel/edit.js:246
+#: gutenberg/blocks/carousel/edit.js:250
 msgid "Dynamic bullets"
 msgstr ""
 
@@ -2658,8 +2658,8 @@ msgstr ""
 
 #: gutenberg/components/color-picker/index.js:99
 #: gutenberg/plugins/color-palette/index.js:88
-#: gutenberg/plugins/color-palette/index.js:263
-#: gutenberg/plugins/ghostkit/index.js:100
+#: gutenberg/plugins/color-palette/index.js:264
+#: gutenberg/plugins/ghostkit/index.js:103
 msgid "Color Palette"
 msgstr ""
 
@@ -3029,22 +3029,22 @@ msgid "Blue"
 msgstr ""
 
 #: gutenberg/plugins/custom-code/index.js:139
-#: gutenberg/plugins/typography/index.js:650
+#: gutenberg/plugins/typography/index.js:649
 msgid "All changes will be applied on the current page only."
 msgstr ""
 
 #: gutenberg/plugins/custom-code/index.js:141
-#: gutenberg/plugins/typography/index.js:652
+#: gutenberg/plugins/typography/index.js:651
 msgid "Local"
 msgstr ""
 
 #: gutenberg/plugins/custom-code/index.js:150
-#: gutenberg/plugins/typography/index.js:661
+#: gutenberg/plugins/typography/index.js:660
 msgid "All changes will be applied site wide."
 msgstr ""
 
 #: gutenberg/plugins/custom-code/index.js:152
-#: gutenberg/plugins/typography/index.js:663
+#: gutenberg/plugins/typography/index.js:662
 msgid "Global"
 msgstr ""
 
@@ -3068,8 +3068,8 @@ msgid "Uncategorized"
 msgstr ""
 
 #: gutenberg/plugins/customizer/index.js:248
-#: gutenberg/plugins/customizer/index.js:467
-#: gutenberg/plugins/ghostkit/index.js:111
+#: gutenberg/plugins/customizer/index.js:468
+#: gutenberg/plugins/ghostkit/index.js:114
 msgid "Customizer"
 msgstr ""
 
@@ -3158,12 +3158,12 @@ msgstr ""
 msgid "Install Plugin"
 msgstr ""
 
-#: gutenberg/plugins/typography/index.js:681
+#: gutenberg/plugins/typography/index.js:680
 #: settings/pages/typography.js:190
 msgid "Hide Advanced"
 msgstr ""
 
-#: gutenberg/plugins/typography/index.js:681
+#: gutenberg/plugins/typography/index.js:680
 #: settings/pages/typography.js:190
 msgid "Show Advanced"
 msgstr ""

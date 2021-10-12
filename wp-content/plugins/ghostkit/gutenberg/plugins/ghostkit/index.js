@@ -18,7 +18,7 @@ const {
 const { __ } = wp.i18n;
 const { Component } = wp.element;
 
-const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
+const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost || {};
 
 const {
     Button,
@@ -45,73 +45,77 @@ export class Plugin extends Component {
 
         return (
             <Fragment>
-                <PluginSidebarMoreMenuItem
-                    target="ghostkit"
-                >
-                    { __( 'Ghost Kit', 'ghostkit' ) }
-                </PluginSidebarMoreMenuItem>
-                <PluginSidebar
-                    name="ghostkit"
-                    title={ __( 'Ghost Kit', 'ghostkit' ) }
-                >
-                    <PanelBody className="plugin-ghostkit-panel">
-                        <Button
-                            className="plugin-ghostkit-panel-button"
-                            isSecondary
-                            isLarge
-                            onClick={ () => {
-                                this.setState( { isModalOpen: 'templates' } );
-                            } }
-                        >
-                            { getIcon( 'plugin-templates' ) }
-                            { __( 'Templates', 'ghostkit' ) }
-                        </Button>
-                        <Button
-                            className="plugin-ghostkit-panel-button"
-                            isSecondary
-                            isLarge
-                            onClick={ () => {
-                                this.setState( { isModalOpen: 'typography' } );
-                            } }
-                        >
-                            { getIcon( 'plugin-typography' ) }
-                            { __( 'Typography', 'ghostkit' ) }
-                        </Button>
-                        <Button
-                            className="plugin-ghostkit-panel-button"
-                            isSecondary
-                            isLarge
-                            onClick={ () => {
-                                this.setState( { isModalOpen: 'custom-code' } );
-                            } }
-                        >
-                            { getIcon( 'plugin-custom-code' ) }
-                            { __( 'CSS & JavaScript', 'ghostkit' ) }
-                        </Button>
-                        <Button
-                            className="plugin-ghostkit-panel-button"
-                            isSecondary
-                            isLarge
-                            onClick={ () => {
-                                this.setState( { isModalOpen: 'color-palette' } );
-                            } }
-                        >
-                            { getIcon( 'plugin-color-palette' ) }
-                            { __( 'Color Palette', 'ghostkit' ) }
-                        </Button>
-                        <Button
-                            className="plugin-ghostkit-panel-button"
-                            isSecondary
-                            isLarge
-                            onClick={ () => {
-                                this.setState( { isModalOpen: 'customizer' } );
-                            } }
-                        >
-                            { getIcon( 'plugin-customizer' ) }
-                            { __( 'Customizer', 'ghostkit' ) }
-                        </Button>
-                    </PanelBody>
-                </PluginSidebar>
+                { PluginSidebarMoreMenuItem ? (
+                    <PluginSidebarMoreMenuItem
+                        target="ghostkit"
+                    >
+                        { __( 'Ghost Kit', 'ghostkit' ) }
+                    </PluginSidebarMoreMenuItem>
+                ) : null }
+                { PluginSidebar ? (
+                    <PluginSidebar
+                        name="ghostkit"
+                        title={ __( 'Ghost Kit', 'ghostkit' ) }
+                    >
+                        <PanelBody className="plugin-ghostkit-panel">
+                            <Button
+                                className="plugin-ghostkit-panel-button"
+                                isSecondary
+                                isLarge
+                                onClick={ () => {
+                                    this.setState( { isModalOpen: 'templates' } );
+                                } }
+                            >
+                                { getIcon( 'plugin-templates' ) }
+                                { __( 'Templates', 'ghostkit' ) }
+                            </Button>
+                            <Button
+                                className="plugin-ghostkit-panel-button"
+                                isSecondary
+                                isLarge
+                                onClick={ () => {
+                                    this.setState( { isModalOpen: 'typography' } );
+                                } }
+                            >
+                                { getIcon( 'plugin-typography' ) }
+                                { __( 'Typography', 'ghostkit' ) }
+                            </Button>
+                            <Button
+                                className="plugin-ghostkit-panel-button"
+                                isSecondary
+                                isLarge
+                                onClick={ () => {
+                                    this.setState( { isModalOpen: 'custom-code' } );
+                                } }
+                            >
+                                { getIcon( 'plugin-custom-code' ) }
+                                { __( 'CSS & JavaScript', 'ghostkit' ) }
+                            </Button>
+                            <Button
+                                className="plugin-ghostkit-panel-button"
+                                isSecondary
+                                isLarge
+                                onClick={ () => {
+                                    this.setState( { isModalOpen: 'color-palette' } );
+                                } }
+                            >
+                                { getIcon( 'plugin-color-palette' ) }
+                                { __( 'Color Palette', 'ghostkit' ) }
+                            </Button>
+                            <Button
+                                className="plugin-ghostkit-panel-button"
+                                isSecondary
+                                isLarge
+                                onClick={ () => {
+                                    this.setState( { isModalOpen: 'customizer' } );
+                                } }
+                            >
+                                { getIcon( 'plugin-customizer' ) }
+                                { __( 'Customizer', 'ghostkit' ) }
+                            </Button>
+                        </PanelBody>
+                    </PluginSidebar>
+                ) : null }
                 { 'templates' === isModalOpen ? (
                     <TemplatesModal
                         onRequestClose={ () => this.setState( { isModalOpen: false } ) }

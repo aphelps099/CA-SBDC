@@ -296,9 +296,28 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 			// Handle any errors.
 			if ( ! empty( ns_cloner()->db->last_error ) ) {
 				if ( false !== strpos( ns_cloner()->db->last_error, 'Duplicate entry' ) ) {
-					ns_cloner()->report->add_notice( ns_cloner()->db->last_error . ' for table ' . $this->current_table );
 					ns_cloner()->log->log( [ 'DUPLICATE entry for query:', $query ] );
-					ns_cloner()->db->last_error = '';
+					$is_duplicate_option = preg_match( "/Duplicate entry '([^'])' for key 'option_name'/", ns_cloner()->db->last_error, $db_error_matches );
+					if ( $is_duplicate_option ) {
+						// For duplicates in the options table, try deleting the row and reinserting.
+						// (Often caused by a plugin that initializes values when site is partly cloned).
+						$option_name = $db_error_matches[1];
+						ns_cloner()->log->log( [ 'TRYING to remove duplicate option:', $option_name ] );
+						ns_cloner()->db->last_error = '';
+						ns_cloner()->db->query( "DELETE FROM $this->current_table WHERE option_name = '$option_name'" );
+						// See if it worked.
+						if ( ns_cloner()->db->last_error ) {
+							ns_cloner()->log->log( 'FAILED to remove duplicate option' );
+							ns_cloner()->report->add_notice( ns_cloner()->db->last_error . ' for table ' . $this->current_table );
+							ns_cloner()->db->last_error = '';
+						} else {
+							ns_cloner()->log->log( 'WORKED to remove duplicate option' );
+						}
+					} else {
+						// For other duplicate entries, warn but don't bail.
+						ns_cloner()->report->add_notice( ns_cloner()->db->last_error . ' for table ' . $this->current_table );
+						ns_cloner()->db->last_error = '';
+					}
 				} else {
 					ns_cloner()->log->handle_any_db_errors();
 				}

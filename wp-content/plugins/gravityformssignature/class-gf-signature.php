@@ -71,7 +71,6 @@ class GFSignature extends GFAddOn {
 
 		add_filter( 'gform_tooltips', array( $this, 'tooltips' ) );
 		add_action( 'gform_field_appearance_settings', array( $this, 'field_settings' ), 10, 2 );
-		add_filter( 'gform_admin_pre_render', array( $this, 'edit_lead_script' ) );
 	}
 
 	/**
@@ -105,7 +104,8 @@ class GFSignature extends GFAddOn {
 	 */
 	public function scripts() {
 
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		$min  = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		$form = $this->get_current_form();
 
 		$scripts = array(
 			array(
@@ -125,9 +125,9 @@ class GFSignature extends GFAddOn {
 				),
 			),
 			array(
-				'handle'    => 'super_signature_base64',
-				'src'       => $this->get_base_url() . '/includes/super_signature/base64.js',
-				'version'   => $this->get_version(),
+				'handle'  => 'super_signature_base64',
+				'src'     => $this->get_base_url() . '/includes/super_signature/base64.js',
+				'version' => $this->get_version(),
 			),
 			array(
 				'handle'    => 'gform_signature_frontend',
@@ -138,9 +138,24 @@ class GFSignature extends GFAddOn {
 				'enqueue'   => array(
 					array( 'field_types' => array( 'signature' ) ),
 				),
-				'strings' => array(
-					'lockedReset' => wp_strip_all_tags( __( 'Reset to re-sign.', 'gravityformssignature' ) )
-				)
+				'strings'   => array(
+					'lockedReset' => wp_strip_all_tags( __( 'Reset to re-sign.', 'gravityformssignature' ) ),
+				),
+			),
+			array(
+				'handle'    => 'gform_signature_delete_signature',
+				'src'       => $this->get_base_url() . "/js/gfsignature_delete_signature{$min}.js",
+				'version'   => $this->get_version(),
+				'deps'      => array( 'jquery' ),
+				'in_footer' => true,
+				'enqueue'   => array(
+					'enqueue' => array( array( 'admin_page' => array( 'entry_edit', 'entry_view' ) ) ),
+				),
+				'strings'   => array(
+					'confirm_delete' => esc_html__( "Would you like to delete this file? 'Cancel' to stop. 'OK' to delete", 'gravityformssignature' ),
+					'delete_nonce'   => wp_create_nonce( 'gf_delete_signature' ),
+					'form_id'        => ! empty( $form['id'] ) ? absint( $form['id'] ) : false,
+				),
 			),
 		);
 
@@ -257,46 +272,19 @@ class GFSignature extends GFAddOn {
 		}
 	}
 
-
 	// # ENTRY DETAIL PAGE ----------------------------------------------------------------------------------------------
 
 	/**
 	 * Used with the gform_admin_pre_render hook to include the functionality for the delete signature link.
+	 *
+	 * @deprecated 4.1 No replacement.
 	 *
 	 * @param array $form The current form object.
 	 *
 	 * @return array
 	 */
 	public function edit_lead_script( $form ) {
-		if ( GFCommon::is_entry_detail_edit() ) {
-			?>
-
-			<script type="text/javascript">
-				function deleteSignature(leadId, fieldId) {
-
-					if (!confirm(<?php echo json_encode( __( "Would you like to delete this file? 'Cancel' to stop. 'OK' to delete", 'gravityformssignature' ) ); ?>))
-						return;
-
-					jQuery.post(ajaxurl, {
-						lead_id: leadId,
-						field_id: fieldId,
-						action: 'gf_delete_signature',
-						gf_delete_signature: '<?php echo wp_create_nonce( 'gf_delete_signature' ) ?>'
-					}, function (response) {
-						var formId = <?php echo absint( $form['id'] ) ?>;
-						//if (!response)
-						//jQuery('#input_' + fieldId).val('');
-						jQuery('#input_' + formId + '_' + fieldId + '_signature_filename').val('');
-						jQuery('#input_' + formId + '_' + fieldId + '_signature_image').hide();
-						jQuery('#input_' + formId + '_' + fieldId + '_Container').show();
-						jQuery('#input_' + formId + '_' + fieldId + '_resetbutton').show();
-					});
-				}
-			</script>
-
-			<?php
-		}
-
+		_deprecated_function( __METHOD__, '4.1' );
 		return $form;
 	}
 
@@ -469,10 +457,15 @@ class GFSignature extends GFAddOn {
 	 * @param string $input_name The input name to use when accessing the $_POST.
 	 * @param string $name_prefix The text to use as the filename prefix.
 	 *
-	 * @return string|void
+	 * @return string
 	 */
 	public function save_signature( $input_name, $name_prefix = '' ) {
-		require_once( 'includes/super_signature/license.php' );
+		require_once( $this->get_base_path() . '/includes/super_signature/license.php' );
+		if ( ! function_exists( 'GetSignatureImage' ) ) {
+			$this->log_error( __METHOD__ . '(): Aborting; GetSignatureImage() does not exist.' );
+
+			return '';
+		}
 
 		$signature_data = rgpost( $input_name );
 
@@ -483,23 +476,32 @@ class GFSignature extends GFAddOn {
 
 		$image = GetSignatureImage( $signature_data );
 		if ( ! $image ) {
+			$this->log_error( __METHOD__ . '(): Aborting; unable to create image from signature data.' );
+
 			return '';
 		}
 
 		$folder = $this->get_signatures_folder();
 
-		//abort if folder can't be created.
 		if ( ! wp_mkdir_p( $folder ) ) {
-			return;
+			$this->log_error( __METHOD__ . '(): Aborting; unable to create folder.' );
+
+			return '';
 		}
+
+		// Add index.html to prevent directory browsing.
+		$this->add_index_file();
 
 		$filename = $name_prefix . uniqid( '', true ) . '.png';
 		$path     = $folder . $filename;
-		imagepng( $image, $path, 4 );
+		$result   = imagepng( $image, $path, 4 );
 		imagedestroy( $image );
 
-		//Add index.html to prevent directory browsing
-		$this->add_index_file();
+		if ( ! $result ) {
+			$this->log_error( __METHOD__ . '(): Aborting; unable to save file.' );
+
+			return '';
+		}
 
 		return $filename;
 	}
@@ -541,7 +543,7 @@ class GFSignature extends GFAddOn {
 
 	/**
 	 * Used by the gform_delete_entries hook to delete any signatures for the entries currently being deleted.
-	 * 
+	 *
 	 * @param int $form_id The ID of the form for which the entries are being deleted.
 	 */
 	public function delete_entries( $form_id, $status ) {

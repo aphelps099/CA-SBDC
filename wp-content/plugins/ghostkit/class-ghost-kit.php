@@ -2,7 +2,7 @@
 /**
  * Plugin Name:  Ghost Kit
  * Description:  Blocks collection and extensions for Gutenberg
- * Version:      2.19.2
+ * Version:      2.19.4
  * Author:       nK
  * Author URI:   https://nkdev.info
  * License:      GPLv2 or later
@@ -170,7 +170,7 @@ class GhostKit {
         add_action( 'enqueue_block_editor_assets', array( $this, 'js_translation_editor' ) );
 
         // add Ghost Kit blocks category.
-        add_filter( 'block_categories', array( $this, 'block_categories' ), 9 );
+        add_filter( 'block_categories_all', array( $this, 'block_categories_all' ), 9 );
 
         // CSS Vars Polyfill.
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_css_vars_polyfill' ) );
@@ -216,7 +216,7 @@ class GhostKit {
      * @param array $categories - available categories.
      * @return array
      */
-    public function block_categories( $categories ) {
+    public function block_categories_all( $categories ) {
         return array_merge(
             array(
                 array(
@@ -260,8 +260,19 @@ class GhostKit {
      * Enqueue editor assets
      */
     public function enqueue_block_editor_assets() {
+        global $current_screen;
+
         $css_deps = array();
         $js_deps  = array( 'ghostkit-helper', 'wp-block-editor', 'wp-blocks', 'wp-date', 'wp-i18n', 'wp-element', 'wp-edit-post', 'wp-compose', 'underscore', 'wp-hooks', 'wp-components', 'wp-keycodes', 'moment', 'jquery' );
+
+        // Fix for Widgets screen.
+        if ( isset( $current_screen->id ) && 'widgets' === $current_screen->id ) {
+            $key = array_search( 'wp-edit-post', $js_deps, true );
+
+            if ( false !== $key ) {
+                unset( $js_deps[ $key ] );
+            }
+        }
 
         // Jarallax.
         if ( apply_filters( 'gkt_enqueue_plugin_jarallax', true ) ) {

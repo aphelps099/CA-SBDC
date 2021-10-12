@@ -53,7 +53,7 @@ class GhostKit_Fonts {
                 'display' => 'swap',
             );
 
-            wp_enqueue_style( 'ghostkit-fonts-google', add_query_arg( $query_args, 'https://fonts.googleapis.com/css' ), array(), '2.19.2' );
+            wp_enqueue_style( 'ghostkit-fonts-google', add_query_arg( $query_args, 'https://fonts.googleapis.com/css' ), array(), '2.19.4' );
         }
     }
 
@@ -76,7 +76,7 @@ class GhostKit_Fonts {
             $post_id = get_the_ID();
         } elseif ( $is_admin_editor ) {
             global $post;
-            $post_id = $post->ID;
+            $post_id = isset( $post->ID ) ? $post->ID : null;
         }
 
         $is_single               = is_singular() && $post_id;

@@ -203,10 +203,23 @@ class GF_Field_Signature extends GF_Field {
 				if ( $is_entry_detail && $value ) {
 
 					// include the download link
-					$input .= sprintf( "<a href='%s' target='_blank' title='%s'><img src='%s/images/download.png' alt='%s'/></a>", $signature_url, esc_attr__( 'Download file', 'gravityformssignature' ), GFCommon::get_base_url(), esc_attr__( 'Download file', 'gravityformssignature' ) );
+					$download_icon = gf_signature()->is_gravityforms_supported( '2.5' ) ? '<i class="gform-icon gform-icon--circle-arrow-down gform-c-hunter"></i>' : '<img src="' . GFCommon::get_base_url() . '/images/download.png"/>';
+					$input        .= sprintf(
+						"<a href='%s' target='_blank' title='%s' class='gform-signature-action'>%s</a>",
+						$signature_url,
+						esc_attr__( 'Download file', 'gravityformssignature' ),
+						$download_icon
+					);
 
 					// include the delete link
-					$input .= sprintf( "<a href='javascript:void(0);' title='%s' onclick='deleteSignature(%d, %d);'><img src='%s/images/delete.png' alt='%s' style='margin-left:8px;'/></a>", esc_attr__( 'Delete file', 'gravityformssignature' ), rgar( $entry, 'id' ), $id, GFCommon::get_base_url(), esc_attr__( 'Delete file', 'gravityformssignature' ) );
+					$delete_icon = gf_signature()->is_gravityforms_supported( '2.5.5.4' ) ? '<i class="gform-icon gform-icon--circle-delete gform-c-red"></i>' : '<img src="' . GFCommon::get_base_url() . '/images/delete.png" style="margin: 0 8px"/>';
+					$input      .= sprintf(
+						"<a href='javascript:void(0);' title='%s' onclick='deleteSignature(%d, %d);' class='gform-signature-action'>%s</a>",
+						esc_attr__( 'Delete file', 'gravityformssignature' ),
+						rgar( $entry, 'id' ),
+						$id,
+						$delete_icon
+					);
 
 				} else {
 
@@ -373,8 +386,8 @@ class GF_Field_Signature extends GF_Field {
 	public function get_value_entry_list( $value, $entry, $field_id, $columns, $form ) {
 		if ( ! empty( $value ) ) {
 			$signature_url = $this->get_value_url( $value );
-			$thumb         = GFCommon::get_base_url() . '/images/doctypes/icon_image.gif';
-			$value         = sprintf( "<a href='%s' target='_blank' title='%s'><img src='%s'/></a>", $signature_url, esc_attr__( 'Click to view', 'gravityformssignature' ), $thumb );
+			$thumb         = gf_signature()->is_gravityforms_supported( '2.5' ) ? '<i class="gform-icon gform-icon--signature"></i>' : '<img src="' . GFCommon::get_base_url() . '/images/doctypes/icon_image.gif">';
+			$value         = sprintf( "<a href='%s' target='_blank' title='%s'>%s</a>", $signature_url, esc_attr__( 'Click to view', 'gravityformssignature' ), $thumb );
 		}
 
 		return $value;

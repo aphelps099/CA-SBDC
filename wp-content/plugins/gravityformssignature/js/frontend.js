@@ -1,3 +1,6 @@
+/* global jQuery, Base64, SignatureEnabled, ResizeSignature, ClearSignature, LoadSignature */
+/* eslint-disable new-cap */
+
 jQuery( window ).on( 'gform_post_render', function( formId ) {
 
 	jQuery( '.gfield_signature_container' ).each( function() {
@@ -43,33 +46,108 @@ jQuery( document ).ready( function( $ ) {
 
 } );
 
+
+/**
+ * Handles updating of the signature field on document resize.
+ *
+ * @return {void}
+ */
 function gformSignatureResize() {
+	/**
+	 * Get the cached components of the signature field.
+	 *
+	 * @since 4.1
+	 *
+	 * @param {Object} $signatureContainer jQuery signature container object.
+	 * @return {Object} Signature data object.
+	 */
+	function getSignature( $signatureContainer ) {
+		var $gfield = $signatureContainer.closest( '.gfield' );
 
-	$( '.gfield_signature_container' ).each( function() {
+		return {
+			$container: $signatureContainer,
+			fieldID: $gfield.find( '.gfield_label' ).attr( 'for' ),
+			gfieldWidth: $gfield.innerWidth(),
+			width: $signatureContainer.data( 'original-width' ),
+			dataInput: $signatureContainer.parent().find( 'input[name$="_data"]:eq( 0 )' ),
+			fieldExists: function() {
+				return typeof this.fieldID !== 'undefined';
+			},
+			dataInputExists: function() {
+				return this.dataInput.length > 0;
+			}
+		};
+	}
 
-		var originalWidth  = $( this ).data( 'original-width' ),
-			containerWidth = $( this ).closest( '.gfield' ).innerWidth(),
-			width          = containerWidth > originalWidth ? originalWidth : containerWidth,
-			ratio          = $( this ).data( 'ratio' ),
-			height         = Math.round( width * ratio );
+	/**
+	 * Get the resized width of the signature.
+	 *
+	 * @since 4.1
+	 *
+	 * @param {Object} signature The signature data object.
+	 * @return {*|null} The new signature width.
+	 */
+	function getNewSignatureWidth( signature ) {
+		return signature.gfieldWidth > signature.width ? signature.width : signature.gfieldWidth;
+	}
 
-		var containerID = $( this ).parent().parent().find( '.gfield_label' ).attr( 'for' ),
-			data        = Base64.decode( $( this ).parent().find( 'input[name$="_data"]:eq( 0 )' ).val() );
+	/**
+	 * Get the resized height of the signature.
+	 *
+	 * @since 4.1
+	 *
+	 * @param {Number} resizedSignatureWidth The width of the resized signature.
+	 * @param {object} signature The original signature data.
+	 * @return {number} The new signature height.
+	 */
+	function getNewSignatureHeight( resizedSignatureWidth, signature ) {
+		return Math.round( resizedSignatureWidth * signature.$container.data( 'ratio' ) );
+	}
 
-		if( data && width < originalWidth ) {
-			SignatureEnabled( containerID, false );
-			$( '#' + containerID + '_lockedReset' ).show();
+	/**
+	 * Get an object representing the signature's new height and width.
+	 *
+	 * @since 4.1
+	 *
+	 * @param {Object} signature The original signature object.
+	 * @return {{width: (*|null), height: number}} The resized signature data.
+	 */
+	function getResizedSignature( signature ) {
+		return {
+			width: getNewSignatureWidth( signature ),
+			height: getNewSignatureHeight( getNewSignatureWidth( signature ), signature )
+		};
+	}
+
+	// Find every signature field on the page and resize it.
+	jQuery( '.gfield_signature_container' ).each( function() {
+		var signature = getSignature( jQuery( this ) );
+		var resizedSignature = getResizedSignature( signature );
+		var decodedSignatureData;
+
+		if (
+			!signature.fieldExists()
+			|| !signature.dataInputExists()
+		) {
+			return;
+		}
+
+		decodedSignatureData = Base64.decode( signature.dataInput.val() );
+
+		if ( decodedSignatureData && resizedSignature.width < signature.width ) {
+			SignatureEnabled( signature.fieldID, false );
+			jQuery( '#' + signature.fieldID + '_lockedReset' ).show();
 			return;
 		}
 
 		// Resize signature.
-		ResizeSignature( containerID, width, height );
-		ClearSignature( containerID );
+		ResizeSignature( signature.fieldID, resizedSignature.width, resizedSignature.height );
+		ClearSignature( signature.fieldID );
 
-		if ( data ) {
-			LoadSignature( containerID, data, 1 );
+		if ( decodedSignatureData ) {
+			LoadSignature( signature.fieldID, decodedSignatureData, 1 );
 		}
-
 	} );
-
 }
+
+

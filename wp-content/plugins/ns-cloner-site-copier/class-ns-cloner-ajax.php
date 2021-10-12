@@ -119,7 +119,7 @@ class NS_Cloner_Ajax {
 		$this->check_nonce();
 		$options_table = is_multisite() ? ns_cloner()->db->sitemeta : ns_cloner()->db->options;
 		$options_key   = is_multisite() ? 'meta_key' : 'option_name';
-		ns_cloner()->db->query( "DELETE * FROM $options_table WHERE $options_key LIKE 'ns_cloner%'" );
+		ns_cloner()->db->query( "DELETE FROM $options_table WHERE $options_key LIKE 'ns_cloner%'" );
 		wp_send_json_success();
 	}
 

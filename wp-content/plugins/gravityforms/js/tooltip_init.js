@@ -1,14 +1,14 @@
-jQuery( document ).ready( function() {
-	window.setTimeout( function() {
-		gform_initialize_tooltips();
-	}, 0 );
+jQuery( function() {
+	gform_initialize_tooltips();
 } );
 
 function gform_initialize_tooltips() {
-	var hasScrollbars = gform_system_shows_scrollbars();
-	var offset        = hasScrollbars ? 'center+11 top-11' : 'center-3 top-11';
+	var $tooltips = jQuery( '.gf_tooltip' );
+	if ( ! $tooltips.length ) {
+		return;
+	}
 
-	jQuery( '.gf_tooltip' ).tooltip( {
+	$tooltips.tooltip( {
 		show: {
 			effect: 'fadeIn',
 			duration: 200,
@@ -16,19 +16,27 @@ function gform_initialize_tooltips() {
 		},
 		position:     {
 			my: 'center bottom',
-			at: offset,
+			at: 'center-3 top-11',
 		},
 		tooltipClass: 'arrow-bottom',
 		items: '[aria-label]',
 		content: function () {
-			return jQuery( this ).attr( 'aria-label' );
+			var content = jQuery( this ).attr( 'aria-label' );
+			return gform_strip_scripts( content );
 		},
 		open:         function ( event, ui ) {
 			if ( typeof ( event.originalEvent ) === 'undefined' ) {
 				return false;
 			}
 
-			var $id = jQuery( ui.tooltip ).attr( 'id' );
+			// set the tooltip offset on reveal based on tip width and offset of trigger to handle dynamic changes in overflow
+			setTimeout( function() {
+				var leftOffset = ( this.getBoundingClientRect().left - ( ( ui.tooltip[0].offsetWidth / 2 ) - 5 ) ).toFixed(3);
+				ui.tooltip.css( 'left', leftOffset + 'px' );
+			}.bind( this ), 100 );
+
+
+			var $id = ui.tooltip.attr( 'id' );
 			jQuery( 'div.ui-tooltip' ).not( '#' + $id ).remove();
 		},
 		close:        function ( event, ui ) {
@@ -44,6 +52,27 @@ function gform_initialize_tooltips() {
 	} );
 }
 
+/**
+ * Sanitizes a given piece of HTML markup by removing script tags from it.
+ *
+ * @param {string} content The HTML content to sanitize.
+ *
+ * @return {string}
+ */
+function gform_strip_scripts( content ) {
+	var tempWrapper = document.createElement( 'div' );
+
+	tempWrapper.innerHTML = content;
+
+	var scripts = tempWrapper.getElementsByTagName( 'script' );
+
+	for ( var i = 0; i < scripts.length; i++ ) {
+		scripts[ i ].parentNode.removeChild( scripts[ i ] );
+	}
+
+	return tempWrapper.innerHTML;
+}
+
 function gform_system_shows_scrollbars() {
 	var parent = document.createElement("div");
 	parent.setAttribute("style", "width:30px;height:30px;");
@@ -55,6 +84,8 @@ function gform_system_shows_scrollbars() {
 	document.body.appendChild(parent);
 
 	var scrollbarWidth = 30 - parent.firstChild.clientWidth;
+
+	document.body.removeChild(parent);
 
 	return scrollbarWidth ? true : false;
 }

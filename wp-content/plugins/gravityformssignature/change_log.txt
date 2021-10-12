@@ -1,7 +1,15 @@
+### 4.1 | 2021-09-01
+- Fixed JavaScript errors on the edit entry page that prevent the signature field from being edited.
+- Fixed an issue that causes the signature field to throw a JavaScript error on the front-end when the data input doesn't exist.
+- Fixed an issue where script tags are output above document head element.
+- Fixed a fatal error which can occur when saving the signature in some hosting environments.
+
+
 ### 4.0 | 2020-09-23
 - Added security enhancements.
 - Added the [gform_signature_url](https://docs.gravityforms.com/gform_signature_url/), [gform_signature_url_permission_granted](https://docs.gravityforms.com/gform_signature_url_permission_granted/), and [gform_signature_url_require_login](https://docs.gravityforms.com/gform_signature_url_require_login/) filters.
 - Added support for Gravity Forms 2.5
+
 
 ### 3.9 | 2020-05-18
 - Added translations for Hebrew, Hindi, Japanese, and Turkish.

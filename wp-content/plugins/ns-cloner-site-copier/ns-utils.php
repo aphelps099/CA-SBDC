@@ -227,10 +227,18 @@ function ns_wp_get_sites_list() {
 		$sites = [];
 	}
 	// Loop through sites and prepare labels.
-	foreach ( $sites as $site ) {
-		$details                = get_blog_details( $site->blog_id );
-		$name                   = substr( $details->blogname, 0, 30 );
-		$list[ $site->blog_id ] = $name . ' - ' . ns_short_url( $details->siteurl ) . ' - ID:' . $site->blog_id;
+	if ( count( $sites ) > 500 ) {
+		// For networks with more than 500 sites, show fewer details to avoid extra queries.
+		foreach ( $sites as $site ) {
+			$list[ $site->blog_id ] = ( is_subdomain_install() ? $site->domain : $site->path ) . ' - ID:' . $site->blog_id;
+		}
+	} else {
+		// For smaller networks, show more detailed results.
+		foreach ( $sites as $site ) {
+			$details                = get_blog_details( $site->blog_id );
+			$name                   = substr( $details->blogname, 0, 30 );
+			$list[ $site->blog_id ] = $name . ' - ' . ns_short_url( $details->siteurl ) . ' - ID:' . $site->blog_id;
+		}
 	}
 	return apply_filters( 'ns_cloner_sites_list', $list );
 }
