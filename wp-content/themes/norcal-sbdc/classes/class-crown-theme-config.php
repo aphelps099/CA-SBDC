@@ -58,6 +58,11 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 				add_theme_support( 'editor-color-palette', $editor_color_palette );
 			}
 
+			if ( ( $editor_gradient_palette = self::get_editor_gradient_palette() ) && ! empty( $editor_gradient_palette ) ) {
+				// add_theme_support( 'disable-custom-gradients' );
+				add_theme_support( 'editor-gradient-presets', $editor_gradient_palette );
+			}
+
 			if ( ( $site_logo_size = self::get_site_logo_size() ) && ! empty( $site_logo_size ) ) {
 				add_theme_support( 'custom-logo', $site_logo_size );
 			}
@@ -279,6 +284,22 @@ if ( ! class_exists( 'Crown_Theme_Config' ) ) {
 				return $n;
 			}, $color_palette );
 			return $editor_color_palette;
+		}
+
+
+		public static function get_editor_gradient_palette() {
+			$gradient_palette = self::get( 'gradient_palette' );
+			if ( empty( $gradient_palette ) ) return array();
+			$editor_gradient_palette = array_map( function( $n ) {
+				$n = array_merge( array(
+					'name' => '',
+					'slug' => '',
+					'gradient' => ''
+				), (array) $n );
+				$n['name'] = __( $n['name'] , 'crown_theme' );
+				return $n;
+			}, $gradient_palette );
+			return $editor_gradient_palette;
 		}
 
 

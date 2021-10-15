@@ -10,7 +10,7 @@ const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const { InnerBlocks, RichText, Editable, MediaUpload, BlockControls, AlignmentToolbar, InspectorControls, PanelColorSettings, URLInputButton, URLInput } = wp.blockEditor;
 const { PanelBody, Popover, RadioControl, ColorPicker, ColorPalette, ToolbarButton, ToolbarGroup, Button, ButtonGroup, Icon, RangeControl, FocalPointPicker, ToggleControl, TextControl, SelectControl } = wp.components;
-const { getColorObjectByColorValue } = wp.blockEditor;
+const { getColorObjectByColorValue, __experimentalPanelColorGradientSettings } = wp.blockEditor;
 
 
 const { createHigherOrderComponent } = wp.compose;
@@ -50,6 +50,7 @@ registerBlockType('crown-blocks/button', {
 		type: { type: 'string', default: 'default' },
 		color: { type: 'string', default: '#D11141' },
 		colorSlug: { type: 'string', default: 'red' },
+		gradient: { type: 'string' },
 		size: { type: 'string', default: 'md' },
 		displayWithArrowIcon: { type: 'boolean', default: false },
 		displayAsBlock: { type: 'boolean', default: false },
@@ -76,6 +77,7 @@ registerBlockType('crown-blocks/button', {
 			type,
 			color,
 			colorSlug,
+			gradient,
 			size,
 			displayWithArrowIcon,
 			displayAsBlock,
@@ -143,6 +145,32 @@ registerBlockType('crown-blocks/button', {
 							disableCustomColors: true
 						}
 					] }
+				/>
+
+				<__experimentalPanelColorGradientSettings
+					title={ 'Button Color' }
+					initialOpen={ true }
+					settings={ [ {
+						colorValue: color,
+						gradientValue: gradient,
+						label: 'Button Color',
+						disableCustomColors: true,
+						disableCustomGradients: true,
+						onColorChange: (value) => {
+							let colors = CrownBlocks.getThemeColorPalette();
+							let colorSlug = '';
+							if(colors) {
+								let colorObject = getColorObjectByColorValue(colors, value);
+								console.log(colorObject);
+								if(colorObject) colorSlug = colorObject.slug;
+							}
+							setAttributes({ color: value, colorSlug: colorSlug });
+						},
+						onGradientChange: (value) => {
+							console.log(value);
+							setAttributes({ gradient: value });
+						}
+					} ] }
 				/>
 
 				<PanelBody title={ 'Link Settings' } initialOpen={ true }>

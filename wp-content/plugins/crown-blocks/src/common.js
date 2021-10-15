@@ -12,6 +12,7 @@ const CrownBlocks = {
 			{ "name": "Blue", "slug": "blue", "color": "#0081B7" },
 			{ "name": "Light Medium Blue", "slug": "light-med-blue", "color": "#98DBF9" },
 			{ "name": "Light Blue", "slug": "light-blue", "color": "#D0E4F8" },
+			{ "name": "Bright Blue", "slug": "bright-blue", "color": "#59CEFF" },
 			{ "name": "Extra Light Blue", "slug": "x-light-blue", "color": "#F4F8FD" },
 			{ "name": "Red", "slug": "red", "color": "#D11141" },
 			{ "name": "Green", "slug": "green", "color": "#84C318" },
