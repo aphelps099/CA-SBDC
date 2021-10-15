@@ -3,17 +3,11 @@
 
 add_filter( 'crown_theme_styles', 'ctc_filter_styles' );
 function ctc_filter_styles( $styles ) {
-	foreach ( $styles as $i => $style ) {
-		if ( $style['handle'] == 'crown-theme-style' ) {
-			unset( $styles[ $i ] );
-			break;
-		}
-	}
 	$styles[] = array(
 		'handle' => 'crown-child-theme-style',
-		'src' => Crown_Theme::get_child_uri() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
-		'ver' => filemtime( Crown_Theme::get_child_dir() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css' ),
-		'deps' => array( 'crown-theme-typekit', 'slick', 'blueimp-gallery', 'odometer-theme-default', 'jquery-oembed' )
+		'src' => get_stylesheet_directory_uri() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
+		'ver' => filemtime( get_stylesheet_directory() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css' ),
+		'deps' => array( 'crown-theme-style' )
 	);
 	return $styles;
 }
