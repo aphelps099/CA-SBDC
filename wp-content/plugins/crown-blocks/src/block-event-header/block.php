@@ -39,6 +39,8 @@ if(!class_exists('Crown_Block_Event_Header')) {
 				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_event' );
 			}
 
+			$index_title = apply_filters( 'crown_block_event_header_index_title', '<span>' . __( 'SBDC', 'crown_blocks' ) . '</span><span>' . __( 'Events', 'crown_blocks' ) . '</span>', $post_id );
+
 			ob_start();
 			// print_r($atts);
 			?>
@@ -55,7 +57,7 @@ if(!class_exists('Crown_Block_Event_Header')) {
 
 								<div class="index-header">
 
-									<h2 class="index-title"><span><?php _e( 'SBDC', 'crown_blocks' ); ?></span><span><?php _e( 'Events', 'crown_blocks' ); ?></span></h2>
+									<h2 class="index-title"><?php echo $index_title; ?></h2>
 								
 									<?php if ( ! empty( $index_page_url ) ) { ?>
 										<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Events', 'crown_blocks' ); ?></a>
