@@ -481,7 +481,7 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 		public static function filter_post_row_actions( $actions, $post ) {
 			if ( $post->post_type == 'webinar_s' ) {
 				$actions = array();
-				if ( is_main_site() ) {
+				if ( apply_filters( 'crown_webinars_can_unpublish_syndicated', is_main_site() ) ) {
 					if ( $post->post_status == 'publish' ) {
 						$actions = array(
 							'unpublish' => sprintf(

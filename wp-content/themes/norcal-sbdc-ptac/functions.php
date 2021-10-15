@@ -28,3 +28,6 @@ add_filter( 'crown_block_event_header_index_title', 'ctc_filter_crown_block_even
 function ctc_filter_crown_block_event_header_index_title( $title, $post_id ) {
 	return '<span>' . __( 'NorCal PTAC', 'crown_child_theme' ) . '</span><span>' . __( 'Events', 'crown_child_theme' ) . '</span>';
 }
+
+
+add_filter( 'crown_webinars_can_unpublish_syndicated', '__return_true' );
