@@ -17013,6 +17013,10 @@ h2, .h2 {
     h2 a:hover, .h2 a:hover {
       text-decoration: underline;
       color: rgba(3, 129, 195, 0.8); }
+    .text-color-light h2 a, .text-color-light .h2 a {
+      color: inherit; }
+      .text-color-light h2 a:hover, .text-color-light .h2 a:hover {
+        color: inherit; }
 
 .has-blue-color {
   color: #0381C3 !important; }
@@ -23114,7 +23118,10 @@ nav.pagination {
       position: relative;
       margin: 0; }
       .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
-        margin: 0 -1rem; }
+        margin: 0 -1rem;
+        -webkit-box-flex: 1;
+            -ms-flex: 1 0 auto;
+                flex: 1 0 auto; }
   .wp-block-crown-blocks-featured-post-slider .post-feed-nav {
     position: relative;
     z-index: 1; }
