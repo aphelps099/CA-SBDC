@@ -1,0 +1,13 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-featured-client-story-slider {
+	.post-feed {
+		> .inner {
+			> article {
+				display: none !important;
+				&:nth-child(1) { display: flex !important; }
+			}
+		}
+	}
+}

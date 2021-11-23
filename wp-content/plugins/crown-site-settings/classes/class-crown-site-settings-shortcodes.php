@@ -76,6 +76,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['devblock'] = new Shortcode(array(
+				'tag' => 'devblock',
+				'getOutputCb' => array( __CLASS__, 'get_devblock_shortcode' ),
+				'defaultAtts' => array(
+					'block' => ''
+				)
+			));
+
 		}
 
 
@@ -428,6 +436,96 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			$value = wp_unslash( strip_tags( $value ) );
 			if ( empty( $value ) ) return $atts['fallback'];
 			return sprintf( $atts['template'], $value );
+		}
+
+
+		public static function get_devblock_shortcode( $atts, $content ) {
+			$block = $atts['block'];
+
+			ob_start();
+
+			if ( $block == 'content-slider' ) {
+				?>
+					<div class="content-slider">
+						<a class="slide" href="#">
+							<div class="bg">
+								<div class="bg-image" style="background-image: url(http://ip.norcalsbdc.org.test/wp-content/uploads/sites/5/2021/04/photo-1459478309853-2c33a60058e7-768x512.jpeg);"></div>
+							</div>
+							<div class="inner">
+								<h5>Tag / Category</h5>
+								<h3>TITLE THAT GETS AN ANIMATED UNDERLINE WHEN HOVERED ON</h3>
+								<p><span href="#" class="btn btn-link btn-has-arrow-icon">Link</span></p>
+							</div>
+						</a>
+						<a class="slide" href="#">
+							<div class="bg">
+								<div class="bg-image" style="background-image: url(http://ip.norcalsbdc.org.test/wp-content/uploads/sites/5/2021/04/bg-colors-1-768x507.jpg);"></div>
+							</div>
+							<div class="inner">
+								<h5>Tag / Category</h5>
+								<h3>Lorem ipsum dolor sit amet, justo congue mauris fermentum lacus. Dignissim hymenaeos placerat in, non mus enim diam nam, vivamus velit nunc imperdiet auctor sed, nibh elit, pellentesque convallis est.</h3>
+								<p><span href="#" class="btn btn-link btn-has-arrow-icon">Link</span></p>
+							</div>
+						</a>
+					</div>
+				<?php
+			} else if ( $block == 'news-slider' ) {
+				?>
+					<div class="news-slider">
+						<a class="slide" href="#">
+							<div class="inner">
+								<h6 class="is-style-display"><strong>News</strong> Finance</h6>
+								<h3>TITLE THAT GETS AN ANIMATED UNDERLINE WHEN HOVERED ON</h3>
+								<p class="date">2 days ago</p>
+							</div>
+						</a>
+						<a class="slide" href="#">
+							<div class="inner">
+								<h6 class="is-style-display"><strong>News</strong> Food Biz</h6>
+								<h3>Lorem ipsum dolor sit amet, justo congue mauris fermentum lacus. Dignissim hymenaeos placerat in, non mus enim diam nam, vivamus velit nunc imperdiet auctor sed, nibh elit, pellentesque convallis est.</h3>
+								<p class="date">8 days ago</p>
+							</div>
+						</a>
+						<a class="slide" href="#">
+							<div class="inner">
+								<h6 class="is-style-display"><strong>News</strong> Finance</h6>
+								<h3>TITLE THAT GETS AN ANIMATED UNDERLINE WHEN HOVERED ON</h3>
+								<p class="date">2 days ago</p>
+							</div>
+						</a>
+						<a class="slide" href="#">
+							<div class="inner">
+								<h6 class="is-style-display"><strong>News</strong> Food Biz</h6>
+								<h3>Lorem ipsum dolor sit amet, justo congue mauris fermentum lacus. Dignissim hymenaeos placerat in, non mus enim diam nam, vivamus velit nunc imperdiet auctor sed, nibh elit, pellentesque convallis est.</h3>
+								<p class="date">8 days ago</p>
+							</div>
+						</a>
+					</div>
+				<?php
+			} else if ( $block == 'client-story-slider' ) {
+				?>
+					<div class="client-story-slider">
+						<a class="slide" href="#">
+							<div class="bg">
+								<div class="bg-image" style="background-image: url(http://ip.norcalsbdc.org.test/wp-content/uploads/sites/5/2021/04/photo-1459478309853-2c33a60058e7-768x512.jpeg);"></div>
+							</div>
+							<div class="inner">
+								<h3>Churn Creamery</h3>
+							</div>
+						</a>
+						<a class="slide" href="#">
+							<div class="bg">
+								<div class="bg-image" style="background-image: url(http://ip.norcalsbdc.org.test/wp-content/uploads/sites/5/2021/04/bg-colors-1-768x507.jpg);"></div>
+							</div>
+							<div class="inner">
+								<h3>Another Slide Goes Here...</h3>
+							</div>
+						</a>
+					</div>
+				<?php
+			}
+
+			return ob_get_clean();
 		}
 
 

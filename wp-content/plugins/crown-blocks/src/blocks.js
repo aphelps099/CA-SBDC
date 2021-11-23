@@ -37,6 +37,7 @@ import './block-faq-index/block.js';
 // import './block-featured-case-studies/block.js';
 // import './block-featured-case-study-logos/block.js';
 import './block-featured-client-story/block.js';
+import './block-featured-client-story-slider/block.js';
 import './block-featured-event/block.js';
 import './block-featured-events/block.js';
 import './block-featured-post-slider/block.js';

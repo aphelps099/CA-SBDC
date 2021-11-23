@@ -16,13 +16,12 @@ $colors: map-merge(
 	$colors
 );
 
-$font-family-sans-serif: "Founders Grotesk", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-$font-family-sans-serif-alt: "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-$font-family-sans-serif-ext: "Helvetica Neue Extended", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-$font-family-mono: 'Founders Grotesk Mono', monospace;
+$font-family-sans-serif: "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-sans-serif-alt: "Helvetica Neue Condensed", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-mono: 'Roboto Mono', monospace;
 $icomoon-font-folder-path: "../../../norcal-sbdc/assets/fonts/icomoon";
 $headings-font-weight: 700;
-$headings-font-family: $font-family-sans-serif-ext;
+$headings-font-family: $font-family-sans-serif-alt;
 
 $btn-font-family: $font-family-mono;
 $btn-font-weight: 500;

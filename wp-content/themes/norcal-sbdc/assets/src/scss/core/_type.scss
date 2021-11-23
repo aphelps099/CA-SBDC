@@ -43,6 +43,12 @@ h2, .h2 {
 			text-decoration: underline;
 			color: rgba($blue, .8);
 		}
+		.text-color-light & {
+			color: inherit;
+			&:hover {
+				color: inherit;
+			}
+		}
 	}
 }
 

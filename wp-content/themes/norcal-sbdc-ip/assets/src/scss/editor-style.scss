@@ -14,3 +14,30 @@
 .wp-block[data-type="crown-blocks/header"] > .crown-block-editor-container > .wp-block-crown-blocks-header > hr {
 	height: 1.25rem;
 }
+
+.wp-block[data-type="crown-blocks/featured-post-slider"] .post-feed > .inner {
+	display: flex;
+	> article {
+		width: 50%;
+		padding: 0;
+		&:nth-child(3) {
+			display: none;
+		}
+	}
+}
+
+.wp-block[data-type="crown-blocks/featured-client-story-slider"] {
+	flex: 1 1 auto;
+	display: flex;
+	> .crown-block-editor-container,
+	> .crown-block-editor-container > div {
+		display: flex;
+		width: 100%;
+	}
+	> .crown-block-editor-container > div > .wp-block-crown-blocks-featured-client-story-slider {
+		width: 100%;
+		.post-feed > .inner > article {
+			height: 100%;
+		}
+	}
+}

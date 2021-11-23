@@ -22,8 +22,6 @@
 }
 #header-primary-navigation-menu {
 	font-family: $font-family-mono;
-	letter-spacing: .1em;
-	text-transform: uppercase;
 	font-weight: 500;
 	> .menu-item {
 		&:hover,
@@ -190,7 +188,7 @@
 #site-copyright {
 	font-size: 1.5rem;
 	font-weight: 700;
-	font-family: $font-family-sans-serif-ext;
+	font-family: $font-family-sans-serif;
 	margin-bottom: 2rem;
 	text-transform: none;
 	letter-spacing: 0;
@@ -205,7 +203,7 @@
 #footer-legal-links {
 	font-size: 1rem;
 	font-weight: 700;
-	font-family: $font-family-sans-serif-ext;
+	font-family: $font-family-sans-serif;
 	letter-spacing: 0;
 	@include media-breakpoint-up(md) {
 		padding: 0;
@@ -267,7 +265,7 @@
 		}
 		> a {
 			padding: .75rem 1rem;
-			font-family: $font-family-sans-serif-ext;
+			font-family: $font-family-mono;
 			font-weight: 700;
 			text-transform: uppercase;
 		}
