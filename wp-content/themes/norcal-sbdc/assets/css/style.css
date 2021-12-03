@@ -23116,7 +23116,8 @@ nav.pagination {
     overflow: hidden; }
     .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider {
       position: relative;
-      margin: 0; }
+      margin: 0;
+      display: block; }
       .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
         margin: 0 -1rem;
         -webkit-box-flex: 1;
