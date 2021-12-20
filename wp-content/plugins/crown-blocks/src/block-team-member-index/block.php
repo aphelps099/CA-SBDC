@@ -105,7 +105,9 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				} else {
 					$sticky_query = new WP_Query( $sticky_query_args );
 				}
-				$query_args['post__not_in'] = array_map( function( $n ) { return is_int($n) ? $n : $n->ID; }, $sticky_query->get_posts() );
+				$sticky_post_ids = array_map( function( $n ) { return is_int($n) ? $n : $n->ID; }, $sticky_query->get_posts() );
+				$test_results = get_posts( array_merge( $query_args, array( 'posts_per_page' => 1, 'fields' => 'ids', 'post__not_in' => $sticky_post_ids ) ) );
+				if ( ! empty( $test_results ) ) $query_args['post__not_in'] = $sticky_post_ids;
 			}
 
 			$query = null;
