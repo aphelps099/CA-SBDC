@@ -105,9 +105,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				} else {
 					$sticky_query = new WP_Query( $sticky_query_args );
 				}
-				$og_sticky_post_ids = array_map( function( $n ) { return is_int($n) ? $n : $n->ID; }, $sticky_query->get_posts() );
-				$test_results = get_posts( array_merge( $query_args, array( 'posts_per_page' => 1, 'fields' => 'ids', 'post__not_in' => $og_sticky_post_ids ) ) );
-				if ( ! empty( $test_results ) ) $query_args['post__not_in'] = $og_sticky_post_ids;
+				$query_args['post__not_in'] = array_map( function( $n ) { return is_int($n) ? $n : $n->ID; }, $sticky_query->get_posts() );
 			}
 
 			$query = null;
@@ -288,7 +286,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 								<div class="post-feed item-count-<?php echo $query->post_count; ?>" data-item-count="<?php echo $query->post_count; ?>">
 									<div class="inner infinite-loader-container">
 	
-										<?php if ( ! $query->have_posts() ) { ?>
+										<?php if ( ! $query->have_posts() && ( ! $sticky_query || ! $sticky_query->have_posts() ) ) { ?>
 
 											<div class="alert-wrapper">
 												<div class="alert alert-info no-results">
