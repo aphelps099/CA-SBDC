@@ -1,29 +1,54 @@
 
 
-$dark-blue:      #1D2F3C;
-$blue:           #0081B7;
-$bright-blue:    #59CEFF;
+// $dark-blue:      #1D2F3C;
+// $blue:           #0081B7;
+// $bright-blue:    #59CEFF;
 $magenta:        #D50679;
 $yellow:         #FEC403;
 $dark-gray:      #2C3E4B;
+
+
+$gold:             #a58a57;
+$dark-blue:        #363d4f;
+$extra-dark-blue:  #032036;
+$dark-purple:      #393e65;
+$blue:             #0079ff;
+$bright-blue:      #a7d0ed;
+$tan:              #baae95;
+$light-blue:       #dceaff;
+$extra-light-blue: #f5f9ff;
+$extra-light-gray: #f0f0f0;
+$white:            #ffffff;
+
 
 $colors: map-merge(
 	(
 		'magenta': $magenta,
 		'yellow': $yellow,
-		'bright-blue': $bright-blue
+		
+		'gold': $gold,
+		'dark-blue': $dark-blue,
+		'extra-dark-blue': $extra-dark-blue,
+		'dark-purple': $dark-purple,
+		'blue': $blue,
+		'bright-blue': $bright-blue,
+		'tan': $tan,
+		'light-blue': $light-blue,
+		'extra-light-blue': $extra-light-blue,
+		'extra-light-gray': $extra-light-gray,
+		'white': $white
 	),
 	$colors
 );
 
-$font-family-sans-serif: "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-$font-family-sans-serif-alt: "Helvetica Neue Condensed", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+// $font-family-sans-serif: "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+// $font-family-sans-serif-alt: "Helvetica Neue Condensed", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 $font-family-mono: 'Roboto Mono', monospace;
 $icomoon-font-folder-path: "../../../norcal-sbdc/assets/fonts/icomoon";
 $headings-font-weight: 700;
-$headings-font-family: $font-family-sans-serif-alt;
+// $headings-font-family: $font-family-sans-serif-alt;
 
-$btn-font-family: $font-family-mono;
+// $btn-font-family: $font-family-mono;
 $btn-font-weight: 500;
 $btn-letter-spacing: .1em;
 $btn-text-transform: uppercase;

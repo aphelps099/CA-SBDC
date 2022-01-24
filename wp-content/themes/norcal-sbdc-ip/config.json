@@ -1,18 +1,30 @@
 {
 
 	"color_palette": [
-		{ "name": "Dark Blue", "slug": "dark-blue", "color": "#1D2F3C" },
-		{ "name": "Blue", "slug": "blue", "color": "#0081B7" },
-		{ "name": "Bright Blue", "slug": "bright-blue", "color": "#59CEFF" },
-		{ "name": "Magenta", "slug": "magenta", "color": "#D50679" },
-		{ "name": "Yellow", "slug": "yellow", "color": "#FEC403" },
-		{ "name": "Dark Gray", "slug": "dark-gray", "color": "#2C3E4B" },
-		{ "name": "Ghost", "slug": "ghost", "color": "#E0E0E0" },
-		{ "name": "White", "slug": "white", "color": "#FFFFFF" }
+		{ "name": "Gold", "slug": "gold", "color": "#a58a57" },
+		{ "name": "Dark Blue", "slug": "dark-blue", "color": "#363d4f" },
+		{ "name": "Extra Dark Blue", "slug": "extra-dark-blue", "color": "#032036" },
+		{ "name": "Dark Purple", "slug": "dark-purple", "color": "#393e65" },
+		{ "name": "Blue", "slug": "blue", "color": "#0079ff" },
+		{ "name": "Bright Blue", "slug": "bright-blue", "color": "#a7d0ed" },
+		{ "name": "Tan", "slug": "tan", "color": "#baae95" },
+		{ "name": "Light Blue", "slug": "light-blue", "color": "#dceaff" },
+		{ "name": "Extra Light Blue", "slug": "extra-light-blue", "color": "#f5f9ff" },
+		{ "name": "Extra Light Gray", "slug": "extra-light-gray", "color": "#f0f0f0" },
+		{ "name": "White", "slug": "white", "color": "#ffffff" }
 	],
 
 	"gradient_palette": [
 		{ "name": "Red to Blue", "slug": "red-blue", "gradient": "linear-gradient(135deg, #835B53 0%, #29547D 100%)" }
+	],
+
+	"nav_menu_locations": [
+		{ "name": "Header: Primary Navigation", "slug": "header_primary" },
+		{ "name": "Header: CTA Links", "slug": "header_cta_links" },
+		{ "name": "Mobile Menu: Primary Navigation", "slug": "mobile_menu_primary" },
+		{ "name": "Footer: Primary Navigation", "slug": "footer_primary" },
+		{ "name": "Footer: CTA Links", "slug": "footer_cta_links" },
+		{ "name": "Footer: Legal Links", "slug": "footer_legal_links" }
 	]
 
 }

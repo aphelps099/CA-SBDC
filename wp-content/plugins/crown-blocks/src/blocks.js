@@ -52,6 +52,8 @@ import './block-job-index/block.js';
 // import './block-locations-map/block.js';
 import './block-multi-column/block.js';
 import './block-nav-menu/block.js';
+import './block-partner-grid/block.js';
+import './block-partner-grid-cell/block.js';
 import './block-portal-link/block.js';
 import './block-portal-link-grid/block.js';
 import './block-portal-link-list/block.js';

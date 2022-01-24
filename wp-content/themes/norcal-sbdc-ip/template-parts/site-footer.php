@@ -4,40 +4,27 @@
 
 			<div class="upper">
 
-				<div class="logos-description">
+				<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
+				<?php if ( ! empty( $description ) ) { ?>
+					<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
+				<?php } ?>
 
-					<div class="logos">
-						<div class="inner">
+				<div class="logos">
+					<div class="inner">
 
-							<div class="logo americas-sbdc-california">
-								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-california-white-180h.png" alt="America's SBDC California">
-							</div>
-
-							<div class="logo site-logo">
-								<?php $logo = get_option( 'theme_config_site_logo_light' ); ?>
-								<?php if ( ! empty( $logo ) ) { ?>
-									<?php echo wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'light' ) ); ?>
-								<?php } else { ?>
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-								<?php } ?>
-							</div>
-
-							<div class="logo sbdc-accredited-member">
-								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-light.png" alt="America's SBDC Accredited Member">
-							</div>
-
+						<div class="logo americas-sbdc-california">
+							<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-california-white-180h.png" alt="America's SBDC California">
 						</div>
+
+						<div class="logo ca-gobed">
+							<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-osba.png" alt="California Governor's Office of Business and Economic Development"></a>
+						</div>
+
+						<div class="logo powered-by-sba">
+							<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba-light.png" alt="Powered by U.S. Small Business Association"></a>
+						</div>
+
 					</div>
-
-					<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
-					<?php if ( ! empty( $description ) ) { ?>
-						<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
-					<?php } ?>
-
-				</div>
-
-				<div class="logo powered-by-sba">
-					<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba-light.png" alt="Powered by U.S. Small Business Association"></a>
 				</div>
 
 			</div>
