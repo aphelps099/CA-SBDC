@@ -114,6 +114,10 @@
 #site-footer-header {
 	background-color: $gold;
 	text-align: left;
+	@media (min-width: 1400px) {
+		padding-left: 3rem;
+		padding-right: 3remn;
+	}
 }
 
 #pre-footer {

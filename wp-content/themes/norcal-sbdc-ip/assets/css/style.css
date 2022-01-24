@@ -32513,6 +32513,10 @@ blockquote,
 #site-footer-header {
   background-color: #a58a57;
   text-align: left; }
+  @media (min-width: 1400px) {
+    #site-footer-header {
+      padding-left: 3rem;
+      padding-right: 3remn; } }
 
 #pre-footer {
   background-color: #032036;
