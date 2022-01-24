@@ -82,7 +82,7 @@
 				@include icon(map-get($icomoon-icons, arrow-right-long), icomoon);
 				position: absolute;
 				margin: 0;
-				color: $value;
+				color: inherit;
 				top: 50%;
 				font-size: 1.666666667em;
 				margin-top: -0.5em;

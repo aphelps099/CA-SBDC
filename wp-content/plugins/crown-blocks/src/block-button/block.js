@@ -98,14 +98,22 @@ registerBlockType('crown-blocks/button', {
 		blockClasses.push('button-type-' + type + '-container');
 
 		let buttonClasses = [ 'btn' ];
+		let buttonStyles = {};
 
 		if(type == 'outline') {
-			buttonClasses.push('btn-outline-' + colorSlug);
+			buttonClasses.push('btn-outline-primary');
+			buttonStyles.color = color;
+			buttonStyles.borderColor = color;
+			buttonStyles.backgroundColor = 'transparent';
 		} else if(type == 'link') {
 			buttonClasses.push('btn-link');
-			buttonClasses.push('btn-link-' + colorSlug);
+			buttonStyles.color = color;
+			buttonStyles.borderColor = color;
 		} else {
 			buttonClasses.push('btn-' + colorSlug);
+			buttonStyles.backgroundColor = color;
+			buttonStyles.borderColor = color;
+			buttonStyles.color = CrownBlocks.isDarkColor(color) ? '#ffffff' : '#000000';
 		}
 
 		buttonClasses.push('btn-' + size);
@@ -126,7 +134,7 @@ registerBlockType('crown-blocks/button', {
 
 			<InspectorControls key="inspector-controls">
 
-				<PanelColorSettings
+				{/* <PanelColorSettings
 					title={ 'Color' }
 					initialOpen={ true }
 					colorSettings={ [
@@ -145,7 +153,7 @@ registerBlockType('crown-blocks/button', {
 							disableCustomColors: true
 						}
 					] }
-				/>
+				/> */}
 
 				<__experimentalPanelColorGradientSettings
 					title={ 'Button Color' }
@@ -154,17 +162,10 @@ registerBlockType('crown-blocks/button', {
 						colorValue: color,
 						gradientValue: gradient,
 						label: 'Button Color',
-						disableCustomColors: true,
-						disableCustomGradients: true,
+						disableCustomColors: false,
+						disableCustomGradients: false,
 						onColorChange: (value) => {
-							let colors = CrownBlocks.getThemeColorPalette();
-							let colorSlug = '';
-							if(colors) {
-								let colorObject = getColorObjectByColorValue(colors, value);
-								console.log(colorObject);
-								if(colorObject) colorSlug = colorObject.slug;
-							}
-							setAttributes({ color: value, colorSlug: colorSlug });
+							setAttributes({ color: value });
 						},
 						onGradientChange: (value) => {
 							console.log(value);
@@ -312,7 +313,7 @@ registerBlockType('crown-blocks/button', {
 
 				<div className={ blockClasses.join(' ') } key="button">
 					
-					<span className={ buttonClasses.join(' ') }>
+					<span className={ buttonClasses.join(' ') } style={ buttonStyles }>
 
 						<RichText
 							tagName="div"
@@ -362,14 +363,22 @@ registerBlockType('crown-blocks/button', {
 		blockClasses.push('button-type-' + type + '-container');
 
 		let buttonClasses = [ 'btn' ];
+		let buttonStyles = {};
 
 		if(type == 'outline') {
-			buttonClasses.push('btn-outline-' + colorSlug);
+			buttonClasses.push('btn-outline-primary');
+			buttonStyles.color = color;
+			buttonStyles.borderColor = color;
+			buttonStyles.backgroundColor = 'transparent';
 		} else if(type == 'link') {
 			buttonClasses.push('btn-link');
-			buttonClasses.push('btn-link-' + colorSlug);
+			buttonStyles.color = color;
+			buttonStyles.borderColor = color;
 		} else {
 			buttonClasses.push('btn-' + colorSlug);
+			buttonStyles.backgroundColor = color;
+			buttonStyles.borderColor = color;
+			buttonStyles.color = CrownBlocks.isDarkColor(color) ? '#ffffff' : '#000000';
 		}
 
 		buttonClasses.push('btn-' + size);
@@ -442,12 +451,159 @@ registerBlockType('crown-blocks/button', {
 
 		return (
 			<p className={ blockClasses.join(' ') }>
-				<a href={ linkUrl } className={ buttonClasses.join(' ') } target={ openNewWindow && '_blank' } rel={ openNewWindow && 'noopener noreferrer' }>
+				<a href={ linkUrl } className={ buttonClasses.join(' ') } target={ openNewWindow && '_blank' } rel={ openNewWindow && 'noopener noreferrer' } style={ buttonStyles }>
 					<span class="btn-label">{ label }</span>
 				</a>
 			</p>
 		);
-	}
+	},
+
+
+	deprecated: [
+
+		{
+			attributes: {
+				label: { type: 'string', default: 'Learn More', selector: '.btn-label', source: 'html' },
+				linkUrl: { type: 'string', default: '' },
+				linkPost: { type: 'object' },
+				alignment: { type: 'string', default: 'none' },
+				type: { type: 'string', default: 'default' },
+				color: { type: 'string', default: '#D11141' },
+				colorSlug: { type: 'string', default: 'red' },
+				gradient: { type: 'string' },
+				size: { type: 'string', default: 'md' },
+				displayWithArrowIcon: { type: 'boolean', default: false },
+				displayAsBlock: { type: 'boolean', default: false },
+				disabledDisplayAsBlockBreakpoint: { type: 'string', default: 'none' },
+				openNewWindow: { type: 'boolean', default: false },
+				openModal: { type: 'boolean', default: false },
+				linkModalType: { type: 'string', default: '' },
+				linkModalFormId: { type: 'string', default: '' },
+				linkModalVideoEmbed: { type: 'string', default: '' },
+				linkModalMeetingId: { type: 'string', default: '' },
+				openEventRegistration: { type: 'boolean', default: false },
+				meetingType: { type: 'string', default: 'meetings' },
+				meetingId: { type: 'string', default: '' }
+			},
+			save: ({ attributes, className }) => {
+
+				const {
+					label,
+					linkUrl,
+					linkPost,
+					alignment,
+					type,
+					color,
+					colorSlug,
+					size,
+					displayWithArrowIcon,
+					displayAsBlock,
+					disabledDisplayAsBlockBreakpoint,
+					openNewWindow,
+					openModal,
+					linkModalType,
+					linkModalFormId,
+					linkModalVideoEmbed,
+					linkModalMeetingId,
+					openEventRegistration,
+					meetingId,
+					meetingType
+				} = attributes;
+		
+				let blockClasses = [ className ];
+				if(typeof alignment != 'undefined') blockClasses.push('text-alignment-' + alignment);
+				blockClasses.push('button-type-' + type + '-container');
+		
+				let buttonClasses = [ 'btn' ];
+		
+				if(type == 'outline') {
+					buttonClasses.push('btn-outline-' + colorSlug);
+				} else if(type == 'link') {
+					buttonClasses.push('btn-link');
+					buttonClasses.push('btn-link-' + colorSlug);
+				} else {
+					buttonClasses.push('btn-' + colorSlug);
+				}
+		
+				buttonClasses.push('btn-' + size);
+		
+				if(displayWithArrowIcon) buttonClasses.push('btn-has-arrow-icon');
+		
+				if(displayAsBlock) {
+					if(disabledDisplayAsBlockBreakpoint == 'none') {
+						blockClasses.push('btn-block-container');
+						buttonClasses.push('btn-block');
+					} else {
+						blockClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint + '-container');
+						buttonClasses.push('btn-block-to-' + disabledDisplayAsBlockBreakpoint);
+					}
+				}
+		
+				if(openModal) {
+		
+					if(linkModalType == 'subscribe') {
+						return (
+							<p className={ blockClasses.join(' ') }>
+								<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target="#subscribe-modal">
+									<span class="btn-label">{ label }</span>
+								</button>
+							</p>
+						);
+					}
+		
+					if(linkModalType == 'form' && linkModalFormId != '') {
+						return (
+							<p className={ blockClasses.join(' ') }>
+								<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target={ '#form-' + parseInt(linkModalFormId) + '-modal' }>
+									<span class="btn-label">{ label }</span>
+								</button>
+							</p>
+						);
+					}
+		
+					if(linkModalType == 'video' && linkModalVideoEmbed != '') {
+						return (
+							<p className={ blockClasses.join(' ') }>
+								<a href={ linkModalVideoEmbed } className={ buttonClasses.join(' ') } target="_blank" rel="noopener noreferrer" data-toggle="modal" data-target={ '#video-modal' }>
+									<span class="btn-label">{ label }</span>
+								</a>
+							</p>
+						);
+					}
+		
+					if(linkModalType == 'zoom_meeting_registration' && linkModalMeetingId != '') {
+						return (
+							<p className={ blockClasses.join(' ') }>
+								<button className={ buttonClasses.join(' ') } data-toggle="modal" data-target={ '#form-event-registration-zoom-meeting-' + parseInt(linkModalMeetingId) + '-modal' }>
+									<span class="btn-label">{ label }</span>
+								</button>
+							</p>
+						);
+					}
+		
+				} else if(openEventRegistration) {
+		
+					return (
+						<p className={ blockClasses.join(' ') }>
+							<button className={ buttonClasses.join(' ') } data-toggle="collapse" data-target={ '#form-event-registration-zoom-meeting-' + parseInt(meetingId) }>
+								<span class="btn-label">{ label }</span>
+							</button>
+						</p>
+					);
+		
+				}
+		
+				return (
+					<p className={ blockClasses.join(' ') }>
+						<a href={ linkUrl } className={ buttonClasses.join(' ') } target={ openNewWindow && '_blank' } rel={ openNewWindow && 'noopener noreferrer' }>
+							<span class="btn-label">{ label }</span>
+						</a>
+					</p>
+				);
+			}
+		}
+
+	]
 
 
 } );

@@ -19683,7 +19683,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #032040;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19729,7 +19729,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #0381C3;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19775,7 +19775,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #84C318;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19821,7 +19821,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #17a2b8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19867,7 +19867,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FEC403;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19913,7 +19913,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D11141;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -19959,7 +19959,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FFFFFF;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20005,7 +20005,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #343a40;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20051,7 +20051,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #032040;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20097,7 +20097,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #012D61;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20143,7 +20143,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #0381C3;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20191,7 +20191,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #98DBF9;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20237,7 +20237,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D0E4F8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20283,7 +20283,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #F4F8FD;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20329,7 +20329,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D11141;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20376,7 +20376,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #84C318;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20422,7 +20422,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #696D7D;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20468,7 +20468,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #6A8EAE;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20514,7 +20514,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #343a40;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20560,7 +20560,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #CFD2D8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20606,7 +20606,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #E0E0E0;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20652,7 +20652,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FFFFFF;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20698,7 +20698,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D50679;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20744,7 +20744,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FEC403;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20790,7 +20790,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #a58a57;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20836,7 +20836,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #032036;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20882,7 +20882,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #393e65;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20928,7 +20928,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #a7d0ed;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -20974,7 +20974,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #baae95;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -21020,7 +21020,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #f5f9ff;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -21066,7 +21066,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #f0f0f0;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;

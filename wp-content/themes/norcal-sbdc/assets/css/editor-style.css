@@ -16393,6 +16393,10 @@ h2, .h2 {
     h2 a:hover, .h2 a:hover {
       text-decoration: underline;
       color: rgba(3, 129, 195, 0.8); }
+    .text-color-light h2 a, .text-color-light .h2 a {
+      color: inherit; }
+      .text-color-light h2 a:hover, .text-color-light .h2 a:hover {
+        color: inherit; }
 
 .has-blue-color {
   color: #0381C3 !important; }
@@ -17846,7 +17850,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #032040;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -17892,7 +17896,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #0381C3;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -17938,7 +17942,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #84C318;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -17984,7 +17988,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #17a2b8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18030,7 +18034,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #ffc107;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18076,7 +18080,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D11141;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18122,7 +18126,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FFFFFF;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18168,7 +18172,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #343a40;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18214,7 +18218,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #032040;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18260,7 +18264,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #012D61;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18306,7 +18310,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #0381C3;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18352,7 +18356,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #98DBF9;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18398,7 +18402,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D0E4F8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18444,7 +18448,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #F4F8FD;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18490,7 +18494,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #D11141;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18536,7 +18540,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #84C318;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18582,7 +18586,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #696D7D;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18628,7 +18632,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #6A8EAE;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18674,7 +18678,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #343a40;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18720,7 +18724,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #CFD2D8;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18766,7 +18770,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #E0E0E0;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -18812,7 +18816,7 @@ form.feed-filters {
       content: "";
       position: absolute;
       margin: 0;
-      color: #FFFFFF;
+      color: inherit;
       top: 50%;
       font-size: 1.666666667em;
       margin-top: -0.5em;
@@ -22277,9 +22281,13 @@ nav.pagination {
     overflow: hidden; }
     .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider {
       position: relative;
-      margin: 0; }
+      margin: 0;
+      display: block; }
       .wp-block-crown-blocks-featured-post-slider .post-feed > .slick-slider .slick-list {
-        margin: 0 -1rem; }
+        margin: 0 -1rem;
+        -webkit-box-flex: 1;
+            -ms-flex: 1 0 auto;
+                flex: 1 0 auto; }
   .wp-block-crown-blocks-featured-post-slider .post-feed-nav {
     position: relative;
     z-index: 1; }
