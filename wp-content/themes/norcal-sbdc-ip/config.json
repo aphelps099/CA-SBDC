@@ -22,6 +22,7 @@
 		{ "name": "Header: Primary Navigation", "slug": "header_primary" },
 		{ "name": "Header: CTA Links", "slug": "header_cta_links" },
 		{ "name": "Mobile Menu: Primary Navigation", "slug": "mobile_menu_primary" },
+		{ "name": "Mobile Menu: CTA Links", "slug": "mobile_cta_links" },
 		{ "name": "Footer: Primary Navigation", "slug": "footer_primary" },
 		{ "name": "Footer: CTA Links", "slug": "footer_cta_links" },
 		{ "name": "Footer: Legal Links", "slug": "footer_legal_links" }
