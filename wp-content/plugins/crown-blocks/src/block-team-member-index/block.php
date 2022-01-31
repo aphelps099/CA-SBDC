@@ -130,7 +130,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 
 				$filters->category->options = array_map( function( $n ) use ( $filters ) {
 					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->category->queried ) );
-				}, get_terms( array( 'taxonomy' => 'team_member_category' ) ) );
+				}, get_terms( array( 'taxonomy' => 'team_member_category', 'parent' => 0 ) ) );
 				if ( ! empty( $filters->category->options ) && ! is_main_site() ) {
 					$filters->category->options[] = (object) array( 'value' => -1, 'label' => 'All', 'selected' => in_array( -1, $filters->category->queried ) );
 				}
