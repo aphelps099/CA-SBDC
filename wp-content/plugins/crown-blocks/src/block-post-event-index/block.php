@@ -51,7 +51,7 @@ if(!class_exists('Crown_Block_Post_Event_Index')) {
 				$event_args = array(
 					'from' => date( 'Y-m-d H:i:s' ),
 					'tax_query' => $query_args['tax_query'],
-					'include_syndicated' => true
+					'include_syndicated' => false
 				);
 				$query_args = Crown_Events::get_event_query_args( $event_args );
 				$query_args = array_merge( $query_args, array(
