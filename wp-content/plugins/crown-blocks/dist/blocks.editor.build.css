@@ -5334,6 +5334,13 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/post-event-index"] .wp-block-crown-blocks-post-event-index form.feed-filters,
+.wp-block[data-type="crown-blocks/post-event-index"] .wp-block-crown-blocks-post-event-index a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/resource-header"] {
   margin-bottom: 4rem; }
   .wp-block[data-type="crown-blocks/resource-header"] .wp-block-crown-blocks-resource-header {

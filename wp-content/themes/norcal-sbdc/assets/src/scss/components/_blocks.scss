@@ -4344,3 +4344,42 @@
 		}
 	}
 }
+
+
+/*	Post Event Index
+---------------------------------------------------------*/
+
+.wp-block-crown-blocks-post-event-index {
+	.post-feed {
+		> .inner {
+			> article {
+				> a {
+					&:hover {
+						> .inner {
+							background-color: mix(#a7d0ed, #fff, 50%);
+						}
+						.entry-link::before {
+							right: -.5rem;
+						}
+					}
+					> .inner {
+						background-color: mix(#dceaff, #fff, 50%);
+					}
+				}
+				.entry-link {
+					position: relative;
+					height: 1.5rem;
+					&::before {
+						@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+						position: absolute;
+						display: block;
+						font-size: 1.5rem;
+						right: 0rem;
+						bottom: 0;
+						transition: right .2s ease-out, opacity .2s;
+					}
+				}
+			}
+		}
+	}
+}

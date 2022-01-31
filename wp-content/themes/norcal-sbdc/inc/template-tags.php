@@ -459,7 +459,7 @@ if ( ! function_exists( 'ct_event_teaser' ) ) {
 
 
 if ( ! function_exists( 'ct_event_date' ) ) {
-	function ct_event_date( $post_id ) {
+	function ct_event_date( $post_id, $include_year = false ) {
 
 		$post = get_post( $post_id );
 		if ( ! $post || ! in_array( $post->post_type, array( 'event' ) ) ) return;
@@ -473,6 +473,9 @@ if ( ! function_exists( 'ct_event_date' ) ) {
 				<div class="inner">
 					<span class="month"><?php echo date( 'M', $event_start_timestamp ); ?></span>
 					<span class="date"><?php echo date( 'j', $event_start_timestamp ); ?></span>
+					<?php if ( $include_year ) { ?>
+						<span class="year"><?php echo date( 'Y', $event_start_timestamp ); ?></span>
+					<?php } ?>
 					<span class="time"><?php echo date( 'g:i a', $event_start_timestamp ); ?><?php if ( $event_end_timestamp !== false) { ?> &mdash; <?php echo date( 'g:i a', $event_end_timestamp ); ?></span><?php } ?>
 				</div>
 			</div>

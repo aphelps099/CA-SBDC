@@ -25829,6 +25829,38 @@ nav.pagination {
   .text-color-dark .wp-block-crown-blocks-featured-events.configuration-slider .post-feed > .inner article.event:after {
     background-color: #032040; }
 
+/*	Post Event Index
+---------------------------------------------------------*/
+.wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a:hover > .inner {
+  background-color: #d3e8f6; }
+
+.wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a:hover .entry-link::before {
+  right: -.5rem; }
+
+.wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a > .inner {
+  background-color: #eef5ff; }
+
+.wp-block-crown-blocks-post-event-index .post-feed > .inner > article .entry-link {
+  position: relative;
+  height: 1.5rem; }
+  .wp-block-crown-blocks-post-event-index .post-feed > .inner > article .entry-link::before {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    font-family: icomoon;
+    content: "";
+    position: absolute;
+    display: block;
+    font-size: 1.5rem;
+    right: 0rem;
+    bottom: 0;
+    -webkit-transition: right .2s ease-out, opacity .2s;
+    transition: right .2s ease-out, opacity .2s; }
+
 #header {
   background-color: transparent;
   position: sticky;

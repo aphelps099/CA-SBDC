@@ -41,6 +41,9 @@ if(!class_exists('Crown_Block_Event_Header')) {
 
 			$index_title = apply_filters( 'crown_block_event_header_index_title', '<span>' . __( 'SBDC', 'crown_blocks' ) . '</span><span>' . __( 'Events', 'crown_blocks' ) . '</span>', $post_id );
 
+			$theme = wp_get_theme();
+			$theme = $theme && $theme->exists() ? trim($theme->get_stylesheet()) : null;
+
 			ob_start();
 			// print_r($atts);
 			?>
@@ -55,68 +58,92 @@ if(!class_exists('Crown_Block_Event_Header')) {
 						<div class="header-contents">
 							<div class="inner">
 
-								<div class="index-header">
+								<?php if ( $theme == 'norcal-sbdc-ip' ) { ?>
 
-									<h2 class="index-title"><?php echo $index_title; ?></h2>
-								
-									<?php if ( ! empty( $index_page_url ) ) { ?>
-										<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Events', 'crown_blocks' ); ?></a>
-									<?php } ?>
+									<div class="title-container">
 
-								</div>
+										<div class="entry-labels">
+											<span class="type">Event</span>
+										</div>
 
-								<div class="article-header wp-block-crown-blocks-container bg-flush-right">
-									<div class="container-bg"></div>
-									<div class="inner">
-										<div class="container-contents">
-											<div class="inner">
-												
-												<?php if ( ! is_main_site() ) { ?>
-													<p class="entry-centers"><span class="center"><?php echo get_bloginfo( 'name' ); ?></span></p>
-												<?php } else { ?>
-													<?php $centers = get_the_terms( $post_id, 'post_center' ); ?>
-													<?php if ( ! empty( $centers ) ) { ?>
-														<p class="entry-centers">
-															<?php foreach ( $centers as $term ) { ?>
-																<?php if ( ! empty( $index_page_url ) ) { ?>
-																	<a class="center" href="<?php echo add_query_arg( 'e_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
-																<?php } else { ?>
-																	<span class="center"><?php echo $term->name; ?></span>
-																<?php } ?>
-															<?php } ?>
-														</p>
-													<?php } ?>
-												<?php } ?>
+										<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
 
-												<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( $post_id ); ?>
+									</div>
 
-												<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
-												
-												<div class="header-meta">
-													<div class="inner">
+									<div class="date-container">
 
-														<?php $topics = get_the_terms( $post_id, 'post_topic' ); ?>
-														<?php if ( ! empty( $topics ) ) { ?>
-															<p class="entry-topics">
-																<?php foreach ( $topics as $term ) { ?>
+										<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( $post_id ); ?>
+
+									</div>
+
+									<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+								<?php } else { ?>
+
+									<div class="index-header">
+
+										<h2 class="index-title"><?php echo $index_title; ?></h2>
+									
+										<?php if ( ! empty( $index_page_url ) ) { ?>
+											<a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'All Events', 'crown_blocks' ); ?></a>
+										<?php } ?>
+
+									</div>
+
+									<div class="article-header wp-block-crown-blocks-container bg-flush-right">
+										<div class="container-bg"></div>
+										<div class="inner">
+											<div class="container-contents">
+												<div class="inner">
+													
+													<?php if ( ! is_main_site() ) { ?>
+														<p class="entry-centers"><span class="center"><?php echo get_bloginfo( 'name' ); ?></span></p>
+													<?php } else { ?>
+														<?php $centers = get_the_terms( $post_id, 'post_center' ); ?>
+														<?php if ( ! empty( $centers ) ) { ?>
+															<p class="entry-centers">
+																<?php foreach ( $centers as $term ) { ?>
 																	<?php if ( ! empty( $index_page_url ) ) { ?>
-																		<a class="topic" href="<?php echo add_query_arg( 'e_topic', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+																		<a class="center" href="<?php echo add_query_arg( 'e_center', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
 																	<?php } else { ?>
-																		<span class="topic"><?php echo $term->name; ?></span>
+																		<span class="center"><?php echo $term->name; ?></span>
 																	<?php } ?>
 																<?php } ?>
 															</p>
 														<?php } ?>
-	
-														<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+													<?php } ?>
 
+													<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( $post_id ); ?>
+
+													<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
+													
+													<div class="header-meta">
+														<div class="inner">
+
+															<?php $topics = get_the_terms( $post_id, 'post_topic' ); ?>
+															<?php if ( ! empty( $topics ) ) { ?>
+																<p class="entry-topics">
+																	<?php foreach ( $topics as $term ) { ?>
+																		<?php if ( ! empty( $index_page_url ) ) { ?>
+																			<a class="topic" href="<?php echo add_query_arg( 'e_topic', $term->term_id, $index_page_url ); ?>"><?php echo $term->name; ?></a>
+																		<?php } else { ?>
+																			<span class="topic"><?php echo $term->name; ?></span>
+																		<?php } ?>
+																	<?php } ?>
+																</p>
+															<?php } ?>
+		
+															<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+														</div>
 													</div>
-												</div>
 
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
+
+								<?php } ?>
 								
 							</div>
 						</div>

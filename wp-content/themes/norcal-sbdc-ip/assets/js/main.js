@@ -5,6 +5,7 @@
 
 	$(document).ready(function() {
 
+		$.wpchildtheme.initHeader();
 		$.wpchildtheme.initContentSliderBlocks();
 		$.wpchildtheme.initFeaturedPostSliderBlocks();
 
@@ -12,6 +13,15 @@
 
 
 	$.wpchildtheme = (function(wpchildtheme) {
+
+
+		wpchildtheme.initHeader = function() {
+
+			var header = $('#header');
+			var first_section = $('#main-content').children().first();
+			if(first_section.is('.wp-block-crown-blocks-event-header')) header.removeClass('text-color-light');
+
+		};
 
 
 		wpchildtheme.initContentSliderBlocks = function() {
