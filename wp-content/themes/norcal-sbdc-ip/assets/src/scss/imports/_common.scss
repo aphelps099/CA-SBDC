@@ -1043,94 +1043,95 @@ blockquote,
 }
 
 
-.wp-block-crown-blocks-post-header {
-	margin-bottom: 12rem;
-	@include media-breakpoint-up(md) {
-		margin-bottom: 8rem;
-	}
-	@include media-breakpoint-up(lg) {
-		margin-bottom: 10rem;
-	}
-	> .inner {
-		> .header-contents {
-			margin-bottom: -12rem;
-			@include media-breakpoint-up(md) {
-				margin-bottom: -8rem;
-			}
-			@include media-breakpoint-up(lg) {
-				margin-bottom: -10rem;
-			}
-		}
-	}
-	.entry-categories {
-		background-color: $dark-blue;
-		padding: 1rem;
-		padding-bottom: 0;
-		margin-bottom: 0;
-		@include media-breakpoint-up(lg) {
-			padding: 2rem;
-			padding-bottom: 0;
-		}
-		@include media-breakpoint-up(xl) {
-			margin-left: -2rem;
-			margin-right: -2rem;
-		}
-		.category {
-			border-radius: 0;
-			border-color: #fff;
-			color: #fff;
-			&:hover {
-				background-color: transparent;
-				border-color: #fff;
-			}
-		}
-	}
-	.entry-title {
-		background-color: $dark-blue;
-		padding: 1rem;
-		padding-top: .5rem;
-		color: $white;
-		@include media-breakpoint-up(lg) {
-			padding: 2rem;
-			padding-top: 1rem;
-		}
-		@include media-breakpoint-up(xl) {
-			margin-left: -2rem;
-			margin-right: -2rem;
-		}
-	}
-	.header-meta {
-		border-top: none;
-		padding-top: 0;
-		.entry-date {
-			font-size: 1.25rem;
-			color: $dark;
-		}
-		.social-sharing-links {
-			margin-right: 0;
-			color: $dark;
-			h4 {
-				font-size: 1rem;
-				text-transform: uppercase;
-				letter-spacing: .1em;
-				font-weight: 700;
-			}
-			.menu-item {
-				a {
-					border-color: $dark;
-					.icon svg {
-						fill: $dark;
-					}
-				}
-			}
-		}
-		.subscribe-button {
-			display: none;
-		}
-	}
-}
+// .wp-block-crown-blocks-post-header {
+// 	margin-bottom: 12rem;
+// 	@include media-breakpoint-up(md) {
+// 		margin-bottom: 8rem;
+// 	}
+// 	@include media-breakpoint-up(lg) {
+// 		margin-bottom: 10rem;
+// 	}
+// 	> .inner {
+// 		> .header-contents {
+// 			margin-bottom: -12rem;
+// 			@include media-breakpoint-up(md) {
+// 				margin-bottom: -8rem;
+// 			}
+// 			@include media-breakpoint-up(lg) {
+// 				margin-bottom: -10rem;
+// 			}
+// 		}
+// 	}
+// 	.entry-categories {
+// 		background-color: $dark-blue;
+// 		padding: 1rem;
+// 		padding-bottom: 0;
+// 		margin-bottom: 0;
+// 		@include media-breakpoint-up(lg) {
+// 			padding: 2rem;
+// 			padding-bottom: 0;
+// 		}
+// 		@include media-breakpoint-up(xl) {
+// 			margin-left: -2rem;
+// 			margin-right: -2rem;
+// 		}
+// 		.category {
+// 			border-radius: 0;
+// 			border-color: #fff;
+// 			color: #fff;
+// 			&:hover {
+// 				background-color: transparent;
+// 				border-color: #fff;
+// 			}
+// 		}
+// 	}
+// 	.entry-title {
+// 		background-color: $dark-blue;
+// 		padding: 1rem;
+// 		padding-top: .5rem;
+// 		color: $white;
+// 		@include media-breakpoint-up(lg) {
+// 			padding: 2rem;
+// 			padding-top: 1rem;
+// 		}
+// 		@include media-breakpoint-up(xl) {
+// 			margin-left: -2rem;
+// 			margin-right: -2rem;
+// 		}
+// 	}
+// 	.header-meta {
+// 		border-top: none;
+// 		padding-top: 0;
+// 		.entry-date {
+// 			font-size: 1.25rem;
+// 			color: $dark;
+// 		}
+// 		.social-sharing-links {
+// 			margin-right: 0;
+// 			color: $dark;
+// 			h4 {
+// 				font-size: 1rem;
+// 				text-transform: uppercase;
+// 				letter-spacing: .1em;
+// 				font-weight: 700;
+// 			}
+// 			.menu-item {
+// 				a {
+// 					border-color: $dark;
+// 					.icon svg {
+// 						fill: $dark;
+// 					}
+// 				}
+// 			}
+// 		}
+// 		.subscribe-button {
+// 			display: none;
+// 		}
+// 	}
+// }
 
 
+.wp-block-crown-blocks-post-header,
 .wp-block-crown-blocks-event-header {
 	color: #fff;
 	> .header-bg {
@@ -1221,6 +1222,18 @@ blockquote,
 					margin-bottom: 0;
 					flex: 1 1 auto;
 				}
+				h4 {
+					line-height: 1.2;
+					font-size: 0.75rem;
+					font-weight: 700;
+					margin-bottom: 0.5rem;
+					text-transform: uppercase;
+					letter-spacing: .05em;
+					@include media-breakpoint-up(md) {
+						margin-bottom: 0;
+						margin-right: 1rem;
+					}
+				}
 			}
 			.additional-links {
 				margin-top: 1rem;
@@ -1257,6 +1270,26 @@ blockquote,
 						content: '+ ';
 					}
 				}
+			}
+		}
+	}
+}
+.wp-block-crown-blocks-post-header {
+	> .inner {
+		> .header-contents {
+			padding-bottom: 2rem;
+			> .inner {
+				max-width: 1260px;
+			}
+			.entry-title {
+				margin-bottom: 2rem;
+			}
+			.entry-date {
+				font-size: 1.25rem;
+				margin-right: 0;
+			}
+			.header-footer {
+				padding-bottom: 0;
 			}
 		}
 	}

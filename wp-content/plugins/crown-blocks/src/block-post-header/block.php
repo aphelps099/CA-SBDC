@@ -66,6 +66,9 @@ if(!class_exists('Crown_Block_Post_Header')) {
 				$block_class[] = 'has-bg-image';
 			}
 
+			$theme = wp_get_theme();
+			$theme = $theme && $theme->exists() ? trim($theme->get_stylesheet()) : null;
+
 			ob_start();
 			?>
 
@@ -87,31 +90,68 @@ if(!class_exists('Crown_Block_Post_Header')) {
 						<div class="header-contents">
 							<div class="inner">
 
-								<?php $categories = get_the_terms( $post_id, 'category' ); ?>
-								<?php if ( ! empty( $categories ) ) { ?>
-									<p class="entry-categories">
-										<?php foreach ( $categories as $term ) { ?>
-											<a class="category" href="<?php echo get_home_url(); ?>/news/?p_category=<?php echo $term->term_id; ?>"><?php echo $term->name; ?></a>
-										<?php } ?>
-									</p>
-								<?php } ?>
-								
-								<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
+								<?php if ( $theme == 'norcal-sbdc-ip' ) { ?>
 
-								<div class="header-meta">
+									<div class="title-container">
 
-									<?php $relative_time = self::get_relative_time( get_the_time( 'Y-m-d H:i:s', $post_id ) ); ?>
-									<?php if ( $relative_time && ! in_array( $relative_time->units, array( 'years', 'months' ) ) ) { ?>
-										<p class="entry-date"><?php echo abs( $relative_time->value ) . ' ' . $relative_time->units . ( $relative_time->value <= 0 ? ' ago' : '' ); ?></p>
-									<?php } else { ?>
-										<p class="entry-date"><?php echo get_the_time( 'j F, Y', $post_id ); ?></p>
+										<div class="entry-labels">
+											<span class="type">News</span>
+										</div>
+										
+										<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
+										
+									</div>
+
+									<div class="header-footer">
+										<div class="inner">
+
+											<?php $relative_time = self::get_relative_time( get_the_time( 'Y-m-d H:i:s', $post_id ) ); ?>
+											<?php if ( $relative_time && ! in_array( $relative_time->units, array( 'years', 'months' ) ) ) { ?>
+												<p class="entry-date"><?php echo abs( $relative_time->value ) . ' ' . $relative_time->units . ( $relative_time->value <= 0 ? ' ago' : '' ); ?></p>
+											<?php } else { ?>
+												<p class="entry-date"><?php echo get_the_time( 'j F, Y', $post_id ); ?></p>
+											<?php } ?>
+
+											<div class="additional-links">
+
+												<div class="link"><?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?></div>
+
+												<div class="link"><button type="button" class="btn btn-outline-dark-blue subscribe-button" data-toggle="modal" data-target="#subscribe-modal"><?php _e( 'Subscribe', 'crown_blocks' ); ?></a></div>
+
+											</div>
+
+										</div>
+									</div>
+
+								<?php } else { ?>
+
+									<?php $categories = get_the_terms( $post_id, 'category' ); ?>
+									<?php if ( ! empty( $categories ) ) { ?>
+										<p class="entry-categories">
+											<?php foreach ( $categories as $term ) { ?>
+												<a class="category" href="<?php echo get_home_url(); ?>/news/?p_category=<?php echo $term->term_id; ?>"><?php echo $term->name; ?></a>
+											<?php } ?>
+										</p>
 									<?php } ?>
+									
+									<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
 
-									<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+									<div class="header-meta">
 
-									<button type="button" class="btn btn-outline-dark-blue subscribe-button" data-toggle="modal" data-target="#subscribe-modal"><?php _e( 'Subscribe', 'crown_blocks' ); ?></a>
+										<?php $relative_time = self::get_relative_time( get_the_time( 'Y-m-d H:i:s', $post_id ) ); ?>
+										<?php if ( $relative_time && ! in_array( $relative_time->units, array( 'years', 'months' ) ) ) { ?>
+											<p class="entry-date"><?php echo abs( $relative_time->value ) . ' ' . $relative_time->units . ( $relative_time->value <= 0 ? ' ago' : '' ); ?></p>
+										<?php } else { ?>
+											<p class="entry-date"><?php echo get_the_time( 'j F, Y', $post_id ); ?></p>
+										<?php } ?>
 
-								</div>
+										<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+										<button type="button" class="btn btn-outline-dark-blue subscribe-button" data-toggle="modal" data-target="#subscribe-modal"><?php _e( 'Subscribe', 'crown_blocks' ); ?></a>
+
+									</div>
+
+								<?php } ?>
 
 							</div>
 						</div>
