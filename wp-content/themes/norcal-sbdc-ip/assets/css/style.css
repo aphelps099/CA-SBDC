@@ -32500,9 +32500,12 @@ blockquote,
     .wp-block-crown-blocks-event-header > .inner > .header-contents .social-sharing-links .menu-item .icon svg {
       fill: #343a40; }
 
-#header {
-  padding-top: 10px; }
-  #header::before {
+#page,
+#mobile-menu > .scrollable {
+  padding-top: 10px;
+  position: relative; }
+  #page::before,
+  #mobile-menu > .scrollable::before {
     content: '';
     display: block;
     position: absolute;
@@ -32621,89 +32624,6 @@ blockquote,
 
 #mobile-menu-toggle .label {
   font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
-
-#main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-#main-content > .wp-block-crown-blocks-container.alignfull:first-child,
-#main-content > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-#main-content > .wp-block-crown-blocks-promo.alignfull:first-child,
-#main-content > .wp-block-crown-blocks-post-header:first-child,
-#main-content > .wp-block-crown-blocks-resource-header:first-child,
-#main-content > .wp-block-crown-blocks-event-header:first-child,
-#main-content > .wp-block-crown-blocks-client-story-header:first-child,
-#main-content > .wp-block-crown-blocks-webinar-header:first-child,
-#main .container > .inner > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-#main .container > .inner > .wp-block-crown-blocks-container.alignfull:first-child,
-#main .container > .inner > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-#main .container > .inner > .wp-block-crown-blocks-promo.alignfull:first-child,
-#main .container > .inner > .wp-block-crown-blocks-post-header:first-child,
-#main .container > .inner > .wp-block-crown-blocks-resource-header:first-child,
-#main .container > .inner > .wp-block-crown-blocks-event-header:first-child,
-#main .container > .inner > .wp-block-crown-blocks-client-story-header:first-child,
-#main .container > .inner > .wp-block-crown-blocks-webinar-header:first-child {
-  margin-top: -118px;
-  padding-top: 78px; }
-  @media (min-width: 768px) {
-    #main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-post-header:first-child,
-    #main-content > .wp-block-crown-blocks-resource-header:first-child,
-    #main-content > .wp-block-crown-blocks-event-header:first-child,
-    #main-content > .wp-block-crown-blocks-client-story-header:first-child,
-    #main-content > .wp-block-crown-blocks-webinar-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-post-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-resource-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-event-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-client-story-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-webinar-header:first-child {
-      margin-top: -150px;
-      padding-top: 90px; } }
-  @media (min-width: 992px) {
-    #main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-post-header:first-child,
-    #main-content > .wp-block-crown-blocks-resource-header:first-child,
-    #main-content > .wp-block-crown-blocks-event-header:first-child,
-    #main-content > .wp-block-crown-blocks-client-story-header:first-child,
-    #main-content > .wp-block-crown-blocks-webinar-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-post-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-resource-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-event-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-client-story-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-webinar-header:first-child {
-      margin-top: -220px;
-      padding-top: 140px; } }
-  @media (min-width: 1200px) {
-    #main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main-content > .wp-block-crown-blocks-post-header:first-child,
-    #main-content > .wp-block-crown-blocks-resource-header:first-child,
-    #main-content > .wp-block-crown-blocks-event-header:first-child,
-    #main-content > .wp-block-crown-blocks-client-story-header:first-child,
-    #main-content > .wp-block-crown-blocks-webinar-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-promo.alignfull:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-post-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-resource-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-event-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-client-story-header:first-child,
-    #main .container > .inner > .wp-block-crown-blocks-webinar-header:first-child {
-      margin-top: -240px; } }
 
 #site-footer-header {
   background-color: #a58a57;

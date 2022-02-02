@@ -1,7 +1,9 @@
 
 
-#header {
+#page,
+#mobile-menu > .scrollable {
 	padding-top: 10px;
+	position: relative;
 	&::before {
 		content: '';
 		display: block;
@@ -14,6 +16,7 @@
 		background-image: linear-gradient(to right, $dark-blue, $dark-blue 13%, $gold 13%, $gold 42%, $bright-blue 42%, $bright-blue 56%, $blue 56%, $blue);
 	}
 }
+
 #header-primary-cta-links {
 	a {
 		@extend .btn-yellow;
@@ -190,21 +193,21 @@
 	> .wp-block-crown-blocks-event-header,
 	> .wp-block-crown-blocks-client-story-header,
 	> .wp-block-crown-blocks-webinar-header {
-		&:first-child {
-			margin-top: -40px - 68px - 10px;
-			padding-top: 68px + 10px;
-			@include media-breakpoint-up(md) {
-				margin-top: -60px - 80px - 10px;
-				padding-top: 80px + 10px;
-			}
-			@include media-breakpoint-up(lg) {
-				margin-top: -80px - 130px - 10px;
-				padding-top: 130px + 10px;
-			}
-			@include media-breakpoint-up(xl) {
-				margin-top: -100px - 130px - 10px;
-			}
-		}
+		// &:first-child {
+		// 	margin-top: -40px - 68px - 10px;
+		// 	padding-top: 68px + 10px;
+		// 	@include media-breakpoint-up(md) {
+		// 		margin-top: -60px - 80px - 10px;
+		// 		padding-top: 80px + 10px;
+		// 	}
+		// 	@include media-breakpoint-up(lg) {
+		// 		margin-top: -80px - 130px - 10px;
+		// 		padding-top: 130px + 10px;
+		// 	}
+		// 	@include media-breakpoint-up(xl) {
+		// 		margin-top: -100px - 130px - 10px;
+		// 	}
+		// }
 		// &:last-child {
 		// 	margin-bottom: -40px;
 		// 	padding-bottom: 0;
