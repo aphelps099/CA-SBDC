@@ -30,7 +30,7 @@
 					<div id="site-title">
 						<a href="<?php echo home_url( '/' ); ?>">
 							<div class="title"><?php echo get_bloginfo( 'name' ); ?></div>
-							<div class="tagline"><?php echo get_bloginfo( 'description' ); ?></div>
+							<!-- <div class="tagline"><?php echo get_bloginfo( 'description' ); ?></div> -->
 						</a>
 					</div>
 

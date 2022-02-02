@@ -32582,6 +32582,9 @@ blockquote,
 #header > .inner {
   position: relative; }
 
+#site-title .title {
+  margin-bottom: 0; }
+
 #header-primary-navigation {
   margin-top: 0;
   margin-bottom: 0;
@@ -32698,7 +32701,19 @@ blockquote,
   font-family: "proxima-nova", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }
 
 #mobile-menu-toggle .label {
-  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji; }
+  font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  display: none; }
+
+#mobile-menu-toggle .icon {
+  width: 1.5rem;
+  background-color: #a58a57; }
+  #header.is-sticky #mobile-menu-toggle .icon {
+    background-color: #a58a57; }
+  #mobile-menu-toggle .icon::before, #mobile-menu-toggle .icon::after {
+    width: 100%;
+    background-color: #a58a57; }
+    #header.is-sticky #mobile-menu-toggle .icon::before, #header.is-sticky #mobile-menu-toggle .icon::after {
+      background-color: #a58a57; }
 
 #site-footer-header {
   background-color: #a58a57;
