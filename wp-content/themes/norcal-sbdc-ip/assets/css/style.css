@@ -32717,7 +32717,11 @@ blockquote,
 
 #site-footer-header {
   background-color: #a58a57;
-  text-align: left; }
+  text-align: left;
+  font-size: 1rem; }
+  @media (min-width: 768px) {
+    #site-footer-header {
+      font-size: 1.525rem; } }
   @media (min-width: 1400px) {
     #site-footer-header {
       padding-left: 3rem;

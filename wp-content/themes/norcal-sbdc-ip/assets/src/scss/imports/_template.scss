@@ -292,6 +292,10 @@
 #site-footer-header {
 	background-color: $gold;
 	text-align: left;
+	font-size: 1rem;
+	@include media-breakpoint-up(md) {
+		font-size: 1.525rem;
+	}
 	@media (min-width: 1400px) {
 		padding-left: 3rem;
 		padding-right: 3remn;
