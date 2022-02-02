@@ -26109,11 +26109,15 @@ nav.pagination {
       top: -0.4375rem; }
     #mobile-menu-toggle .icon:after {
       bottom: -0.4375rem; }
-  #header.text-color-light #mobile-menu-toggle .label {
+  #header.text-color-light #mobile-menu-toggle .label,
+  body.header-dropdown-active #mobile-menu-toggle .label {
     color: #fff; }
-  #header.text-color-light #mobile-menu-toggle .icon {
+  #header.text-color-light #mobile-menu-toggle .icon,
+  body.header-dropdown-active #mobile-menu-toggle .icon {
     background-color: #FFFFFF; }
-    #header.text-color-light #mobile-menu-toggle .icon:before, #header.text-color-light #mobile-menu-toggle .icon:after {
+    #header.text-color-light #mobile-menu-toggle .icon:before, #header.text-color-light #mobile-menu-toggle .icon:after,
+    body.header-dropdown-active #mobile-menu-toggle .icon:before,
+    body.header-dropdown-active #mobile-menu-toggle .icon:after {
       background-color: #FFFFFF; }
   #header.is-sticky #mobile-menu-toggle .label {
     color: #032040; }
@@ -26121,6 +26125,12 @@ nav.pagination {
     background-color: #D11141; }
     #header.is-sticky #mobile-menu-toggle .icon:before, #header.is-sticky #mobile-menu-toggle .icon:after {
       background-color: #D11141; }
+  body.header-dropdown-active #header.is-sticky #mobile-menu-toggle .label {
+    color: #fff; }
+  body.header-dropdown-active #header.is-sticky #mobile-menu-toggle .icon {
+    background-color: #FFFFFF; }
+    body.header-dropdown-active #header.is-sticky #mobile-menu-toggle .icon:before, body.header-dropdown-active #header.is-sticky #mobile-menu-toggle .icon:after {
+      background-color: #FFFFFF; }
 
 /*	Branding
 ---------------------------------------------------------*/
@@ -26186,9 +26196,11 @@ nav.pagination {
     transition: opacity .2s; }
     #site-logo a img.light {
       opacity: 0; }
-    #header.text-color-light #site-logo a img.dark {
+    #header.text-color-light #site-logo a img.dark,
+    body.header-dropdown-active #site-logo a img.dark {
       opacity: 0; }
-    #header.text-color-light #site-logo a img.light {
+    #header.text-color-light #site-logo a img.light,
+    body.header-dropdown-active #site-logo a img.light {
       opacity: 1; }
     @media (min-width: 768px) {
       #site-logo a img {
@@ -26244,6 +26256,8 @@ nav.pagination {
     @media (min-width: 1200px) {
       #site-title .title {
         font-size: 1.625rem; } }
+    body.header-dropdown-active #site-title .title {
+      color: #fff; }
   #site-title .tagline {
     text-transform: uppercase;
     color: #68798c;
@@ -26256,6 +26270,8 @@ nav.pagination {
     @media (min-width: 1200px) {
       #site-title .tagline {
         font-size: 1.125rem; } }
+    body.header-dropdown-active #site-title .tagline {
+      color: #fff; }
 
 /*	Primary CTA Links
 ---------------------------------------------------------*/
@@ -26402,10 +26418,13 @@ nav.pagination {
       @media (min-width: 992px) {
         #header-primary-navigation-menu > .menu-item > a {
           padding: 0.5rem 1rem; } }
-      #header.text-color-light #header-primary-navigation-menu > .menu-item > a {
+      #header.text-color-light #header-primary-navigation-menu > .menu-item > a,
+      body.header-dropdown-active #header-primary-navigation-menu > .menu-item > a {
         color: #fff; }
       #header.is-sticky #header-primary-navigation-menu > .menu-item > a {
         color: #032040; }
+        body.header-dropdown-active #header.is-sticky #header-primary-navigation-menu > .menu-item > a {
+          color: #fff; }
       #header-primary-navigation-menu > .menu-item > a .label {
         padding: 0.3rem 0;
         position: relative;
@@ -26423,10 +26442,13 @@ nav.pagination {
           opacity: 0;
           -webkit-transition: opacity .15s, border-color .2s;
           transition: opacity .15s, border-color .2s; }
-          #header.text-color-light #header-primary-navigation-menu > .menu-item > a .label:after {
+          #header.text-color-light #header-primary-navigation-menu > .menu-item > a .label:after,
+          body.header-dropdown-active #header-primary-navigation-menu > .menu-item > a .label:after {
             border-color: #fff; }
           #header.is-sticky #header-primary-navigation-menu > .menu-item > a .label:after {
             border-color: #032040; }
+            body.header-dropdown-active #header.is-sticky #header-primary-navigation-menu > .menu-item > a .label:after {
+              border-color: #fff; }
           @media (min-width: 992px) {
             #header-primary-navigation-menu > .menu-item > a .label:after {
               border-top-width: 4px; } }
@@ -26758,15 +26780,21 @@ nav.pagination {
     transition: color .15s, opacity .15s;
     color: #032040;
     overflow: hidden; }
-    #header.text-color-light #header-search button.toggle {
+    #header.text-color-light #header-search button.toggle,
+    body.header-dropdown-active #header-search button.toggle {
       color: #fff; }
-      #header.text-color-light #header-search button.toggle:hover {
+      #header.text-color-light #header-search button.toggle:hover,
+      body.header-dropdown-active #header-search button.toggle:hover {
         opacity: .75; }
     #header.is-sticky #header-search button.toggle {
       color: #032040; }
       #header.is-sticky #header-search button.toggle:hover {
         opacity: 1;
         color: #0381C3; }
+      body.header-dropdown-active #header.is-sticky #header-search button.toggle {
+        color: #fff; }
+        body.header-dropdown-active #header.is-sticky #header-search button.toggle:hover {
+          opacity: .75; }
     #header-search button.toggle:hover {
       color: #0381C3; }
     #header-search button.toggle:after {
@@ -26829,10 +26857,13 @@ nav.pagination {
       margin-top: 0;
       -webkit-transition: color .15s;
       transition: color .15s; }
-      #header.text-color-light #header-search .search-form .icon {
+      #header.text-color-light #header-search .search-form .icon,
+      body.header-dropdown-active #header-search .search-form .icon {
         color: #fff; }
       #header.is-sticky #header-search .search-form .icon {
         color: #032040; }
+        body.header-dropdown-active #header.is-sticky #header-search .search-form .icon {
+          color: #fff; }
     #header-search .search-form input[type=search] {
       padding: .75rem 1.25rem;
       -webkit-box-shadow: none;
@@ -26843,12 +26874,16 @@ nav.pagination {
       padding-left: 2.5rem;
       -webkit-transition: border-color .15s, color .15s;
       transition: border-color .15s, color .15s; }
-      #header.text-color-light #header-search .search-form input[type=search] {
+      #header.text-color-light #header-search .search-form input[type=search],
+      body.header-dropdown-active #header-search .search-form input[type=search] {
         border-color: #fff;
         color: #fff; }
       #header.is-sticky #header-search .search-form input[type=search] {
         border-color: #032040;
         color: #032040; }
+        body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search] {
+          border-color: #fff;
+          color: #fff; }
       #header-search .search-form input[type=search]::-webkit-input-placeholder {
         -webkit-transition: color .15s;
         transition: color .15s; }
@@ -26864,15 +26899,16 @@ nav.pagination {
       #header-search .search-form input[type=search]::placeholder {
         -webkit-transition: color .15s;
         transition: color .15s; }
-        #header.text-color-light #header-search .search-form input[type=search]::-webkit-input-placeholder {
+        #header.text-color-light #header-search .search-form input[type=search]::-webkit-input-placeholder, body.header-dropdown-active #header-search .search-form input[type=search]::-webkit-input-placeholder {
           color: rgba(255, 255, 255, 0.3); }
-        #header.text-color-light #header-search .search-form input[type=search]::-moz-placeholder {
+        #header.text-color-light #header-search .search-form input[type=search]::-moz-placeholder, body.header-dropdown-active #header-search .search-form input[type=search]::-moz-placeholder {
           color: rgba(255, 255, 255, 0.3); }
-        #header.text-color-light #header-search .search-form input[type=search]:-ms-input-placeholder {
+        #header.text-color-light #header-search .search-form input[type=search]:-ms-input-placeholder, body.header-dropdown-active #header-search .search-form input[type=search]:-ms-input-placeholder {
           color: rgba(255, 255, 255, 0.3); }
-        #header.text-color-light #header-search .search-form input[type=search]::-ms-input-placeholder {
+        #header.text-color-light #header-search .search-form input[type=search]::-ms-input-placeholder, body.header-dropdown-active #header-search .search-form input[type=search]::-ms-input-placeholder {
           color: rgba(255, 255, 255, 0.3); }
-        #header.text-color-light #header-search .search-form input[type=search]::placeholder {
+        #header.text-color-light #header-search .search-form input[type=search]::placeholder,
+        body.header-dropdown-active #header-search .search-form input[type=search]::placeholder {
           color: rgba(255, 255, 255, 0.3); }
         #header.is-sticky #header-search .search-form input[type=search]::-webkit-input-placeholder {
           color: rgba(3, 32, 64, 0.5); }
@@ -26884,6 +26920,16 @@ nav.pagination {
           color: rgba(3, 32, 64, 0.5); }
         #header.is-sticky #header-search .search-form input[type=search]::placeholder {
           color: rgba(3, 32, 64, 0.5); }
+          body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]::-webkit-input-placeholder {
+            color: rgba(255, 255, 255, 0.3); }
+          body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]::-moz-placeholder {
+            color: rgba(255, 255, 255, 0.3); }
+          body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]:-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.3); }
+          body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]::-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.3); }
+          body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]::placeholder {
+            color: rgba(255, 255, 255, 0.3); }
 
 #footer {
   background-color: #edeff2;

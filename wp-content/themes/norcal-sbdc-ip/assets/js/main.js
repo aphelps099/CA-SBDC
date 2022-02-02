@@ -21,6 +21,21 @@
 			var first_section = $('#main-content').children().first();
 			if(first_section.is('.wp-block-crown-blocks-event-header')) header.removeClass('text-color-light');
 
+			$(document).on('mouseenter mousemove', '#header-primary-navigation-menu > li', function(e) {
+				var hoveredMenuItem = $(this);
+				if(hoveredMenuItem.hasClass('menu-item-has-children')) {
+					$('body').addClass('header-dropdown-active');
+					var bg = $('#header > .bg');
+					var subMenu = $('> .sub-menu', hoveredMenuItem);
+					bg.css({ height: subMenu.offset().top + subMenu.outerHeight() - $('#header').offset().top + 20 });
+				}
+			}).on('mouseleave', '#header-primary-navigation-menu > li', function(e) {
+				var hoveredMenuItem = $('#header-primary-navigation-menu > li:hover');
+				if(!hoveredMenuItem.length || !hoveredMenuItem.hasClass('menu-item-has-children')) {
+					$('body').removeClass('header-dropdown-active');
+				}
+			});
+
 		};
 
 

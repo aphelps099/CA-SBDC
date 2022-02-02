@@ -1,4 +1,5 @@
 <header id="header" role="banner">
+	<div class="bg"></div>
 	
 	<div class="inner">
 		<div class="container">
@@ -48,7 +49,7 @@
 								'theme_location' => 'header_primary',
 								'container' => '',
 								'menu_id' => 'header-primary-navigation-menu',
-								'depth' => 3,
+								'depth' => 2,
 								'fallback_cb' => false
 							) );
 						}
