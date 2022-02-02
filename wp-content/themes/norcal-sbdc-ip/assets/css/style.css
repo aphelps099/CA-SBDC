@@ -32681,6 +32681,20 @@ blockquote,
     -webkit-box-shadow: none;
             box-shadow: none;
     border-radius: 0; }
+    #header-primary-navigation-menu .sub-menu.double-column {
+      width: 25rem;
+      -webkit-column-count: 2;
+         -moz-column-count: 2;
+              column-count: 2;
+      -webkit-column-gap: 1.5rem;
+         -moz-column-gap: 1.5rem;
+              column-gap: 1.5rem; }
+      #header-primary-navigation-menu .sub-menu.double-column > .menu-item {
+        display: inline-block;
+        width: 100%;
+        -webkit-column-break-inside: avoid;
+           -moz-column-break-inside: avoid;
+                break-inside: avoid; }
     #header-primary-navigation-menu .sub-menu .menu-item:hover > a {
       color: #fff; }
     #header-primary-navigation-menu .sub-menu a {

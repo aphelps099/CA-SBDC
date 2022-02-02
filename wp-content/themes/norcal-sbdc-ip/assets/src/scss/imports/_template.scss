@@ -112,6 +112,16 @@
 		background-color: transparent;
 		box-shadow: none;
 		border-radius: 0;
+		&.double-column {
+			width: 25rem;
+			column-count: 2;
+			column-gap: 1.5rem;
+			> .menu-item {
+				display: inline-block;
+				width: 100%;
+				break-inside: avoid;
+			}
+		}
 		.menu-item {
 			&:hover {
 				> a {

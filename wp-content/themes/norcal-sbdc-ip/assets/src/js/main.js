@@ -29,6 +29,16 @@
 			var first_section = $('#main-content').children().first();
 			// if(first_section.is('.wp-block-crown-blocks-event-header')) header.removeClass('text-color-light');
 
+			$('#header-primary-navigation-menu > li > .sub-menu').each(function(i, el) {
+				var subMenu = $(this);
+				var itemCount = subMenu.children().length;
+				if(itemCount >= 4) {
+					subMenu.addClass('double-column');
+				} else {
+					subMenu.addClass('single-column');
+				}
+			});
+
 			$(document).on('mouseenter mousemove', '#header-primary-navigation-menu > li', function(e) {
 				var hoveredMenuItem = $(this);
 				if(hoveredMenuItem.hasClass('menu-item-has-children')) {
