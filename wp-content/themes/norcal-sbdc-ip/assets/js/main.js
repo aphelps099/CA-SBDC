@@ -9,6 +9,14 @@
 		$.wpchildtheme.initContentSliderBlocks();
 		$.wpchildtheme.initFeaturedPostSliderBlocks();
 
+		$(document).on('click', 'a', function(e) {
+			var href = $(this).attr('href');
+			if(href.match(/^#.+/) && $(href).length) {
+				e.preventDefault();
+				$.wptheme.smoothScrollToElement($(href));
+			}
+		});
+
 	});
 
 
@@ -88,6 +96,7 @@
 				}).slick(slickSettings);
 			});
 		};
+
 
 
 		return wpchildtheme;
