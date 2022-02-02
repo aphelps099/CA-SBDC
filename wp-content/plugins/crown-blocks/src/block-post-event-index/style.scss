@@ -204,11 +204,6 @@ $spacer: 1rem;
 					display: flex;
 					width: 100%;
 					color: #363d4f;
-					&:hover {
-						> .inner {
-							background-color: #e3e3e3;
-						}
-					}
 					> .inner {
 						width: 100%;
 						background-color: #eee;

@@ -44,6 +44,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			register_activation_hook( $plugin_file, array( __CLASS__, 'activate' ));
 			register_deactivation_hook( $plugin_file, array( __CLASS__, 'deactivate' ));
 
+			add_action( 'init', array( __CLASS__, 'add_rewrite_rules' ) );
+			add_action( 'init', array( __CLASS__, 'simulate_rewrite_rules' ) );
+
 			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
 			add_action( 'crown_sync_event_data', array( __CLASS__, 'sync_event_data' ) );
 			// add_action( 'init', array( __CLASS__, 'sync_event_data' ), 100, 0 );
@@ -113,6 +116,27 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			}
 			
 			flush_rewrite_rules();
+		}
+
+
+		public static function add_rewrite_rules() {
+
+			add_rewrite_rule('^event/([-0-9a-zA-Z_]+)/ics/?$', 'wp-content/plugins/crown-events/ics.php?event=$1', 'top');
+
+		}
+
+
+		public static function simulate_rewrite_rules() {
+
+			$url_params = explode('?', $_SERVER['REQUEST_URI']);
+			$request_uri = $url_params[0];
+			$query_params = isset( $url_params[1] ) ? $url_params[1] : '';
+			if ( preg_match( '/^\/event\/([-0-9a-zA-Z_]+)\/ics\/?$/', $request_uri, $matches ) ) {
+				$_GET['event'] = $matches[1];
+				require_once( preg_replace( '/\/classes$/', '', dirname( __FILE__ ) ) . '/ics.php' );
+				die;
+			}
+
 		}
 
 
@@ -264,7 +288,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 					'capability_type' => array( 'event', 'events' ),
 					'map_meta_cap' => true,
 					'menu_position' => 31,
-					'template' => array(
+					'template' => apply_filters( 'crown_event_post_type_template', array(
 						array( 'crown-blocks/event-header', array() ),
 						array( 'crown-blocks/container', array(
 							'align' => 'full',
@@ -348,7 +372,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 								) )
 							) )
 						) )
-					)
+					) )
 				),
 				'metaBoxes' => array(
 					new MetaBox( array(

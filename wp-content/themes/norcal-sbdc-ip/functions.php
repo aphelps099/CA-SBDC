@@ -201,3 +201,59 @@ function ctc_get_relative_time( $timestamp, $current_timestamp = null ) {
 	return $time;
 
 }
+
+
+add_filter( 'crown_event_post_type_template', 'ctc_filter_crown_event_post_type_template' );
+function ctc_filter_crown_event_post_type_template( $template ) {
+	return array(
+		array( 'crown-blocks/event-header', array() ),
+		array( 'crown-blocks/container', array(
+			'align' => 'full',
+			'spacingProfile' => '',
+			'paddingTopXl' => 10,
+			'paddingBottomXl' => 10,
+			'paddingXXl' => 5,
+			'paddingTopLg' => 10,
+			'paddingBottomLg' => 10,
+			'paddingXLg' => 4,
+			'paddingTopMd' => 7,
+			'paddingBottomMd' => 7,
+			'paddingXMd' => 3,
+			'paddingTopSm' => 5,
+			'paddingBottomSm' => 5,
+			'paddingXSm' => 2,
+			'paddingTopXs' => 5,
+			'paddingBottomXs' => 5,
+			'paddingXXs' => 2
+		), array(
+			array( 'crown-blocks/multi-column', array(
+				'columnBreakpoint' => 'lg',
+				'columnLayoutXl' => 8
+			), array(
+				array( 'crown-blocks/column', array(), array(
+					array( 'core/heading', array(
+						'content' => 'Event Details'
+					) ),
+					array( 'core/paragraph', array() ),
+					array( 'crown-blocks/expandable-content', array(
+						'label' => 'Disclaimer',
+						'type' => 'link'
+					), array(
+						array( 'core/paragraph', array(
+							'content' => 'The information provided in this webinar and any supplementary materials provided to registrants are intended for educational and informational purposes only and does not constitute professional financial or legal advice. No registrant should act or fail to act on the basis of any material contained in this webinar without obtaining proper financial, legal or other professional advice specific to their situation. The Northern CaliforniaSmall Business Development Center, and its host, the HSU Sponsored Programs Foundation, specifically disclaims any liability, loss or risk, personal or otherwise, which is incurred as a consequence, directly or indirectly, of the use and application of any of the information presented in this webinar. By registering for this webinar you acknowledge and agree that you have read, understood, accept and agree to the above disclaimer and that under no circumstances shall the Northern California Small Business Development Center or it’s host, the HSU Sponsored Programs Foundation, be held liable for any claims, losses, or damages of any kind or nature arising out of or in any way related to the information provided in this webinar and/or the registrant’s use of or reliance on said information.',
+							'fontSize' => 'extra-small'
+						) )
+					) )
+				) ),
+				array( 'crown-blocks/column', array(), array(
+					array( 'crown-blocks/button', array(
+						'label' => 'Register',
+						'size' => 'lg',
+						'displayAsBlock' => true,
+						'color' => '#a58a57'
+					) )
+				) )
+			) )
+		) )
+	);
+}

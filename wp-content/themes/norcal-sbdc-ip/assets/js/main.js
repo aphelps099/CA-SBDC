@@ -19,7 +19,7 @@
 
 			var header = $('#header');
 			var first_section = $('#main-content').children().first();
-			if(first_section.is('.wp-block-crown-blocks-event-header')) header.removeClass('text-color-light');
+			// if(first_section.is('.wp-block-crown-blocks-event-header')) header.removeClass('text-color-light');
 
 			$(document).on('mouseenter mousemove', '#header-primary-navigation-menu > li', function(e) {
 				var hoveredMenuItem = $(this);

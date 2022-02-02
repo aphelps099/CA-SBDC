@@ -553,6 +553,19 @@
 			});
 			$('.wp-block-crown-blocks-post-index').trigger('setArticleColors');
 
+			$('.wp-block-crown-blocks-post-event-index').on('setArticleColors', function(e) {
+				var block = $(this);
+				if(block.hasClass('wp-block-crown-blocks-post-event-index')) {
+					$('.post-feed article a', block).each(function(i, el) {
+						if($(this).hasClass('color-set')) return;
+						var colors = [ 'primary', 'secondary', 'tertiary' ];
+						var color = colors[Math.floor(Math.random() * Math.floor(colors.length))];
+						$(this).addClass('color-set color-' + color);
+					});
+				}
+			});
+			$('.wp-block-crown-blocks-post-event-index').trigger('setArticleColors');
+
 			$(document).on('click', 'form.feed-filters button.filters-toggle', function(e) {
 				var form = $(this).closest('form');
 				form.toggleClass('active');

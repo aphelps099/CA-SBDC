@@ -4355,9 +4355,6 @@
 			> article {
 				> a {
 					&:hover {
-						> .inner {
-							background-color: mix(#a7d0ed, #fff, 50%);
-						}
 						.entry-link::before {
 							right: -.5rem;
 						}

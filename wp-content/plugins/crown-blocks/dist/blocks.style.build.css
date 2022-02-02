@@ -10423,8 +10423,6 @@
         display: flex;
         width: 100%;
         color: #363d4f; }
-        .wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a:hover > .inner {
-          background-color: #e3e3e3; }
         .wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a > .inner {
           width: 100%;
           background-color: #eee;

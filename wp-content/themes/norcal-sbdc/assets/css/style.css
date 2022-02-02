@@ -25831,9 +25831,6 @@ nav.pagination {
 
 /*	Post Event Index
 ---------------------------------------------------------*/
-.wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a:hover > .inner {
-  background-color: #d3e8f6; }
-
 .wp-block-crown-blocks-post-event-index .post-feed > .inner > article > a:hover .entry-link::before {
   right: -.5rem; }
 

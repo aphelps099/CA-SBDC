@@ -65,18 +65,30 @@ if(!class_exists('Crown_Block_Event_Header')) {
 										<div class="entry-labels">
 											<span class="type">Event</span>
 										</div>
-
+										
 										<h1 class="entry-title"><?php echo get_the_title( $post_id ); ?></h1>
-
-									</div>
-
-									<div class="date-container">
-
+										
 										<?php if ( function_exists( 'ct_event_date' ) ) ct_event_date( $post_id ); ?>
 
 									</div>
 
-									<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+									<div class="header-footer">
+										<div class="inner">
+
+											<?php if ( function_exists( 'ct_social_sharing_links' ) ) ct_social_sharing_links(); ?>
+
+											<div class="additional-links">
+
+												<?php if ( ! empty( $index_page_url ) ) { ?>
+													<div class="link"><a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'See All Events', 'crown_blocks' ); ?></a></div>
+												<?php } ?>
+
+												<div class="link"><a href="<?php echo get_permalink(); ?>ics/" class="add-to-calendar"><?php _e( 'Add to Calendar', 'crown_blocks' ); ?></a></div>
+
+											</div>
+
+										</div>
+									</div>
 
 								<?php } else { ?>
 

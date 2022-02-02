@@ -728,6 +728,23 @@ blockquote,
 	}
 }
 
+.wp-block-crown-blocks-post-event-index {
+	.post-feed {
+		> .inner {
+			> article {
+				> a {
+					&.color-primary > .inner { background-color: mix($light-blue, #fff, 50%); }
+					&.color-secondary > .inner { background-color: $bright-blue; }
+					&.color-tertiary > .inner { background-color: mix($tan, #fff, 50%); }
+					> .inner {
+						background-color: mix($light-blue, #fff, 50%);
+					}
+				}
+			}
+		}
+	}
+}
+
 
 
 .content-slider {
@@ -1115,27 +1132,23 @@ blockquote,
 
 
 .wp-block-crown-blocks-event-header {
-	color: inherit;
+	color: #fff;
 	> .header-bg {
 		background-image: none;
-		background-color: $extra-light-gray;
+		background-color: $dark-blue;
 		.bg-image {
-			mix-blend-mode: none;
-			opacity: .1;
+			mix-blend-mode: normal;
+			opacity: .25;
 		}
 	}
 	> .inner {
 		> .header-contents {
 			> .inner {
 				display: block;
-				@include media-breakpoint-up(md) {
-					display: flex;
-					flex-wrap: wrap;
-				}
 			}
 			.title-container {
-				@include media-breakpoint-up(md) {
-					width: 70%;
+				@include media-breakpoint-up(lg) {
+					width: 66.666667%;
 				}
 			}
 			.entry-labels {
@@ -1153,45 +1166,95 @@ blockquote,
 			}
 			.entry-title {
 				font-weight: 700;
-				text-decoration: underline;
-				color: $gold;
-				text-decoration-color: $dark;
+				color: $white;
+				margin-bottom: 2rem;
 				@include media-breakpoint-up(md) {
-					margin-bottom: 5rem;
+					margin-bottom: 3rem;
 				}
 				@include media-breakpoint-up(lg) {
 					font-size: 3.5rem;
 				}
 			}
-			.date-container {
-				@include media-breakpoint-up(md) {
-					width: 25%;
-				}
-			}
 			.entry-event-date {
-				.date {
-					color: $bright-blue;
+				@include media-breakpoint-up(md) {
+					margin-bottom: 2rem;
+				}
+				.month,
+				.date,
+				.year,
+				.time {
+					display: inline;
+					font-size: 1.5rem;
+					line-height: 1.4;
+					font-weight: 400;
+					font-style: normal;
+					font-family: inherit;
+					text-transform: none;
 				}
 				.time {
-					font-size: 1.5rem;
-					font-weight: 400;
+					display: inline;
+					&::before {
+						content: ' | ';
+						opacity: .5;
+					}
+				}
+			}
+			.header-footer {
+				border-top: 1px solid #fff;
+				padding-top: 1rem;
+				padding-bottom: 1rem;
+				@include media-breakpoint-up(md) {
+					padding-top: 2rem;
+					padding-bottom: 2rem;
+				}
+				> .inner {
+					@include media-breakpoint-up(md) {
+						display: flex;
+						align-items: center;
+					}
 				}
 			}
 			.social-sharing-links {
 				margin-left: 0;
 				margin-right: 0;
-				margin-top: 2rem;
 				@include media-breakpoint-up(md) {
-					width: 100%;
-					margin-top: -4rem;
-					margin-bottom: 4rem;
+					margin-bottom: 0;
+					flex: 1 1 auto;
 				}
-				.menu-item {
-					a {
-						border-color: $dark;
+			}
+			.additional-links {
+				margin-top: 1rem;
+				@include media-breakpoint-up(md) {
+					display: flex;
+					margin-top: 0;
+					align-items: center;
+				}
+				.link {
+					@include media-breakpoint-up(md) {
+						margin-left: 2rem;
 					}
-					.icon svg {
-						fill: $dark;
+				}
+				.return-to-index {
+					font-weight: inherit;
+					text-transform: none;
+					letter-spacing: 0;
+					line-height: inherit;
+					font-size: inherit;
+					text-decoration: underline;
+					margin-top: 0;
+					&::before {
+						display: none;
+					}
+				}
+				.add-to-calendar {
+					color: #fff;
+					opacity: .7;
+					transition: opacity .15s;
+					&:hover {
+						opacity: 1;
+					}
+					&::before {
+						content: '+ ';
 					}
 				}
 			}
