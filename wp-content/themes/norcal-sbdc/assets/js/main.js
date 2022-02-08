@@ -449,9 +449,12 @@
 		};
 
 
-		wptheme.initMap = function(map) {
+		wptheme.initMap = function(map, zoomToBounds) {
+			if(typeof zoomToBounds === 'undefined') zoomToBounds = false;
 			wptheme.initMapSettings();
 			if(typeof google === 'undefined') return;
+
+			map.data('zoom-to-bounds', zoomToBounds);
 
 			map.on('mapInitialized', function(e) {
 				var mapData = $(this).data('map-data');
@@ -523,12 +526,14 @@
 
 						mapData.map.fitBounds(mapData.bounds);
 
-						google.maps.event.addListenerOnce(mapData.map, 'idle', function() { 
-							var mapData = $(this.getDiv()).data('map-data');
-							if(mapData.map.getZoom() > mapData.settings.options.zoom) {
-								mapData.map.setZoom(mapData.settings.options.zoom);
-							}
-						});
+						if(!$(mapData.map.getDiv()).data('zoom-to-bounds')) {
+							google.maps.event.addListenerOnce(mapData.map, 'idle', function() { 
+								var mapData = $(this.getDiv()).data('map-data');
+								if(mapData.map.getZoom() > mapData.settings.options.zoom) {
+									mapData.map.setZoom(mapData.settings.options.zoom);
+								}
+							});
+						}
 
 					}
 
@@ -1539,7 +1544,7 @@
 		};
 
 
-		wptheme.initChampionFinderBlocks = function() {
+		/*wptheme.initChampionFinderBlocks = function() {
 
 			$('.wp-block-crown-blocks-champion-finder').closest('.wp-block-crown-blocks-container.alignfull').addClass('champion-finder-map-container');
 
@@ -1622,6 +1627,47 @@
 			if($('.wp-block-crown-blocks-champion-finder .location-search-form input[name=zip]').val() != '') {
 				$('.wp-block-crown-blocks-champion-finder .location-search-form').trigger('submit');
 			}
+
+		};*/
+
+		wptheme.initChampionFinderBlocks = function() {
+
+			$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
+				var block = $(el);
+
+				wptheme.initMap($('.google-map', block), true);
+
+				block.on('click', '.results article.champion', function(e) {
+					var champion = $(this);
+					if(champion.hasClass('active')) return;
+					var block = $(this).closest('.wp-block-crown-blocks-champion-finder');
+
+					$('.results article.champion.active', block).removeClass('active');
+					champion.addClass('active');
+
+					var championId = parseInt(champion.data('champion-id'));
+					var map = $('.map-container .google-map', block);
+					if(map.hasClass('map-initialized')) {
+						var mapData = map.data('map-data');
+						for(var i in mapData.markers) mapData.markers[i].setIcon(mapSettings.markerImages.red);
+						var marker = mapData.markers.find(function(n) { return n.data.id == championId; });
+						if(typeof marker !== 'undefined') {
+							marker.setIcon(mapSettings.markerImages.blue);
+						}
+					} else {
+						map.on('mapInitialized', function(e) {
+							var mapData = $(this).data('map-data');
+							for(var i in mapData.markers) mapData.markers[i].setIcon(mapSettings.markerImages.red);
+							var marker = mapData.markers.find(function(n) { return n.data.id == championId; });
+							if(typeof marker !== 'undefined') {
+								marker.setIcon(mapSettings.markerImages.blue);
+							}
+						});
+					}
+				});
+				$('.results article.champion:first', block).trigger('click');
+
+			});
 
 		};
 

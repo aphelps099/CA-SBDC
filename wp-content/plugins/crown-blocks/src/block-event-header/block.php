@@ -83,7 +83,44 @@ if(!class_exists('Crown_Block_Event_Header')) {
 													<div class="link"><a href="<?php echo $index_page_url; ?>" class="return-to-index"><?php _e( 'See All Events', 'crown_blocks' ); ?></a></div>
 												<?php } ?>
 
-												<div class="link"><a href="<?php echo get_permalink(); ?>ics/" class="add-to-calendar"><?php _e( 'Add to Calendar', 'crown_blocks' ); ?></a></div>
+												<?php /*<div class="link"><a href="<?php echo get_permalink(); ?>ics/" class="add-to-calendar"><?php _e( 'Add to Calendar', 'crown_blocks' ); ?></a></div>*/ ?>
+
+												<?php
+													wp_enqueue_script( 'atcb' );
+													wp_enqueue_style( 'atcb' );
+													$startTimestamp = new DateTime( get_post_meta( get_the_ID(), 'event_start_timestamp', true ) );
+													$endTimestamp = new DateTime( get_post_meta( get_the_ID(), 'event_end_timestamp', true ) );
+													$atcb_data = array(
+														'event' => array(
+															'@context' => 'https://schema.org',
+															'@type' => 'Event',
+															'name' => get_the_title(),
+															'description' => get_permalink(),
+															'startDate' => $startTimestamp->format( 'm-d-Y\TH:i' ),
+															'endDate' => $startTimestamp->format( 'm-d-Y\TH:i' ),
+															'location' => '',
+														),
+														'label' => 'Add to Calendar',
+														'options' => array(
+															'Apple',
+															'Google',
+															'iCal',
+															'Microsoft365',
+															'Outlook.com',
+															'Yahoo'
+														),
+														'timeZone' => get_post_meta( get_the_ID(), 'event_timezone', true ),
+														'trigger' => 'click',
+														'iCalFileName' => sanitize_title( get_the_title() )
+													);
+												?>
+												<div class="link">
+													<div class="atcb" style="display: none;">
+														<script type="application/ld+json">
+															<?php echo json_encode( $atcb_data, JSON_UNESCAPED_SLASHES ); ?>
+														</script>
+													</div>
+												</div>
 
 											</div>
 

@@ -159,6 +159,10 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 												'input' => new TextInput( array( 'name' => 'champion_organization', 'class' => 'input-medium' ) )
 											) ),
 											new Field( array(
+												'label' => 'Phone',
+												'input' => new TextInput( array( 'name' => 'champion_phone', 'class' => 'input-medium' ) )
+											) ),
+											new Field( array(
 												'label' => 'Email Address',
 												'input' => new TextInput( array( 'name' => 'champion_email', 'class' => 'input-medium' ) )
 											) )
@@ -400,7 +404,7 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 		}
 
 
-		public static function champion_finder( $is_editor = false ) {
+		/*public static function champion_finder( $is_editor = false ) {
 
 			$queried_zip = isset( $_GET['zip'] ) ? trim( $_GET['zip'] ) : '';
 
@@ -500,6 +504,109 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 
 				</div>
 			<?php
+		}*/
+
+
+		public static function champion_finder( $is_editor = false ) {
+
+			$queried_zip = isset( $_GET['zip'] ) ? trim( $_GET['zip'] ) : '';
+
+			$nearby_champions = self::get_nearby_champions( $queried_zip, 100 );
+			$champion_ids = array_map( function( $n ) { return $n->id; }, $nearby_champions );
+
+			$champions = array_map( function( $n ) {
+				return (object) array(
+					'id' => $n,
+					'name' => get_the_title( $n ),
+					'first_name' => get_post_meta( $n, 'champion_first_name', true ),
+					'job_title' => get_post_meta( $n, 'champion_job_title', true ),
+					'organization' => get_post_meta( $n, 'champion_organization', true ),
+					'phone' => get_post_meta( $n, 'champion_phone', true ),
+					'email' => get_post_meta( $n, 'champion_email', true ),
+					'headshot_photo' => get_post_meta( $n, 'champion_headshot_photo', true ),
+					'coordinates' => get_post_meta( $n, 'coordinates', true )
+				);
+			}, $champion_ids );
+
+			$map_args = array(
+				'points' => array(),
+				'autoAddMarkers' => false,
+				'options' => array(
+					'styles' => apply_filters( 'crown_google_map_styles', null ),
+					'scrollwheel' => false,
+					'mapTypeControl' => false,
+					'streetViewControl' => false,
+					'zoom' => 6,
+					'center' => array( 'lat' => '37.34175881115055', 'lng' => '-119.40158426194763' )
+				)
+			);
+			foreach ( $champions as $champion ) {
+				if ( ! is_array( $champion->coordinates ) || empty( $champion->coordinates['lat'] ) || empty( $champion->coordinates['lng'] ) ) continue;
+				$point = $champion->coordinates;
+				$point['id'] = $champion->id;
+				$map_args['points'][] = $point;
+			}
+
+			$search_action = remove_query_arg( array( 'zip' ) );
+
+			?>
+				<div class="champion-finder">
+
+					<div class="search-results">
+
+						<form class="location-search-form" method="get" action="<?php echo esc_attr( $search_action ); ?>">
+							<div class="field">
+								<input type="text" name="zip" value="<?php echo esc_attr( $queried_zip ); ?>" placeholder="<?php echo esc_attr( __( 'Enter Zipcode' ), 'crown_champions' ); ?>">
+							</div>
+							<footer class="form-footer">
+								<button type="submit" class="btn btn-primary">Search</button>
+							</footer>
+						</form>
+
+						<div class="results">
+							<div class="inner">
+
+								<?php foreach ( $champions as $champion ) { ?>
+									<article class="champion" data-champion-id="<?php echo $champion->id; ?>">
+										<div class="inner">
+											<div class="headshot-container">
+												<div class="headshot">
+													<?php if ( ! empty( $champion->headshot_photo ) ) { ?>
+														<?php echo wp_get_attachment_image( $champion->headshot_photo, 'medium' ); ?>
+													<?php } ?>
+												</div>
+											</div>
+											<div class="details">
+												<h3 class="name"><?php echo $champion->name; ?></h3>
+												<?php if ( ! empty( $champion->phone ) ) { ?>
+													<p class="phone">Phone: <a href="mailto:<?php echo esc_attr( preg_replace( '/[^0-9]/', '', $champion->phone ) ); ?>" target="_blank"><?php echo $champion->phone; ?></a></p>
+												<?php } ?>
+												<?php if ( ! empty( $champion->email ) ) { ?>
+													<p class="email">Email: <a href="mailto:<?php echo esc_attr( $champion->email ); ?>" target="_blank"><?php echo $champion->email; ?></a></p>
+													<p class="contact"><a href="mailto:<?php echo esc_attr( $champion->email ); ?>" target="_blank">Contact <?php echo $champion->first_name; ?></a></p>
+												<?php } ?>
+											</div>
+										</div>
+									</article>
+								<?php } ?>
+
+							</div>
+						</div>
+
+					</div>
+
+					<div class="map-container">
+						<div class="inner">
+							<?php if ( $is_editor ) { ?>
+								<div class="placeholder"></div>
+							<?php } else { ?>
+								<?php echo GoogleMaps::getMap( $map_args ); ?>
+							<?php } ?>
+						</div>
+					</div>
+
+				</div>
+			<?php
 		}
 
 
@@ -526,6 +633,32 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 
 				</div>
 			<?php
+		}
+
+
+		protected static function get_nearby_champions( $address, $radius = 0 ) {
+			global $wpdb;
+
+			$search_coords = GoogleMaps::geocode( $address );
+			if ( empty( $search_coords ) ) return array();
+
+			$query = "
+				SELECT
+					p.ID id,
+					p.post_title title,
+					lat.meta_value lat,
+					lng.meta_value lng,
+					(3959 * acos(cos(radians(" . $search_coords->lat . ")) * cos(radians(lat.meta_value)) * cos(radians(lng.meta_value) - radians(" . $search_coords->lng . ")) + sin(radians(" . $search_coords->lat . ")) * sin(radians(lat.meta_value)))) AS distance
+				FROM $wpdb->posts p
+				INNER JOIN $wpdb->postmeta lat ON (p.ID = lat.post_id AND lat.meta_key = 'coordinates_lat')
+				INNER JOIN $wpdb->postmeta lng ON (p.ID = lng.post_id AND lng.meta_key = 'coordinates_lng')
+				WHERE p.post_type = 'champion'
+				AND p.post_status = 'publish'
+				" . ( $radius > 0 ? "HAVING distance <= " . $radius : "" ) . "
+				ORDER BY distance ASC
+			";
+			return $wpdb->get_results( $query );
+
 		}
 
 

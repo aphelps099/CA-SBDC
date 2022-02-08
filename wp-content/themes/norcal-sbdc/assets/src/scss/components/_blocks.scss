@@ -4162,70 +4162,46 @@
 .wp-block-crown-blocks-champion-finder,
 .wp-block-crown-blocks-champion-zip-search {
 	.location-search-form {
-		position: relative;
-		max-width: 300px;
-		&.submitted {
-			.form-footer button[type=submit] {
-				&:before { display: none; }
-				&:after { display: block; }
+		.field {
+			position: relative;
+			&:before {
+				content: '';
+				background-image: escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#{#233252}" class="bi bi-search" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/><path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/></svg>'));
+				width: 1.5rem;
+				height: 1.5rem;
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				position: absolute;
+				left: 0;
+				top: .6rem;
 			}
-		}
-		input[type=text] {
-			border: none;
-			background-color: rgba(#fff, .25);
-			border-radius: 1000px;
-			padding: 1rem 1.5rem;
-			font-size: 1.25rem;
-			height: auto;
-			box-shadow: none;
-			color: #fff;
-			padding-right: 3rem;
-			&::placeholder {
-				color: rgba(#fff, .8);
+			input {
+				padding-left: 2.25rem;
+				box-shadow: inset 0 -2px $dark-med-blue;
 			}
 		}
 		.form-footer {
-			margin: 0;
-			button[type=submit] {
-				position: absolute;
-				right: .75rem;
-				top: calc(50% - 1rem);
-				padding: 0;
+			button {
+				@extend .btn-blue;
+				width: 3rem;
+				padding-left: 0;
+				padding-right: 0;
+				text-indent: -100000px;
 				overflow: hidden;
-				text-indent: -10000px;
-				width: 2rem;
-				height: 2rem;
-				background-color: transparent;
-				border: none;
+				position: relative;
 				&:before {
-					@include icon(map-get($icomoon-icons, arrow-right-display), icomoon);
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
 					position: absolute;
-					display: flex;
-					align-items: center;
-					justify-content: center;
 					left: 0;
 					top: 0;
 					width: 100%;
 					height: 100%;
-					font-size: 1.5rem;
-					line-height: 1;
 					text-indent: 0;
-					color: #fff;
-				}
-				&:after {
-					@include icon(fa-content($fa-var-circle-notch));
-					position: absolute;
-					display: none;
-					text-align: center;
-					left: calc((2rem - 24px) / 2);
-					top: calc((2rem - 24px) / 2);
-					width: 24px;
-					height: 24px;
-					font-size: 24px;
-					line-height: 1;
-					text-indent: 0;
-					color: #fff;
-					animation: fa-spin 2s infinite linear;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 1.25rem;
 				}
 			}
 		}

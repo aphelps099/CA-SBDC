@@ -1,5 +1,5 @@
 
-.wp-block-crown-blocks-champion-finder {
+/*.wp-block-crown-blocks-champion-finder {
 	margin-bottom: 1rem;
 	.champion-finder {
 		@media (min-width: 992px) {
@@ -222,6 +222,162 @@
 				&.active {
 					fill: #0081B7;
 				}
+			}
+		}
+	}
+}
+
+.wp-block-crown-blocks-container.champion-finder-map-container {
+	overflow: hidden;
+	> .inner > .container-contents > .inner {
+		position: static;
+	}
+}*/
+
+
+.wp-block-crown-blocks-champion-finder {
+	margin-bottom: 1rem;
+	.champion-finder {
+		@media (min-width: 992px) {
+			display: flex;
+			margin: 0 -1rem;
+		}
+	}
+	.search-results {
+		position: relative;
+		z-index: 1;
+		@media (min-width: 992px) {
+			width: percentage(1 / 3);
+			padding: 0 1rem;
+		}
+	}
+	.location-search-form {
+		max-width: 360px;
+		display: flex;
+		margin-bottom: 2rem;
+		@media (min-width: 768px) {
+			margin-bottom: 4rem;
+		}
+		.field {
+			flex: 1 1 auto;
+		}
+		.form-footer {
+			margin-left: 0.25rem;
+		}
+	}
+	.results {
+		.champion {
+			margin-top: 1.5rem;
+			padding-left: 6rem + 1rem;
+			position: relative;
+			min-height: 6rem;
+			font-size: 1.25rem;
+			line-height: 1.2;
+			display: flex;
+			align-items: center;
+			@media (min-width: 768px) {
+				min-height: 8rem;
+				padding-left: 8rem + 1.5rem;
+			}
+			@media (min-width: 992px) {
+				min-height: 6rem;
+				padding-left: 6rem + 1rem;
+			}
+			@media (min-width: 1200px) {
+				min-height: 8rem;
+				padding-left: 8rem + 1.5rem;
+			}
+			> .inner {
+				width: 100%;
+			}
+			h3, h4, p {
+				margin-top: 0;
+				margin-bottom: .25rem;
+				line-height: inherit;
+				font-size: inherit;
+				font-family: inherit;
+				font-weight: inherit;
+				&:last-child {
+					margin-bottom: 0;
+				}
+			}
+			h4 {
+				font-weight: 700;
+			}
+			.headshot-container {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 4rem;
+				height: 100%;
+				background-color: #363d4f;
+				@media (min-width: 768px) {
+					width: 8rem;
+				}
+				@media (min-width: 992px) {
+					width: 6rem;
+				}
+				@media (min-width: 1200px) {
+					width: 8rem;
+				}
+			}
+			.headshot {
+				width: 100%;
+				height: 100%;
+				padding-top: 100%;
+				overflow: hidden;
+				position: relative;
+				img {
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+			}
+		}
+	}
+	.map-container {
+		display: none;
+		align-self: flex-start;
+		position: sticky;
+		top: 2rem;
+		body.admin-bar & {
+			top: calc(32px + 2rem);
+		}
+		@media (min-width: 992px) {
+			display: block;
+			padding: 0 1rem;
+			width: percentage(2 / 3);
+		}
+		> .inner {
+			position: relative;
+			padding-top: percentage(3 / 4);
+		}
+		.google-map {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+		}
+		.placeholder {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #eee;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			&:before {
+				content: 'Google Map';
+				color: #ccc;
+				text-transform: uppercase;
+				font-size: 1rem;
+				line-height: 1.2;
 			}
 		}
 	}

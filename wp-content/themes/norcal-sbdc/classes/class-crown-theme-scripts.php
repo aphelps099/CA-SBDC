@@ -60,6 +60,10 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'local_path' => '/lib/rellax/rellax.min.js'
 				),
 				array(
+					'handle' => 'atcb',
+					'local_path' => '/lib/atcb/js/atcb.min.js'
+				),
+				array(
 					'handle' => 'crown-theme-main',
 					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
 					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed', 'rellax' )
