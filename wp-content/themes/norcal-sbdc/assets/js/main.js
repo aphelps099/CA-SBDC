@@ -449,12 +449,12 @@
 		};
 
 
-		wptheme.initMap = function(map, zoomToBounds) {
-			if(typeof zoomToBounds === 'undefined') zoomToBounds = false;
+		wptheme.initMap = function(map, maxZoom) {
+			if(typeof maxZoom === 'undefined') maxZoom = 0;
 			wptheme.initMapSettings();
 			if(typeof google === 'undefined') return;
 
-			map.data('zoom-to-bounds', zoomToBounds);
+			map.data('max-zoom', maxZoom);
 
 			map.on('mapInitialized', function(e) {
 				var mapData = $(this).data('map-data');
@@ -526,14 +526,14 @@
 
 						mapData.map.fitBounds(mapData.bounds);
 
-						if(!$(mapData.map.getDiv()).data('zoom-to-bounds')) {
-							google.maps.event.addListenerOnce(mapData.map, 'idle', function() { 
-								var mapData = $(this.getDiv()).data('map-data');
-								if(mapData.map.getZoom() > mapData.settings.options.zoom) {
-									mapData.map.setZoom(mapData.settings.options.zoom);
-								}
-							});
-						}
+						var maxZoom = parseInt($(mapData.map.getDiv()).data('max-zoom'));
+						google.maps.event.addListenerOnce(mapData.map, 'idle', function() { 
+							var mapData = $(this.getDiv()).data('map-data');
+							var zoom = maxZoom > 0 ? maxZoom : mapData.settings.options.zoom;
+							if(mapData.map.getZoom() > zoom) {
+								mapData.map.setZoom(zoom);
+							}
+						});
 
 					}
 
@@ -1646,7 +1646,7 @@
 			$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
 				var block = $(el);
 
-				wptheme.initMap($('.google-map', block), true);
+				wptheme.initMap($('.google-map', block), 10);
 
 				block.on('click', '.results article.champion', function(e) {
 					var champion = $(this);
