@@ -32588,7 +32588,10 @@ blockquote,
       -webkit-transition: opacity .15s;
       transition: opacity .15s;
       margin: 0;
-      min-width: 0; }
+      min-width: 0;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit; }
       .wp-block-crown-blocks-post-header > .inner > .header-contents .additional-links .atcb .atcb_button:hover, .wp-block-crown-blocks-post-header > .inner > .header-contents .additional-links .atcb_initialized .atcb_button:hover,
       .wp-block-crown-blocks-event-header > .inner > .header-contents .additional-links .atcb .atcb_button:hover,
       .wp-block-crown-blocks-event-header > .inner > .header-contents .additional-links .atcb_initialized .atcb_button:hover {

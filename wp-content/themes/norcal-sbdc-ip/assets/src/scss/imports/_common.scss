@@ -1303,6 +1303,9 @@ blockquote,
 						transition: opacity .15s;
 						margin: 0;
 						min-width: 0;
+						font-size: inherit;
+						font-weight: inherit;
+						line-height: inherit;
 						&:hover {
 							opacity: 1;
 						}
