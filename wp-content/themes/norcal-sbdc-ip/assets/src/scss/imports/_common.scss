@@ -1291,6 +1291,40 @@ blockquote,
 						content: '+ ';
 					}
 				}
+				.atcb, .atcb_initialized {
+					.atcb_button {
+						background-color: transparent;
+						border: none;
+						border-radius: 0;
+						padding: 0;
+						box-shadow: none;
+						color: #fff;
+						opacity: .7;
+						transition: opacity .15s;
+						margin: 0;
+						min-width: 0;
+						&:hover {
+							opacity: 1;
+						}
+						&::before {
+							content: '+ ';
+						}
+						.atcb_icon {
+							display: none;
+						}
+					}
+					.atcb_list {
+						margin: 0;
+						max-width: none;
+						width: 180px;
+					}
+					.atcb_list_item {
+						&:first-child {
+							padding-top: 12px;
+							border-radius: 6px 6px 0 0;
+						}
+					}
+				}
 			}
 		}
 	}
