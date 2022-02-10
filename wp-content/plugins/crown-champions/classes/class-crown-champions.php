@@ -536,6 +536,8 @@ if ( ! class_exists( 'Crown_Champions' ) ) {
 					'scrollwheel' => false,
 					'mapTypeControl' => false,
 					'streetViewControl' => false,
+					'zoomControl' => false,
+					'fullscreenControl' => false,
 					'zoom' => 6,
 					'center' => array( 'lat' => '37.34175881115055', 'lng' => '-119.40158426194763' )
 				)

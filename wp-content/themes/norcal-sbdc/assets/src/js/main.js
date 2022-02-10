@@ -1632,6 +1632,17 @@
 
 		wptheme.initChampionFinderBlocks = function() {
 
+			var adjustChampionFinderMap = function() {
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
+					var block = $(el);
+					var map = $('.google-map', el);
+					map.css({ width: 'auto', right: Math.min(0, block.offset().left + block.outerWidth() - windowWidth) });
+				});
+			};
+			adjustChampionFinderMap();
+			$(window).on('load resize', adjustChampionFinderMap);
+
 			$('.wp-block-crown-blocks-champion-finder').each(function(i, el) {
 				var block = $(el);
 

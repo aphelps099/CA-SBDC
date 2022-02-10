@@ -532,7 +532,7 @@
         width: 66.66667%; } }
     .wp-block-crown-blocks-champion-finder .map-container > .inner {
       position: relative;
-      padding-top: 75%; }
+      padding-top: 100%; }
     .wp-block-crown-blocks-champion-finder .map-container .google-map {
       position: absolute;
       left: 0;
