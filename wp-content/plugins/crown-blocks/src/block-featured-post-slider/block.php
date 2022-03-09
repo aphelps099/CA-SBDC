@@ -76,6 +76,11 @@ if(!class_exists('Crown_Block_Featured_Post_Slider')) {
 			$query = new WP_Query( $queryArgs );
 			if ( ! $query->have_posts() ) return '';
 
+			$index_page_url = '';
+			if ( ( $index_page_id = get_option( 'theme_config_index_page_post' ) ) ) {
+				$index_page_url = apply_filters( 'crown_localized_index_url', get_permalink( $index_page_id ), 'theme_config_index_page_post' );
+			}
+
 			$block_class = array( 'wp-block-crown-blocks-featured-post-slider', $atts['className'] );
 
 			ob_start();
@@ -124,13 +129,15 @@ if(!class_exists('Crown_Block_Featured_Post_Slider')) {
 
 							</div>
 						</div>
-
-						<p class="block-link">
-							<a href="<?php echo get_post_type_archive_link( 'post' ); ?>" class="action-subject-link">
-								<span class="action"><?php _e( 'View All' ); ?></span>
-								<span class="subject"><?php _e( 'SBDC Updates' ); ?></span>
-							</a>
-						</p>
+						
+						<?php if ( ! empty( $index_page_url ) ) { ?>
+							<p class="block-link">
+								<a href="<?php echo $index_page_url; ?>" class="action-subject-link">
+									<span class="action"><?php _e( 'View All' ); ?></span>
+									<span class="subject"><?php _e( 'SBDC Updates' ); ?></span>
+								</a>
+							</p>
+						<?php } ?>
 
 					</div>
 				</div>
