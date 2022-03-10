@@ -82,6 +82,27 @@ add_filter(
 );
 
 /**
+ * Skip copying options certain plugin options, because they will be created first
+ * by the plugin and will result in a duplicate key error, or cause some other problem.
+ */
+add_filter(
+	'ns_cloner_do_search_replace',
+	function( $do, $row ) {
+		$excluded_meta = [];
+		// WP Simple Pay has Stripe plan objects encoded.
+		$excluded_meta = array_merge( $excluded_meta, [ '_single_plan_object' ] );
+		// Skip doing search/replace on any of the above listed meta rows.
+		if ( isset( $row['meta_key'] ) && in_array( $row['meta_key'], $excluded_meta, true ) ) {
+			$do = false;
+		}
+
+		return $do;
+	},
+	10,
+	2
+);
+
+/**
  * Clear WP Engine cache on completion because cloned sites won't use the correct
  * theme + options without flushing if object caching is enabled.
  * Based from https://github.com/a7/wpe-cache-flush/ and issue #1 on that repo.

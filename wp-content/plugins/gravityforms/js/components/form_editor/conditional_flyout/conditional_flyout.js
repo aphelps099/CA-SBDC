@@ -569,7 +569,7 @@ GFConditionalLogic.prototype.renderOperatorOptions = function( rule ) {
 		ends_with: gf_vars.endsWith,
 	};
 
-	operators = gform.applyFilters( 'gform_conditional_logic_operators', operators, this.objectType, this.fieldId );
+	operators = gform.applyFilters( 'gform_conditional_logic_operators', operators, this.objectType, rule.fieldId );
 
 	for ( key in operators ) {
 		var label  = operators[ key ];
@@ -600,7 +600,7 @@ GFConditionalLogic.prototype.renderValueOptions = function( rule, idx ) {
 
 	// Field is actually a sub-field (such as the First Name or Country field), get the correct field from its ID.
 	if ( rule.fieldId.toString().indexOf( '.' ) !== -1 ) {
-		var parts   = rule.fieldId.split( '.' );
+		var parts   = rule.fieldId.toString().split( '.' );
 		var fieldId = parts[ 0 ];
 		field       = getFieldById( fieldId );
 	}

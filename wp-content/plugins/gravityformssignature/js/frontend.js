@@ -1,52 +1,6 @@
 /* global jQuery, Base64, SignatureEnabled, ResizeSignature, ClearSignature, LoadSignature */
 /* eslint-disable new-cap */
 
-jQuery( window ).on( 'gform_post_render', function( formId ) {
-
-	jQuery( '.gfield_signature_container' ).each( function() {
-
-		// If original width is already set, exit.
-		if ( jQuery( this ).data( 'original-width' ) ) {
-			return;
-		}
-
-		var width  = parseFloat( jQuery( this ).css( 'width' ) ),
-			height = parseFloat( jQuery( this ).css( 'height' ) ),
-			containerID = jQuery( this ).parent().parent().find( '.gfield_label' ).attr( 'for' );
-
-		// Force reset button to work even when Signature is disabled.
-		var $resetButton = jQuery( '#' + containerID + '_resetbutton' );
-		$resetButton.click( function() {
-			SignatureEnabled( containerID, true );
-			ClearSignature( containerID );
-			gformSignatureResize();
-		} ).parent().append( '<button type="button" id="' + containerID + '_lockedReset" class="gform_signature_locked_reset" style="display:none;height:24px;cursor:pointer;padding: 0 0 0 1.8em;opacity:0.75;font-size:0.813em;border:0;background: transparent url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIiBjbGFzcz0idW5kZWZpbmVkIj48cGF0aCBkPSJNNDAwIDIyNGgtMjR2LTcyQzM3NiA2OC4yIDMwNy44IDAgMjI0IDBTNzIgNjguMiA3MiAxNTJ2NzJINDhjLTI2LjUgMC00OCAyMS41LTQ4IDQ4djE5MmMwIDI2LjUgMjEuNSA0OCA0OCA0OGgzNTJjMjYuNSAwIDQ4LTIxLjUgNDgtNDhWMjcyYzAtMjYuNS0yMS41LTQ4LTQ4LTQ4em0tMTA0IDBIMTUydi03MmMwLTM5LjcgMzIuMy03MiA3Mi03MnM3MiAzMi4zIDcyIDcydjcyeiIgY2xhc3M9InVuZGVmaW5lZCIvPjwvc3ZnPg==) no-repeat left center;background-size:16px;">' + gform_signature_frontend_strings.lockedReset + '</button>' );
-
-		// Trigger reset when Locked Reset button is clicked.
-		jQuery( '#' + containerID + '_lockedReset' ).click( function() {
-			jQuery( this ).hide();
-			$resetButton.click();
-		} );
-
-		// Hide the status box so that our Locked Reset button display left-aligned.
-		jQuery( '#' + containerID + '_status' ).hide();
-
-		jQuery( this ).data( 'ratio', height / width );
-		jQuery( this ).data( 'original-width', width );
-
-	} );
-
-} );
-
-jQuery( document ).ready( function( $ ) {
-
-	$( window ).on( 'load resize', function() {
-		gformSignatureResize();
-	} );
-
-} );
-
-
 /**
  * Handles updating of the signature field on document resize.
  *
@@ -63,7 +17,6 @@ function gformSignatureResize() {
 	 */
 	function getSignature( $signatureContainer ) {
 		var $gfield = $signatureContainer.closest( '.gfield' );
-
 		return {
 			$container: $signatureContainer,
 			fieldID: $gfield.find( '.gfield_label' ).attr( 'for' ),
@@ -112,7 +65,7 @@ function gformSignatureResize() {
 	 * @param {Object} signature The original signature object.
 	 * @return {{width: (*|null), height: number}} The resized signature data.
 	 */
-	function getResizedSignature( signature ) {
+	function getResizedSignatureDimensions( signature ) {
 		return {
 			width: getNewSignatureWidth( signature ),
 			height: getNewSignatureHeight( getNewSignatureWidth( signature ), signature )
@@ -121,27 +74,47 @@ function gformSignatureResize() {
 
 	// Find every signature field on the page and resize it.
 	jQuery( '.gfield_signature_container' ).each( function() {
-		var signature = getSignature( jQuery( this ) );
-		var resizedSignature = getResizedSignature( signature );
-		var decodedSignatureData;
+		var $this = jQuery( this );
 
+		// Reset the width on the signature field containers before we update our
+		// dimensions. This helps us get around a difference in how CSS grid sizes a
+		// parent container's width when a child has an explicitly set width greater
+		// than the parent in Firefox.
 		if (
-			!signature.fieldExists()
-			|| !signature.dataInputExists()
+			( typeof $this.closest( '.gfield' ).find( '.gfield_label' ).attr( 'for' ) !== 'undefined' ) &&
+			$this.parent().find( 'input[name$="_data"]:eq( 0 )' ).length > 0
 		) {
+			$this.css( 'width', '' ).find( 'canvas' ).css( 'width', '' ).attr( 'width', '' );
+			$this.next().css( 'width', '' );
+		}
+
+		// Update field dimensions
+		var signature = getSignature( $this );
+		var resizedSignature = getResizedSignatureDimensions( signature );
+		var fieldWidth = resizedSignature.width;
+		var fieldHeight = resizedSignature.height > 180 ? resizedSignature.height : 180;
+
+		if ( ! signature.fieldExists() || ! signature.dataInputExists() ) {
 			return;
 		}
 
-		decodedSignatureData = Base64.decode( signature.dataInput.val() );
+		var decodedSignatureData = Base64.decode( signature.dataInput.val() );
 
-		if ( decodedSignatureData && resizedSignature.width < signature.width ) {
+		// If we have a signature, let's lock the field down and show the locked reset button.
+		if ( decodedSignatureData ) {
 			SignatureEnabled( signature.fieldID, false );
 			jQuery( '#' + signature.fieldID + '_lockedReset' ).show();
-			return;
+			// If the width field setting is greater than the field's available width,
+			// let's not resize the field and instead use the signed signature's dimensions.
+			if ( signature.width > resizedSignature.width ) {
+				var signatureDimensions = decodedSignatureData.split(';')[0];
+				fieldWidth = signatureDimensions.split(',')[3];
+				fieldHeight = signatureDimensions.split(',')[4];
+			}
 		}
 
 		// Resize signature.
-		ResizeSignature( signature.fieldID, resizedSignature.width, resizedSignature.height );
+		ResizeSignature( signature.fieldID, fieldWidth, fieldHeight );
 		ClearSignature( signature.fieldID );
 
 		if ( decodedSignatureData ) {
@@ -150,4 +123,77 @@ function gformSignatureResize() {
 	} );
 }
 
+jQuery( window ).on( 'gform_post_render', function( formId ) {
 
+	jQuery( '.gfield_signature_container' ).each( function() {
+		var $this = jQuery( this );
+
+		// If original width is already set, exit.
+		if ( $this.data( 'original-width' ) ) {
+			return;
+		}
+
+		var width  = parseFloat( $this.css( 'width' ) ),
+			height = parseFloat( $this.css( 'height' ) ),
+			containerID = $this.closest( '.gfield' ).find( '.gfield_label' ).attr( 'for' ),
+			$resetButton = jQuery( '#' + containerID + '_resetbutton' );
+
+		// Add a locked reset button for when a signature is present and resized.
+		$resetButton.parent().append( '<button type="button" id="' + containerID + '_lockedReset" class="gform_signature_locked_reset" style="display:none;height:24px;cursor:pointer;padding: 0 0 0 1.8em;opacity:0.75;font-size:0.813em;border:0;background: transparent url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0NDggNTEyIiBjbGFzcz0idW5kZWZpbmVkIj48cGF0aCBkPSJNNDAwIDIyNGgtMjR2LTcyQzM3NiA2OC4yIDMwNy44IDAgMjI0IDBTNzIgNjguMiA3MiAxNTJ2NzJINDhjLTI2LjUgMC00OCAyMS41LTQ4IDQ4djE5MmMwIDI2LjUgMjEuNSA0OCA0OCA0OGgzNTJjMjYuNSAwIDQ4LTIxLjUgNDgtNDhWMjcyYzAtMjYuNS0yMS41LTQ4LTQ4LTQ4em0tMTA0IDBIMTUydi03MmMwLTM5LjcgMzIuMy03MiA3Mi03MnM3MiAzMi4zIDcyIDcydjcyeiIgY2xhc3M9InVuZGVmaW5lZCIvPjwvc3ZnPg==) no-repeat left center;background-size:16px;">' + gform_signature_frontend_strings.lockedReset + '</button>' );
+
+		var $lockedResetButton = jQuery( '#' + containerID + '_lockedReset' );
+
+		// Force reset button to work even when Signature is disabled.
+		$resetButton.click( function() {
+			SignatureEnabled( containerID, true );
+			ClearSignature( containerID );
+			gformSignatureResize();
+			// Hide the locked reset resize button
+			$lockedResetButton.hide();
+		} );
+
+		// Trigger reset when Locked Reset button is clicked.
+		$lockedResetButton.click( function() {
+			jQuery( this ).hide();
+			$resetButton.click();
+		} );
+
+		// Hide the status box so that our Locked Reset button display left-aligned.
+		jQuery( '#' + containerID + '_status' ).hide();
+
+		$this.data( 'ratio', height / width );
+		$this.data( 'original-width', width );
+
+		setTimeout(function () { gformSignatureResize(); }, 0 );
+
+	} );
+
+} );
+
+jQuery( document ).ready( function( $ ) {
+
+	var windowWidth = window.innerWidth
+
+	$( window ).on( 'resize', function() {
+
+		// Check width has actually changed as mobile devices have a variety of situations
+		// in which they can trigger the resize event such as when scrolling. When this happens
+		// it creates issues with the signature field functionality based on our customizations
+		// to have this field be responsive.
+		if ( window.innerWidth === windowWidth ) {
+			return;
+		}
+
+		windowWidth = window.innerWidth;
+
+		setTimeout(function () { gformSignatureResize(); }, 200 );
+
+	} );
+
+	gform.addAction( 'gform_post_conditional_logic_field_action', function ( formId, action, targetId, defaultValues, isInit ) {
+		if ( ! isInit && action === 'show' && $( targetId ).find( '.gfield_signature_container' ).length ) {
+			gformSignatureResize();
+		}
+	} );
+
+} );

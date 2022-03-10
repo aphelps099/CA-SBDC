@@ -31,6 +31,13 @@ class NS_Cloner_Log {
 	private $log_handle;
 
 	/**
+	 * Whether 'all' hook has been hooked
+	 *
+	 * @var bool
+	 */
+	private $log_all_hooked = false;
+
+	/**
 	 * List of keys for verbose/sensitive data that should not be logged
 	 *
 	 * @var array
@@ -145,6 +152,11 @@ class NS_Cloner_Log {
 			$this->header();
 			$this->log( 'CONTINUING FROM: <a href="' . $this->get_url( $old ) . '">' . $old . '</a>' );
 		}
+		// Hook to WP 'all' hook to automatically log all hooks that start with ns_cloner.
+		if ( ! $this->log_all_hooked ) {
+			add_action( 'all', [ $this, 'log_hook' ] );
+			$this->log_all_hooked = true;
+		}
 	}
 
 	/**
@@ -216,6 +228,9 @@ class NS_Cloner_Log {
 	 * @return bool
 	 */
 	public function log( $message, $raw = false ) {
+		// Remove this temporarily to prevent infinite loop.
+		remove_action( 'all', [ $this, 'log_hook' ] );
+
 		// If debug is off or the log directory isn't writable, don't log.
 		if ( ! is_resource( $this->log_handle ) ) {
 			return false;
@@ -263,6 +278,7 @@ class NS_Cloner_Log {
 		$message_cell = "<td>{$formatted}</td>";
 		$message_row  = "<tr>{$time_cell}{$color_cell}{$message_cell}</tr>";
 		fwrite( $this->log_handle, $message_row );
+		add_action( 'all', [ $this, 'log_hook' ] );
 		return true;
 
 	}
@@ -273,6 +289,31 @@ class NS_Cloner_Log {
 	 */
 	public function log_break() {
 		$this->log( '-----------------------------------------------------------------------------------------------------------' );
+	}
+
+	/**
+	 * Called on 'all' hook in order to catch and record any hook starting with ns_cloner
+	 */
+	public function log_hook() {
+		global $wp_actions;
+		$args = func_get_args();
+		$hook = $args[0];
+		// Skip if not a cloner hook, if the logger is not loaded yet, or if no hooks are registered.
+		if ( 0 !== strpos( $hook, 'ns_cloner_' ) ) {
+			return;
+		}
+		// Skip if the hook has been marked as private (not logged).
+		if ( in_array( $hook, ns_cloner()->hidden_hooks ) ) {
+			return;
+		}
+		// Log as hook or action.
+		$is_action = isset( $wp_actions[ $hook ] );
+		if ( $is_action ) {
+			$this->log( "DOING ACTION: {$hook}" );
+		} elseif ( defined ( 'WP_NS_CLONER_DEBUG' ) && WP_NS_CLONER_DEBUG ) {
+			// Filters are much more verbose an can contain more sensitive info in args so skip by default.
+			$this->log( [ "APPLYING FILTER: {$hook} with args:", array_slice( $args, 1 ) ] );
+		}
 	}
 
 	/**

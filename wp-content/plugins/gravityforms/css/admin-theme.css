@@ -81,6 +81,8 @@ AND ANY CHANGES MADE HERE WILL BE OVERWRITTEN.
 
 }
 
+/* Media Queries */
+
 /* -----------------------------------------------------------------------------
  *
  * Mixins
@@ -199,8 +201,15 @@ AND ANY CHANGES MADE HERE WILL BE OVERWRITTEN.
 .gform_wrapper.gravity-theme .left_label .gfield_label, .gform_wrapper.gravity-theme .right_label .gfield_label {
 		width: 30%;
 		margin: 0;
-		padding: 0;
+		padding: 0
 	}
+
+@media (max-width: 640px) {
+
+	.gform_wrapper.gravity-theme .left_label .gfield_label, .gform_wrapper.gravity-theme .right_label .gfield_label {
+			width: 100%
+	}
+		}
 
 .gform_wrapper.gravity-theme .gform_fields.left_label fieldset, .gform_wrapper.gravity-theme .gform_fields.right_label fieldset {
 				clear: both;
@@ -208,23 +217,51 @@ AND ANY CHANGES MADE HERE WILL BE OVERWRITTEN.
 
 .gform_wrapper.gravity-theme .gform_fields.left_label fieldset .ginput_container, .gform_wrapper.gravity-theme .gform_fields.right_label fieldset .ginput_container {
 					float: left;
-					width: 70%;
+					width: 70%
 				}
+
+@media (max-width: 640px) {
+
+				.gform_wrapper.gravity-theme .gform_fields.left_label fieldset .ginput_container, .gform_wrapper.gravity-theme .gform_fields.right_label fieldset .ginput_container {
+						width: 100%
+				}
+					}
+
+@media (max-width: 640px) {
+
+				.gform_wrapper.gravity-theme .gform_fields.left_label fieldset > .ginput_complex, .gform_wrapper.gravity-theme .gform_fields.right_label fieldset > .ginput_complex {
+						width: 100%
+				}
+					}
 
 .gform_wrapper.gravity-theme .gform_fields.left_label legend.gfield_label, .gform_wrapper.gravity-theme .gform_fields.right_label legend.gfield_label {
 					display: block;
 					float: left;
 					padding-right: 1em;
-					width: 30%;
+					width: 30%
 				}
+
+@media (max-width: 640px) {
+
+				.gform_wrapper.gravity-theme .gform_fields.left_label legend.gfield_label, .gform_wrapper.gravity-theme .gform_fields.right_label legend.gfield_label {
+						width: 100%
+				}
+					}
 
 .gform_wrapper.gravity-theme .left_label .ginput_complex .ginput_container, .gform_wrapper.gravity-theme .right_label .ginput_complex .ginput_container {
 		width: auto;
 	}
 
 .gform_wrapper.gravity-theme .left_label div.gfield > div:not(.ui-resizable-handle):not(.gfield-admin-icons), .gform_wrapper.gravity-theme .right_label div.gfield > div:not(.ui-resizable-handle):not(.gfield-admin-icons) {
-		width: 70%;
+		width: 70%
 	}
+
+@media (max-width: 640px) {
+
+	.gform_wrapper.gravity-theme .left_label div.gfield > div:not(.ui-resizable-handle):not(.gfield-admin-icons), .gform_wrapper.gravity-theme .right_label div.gfield > div:not(.ui-resizable-handle):not(.gfield-admin-icons) {
+			width: 100%
+	}
+		}
 
 .gform_wrapper.gravity-theme .right_label .gfield_label {
 		text-align: right;
@@ -853,15 +890,23 @@ to no.
 		.gform_wrapper.gravity-theme .ginput_full:not(:last-of-type), .gform_wrapper.gravity-theme .ginput_container_address span:not(.ginput_full):not(:last-of-type):not(:nth-last-of-type(2)) {
 			margin-bottom: 0.5rem;
 		}
+			html[dir=rtl] .gform_wrapper.gravity-theme .ginput_complex:not(.ginput_container_address) span:not([style*="display:none"]):not(.ginput_full), html[dir=rtl] .gform_wrapper.gravity-theme .ginput_complex:not(.ginput_container_address) fieldset:not([style*="display:none"]):not(.ginput_full) {
+				padding-left: 1%;
+				padding-right: 0;
+			}
+
 			html[dir=rtl] .gform_wrapper.gravity-theme .ginput_complex:not(.ginput_container_address) span:not([style*="display:none"]):not(.ginput_full) ~ span:not(.ginput_full), html[dir=rtl] .gform_wrapper.gravity-theme .ginput_complex:not(.ginput_container_address) fieldset:not([style*="display:none"]):not(.ginput_full) ~ span:not(.ginput_full) {
+				padding-left: 0;
 				padding-right: 1%;
 			}
 
 			html[dir=rtl] .gform_wrapper.gravity-theme .ginput_container_address .ginput_left {
 				padding-left: 1%;
+				padding-right: 0;
 			}
 
 			html[dir=rtl] .gform_wrapper.gravity-theme .ginput_container_address .ginput_right {
+				padding-left: 0;
 				padding-right: 1%;
 			}
 
@@ -1111,6 +1156,20 @@ html[dir=rtl] .gform_wrapper.gravity-theme .gfield_list_icons button.delete_list
 		flex: 1 1 100%;
 	}
 
+.gform_wrapper.gravity-theme fieldset.ginput_cardinfo_left {
+		display: flex;
+		flex-direction: column;
+	}
+
+.gform_wrapper.gravity-theme fieldset.ginput_cardinfo_left legend {
+			float: left;
+			padding-top: 5px;
+		}
+
+.gform_wrapper.gravity-theme .field_sublabel_below fieldset.ginput_cardinfo_left {
+		flex-direction: column-reverse;
+	}
+
 html[dir="rtl"] .gform_wrapper.gravity-theme .ginput_card_expiration_month {
 		margin-left: 1rem;
 		margin-right: 0;
@@ -1127,6 +1186,10 @@ html[dir="rtl"] .gform_wrapper.gravity-theme .gfield_creditcard_warning .gfield_
 		background-size: 1.5rem 1rem;
 		background-repeat: no-repeat;
 		background-position: right 0.2rem;
+	}
+
+html[dir="rtl"] .gform_wrapper.gravity-theme fieldset.ginput_cardinfo_left {
+		display: flex;
 	}
 
 @media (max-width: 640px) {

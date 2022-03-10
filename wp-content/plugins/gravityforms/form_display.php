@@ -1282,7 +1282,17 @@ class GFFormDisplay {
 				}
 			}
 
-			return $progress_confirmation;
+			/**
+			 * Filters the form confirmation text.
+			 *
+			 * This filter allows the form confirmation text to be programmatically changed before it is rendered to the page.
+			 *
+			 * @since 2.5.15
+			 *
+			 * @param string  $progress_confirmation Confirmation text to be filtered.
+			 * @param array $form The current form object
+			 */
+			return gf_apply_filters( array( 'gform_get_form_confirmation_filter', $form_id ), $progress_confirmation, $form );
 		}
 	}
 
@@ -1591,7 +1601,6 @@ class GFFormDisplay {
          */
 		do_action( 'gform_entry_created', $lead, $form );
 		$lead = gf_apply_filters( array( 'gform_entry_post_save', $form['id'] ), $lead, $form );
-
 		gf_feed_processor()->save()->dispatch();
 
 		RGFormsModel::set_current_lead( $lead );

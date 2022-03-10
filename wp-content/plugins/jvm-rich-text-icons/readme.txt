@@ -3,8 +3,8 @@ Contributors: jorisvanmontfort
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXZJG9GC34JJU
 Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF
 Requires at least: 5.4
-Tested up to: 5.8.1
-Stable tag: 1.0.4
+Tested up to: 5.9
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,25 @@ add_filter( 'jvm_richtext_icons_base_class', 'my_icon_class');
 `
 
 == Changelog ==
+
+= 1.0.7 =
+Fixed the styling of the editor pop-over. It was to large since WordPress 5.9.
+
+= 1.0.6 =
+The addon is now also loaded in the widget screen (widget.php)
+
+= 1.0.5 =
+Added a hook for modifying the editor javascript file loaded for advanced users. 
+Example usage:
+
+`
+function add_my_js_file($file) {
+    $file = '/path_to_my/js_file.js';
+    return $file;
+}
+
+add_filter( 'jvm_richtext_icons_editor_js_file', 'add_my_js_file');
+`
 
 = 1.0.4 =
 Bug fix: Replaced the deprecated block_editor_settings hook by the new block_editor_settings_all hook. This fixes a deprecated notice.

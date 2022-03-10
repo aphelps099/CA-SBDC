@@ -288,9 +288,13 @@ class NS_Cloner_Process_Manager {
 		}
 
 		// Flush caches for clone over.
-		switch_to_blog( $target_id );
-		wp_cache_flush();
-		restore_current_blog();
+		// This can prevent issues, but also is expensive for large redis caches, so allow disabling.
+		$do_cache_flush = ns_cloner_request()->is_mode([ 'clone_over', 'search_replace' ]);
+		if ( apply_filters( 'ns_cloner_do_cache_flush', $do_cache_flush ) ) {
+			switch_to_blog( $target_id );
+			wp_cache_flush();
+			restore_current_blog();
+		}
 
 		// Log and report timing details.
 		ns_cloner()->report->set_end_time();

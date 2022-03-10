@@ -58,7 +58,7 @@ if ( ! class_exists( 'GhostKit_Breakpoints' ) ) {
          *
          * @var string
          */
-        protected $plugin_version = '2.19.4';
+        protected $plugin_version = '2.22.3';
 
         /**
          * Scss Configurations.
@@ -239,7 +239,7 @@ if ( ! class_exists( 'GhostKit_Breakpoints' ) ) {
                     array_merge(
                         $breakpoints,
                         array(
-                            '2.19.4',
+                            '2.22.3',
                         )
                     )
                 )

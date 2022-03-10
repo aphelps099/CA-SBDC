@@ -29,7 +29,7 @@ class JVM_acf_plugin_jvm_rich_text_icons {
         // settings
         // - these will be passed into the field class.
         $this->settings = array(
-            'version'   => '1.0.4',
+            'version'   => '1.0.5',
             'url'       => plugin_dir_url( __FILE__ ),
             'path'      => plugin_dir_path( __FILE__ )
         );
@@ -80,9 +80,11 @@ class JVM_acf_plugin_jvm_rich_text_icons {
     
 
     public function load_admin_assets() {
-         wp_enqueue_script(
+        $js_file = apply_filters('jvm_richtext_icons_editor_js_file', plugins_url( '/dist/acf.js', dirname( __FILE__ ) ));
+
+        wp_enqueue_script(
             'jvm-richhtext-icons-acf', // Handle.
-            plugins_url( '/dist/acf.js', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
+            $js_file, // Block.build.js: We register the block here. Built with Webpack.
             array( 'wp-i18n', 'wp-element', 'wp-editor' ), // Dependencies, defined above.
             null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
             true // Enqueue the script in the footer.

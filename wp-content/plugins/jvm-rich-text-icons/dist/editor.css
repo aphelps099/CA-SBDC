@@ -1,6 +1,6 @@
 .jvm-richtext-icons-popover .components-popover__content {
     width: 432px;
-    max-height: 400px;
+    max-height: 443px !important;
     padding: 10px;
     overflow-y: auto !important;
 }

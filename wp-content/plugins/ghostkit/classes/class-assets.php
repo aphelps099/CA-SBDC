@@ -184,24 +184,18 @@ class GhostKit_Assets {
 
         do_action( 'gkt_before_assets_register' );
 
-        // Object Fit Images.
-        if ( apply_filters( 'gkt_enqueue_plugin_object_fit_images', true ) ) {
-            wp_register_script( 'object-fit-images', ghostkit()->plugin_url . 'assets/vendor/object-fit-images/dist/ofi.min.js', array(), '3.2.4', true );
-
-            $js_deps[] = 'object-fit-images';
-        }
-
         // ScrollReveal.
         if ( apply_filters( 'gkt_enqueue_plugin_scrollreveal', true ) ) {
-            wp_register_script( 'scrollreveal', ghostkit()->plugin_url . 'assets/vendor/scrollreveal/dist/scrollreveal.min.js', array(), '4.0.7', true );
+            // We need to use previous version, as in 4.0.9 `cleanup` is not working at all.
+            wp_register_script( 'scrollreveal', ghostkit()->plugin_url . 'assets/vendor/scrollreveal-4-0-7/scrollreveal.min.js', array(), '4.0.7', true );
 
             $js_deps[] = 'scrollreveal';
         }
 
         // Jarallax.
         if ( apply_filters( 'gkt_enqueue_plugin_jarallax', true ) ) {
-            wp_register_script( 'jarallax', ghostkit()->plugin_url . 'assets/vendor/jarallax/dist/jarallax.min.js', array( 'jquery' ), '1.12.4', true );
-            wp_register_script( 'jarallax-video', ghostkit()->plugin_url . 'assets/vendor/jarallax/dist/jarallax-video.min.js', array( 'jarallax' ), '1.12.4', true );
+            wp_register_script( 'jarallax', ghostkit()->plugin_url . 'assets/vendor/jarallax/dist/jarallax.min.js', array( 'jquery' ), '2.0.1', true );
+            wp_register_script( 'jarallax-video', ghostkit()->plugin_url . 'assets/vendor/jarallax/dist/jarallax-video.min.js', array( 'jarallax' ), '2.0.1', true );
         }
 
         // Swiper.
@@ -291,7 +285,7 @@ class GhostKit_Assets {
             'ghostkit-helper',
             ghostkit()->plugin_url . 'assets/js/helper.min.js',
             array( 'jquery' ),
-            '2.19.4',
+            '2.22.3',
             true
         );
         $default_variant = array(
@@ -382,7 +376,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'gutenberg/style.min.css',
             $css_deps,
-            '2.19.4'
+            '2.22.3'
         );
         wp_style_add_data( 'ghostkit', 'rtl', 'replace' );
         wp_style_add_data( 'ghostkit', 'suffix', '.min' );
@@ -391,7 +385,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'assets/js/main.min.js',
             $js_deps,
-            '2.19.4',
+            '2.22.3',
             true
         );
 
@@ -446,7 +440,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_script_url,
                 array_unique( $block_js_deps ),
-                '2.19.4',
+                '2.22.3',
                 true
             );
         }
@@ -471,7 +465,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_style_url,
                 array_unique( $block_css_deps ),
-                '2.19.4'
+                '2.22.3'
             );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'rtl', 'replace' );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'suffix', '.min' );
@@ -644,20 +638,20 @@ class GhostKit_Assets {
 
             // Enqueue custom CSS.
             if ( ! self::$already_added_custom_assets ) {
-                wp_register_style( $name, false, array(), '2.19.4' );
+                wp_register_style( $name, false, array(), '2.22.3' );
                 wp_enqueue_style( $name );
                 wp_add_inline_style( $name, $css );
 
                 // Enqueue JS instead of CSS when rendering in <body> to prevent W3C errors.
             } elseif ( ! wp_script_is( $name, 'enqueued' ) ) {
-                wp_register_script( $name, false, array(), '2.19.4', true );
+                wp_register_script( $name, false, array(), '2.22.3', true );
                 wp_enqueue_script( $name );
                 wp_add_inline_script(
                     $name,
                     '(function(){
                         var styleTag = document.createElement("style");
                         styleTag.id = "' . esc_attr( $name ) . '-inline-css";
-                        styleTag.innerHTML = "' . preg_replace( "/[\r\n]+/", ' ', $css ) . '";
+                        styleTag.innerHTML = ' . wp_json_encode( $css ) . ';
                         document.body.appendChild(styleTag);
                     }());'
                 );
@@ -675,7 +669,7 @@ class GhostKit_Assets {
      * @param Boolean $footer - print in footer.
      */
     public static function add_custom_js( $name, $js, $footer = false ) {
-        wp_register_script( $name, '', array(), '2.19.4', $footer );
+        wp_register_script( $name, '', array(), '2.22.3', $footer );
         wp_enqueue_script( $name );
         wp_add_inline_script( $name, $js );
     }

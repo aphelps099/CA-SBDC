@@ -389,7 +389,7 @@ class GF_Field extends stdClass implements ArrayAccess {
 
 		$field_label = $this->get_field_label( $force_frontend_label, $value );
 		if ( ! in_array( $this->inputType, array( 'calculation', 'singleproduct' ), true ) ) {
-			// Calculation field put a screen reader text in the label so do not escape it.
+			// Calculation and Single Product field add a screen reader text to the label so do not escape it.
 			$field_label = esc_html( $field_label );
 		}
 
@@ -2532,6 +2532,20 @@ class GF_Field extends stdClass implements ArrayAccess {
 			$form_id,
 			$this->id,
 		), esc_html__( 'Quantity:', 'gravityforms' ), $form_id );
+	}
+
+	/**
+	 * Returns an array of key value pairs to be saved to the entry meta after saving/updating the entry.
+	 *
+	 * @since 2.5.16
+	 *
+	 * @param array $form  The form object being saved.
+	 * @param array $entry The entry object being saved
+	 *
+	 * @return array The array that contains the key/value pairs to be stored as extra meta data.
+	 */
+	public function get_extra_entry_metadata( $form, $entry ) {
+		return array();
 	}
 
 }

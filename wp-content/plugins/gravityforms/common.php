@@ -166,11 +166,16 @@ class GFCommon {
 	}
 
 	public static function recursive_add_index_file( $dir ) {
-		if ( ! is_dir( $dir ) || is_link( $dir ) ) {
+		$dir = untrailingslashit( $dir );
+		if ( ! is_dir( $dir ) || ! wp_is_writable( $dir ) || is_link( $dir ) ) {
+			GFCommon::log_debug( __METHOD__ . '(): Path ' . $dir . ' is not a valid path or is not writable' );
+
 			return;
 		}
 
 		if ( ! ( $dp = opendir( $dir ) ) ) {
+			GFCommon::log_debug( __METHOD__ . '(): Unable to open directory: ' . $dir );
+
 			return;
 		}
 
@@ -178,7 +183,10 @@ class GFCommon {
 		set_error_handler( '__return_false', E_ALL );
 
 		//creates an empty index.html file
-		if ( $f = fopen( $dir . '/index.html', 'w' ) ) {
+		$index_file_path = $dir . '/index.html';
+		GFCommon::log_debug( __METHOD__ . '(): Adding file: ' . $index_file_path );
+
+		if ( $f = fopen( $index_file_path, 'w' ) ) {
 			fclose( $f );
 		}
 
@@ -5256,7 +5264,7 @@ Content-Type: text/html;
 		$gf_vars['disable']                 = esc_html__( 'Disable', 'gravityforms' );
 		$gf_vars['enabled']                 = esc_html__( 'Enabled', 'gravityforms' );
 		$gf_vars['disabled']                = esc_html__( 'Disabled', 'gravityforms' );
-		$gf_vars['configure']               = esc_html__( 'Configure', 'gravityform' );
+		$gf_vars['configure']               = esc_html__( 'Configure', 'gravityforms' );
 		$gf_vars['conditional_logic_text']  = esc_html__( 'Conditional Logic', 'gravityforms' );
 		$gf_vars['conditional_logic_desc']  = esc_html__( 'Conditional logic allows you to change what the user sees depending on the fields they select.', 'gravityforms' );
 		/**

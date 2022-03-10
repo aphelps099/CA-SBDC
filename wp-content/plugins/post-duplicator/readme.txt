@@ -2,8 +2,8 @@
 Contributors: metaphorcreations
 Tags: posts, post, duplicate, duplication
 Requires at least: 4.0
-Tested up to: 5.7.2
-Stable tag: /trunk/
+Tested up to: 5.9
+Stable tag: 2.28
 License: GPL2
 
 Creates functionality to duplicate any and all post types, including taxonomies & custom fields.
@@ -40,6 +40,24 @@ Check out the 'Installation' tab.
 2. View of the settings page
 
 == Changelog ==
+
+= 2.28 =
+* Bug fix from last update
+
+= 2.27 =
+* Sanitization and validation updates
+* Settings page optimization
+
+= 2.26 =
+* Removed duplicate functionality from post trash pages
+* Database sanitization updates
+* Asset loading path updates
+
+= 2.25 =
+* Multiple data sanitization updates
+
+= 2.24 =
+* Settings sanitization updates
 
 = 2.23 =
 * Added setting to limit post duplication to current user
@@ -135,4 +153,4 @@ Must upgrade in order for the plugin to work. The file paths where initially wro
 
 == Upgrade Notice ==
 
-Set the default setting of duplicated post author to current user and added additional settings
+Bug fix from last update

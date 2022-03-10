@@ -1,24 +1,27 @@
 {
-	"name": "ghostkit/table-of-contents",
-	"category": "text",
-    "supports": {
-        "html": false,
-        "className": false,
-        "align": [ "wide", "full" ],
-        "multiple": false
+  "name": "ghostkit/table-of-contents",
+  "category": "text",
+  "title": "Table of Contents",
+  "description": "Automatically generate a table of contents by parsing page headers in content.",
+  "keywords": ["table of contents", "toc"],
+  "supports": {
+    "html": false,
+    "className": false,
+    "align": ["wide", "full"],
+    "multiple": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Table of Contents"
     },
-    "attributes": {
-        "title": {
-            "type": "string",
-            "default": "Table of Contents"
-        },
-        "listStyle": {
-            "type": "string",
-            "default": "ol-styled"
-        },
-        "allowedHeaders": {
-            "type": "array",
-            "default": [2, 3, 4]
-        }
+    "listStyle": {
+      "type": "string",
+      "default": "ol-styled"
+    },
+    "allowedHeaders": {
+      "type": "array",
+      "default": [2, 3, 4]
     }
+  }
 }

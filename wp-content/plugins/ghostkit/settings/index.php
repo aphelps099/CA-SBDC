@@ -123,8 +123,16 @@ class GhostKit_Settings {
 
         // phpcs:ignore
         if ( 'ghostkit_go_pro' === $_GET['page'] ) {
+            $medium = 'admin_menu';
+
             // phpcs:ignore
-            wp_redirect( ghostkit()->go_pro_link() );
+            if ( isset( $_GET['utm_medium'] ) ) {
+                // phpcs:ignore
+                $medium = $_GET['utm_medium'];
+            }
+
+            // phpcs:ignore
+            wp_redirect( ghostkit()->go_pro_link() . '?utm_source=plugin&utm_medium=' . esc_attr( $medium ) . '&utm_campaign=go_pro&utm_content=2.22.3' );
             exit();
         }
     }
@@ -201,7 +209,7 @@ class GhostKit_Settings {
             'read',
             'edit.php?post_type=wp_block',
             '',
-            'dashicons-grid-view',
+            'dashicons-editor-table',
             57
         );
     }

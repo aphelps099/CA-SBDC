@@ -60,7 +60,7 @@ class JVM_Richtext_icons {
      * Enqueue Gutenberg block assets for both admin backend.
      */
     public function load_admin_assets($hook_suffix) {
-        if( 'post.php' == $hook_suffix || 'post-new.php' == $hook_suffix ) {
+        if( 'post.php' == $hook_suffix || 'post-new.php' == $hook_suffix || 'widgets.php' == $hook_suffix) {
             // Register block editor script for backend.
             wp_enqueue_script(
                 'jvm-richhtext-icons-js', // Handle.

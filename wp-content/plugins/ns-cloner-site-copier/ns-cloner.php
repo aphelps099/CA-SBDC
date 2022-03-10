@@ -3,7 +3,7 @@
  * Plugin Name: NS Cloner - Site Copier
  * Plugin URI: https://neversettle.it
  * Description: The amazing NS Cloner creates a new site as an exact clone / duplicate / copy of an existing site with theme and all plugins and settings intact in just a few steps. Check out NS Cloner Pro for additional powerful add-ons and features!
- * Version: 4.1.8
+ * Version: 4.1.9.3
  * Author: Never Settle
  * Author URI: https://neversettle.it
  * Requires at least: 4.0.0
@@ -67,7 +67,7 @@ final class NS_Cloner {
 	 *
 	 * @var string
 	 */
-	public $version = '4.1.8';
+	public $version = '4.1.9.3';
 
 	/**
 	 * Menu Slug
@@ -172,7 +172,7 @@ final class NS_Cloner {
 	 *
 	 * @var array
 	 */
-	private $hidden_hooks = [];
+	public $hidden_hooks = [];
 
 	/**
 	 * Singleton instance of NS_Cloner
@@ -219,14 +219,15 @@ final class NS_Cloner {
 		// Add quick-clone link.
 		add_action( 'manage_sites_action_links', [ $this, 'admin_quick_clone_link' ], 10, 2 );
 
-		// Do cloner specific setup once translation/localization is ready.
-		add_action( 'plugins_loaded', [ $this, 'init' ] );
-
-		// Hook to WP 'all' hook to automatically log all hooks that start with ns_cloner.
-		add_action( 'all', [ $this, 'log_hooks' ] );
-
 		// Install custom tables after cloner init.
 		add_action( 'ns_cloner_init', [ $this, 'install_tables' ] );
+
+		// Only load rest of plugin if it could be needed (not on frontend).
+		$should_load = is_admin() || (wp_doing_ajax() && is_user_logged_in()) || ( defined( 'WP_CLI' ) && WP_CLI );
+		if ( apply_filters( 'ns_cloner_should_load', $should_load ) ) {
+			// Bootstrap full cloner and addons once translation/localization is ready.
+			add_action( 'plugins_loaded', [ $this, 'init' ] );
+		}
 	}
 
 	/**
@@ -235,7 +236,11 @@ final class NS_Cloner {
 	 * The difference between this and the constructor is that anything that needs to use localization has to go here.
 	 */
 	public function init() {
-		load_plugin_textdomain( 'ns-cloner-site-copier', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain(
+			'ns-cloner-site-copier',
+			false,
+			NS_CLONER_V4_PLUGIN_DIR . 'languages/'
+		);
 
 		// Setup class instances.
 		$this->process_manager = new NS_Cloner_Process_Manager();
@@ -538,33 +543,6 @@ final class NS_Cloner {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Automatically log all actions and filters starting with 'ns_cloner_' in the detail log.
-	 *
-	 * Runs on the 'all' hook.
-	 */
-	public function log_hooks() {
-		global $wp_actions;
-		$args = func_get_args();
-		$hook = $args[0];
-		// Skip if not a cloner hook, if the logger is not loaded yet, or if no hooks are registered.
-		if ( ! $this->log || ! has_filter( $hook ) || false === strpos( $hook, 'ns_cloner_' ) ) {
-			return;
-		}
-		// Skip if the hook has been marked as private (not logged).
-		$private_pattern = '/' . implode( '|', $this->hidden_hooks ) . '/';
-		if ( preg_match( $private_pattern, $hook ) ) {
-			return;
-		}
-		// Log as hook or action.
-		$is_action = isset( $wp_actions[ $hook ] );
-		if ( $is_action ) {
-			$this->log->log( "DOING ACTION: {$hook}" );
-		} else {
-			$this->log->log( [ "APPLYING FILTER: {$hook} with args:", array_slice( $args, 1 ) ] );
-		}
 	}
 
 	/*

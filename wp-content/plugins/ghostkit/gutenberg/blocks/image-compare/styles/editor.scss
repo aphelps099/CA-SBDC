@@ -5,17 +5,11 @@
 @import "./style";
 
 .ghostkit-image-compare-placeholder .components-placeholder__fieldset {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 
-    > .components-placeholder {
-        -webkit-box-flex: 1;
-            -ms-flex: 1;
-                flex: 1;
-        -webkit-box-shadow: none;
-                box-shadow: none;
-    }
+  > .components-placeholder {
+    flex: 1;
+    box-shadow: none;
+  }
 }
