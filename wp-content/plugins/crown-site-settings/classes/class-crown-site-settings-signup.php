@@ -65,6 +65,16 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 												'input' => new TextInput( array( 'name' => 'neoserra_center_id', 'class' => 'input-small' ) )
 											) ),
 											new Field( array(
+												'label' => 'Welcome Page Message (Customized)',
+												'description' => 'Use the <code>%%name%%</code> placeholder to include their name if provided in the query string.',
+												'input' => new TextInput( array( 'name' => 'welcome_message' ) )
+											) ),
+											new Field( array(
+												'label' => 'Welcome Page Message (Default)',
+												'description' => 'If no name is provided, this message will be displayed.',
+												'input' => new TextInput( array( 'name' => 'welcome_message_default' ) )
+											) ),
+											new Field( array(
 												'label' => 'Calendly Meeting URL',
 												'input' => new TextInput( array( 'name' => 'calendly_url' ) )
 											) )

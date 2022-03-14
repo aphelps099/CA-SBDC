@@ -84,6 +84,12 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['signup_welcome_message'] = new Shortcode(array(
+				'tag' => 'signup_welcome_message',
+				'getOutputCb' => array( __CLASS__, 'get_signup_welcome_message_shortcode' ),
+				'defaultAtts' => array()
+			));
+
 		}
 
 
@@ -526,6 +532,28 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			}
 
 			return ob_get_clean();
+		}
+
+
+		public static function get_signup_welcome_message_shortcode( $atts, $content ) {
+			if ( isset( $_GET['program'] ) && ! empty( $_GET['program'] ) ) {
+				$program_key = $_GET['program'];
+				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+				foreach ( $programs as $program ) {
+					if ( $program['parameter_value'] == $program_key ) {
+						$message = trim( $program['welcome_message_default'] );
+						if ( isset( $_GET['pc_first_name'] ) && ! empty( $_GET['pc_first_name'] ) ) {
+							$custom_message = trim( $program['welcome_message'] );
+							$custom_message = str_replace( '%%name%%', $_GET['pc_first_name'], $custom_message );
+							if ( ! empty( $custom_message ) ) $message = $custom_message;
+						}
+						if ( ! empty( $message ) ) {
+							return do_shortcode( $message );
+						}
+					}
+				}
+			}
+			return do_shortcode( $content );
 		}
 
 
