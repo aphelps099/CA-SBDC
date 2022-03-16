@@ -90,6 +90,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				'defaultAtts' => array()
 			));
 
+			self::$shortcodes['signup_welcome_logo'] = new Shortcode(array(
+				'tag' => 'signup_welcome_logo',
+				'getOutputCb' => array( __CLASS__, 'get_signup_welcome_logo_shortcode' ),
+				'defaultAtts' => array(
+					'default' => ''
+				)
+			));
+
 		}
 
 
@@ -554,6 +562,24 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				}
 			}
 			return do_shortcode( $content );
+		}
+
+
+		public static function get_signup_welcome_logo_shortcode( $atts, $content ) {
+			$logo_src = trim( $atts['default'] );
+			if ( isset( $_GET['program'] ) && ! empty( $_GET['program'] ) ) {
+				$program_key = $_GET['program'];
+				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+				foreach ( $programs as $program ) {
+					if ( $program['parameter_value'] == $program_key ) {
+						$logo_id = trim( $program['welcome_logo'] );
+						if ( ! empty( $logo_id ) ) {
+							$logo_src = wp_get_attachment_image_url( $logo_id, 'medium' );
+						}
+					}
+				}
+			}
+			return ! empty( $logo_src ) ? '<p><img src="' . $logo_src . '" class="alignnone"></p>' : '';
 		}
 
 

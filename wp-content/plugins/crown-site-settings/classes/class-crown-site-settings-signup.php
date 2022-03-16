@@ -65,6 +65,10 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 												'input' => new TextInput( array( 'name' => 'neoserra_center_id', 'class' => 'input-small' ) )
 											) ),
 											new Field( array(
+												'label' => 'Welcome Page Logo',
+												'input' => new MediaInput( array( 'name' => 'welcome_logo', 'mimeType' => 'image' ) )
+											) ),
+											new Field( array(
 												'label' => 'Welcome Page Message (Customized)',
 												'description' => 'Use the <code>%%name%%</code> placeholder to include their name if provided in the query string.',
 												'input' => new TextInput( array( 'name' => 'welcome_message' ) )
