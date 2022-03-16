@@ -574,12 +574,12 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 					if ( $program['parameter_value'] == $program_key ) {
 						$logo_id = trim( $program['welcome_logo'] );
 						if ( ! empty( $logo_id ) ) {
-							$logo_src = wp_get_attachment_image_url( $logo_id, 'medium' );
+							$logo_src = wp_get_attachment_image_url( $logo_id, 'large' );
 						}
 					}
 				}
 			}
-			return ! empty( $logo_src ) ? '<p><img src="' . $logo_src . '" class="alignnone"></p>' : '';
+			return ! empty( $logo_src ) ? '<p><img src="' . $logo_src . '" class="alignnone" style="max-height: 200px; width: auto;"></p>' : '';
 		}
 
 
