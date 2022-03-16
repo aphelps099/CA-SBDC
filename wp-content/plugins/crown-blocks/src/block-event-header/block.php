@@ -58,7 +58,7 @@ if(!class_exists('Crown_Block_Event_Header')) {
 						<div class="header-contents">
 							<div class="inner">
 
-								<?php if ( $theme == 'norcal-sbdc-ip' ) { ?>
+								<?php if ( true || $theme == 'norcal-sbdc-ip' ) { ?>
 
 									<div class="title-container">
 
