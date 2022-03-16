@@ -81,6 +81,13 @@
 
 						<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
 
+						<?php $google_reviews_link = get_option( 'theme_config_footer_google_reviews_link' ); ?>
+						<?php if ( ! empty( $google_reviews_link ) ) { ?>
+							<a href="<?php echo $google_reviews_link; ?>" target="_blank" class="google-reviews-link">
+								<span class="inner">Review us on Google</span>
+							</a>
+						<?php } ?>
+
 						<div id="google-translate"></div>
 						<script>
 							function googleTranslateElementInit() {

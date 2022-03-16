@@ -101,6 +101,10 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										)
 									) ),
 									new Field( array(
+										'label' => 'Google Reviews Link',
+										'input' => new TextInput( array( 'name' => 'theme_config_footer_google_reviews_link', 'placeholder' => 'https://' ) )
+									) ),
+									new Field( array(
 										'label' => 'Subscribe Form',
 										'input' => new Select( array( 'name' => 'theme_config_footer_subscribe_form' ) ),
 										'getOutputCb' => array( __CLASS__, 'set_form_select_input_options' )

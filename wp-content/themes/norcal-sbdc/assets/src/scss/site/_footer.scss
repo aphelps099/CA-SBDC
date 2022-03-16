@@ -412,6 +412,46 @@ body {
 	}
 }
 
+#footer .google-reviews-link {
+	width: 271px;
+	height: 126px;
+	position: relative;
+	margin: 1rem auto;
+	&:hover {
+		&::before {
+			opacity: 0;
+		}
+		&::after {
+			opacity: 1;
+		}
+	}
+	&::before,
+	&::after {
+		content: '';
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		transition: opacity .2s;
+	}
+	&::before {
+		opacity: 1;
+		background-image: url(../img/logos/google-review.png);
+	}
+	&::after {
+		background-image: url(../img/logos/google-review-active.png);
+	}
+	> .inner {
+		display: none;
+	}
+}
+
 
 /*	Footer CTA Links
 ---------------------------------------------------------*/
