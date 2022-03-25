@@ -98,6 +98,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['signup_calendly_link'] = new Shortcode(array(
+				'tag' => 'signup_calendly_link',
+				'getOutputCb' => array( __CLASS__, 'get_signup_calendly_link_shortcode' ),
+				'defaultAtts' => array(
+					'default' => ''
+				)
+			));
+
 		}
 
 
@@ -580,6 +588,27 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				}
 			}
 			return ! empty( $logo_src ) ? '<p><img src="' . $logo_src . '" class="alignnone" style="max-height: 200px; width: auto;"></p>' : '';
+		}
+
+
+		public static function get_signup_calendly_link_shortcode( $atts, $content ) {
+			$url = $atts['default'];
+			if ( isset( $_GET['program'] ) && ! empty( $_GET['program'] ) ) {
+				$program_key = $_GET['program'];
+				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
+				foreach ( $programs as $program ) {
+					if ( $program['parameter_value'] == $program_key ) {
+						$program_url = trim( $program['calendly_url'] );
+						if ( ! empty( $program_url ) ) {
+							$url = $program_url;
+						}
+					}
+				}
+			}
+			if ( ! empty( $url ) ) {
+				return '<a href="' . $url . '" class="btn btn-red btn-lg btn-has-arrow-icon" target="_blank" rel="noopener noreferrer"><span class="btn-label">Schedule Interview</span></a>';
+			}
+			return '';
 		}
 
 
