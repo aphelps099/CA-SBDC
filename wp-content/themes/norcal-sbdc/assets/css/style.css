@@ -27997,9 +27997,6 @@ body.mobile-menu-active {
     margin-right: auto;
     max-width: 900px; }
 
-#main a {
-  text-decoration: underline; }
-
 #main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
 #main-content > .wp-block-crown-blocks-container.alignfull:first-child,
 #main-content > .wp-block-crown-blocks-container-featured-image.alignfull:first-child,
