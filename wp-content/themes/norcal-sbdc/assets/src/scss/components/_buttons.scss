@@ -3,6 +3,9 @@
 .btn {
 	letter-spacing: $btn-letter-spacing;
 	text-transform: $btn-text-transform;
+	&, #main & {
+		text-decoration: none;
+	}
 }
 
 .btn-md {

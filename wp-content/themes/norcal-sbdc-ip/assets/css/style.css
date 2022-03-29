@@ -19430,6 +19430,12 @@ form.feed-filters {
 .gform_page_footer button[type=submit] {
   letter-spacing: 0.1em;
   text-transform: uppercase; }
+  .btn, nav.pagination .nav-links .page-numbers, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link a, #header-primary-cta-links a, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, #footer-primary-cta-links a, #mobile-menu-primary-cta-links a, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, .gform_footer button[type=submit], .gform_page_footer .gform_next_button,
+  .gform_page_footer .gform_previous_button,
+  .gform_page_footer button[type=submit], #main .btn, #main nav.pagination .nav-links .page-numbers, nav.pagination .nav-links #main .page-numbers, #main .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link a, .wp-block-crown-blocks-testimonial-slider .testimonial-slider-link #main a, #main .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link #main a, #main #header-primary-cta-links a, #header-primary-cta-links #main a, #main #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links #main a, #main #footer-primary-cta-links a, #footer-primary-cta-links #main a, #main #mobile-menu-primary-cta-links a, #mobile-menu-primary-cta-links #main a, #main #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links #main a, #main .gform_footer button[type=submit], .gform_footer #main button[type=submit], #main .gform_page_footer .gform_next_button, .gform_page_footer #main .gform_next_button,
+  #main .gform_page_footer .gform_previous_button, .gform_page_footer #main .gform_previous_button,
+  #main .gform_page_footer button[type=submit], .gform_page_footer #main button[type=submit] {
+    text-decoration: none; }
 
 .btn-md, #mobile-menu-primary-cta-links a {
   padding: 0.8rem 1.3rem;
@@ -23002,6 +23008,21 @@ nav.pagination {
 
 .rpad {
   padding-right: 8%; }
+
+.scroll-reveal-fade.scroll-reveal-initialized {
+  opacity: 0;
+  -webkit-transform: translateY(2rem);
+      -ms-transform: translateY(2rem);
+          transform: translateY(2rem); }
+  .scroll-reveal-fade.scroll-reveal-initialized.animated {
+    opacity: 1;
+    -webkit-transform: none;
+        -ms-transform: none;
+            transform: none;
+    -webkit-transition: opacity .75s, -webkit-transform .75s ease-out;
+    transition: opacity .75s, -webkit-transform .75s ease-out;
+    transition: opacity .75s, transform .75s ease-out;
+    transition: opacity .75s, transform .75s ease-out, -webkit-transform .75s ease-out; }
 
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
@@ -29036,6 +29057,42 @@ body {
     height: 3rem;
     fill: rgba(91, 109, 128, 0.5); }
 
+#footer .google-reviews-link {
+  width: 271px;
+  height: 126px;
+  position: relative;
+  margin-top: 1rem;
+  display: block; }
+  @media (min-width: 992px) {
+    #footer .google-reviews-link {
+      margin-left: auto;
+      margin-right: auto; } }
+  #footer .google-reviews-link:hover::before {
+    opacity: 0; }
+  #footer .google-reviews-link:hover::after {
+    opacity: 1; }
+  #footer .google-reviews-link::before, #footer .google-reviews-link::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    -webkit-transition: opacity .2s;
+    transition: opacity .2s; }
+  #footer .google-reviews-link::before {
+    opacity: 1;
+    background-image: url(../img/logos/google-review.png); }
+  #footer .google-reviews-link::after {
+    background-image: url(../img/logos/google-review-active.png); }
+  #footer .google-reviews-link > .inner {
+    display: none; }
+
 /*	Footer CTA Links
 ---------------------------------------------------------*/
 #footer-primary-cta-links {
@@ -29692,6 +29749,9 @@ body.mobile-menu-active {
     margin-left: auto;
     margin-right: auto;
     max-width: 900px; }
+
+#main a {
+  text-decoration: underline; }
 
 #main-content > .wp-block-crown-blocks-call-to-action.alignfull:first-child,
 #main-content > .wp-block-crown-blocks-container.alignfull:first-child,
@@ -31502,21 +31562,6 @@ blockquote,
       color: #cacaca; }
   .btn-link.btn-has-arrow-icon, .wp-block-crown-blocks-featured-post-slider article .entry-link a, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link, #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link #header-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a.btn-link, #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links .wp-block-crown-blocks-featured-post-slider article .entry-link a, .wp-block-crown-blocks-featured-post-slider article .entry-link #mobile-menu-primary-navigation-menu .mega-sub-menu .sub-menu-cta-links a {
     white-space: nowrap; }
-
-.scroll-reveal-fade.scroll-reveal-initialized {
-  opacity: 0;
-  -webkit-transform: translateY(2rem);
-      -ms-transform: translateY(2rem);
-          transform: translateY(2rem);
-  -webkit-transition: opacity .75s, -webkit-transform .75s ease-out;
-  transition: opacity .75s, -webkit-transform .75s ease-out;
-  transition: opacity .75s, transform .75s ease-out;
-  transition: opacity .75s, transform .75s ease-out, -webkit-transform .75s ease-out; }
-  .scroll-reveal-fade.scroll-reveal-initialized.animated {
-    opacity: 1;
-    -webkit-transform: none;
-        -ms-transform: none;
-            transform: none; }
 
 .entry-event-date .month {
   text-transform: uppercase; }

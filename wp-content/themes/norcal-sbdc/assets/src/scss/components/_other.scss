@@ -823,3 +823,14 @@
 .rpad {
 	padding-right:8%;
 }
+
+
+.scroll-reveal-fade.scroll-reveal-initialized {
+	opacity: 0;
+	transform: translateY(2rem);
+	&.animated {
+		opacity: 1;
+		transform: none;
+		transition: opacity .75s, transform .75s ease-out;
+	}
+}

@@ -95,16 +95,6 @@ blockquote,
 	}
 }
 
-.scroll-reveal-fade.scroll-reveal-initialized {
-	opacity: 0;
-	transform: translateY(2rem);
-	transition: opacity .75s, transform .75s ease-out;
-	&.animated {
-		opacity: 1;
-		transform: none;
-	}
-}
-
 .entry-event-date {
 	.month {
 		text-transform: uppercase;
