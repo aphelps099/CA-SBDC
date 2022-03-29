@@ -46,7 +46,9 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
 			add_action( 'crown_sync_team_member_data', array( __CLASS__, 'sync_team_member_data' ) );
-			// add_action( 'init', array( __CLASS__, 'sync_team_member_data' ), 100, 0 );
+			if ( isset( $_GET['sync_team_members'] ) && boolval( $_GET['sync_team_members'] ) ) {
+				add_action( 'init', function() { self::sync_team_member_data( true ); }, 100, 0 );
+			}
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_team_member_category_taxonomy' ) );
@@ -133,6 +135,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 			if ( ! is_main_site() ) {
 
+				$syndication_enabled = apply_filters( 'crown_syndication_enabled', true, 'team_member' );
+
 				$query_modified_time = new DateTime( '@0' );
 				if ( ! $sync_all ) {
 					$query_modified_time = get_option( 'crown_team_member_data_last_synced' ) ? new DateTime( get_option( 'crown_team_member_data_last_synced', 0 ) ) : new DateTime();
@@ -151,30 +155,34 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				$dest_site = get_current_blog_id();
 				switch_to_blog( get_main_site_id() );
 
-				$update_post_ids = get_posts( array(
-					'post_type' => 'team_member',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'date_query' => array(
-						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
-					),
-					'meta_query' => array(
-						array( 'key' => '__team_member_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
+				$post_ids = array();
+				if ( $syndication_enabled && apply_filters( 'crown_syndication_enabled', true, 'team_member' ) ) {
 
-				foreach ( $update_post_ids as $post_id ) {
-					self::syndicate_post( $post_id, $dest_site );
+					$update_post_ids = get_posts( array(
+						'post_type' => 'team_member',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'date_query' => array(
+							array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+						),
+						'meta_query' => array(
+							array( 'key' => '__team_member_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
+
+					foreach ( $update_post_ids as $post_id ) {
+						self::syndicate_post( $post_id, $dest_site );
+					}
+
+					$post_ids = get_posts( array(
+						'post_type' => 'team_member',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'meta_query' => array(
+							array( 'key' => '__team_member_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
 				}
-
-				$post_ids = get_posts( array(
-					'post_type' => 'team_member',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'meta_query' => array(
-						array( 'key' => '__team_member_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
 				
 				$old_post_ids = array_diff( $syn_post_ids, $post_ids );
 				foreach ( $old_post_ids as $post_id ) {
@@ -389,7 +397,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				'pluralLabel' => 'Syndicated Team Members',
 				'settings' => array(
 					'public' => false,
-					'show_in_menu' => 'edit.php?post_type=team_member',
+					'show_in_menu' => apply_filters( 'crown_syndication_enabled', true, 'team_member' ) ? 'edit.php?post_type=team_member' : false,
 					// 'show_ui' => ! is_main_site(),
 					'show_ui' => true,
 					'labels' => array(
@@ -605,6 +613,13 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			if ( ! $post || $post->post_type != 'team_member' ) return $post_id;
 			if ( $post->post_title == 'Auto Draft' ) return $post_id;
 
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) {
+				if ( ! is_main_site() ) {
+					self::delete_syndicated_post( $post_id, get_main_site_id() );
+				}
+				return $post_id;
+			}
+
 			$options = get_post_meta( $post_id, '__team_member_options' );
 
 			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
@@ -617,6 +632,8 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
+
+			$post_type = get_post_type( $post_id );
 
 			$post_arr = array(
 				'post_title' => get_the_title( $post_id ),
@@ -666,6 +683,11 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
+
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post_type ) ) {
+				restore_current_blog();
+				return;
+			}
 			
 			$syn_id = get_posts( array(
 				'post_type' => 'team_member_s',
@@ -833,12 +855,14 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 
 		public static function filter_bulk_actions_edit_team_member_s( $actions ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'team_member' ) ) return $actions;
 			$actions = array();
 			return $actions;
 		}
 
 
 		public static function filter_display_post_states( $post_states, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) return $post_states;
 			if ( $post->post_type == 'team_member' && is_main_site() && in_array( 'post-to-center-sites', get_post_meta( $post->ID, '__team_member_options' ) ) ) {
 				$post_states['post-syndicated'] = 'Syndicated';
 			} else if ( $post->post_type == 'team_member' && ! is_main_site() && ! in_array( 'do-not-post-to-regional-site', get_post_meta( $post->ID, '__team_member_options' ) ) ) {
@@ -849,6 +873,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 
 
 		public static function filter_post_row_actions( $actions, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'team_member' ) ) return $actions;
 			if ( $post->post_type == 'team_member_s' ) {
 				$actions = array();
 				if ( is_main_site() ) {

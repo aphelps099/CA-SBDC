@@ -31,3 +31,4 @@ function ctc_filter_crown_block_event_header_index_title( $title, $post_id ) {
 
 
 add_filter( 'crown_webinars_can_unpublish_syndicated', '__return_true' );
+add_filter( 'crown_syndication_enabled', function( $enabled, $post_type ) { return false; }, 10, 2 );

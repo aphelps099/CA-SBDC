@@ -57,7 +57,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 			add_action( 'after_delete_post', array( __CLASS__, 'delete_syndicated_post' ), 100 );
 
 			// add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
-
+			
 			add_action( 'admin_init', array( __CLASS__, 'process_action_publish_syndicated_client_story' ) );
 			add_action( 'admin_init', array( __CLASS__, 'process_action_unpublish_syndicated_client_story' ) );
 			add_action( 'admin_notices', array( __CLASS__, 'output_syndicated_client_story_admin_notices' ) );
@@ -128,6 +128,8 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			if ( ! is_main_site() ) {
 
+				$syndication_enabled = apply_filters( 'crown_syndication_enabled', true, 'client_story' );
+
 				$query_modified_time = new DateTime( '@0' );
 				if ( ! $sync_all ) {
 					$query_modified_time = get_option( 'crown_client_story_data_last_synced' ) ? new DateTime( get_option( 'crown_client_story_data_last_synced', 0 ) ) : new DateTime();
@@ -146,30 +148,34 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				$dest_site = get_current_blog_id();
 				switch_to_blog( get_main_site_id() );
 
-				$update_post_ids = get_posts( array(
-					'post_type' => 'client_story',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'date_query' => array(
-						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
-					),
-					'meta_query' => array(
-						array( 'key' => '__client_story_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
+				$post_ids = array();
+				if ( $syndication_enabled && apply_filters( 'crown_syndication_enabled', true, 'client_story' ) ) {
 
-				foreach ( $update_post_ids as $post_id ) {
-					self::syndicate_post( $post_id, $dest_site );
+					$update_post_ids = get_posts( array(
+						'post_type' => 'client_story',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'date_query' => array(
+							array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+						),
+						'meta_query' => array(
+							array( 'key' => '__client_story_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
+
+					foreach ( $update_post_ids as $post_id ) {
+						self::syndicate_post( $post_id, $dest_site );
+					}
+
+					$post_ids = get_posts( array(
+						'post_type' => 'client_story',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'meta_query' => array(
+							array( 'key' => '__client_story_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
 				}
-
-				$post_ids = get_posts( array(
-					'post_type' => 'client_story',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'meta_query' => array(
-						array( 'key' => '__client_story_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
 				
 				$old_post_ids = array_diff( $syn_post_ids, $post_ids );
 				foreach ( $old_post_ids as $post_id ) {
@@ -252,7 +258,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 					
 				)
 			) );
-
+			
 			// $count = count( get_posts( array( 'post_type' => 'client_story_s', 'posts_per_page' => -1, 'fields' => 'ids', 'post_status' => 'pending' ) ) );
 			$count = 0;
 			self::$syndicated_client_story_post_type = new PostType( array(
@@ -261,7 +267,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 				'pluralLabel' => 'Syndicated Client Stories',
 				'settings' => array(
 					'rewrite' => array( 'slug' => 'shared/client-stories', 'with_front' => false ),
-					'show_in_menu' => 'edit.php?post_type=client_story',
+					'show_in_menu' => apply_filters( 'crown_syndication_enabled', true, 'client_story' ) ? 'edit.php?post_type=client_story' : false,
 					'has_archive' => false,
 					'publicly_queryable' => true,
 					'show_in_rest' => true,
@@ -371,6 +377,13 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 			if ( ! $post || $post->post_type != 'client_story' ) return $post_id;
 			if ( $post->post_title == 'Auto Draft' ) return $post_id;
 
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) {
+				if ( ! is_main_site() ) {
+					self::delete_syndicated_post( $post_id, get_main_site_id() );
+				}
+				return $post_id;
+			}
+
 			$options = get_post_meta( $post_id, '__client_story_options' );
 
 			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
@@ -384,6 +397,8 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
 			global $wpdb;
+
+			$post_type = get_post_type( $post_id );
 
 			$post = get_post( $post_id );
 			$post_arr = array(
@@ -421,6 +436,11 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
+
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post_type ) ) {
+				restore_current_blog();
+				return;
+			}
 			
 			$syn_ids = get_posts( array(
 				'post_type' => 'client_story_s',
@@ -498,7 +518,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
-				
+
 			$syn_id = get_posts( array(
 				'post_type' => 'client_story_s',
 				'posts_per_page' => 1,
@@ -603,12 +623,14 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 
 		public static function filter_bulk_actions_edit_client_story_s( $actions ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'client_story' ) ) return $actions;
 			$actions = array();
 			return $actions;
 		}
 
 
 		public static function filter_display_post_states( $post_states, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) return $post_states;
 			if( $post->post_type == 'client_story' && in_array( 'featured-post', get_post_meta( $post->ID, '__client_story_options' ) ) ) {
 				$post_states['post-featured'] = 'Featured';
 			}
@@ -628,6 +650,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 
 		public static function filter_post_row_actions( $actions, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'client_story' ) ) return $actions;
 			if ( $post->post_type == 'client_story_s' ) {
 				$actions = array();
 				if ( is_main_site() ) {

@@ -113,6 +113,8 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 
 			if ( ! is_main_site() ) {
 
+				$syndication_enabled = apply_filters( 'crown_syndication_enabled', true, 'webinar' );
+
 				$query_modified_time = new DateTime( '@0' );
 				if ( ! $sync_all ) {
 					$query_modified_time = get_option( 'crown_webinar_data_last_synced' ) ? new DateTime( get_option( 'crown_webinar_data_last_synced', 0 ) ) : new DateTime();
@@ -131,30 +133,35 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 				$dest_site = get_current_blog_id();
 				switch_to_blog( get_main_site_id() );
 
-				$update_post_ids = get_posts( array(
-					'post_type' => 'webinar',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'date_query' => array(
-						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
-					),
-					'meta_query' => array(
-						array( 'key' => '__webinar_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
+				$post_ids = array();
+				if ( $syndication_enabled && apply_filters( 'crown_syndication_enabled', true, 'webinar' ) ) {
 
-				foreach ( $update_post_ids as $post_id ) {
-					self::syndicate_post( $post_id, $dest_site );
+					$update_post_ids = get_posts( array(
+						'post_type' => 'webinar',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'date_query' => array(
+							array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+						),
+						'meta_query' => array(
+							array( 'key' => '__webinar_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
+
+					foreach ( $update_post_ids as $post_id ) {
+						self::syndicate_post( $post_id, $dest_site );
+					}
+
+					$post_ids = get_posts( array(
+						'post_type' => 'webinar',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'meta_query' => array(
+							array( 'key' => '__webinar_options', 'value' => 'post-to-center-sites' )
+						)
+					) );
+
 				}
-
-				$post_ids = get_posts( array(
-					'post_type' => 'webinar',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'meta_query' => array(
-						array( 'key' => '__webinar_options', 'value' => 'post-to-center-sites' )
-					)
-				) );
 				
 				$old_post_ids = array_diff( $syn_post_ids, $post_ids );
 				foreach ( $old_post_ids as $post_id ) {
@@ -225,7 +232,7 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 				'pluralLabel' => 'Syndicated Webinars',
 				'settings' => array(
 					'rewrite' => array( 'slug' => 'shared/webinar', 'with_front' => false ),
-					'show_in_menu' => 'edit.php?post_type=webinar',
+					'show_in_menu' => apply_filters( 'crown_syndication_enabled', true, 'webinar' ) ? 'edit.php?post_type=webinar' : false,
 					'has_archive' => false,
 					'publicly_queryable' => true,
 					'show_in_rest' => true,
@@ -260,6 +267,13 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 			if ( ! $post || $post->post_type != 'webinar' ) return $post_id;
 			if ( $post->post_title == 'Auto Draft' ) return $post_id;
 
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) {
+				if ( ! is_main_site() ) {
+					self::delete_syndicated_post( $post_id, get_main_site_id() );
+				}
+				return $post_id;
+			}
+
 			$options = get_post_meta( $post_id, '__webinar_options' );
 
 			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
@@ -273,6 +287,8 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
 			global $wpdb;
+
+			$post_type = get_post_type( $post_id );
 
 			$post = get_post( $post_id );
 			$post_arr = array(
@@ -309,6 +325,11 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
+
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post_type ) ) {
+				restore_current_blog();
+				return;
+			}
 			
 			$syn_ids = get_posts( array(
 				'post_type' => 'webinar_s',
@@ -463,12 +484,14 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 
 
 		public static function filter_bulk_actions_edit_webinar_s( $actions ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'webinar' ) ) return $actions;
 			$actions = array();
 			return $actions;
 		}
 
 
 		public static function filter_display_post_states( $post_states, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) return $post_states;
 			if ( $post->post_type == 'webinar' && is_main_site() && in_array( 'post-to-center-sites', get_post_meta( $post->ID, '__webinar_options' ) ) ) {
 				$post_states['post-syndicated'] = 'Syndicated';
 			} else if ( $post->post_type == 'webinar' && ! is_main_site() && ! in_array( 'do-not-post-to-regional-site', get_post_meta( $post->ID, '__webinar_options' ) ) ) {
@@ -479,6 +502,7 @@ if ( ! class_exists( 'Crown_Webinars' ) ) {
 
 
 		public static function filter_post_row_actions( $actions, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'webinar' ) ) return $actions;
 			if ( $post->post_type == 'webinar_s' ) {
 				$actions = array();
 				if ( apply_filters( 'crown_webinars_can_unpublish_syndicated', is_main_site() ) ) {

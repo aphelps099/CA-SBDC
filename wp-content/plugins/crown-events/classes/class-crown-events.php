@@ -49,7 +49,9 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			add_action( 'init', array( __CLASS__, 'init_scheduled_events' ) );
 			add_action( 'crown_sync_event_data', array( __CLASS__, 'sync_event_data' ) );
-			// add_action( 'init', array( __CLASS__, 'sync_event_data' ), 100, 0 );
+			if ( isset( $_GET['sync_events'] ) && boolval( $_GET['sync_events'] ) ) {
+				add_action( 'init', function() { self::sync_event_data( true ); }, 100, 0 );
+			}
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_event_series_taxonomy' ) );
@@ -157,6 +159,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			if ( ! is_main_site() ) {
 
+				$syndication_enabled = apply_filters( 'crown_syndication_enabled', true, 'event' );
+
 				$query_modified_time = new DateTime( '@0' );
 				if ( ! $sync_all ) {
 					$query_modified_time = get_option( 'crown_event_data_last_synced' ) ? new DateTime( get_option( 'crown_event_data_last_synced', 0 ) ) : new DateTime();
@@ -175,38 +179,42 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				$dest_site = get_current_blog_id();
 				switch_to_blog( get_main_site_id() );
 
-				$post__not_in = get_posts( array(
-					'post_type' => 'event',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'date_query' => array(
-						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
-					),
-					'meta_query' => array(
-						array( 'key' => '__event_options', 'value' => 'do-not-post-to-center-sites' )
-					)
-				) );
+				$post_ids = array();
+				if ( $syndication_enabled && apply_filters( 'crown_syndication_enabled', true, 'event' ) ) {
 
-				$update_post_ids = get_posts( array(
-					'post_type' => 'event',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'post__not_in' => $post__not_in,
-					'date_query' => array(
-						array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
-					)
-				) );
+					$post__not_in = get_posts( array(
+						'post_type' => 'event',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'date_query' => array(
+							array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+						),
+						'meta_query' => array(
+							array( 'key' => '__event_options', 'value' => 'do-not-post-to-center-sites' )
+						)
+					) );
 
-				foreach ( $update_post_ids as $post_id ) {
-					self::syndicate_post( $post_id, $dest_site );
+					$update_post_ids = get_posts( array(
+						'post_type' => 'event',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'post__not_in' => $post__not_in,
+						'date_query' => array(
+							array( 'column' => 'post_modified_gmt', 'after' => $query_modified_time->format( 'Y-m-d H:i:s' ) )
+						)
+					) );
+
+					foreach ( $update_post_ids as $post_id ) {
+						self::syndicate_post( $post_id, $dest_site );
+					}
+
+					$post_ids = get_posts( array(
+						'post_type' => 'event',
+						'posts_per_page' => -1,
+						'fields' => 'ids',
+						'post__not_in' => $post__not_in
+					) );
 				}
-
-				$post_ids = get_posts( array(
-					'post_type' => 'event',
-					'posts_per_page' => -1,
-					'fields' => 'ids',
-					'post__not_in' => $post__not_in
-				) );
 				
 				$old_post_ids = array_diff( $syn_post_ids, $post_ids );
 				foreach ( $old_post_ids as $post_id ) {
@@ -436,7 +444,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 				'pluralLabel' => 'Syndicated Events',
 				'settings' => array(
 					'public' => false,
-					'show_in_menu' => 'edit.php?post_type=event',
+					'show_in_menu' => apply_filters( 'crown_syndication_enabled', true, 'event' ) ? 'edit.php?post_type=event' : false,
 					'show_ui' => true,
 					'show_in_rest' => true,
 					'labels' => array(
@@ -616,6 +624,13 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 			if ( ! $post || $post->post_type != 'event' ) return $post_id;
 			if ( $post->post_title == 'Auto Draft' ) return $post_id;
 
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) {
+				if ( ! is_main_site() ) {
+					self::delete_syndicated_post( $post_id, get_main_site_id() );
+				}
+				return $post_id;
+			}
+
 			$options = get_post_meta( $post_id, '__event_options' );
 
 			if ( ! in_array( 'do-not-post-to-regional-site', $options ) && $post->post_status == 'publish' && ! is_main_site() ) {
@@ -628,6 +643,8 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 
 		protected static function syndicate_post( $post_id, $dest_site ) {
+
+			$post_type = get_post_type( $post_id );
 
 			$post_arr = array(
 				'post_title' => get_the_title( $post_id ),
@@ -667,6 +684,11 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			$src_site = get_current_blog_id();
 			switch_to_blog( $dest_site );
+
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post_type ) ) {
+				restore_current_blog();
+				return;
+			}
 			
 			$syn_id = get_posts( array(
 				'post_type' => 'event_s',
@@ -811,12 +833,14 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 
 		public static function filter_bulk_actions_edit_event_s( $actions ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'event' ) ) return $actions;
 			$actions = array();
 			return $actions;
 		}
 
 
 		public static function filter_display_post_states( $post_states, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, $post->post_type ) ) return $post_states;
 			if ( $post->post_type == 'event' && in_array( 'featured-post', get_post_meta( $post->ID, '__event_options' ) ) ) {
 				$post_states['post-featured'] = 'Featured';
 			}
@@ -830,6 +854,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 
 		public static function filter_post_row_actions( $actions, $post ) {
+			if ( ! apply_filters( 'crown_syndication_enabled', true, 'event' ) ) return $actions;
 			if ( $post->post_type == 'event_s' ) {
 				$actions = array();
 				// if ( is_main_site() ) {
