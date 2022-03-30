@@ -373,7 +373,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 
 		public static function registerAdminScripts($hook) {
 
-			wp_register_script('jquery-ui-nested-sortable', plugins_url('assets/js/jquery.mjs.nestedSortable.min.js', __FILE__), array('jquery-ui-sortable'));
+			wp_register_script('jquery-ui-nested-sortable', plugins_url('assets/js/jquery.mjs.nestedSortable.js', __FILE__), array('jquery-ui-sortable'));
 			wp_register_script('crown-ordering-admin-post-ordering', plugins_url('assets/js/admin-post-ordering.min.js', __FILE__), array('jquery-ui-nested-sortable'));
 			wp_register_script('crown-ordering-admin-term-ordering', plugins_url('assets/js/admin-term-ordering.min.js', __FILE__), array('jquery-ui-nested-sortable'));
 			wp_register_script('crown-ordering-admin-term-post-ordering', plugins_url('assets/js/admin-term-post-ordering.min.js', __FILE__), array('jquery-ui-sortable'));
