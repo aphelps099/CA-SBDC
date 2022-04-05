@@ -729,12 +729,14 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 			foreach ( $meta as $k => $v ) {
 				update_post_meta( $syn_id, $k, $v );
 			}
+			delete_post_meta( $syn_id, '__team_member_options' );
 			if ( is_array( $meta['team_member_options'] ) ) {
 				foreach( $meta['team_member_options'] as $v ) {
 					if ( in_array( $v, array( 'post-to-center-sites', 'do-not-post-to-center-sites', 'post-to-regional-site', 'do-not-post-to-regional-site' ) ) ) continue;
 					add_post_meta( $syn_id, '__team_member_options', $v );
 				}
 			}
+			delete_post_meta( $syn_id, '__team_member_languages' );
 			if ( is_array( $meta['team_member_languages'] ) ) {
 				foreach( $meta['team_member_languages'] as $v ) {
 					add_post_meta( $syn_id, '__team_member_languages', $v );
