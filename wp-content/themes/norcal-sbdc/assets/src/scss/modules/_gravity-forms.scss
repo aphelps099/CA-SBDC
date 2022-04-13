@@ -180,7 +180,8 @@ $gform-gutter-width: 10px;
 
 	}
 
-	&.gfield_visibility_hidden {
+	&.gfield_visibility_hidden
+	&.gform_validation_container {
 		display: none;
 	}
 
