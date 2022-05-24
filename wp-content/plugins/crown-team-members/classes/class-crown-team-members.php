@@ -233,6 +233,7 @@ if ( ! class_exists( 'Crown_Team_Members' ) ) {
 				'fr'    => 'French',
 				'de'    => 'German',
 				'hi'    => 'Hindi',
+				'hmn'   => 'Hmong',
 				'it'    => 'Italian',
 				'ja'    => 'Japanese',
 				'ko'    => 'Korean',
