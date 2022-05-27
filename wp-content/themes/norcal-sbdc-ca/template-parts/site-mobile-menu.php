@@ -59,7 +59,7 @@
 								'theme_location' => 'mobile_menu_primary',
 								'container' => '',
 								'menu_id' => 'mobile-menu-primary-navigation-menu',
-								'depth' => 3,
+								'depth' => 2,
 								'fallback_cb' => false
 							) );
 						// }

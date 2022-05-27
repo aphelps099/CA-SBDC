@@ -29903,3 +29903,18 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
     color: rgba(255, 255, 255, 0.6); }
   #header.is-sticky #header-search .search-form input[type=search]::placeholder {
     color: rgba(255, 255, 255, 0.6); }
+
+#header.is-sticky #mobile-menu-toggle .label {
+  color: #fff; }
+
+#header.is-sticky #mobile-menu-toggle .icon,
+#header.is-sticky #mobile-menu-toggle .icon::before,
+#header.is-sticky #mobile-menu-toggle .icon::after {
+  background-color: #fff; }
+
+#mobile-menu-primary-navigation-menu > .menu-item > .sub-menu {
+  font-size: 1.25rem; }
+  #mobile-menu-primary-navigation-menu > .menu-item > .sub-menu > .menu-item:last-child {
+    padding-bottom: 1rem; }
+  #mobile-menu-primary-navigation-menu > .menu-item > .sub-menu > .menu-item a {
+    padding: .25rem 1rem; }
