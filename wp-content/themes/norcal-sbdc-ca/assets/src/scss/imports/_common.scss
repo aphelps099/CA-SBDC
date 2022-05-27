@@ -1,0 +1,245 @@
+
+
+#header {
+	&.is-sticky {
+		background-color: #2F3F58;
+		color: #fff;
+	}
+}
+
+#site-branding {
+	@include media-breakpoint-up(xl) {
+		order: 2;
+		width: 150px;
+		flex: 0 0 150px;
+		margin: 0;
+		justify-content: center;
+		position: static;
+	}
+}
+#site-logo {
+	@include media-breakpoint-up(xl) {
+		justify-content: center;
+	}
+	a img {
+		@include media-breakpoint-up(xl) {
+			left: 50%;
+			transform: translateX(-50%);
+		}
+	}
+}
+#site-title {
+	@include media-breakpoint-up(xl) {
+		position: absolute;
+		left: 0;
+		top: 1rem;
+		height: auto;
+		right: auto;
+		width: auto;
+		transform: translateY(-10px)
+	}
+	.title {
+		letter-spacing: 0;
+		color: #fff;
+		.sbdc {
+			font-weight: 400;
+		}
+	}
+}
+
+#header-primary-navigation {
+	#header.search-active & {
+		@include media-breakpoint-up(xl) {
+			opacity: 1;
+		}
+	}
+	align-self: center;
+	@include media-breakpoint-up(xl) {
+		order: 1;
+		flex: 0 0 calc(50% - 75px);
+		justify-content: flex-start;
+		transition: margin-top .2s ease-out;
+		#header.is-sticky & {
+			margin-top: 1rem;
+		}
+	}
+}
+#header-primary-navigation-menu {
+	&:hover {
+		body.header-dropdown-active & {
+			> .menu-item {
+				&:hover,
+				&.active {
+					> a {
+						opacity: 1;
+					}
+				}
+				> a {
+					opacity: .5;
+				}
+			}
+		}
+	}
+	> .menu-item {
+		&:hover,
+		&.active {
+			> a::after {
+				opacity: 1;
+				width: calc(100% - 1rem);
+				@include media-breakpoint-up(lg) {
+					width: calc(100% - 2rem);
+				}
+			}
+			> .sub-menu {
+				opacity: 1;
+				visibility: visible;
+				transition-delay: 0s;
+				transform: none;
+			}
+		}
+		> a {
+			padding: 1rem 0.5rem;
+			position: relative;
+			transition: color .2s, opacity .2s;
+			#header.is-sticky & {
+				color: #fff;
+			}
+			@include media-breakpoint-up(lg) {
+				padding: 1rem;
+			}
+			&::after {
+				content: '';
+				display: block;
+				position: absolute;
+				left: 0.5rem;
+				width: 0;
+				bottom: 0.375rem;
+				border-top: 0.125rem solid $primary;
+				transition: opacity .15s, width .15s ease-out;
+				// opacity: 0;
+				@include media-breakpoint-up(lg) {
+					left: 1rem;
+				}
+				#header.text-color-light &,
+				#header.is-sticky & {
+					border-color: #fff;
+				}
+			}
+		}
+		.menu-item-thumbnail {
+			display: none;
+		}
+		@include media-breakpoint-up(xl) {
+			&.has-thumbnail {
+				> .sub-menu {
+					width: (450px * 2);
+					min-height: 400px;
+					padding-right: 450px;
+					padding-top: 2rem;
+					padding-bottom: 2rem;
+					.menu-item {
+						a {
+							padding-left: 2.5rem;
+							padding-right: 2.5rem;
+						}
+					}
+					> .menu-item-thumbnail {
+						width: 450px;
+						position: absolute;
+						right: 0;
+						top: 0;
+						bottom: 0;
+						display: block;
+						img {
+							position: absolute;
+							left: 0;
+							top: 0;
+							width: 100%;
+							height: 100%;
+							object-fit: cover;
+							object-position: center;
+						}
+					}
+				}
+			}
+		}
+	}
+	.sub-menu {
+		border-radius: 0;
+		left: 1rem;
+		transform: translateX(-10px);
+		.menu-item {
+			&:hover {
+				> a {
+					color: $primary;
+				}
+			}
+		}
+		a {
+			color: $dark;
+		}
+	}
+}
+
+#header-primary-cta-links {
+	@include media-breakpoint-up(xl) {
+		order: 3;
+		flex: 1 1 auto;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.menu-item a {
+		@extend .btn;
+		@extend .btn-sm;
+		@extend .btn-dark-blue;
+		background-color: transparent;
+		color: $dark-blue;
+		@include media-breakpoint-up(lg) {
+			@include make-button-size(md);
+			border-width: 2px;
+			padding: calc(#{$btn-padding-y} - (3px - #{$btn-border-width})) calc(#{$btn-padding-x} - (3px - #{$btn-border-width}));
+		}
+		@include media-breakpoint-up(xl) {
+			@include make-button-size(lg);
+			border-width: 2px;
+			padding: calc(#{$btn-padding-y-lg} - (4px - #{$btn-border-width})) calc(#{$btn-padding-x-lg} - (4px - #{$btn-border-width}));
+		}
+		#header.text-color-light &,
+		#header.is-sticky & {
+			color: #fff;
+			border-color: #fff;
+			@include hover() {
+				background-color: $light-med-blue;
+				color: $dark;
+				border-color: $light-med-blue;
+			}
+		}
+	}
+}
+
+#header-search {
+	@include media-breakpoint-up(xl) {
+		order: 4;
+	}
+	button.toggle {
+		#header.is-sticky & {
+			color: #fff;
+		}
+	}
+	.search-form {
+		.icon {
+			#header.is-sticky & {
+				color: #fff;
+			}
+		}
+		input[type=search] {
+			#header.is-sticky & {
+				border-color: #fff;
+				color: #fff;
+				&::placeholder {
+					color: rgba(#fff, .6);
+				}
+			}
+		}
+	}
+}
