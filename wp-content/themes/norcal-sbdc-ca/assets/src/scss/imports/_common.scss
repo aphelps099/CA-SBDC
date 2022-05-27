@@ -32,7 +32,7 @@
 	@include media-breakpoint-up(xl) {
 		position: absolute;
 		left: 0;
-		top: 1rem;
+		top: .5rem;
 		height: auto;
 		right: auto;
 		width: auto;
@@ -272,6 +272,122 @@
 					padding: .25rem 1rem;
 				}
 			}
+		}
+	}
+}
+
+#footer {
+	> .inner > .container {
+		> .upper {
+			@include media-breakpoint-up(md) {
+				padding-bottom: 3rem;
+			}
+			> .inner {
+				@include media-breakpoint-up(md) {
+					display: flex;
+					flex-wrap: nowrap;
+					justify-content: space-between;
+				}
+			}
+		}
+		> .lower {
+			@media (min-width: 1400px) {
+				margin-left: 0;
+				margin-right: 0;
+			}
+		}
+	}
+}
+#site-footer-branding {
+	@include media-breakpoint-up(md) {
+		flex: 1 1 auto;
+		max-width: 500px;
+		margin-bottom: 0;
+	}
+}
+#site-footer-logo {
+	margin-bottom: 2rem;
+}
+#site-footer-tagline {
+	margin: 0;
+}
+#site-footer-links {
+	flex: 0 0 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+	@include media-breakpoint-up(md) {
+		flex: 0 0 300px;
+	}
+	.social-links {
+		@include media-breakpoint-up(md) {
+			text-align: center;
+			.menu {
+				justify-content: center;
+			}
+		}
+	}
+}
+#footer-primary-cta-links {
+	margin-bottom: 2rem;
+	ul {
+		@include media-breakpoint-up(md) {
+			margin-top: 0;
+		}
+	}
+	li a {
+		@extend .btn-dark-med-blue;
+	}
+}
+#site-copyright {
+	margin-top: 0;
+}
+#footer-legal-links {
+	@include media-breakpoint-up(md) {
+		margin-top: 0;
+	}
+}
+#site-footer-meta {
+	margin-top: 2rem;
+	@include media-breakpoint-up(md) {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+	}
+	.accreditations {
+		@include media-breakpoint-up(md) {
+			padding-right: 0;
+			width: auto;
+			order: 2;
+		}
+	}
+}
+#site-description {
+	@include media-breakpoint-up(md) {
+		text-align: left;
+		flex: 1 1 auto;
+		margin-left: 0;
+		margin-right: 2rem;
+	}
+	h3 {
+		font-size: 1rem;
+		color: $primary;
+	}
+}
+
+
+#main-content,
+#main .container > .inner {
+	> .wp-block-crown-blocks-call-to-action.alignfull,
+	> .wp-block-crown-blocks-container.alignfull,
+	> .wp-block-crown-blocks-container-featured-image.alignfull,
+	> .wp-block-crown-blocks-promo.alignfull,
+	> .wp-block-crown-blocks-post-header,
+	> .wp-block-crown-blocks-resource-header,
+	> .wp-block-crown-blocks-event-header,
+	> .wp-block-crown-blocks-client-story-header,
+	> .wp-block-crown-blocks-webinar-header {
+		&:last-child {
+			padding-bottom: 0;
 		}
 	}
 }
