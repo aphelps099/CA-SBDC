@@ -1,11 +1,11 @@
-=== The SEO Framework – Automated, Effortless, Fast. ===
+=== The SEO Framework – Fast, Automated, Effortless. ===
 Contributors: Cybr
 Donate link: https://github.com/sponsors/sybrew
 Tags: seo, xml sitemap, google search, open graph, schema.org, twitter card, performance, headless
 Requires at least: 5.5.0
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.2.0
-Stable tag: 4.2.3
+Stable tag: 4.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -246,6 +246,10 @@ The SEO Framework does not provide the display of breadcrumbs. This is theme-ter
 If you wish to display breadcrumbs, then your theme should provide this. Alternatively, there are [other plugins](https://wordpress.org/plugins/search/breadcrumbs/) that help you do this.
 
 == Changelog ==
+
+= 4.2.4 =
+
+This minor update improves image processing, reducing TSF's load impact by roughly 20% when generating metadata. We also added WordPress 6.0 support for image filesizes, making social sharing [even more robust](https://theseoframework.com/?p=3903).
 
 = 4.2.3 =
 

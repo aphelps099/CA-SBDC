@@ -62,7 +62,7 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 
 		$info = HTML::make_info(
 			__( 'Learn how this data is used.', 'autodescription' ),
-			'https://developers.google.com/search/docs/data-types/breadcrumb',
+			'https://developers.google.com/search/docs/advanced/structured-data/breadcrumb',
 			false
 		);
 		HTML::wrap_fields(
@@ -82,7 +82,7 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 
 		$info = HTML::make_info(
 			__( 'Learn how this data is used.', 'autodescription' ),
-			'https://developers.google.com/search/docs/data-types/sitelinks-searchbox',
+			'https://developers.google.com/search/docs/advanced/structured-data/sitelinks-searchbox',
 			false
 		);
 		HTML::wrap_fields(
@@ -101,7 +101,7 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 
 		$info = HTML::make_info(
 			__( 'Learn how this data is used.', 'autodescription' ),
-			'https://developers.google.com/search/docs/guides/enhance-site#add-your-sites-name-logo-and-social-links',
+			'https://developers.google.com/search/docs/beginner/establish-business-details',
 			false
 		);
 		HTML::wrap_fields(
@@ -127,9 +127,16 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 						'person'       => __( 'A Person', 'autodescription' ),
 					]
 				);
-				foreach ( $knowledge_type as $value => $name ) {
-					echo '<option value="' . esc_attr( $value ) . '"' . selected( $this->get_option( 'knowledge_type' ), esc_attr( $value ), false ) . '>' . esc_html( $name ) . '</option>' . "\n";
-				}
+				$_current       = $this->get_option( 'knowledge_type' );
+				foreach ( $knowledge_type as $value => $name )
+					vprintf(
+						'<option value="%s" %s>%s</option>',
+						[
+							esc_attr( $value ),
+							selected( $_current, esc_attr( $value ), false ),
+							esc_html( $name ),
+						]
+					);
 				?>
 			</select>
 		</p>
@@ -148,7 +155,7 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 		HTML::description( esc_html__( 'These options are used when this site represents an organization. When no logo is outputted, search engine will look elsewhere.', 'autodescription' ) );
 		$info = HTML::make_info(
 			__( 'Learn how this data is used.', 'autodescription' ),
-			'https://developers.google.com/search/docs/data-types/logo',
+			'https://developers.google.com/search/docs/advanced/structured-data/logo',
 			false
 		);
 		HTML::wrap_fields(
@@ -178,10 +185,10 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 				'id'   => 'knowledge_logo',
 				'data' => [
 					'inputType' => 'logo',
-					'width'     => 512,
-					'height'    => 512,
-					'minWidth'  => 112,
-					'minHeight' => 112,
+					'width'     => 512, // Magic number -> Google requirement? "MAGIC::GOOGLE->LOGO_MAX"?
+					'height'    => 512, // Magic number
+					'minWidth'  => 112, // Magic number -> Google requirement? "MAGIC::GOOGLE->LOGO_MIN"?
+					'minHeight' => 112, // Magic number
 					'flex'      => true,
 				],
 				'i18n' => [
@@ -289,7 +296,7 @@ switch ( $this->get_view_instance( 'schema', $instance ) ) :
 					sprintf(
 						/* translators: %s = Learn more URL. Markdown! */
 						esc_html__( 'These settings are marked for removal. When you clear a field, it will be hidden forever. [Learn more](%s).', 'autodescription' ),
-						'https://developers.google.com/search/docs/data-types/social-profile'
+						'https://support.google.com/knowledgepanel/answer/7534842'
 					),
 					[ 'a' ],
 					[ 'a_internal' => false ]

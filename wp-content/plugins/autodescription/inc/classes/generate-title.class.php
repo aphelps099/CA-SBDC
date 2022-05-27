@@ -713,6 +713,7 @@ class Generate_Title extends Generate_Description {
 	 *
 	 * @since 3.1.0
 	 * @since 4.2.0 Flipped order of query tests.
+	 * @since 4.3.0 Added failover filter for failed queries.
 	 * @internal
 	 * @see $this->get_raw_generated_title()
 	 *
@@ -720,9 +721,7 @@ class Generate_Title extends Generate_Description {
 	 */
 	protected function generate_title_from_query() {
 
-		$title = '';
-
-		if ( $this->is_404() ) {
+		if ( \is_404() ) {
 			$title = $this->get_static_404_title();
 		} elseif ( $this->is_search() ) {
 			$title = $this->get_generated_search_query_title();
@@ -734,7 +733,7 @@ class Generate_Title extends Generate_Description {
 			$title = $this->get_generated_archive_title();
 		}
 
-		return $title;
+		return $title ?? '';
 	}
 
 	/**
@@ -749,8 +748,6 @@ class Generate_Title extends Generate_Description {
 	 * @return string The generated title. Empty if query can't be replicated.
 	 */
 	protected function generate_title_from_args( $args ) {
-
-		$title = '';
 
 		if ( $args['taxonomy'] ) {
 			$title = $this->get_generated_archive_title( \get_term( $args['id'], $args['taxonomy'] ) );
@@ -930,14 +927,14 @@ class Generate_Title extends Generate_Description {
 		} elseif ( $this->is_author() ) {
 			$title  = \get_queried_object()->display_name ?? '';
 			$prefix = \_x( 'Author:', 'author archive title prefix', 'default' );
-		} elseif ( $this->is_date() ) {
-			if ( $this->is_year() ) {
+		} elseif ( \is_date() ) {
+			if ( \is_year() ) {
 				$title  = \get_the_date( \_x( 'Y', 'yearly archives date format', 'default' ) );
 				$prefix = \_x( 'Year:', 'date archive title prefix', 'default' );
-			} elseif ( $this->is_month() ) {
+			} elseif ( \is_month() ) {
 				$title  = \get_the_date( \_x( 'F Y', 'monthly archives date format', 'default' ) );
 				$prefix = \_x( 'Month:', 'date archive title prefix', 'default' );
-			} elseif ( $this->is_day() ) {
+			} elseif ( \is_day() ) {
 				$title  = \get_the_date( \_x( 'F j, Y', 'daily archives date format', 'default' ) );
 				$prefix = \_x( 'Day:', 'date archive title prefix', 'default' );
 			}
@@ -1165,6 +1162,7 @@ class Generate_Title extends Generate_Description {
 	 * @return string The untitled title.
 	 */
 	public function get_static_untitled_title() {
+		// FIXME: WordPress no longer outputs 'Untitled' for the title. It still actively holds this translation, but other context (Widget).
 		return \__( 'Untitled', 'default' );
 	}
 
@@ -1293,7 +1291,7 @@ class Generate_Title extends Generate_Description {
 		if ( $paged >= 2 || $page >= 2 ) {
 			$sep = $this->get_title_separator();
 
-			// phpcs:ignore, WordPress.WP.I18n -- WP didn't add translator code either.
+			/* translators: %s: Page number. */
 			$paging = sprintf( \__( 'Page %s', 'default' ), max( $paged, $page ) );
 
 			if ( \is_rtl() ) {
@@ -1311,6 +1309,7 @@ class Generate_Title extends Generate_Description {
 	 * @since 3.1.2 Added strict taxonomical checks for title protection.
 	 * @since 3.1.3 Fixed conditional logic.
 	 * @since 4.2.0 Now supports the `$args['pta']` index.
+	 * @since 4.2.4 Resolved regression where $run-test was reversed (renamed to $merge).
 	 * @see $this->merge_title_prefixes()
 	 *
 	 * @param string     $title The title. Passed by reference.
@@ -1321,19 +1320,23 @@ class Generate_Title extends Generate_Description {
 	public function merge_title_protection( &$title, $args = null ) {
 
 		if ( null === $args ) {
-			$id  = $this->get_the_real_ID();
-			$run = $this->is_singular();
+			$id    = $this->get_the_real_ID();
+			$merge = $this->is_singular();
 		} else {
 			$this->fix_generation_args( $args );
-			$id  = $args['id'];
-			$run = ! $args['taxonomy'] && ! $args['pta'];
+			$id    = $args['id'];
+			$merge = ! $args['taxonomy'] && ! $args['pta'];
 		}
 
-		if ( $run ) return;
+		if ( ! $merge ) return;
 
 		$post = $id ? \get_post( $id ) : null;
 
-		if ( isset( $post->post_password ) && '' !== $post->post_password ) {
+		if ( ! empty( $post->post_password ) ) {
+
+			/* translators: %s: Protected post title. */
+			$prepend = \__( 'Protected: %s', 'default' );
+
 			/**
 			 * Filters the text prepended to the post title of private posts.
 			 *
@@ -1345,10 +1348,13 @@ class Generate_Title extends Generate_Description {
 			 *                         Default 'Private: %s'.
 			 * @param WP_Post $post    Current post object.
 			 */
-			// phpcs:ignore, WordPress.WP.I18n -- WordPress doesn't have a comment, either.
-			$protected_title_format = (string) \apply_filters( 'protected_title_format', \__( 'Protected: %s', 'default' ), $post );
+			$protected_title_format = (string) \apply_filters( 'protected_title_format', $prepend, $post );
 			$title                  = sprintf( $protected_title_format, $title );
 		} elseif ( isset( $post->post_status ) && 'private' === $post->post_status ) {
+
+			/* translators: %s: Private post title. */
+			$prepend = \__( 'Private: %s', 'default' );
+
 			/**
 			 * Filters the text prepended to the post title of private posts.
 			 *
@@ -1360,8 +1366,8 @@ class Generate_Title extends Generate_Description {
 			 *                         Default 'Private: %s'.
 			 * @param WP_Post $post    Current post object.
 			 */
-			// phpcs:ignore, WordPress.WP.I18n -- WordPress doesn't have a comment, either.
-			$private_title_format = (string) \apply_filters( 'private_title_format', \__( 'Private: %s', 'default' ), $post );
+			/* translators: %s: Private post title. */
+			$private_title_format = (string) \apply_filters( 'private_title_format', $prepend, $post );
 			$title                = sprintf( $private_title_format, $title );
 		}
 	}
@@ -1454,7 +1460,7 @@ class Generate_Title extends Generate_Description {
 
 		//? Only add pagination if the query is autodetermined, and on a real page.
 		if ( null === $args ) {
-			if ( $this->is_404() || \is_admin() ) {
+			if ( \is_404() || \is_admin() ) {
 				$use = false;
 			} else {
 				$use = true;
