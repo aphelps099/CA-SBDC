@@ -62,10 +62,10 @@ wp.domReady(function() {
 		{ name: 'simple', label: 'Simple' }
 	]);
 
-	// wp.blocks.registerBlockStyle('crown-blocks/container', [ 
-	// 	{ name: 'default', label: 'Default', isDefault: true },
-	// 	{ name: 'panel', label: 'Panel' }
-	// ]);
+	wp.blocks.registerBlockStyle('crown-blocks/container', [ 
+		{ name: 'default', label: 'Default', isDefault: true },
+		{ name: 'inset-border', label: 'Inset Border' }
+	]);
 
 	wp.blocks.registerBlockStyle('crown-blocks/grid', [ 
 		{ name: 'default', label: 'Default', isDefault: true },

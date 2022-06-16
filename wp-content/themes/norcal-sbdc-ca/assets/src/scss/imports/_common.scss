@@ -391,3 +391,133 @@
 		}
 	}
 }
+
+
+.wp-block-crown-blocks-grid {
+	&.is-style-dividers {
+		$column-cell-selector: '> .inner > .grid-columns > .inner > .wp-block-crown-blocks-grid-cell';
+		#{$column-cell-selector} > .inner {
+			position: relative;
+			&:before {
+				content: '';
+				position: absolute;
+				display: none;
+				left: 0;
+				top: 0;
+				bottom: 0;
+				border-left: 4px solid $primary;
+				opacity: 1;
+				margin-left: -2px;
+				.text-color-light & {
+					border-left-color: $rain;
+				}
+				.text-color-dark & {
+					border-left-color: $primary;
+				}
+			}
+			&:after {
+				content: '';
+				position: absolute;
+				display: none;
+				left: 0;
+				top: 0;
+				right: 0;
+				border-top: 4px solid $primary;
+				opacity: 1;
+				margin-top: -2px;
+				.text-color-light & {
+					border-top-color: $rain;
+				}
+				.text-color-dark & {
+					border-top-color: $primary;
+				}
+			}
+		}
+		&.column-breakpoint-xs {
+			#{$column-cell-selector} > .inner:before { display: block; }
+			@for $i from 1 through 6 {
+				&.column-count-xs-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+			}
+			@for $i from 0 through 16 {
+				&.column-spacing-xs-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+			}
+		}
+		@media (min-width: 576px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm {
+				#{$column-cell-selector} > .inner:before { display: block; }
+				@for $i from 1 through 6 {
+					&.column-count-sm-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-sm-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 768px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md {
+				#{$column-cell-selector} > .inner:before { display: block; }
+				#{$column-cell-selector} > .inner:after { display: block; }
+				@for $i from 1 through 6 {
+					&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+					&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:after { left: 0; }
+					@for $j from 1 through $i {
+						&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$j}) > .inner:before { top: 0; }
+						&.column-count-md-#{$i} #{$column-cell-selector}:nth-child(#{$j}) > .inner:after { display: none; }
+					}
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-md-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; top: ($i * 1rem) / -1; }
+					&.column-spacing-md-#{$i} #{$column-cell-selector} > .inner:after { left: ($i * 1rem) / -1; top: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 992px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg {
+				#{$column-cell-selector} > .inner:before { display: block; }
+				@for $i from 1 through 6 {
+					&.column-count-lg-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-lg-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+		@media (min-width: 1200px) {
+			&.column-breakpoint-xs, &.column-breakpoint-sm, &.column-breakpoint-md, &.column-breakpoint-lg, &.column-breakpoint-xl {
+				#{$column-cell-selector} > .inner:before { display: block; }
+				@for $i from 1 through 6 {
+					&.column-count-xl-#{$i} #{$column-cell-selector}:nth-child(#{$i}n + 1) > .inner:before { display: none; }
+				}
+				@for $i from 0 through 16 {
+					&.column-spacing-xl-#{$i} #{$column-cell-selector} > .inner:before { left: ($i * 1rem) / -2; }
+				}
+			}
+		}
+	}
+}
+
+
+.wp-block-crown-blocks-multi-column {
+	&.overlap-left-column {
+		> .inner > .multi-column-columns > .inner {
+			> .wp-block-crown-blocks-column:nth-child(1) {
+				z-index: 1;
+			}
+			> .wp-block-crown-blocks-column:nth-child(2) > .inner > .column-contents {
+				margin-left: -20%;
+				width: 120%;
+			}
+		}
+	}
+	&.overlap-right-column {
+		> .inner > .multi-column-columns > .inner {
+			> .wp-block-crown-blocks-column:nth-child(1) {
+				margin-right: -20%;
+				width: 120%;
+			}
+			> .wp-block-crown-blocks-column:nth-child(2) > .inner > .column-contents {
+				z-index: 1;
+			}
+		}
+	}
+}

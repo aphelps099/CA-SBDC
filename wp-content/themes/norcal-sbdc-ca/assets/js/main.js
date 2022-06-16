@@ -7,6 +7,7 @@
 	$(document).ready(function() {
 
 		$.wpchildtheme.initHeader();
+		$.wpchildtheme.initContainers();
 
 		$(document).on('click', 'a', function(e) {
 			var href = $(this).attr('href');
@@ -62,7 +63,23 @@
 		};
 
 
-
+		wpchildtheme.initContainers = function() {
+			var adjustContainers = function() {
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-container.container-flush-right').each(function(i, el) {
+					var block = $(el);
+					var container = block.parent();
+					block.css({ marginRight: Math.min(0, container.offset().left + container.outerWidth() - windowWidth) });
+				});
+				$('.wp-block-crown-blocks-container.container-flush-left').each(function(i, el) {
+					var block = $(el);
+					var container = block.parent();
+					block.css({ marginLeft: Math.min(0, -container.offset().left) });
+				});
+			};
+			adjustContainers();
+			$(window).on('load resize', adjustContainers);
+		};
 
 
 		return wpchildtheme;

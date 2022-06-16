@@ -101,6 +101,24 @@
 			top: -4vh;
 		}
 	}
+	&.is-style-inset-border {
+		> .container-bg::after {
+			content: '';
+			display: block;
+			position: absolute;
+			left: 1rem;
+			top: 1rem;
+			right: 1rem;
+			bottom: 1rem;
+			border: 1px solid $primary;
+		}
+		&.text-color-light > .container-bg::after {
+			border-color: #fff;
+		}
+		&.text-color-dark > .container-bg::after {
+			border-color: $primary;
+		}
+	}
 }
 
 

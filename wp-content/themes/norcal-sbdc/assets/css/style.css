@@ -21388,6 +21388,22 @@ nav.pagination {
   min-height: calc(100% + 8vh);
   top: -4vh; }
 
+.wp-block-crown-blocks-container.is-style-inset-border > .container-bg::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  border: 1px solid #032040; }
+
+.wp-block-crown-blocks-container.is-style-inset-border.text-color-light > .container-bg::after {
+  border-color: #fff; }
+
+.wp-block-crown-blocks-container.is-style-inset-border.text-color-dark > .container-bg::after {
+  border-color: #032040; }
+
 /*	Multi-Column
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-multi-column.relative-to-container-width > .inner > .multi-column-columns {
