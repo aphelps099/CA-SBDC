@@ -1142,6 +1142,19 @@
 
 
 		wptheme.initFeaturedClientStorySliderBlocks = function() {
+
+			var adjustFeaturedClientStorySliders = function() {
+				var windowWidth = $('body').width();
+				$('.wp-block-crown-blocks-featured-client-story-slider.slider-flush-right').each(function(i, el) {
+					var block = $(el);
+					var container = $('> .inner', el);
+					var margin = Math.min(0, block.offset().left + block.outerWidth() - windowWidth);
+					container.css({ marginRight: margin, width: block.width() - margin });
+				});
+			};
+			adjustFeaturedClientStorySliders();
+			$(window).on('load resize', adjustFeaturedClientStorySliders);
+
 			$('.wp-block-crown-blocks-featured-client-story-slider').each(function(i, el) {
 				var slider = $('.post-feed > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;

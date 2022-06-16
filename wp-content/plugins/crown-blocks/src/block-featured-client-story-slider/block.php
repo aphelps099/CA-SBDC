@@ -89,7 +89,18 @@ if(!class_exists('Crown_Block_Featured_Client_Story_Slider')) {
 												<?php } ?>
 											</div>
 											<div class="inner">
+
 												<h3 class="entry-title"><?php the_title(); ?></h3>
+
+												<?php $industries = get_the_terms( get_the_ID(), 'client_story_industry' ); ?>
+												<?php if ( ! empty( $industries ) ) { ?>
+													<p class="entry-industries" style="display: none;">
+														<?php foreach ( $industries as $term ) { ?>
+															<span class="industry"><?php echo $term->name; ?></span>
+														<?php } ?>
+													</p>
+												<?php } ?>
+
 											</div>
 										</a>
 									</article>
