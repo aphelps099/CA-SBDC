@@ -1868,6 +1868,20 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block[data-type="crown-blocks/impact-report-index"] .wp-block-crown-blocks-impact-report-index form.feed-filters,
+.wp-block[data-type="crown-blocks/impact-report-index"] .wp-block-crown-blocks-impact-report-index a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block[data-type="crown-blocks/impact-report-search"] .wp-block-crown-blocks-impact-report-search form.feed-filters,
+.wp-block[data-type="crown-blocks/impact-report-search"] .wp-block-crown-blocks-impact-report-search a {
+  pointer-events: none !important; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
 .wp-block[data-type="crown-blocks/inline-related-content-link"][data-align=wide],
 .block-editor-block-list__block[data-type="crown-blocks/inline-related-content-link"][data-align=wide] {
   max-width: 900px;

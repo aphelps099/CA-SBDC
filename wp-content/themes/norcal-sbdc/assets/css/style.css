@@ -17823,6 +17823,36 @@ form.feed-filters {
         background-repeat: no-repeat;
         vertical-align: top;
         margin-top: .05em; }
+    form.feed-filters .filters-header .filters-title {
+      -webkit-box-ordinal-group: -9;
+          -ms-flex-order: -10;
+              order: -10;
+      -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+              flex: 1 1 auto;
+      border: none;
+      padding: 0;
+      background-color: transparent;
+      line-height: 1.2;
+      font-size: 1.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      text-align: left;
+      outline: none;
+      color: #032040;
+      -webkit-transition: opactity .15s, color .15s;
+      transition: opactity .15s, color .15s;
+      font-family: "semplicitapro", proxima-nova, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+      outline: none; }
+      @media (min-width: 992px) {
+        form.feed-filters .filters-header .filters-title {
+          -webkit-box-flex: 0;
+              -ms-flex: 0 0 auto;
+                  flex: 0 0 auto;
+          margin-right: 1.5rem; } }
+      form.feed-filters .filters-header .filters-title:after {
+        content: ':'; }
     form.feed-filters .filters-header button.filters-clear {
       margin-left: 2rem;
       border: none;

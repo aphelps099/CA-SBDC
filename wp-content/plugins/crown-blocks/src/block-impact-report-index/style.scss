@@ -1,0 +1,115 @@
+$spacer: 1rem;
+
+
+.wp-block-crown-blocks-impact-report-index {
+	margin-bottom: $spacer;
+	form.feed-filters {
+		&.has-active-filters {
+			.filters-header {
+				button.filters-clear {
+					visibility: visible;
+					opacity: 1;
+				}
+			}
+		}
+		ul.options.quick-filters li.option {
+			padding-right: 0;
+			border-right: none;
+			label {
+				&:hover {
+					.label {
+						background-color: rgba(3,32,64,.1);
+					}
+				}
+				input:checked + .label {
+					background-color: #032040;
+					color: #fff;
+				}
+				.label {
+					line-height: 1.2;
+					font-weight: 700;
+					font-size: 0.75rem;
+					border-radius: 10rem;
+					border: 2px solid #032040;
+					padding: .5rem .75rem;
+					color: #032040;
+					transition: color .15s, background-color .15s;
+				}
+			}
+		}
+	}
+	.post-feed {
+		> .inner {
+			display: flex;
+			flex-wrap: wrap;
+			margin: -.5rem;
+		}
+		.alert-wrapper {
+			width: 100%;
+			padding: .5rem;
+		}
+		article {
+			margin: .5rem;
+			display: flex;
+			a {
+				display: flex;
+				flex-direction: column;
+				width: 220px;
+				background-color: #696D7D;
+				padding: 1rem;
+				color: #fff;
+				position: relative;
+				&:hover {
+					.entry-rep-types {
+						transform: translateY(-2rem);
+					}
+					.entry-link {
+						opacity: 1;
+						transition-delay: .1s;
+					}
+				}
+			}
+			.entry-title {
+				font-weight: 400;
+				flex: 1 1 auto;
+				margin-bottom: 4rem;
+			}
+			.entry-rep-types {
+				display: block !important;
+				border-bottom: 2px solid #fff;
+				padding-bottom: 1rem;
+				margin-bottom: 0;
+				position: relative;
+				transition: transform .2s ease-out;
+				.rep-type {
+					display: inline-block;
+					line-height: 1.2;
+					font-weight: 700;
+					font-size: 0.625rem;
+					letter-spacing: .05em;
+					text-transform: uppercase;
+					border-radius: 10rem;
+					border: 1px solid #fff;
+					padding: .5rem .75rem;
+					color: inherit;
+				}
+			}
+			.entry-link {
+				position: absolute;
+				left: 1rem;
+				right: 1rem;
+				bottom: 1rem;
+				padding: 0;
+				margin: 0;
+				text-align: center;
+				font-size: 12px;
+				text-transform: uppercase;
+				color: #D0E4F8;
+				font-weight: 700;
+				opacity: 0;
+				transition: opacity .2s;
+				letter-spacing: .1em;
+			}
+		}
+	}
+}

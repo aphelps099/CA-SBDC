@@ -8287,6 +8287,116 @@
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }
+
+.wp-block-crown-blocks-impact-report-index {
+  margin-bottom: 1rem; }
+  .wp-block-crown-blocks-impact-report-index form.feed-filters.has-active-filters .filters-header button.filters-clear {
+    visibility: visible;
+    opacity: 1; }
+  .wp-block-crown-blocks-impact-report-index form.feed-filters ul.options.quick-filters li.option {
+    padding-right: 0;
+    border-right: none; }
+    .wp-block-crown-blocks-impact-report-index form.feed-filters ul.options.quick-filters li.option label:hover .label {
+      background-color: rgba(3, 32, 64, 0.1); }
+    .wp-block-crown-blocks-impact-report-index form.feed-filters ul.options.quick-filters li.option label input:checked + .label {
+      background-color: #032040;
+      color: #fff; }
+    .wp-block-crown-blocks-impact-report-index form.feed-filters ul.options.quick-filters li.option label .label {
+      line-height: 1.2;
+      font-weight: 700;
+      font-size: 0.75rem;
+      border-radius: 10rem;
+      border: 2px solid #032040;
+      padding: .5rem .75rem;
+      color: #032040;
+      -webkit-transition: color .15s, background-color .15s;
+      -o-transition: color .15s, background-color .15s;
+      transition: color .15s, background-color .15s; }
+  .wp-block-crown-blocks-impact-report-index .post-feed > .inner {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    margin: -.5rem; }
+  .wp-block-crown-blocks-impact-report-index .post-feed .alert-wrapper {
+    width: 100%;
+    padding: .5rem; }
+  .wp-block-crown-blocks-impact-report-index .post-feed article {
+    margin: .5rem;
+    display: -ms-flexbox;
+    display: flex; }
+    .wp-block-crown-blocks-impact-report-index .post-feed article a {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-direction: column;
+          flex-direction: column;
+      width: 220px;
+      background-color: #696D7D;
+      padding: 1rem;
+      color: #fff;
+      position: relative; }
+      .wp-block-crown-blocks-impact-report-index .post-feed article a:hover .entry-rep-types {
+        -webkit-transform: translateY(-2rem);
+            -ms-transform: translateY(-2rem);
+                transform: translateY(-2rem); }
+      .wp-block-crown-blocks-impact-report-index .post-feed article a:hover .entry-link {
+        opacity: 1;
+        -webkit-transition-delay: .1s;
+             -o-transition-delay: .1s;
+                transition-delay: .1s; }
+    .wp-block-crown-blocks-impact-report-index .post-feed article .entry-title {
+      font-weight: 400;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+      margin-bottom: 4rem; }
+    .wp-block-crown-blocks-impact-report-index .post-feed article .entry-rep-types {
+      display: block !important;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 1rem;
+      margin-bottom: 0;
+      position: relative;
+      -webkit-transition: -webkit-transform .2s ease-out;
+      transition: -webkit-transform .2s ease-out;
+      -o-transition: transform .2s ease-out;
+      transition: transform .2s ease-out;
+      transition: transform .2s ease-out, -webkit-transform .2s ease-out; }
+      .wp-block-crown-blocks-impact-report-index .post-feed article .entry-rep-types .rep-type {
+        display: inline-block;
+        line-height: 1.2;
+        font-weight: 700;
+        font-size: 0.625rem;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        border-radius: 10rem;
+        border: 1px solid #fff;
+        padding: .5rem .75rem;
+        color: inherit; }
+    .wp-block-crown-blocks-impact-report-index .post-feed article .entry-link {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #D0E4F8;
+      font-weight: 700;
+      opacity: 0;
+      -webkit-transition: opacity .2s;
+      -o-transition: opacity .2s;
+      transition: opacity .2s;
+      letter-spacing: .1em; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
+
+.wp-block-crown-blocks-impact-report-search {
+  margin-bottom: 1rem; }
+.crown-block-general-controls {
+  padding: 16px 20px;
+  background-color: #eee; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

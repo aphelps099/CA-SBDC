@@ -47,6 +47,8 @@ import './block-grid/block.js';
 import './block-grid-cell/block.js';
 import './block-header/block.js';
 import './block-hover-container/block.js';
+import './block-impact-report-index/block.js';
+import './block-impact-report-search/block.js';
 import './block-inline-related-content-link/block.js';
 import './block-job-index/block.js';
 // import './block-locations-map/block.js';

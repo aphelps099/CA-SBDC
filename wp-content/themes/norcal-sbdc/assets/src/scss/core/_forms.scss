@@ -268,6 +268,31 @@ form.feed-filters {
 				margin-top: .05em;
 			}
 		}
+		.filters-title {
+			order: -10;
+			flex: 1 1 auto;
+			border: none;
+			padding: 0;
+			background-color: transparent;
+			line-height: $line-height-sm;
+			font-size: 1.625rem;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .1em;
+			text-align: left;
+			outline: none;
+			color: $primary;
+			transition: opactity .15s, color .15s;
+			font-family: $font-family-sans-serif-alt;
+			outline: none;
+			@include media-breakpoint-up(lg) {
+				flex: 0 0 auto;
+				margin-right: 1.5rem;
+			}
+			&:after {
+				content: ':';
+			}
+		}
 		button.filters-clear {
 			margin-left: 2rem;
 			border: none;
