@@ -4,6 +4,7 @@
 
 $dark-blue:      #032040 !default;
 $dark-med-blue:  #012D61 !default;
+$darker-blue:    #1A599A !default;
 $blue:           #0381C3 !default;
 $light-med-blue: #98DBF9 !default;
 $light-blue:     #D0E4F8 !default;
@@ -23,6 +24,7 @@ $colors: map-merge(
 	(
 		'dark-blue': $dark-blue,
 		'dark-med-blue': $dark-med-blue,
+		'darker-blue': $darker-blue,
 		'blue': $blue,
 		'light-med-blue': $light-med-blue,
 		'light-blue': $light-blue,
