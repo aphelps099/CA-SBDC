@@ -1758,7 +1758,8 @@
 ---------------------------------------------------------*/
 
 .wp-block-crown-blocks-header {
-	> .hr-container {
+	> .hr-container,
+	> .header-container > .hr-container {
 		width: 0;
 		&.reveal-right {
 			width: 0;
@@ -1768,7 +1769,9 @@
 		}
 	}
 	> .hr-container > hr,
-	> hr {
+	> hr,
+	> .header-container > .hr-container > hr,
+	> .header-container > hr {
 		background-color: $red;
 		background: linear-gradient(to right, rgba($red, 0), $red);
 	}

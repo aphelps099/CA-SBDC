@@ -27,7 +27,8 @@ registerBlockType('crown-blocks/header', {
 	supports: {},
 
 	attributes: {
-		borderColor: { type: 'string', default: '#D11141' }
+		borderColor: { type: 'string', default: '#D11141' },
+		alignment: { type: 'string', default: 'none' }
 	},
 
 
@@ -39,15 +40,22 @@ registerBlockType('crown-blocks/header', {
 
 		const {
 			borderColor,
+			alignment
 		} = attributes;
 
 		let blockClasses = [ className ];
+		if(typeof alignment != 'undefined' && alignment != 'none') blockClasses.push('text-alignment-' + alignment);
 
 		let hrStyle = {};
 		if(borderColor) {
 			let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 			hrStyle.backgroundColor = borderColor;
 			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+		}
+
+		let hrSolidStyle = {};
+		if(borderColor) {
+			hrSolidStyle.backgroundColor = borderColor;
 		}
 
 		return [
@@ -70,13 +78,23 @@ registerBlockType('crown-blocks/header', {
 
 			<div class="crown-block-editor-container">
 
+				<BlockControls>
+					<AlignmentToolbar
+						value={ alignment }
+						onChange={ (value) => { setAttributes({ alignment: value }); } }
+					/>
+				</BlockControls>
+
 				<div className={ blockClasses.join(' ') } key="header">
-					<div className="inner">
+					<div className="header-container">
+						<div className="inner">
 
-						<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } renderAppender={ false } />
+							<InnerBlocks allowedBlocks={ ALLOWED_BLOCKS } template={ TEMPLATE } renderAppender={ false } />
 
+						</div>
+						<hr style={ hrStyle } />
+						<hr style={ hrSolidStyle } class="solid" />
 					</div>
-					<hr style={ hrStyle } />
 				</div>
 
 			</div>
@@ -88,10 +106,12 @@ registerBlockType('crown-blocks/header', {
 	save: ({ attributes, className }) => {
 		
 		const {
-			borderColor
+			borderColor,
+			alignment
 		} = attributes;
 
 		let blockClasses = [ className ];
+		if(typeof alignment != 'undefined' && alignment != 'none') blockClasses.push('text-alignment-' + alignment);
 
 		let hrStyle = {};
 		if(borderColor) {
@@ -100,15 +120,22 @@ registerBlockType('crown-blocks/header', {
 			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
 		}
 
+		let hrSolidStyle = {};
+		if(borderColor) {
+			hrSolidStyle.backgroundColor = borderColor;
+		}
+
 		return (
 
 			<div className={ blockClasses.join(' ') } key="header">
-				<div className="inner">
+				<div className="header-container">
+					<div className="inner">
 
-					<InnerBlocks.Content />
+						<InnerBlocks.Content />
 
+					</div>
+					<div class="hr-container"><hr style={ hrStyle } /><hr style={ hrSolidStyle } class="solid" /></div>
 				</div>
-				<div class="hr-container"><hr style={ hrStyle } /></div>
 			</div>
 
 		);
@@ -147,6 +174,42 @@ registerBlockType('crown-blocks/header', {
 		
 				);
 			}
+		},
+		{
+			attributes: {
+				borderColor: { type: 'string', default: '#D11141' },
+				alignment: { type: 'string', default: 'none' }
+			},
+			save: ({ attributes, className }) => {
+		
+				const {
+					borderColor,
+					alignment
+				} = attributes;
+		
+				let blockClasses = [ className ];
+				if(typeof alignment != 'undefined' && alignment != 'none') blockClasses.push('text-alignment-' + alignment);
+		
+				let hrStyle = {};
+				if(borderColor) {
+					let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
+					hrStyle.backgroundColor = borderColor;
+					hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+				}
+		
+				return (
+		
+					<div className={ blockClasses.join(' ') } key="header">
+						<div className="inner">
+		
+							<InnerBlocks.Content />
+		
+						</div>
+						<div class="hr-container"><hr style={ hrStyle } /></div>
+					</div>
+		
+				);
+			},
 		}
 
 	]

@@ -4,7 +4,8 @@ $spacer: 0.25rem;
 	margin-bottom: 1.5rem;
 	padding-bottom: 0.375rem;
 	position: relative;
-	> .hr-container {
+	> .hr-container,
+	> .header-container > .hr-container {
 		position: absolute;
 		left: 0;
 		bottom: 0;
@@ -13,7 +14,9 @@ $spacer: 0.25rem;
 		overflow: hidden;
 	}
 	> hr,
-	> .hr-container > hr {
+	> .header-container > hr,
+	> .hr-container > hr,
+	> .header-container > .hr-container > hr {
 		position: absolute;
 		left: 0;
 		bottom: 0;
@@ -23,13 +26,21 @@ $spacer: 0.25rem;
 		background: linear-gradient(to right, rgba(red, 0), red);
 		border: none;
 		margin: 0;
+		&.solid {
+			display: none;
+			background-image: none;
+		}
 	}
-	> .inner {
+	> .inner,
+	> .header-container > .inner {
 		margin-bottom: 1rem;
 	}
 	h1, h2, h3, h4, h5, h6 {
 		+ p {
 			margin-top: -.5rem;
 		}
+	}
+	&.text-alignment-center {
+		text-align: center;
 	}
 }
