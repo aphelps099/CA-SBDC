@@ -5,7 +5,7 @@
 
 
 	$(document).ready(function() {
-
+		
 		$.wpchildtheme.initHeader();
 		$.wpchildtheme.initContainers();
 		$.wpchildtheme.initScrollReveal();

@@ -5,9 +5,10 @@
 
 
 	$(document).ready(function() {
-
+		
 		$.wpchildtheme.initHeader();
 		$.wpchildtheme.initContainers();
+		$.wpchildtheme.initScrollReveal();
 
 		$(document).on('click', 'a', function(e) {
 			var href = $(this).attr('href');
@@ -79,6 +80,24 @@
 			};
 			adjustContainers();
 			$(window).on('load resize', adjustContainers);
+		};
+
+
+		wpchildtheme.initScrollReveal = function() {
+
+			var animateScrollReveal = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('.wp-block-crown-blocks-grid .wp-block-crown-blocks-grid-cell > .inner:not(.animated)').each(function(i, el) {
+					var element = $(el);
+					if(element.offset().top <= scrollTop + (windowHeight * .75)) {
+						element.addClass('animated');
+					}
+				});
+			};
+			animateScrollReveal();
+			$(window).on('load scroll', animateScrollReveal);
+
 		};
 
 
