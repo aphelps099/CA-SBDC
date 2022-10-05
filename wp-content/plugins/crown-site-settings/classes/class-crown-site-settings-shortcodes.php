@@ -106,6 +106,15 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['tabbed_content_image_slider'] = new Shortcode(array(
+				'tag' => 'tabbed_content_image_slider',
+				'getOutputCb' => array( __CLASS__, 'get_tabbed_content_image_slider_shortcode' ),
+				'defaultAtts' => array(
+					'selector' => '',
+					'class' => ''
+				)
+			));
+
 		}
 
 
@@ -609,6 +618,11 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				return '<a href="' . $url . '" class="btn btn-red btn-lg btn-has-arrow-icon" target="_blank" rel="noopener noreferrer"><span class="btn-label">Schedule Interview</span></a>';
 			}
 			return '';
+		}
+
+
+		public static function get_tabbed_content_image_slider_shortcode( $atts, $content ) {
+			return '<div class="tabbed-content-image-slider ' . esc_attr( $atts['class'] ) . '" data-selector="' . esc_attr( $atts['selector'] ) . '"></div>';
 		}
 
 

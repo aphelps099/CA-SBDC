@@ -11224,6 +11224,8 @@
 
 .wp-block-crown-blocks-tabbed-content-tab {
   margin-bottom: 1rem; }
+  .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-image {
+    display: none; }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

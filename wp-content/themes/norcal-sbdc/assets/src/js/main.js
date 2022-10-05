@@ -850,12 +850,41 @@
 
 		wptheme.initTabbedContentBlocks = function() {
 
+			$('.tabbed-content-image-slider').each(function(i, el) {
+				var imageSlider = $(el);
+				var imageSliderId = 'image-slider-' + Math.random().toString(16).slice(2);
+				imageSlider.attr('id', imageSliderId);
+				var tabbedContentBlock = $($(el).data('selector'));
+				if(!tabbedContentBlock.length || !tabbedContentBlock.hasClass('wp-block-crown-blocks-tabbed-content')) return;
+				var slider = $('> .inner > .tabbed-content-tabs > .inner', tabbedContentBlock);
+				slider.data('as-nav-for', '#' + imageSliderId);
+				var tabs = $('> .wp-block-crown-blocks-tabbed-content-tab', slider);
+				tabs.each(function(j, el2) {
+					var imageSlide = $('<div class="tab-image"></div>');
+					var tabImage = $('> .inner > .tab-image img', el2);
+					if(tabImage.length) imageSlide.append(tabImage.clone());
+					imageSlider.append(imageSlide);
+				});
+				imageSlider.on('setPosition', function(event, slick) {
+					var track = $('.slick-track', slick.$slider);
+					var slides = $('.slick-slide', slick.$slider);
+					slides.css({ height: 'auto' });
+					slides.css({ height: track.height() });
+				}).slick({
+					draggable: false,
+					dots: false,
+					arrows: false,
+					fade: true
+				});
+			});
+
 			$('.wp-block-crown-blocks-tabbed-content:not(.type-grid):not(.type-accordion)').each(function(i, el) {
 				var slider = $('.tabbed-content-tabs > .inner', el);
 				if(slider.hasClass('slick-initialized')) return;
 				var sliderNavContainer = $('<div class="slick-slider-nav"></div>');
 				$('.tabbed-content-tabs', el).before(sliderNavContainer);
 				slider.children().wrap('<div></div>');
+				var asNavFor = slider.data('as-nav-for');
 				var slickSettings = {
 					mobileFirst: true,
 					draggable: false,
@@ -863,6 +892,7 @@
 					arrows: false,
 					fade: true,
 					appendDots: sliderNavContainer,
+					asNavFor: asNavFor ? asNavFor : null,
 					adaptiveHeight: true,
 					customPaging: function(slider, pageIndex) {
 						var tabTitleEl = $('> .wp-block-crown-blocks-tabbed-content-tab > .inner > .tab-title', slider.$slides[pageIndex]);

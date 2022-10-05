@@ -59,7 +59,8 @@ registerBlockType('crown-blocks/tabbed-content', {
 						options={ [
 							{ label: 'Default', value: '' },
 							{ label: 'Grid', value: 'grid' },
-							{ label: 'Accordion', value: 'accordion' }
+							{ label: 'Accordion', value: 'accordion' },
+							{ label: 'Pills', value: 'pills' }
 						] }
 					/>
 
@@ -108,7 +109,7 @@ registerBlockType('crown-blocks/tabbed-content', {
 			<div className={ blockClasses.join(' ') } key="tabbed-content">
 				<div className="inner">
 
-				<div className={ tabsClasses.join(' ') }>
+					<div className={ tabsClasses.join(' ') }>
 						<div className="inner">
 
 							<InnerBlocks.Content />

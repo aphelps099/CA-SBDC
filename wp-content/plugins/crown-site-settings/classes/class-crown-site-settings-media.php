@@ -25,7 +25,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Media' ) ) {
 		}
 	
 	
-		public function filter_check_filetype_and_ext( $check_filetype_and_ext, $file, $filename, $mimes ) {
+		public static function filter_check_filetype_and_ext( $check_filetype_and_ext, $file, $filename, $mimes ) {
 
 			// If the content was already okay
 			if ( $check_filetype_and_ext['ext'] && $check_filetype_and_ext['type'] ) {
