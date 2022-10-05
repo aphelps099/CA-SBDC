@@ -8,6 +8,7 @@ import classnames from 'classnames/dedupe';
  */
 import IconPicker from '../../components/icon-picker';
 import URLPicker from '../../components/url-picker';
+import RangeControl from '../../components/range-control';
 
 /**
  * WordPress dependencies
@@ -18,15 +19,8 @@ const { __ } = wp.i18n;
 
 const { Component, Fragment } = wp.element;
 
-const {
-  PanelBody,
-  BaseControl,
-  SelectControl,
-  RangeControl,
-  TextareaControl,
-  ExternalLink,
-  Button,
-} = wp.components;
+const { PanelBody, BaseControl, SelectControl, TextareaControl, ExternalLink, Button } =
+  wp.components;
 
 const { withSelect } = wp.data;
 
@@ -117,6 +111,7 @@ class BlockEdit extends Component {
       starsIcon,
 
       url,
+      ariaLabel,
       target,
       rel,
     } = attributes;
@@ -249,6 +244,7 @@ class BlockEdit extends Component {
         <URLPicker
           url={url}
           rel={rel}
+          ariaLabel={ariaLabel}
           target={target}
           onChange={(data) => {
             setAttributes(data);

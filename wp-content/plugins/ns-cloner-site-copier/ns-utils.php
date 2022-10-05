@@ -104,8 +104,20 @@ function ns_recursive_search_replace( &$data, $search, $replace, $case_sensitive
 			$replacement_count += ns_recursive_search_replace( $data[ $key ], $search, $replace, $case_sensitive );
 		}
 	} elseif ( is_object( $data ) ) {
-		foreach ( $data as $key => $value ) {
-			$replacement_count += ns_recursive_search_replace( $data->$key, $search, $replace, $case_sensitive );
+		if ( $data instanceof \__PHP_Incomplete_Class ) {
+			$array   = new ArrayObject( $data );
+			$message = sprintf(
+				'Skipping an uninitialized class "%s", replacements might not be complete.',
+				$array['__PHP_Incomplete_Class_Name']
+			);
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				\WP_CLI::warning( $message );
+			}
+			ns_cloner()->log->log( $message );
+		} else {
+			foreach ( $data as $key => $value ) {
+				$replacement_count += ns_recursive_search_replace( $data->$key, $search, $replace, $case_sensitive );
+			}
 		}
 	} elseif ( is_string( $data ) ) {
 		$replace_func = $case_sensitive ? 'str_replace' : 'str_ireplace';
@@ -113,6 +125,7 @@ function ns_recursive_search_replace( &$data, $search, $replace, $case_sensitive
 	}
 	// Reserialize if it was serialized originally.
 	if ( $was_serialized ) {
+		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions -- only leaving it how we found it.
 		$data = serialize( $data );
 	}
 	// Return number of replacements made for informational/reporting purposes.
@@ -134,7 +147,7 @@ function ns_recursive_dir_copy_by_process( $src, $dst, $process, $num = 0 ) {
 	if ( is_dir( $src ) ) {
 		$files = scandir( $src );
 		// Specify items to ignore when copying.
-		$ignore = apply_filters( 'ns_cloner_dir_copy_ignore', [ 'sites', '.', '..' ] );
+		$ignore = apply_filters( 'ns_cloner_dir_copy_ignore', array( 'sites', '.', '..' ) );
 		// Recursively copy files that aren't in the ignore array.
 		foreach ( $files as $file ) {
 			if ( ! in_array( $file, $ignore, true ) ) {
@@ -142,11 +155,11 @@ function ns_recursive_dir_copy_by_process( $src, $dst, $process, $num = 0 ) {
 			}
 		}
 	} elseif ( file_exists( $src ) ) {
-		$file = [
+		$file = array(
 			'number'      => ++ $num,
 			'source'      => $src,
 			'destination' => $dst,
-		];
+		);
 		$process->push_to_queue( $file );
 	}
 
@@ -168,7 +181,7 @@ function ns_recursive_dir_copy_by_process( $src, $dst, $process, $num = 0 ) {
  */
 function ns_wp_validate_site( $site_name, $site_title ) {
 	global $domain;
-	$errors        = [];
+	$errors = array();
 	// Preempt any spaces and uppercase chars.
 	$site_name = strtolower( trim( $site_name ) );
 	// Require some name.
@@ -189,14 +202,14 @@ function ns_wp_validate_site( $site_name, $site_title ) {
 			$path     = $base . $site_name . '/';
 		}
 		if ( domain_exists( $mydomain, $path, get_network()->id ) ) {
-			$errors[] = __('Sorry, that site already exists!', 'ns-cloner-site-copier');
+			$errors[] = __( 'Sorry, that site already exists!', 'ns-cloner-site-copier' );
 		}
 		// Validate against WP illegal / reserved names.
-		$illegal_names  = get_site_option( 'illegal_names', [] );
+		$illegal_names  = get_site_option( 'illegal_names', array() );
 		$illegal_dirs   = get_subdirectory_reserved_names();
-		$illegal_values = is_subdomain_install() ? $illegal_names : array_merge ( $illegal_names, $illegal_dirs );
-		if ( in_array ( $site_name, $illegal_values ) ) {
-			$errors[] = __('That URL is reserved by WordPress.', 'ns-cloner-site-copier');
+		$illegal_values = is_subdomain_install() ? $illegal_names : array_merge( $illegal_names, $illegal_dirs );
+		if ( in_array( $site_name, $illegal_values, true ) ) {
+			$errors[] = __( 'That URL is reserved by WordPress.', 'ns-cloner-site-copier' );
 		}
 	}
 	// Require some title.
@@ -212,19 +225,12 @@ function ns_wp_validate_site( $site_name, $site_title ) {
  * @return array
  */
 function ns_wp_get_sites_list() {
-	$list = [];
+	$list = array();
 	if ( function_exists( 'get_sites' ) ) {
-		// Get sites for WP 4.6 and later.
-		$sites = get_sites( [ 'number' => 9999 ] );
-	} elseif ( function_exists( 'wp_get_sites' ) ) {
-		// Get sites for WP 4.5 and earlier, and map results to objects instead of arrays.
-		$sites = wp_get_sites( [ 'limit' => 9999 ] );
-		foreach ( $sites as $index => $site ) {
-			$sites[ $index ] = (object) $site;
-		}
+		$sites = get_sites( array( 'number' => 9999 ) );
 	} else {
 		// Not multisite, or really ancient.
-		$sites = [];
+		$sites = array();
 	}
 	// Loop through sites and prepare labels.
 	if ( count( $sites ) > 500 ) {
@@ -249,15 +255,15 @@ function ns_wp_get_sites_list() {
  * @return array
  */
 function ns_wp_kses_allowed() {
-	return [
-		'a'    => [
-			'href'   => [],
-			'target' => [],
-			'class'  => [],
-		],
-		'em'   => [],
-		'code' => [],
-	];
+	return array(
+		'a'    => array(
+			'href'   => array(),
+			'target' => array(),
+			'class'  => array(),
+		),
+		'em'   => array(),
+		'code' => array(),
+	);
 }
 
 /**
@@ -267,7 +273,7 @@ function ns_wp_kses_allowed() {
  * @return string
  */
 function ns_short_url( $url ) {
-	return untrailingslashit( str_replace( [ 'https://', 'http://', '//' ], '', $url ) );
+	return untrailingslashit( str_replace( array( 'https://', 'http://', '//' ), '', $url ) );
 }
 
 /**
@@ -284,8 +290,8 @@ function ns_site_link( $site_id = null, $html = true ) {
 	}
 	if ( is_multisite() && ( is_numeric( $site_id ) || is_array( $site_id ) ) ) {
 		// Multisite.
-		$links    = [];
-		$site_ids = is_array( $site_id ) ? $site_id : [ $site_id ];
+		$links    = array();
+		$site_ids = is_array( $site_id ) ? $site_id : array( $site_id );
 		foreach ( $site_ids as $id ) {
 			$details = get_blog_details( $id );
 			$links[] = $html ? "<a href='{$details->siteurl}' target='_blank'>{$details->blogname}</a>" : $details->siteurl;
@@ -324,7 +330,7 @@ function ns_sql_create_table_query( $source_table, $target_table, $source_prefix
 		ns_cloner()->log->log( "DETECTING that table *$source_table* is a view. Skipping." );
 		// Replace prefix for other table names that view refers to.
 		if ( ! apply_filters( 'ns_cloner_skip_views', false ) ) {
-			$view_query = str_replace ("`$source_prefix", "`$target_prefix", $query );
+			$view_query = str_replace( "`$source_prefix", "`$target_prefix", $query );
 			ns_cloner()->process_manager->add_finish_query( $view_query, 200 );
 		}
 		return '';
@@ -336,10 +342,10 @@ function ns_sql_create_table_query( $source_table, $target_table, $source_prefix
 		foreach ( $constraint_matches[1] as $constraint_def ) {
 			// Redefine final target table name based on source, instead of using $target_table,
 			// because for teleport and clone over, $target_table will have a temp prefix that shouldn't be in alter query.
-			$constraint_table = preg_replace("|^$source_prefix|", $raw_target_prefix, $source_table);
+			$constraint_table = preg_replace( "|^$source_prefix|", $raw_target_prefix, $source_table );
 			// Rename prefixes in constraint. Can't look for a backquote before the prefix (assume prefix is at beginning),
 			// because some plugins like Woo add extra prefixes like fk_{wpdb_prefix}_something, etc.
-			$constraint_def = str_replace($source_prefix, $raw_target_prefix, $constraint_def);
+			$constraint_def = str_replace( $source_prefix, $raw_target_prefix, $constraint_def );
 			// Store alter query in site_options. Use high priority to make sure it executes after all table renames.
 			ns_cloner()->process_manager->add_finish_query( "ALTER TABLE `$constraint_table` ADD $constraint_def;", 100 );
 		}
@@ -348,7 +354,7 @@ function ns_sql_create_table_query( $source_table, $target_table, $source_prefix
 	$query = preg_replace( $constraint, '', $query );
 	// And rename it to create the new target table.
 	$query = str_replace( "$source_table", "$target_table", $query );
-	ns_cloner()->log->log( [ "GENERATING create table query for *$target_table*:", $query ] );
+	ns_cloner()->log->log( array( "GENERATING create table query for *$target_table*:", $query ) );
 	return $query;
 }
 
@@ -406,13 +412,13 @@ function ns_get_sql_variable( $variable, $default = '' ) {
  * @param array  $args Arguments to pass to wpdb::prepare.
  * @return string|array
  */
-function ns_prepare_option_query( $query, $args = [] ) {
-	$details = [
+function ns_prepare_option_query( $query, $args = array() ) {
+	$details = array(
 		'{table}' => is_multisite() ? ns_cloner()->db->sitemeta : ns_cloner()->db->options,
 		'{id}'    => is_multisite() ? 'meta_id' : 'option_id',
 		'{key}'   => is_multisite() ? 'meta_key' : 'option_name',
 		'{value}' => is_multisite() ? 'meta_value' : 'option_value',
-	];
+	);
 	// Replace table/column references with actual values based on whether this is multisite or no.
 	$query = str_replace( array_keys( $details ), array_values( $details ), $query );
 	// Run normal db query prep.
@@ -430,11 +436,11 @@ function ns_prepare_option_query( $query, $args = [] ) {
  * @return array
  */
 function ns_prepare_row_formats( &$row, $table ) {
-	$formats = [];
+	$formats = array();
 	foreach ( $row as $field => $value ) {
 		if ( is_null( $value ) ) {
 			$formats[] = 'NULL';
-			unset( $row[$field] );
+			unset( $row[ $field ] );
 		} else {
 			$formats[] = apply_filters( 'ns_cloner_row_format', '%s', $field, $table );
 		}

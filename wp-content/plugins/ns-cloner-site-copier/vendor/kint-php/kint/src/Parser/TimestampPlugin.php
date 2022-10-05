@@ -52,11 +52,15 @@ class TimestampPlugin extends Plugin
             return;
         }
 
+        if ($var < 0) {
+            return;
+        }
+
         if (\in_array($var, self::$blacklist, true)) {
             return;
         }
 
-        $len = \strlen($var);
+        $len = \strlen((string) $var);
 
         // Guess for anything between March 1973 and November 2286
         if (9 === $len || 10 === $len) {

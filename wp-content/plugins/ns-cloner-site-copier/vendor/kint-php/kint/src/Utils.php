@@ -25,7 +25,6 @@
 
 namespace Kint;
 
-use InvalidArgumentException;
 use Kint\Zval\BlobValue;
 use ReflectionNamedType;
 use ReflectionType;
@@ -59,11 +58,11 @@ final class Utils
         if ($value < 1024) {
             $i = 0;
             $value = \floor($value);
-        } elseif ($value < 0xfffcccccccccccc >> 40) {
+        } elseif ($value < 0xFFFCCCCCCCCCCCC >> 40) {
             $i = 1;
-        } elseif ($value < 0xfffcccccccccccc >> 30) {
+        } elseif ($value < 0xFFFCCCCCCCCCCCC >> 30) {
             $i = 2;
-        } elseif ($value < 0xfffcccccccccccc >> 20) {
+        } elseif ($value < 0xFFFCCCCCCCCCCCC >> 20) {
             $i = 3;
         } else {
             $i = 4;
@@ -109,6 +108,10 @@ final class Utils
 
             if (\file_exists($installed) && \is_readable($installed)) {
                 $packages = \json_decode(\file_get_contents($installed), true);
+
+                if (!\is_array($packages)) {
+                    continue;
+                }
 
                 foreach ($packages as $package) {
                     if (isset($package['extra'][$key]) && \is_array($package['extra'][$key])) {
@@ -245,7 +248,8 @@ final class Utils
         $endlength = BlobValue::strlen($end);
 
         if ($endlength >= $length) {
-            throw new InvalidArgumentException('Can\'t truncate a string to '.$length.' characters if ending with string '.$endlength.' characters long');
+            $endlength = 0;
+            $end = '';
         }
 
         if (BlobValue::strlen($input, $encoding) > $length) {

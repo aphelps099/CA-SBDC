@@ -35,7 +35,7 @@ abstract class NS_Cloner_Section {
 	 *
 	 * @var array
 	 */
-	public $modes_supported = [];
+	public $modes_supported = array();
 
 	/**
 	 * Display order relative to other sections (lower number is displayed higher on page).
@@ -49,7 +49,7 @@ abstract class NS_Cloner_Section {
 	 *
 	 * @var array
 	 */
-	protected $errors = [];
+	protected $errors = array();
 
 	/**
 	 * NS_Cloner_Section constructor.

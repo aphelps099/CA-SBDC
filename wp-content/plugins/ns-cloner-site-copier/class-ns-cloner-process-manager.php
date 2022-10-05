@@ -35,8 +35,8 @@ class NS_Cloner_Process_Manager {
 	 * @param string $message Error message.
 	 * @param array  $data Additional data to store with message, such as associated section id.
 	 */
-	public function add_error( $message, $data = [] ) {
-		$error          = [ 'message' => $message ];
+	public function add_error( $message, $data = array() ) {
+		$error          = array( 'message' => $message );
 		$this->errors[] = array_merge( $error, $data );
 	}
 
@@ -58,10 +58,10 @@ class NS_Cloner_Process_Manager {
 	 * @param int    $priority Priority of execution. Higher = sooner.
 	 */
 	public function add_finish_query( $query, $priority = 10 ) {
-		$queries = get_site_option( 'ns_cloner_finish_queries', [] );
+		$queries = get_site_option( 'ns_cloner_finish_queries', array() );
 		if ( ! isset( $queries[ $priority ] ) ) {
 			// Create an array for this priority if it doesn't exist.
-			$queries[ $priority ] = [ $query ];
+			$queries[ $priority ] = array( $query );
 		} else {
 			// Or just add it to existing priority queue.
 			$queries[ $priority ][] = $query;
@@ -79,8 +79,8 @@ class NS_Cloner_Process_Manager {
 	 * @return array
 	 */
 	public function get_finish_queries() {
-		$result  = [];
-		$queries = get_site_option( 'ns_cloner_finish_queries', [] );
+		$result  = array();
+		$queries = get_site_option( 'ns_cloner_finish_queries', array() );
 		// Order by key, since they'll be grouped by priority.
 		ksort( $queries );
 		// Flatten, put all queries together in one array.
@@ -180,7 +180,7 @@ class NS_Cloner_Process_Manager {
 
 		// Validate sections.
 		if ( ! empty( $section_id ) ) {
-			$sections = [ ns_cloner()->get_section( $section_id ) ];
+			$sections = array( ns_cloner()->get_section( $section_id ) );
 		} else {
 			$sections = ns_cloner()->sections;
 		}
@@ -188,7 +188,7 @@ class NS_Cloner_Process_Manager {
 			if ( in_array( $clone_mode, $section->modes_supported, true ) ) {
 				$section->validate();
 				foreach ( $section->get_errors() as $error_message ) {
-					$this->add_error( $error_message, [ 'section' => $section->id ] );
+					$this->add_error( $error_message, array( 'section' => $section->id ) );
 				}
 			}
 		}
@@ -204,7 +204,8 @@ class NS_Cloner_Process_Manager {
 	 */
 	public function maybe_finish() {
 		// Check that this isn't already being run in another parallel session.
-		if ( $lock = $this->get_finish_lock() ) {
+		$lock = $this->get_finish_lock();
+		if ( $lock ) {
 			ns_cloner()->log->log( "DETECTED already running finish $lock, skipping" );
 			return;
 		}
@@ -216,8 +217,8 @@ class NS_Cloner_Process_Manager {
 				$finish_lock_id = wp_generate_password( 8 );
 				ns_cloner()->db->query(
 					ns_prepare_option_query(
-						"INSERT INTO {table} ( {key}, {value} ) VALUES( %s, %s )",
-						[ 'ns_cloner_finish_lock', $finish_lock_id ]
+						'INSERT INTO {table} ( {key}, {value} ) VALUES( %s, %s )',
+						array( 'ns_cloner_finish_lock', $finish_lock_id )
 					)
 				);
 				ns_cloner()->log->log( "SETTING finish lock *$finish_lock_id*" );
@@ -233,7 +234,7 @@ class NS_Cloner_Process_Manager {
 				// Remove lock for next time.
 				ns_cloner()->db->query(
 					ns_prepare_option_query(
-						"DELETE FROM {table} WHERE {key} = %s",
+						'DELETE FROM {table} WHERE {key} = %s',
 						'ns_cloner_finish_lock'
 					)
 				);
@@ -246,7 +247,7 @@ class NS_Cloner_Process_Manager {
 	 *
 	 * @return string|null
 	 */
-	protected function get_finish_lock(){
+	protected function get_finish_lock() {
 		return ns_cloner()->db->get_var(
 			ns_prepare_option_query(
 				'SELECT {value} FROM {table} WHERE {key} = %s',
@@ -281,19 +282,18 @@ class NS_Cloner_Process_Manager {
 			if ( ! empty( $target_id ) && ! empty( $target_title ) ) {
 				ns_cloner()->db->update(
 					$target_prefix . 'options',
-					[ 'option_value' => $target_title ],
-					[ 'option_name' => 'blogname' ]
+					array( 'option_value' => $target_title ),
+					array( 'option_name' => 'blogname' )
 				);
 			}
 		}
 
-		// Flush caches for clone over.
-		// This can prevent issues, but also is expensive for large redis caches, so allow disabling.
-		$do_cache_flush = ns_cloner_request()->is_mode([ 'clone_over', 'search_replace' ]);
-		if ( apply_filters( 'ns_cloner_do_cache_flush', $do_cache_flush ) ) {
-			switch_to_blog( $target_id );
+		// Flush cache if checkbox to flush cache is enabled.
+		// Do not flush cache if sites are different servers.
+		if ( (bool) ns_cloner_request()->get( 'flush_cache' ) && ! empty( $target_id ) ) {
+			// Switch to blog only affects database and not functions.
+			ns_cloner()->log->log( 'FLUSHING CACHE' );
 			wp_cache_flush();
-			restore_current_blog();
 		}
 
 		// Log and report timing details.
@@ -352,8 +352,8 @@ class NS_Cloner_Process_Manager {
 
 		// Log and report the error, if present.
 		if ( $error ) {
-			ns_cloner()->log->log( [ 'CALLED exit with error message:', $error ] );
-			ns_cloner()->log->log( [ 'Other errors from prccess_manager:', $this->get_errors() ] );
+			ns_cloner()->log->log( array( 'CALLED exit with error message:', $error ) );
+			ns_cloner()->log->log( array( 'Other errors from prccess_manager:', $this->get_errors() ) );
 			// Add this to the errors array so that it can be displayed immediately by any ajax requests
 			// that will see it (for example, process_init).
 			$this->add_error( $error );
@@ -369,7 +369,7 @@ class NS_Cloner_Process_Manager {
 		}
 
 		// Cancel running background processes, as well as clear data from any completed ones.
-		foreach ( $this->get_current_processes(true) as $process_id => $progress ) {
+		foreach ( $this->get_current_processes( true ) as $process_id => $progress ) {
 			$process = ns_cloner()->get_process( $process_id );
 			$process->cancel();
 		}
@@ -379,7 +379,7 @@ class NS_Cloner_Process_Manager {
 		update_site_option( 'ns_cloner_exited', '1' );
 
 		// Log the current saved report data.
-		ns_cloner()->log->log( [ 'REPORT DATA:', ns_cloner()->report->get_all_reports() ] );
+		ns_cloner()->log->log( array( 'REPORT DATA:', ns_cloner()->report->get_all_reports() ) );
 
 		// Provide last hook while request, report and log are still accessible.
 		do_action( 'ns_cloner_process_exit' );
@@ -416,24 +416,24 @@ class NS_Cloner_Process_Manager {
 
 		// Try to create new site.
 		$source    = get_site( $source_id );
-		$site_data = [
+		$site_data = array(
 			'title'   => $target_title,
 			'user_id' => ns_cloner_request()->get( 'user_id' ),
 			'public'  => $source->public,
 			'lang_id' => $source->lang_id,
-		];
+		);
 		if ( is_subdomain_install() ) {
-			$site_data += [
+			$site_data += array(
 				'domain' => $target_name . '.' . preg_replace( '|^www\.|', '', get_current_site()->domain ),
 				'path'   => get_current_site()->path,
-			];
+			);
 		} else {
-			$site_data += [
+			$site_data += array(
 				'domain' => get_current_site()->domain,
 				'path'   => get_current_site()->path . $target_name . '/',
-			];
+			);
 		}
-		ns_cloner()->log->log( [ 'Attempting to create site with data:', $site_data ] );
+		ns_cloner()->log->log( array( 'Attempting to create site with data:', $site_data ) );
 		if ( function_exists( 'wp_insert_site' ) ) {
 			$target_id = wp_insert_site( $site_data );
 		} else {
@@ -479,12 +479,12 @@ class NS_Cloner_Process_Manager {
 		foreach ( $source_tables as $source_table ) {
 			$target_table = preg_replace( "|^$source_prefix|", $target_prefix, $source_table );
 			$target_table = apply_filters( 'ns_cloner_target_table', $target_table );
-			$table_data   = [
+			$table_data   = array(
 				'source_table' => $source_table,
 				'target_table' => $target_table,
 				'source_id'    => $source_id,
 				'target_id'    => $target_id,
-			];
+			);
 			$tables_process->push_to_queue( $table_data );
 			ns_cloner()->log->log( "QUEUEING clone of *$source_table* to *$target_table*" );
 		}
@@ -535,7 +535,7 @@ class NS_Cloner_Process_Manager {
 	 * @return array|bool
 	 */
 	public function get_progress() {
-		$by_process  = [];
+		$by_process  = array();
 		$total       = 0;
 		$completed   = 0;
 		$queue_empty = true;
@@ -552,10 +552,10 @@ class NS_Cloner_Process_Manager {
 
 		// If there are no processes but there IS a report, it means that the operation has finished.
 		if ( empty( $processes ) && ! empty( ns_cloner()->report->get_all_reports() ) ) {
-			return [
+			return array(
 				'status' => 'reported',
 				'report' => ns_cloner()->report->get_all_reports(),
-			];
+			);
 		}
 
 		// Otherwise - process must be in progress, so prepare progress data.
@@ -570,20 +570,20 @@ class NS_Cloner_Process_Manager {
 				$queue_empty = false;
 			}
 			// Also prepare to return data for each individual process.
-			$by_process[ $process_id ] = [
+			$by_process[ $process_id ] = array(
 				'label'      => $process->report_label,
 				'progress'   => $progress,
 				'dispatched' => get_site_option( "ns_cloner_{$process_id}_process_dispatched" ),
 				'nonce'      => $process->get_nonce(),
-			];
+			);
 		}
-		return [
+		return array(
 			'total'      => $total,
 			'completed'  => $completed,
 			'percentage' => $total > 0 ? round( ( 100 * $completed ) / $total ) : 0,
 			'status'     => $queue_empty ? 'complete' : 'in_progress',
 			'processes'  => $by_process,
-		];
+		);
 	}
 
 	/**
@@ -593,13 +593,13 @@ class NS_Cloner_Process_Manager {
 	 * @return array
 	 */
 	private function get_current_processes( $suppress_filters = false ) {
-		$processes     = [];
+		$processes     = array();
 		$all_processes = ns_cloner()->processes;
 		// Add filter here so that addons/mode can disable checking for unused processes to speed up code.
 		if ( ! $suppress_filters ) {
-			$all_processes = apply_filters('ns_cloner_processes_to_check', $all_processes);
+			$all_processes = apply_filters( 'ns_cloner_processes_to_check', $all_processes );
 		}
-		ns_cloner()->log->log( [ 'CHECKING progress for processes:', array_keys( $all_processes ) ] );
+		ns_cloner()->log->log( array( 'CHECKING progress for processes:', array_keys( $all_processes ) ) );
 		foreach ( $all_processes as $process_id => $process ) {
 			$progress = $process->get_total_progress();
 			// Only add to the results if it this process has more than one object in it.

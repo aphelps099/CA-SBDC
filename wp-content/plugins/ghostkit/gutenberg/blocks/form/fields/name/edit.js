@@ -156,7 +156,6 @@ class BlockEdit extends Component {
                     value={descriptionMiddle}
                     placeholder={__('Write description…', 'ghostkit')}
                     onChange={(val) => setAttributes({ descriptionMiddle: val })}
-                    keepPlaceholderOnFocus
                   />
                 </div>
               ) : (
@@ -179,7 +178,6 @@ class BlockEdit extends Component {
                     value={descriptionLast}
                     placeholder={__('Write description…', 'ghostkit')}
                     onChange={(val) => setAttributes({ descriptionLast: val })}
-                    keepPlaceholderOnFocus
                   />
                 </div>
               ) : (

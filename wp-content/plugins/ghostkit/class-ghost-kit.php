@@ -2,9 +2,9 @@
 /**
  * Plugin Name:  Ghost Kit
  * Description:  Blocks collection and extensions for Gutenberg
- * Version:      2.22.3
- * Author:       nK
- * Author URI:   https://nkdev.info
+ * Version:      2.24.1
+ * Author:       Ghost Kit Team
+ * Author URI:   https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline
  * License:      GPLv2 or later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:  ghostkit
@@ -145,6 +145,9 @@ class GhostKit {
         // breakpoints.
         require_once $this->plugin_path . 'classes/class-breakpoints.php';
 
+        // scroll reveal extension.
+        require_once $this->plugin_path . 'classes/class-scroll-reveal.php';
+
         // utils encode/decode.
         require_once $this->plugin_path . 'gutenberg/utils/encode-decode/index.php';
 
@@ -237,7 +240,7 @@ class GhostKit {
         global $current_screen;
 
         $css_deps = array();
-        $js_deps  = array( 'ghostkit-helper', 'wp-block-editor', 'wp-blocks', 'wp-date', 'wp-i18n', 'wp-element', 'wp-edit-post', 'wp-compose', 'underscore', 'wp-hooks', 'wp-components', 'wp-keycodes', 'moment', 'jquery' );
+        $js_deps  = array( 'ghostkit-helper', 'wp-block-editor', 'wp-blocks', 'wp-date', 'wp-i18n', 'wp-element', 'wp-edit-post', 'wp-compose', 'underscore', 'wp-hooks', 'wp-components', 'wp-keycodes', 'jquery' );
 
         // Fix for Widgets screen.
         if ( isset( $current_screen->id ) && 'widgets' === $current_screen->id ) {
@@ -257,6 +260,11 @@ class GhostKit {
         // ScrollReveal.
         if ( apply_filters( 'gkt_enqueue_plugin_scrollreveal', true ) ) {
             $js_deps[] = 'scrollreveal';
+        }
+
+        // Luxon.
+        if ( apply_filters( 'gkt_enqueue_plugin_luxon', true ) ) {
+            $js_deps[] = 'luxon';
         }
 
         // GistEmbed.

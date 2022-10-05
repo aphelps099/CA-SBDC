@@ -30,7 +30,7 @@ if ( remove_action( 'ns_cloner_before_construct', 'ns_cloner_addon_content_users
 	printf(
 		wp_kses(
 			/* translators: URLs to plugins page and plugin license page */
-			__( 'NS Cloner Pro needs to be updated for compatibility with NS Cloner 4. Please <a href="%s" target="_blank">click here</a> to check for the latest version, and then click "Update now" on NS Cloner Pro when you are redirected to the plugins page (you\'ll need to have <a href="%s" target="_blank">entered an active license</a> for the new version to show up).', 'ns-cloner-site-copier' ),
+			__( 'NS Cloner Pro needs to be updated for compatibility with NS Cloner 4. Please <a href="%1$s" target="_blank">click here</a> to check for the latest version, and then click "Update now" on NS Cloner Pro when you are redirected to the plugins page (you\'ll need to have <a href="%2$s" target="_blank">entered an active license</a> for the new version to show up).', 'ns-cloner-site-copier' ),
 			ns_wp_kses_allowed()
 		),
 		esc_url( $url_function( 'plugins.php?check_for_updates=yes' ) ),
@@ -97,24 +97,28 @@ if ( ! is_writeable( NS_CLONER_LOG_DIR ) ) {
 	echo '</span>';
 }
 
-// Warn if max execution time is less than one minute.
-$max_execution_time = intval( ini_get( 'max_execution_time' ) );
-// 0 means unlimited, so make sure it's greater than that but less than a reasonable limit
-if ( $max_execution_time > 0 && $max_execution_time < 60 ) {
-	echo "<span class='ns-cloner-warning-message'>";
-	// translators: %d: max execution time in seconds.
-	echo esc_html( sprintf( __( 'This host\'s max_execution_time is set to %d seconds - we generally recommend at least 60 seconds for running the Cloner.', 'ns-cloner-site-copier' ), $max_execution_time ) );
-	esc_html_e( 'You may want to increase the max_execution_time in php.ini (or wherever your host supports PHP configuration updates) to avoid any timeout errors.', 'ns-cloner-site-copier' );
-	echo '</span>';
-}
-
-// Warn if memory limit is less than 128M.
 if ( function_exists( 'ini_get' ) ) {
+	// Warn if max execution time is less than one minute.
+	$max_execution_time = intval( ini_get( 'max_execution_time' ) );
+	// 0 means unlimited, so make sure it's greater than that but less than a reasonable limit
+	if ( $max_execution_time > 0 && $max_execution_time < 60 ) {
+		echo "<span class='ns-cloner-warning-message'>";
+		// translators: %d: max execution time in seconds.
+		echo esc_html( sprintf( __( 'This host\'s max_execution_time is set to %d seconds - we generally recommend at least 60 seconds for running the Cloner.', 'ns-cloner-site-copier' ), $max_execution_time ) );
+		esc_html_e( 'You may want to increase the max_execution_time in php.ini (or wherever your host supports PHP configuration updates) to avoid any timeout errors.', 'ns-cloner-site-copier' );
+		echo '</span>';
+	}
+
+	// Warn if memory limit is less than 128M.
 	$memory_limit = ini_get( 'memory_limit' );
-	if ( $memory_limit && -1 != $memory_limit && wp_convert_hr_to_bytes( $memory_limit ) < 128 * MB_IN_BYTES ) {
+	if ( ! $memory_limit || -1 === $memory_limit ) {
+		return;
+	}
+	// Memory limit should not be converted to an integer at this point as it removes the last string.
+	if ( wp_convert_hr_to_bytes( $memory_limit ) < 128 * MB_IN_BYTES ) {
 		echo "<span class='ns-cloner-warning-message'>";
 		// translators: %d: memory limit in megabytes.
-		echo esc_html( sprintf( __( 'This host\'s memory_limit is set to %dMB - we generally recommend at least 128MB for running the Cloner.', 'ns-cloner-site-copier' ), $memory_limit ) );
+		echo esc_html( sprintf( __( 'This host\'s memory_limit is set to %dMB - we generally recommend at least 128MB for running the Cloner.', 'ns-cloner-site-copier' ), (int) $memory_limit ) );
 		esc_html_e( 'You may want to increase the memory_limit in php.ini (or wherever your host supports PHP configuration updates) to avoid any out-of-memory errors.', 'ns-cloner-site-copier' );
 		echo '</span>';
 	}
@@ -125,10 +129,11 @@ if ( is_multisite() && ! iis7_supports_permalinks() ) {
 	// Foolproof htaccess path detection stolen from wp-admin/includes/network.php.
 	$slashed_home      = trailingslashit( get_option( 'home' ) );
 	$base              = wp_parse_url( $slashed_home, PHP_URL_PATH );
-	$document_root_fix = str_replace( '\\', '/', realpath( $_SERVER['DOCUMENT_ROOT'] ) );
+	$document_root_fix = str_replace( '\\', '/', realpath( $_SERVER['DOCUMENT_ROOT'] ) ); // phpcs:ignore
 	$abspath_fix       = str_replace( '\\', '/', ABSPATH );
 	$home_path         = 0 === strpos( $abspath_fix, $document_root_fix ) ? $document_root_fix . $base : get_home_path();
 	if ( file_exists( $home_path . '.htaccess' ) ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions -- file_get_contents is intentional.
 		$htaccess = file_get_contents( $home_path . '.htaccess' );
 		// Set patterns which tell us that multisite file rewrite is there.
 		$pre_3_5_rewrite  = 'wp-includes/ms-files.php';

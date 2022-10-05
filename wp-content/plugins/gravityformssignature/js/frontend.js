@@ -6,7 +6,7 @@
  *
  * @return {void}
  */
-function gformSignatureResize() {
+function gformSignatureResize( $instance ) {
 	/**
 	 * Get the cached components of the signature field.
 	 *
@@ -72,9 +72,15 @@ function gformSignatureResize() {
 		};
 	}
 
-	// Find every signature field on the page and resize it.
-	jQuery( '.gfield_signature_container' ).each( function() {
-		var $this = jQuery( this );
+	/**
+	 * Initializes the signature resize functionality.
+	 *
+	 * @since 4.3
+	 *
+	 * @param {Object} $instance jQuery signature container object.
+	 */
+	function init( $instance ) {
+		var $this = $instance;
 
 		// Reset the width on the signature field containers before we update our
 		// dimensions. This helps us get around a difference in how CSS grid sizes a
@@ -120,12 +126,15 @@ function gformSignatureResize() {
 		if ( decodedSignatureData ) {
 			LoadSignature( signature.fieldID, decodedSignatureData, 1 );
 		}
-	} );
+	}
+
+	init( $instance );
 }
 
-jQuery( window ).on( 'gform_post_render', function( formId ) {
+jQuery( window ).on( 'gform_post_render', function( event, form_id ) {
 
-	jQuery( '.gfield_signature_container' ).each( function() {
+	jQuery( '#gform_' + form_id ).find( '.gfield_signature_container' ).each( function() {
+
 		var $this = jQuery( this );
 
 		// If original width is already set, exit.
@@ -147,7 +156,7 @@ jQuery( window ).on( 'gform_post_render', function( formId ) {
 		$resetButton.click( function() {
 			SignatureEnabled( containerID, true );
 			ClearSignature( containerID );
-			gformSignatureResize();
+			gformSignatureResize( $this );
 			// Hide the locked reset resize button
 			$lockedResetButton.hide();
 		} );
@@ -164,7 +173,7 @@ jQuery( window ).on( 'gform_post_render', function( formId ) {
 		$this.data( 'ratio', height / width );
 		$this.data( 'original-width', width );
 
-		setTimeout(function () { gformSignatureResize(); }, 0 );
+		setTimeout(function () { gformSignatureResize( $this ); }, 0 );
 
 	} );
 
@@ -186,13 +195,17 @@ jQuery( document ).ready( function( $ ) {
 
 		windowWidth = window.innerWidth;
 
-		setTimeout(function () { gformSignatureResize(); }, 200 );
+		jQuery( '.gfield_signature_container' ).each( function() {
+			var $this = jQuery( this );
+			setTimeout(function () { gformSignatureResize( $this ); }, 200 );
+		} );
 
 	} );
 
 	gform.addAction( 'gform_post_conditional_logic_field_action', function ( formId, action, targetId, defaultValues, isInit ) {
-		if ( ! isInit && action === 'show' && $( targetId ).find( '.gfield_signature_container' ).length ) {
-			gformSignatureResize();
+		var $this = $( targetId ).find( '.gfield_signature_container' );
+		if ( ! isInit && action === 'show' && $this.length ) {
+			gformSignatureResize( $this );
 		}
 	} );
 

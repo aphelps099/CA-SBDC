@@ -11,10 +11,6 @@
             "homepage": "https://github.com/jnvsor"
         },
         {
-            "name": "Rokas Šleinius",
-            "homepage": "https://github.com/raveren"
-        },
-        {
             "name": "Contributors",
             "homepage": "https://github.com/kint-php/kint/graphs/contributors"
         }
@@ -23,12 +19,12 @@
         "php": ">=5.6"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "^9.0",
         "phpspec/prophecy-phpunit": "^2",
         "symfony/finder": "^3.0 || ^4.0 || ^5.0",
         "seld/phar-utils": "^1.0",
-        "vimeo/psalm": "dev-master"
+        "vimeo/psalm": "^4.0"
     },
     "autoload": {
         "files": ["init.php"],
@@ -72,13 +68,7 @@
         "analyze": "psalm --show-info=false"
     },
     "suggest": {
-        "kint-php/kint-twig": "Provides d() and s() functions in twig templates",
-        "kint-php/kint-js": "Provides a simplified dump to console.log()",
-        "ext-mbstring": "Provides string encoding detection",
-        "ext-iconv": "Provides fallback detection for ambiguous legacy string encodings such as the Windows and ISO 8859 code pages",
-        "ext-ctype": "Simple data type tests",
-        "symfony/polyfill-mbstring": "Replacement for ext-mbstring if missing",
-        "symfony/polyfill-iconv": "Replacement for ext-iconv if missing",
-        "symfony/polyfill-ctype": "Replacement for ext-ctype if missing"
+        "kint-php/kint-helpers": "Provides extra helper functions",
+        "kint-php/kint-twig": "Provides d() and s() functions in twig templates"
     }
 }

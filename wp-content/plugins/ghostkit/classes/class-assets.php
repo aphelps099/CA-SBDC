@@ -206,9 +206,14 @@ class GhostKit_Assets {
                 wp_register_style( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper-5-4-5/swiper.min.css', array(), '5.4.5' );
                 wp_register_script( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper-5-4-5/swiper.min.js', array(), '5.4.5', true );
             } else {
-                wp_register_style( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper/swiper-bundle.min.css', array(), '6.3.4' );
-                wp_register_script( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper/swiper-bundle.min.js', array(), '6.3.4', true );
+                wp_register_style( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper/swiper-bundle.min.css', array(), '8.4.0' );
+                wp_register_script( 'swiper', ghostkit()->plugin_url . 'assets/vendor/swiper/swiper-bundle.min.js', array(), '8.4.0', true );
             }
+        }
+
+        // Luxon.
+        if ( apply_filters( 'gkt_enqueue_plugin_luxon', true ) ) {
+            wp_register_script( 'luxon', ghostkit()->plugin_url . 'assets/vendor/luxon/build/global/luxon.min.js', array(), '3.0.1', true );
         }
 
         // GistEmbed.
@@ -285,7 +290,7 @@ class GhostKit_Assets {
             'ghostkit-helper',
             ghostkit()->plugin_url . 'assets/js/helper.min.js',
             array( 'jquery' ),
-            '2.22.3',
+            '2.24.1',
             true
         );
         $default_variant = array(
@@ -313,6 +318,12 @@ class GhostKit_Assets {
 
         $breakpoints = GhostKit_Breakpoints::get_breakpoints();
 
+        $timezone = wp_timezone_string();
+
+        if ( substr( $timezone, 0, 1 ) === '+' || substr( $timezone, 0, 1 ) === '-' ) {
+            $timezone = 'UTC' . $timezone;
+        }
+
         wp_localize_script(
             'ghostkit-helper',
             'ghostkitVariables',
@@ -328,6 +339,7 @@ class GhostKit_Assets {
                     'lg' => $breakpoints['md'],
                     'xl' => $breakpoints['lg'],
                 ),
+                'timezone'                    => $timezone,
                 'googleMapsAPIKey'            => get_option( 'ghostkit_google_maps_api_key' ),
                 'googleMapsAPIUrl'            => 'https://maps.googleapis' . $gmaps_suffix . '/maps/api/js?v=3.exp&language=' . esc_attr( $gmaps_locale ),
                 'googleMapsLibrary'           => apply_filters( 'gkt_enqueue_plugin_gmaps', true ) ? array(
@@ -376,7 +388,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'gutenberg/style.min.css',
             $css_deps,
-            '2.22.3'
+            '2.24.1'
         );
         wp_style_add_data( 'ghostkit', 'rtl', 'replace' );
         wp_style_add_data( 'ghostkit', 'suffix', '.min' );
@@ -385,7 +397,7 @@ class GhostKit_Assets {
             'ghostkit',
             ghostkit()->plugin_url . 'assets/js/main.min.js',
             $js_deps,
-            '2.22.3',
+            '2.24.1',
             true
         );
 
@@ -421,7 +433,7 @@ class GhostKit_Assets {
                     }
                     break;
                 case 'countdown':
-                    $block_js_deps[] = 'moment';
+                    $block_js_deps[] = 'luxon';
                     break;
                 case 'form':
                     if ( wp_script_is( 'parsley' ) || wp_script_is( 'parsley', 'registered' ) ) {
@@ -440,7 +452,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_script_url,
                 array_unique( $block_js_deps ),
-                '2.22.3',
+                '2.24.1',
                 true
             );
         }
@@ -465,7 +477,7 @@ class GhostKit_Assets {
                 'ghostkit-block-' . $block_name,
                 $block_style_url,
                 array_unique( $block_css_deps ),
-                '2.22.3'
+                '2.24.1'
             );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'rtl', 'replace' );
             wp_style_add_data( 'ghostkit-block-' . $block_name, 'suffix', '.min' );
@@ -638,13 +650,13 @@ class GhostKit_Assets {
 
             // Enqueue custom CSS.
             if ( ! self::$already_added_custom_assets ) {
-                wp_register_style( $name, false, array(), '2.22.3' );
+                wp_register_style( $name, false, array(), '2.24.1' );
                 wp_enqueue_style( $name );
                 wp_add_inline_style( $name, $css );
 
                 // Enqueue JS instead of CSS when rendering in <body> to prevent W3C errors.
             } elseif ( ! wp_script_is( $name, 'enqueued' ) ) {
-                wp_register_script( $name, false, array(), '2.22.3', true );
+                wp_register_script( $name, false, array(), '2.24.1', true );
                 wp_enqueue_script( $name );
                 wp_add_inline_script(
                     $name,
@@ -669,7 +681,7 @@ class GhostKit_Assets {
      * @param Boolean $footer - print in footer.
      */
     public static function add_custom_js( $name, $js, $footer = false ) {
-        wp_register_script( $name, '', array(), '2.22.3', $footer );
+        wp_register_script( $name, '', array(), '2.24.1', $footer );
         wp_enqueue_script( $name );
         wp_add_inline_script( $name, $js );
     }

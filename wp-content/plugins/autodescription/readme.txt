@@ -2,10 +2,10 @@
 Contributors: Cybr
 Donate link: https://github.com/sponsors/sybrew
 Tags: seo, xml sitemap, google search, open graph, schema.org, twitter card, performance, headless
-Requires at least: 5.5.0
+Requires at least: 5.5
 Tested up to: 6.0
 Requires PHP: 7.2.0
-Stable tag: 4.2.4
+Stable tag: 4.2.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -246,6 +246,10 @@ The SEO Framework does not provide the display of breadcrumbs. This is theme-ter
 If you wish to display breadcrumbs, then your theme should provide this. Alternatively, there are [other plugins](https://wordpress.org/plugins/search/breadcrumbs/) that help you do this.
 
 == Changelog ==
+
+= 4.2.5 =
+
+This minor update addresses a change in WordPress 6.0 that causes taxonomy sitemaps to crash, allows paginated deindexing to supersede forced indexing, and improves image cropping by [preserving metadata](https://theseoframework.com/?p=3929).
 
 = 4.2.4 =
 

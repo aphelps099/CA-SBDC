@@ -301,7 +301,7 @@ export default class Typography extends Component {
                   'Adobe Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ',
                   'ghostkit'
                 )}
-                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=adobe_fonts&utm_content=2.22.3">
+                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=adobe_fonts&utm_content=2.24.1">
                   https://ghostkit.io/pricing/
                 </ExternalLink>
               </div>
@@ -314,7 +314,7 @@ export default class Typography extends Component {
                   'Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ',
                   'ghostkit'
                 )}
-                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=custom_fonts&utm_content=2.22.3">
+                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=custom_fonts&utm_content=2.24.1">
                   https://ghostkit.io/pricing/
                 </ExternalLink>
               </div>

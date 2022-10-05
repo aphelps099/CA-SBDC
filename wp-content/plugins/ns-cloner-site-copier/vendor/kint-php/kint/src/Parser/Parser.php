@@ -34,6 +34,7 @@ use Kint\Zval\ResourceValue;
 use Kint\Zval\Value;
 use ReflectionObject;
 use stdClass;
+use TypeError;
 
 class Parser
 {
@@ -58,25 +59,22 @@ class Parser
     const TRIGGER_COMPLETE = 14;
 
     protected $caller_class;
-    protected $depth_limit = false;
+    protected $depth_limit = 0;
     protected $marker;
     protected $object_hashes = [];
     protected $parse_break = false;
     protected $plugins = [];
 
     /**
-     * @param false|int   $depth_limit Maximum depth to parse data
+     * @param int         $depth_limit Maximum depth to parse data
      * @param null|string $caller      Caller class name
      */
-    public function __construct($depth_limit = false, $caller = null)
+    public function __construct($depth_limit = 0, $caller = null)
     {
         $this->marker = \uniqid("kint\0", true);
 
+        $this->depth_limit = $depth_limit;
         $this->caller_class = $caller;
-
-        if ($depth_limit) {
-            $this->depth_limit = $depth_limit;
-        }
     }
 
     /**
@@ -99,9 +97,9 @@ class Parser
     /**
      * Set the depth limit.
      *
-     * @param false|int $depth_limit Maximum depth to parse data
+     * @param int $depth_limit Maximum depth to parse data
      */
-    public function setDepthLimit($depth_limit = false)
+    public function setDepthLimit($depth_limit = 0)
     {
         $this->noRecurseCall();
 
@@ -111,28 +109,6 @@ class Parser
     public function getDepthLimit()
     {
         return $this->depth_limit;
-    }
-
-    /**
-     * Disables the depth limit and parses a variable.
-     *
-     * This should not be used unless you know what you're doing!
-     *
-     * @param mixed $var The input variable
-     * @param Value $o   The base object
-     *
-     * @return Value
-     */
-    public function parseDeep(&$var, Value $o)
-    {
-        $depth_limit = $this->depth_limit;
-        $this->depth_limit = false;
-
-        $out = $this->parse($var, $o);
-
-        $this->depth_limit = $depth_limit;
-
-        return $out;
     }
 
     /**
@@ -459,6 +435,48 @@ class Parser
 
         $rep = new Representation('Properties');
 
+        if (KINT_PHP74) {
+            $rprops = $reflector->getProperties();
+
+            foreach ($rprops as $rprop) {
+                if ($rprop->isStatic()) {
+                    continue;
+                }
+
+                $rprop->setAccessible(true);
+                if ($rprop->isInitialized($var)) {
+                    continue;
+                }
+
+                $undefined = null;
+
+                $child = new Value();
+                $child->type = 'undefined';
+                $child->depth = $object->depth + 1;
+                $child->owner_class = $rprop->getDeclaringClass()->getName();
+                $child->operator = Value::OPERATOR_OBJECT;
+                $child->name = $rprop->getName();
+
+                if ($rprop->isPublic()) {
+                    $child->access = Value::ACCESS_PUBLIC;
+                } elseif ($rprop->isProtected()) {
+                    $child->access = Value::ACCESS_PROTECTED;
+                } elseif ($rprop->isPrivate()) {
+                    $child->access = Value::ACCESS_PRIVATE;
+                }
+
+                // Can't dynamically add undefined properties, so no need to use var_export
+                if ($this->childHasPath($object, $child)) {
+                    $child->access_path .= $object->access_path.'->'.$child->name;
+                }
+
+                if ($this->applyPlugins($undefined, $child, self::TRIGGER_BEGIN)) {
+                    $this->applyPlugins($undefined, $child, self::TRIGGER_SUCCESS);
+                }
+                $rep->contents[] = $child;
+            }
+        }
+
         $copy = \array_values($values);
         $refmarker = new stdClass();
         $i = 0;
@@ -507,7 +525,11 @@ class Parser
             }
 
             $stash = $val;
-            $copy[$i] = $refmarker;
+            try {
+                $copy[$i] = $refmarker;
+            } catch (TypeError $e) {
+                $child->reference = true;
+            }
             if ($val === $refmarker) {
                 $child->reference = true;
                 $val = $stash;

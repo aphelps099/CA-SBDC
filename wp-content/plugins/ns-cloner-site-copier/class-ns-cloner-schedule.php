@@ -36,9 +36,10 @@ class NS_Cloner_Schedule {
 	 */
 	public function __construct() {
 		// Register handler for cloner cron events.
-		add_action( $this->cron_id, [ $this, 'handle' ] );
+		add_action( $this->cron_id, array( $this, 'handle' ) );
 		// Add new (default 2 min) interval to existing wp cron intervals.
-		add_filter( 'cron_schedules', [ $this, 'register_interval' ] );
+		// phpcs:ignore WordPress.WP.CronInterval -- intentional addition
+		add_filter( 'cron_schedules', array( $this, 'register_interval' ) );
 	}
 
 	/**
@@ -68,12 +69,12 @@ class NS_Cloner_Schedule {
 		// Add timing info to the request for info / debugging.
 		$request = array_merge(
 			$request,
-			[
+			array(
 				'user_id'    => get_current_user_id(),
 				'_caller'    => $caller,
 				'_created'   => time(),
 				'_scheduled' => $time,
-			]
+			)
 		);
 		// Add the scheduled request to the queue of scheduled operations.
 		$scheduled          = $this->get();
@@ -100,7 +101,7 @@ class NS_Cloner_Schedule {
 	 * @return array
 	 */
 	public function get() {
-		return get_site_option( $this->cron_data_key, [] );
+		return get_site_option( $this->cron_data_key, array() );
 	}
 
 	/**
@@ -134,7 +135,7 @@ class NS_Cloner_Schedule {
 	 */
 	public function handle() {
 		// Ensure that plugin functions are available in cron environment.
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		$scheduled = $this->get();
 		if ( ns_cloner()->process_manager->is_in_progress() ) {
 			// Do wrap up for any hanging operations that didn't call their own finish() for one reason or another.

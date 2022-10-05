@@ -21,7 +21,7 @@ class NS_Cloner_Section_Select_Source extends NS_Cloner_Section {
 	 *
 	 * @var array
 	 */
-	public $modes_supported = [ 'core', 'clone_over', 'clone_teleport' ];
+	public $modes_supported = array( 'core', 'clone_over', 'clone_teleport' );
 
 	/**
 	 * DOM id for section box.
@@ -67,7 +67,8 @@ class NS_Cloner_Section_Select_Source extends NS_Cloner_Section {
 					$default = ns_cloner_request()->get( 'source', $saved );
 					?>
 					<option value="<?php echo esc_attr( $id ); ?>" <?php echo selected( esc_attr( $id ), $default ); ?>>
-						<?php echo $label; // Don't escape this with esc_html b/c non-latin chars can result in totally empty string. ?>
+						<?php // phpcs:ignore WordPress.Security -- can't escape b/c non-latin chars can cause empty string. ?>
+						<?php echo $label; ?>
 					</option>
 				<?php endforeach; ?>
 			</select>

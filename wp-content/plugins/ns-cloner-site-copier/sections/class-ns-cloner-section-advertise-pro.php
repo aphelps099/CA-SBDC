@@ -21,7 +21,7 @@ class NS_Cloner_Section_Advertise_Pro extends NS_Cloner_Section {
 	 *
 	 * @var array
 	 */
-	public $modes_supported = [ 'core' ];
+	public $modes_supported = array( 'core' );
 
 	/**
 	 * DOM id for section box.

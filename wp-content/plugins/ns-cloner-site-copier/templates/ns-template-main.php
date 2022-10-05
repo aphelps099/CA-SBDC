@@ -9,6 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+$ns_cloner_modes          = ns_cloner()->get_modes();
+$first_ns_cloner_mode     = false;
+$first_ns_cloner_mode_key = 0;
+if ( ! empty( $ns_cloner_modes ) ) {
+	$first_ns_cloner_mode     = reset( $ns_cloner_modes );
+	$first_ns_cloner_mode_key = key( $ns_cloner_modes );
+}
 ?>
 <div class="ns-cloner-header">
 	<a href="<?php echo esc_url( network_admin_url( 'admin.php?page=' . ns_cloner()->menu_slug ) ); ?>">
@@ -22,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endif; ?>
 </div>
 
-<div class="ns-cloner-wrapper <?php echo empty( ns_cloner()->get_modes() ) ? 'disabled' : 'enabled'; ?>">
+<div class="ns-cloner-wrapper <?php echo empty( $ns_cloner_modes ) ? 'disabled' : 'enabled'; ?>">
 
 	<form class="ns-cloner-form ns-cloner-main-form" method="post" enctype="multipart/form-data">
 
@@ -42,19 +49,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</span>
 			</div>
 			<div class="ns-cloner-section-content">
-				<?php if ( empty( ns_cloner()->get_modes() ) ) : ?>
+				<?php if ( empty( $ns_cloner_modes ) ) : ?>
 				<h5><?php esc_html_e( 'No cloning modes are currently available for this site.', 'ns-cloner-site-copier' ); ?></h5>
 				<?php else : ?>
 				<select class="ns-cloner-select-mode" name="clone_mode">
-					<?php foreach ( ns_cloner()->get_modes() as $mode_id => $details ) : ?>
+					<?php foreach ( $ns_cloner_modes as $mode_id => $details ) : ?>
 						<option value="<?php echo esc_attr( $mode_id ); ?>"
 								data-description="<?php echo esc_attr( wpautop( $details->description ) ); ?>"
-								data-button-text="<?php echo esc_attr( $details->button_text ); ?>">
+								data-button-text="<?php echo esc_attr( $details->button_text ); ?>"
+								<?php $first_ns_cloner_mode_key ? selected( $first_ns_cloner_mode_key, $mode_id ) : ''; ?>>
 							<?php echo esc_html( $details->title ); ?>
 						</option>
 					<?php endforeach; ?>
 				</select>
-				<div class="ns-cloner-mode-description"></div>
+				<div class="ns-cloner-mode-description">
+					<?php
+					if ( $first_ns_cloner_mode ) {
+						echo '<p>' . esc_html( $first_ns_cloner_mode->description ) . '</p>';
+					}
+					?>
+				</div>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -91,6 +105,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php
 						// Display the title of the current in progress clone mode if applicable.
 						if ( ns_cloner()->process_manager->is_in_progress() ) :
+                            // phpcs:ignore WordPress.WP.GlobalVariablesOverride -- local scope here
 							$mode = ns_cloner_request()->get( 'clone_mode' );
 							echo esc_html( $mode ? ns_cloner()->get_mode( $mode )->title : 'Unrecognized mode' );
 						endif;

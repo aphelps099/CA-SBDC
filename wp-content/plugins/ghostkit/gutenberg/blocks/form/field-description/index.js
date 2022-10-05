@@ -31,7 +31,6 @@ class FieldDescription extends Component {
         value={description}
         placeholder={__('Write description…', 'ghostkit')}
         onChange={(val) => setAttributes({ description: val })}
-        keepPlaceholderOnFocus
       />
     );
   }

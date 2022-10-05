@@ -27,6 +27,7 @@ namespace Kint\Parser;
 
 use Kint\Zval\Value;
 use Mysqli;
+use ReflectionClass;
 use Throwable;
 
 /**
@@ -85,13 +86,15 @@ class MysqliPlugin extends Plugin
 
         try {
             $connected = \is_string(@$var->sqlstate);
-        } catch (Throwable $t) { // @codeCoverageIgnore
-            $connected = false; // @codeCoverageIgnore
+        } catch (Throwable $t) {
+            $connected = false;
         }
 
         try {
             $empty = !$connected && \is_string(@$var->client_info);
         } catch (Throwable $t) { // @codeCoverageIgnore
+            // Only possible in PHP 8.0. Before 8.0 there's no exception,
+            // after 8.1 there are no failed connection objects
             $empty = false; // @codeCoverageIgnore
         }
 
@@ -101,8 +104,9 @@ class MysqliPlugin extends Plugin
                     continue;
                 }
             } elseif (isset($this->empty_readable[$obj->name])) {
-                if (!$connected && !$empty) {
-                    continue;
+                // No failed connections after PHP 8.1
+                if (!$connected && !$empty) { // @codeCoverageIgnore
+                    continue; // @codeCoverageIgnore
                 }
             } elseif (!isset($this->always_readable[$obj->name])) {
                 continue;
@@ -111,6 +115,10 @@ class MysqliPlugin extends Plugin
             if ('null' !== $obj->type) {
                 continue;
             }
+
+            // @codeCoverageIgnoreStart
+            // All of this is irellevant after 8.1,
+            // we have separate logic for that below
 
             $param = $var->{$obj->name};
 
@@ -127,6 +135,55 @@ class MysqliPlugin extends Plugin
             $base->reference = $obj->reference;
 
             $o->value->contents[$key] = $this->parser->parse($param, $base);
+
+            // @codeCoverageIgnoreEnd
+        }
+
+        // PHP81 returns an empty array when casting a Mysqli instance
+        if (KINT_PHP81) {
+            $r = new ReflectionClass(Mysqli::class);
+
+            $basepropvalues = [];
+
+            foreach ($r->getProperties() as $prop) {
+                if ($prop->isStatic()) {
+                    continue; // @codeCoverageIgnore
+                }
+
+                $pname = $prop->getName();
+                $param = null;
+
+                if (isset($this->connected_readable[$pname])) {
+                    if ($connected) {
+                        $param = $var->{$pname};
+                    }
+                } else {
+                    $param = $var->{$pname};
+                }
+
+                $child = new Value();
+                $child->depth = $o->depth + 1;
+                $child->owner_class = Mysqli::class;
+                $child->operator = Value::OPERATOR_OBJECT;
+                $child->name = $pname;
+
+                if ($prop->isPublic()) {
+                    $child->access = Value::ACCESS_PUBLIC;
+                } elseif ($prop->isProtected()) { // @codeCoverageIgnore
+                    $child->access = Value::ACCESS_PROTECTED; // @codeCoverageIgnore
+                } elseif ($prop->isPrivate()) { // @codeCoverageIgnore
+                    $child->access = Value::ACCESS_PRIVATE; // @codeCoverageIgnore
+                }
+
+                // We only do base Mysqli properties so we don't need to worry about complex names
+                if ($this->parser->childHasPath($o, $child)) {
+                    $child->access_path .= $o->access_path.'->'.$child->name;
+                }
+
+                $basepropvalues[] = $this->parser->parse($param, $child);
+            }
+
+            $o->value->contents = \array_merge($basepropvalues, $o->value->contents);
         }
     }
 }

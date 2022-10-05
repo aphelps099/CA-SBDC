@@ -20,14 +20,14 @@ class NS_Cloner_Ajax {
 	 * NS_Cloner_Ajax constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_ns_cloner_search_sites', [ $this, 'search_sites' ] );
-		add_action( 'wp_ajax_ns_cloner_validate_section', [ $this, 'validate_section' ] );
-		add_action( 'wp_ajax_ns_cloner_process_init', [ $this, 'process_init' ] );
-		add_action( 'wp_ajax_ns_cloner_get_progress', [ $this, 'get_progress' ] );
-		add_action( 'wp_ajax_ns_cloner_process_finish', [ $this, 'process_finish' ] );
-		add_action( 'wp_ajax_ns_cloner_process_exit', [ $this, 'process_exit' ] );
-		add_action( 'wp_ajax_ns_cloner_delete_schedule', [ $this, 'delete_schedule' ] );
-		add_action( 'wp_ajax_ns_cloner_delete_options', [ $this, 'delete_options' ] );
+		add_action( 'wp_ajax_ns_cloner_search_sites', array( $this, 'search_sites' ) );
+		add_action( 'wp_ajax_ns_cloner_validate_section', array( $this, 'validate_section' ) );
+		add_action( 'wp_ajax_ns_cloner_process_init', array( $this, 'process_init' ) );
+		add_action( 'wp_ajax_ns_cloner_get_progress', array( $this, 'get_progress' ) );
+		add_action( 'wp_ajax_ns_cloner_process_finish', array( $this, 'process_finish' ) );
+		add_action( 'wp_ajax_ns_cloner_process_exit', array( $this, 'process_exit' ) );
+		add_action( 'wp_ajax_ns_cloner_delete_schedule', array( $this, 'delete_schedule' ) );
+		add_action( 'wp_ajax_ns_cloner_delete_options', array( $this, 'delete_options' ) );
 	}
 
 	/**
@@ -35,7 +35,7 @@ class NS_Cloner_Ajax {
 	 */
 	public function search_sites() {
 		$this->check_nonce();
-		$matching_sites = [];
+		$matching_sites = array();
 		$search_term    = ns_cloner_request()->get( 'term' );
 		$search_value   = esc_sql( ns_cloner()->db->esc_like( $search_term ) );
 		$search_column  = is_subdomain_install() ? 'domain' : 'path';
@@ -43,10 +43,10 @@ class NS_Cloner_Ajax {
 		$results        = ns_cloner()->db->get_results( "SELECT blog_id FROM $blogs_table WHERE $search_column LIKE '%$search_value%'" );
 		foreach ( $results as $result ) {
 			$details          = get_blog_details( $result->blog_id );
-			$matching_sites[] = [
+			$matching_sites[] = array(
 				'value' => $details->blog_id,
 				'label' => "$details->blogname ($details->siteurl)",
-			];
+			);
 		}
 		wp_send_json( $matching_sites );
 	}
@@ -95,7 +95,7 @@ class NS_Cloner_Ajax {
 		// Send results back to browser.
 		if ( 'reported' === $progress['status'] ) {
 			// Format report into html if cloning is done.
-			$this->send_response( [ 'report' => ns_cloner()->report->get_html() ] );
+			$this->send_response( array( 'report' => ns_cloner()->report->get_html() ) );
 		} else {
 			// Otherwise send progress data to update the UI.
 			$this->send_response( $progress );

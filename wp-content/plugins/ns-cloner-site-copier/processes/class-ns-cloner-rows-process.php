@@ -28,14 +28,14 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 	 *
 	 * @var array
 	 */
-	protected $preloaded = [];
+	protected $preloaded = array();
 
 	/**
 	 * Array of primary key column names and last touched value by table.
 	 *
 	 * @var array
 	 */
-	protected $primary_keys = [];
+	protected $primary_keys = array();
 
 	/**
 	 * SQL query string compiled to insert row data
@@ -75,11 +75,11 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 		$this->report_label = __( 'Rows', 'ns-cloner-site-copier' );
 
 		// Load stored primary keys from past processes.
-		$this->primary_keys = get_site_option( $this->identifier . '_primary_keys', [] );
-		ns_cloner()->log->log( [ 'LOADING previous primary keys', $this->primary_keys ] );
+		$this->primary_keys = get_site_option( $this->identifier . '_primary_keys', array() );
+		ns_cloner()->log->log( array( 'LOADING previous primary keys', $this->primary_keys ) );
 
 		// Create dependency - this will auto-dispatch when table processing is complete.
-		add_action( 'ns_cloner_tables_process_complete', [ $this, 'dispatch' ] );
+		add_action( 'ns_cloner_tables_process_complete', array( $this, 'dispatch' ) );
 	}
 
 	/**
@@ -115,7 +115,7 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 		$is_edit_meta   = isset( $row['meta_key'] ) && preg_match( '/(ns_cloner|_edit_lock|_edit_last)/', $row['meta_key'] );
 		$do_copy_row    = apply_filters( 'ns_cloner_do_copy_row', ( ! $is_cloner_data && ! $is_transient && ! $is_edit_meta ), $row, $item );
 		if ( ! $do_copy_row ) {
-			ns_cloner()->log->log( [ "SKIPPING row in *$source_table* because do_copy_row was false:", $row ] );
+			ns_cloner()->log->log( array( "SKIPPING row in *$source_table* because do_copy_row was false:", $row ) );
 			return parent::task( $item );
 		}
 
@@ -140,7 +140,7 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 				ns_cloner()->report->increment_report( '_replacements', $replaced_in_row );
 			}
 		} else {
-			ns_cloner()->log->log( [ "SKIPPING row replacements in *$source_table* because do_copy_row was false:", $row ] );
+			ns_cloner()->log->log( array( "SKIPPING row replacements in *$source_table* because do_copy_row was false:", $row ) );
 		}
 
 		// Remove primary key, if it's a table like wp_options where:
@@ -148,10 +148,10 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 		// 2. There's a possibility that the table will be added to during the clone process.
 		$non_essential_keys = apply_filters(
 			'ns_cloner_non_essential_primary_keys',
-			[
+			array(
 				'options'  => 'option_id',
 				'sitemeta' => 'meta_id',
-			]
+			)
 		);
 		foreach ( $non_essential_keys as $table => $key ) {
 			if ( preg_match( "/_{$table}$/", $source_table ) ) {
@@ -178,23 +178,23 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 	 * @return array
 	 */
 	protected function get_row( $source_id, $source_table, $row_num ) {
-		$source_prefix  = is_multisite() ? ns_cloner()->db->get_blog_prefix( $source_id ) : ns_cloner()->db->prefix;
+		$source_prefix = is_multisite() ? ns_cloner()->db->get_blog_prefix( $source_id ) : ns_cloner()->db->prefix;
 
 		// Make sure the table array is initialized.
 		if ( ! isset( $this->preloaded[ $source_table ] ) ) {
-			$this->preloaded[ $source_table ] = [];
+			$this->preloaded[ $source_table ] = array();
 		}
 
 		// Get the primary key for this table.
 		if ( ! isset( $this->primary_keys[ $source_table ] ) ) {
 			// Be careful about multiple keys - this can cause issues for some tables like term_relationships.
 			// Best to default to LIMIT fetching if there are multiple primary keys, even though that's slower.
-			$key_data = ns_cloner()->db->get_results( "SHOW KEYS FROM $source_table WHERE Key_name = 'PRIMARY'" );
-			$this->primary_keys[ $source_table ] = [
+			$key_data                            = ns_cloner()->db->get_results( "SHOW KEYS FROM $source_table WHERE Key_name = 'PRIMARY'" );
+			$this->primary_keys[ $source_table ] = array(
 				'name'  => $key_data && 1 === count( $key_data ) ? $key_data[0]->Column_name : false,
 				'value' => 0,
-			];
-			ns_cloner()->log->log( [ "CHECKING primary key for *$source_table*", $key_data ] );
+			);
+			ns_cloner()->log->log( array( "CHECKING primary key for *$source_table*", $key_data ) );
 		}
 		$primary_key_name = $this->primary_keys[ $source_table ]['name'];
 		$primary_key_val  = $this->primary_keys[ $source_table ]['value'];
@@ -226,7 +226,7 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 				. ' ' . apply_filters( 'ns_cloner_rows_order', $order, $source_table, $source_prefix )
 				. ' ' . apply_filters( 'ns_cloner_rows_limit', $limit, $source_table, $source_prefix );
 			// Run it!
-			ns_cloner()->log->log( [ "PRELOADING rows for *$source_table* with query:", $query ] );
+			ns_cloner()->log->log( array( "PRELOADING rows for *$source_table* with query:", $query ) );
 			$rows = ns_cloner()->db->get_results( $query, ARRAY_A );
 			// Assign the correct keys for the next preloaded batch, starting with the current row_num, not 0.
 			$indexes = array_keys( array_fill( $row_num, count( $rows ), '' ) );
@@ -245,7 +245,7 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 			return $row;
 		} else {
 			ns_cloner()->report->add_notice( "Missing row *$row_num* in *$source_table* - could not be preloaded" );
-			return [];
+			return array();
 		}
 	}
 
@@ -296,13 +296,13 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 			// Handle any errors.
 			if ( ! empty( ns_cloner()->db->last_error ) ) {
 				if ( false !== strpos( ns_cloner()->db->last_error, 'Duplicate entry' ) ) {
-					ns_cloner()->log->log( [ 'DUPLICATE entry for query:', $query ] );
+					ns_cloner()->log->log( array( 'DUPLICATE entry for query:', $query ) );
 					$is_duplicate_option = preg_match( "/Duplicate entry '([^'])' for key 'option_name'/", ns_cloner()->db->last_error, $db_error_matches );
 					if ( $is_duplicate_option ) {
 						// For duplicates in the options table, try deleting the row and reinserting.
 						// (Often caused by a plugin that initializes values when site is partly cloned).
 						$option_name = $db_error_matches[1];
-						ns_cloner()->log->log( [ 'TRYING to remove duplicate option:', $option_name ] );
+						ns_cloner()->log->log( array( 'TRYING to remove duplicate option:', $option_name ) );
 						ns_cloner()->db->last_error = '';
 						ns_cloner()->db->query( "DELETE FROM $this->current_table WHERE option_name = '$option_name'" );
 						// See if it worked.
@@ -337,7 +337,7 @@ class NS_Cloner_Rows_Process extends NS_Cloner_Process {
 			$this->insert_batch();
 		}
 		// Save most recent primary key so we know where to pick up again.
-		ns_cloner()->log->log( [ 'SAVING primary key data for rows process:', $this->primary_keys ] );
+		ns_cloner()->log->log( array( 'SAVING primary key data for rows process:', $this->primary_keys ) );
 		update_site_option( $this->identifier . '_primary_keys', $this->primary_keys );
 		parent::after_handle();
 	}

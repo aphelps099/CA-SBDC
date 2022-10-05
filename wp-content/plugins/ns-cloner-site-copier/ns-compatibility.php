@@ -17,11 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter(
 	'ns_cloner_global_table_patterns',
 	function( $global_patterns ) {
-		$plugin_patterns = [
+		$plugin_patterns = array(
 			'domain_mapping.*',   // Domain mapping tables.
 			'3wp_broadcast_.*',   // 3wp broadcast tables.
 			'bp_.*',              // BuddyPress tables.
-		];
+		);
 		return array_merge( $global_patterns, $plugin_patterns );
 	}
 );
@@ -49,23 +49,23 @@ add_filter(
 add_filter(
 	'ns_cloner_do_copy_row',
 	function( $do, $row ) {
-		$plugin_opts = [];
+		$plugin_opts = array();
 		// Collisimo Shipping Methods for WooCommerce.
-		$plugin_opts = array_merge( $plugin_opts, [ 'lpc_db_version' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'lpc_db_version' ) );
 		// Jetpack.
-		$plugin_opts = array_merge( $plugin_opts, [ 'jetpack_activated', 'jetpack_private_options' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'jetpack_activated', 'jetpack_private_options' ) );
 		// WC Multilingual.
-		$plugin_opts = array_merge( $plugin_opts, [ 'wcml_currency_switcher_template_objects' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'wcml_currency_switcher_template_objects' ) );
 		// WP Mail SMTP.
-		$plugin_opts = array_merge( $plugin_opts, [ 'mail_bank_update_database', 'mail-bank-version-number', 'mb_admin_notice' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'mail_bank_update_database', 'mail-bank-version-number', 'mb_admin_notice' ) );
 		// WordFence.
-		$plugin_opts = array_merge( $plugin_opts, [ 'wordfence_installed' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'wordfence_installed' ) );
 		// Yoast WP SEO.
-		$plugin_opts = array_merge( $plugin_opts, [ 'wpseo_ryte' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'wpseo_ryte' ) );
 		// Woo Discount Rules.
-		$plugin_opts = array_merge( $plugin_opts, [ 'awdr_activity_log_version' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'awdr_activity_log_version' ) );
 		// Freemius.
-		$plugin_opts = array_merge( $plugin_opts, [ 'fs_accounts' ] );
+		$plugin_opts = array_merge( $plugin_opts, array( 'fs_accounts' ) );
 		// Skip copying any of the above listed option rows.
 		if ( isset( $row['option_name'] ) && in_array( $row['option_name'], $plugin_opts, true ) ) {
 			$do = false;
@@ -88,9 +88,9 @@ add_filter(
 add_filter(
 	'ns_cloner_do_search_replace',
 	function( $do, $row ) {
-		$excluded_meta = [];
+		$excluded_meta = array();
 		// WP Simple Pay has Stripe plan objects encoded.
-		$excluded_meta = array_merge( $excluded_meta, [ '_single_plan_object' ] );
+		$excluded_meta = array_merge( $excluded_meta, array( '_single_plan_object' ) );
 		// Skip doing search/replace on any of the above listed meta rows.
 		if ( isset( $row['meta_key'] ) && in_array( $row['meta_key'], $excluded_meta, true ) ) {
 			$do = false;

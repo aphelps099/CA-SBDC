@@ -31,7 +31,7 @@ class NS_Cloner_Files_Process extends NS_Cloner_Process {
 		$this->report_label = __( 'Files', 'ns-cloner-site-copier' );
 
 		// Set a lower maximum batch size for files since queue items are bigger (more text for paths).
-		add_filter( $this->identifier . '_max_batch', [ $this, 'max_batch' ] );
+		add_filter( $this->identifier . '_max_batch', array( $this, 'max_batch' ) );
 	}
 
 	/**
@@ -56,7 +56,7 @@ class NS_Cloner_Files_Process extends NS_Cloner_Process {
 		// Create destination directory if it doesn't exist already.
 		$destination_dir = dirname( $destination );
 		if ( ! is_dir( $destination_dir ) ) {
-			$missing_dirs = [];
+			$missing_dirs = array();
 			// Go back up the tree until we get to a dir that DOES exist.
 			while ( ! is_dir( $destination_dir ) ) {
 				$missing_dirs[]  = $destination_dir;
@@ -90,7 +90,7 @@ class NS_Cloner_Files_Process extends NS_Cloner_Process {
 	 * @param int $max Default maximum number of batch items.
 	 * @return int
 	 */
-	public function max_batch( $max ){
+	public function max_batch( $max ) {
 		return 2500;
 	}
 

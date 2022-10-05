@@ -42,6 +42,7 @@ if (\version_compare(PHP_VERSION, '5.6') < 0) {
 \define('KINT_PHP73', (\version_compare(PHP_VERSION, '7.3') >= 0));
 \define('KINT_PHP74', (\version_compare(PHP_VERSION, '7.4') >= 0));
 \define('KINT_PHP80', (\version_compare(PHP_VERSION, '8.0') >= 0));
+\define('KINT_PHP81', (\version_compare(PHP_VERSION, '8.1') >= 0));
 
 // Dynamic default settings
 Kint::$file_link_format = \ini_get('xdebug.file_link_format');
@@ -55,7 +56,7 @@ if (isset($_SERVER['DOCUMENT_ROOT'])) {
 Utils::composerSkipFlags();
 
 if ((!\defined('KINT_SKIP_FACADE') || !KINT_SKIP_FACADE) && !\class_exists('Kint')) {
-    \class_alias('Kint\\Kint', 'Kint');
+    \class_alias(Kint::class, 'Kint');
 }
 
 if (!\defined('KINT_SKIP_HELPERS') || !KINT_SKIP_HELPERS) {

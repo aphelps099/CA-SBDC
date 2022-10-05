@@ -27,7 +27,7 @@ final class NS_Cloner_Request {
 	 *
 	 * @var array
 	 */
-	private $request = [];
+	private $request = array();
 
 	/**
 	 * Option key to save stored request to
@@ -41,13 +41,13 @@ final class NS_Cloner_Request {
 	 *
 	 * @var array
 	 */
-	private static $vars = [
+	private static $vars = array(
 		'prefix',
 		'upload_dir',
 		'upload_url',
 		'url',
 		'url_short',
-	];
+	);
 
 	/**
 	 * Singleton instance of this class
@@ -61,10 +61,11 @@ final class NS_Cloner_Request {
 	 */
 	private function __construct() {
 		// Load request from saved request option if present, enabling background processes to stay in sync.
-		$request = (array) get_site_option( 'ns_cloner_saved_request', [] );
+		$request = (array) get_site_option( 'ns_cloner_saved_request', array() );
 		// Enable $_GET and $_POST to override / fill in gaps in the saved request.
 		// Verifying the nonce here shouldn't be needed, because it is checked elsewhere before performing any actions.
 		// However, this check is here as a safety precaution so the cloner request object can't ever somehow get injected.
+		// phpcs:ignore WordPress.Security -- safely checking the nonce here.
 		$nonce = isset( $_REQUEST['clone_nonce'] ) ? $_REQUEST['clone_nonce'] : '';
 		if ( wp_verify_nonce( $nonce, 'ns_cloner' ) ) {
 			$request = array_merge( $request, wp_unslash( $_GET ), wp_unslash( $_POST ) );
@@ -103,7 +104,7 @@ final class NS_Cloner_Request {
 	 * @return $this
 	 */
 	public function refresh() {
-		$this->request = (array) get_site_option( 'ns_cloner_saved_request', [] );
+		$this->request = (array) get_site_option( 'ns_cloner_saved_request', array() );
 		return $this;
 	}
 
@@ -122,7 +123,7 @@ final class NS_Cloner_Request {
 	 * @param string $key Key of request array.
 	 * @param mixed  $default Default value.
 	 *
-	 * @return null
+	 * @return mixed
 	 */
 	public function get( $key, $default = null ) {
 		return isset( $this->request[ $key ] ) ? $this->request[ $key ] : $default;
@@ -136,7 +137,7 @@ final class NS_Cloner_Request {
 	 */
 	public function set( $key, $value ) {
 		$this->request[ $key ] = $value;
-		ns_cloner()->log->log( [ "SETTING REQUEST VAR '$key' to:", $value ] );
+		ns_cloner()->log->log( array( "SETTING REQUEST VAR '$key' to:", $value ) );
 	}
 
 	/**
@@ -144,7 +145,7 @@ final class NS_Cloner_Request {
 	 */
 	public function save() {
 		update_site_option( self::$option_key, $this->request );
-		ns_cloner()->log->log( [ 'SAVING REQUEST:', $this->request ] );
+		ns_cloner()->log->log( array( 'SAVING REQUEST:', $this->request ) );
 	}
 
 	/**
@@ -190,7 +191,7 @@ final class NS_Cloner_Request {
 		$upload_url = str_replace( WP_CONTENT_URL, $site_url, $upload_dir['baseurl'] );
 		// These definitions should all work both for multisite (after using switch_blog above
 		// so they have the correct sub-site values) as well as single site / whole network.
-		$vars = [
+		$vars = array(
 			'prefix'              => ns_cloner()->db->prefix,
 			'upload_dir'          => $upload_dir['basedir'],
 			'upload_dir_relative' => str_replace( ABSPATH, '', $upload_dir['basedir'] ),
@@ -198,7 +199,7 @@ final class NS_Cloner_Request {
 			'upload_url_relative' => str_replace( $site_url, '', $upload_url ),
 			'url'                 => $site_url,
 			'url_short'           => untrailingslashit( preg_replace( '|^(https?:)?//|', '', $site_url ) ),
-		];
+		);
 		if ( $is_subsite ) {
 			restore_current_blog();
 		}
@@ -240,18 +241,18 @@ final class NS_Cloner_Request {
 		$target_id  = $target_id ?: $this->get( 'target_id' );
 		$option_key = "ns_cloner_search_{$source_id}_replace_{$target_id}";
 		// Generate arrays and save if not.
-		$search  = [
+		$search  = array(
 			$this->request['source_upload_dir_relative'],
 			$this->request['source_upload_url'],
 			$this->request['source_url_short'],
 			$this->request['source_prefix'] . 'user_roles',
-		];
-		$replace = [
+		);
+		$replace = array(
 			$this->request['target_upload_dir_relative'],
 			$this->request['target_upload_url'],
 			$this->request['target_url_short'],
 			$this->request['target_prefix'] . 'user_roles',
-		];
+		);
 
 		$search  = apply_filters( 'ns_cloner_search_items_before_sequence', $search );
 		$replace = apply_filters( 'ns_cloner_replace_items_before_sequence', $replace );
@@ -259,13 +260,13 @@ final class NS_Cloner_Request {
 		// Sort and filter replacements to intelligently avoid compounding replacement issues.
 		ns_set_search_replace_sequence( $search, $replace );
 		// Add filters that enable custom replacements to be applied.
-		$search_replace = [
+		$search_replace = array(
 			'search'  => apply_filters( 'ns_cloner_search_items', $search ),
 			'replace' => apply_filters( 'ns_cloner_replace_items', $replace ),
-		];
+		);
 		// Save in settings for use by background processes.
 		update_site_option( $option_key, $search_replace );
-		ns_cloner()->log->log( [ "SETTING search/replace for source *$source_id* and target *$target_id*:", $search_replace ] );
+		ns_cloner()->log->log( array( "SETTING search/replace for source *$source_id* and target *$target_id*:", $search_replace ) );
 	}
 
 	/**

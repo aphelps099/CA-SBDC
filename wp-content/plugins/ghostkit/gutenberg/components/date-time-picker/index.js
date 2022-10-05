@@ -9,6 +9,8 @@ const { __experimentalGetSettings: getSettings, dateI18n } = wp.date;
 
 const { BaseControl, Popover, Button, DateTimePicker: WPDateTimePicker } = wp.components;
 
+const { luxon } = window;
+
 /**
  * Component Class
  */
@@ -33,13 +35,19 @@ export default class DateTimePicker extends Component {
       <BaseControl label={label} className="ghostkit-components-date-time-picker">
         <div>
           <Button isLink onClick={() => this.setState({ isPickerOpen: !isPickerOpen })}>
-            {value ? dateI18n(resolvedFormat, value) : __('Select Date', 'ghostkit')}
+            {value
+              ? `${dateI18n(resolvedFormat, value)} ${
+                  settings.timezone.abbr ||
+                  settings.timezone.string ||
+                  `UTC${settings.timezone.offset}`
+                }`
+              : __('Select Date', 'ghostkit')}
           </Button>
           {isPickerOpen ? (
             <Popover onClose={() => this.setState({ isPickerOpen: false })}>
               <WPDateTimePicker
                 label={label}
-                currentDate={value}
+                currentDate={luxon.DateTime.fromISO(value).isValid ? value : ''}
                 onChange={onChange}
                 is12Hour={is12Hour}
               />

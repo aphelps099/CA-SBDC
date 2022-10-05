@@ -26,7 +26,7 @@
 namespace Kint\Renderer\Rich;
 
 use Kint\Renderer\RichRenderer;
-use Kint\Zval\BlobValue;
+use Kint\Utils;
 use Kint\Zval\Value;
 
 class SimpleXMLElementPlugin extends Plugin implements ValuePluginInterface
@@ -63,15 +63,11 @@ class SimpleXMLElementPlugin extends Plugin implements ValuePluginInterface
             $header .= '('.$this->renderer->escape($s).') ';
         }
 
-        if (null === $s && $c = $o->getRepresentation('contents')) {
-            $c = \reset($c->contents);
-
-            if ($c && null !== ($s = $c->getValueShort())) {
-                if (RichRenderer::$strlen_max && BlobValue::strlen($s) > RichRenderer::$strlen_max) {
-                    $s = \substr($s, 0, RichRenderer::$strlen_max).'...';
-                }
-                $header .= $this->renderer->escape($s);
+        if (null !== ($s = $o->getValueShort())) {
+            if (RichRenderer::$strlen_max) {
+                $s = Utils::truncateString($s, RichRenderer::$strlen_max);
             }
+            $header .= $this->renderer->escape($s);
         }
 
         $header = $this->renderer->renderHeaderWrapper($o, (bool) \strlen($children), $header);

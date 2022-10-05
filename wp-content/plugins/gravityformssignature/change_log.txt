@@ -1,3 +1,7 @@
+### 4.3 | 2022-06-15
+- Fixed an issue where the signature field has no width when used in multiple forms on a page.
+
+
 ### 4.2 | 2022-02-17
 - Fixed an issue where the signature field has no width when other form fields use conditional logic.
 - Fixed an issue where the signature field does not work correctly for mobile/touch devices.

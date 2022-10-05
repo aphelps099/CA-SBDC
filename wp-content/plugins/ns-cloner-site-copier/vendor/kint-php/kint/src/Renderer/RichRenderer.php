@@ -38,12 +38,12 @@ class RichRenderer extends Renderer
      * RichRenderer value plugins should implement Kint\Renderer\Rich\ValuePluginInterface.
      */
     public static $value_plugins = [
+        'array_limit' => 'Kint\\Renderer\\Rich\\ArrayLimitPlugin',
         'blacklist' => 'Kint\\Renderer\\Rich\\BlacklistPlugin',
         'callable' => 'Kint\\Renderer\\Rich\\CallablePlugin',
         'closure' => 'Kint\\Renderer\\Rich\\ClosurePlugin',
         'color' => 'Kint\\Renderer\\Rich\\ColorPlugin',
         'depth_limit' => 'Kint\\Renderer\\Rich\\DepthLimitPlugin',
-        'elide' => 'Kint\\Renderer\\Rich\\ElidedPlugin',
         'recursion' => 'Kint\\Renderer\\Rich\\RecursionPlugin',
         'simplexml_element' => 'Kint\\Renderer\\Rich\\SimpleXMLElementPlugin',
         'trace_frame' => 'Kint\\Renderer\\Rich\\TraceFramePlugin',
@@ -133,6 +133,9 @@ class RichRenderer extends Renderer
 
     public static $always_pre_render = false;
 
+    public static $js_nonce = null;
+    public static $css_nonce = null;
+
     protected $plugin_objs = [];
     protected $expand = false;
     protected $force_pre_render = false;
@@ -194,7 +197,6 @@ class RichRenderer extends Renderer
 
     public function setPreRender($pre_render)
     {
-        $this->setForcePreRender(); // TODO: Remove line in next major version
         $this->pre_render = $pre_render;
     }
 
@@ -216,7 +218,8 @@ class RichRenderer extends Renderer
     public function render(Value $o)
     {
         if ($plugin = $this->getPlugin(self::$value_plugins, $o->hints)) {
-            if (\strlen($output = $plugin->renderValue($o))) {
+            $output = $plugin->renderValue($o);
+            if (null !== $output && \strlen($output)) {
                 return $output;
             }
         }
@@ -354,10 +357,16 @@ class RichRenderer extends Renderer
                 $output .= $this->escape($tab->getLabel()).'</li>';
             }
 
-            $output .= '</ul><ul>';
+            $output .= '</ul><ul class="kint-tab-contents">';
 
-            foreach ($contents as $tab) {
-                $output .= '<li>'.$tab.'</li>';
+            foreach ($contents as $i => $tab) {
+                if (0 === $i) {
+                    $output .= '<li class="kint-show">';
+                } else {
+                    $output .= '<li>';
+                }
+
+                $output .= $tab.'</li>';
             }
 
             $output .= '</ul>';
@@ -383,10 +392,18 @@ class RichRenderer extends Renderer
 
                 switch ($type) {
                     case 'script':
-                        $output .= '<script class="kint-rich-script">'.$contents.'</script>';
+                        $output .= '<script class="kint-rich-script"';
+                        if (null !== self::$js_nonce) {
+                            $output .= ' nonce="'.\htmlspecialchars(self::$js_nonce).'"';
+                        }
+                        $output .= '>'.$contents.'</script>';
                         break;
                     case 'style':
-                        $output .= '<style class="kint-rich-style">'.$contents.'</style>';
+                        $output .= '<style class="kint-rich-style"';
+                        if (null !== self::$css_nonce) {
+                            $output .= ' nonce="'.\htmlspecialchars(self::$css_nonce).'"';
+                        }
+                        $output .= '>'.$contents.'</style>';
                         break;
                     default:
                         $output .= $contents;
@@ -502,7 +519,7 @@ class RichRenderer extends Renderer
 
         // this call converts all non-ASCII characters into numeirc htmlentities
         if (\function_exists('mb_encode_numericentity') && 'ASCII' !== $original_encoding) {
-            $string = \mb_encode_numericentity($string, [0x80, 0xffff, 0, 0xffff], $encoding);
+            $string = \mb_encode_numericentity($string, [0x80, 0xFFFF, 0, 0xFFFF], $encoding);
         }
 
         return $string;
@@ -529,7 +546,8 @@ class RichRenderer extends Renderer
     protected function renderTab(Value $o, Representation $rep)
     {
         if ($plugin = $this->getPlugin(self::$tab_plugins, $rep->hints)) {
-            if (\strlen($output = $plugin->renderTab($rep))) {
+            $output = $plugin->renderTab($rep);
+            if (null !== $output && \strlen($output)) {
                 return $output;
             }
         }
@@ -560,7 +578,7 @@ class RichRenderer extends Renderer
             } else {
                 if (\preg_match('/(:?[\\r\\n\\t\\f\\v]| {2})/', $rep->contents)) {
                     $show_contents = true;
-                } elseif (self::$strlen_max && BlobValue::strlen($o->getValueShort()) > self::$strlen_max) {
+                } elseif (self::$strlen_max && null !== $o->getValueShort() && BlobValue::strlen($o->getValueShort()) > self::$strlen_max) {
                     $show_contents = true;
                 }
 
@@ -577,6 +595,8 @@ class RichRenderer extends Renderer
         if ($rep->contents instanceof Value) {
             return $this->render($rep->contents);
         }
+
+        return '';
     }
 
     protected function getPlugin(array $plugins, array $hints)

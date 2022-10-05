@@ -10,6 +10,7 @@ import getIcon from '../../utils/get-icon';
 import ApplyFilters from '../../components/apply-filters';
 import GapSettings from '../../components/gap-settings';
 import ToggleGroup from '../../components/toggle-group';
+import RangeControl from '../../components/range-control';
 import { TemplatesModal } from '../../plugins/templates';
 
 /**
@@ -19,53 +20,44 @@ const { applyFilters } = wp.hooks;
 
 const { __ } = wp.i18n;
 
-const { Component, Fragment } = wp.element;
+const { Fragment, useState } = wp.element;
 
-const { Button, PanelBody, RangeControl, Placeholder, ToolbarGroup, ToolbarButton, Tooltip } =
-  wp.components;
+const { Button, PanelBody, Placeholder, ToolbarGroup, ToolbarButton, Tooltip } = wp.components;
 
-const { InspectorControls, InnerBlocks, BlockControls } = wp.blockEditor;
+const {
+  InspectorControls,
+  BlockControls,
+  useBlockProps,
+  useInnerBlocksProps: __stableUseInnerBlocksProps,
+  __experimentalUseInnerBlocksProps,
+} = wp.blockEditor;
 
-const { compose } = wp.compose;
-
-const { withSelect, withDispatch } = wp.data;
+const { useSelect, useDispatch } = wp.data;
 
 const { createBlock } = wp.blocks;
+
+const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
 
 /**
  * Block Edit Class.
  */
-class BlockEdit extends Component {
-  constructor(props) {
-    super(props);
+export default function BlockEdit(props) {
+  const { clientId, attributes, setAttributes, isSelected } = props;
 
-    this.state = {
-      isTemplatesModalOpen: false,
+  const { gap, gapCustom, gapVerticalCustom, verticalAlign, horizontalAlign } = attributes;
+
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
+
+  const { removeBlock, replaceInnerBlocks } = useDispatch('core/block-editor');
+
+  const { getBlocks, columnsCount } = useSelect((select) => {
+    const { getBlockCount } = select('core/block-editor');
+
+    return {
+      getBlocks: select('core/block-editor').getBlocks,
+      columnsCount: getBlockCount(clientId),
     };
-
-    this.getColumnsFromLayout = this.getColumnsFromLayout.bind(this);
-    this.onLayoutSelect = this.onLayoutSelect.bind(this);
-    this.getLayoutsSelector = this.getLayoutsSelector.bind(this);
-    this.updateColumns = this.updateColumns.bind(this);
-  }
-
-  /**
-   * Select predefined layout.
-   *
-   * @param {String} layout layout string.
-   */
-  onLayoutSelect(layout) {
-    const { block, replaceInnerBlocks } = this.props;
-
-    const columnsData = this.getColumnsFromLayout(layout);
-    const newInnerBlocks = [];
-
-    columnsData.forEach((colAttrs) => {
-      newInnerBlocks.push(createBlock('ghostkit/grid-column', colAttrs));
-    });
-
-    replaceInnerBlocks(block.clientId, newInnerBlocks, false);
-  }
+  }, []);
 
   /**
    * Get columns sizes array from layout string
@@ -74,15 +66,20 @@ class BlockEdit extends Component {
    *
    * @return {array}.
    */
-  // eslint-disable-next-line class-methods-use-this
-  getColumnsFromLayout(layout) {
+  function getColumnsFromLayout(layout) {
     const result = [];
     const columnsData = layout.split('-');
 
     columnsData.forEach((col) => {
       const colAttrs = {
-        size: 'a' === col ? 'auto' : col,
+        size: col,
       };
+
+      if ('a' === col) {
+        colAttrs.size = 'auto';
+      } else if ('g' === col) {
+        colAttrs.size = 'grow';
+      }
 
       // responsive.
       if (2 === columnsData.length) {
@@ -113,13 +110,27 @@ class BlockEdit extends Component {
   }
 
   /**
+   * Select predefined layout.
+   *
+   * @param {String} layout layout string.
+   */
+  function onLayoutSelect(layout) {
+    const columnsData = getColumnsFromLayout(layout);
+    const newInnerBlocks = [];
+
+    columnsData.forEach((colAttrs) => {
+      newInnerBlocks.push(createBlock('ghostkit/grid-column', colAttrs));
+    });
+
+    replaceInnerBlocks(clientId, newInnerBlocks, false);
+  }
+
+  /**
    * Layouts selector when no columns selected.
    *
    * @return {jsx}.
    */
-  getLayoutsSelector() {
-    const { removeBlock } = this.props;
-
+  function getLayoutsSelector() {
     let layouts = [
       '12',
       '6-6',
@@ -133,10 +144,10 @@ class BlockEdit extends Component {
 
       '6-3-3',
       '2-8-2',
-      'a-a-a-a-a',
+      'g-g-g-g-g',
       '2-2-2-2-2-2',
     ];
-    layouts = applyFilters('ghostkit.editor.grid.layouts', layouts, this.props);
+    layouts = applyFilters('ghostkit.editor.grid.layouts', layouts, props);
 
     return (
       <Placeholder
@@ -147,13 +158,13 @@ class BlockEdit extends Component {
       >
         <div className="ghostkit-grid-layout-preview">
           {layouts.map((layout) => {
-            const columnsData = this.getColumnsFromLayout(layout);
+            const columnsData = getColumnsFromLayout(layout);
 
             return (
               <Button
                 key={`layout-${layout}`}
                 className="ghostkit-grid-layout-preview-btn ghostkit-grid"
-                onClick={() => this.onLayoutSelect(layout)}
+                onClick={() => onLayoutSelect(layout)}
               >
                 {columnsData.map((colAttrs, i) => {
                   const colName = `layout-${layout}-col-${i}`;
@@ -172,19 +183,19 @@ class BlockEdit extends Component {
         <Button
           isPrimary
           onClick={() => {
-            this.setState({ isTemplatesModalOpen: true });
+            setIsTemplatesModalOpen(true);
           }}
         >
           {__('Select Template', 'ghostkit')}
         </Button>
-        {this.state.isTemplatesModalOpen || this.props.attributes.isTemplatesModalOnly ? (
+        {isTemplatesModalOpen || props.attributes.isTemplatesModalOnly ? (
           <TemplatesModal
-            replaceBlockId={this.props.clientId}
+            replaceBlockId={clientId}
             onRequestClose={() => {
-              this.setState({ isTemplatesModalOpen: false });
+              setIsTemplatesModalOpen(false);
 
-              if (this.props.attributes.isTemplatesModalOnly) {
-                removeBlock(this.props.clientId);
+              if (props.attributes.isTemplatesModalOnly) {
+                removeBlock(clientId);
               }
             }}
           />
@@ -200,224 +211,188 @@ class BlockEdit extends Component {
    *
    * @param {number} newColumns New column count.
    */
-  updateColumns(newColumns) {
-    const { block, getBlocks, replaceInnerBlocks, columnsCount, removeBlock } = this.props;
-
+  function updateColumns(newColumns) {
     // Remove Grid block.
     if (1 > newColumns) {
-      removeBlock(block.clientId);
+      removeBlock(clientId);
 
       // Add new columns.
     } else if (newColumns > columnsCount) {
       const newCount = newColumns - columnsCount;
-      const newInnerBlocks = [...getBlocks(block.clientId)];
+      const newInnerBlocks = [...getBlocks(clientId)];
 
       for (let i = 1; i <= newCount; i += 1) {
         newInnerBlocks.push(createBlock('ghostkit/grid-column', { size: 3 }));
       }
 
-      replaceInnerBlocks(block.clientId, newInnerBlocks, false);
+      replaceInnerBlocks(clientId, newInnerBlocks, false);
 
       // Remove columns.
     } else if (newColumns < columnsCount) {
-      const newInnerBlocks = [...getBlocks(block.clientId)];
+      const newInnerBlocks = [...getBlocks(clientId)];
       newInnerBlocks.splice(newColumns, columnsCount - newColumns);
 
-      replaceInnerBlocks(block.clientId, newInnerBlocks, false);
+      replaceInnerBlocks(clientId, newInnerBlocks, false);
     }
   }
 
-  render() {
-    const { attributes, setAttributes, isSelected, columnsCount } = this.props;
+  let className = classnames(
+    'ghostkit-grid',
+    `ghostkit-grid-gap-${gap}`,
+    verticalAlign ? `ghostkit-grid-align-items-${verticalAlign}` : false,
+    horizontalAlign ? `ghostkit-grid-justify-content-${horizontalAlign}` : false
+  );
 
-    let { className = '' } = this.props;
+  // background
+  const background = applyFilters('ghostkit.editor.grid.background', '', props);
 
-    const { gap, gapCustom, verticalAlign, horizontalAlign } = attributes;
+  if (background) {
+    className = classnames(className, 'ghostkit-grid-with-bg');
+  }
 
-    className = classnames(
-      className,
-      'ghostkit-grid',
-      `ghostkit-grid-gap-${gap}`,
-      verticalAlign ? `ghostkit-grid-align-items-${verticalAlign}` : false,
-      horizontalAlign ? `ghostkit-grid-justify-content-${horizontalAlign}` : false
-    );
+  className = applyFilters('ghostkit.editor.className', className, props);
 
-    // background
-    const background = applyFilters('ghostkit.editor.grid.background', '', this.props);
+  const blockProps = useBlockProps({
+    className,
+  });
 
-    if (background) {
-      className = classnames(className, 'ghostkit-grid-with-bg');
-    }
+  const { children, ...innerBlocksProps } = useInnerBlocksProps(blockProps, {
+    allowedBlocks: ['ghostkit/grid-column'],
+    orientation: 'horizontal',
+    renderAppender: false,
+  });
 
-    className = applyFilters('ghostkit.editor.className', className, this.props);
-
-    return (
-      <Fragment>
-        {0 < columnsCount ? (
-          <BlockControls>
-            <ToolbarGroup>
-              <ToolbarButton
-                icon={getIcon('icon-vertical-top')}
-                title={__('Content Vertical Start', 'ghostkit')}
-                onClick={() => setAttributes({ verticalAlign: '' })}
-                isActive={'' === verticalAlign}
-              />
-              <ToolbarButton
-                icon={getIcon('icon-vertical-center')}
-                title={__('Content Vertical Center', 'ghostkit')}
-                onClick={() => setAttributes({ verticalAlign: 'center' })}
-                isActive={'center' === verticalAlign}
-              />
-              <ToolbarButton
-                icon={getIcon('icon-vertical-bottom')}
-                title={__('Content Vertical End', 'ghostkit')}
-                onClick={() => setAttributes({ verticalAlign: 'end' })}
-                isActive={'end' === verticalAlign}
-              />
-            </ToolbarGroup>
-          </BlockControls>
-        ) : (
-          ''
-        )}
-        <InspectorControls>
-          <ApplyFilters name="ghostkit.editor.controls" attribute="columns" props={this.props}>
-            <PanelBody>
-              <RangeControl
-                label={__('Columns', 'ghostkit')}
-                value={columnsCount}
-                onChange={(value) => this.updateColumns(value)}
-                min={1}
-                max={12}
-              />
-            </PanelBody>
-          </ApplyFilters>
-        </InspectorControls>
-        {0 < columnsCount ? (
-          <InspectorControls>
-            <PanelBody>
-              <ToggleGroup
-                label={__('Vertical alignment', 'ghostkit')}
-                value={verticalAlign}
-                options={[
-                  {
-                    label: getIcon('icon-vertical-top'),
-                    value: '',
-                  },
-                  {
-                    label: getIcon('icon-vertical-center'),
-                    value: 'center',
-                  },
-                  {
-                    label: getIcon('icon-vertical-bottom'),
-                    value: 'end',
-                  },
-                ]}
-                onChange={(value) => {
-                  setAttributes({ verticalAlign: value });
-                }}
-              />
-              <ToggleGroup
-                label={__('Horizontal alignment', 'ghostkit')}
-                value={horizontalAlign}
-                options={[
-                  {
-                    label: getIcon('icon-horizontal-start'),
-                    value: '',
-                  },
-                  {
-                    label: getIcon('icon-horizontal-center'),
-                    value: 'center',
-                  },
-                  {
-                    label: getIcon('icon-horizontal-end'),
-                    value: 'end',
-                  },
-                  {
-                    label: getIcon('icon-horizontal-around'),
-                    value: 'around',
-                  },
-                  {
-                    label: getIcon('icon-horizontal-between'),
-                    value: 'between',
-                  },
-                ]}
-                onChange={(value) => {
-                  setAttributes({ horizontalAlign: value });
-                }}
-              />
-            </PanelBody>
-            <PanelBody>
-              <GapSettings
-                gap={gap}
-                gapCustom={gapCustom}
-                onChange={(data) => {
-                  setAttributes(data);
-                }}
-              />
-            </PanelBody>
-          </InspectorControls>
-        ) : (
-          ''
-        )}
-        <InspectorControls>
-          <div className="ghostkit-background-controls">
-            <ApplyFilters
-              name="ghostkit.editor.controls"
-              attribute="background"
-              props={this.props}
+  return (
+    <div {...innerBlocksProps}>
+      {0 < columnsCount ? (
+        <BlockControls>
+          <ToolbarGroup>
+            <ToolbarButton
+              icon={getIcon('icon-vertical-top')}
+              title={__('Content Vertical Start', 'ghostkit')}
+              onClick={() => setAttributes({ verticalAlign: '' })}
+              isActive={'' === verticalAlign}
             />
-          </div>
+            <ToolbarButton
+              icon={getIcon('icon-vertical-center')}
+              title={__('Content Vertical Center', 'ghostkit')}
+              onClick={() => setAttributes({ verticalAlign: 'center' })}
+              isActive={'center' === verticalAlign}
+            />
+            <ToolbarButton
+              icon={getIcon('icon-vertical-bottom')}
+              title={__('Content Vertical End', 'ghostkit')}
+              onClick={() => setAttributes({ verticalAlign: 'end' })}
+              isActive={'end' === verticalAlign}
+            />
+          </ToolbarGroup>
+        </BlockControls>
+      ) : (
+        ''
+      )}
+      <InspectorControls>
+        <ApplyFilters name="ghostkit.editor.controls" attribute="columns" props={props}>
+          <PanelBody>
+            <RangeControl
+              label={__('Columns', 'ghostkit')}
+              value={columnsCount}
+              onChange={(value) => updateColumns(value)}
+              min={1}
+              max={12}
+              allowCustomMax
+            />
+          </PanelBody>
+        </ApplyFilters>
+      </InspectorControls>
+      {0 < columnsCount ? (
+        <InspectorControls>
+          <PanelBody>
+            <ToggleGroup
+              label={__('Vertical alignment', 'ghostkit')}
+              value={verticalAlign}
+              options={[
+                {
+                  label: getIcon('icon-vertical-top'),
+                  value: '',
+                },
+                {
+                  label: getIcon('icon-vertical-center'),
+                  value: 'center',
+                },
+                {
+                  label: getIcon('icon-vertical-bottom'),
+                  value: 'end',
+                },
+              ]}
+              onChange={(value) => {
+                setAttributes({ verticalAlign: value });
+              }}
+            />
+            <ToggleGroup
+              label={__('Horizontal alignment', 'ghostkit')}
+              value={horizontalAlign}
+              options={[
+                {
+                  label: getIcon('icon-horizontal-start'),
+                  value: '',
+                },
+                {
+                  label: getIcon('icon-horizontal-center'),
+                  value: 'center',
+                },
+                {
+                  label: getIcon('icon-horizontal-end'),
+                  value: 'end',
+                },
+                {
+                  label: getIcon('icon-horizontal-around'),
+                  value: 'around',
+                },
+                {
+                  label: getIcon('icon-horizontal-between'),
+                  value: 'between',
+                },
+              ]}
+              onChange={(value) => {
+                setAttributes({ horizontalAlign: value });
+              }}
+            />
+          </PanelBody>
+          <PanelBody>
+            <GapSettings
+              gap={gap}
+              gapCustom={gapCustom}
+              gapVerticalCustom={gapVerticalCustom}
+              onChange={(data) => {
+                setAttributes(data);
+              }}
+              allowVerticalGap
+            />
+          </PanelBody>
         </InspectorControls>
-        <div className={className}>
-          {0 < columnsCount ? (
-            <Fragment>
-              {background}
-              {!isSelected ? (
-                <div className="ghostkit-grid-button-select">
-                  <Tooltip text={__('Select Grid', 'ghostkit')}>
-                    {getIcon('block-grid')}
-                  </Tooltip>
-                </div>
-              ) : (
-                ''
-              )}
-              <InnerBlocks
-                allowedBlocks={['ghostkit/grid-column']}
-                orientation="horizontal"
-                renderAppender={false}
-              />
-            </Fragment>
-          ) : (
-            this.getLayoutsSelector()
-          )}
+      ) : (
+        ''
+      )}
+      <InspectorControls>
+        <div className="ghostkit-background-controls">
+          <ApplyFilters name="ghostkit.editor.controls" attribute="background" props={props} />
         </div>
-      </Fragment>
-    );
-  }
+      </InspectorControls>
+      {0 < columnsCount ? (
+        <Fragment>
+          {background}
+          {!isSelected ? (
+            <div className="ghostkit-grid-button-select">
+              <Tooltip text={__('Select Grid', 'ghostkit')}>{getIcon('block-grid')}</Tooltip>
+            </div>
+          ) : (
+            ''
+          )}
+          <div className="ghostkit-grid-inner">{children}</div>
+        </Fragment>
+      ) : (
+        getLayoutsSelector()
+      )}
+    </div>
+  );
 }
-
-export default compose([
-  withSelect((select, ownProps) => {
-    const { getBlock, getBlocks, getBlockCount, isBlockSelected, hasSelectedInnerBlock } =
-      select('core/block-editor');
-
-    const { clientId } = ownProps;
-
-    return {
-      getBlocks,
-      columnsCount: getBlockCount(clientId),
-      block: getBlock(clientId),
-      isSelectedBlockInRoot: isBlockSelected(clientId) || hasSelectedInnerBlock(clientId, true),
-    };
-  }),
-  withDispatch((dispatch) => {
-    const { updateBlockAttributes, removeBlock, replaceInnerBlocks } =
-      dispatch('core/block-editor');
-
-    return {
-      updateBlockAttributes,
-      removeBlock,
-      replaceInnerBlocks,
-    };
-  }),
-])(BlockEdit);

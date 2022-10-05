@@ -733,6 +733,7 @@ jQuery(
                 ns_cloner.ajaxurl,
                 {
                     action: 'ns_cloner_save_analytics_mode',
+					nonce: ns_cloner.nonce,
                     mode: mode
                 },
                 function (response) {

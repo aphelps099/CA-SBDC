@@ -1,3 +1,13 @@
+= 4.2.1 - 2022.09.19 =
+* Fix inaccurate memory limit warning
+* Fix default cloning mode selection
+* Remove unnecessary vendor files
+
+= 4.2.0 - 2022.08.25 =
+* Improve cache flushing logic
+* Improve internal coding standards
+* Fix handling for undefined classes in serialized values
+
 = 4.1.9.3 - 2022.01.06 =
 * Optimize with reduction of unnecessary all hook when not cloning
 

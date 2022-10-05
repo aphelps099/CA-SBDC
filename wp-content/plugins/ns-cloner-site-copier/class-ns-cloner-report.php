@@ -58,8 +58,8 @@ class NS_Cloner_Report {
 	 * @param string $message Text to display in notice.
 	 */
 	public function add_notice( $message ) {
-		ns_cloner()->log->log( [ 'WRITING notice:', $message ] );
-		$notices   = $this->get_report( '_notices' ) ?: [];
+		ns_cloner()->log->log( array( 'WRITING notice:', $message ) );
+		$notices   = $this->get_report( '_notices' ) ?: array();
 		$notices[] = $message;
 		$this->add_report( '_notices', $notices );
 	}

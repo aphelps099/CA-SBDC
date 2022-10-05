@@ -11,10 +11,10 @@
          "Blocks collection and extensions for Gutenberg": [
             ""
          ],
-         "nK": [
+         "Ghost Kit Team": [
             ""
          ],
-         "https://nkdev.info": [
+         "https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline": [
             ""
          ],
          "Go Pro": [
@@ -95,10 +95,22 @@
          "User don't have permissions to change Customizer options.": [
             ""
          ],
+         "User don't have permissions to change options.": [
+            ""
+         ],
+         "Options not found.": [
+            ""
+         ],
          "Provide image ID.": [
             ""
          ],
+         "Image not found.": [
+            ""
+         ],
          "Provide Instagram Access Token.": [
+            ""
+         ],
+         "Instagram data failed to load.": [
             ""
          ],
          "Provide Twitter Consumer Key.": [
@@ -114,18 +126,6 @@
             ""
          ],
          "Provide Username.": [
-            ""
-         ],
-         "User don't have permissions to change options.": [
-            ""
-         ],
-         "Options not found.": [
-            ""
-         ],
-         "Image not found.": [
-            ""
-         ],
-         "Instagram data failed to load.": [
             ""
          ],
          "Twitter data failed to load.": [
@@ -464,10 +464,10 @@
          "Write text…": [
             ""
          ],
-         "Align": [
+         "Add Button": [
             ""
          ],
-         "Add Button": [
+         "Align": [
             ""
          ],
          "Slides": [
@@ -639,10 +639,13 @@
          "Top": [
             ""
          ],
-         "Animate in viewport": [
+         "Number Alignment": [
             ""
          ],
          "Show Content": [
+            ""
+         ],
+         "Animate in viewport": [
             ""
          ],
          "Animate from": [
@@ -987,6 +990,9 @@
          "Auto": [
             ""
          ],
+         "Grow": [
+            ""
+         ],
          "%d Column (%s)": [
             ""
          ],
@@ -1036,6 +1042,9 @@
             ""
          ],
          "Select Grid": [
+            ""
+         ],
+         "Icon Alignment": [
             ""
          ],
          "Start Position": [
@@ -1269,7 +1278,7 @@
          "Table of Contents": [
             ""
          ],
-         "No headings found.": [
+         "Start adding Heading blocks to create a table of contents. Headings with HTML anchors will be linked here.": [
             ""
          ],
          "Write title…": [
@@ -1444,6 +1453,12 @@
             ""
          ],
          "L": [
+            ""
+         ],
+         "Horizontal": [
+            ""
+         ],
+         "Vertical": [
             ""
          ],
          "Search Icon": [
@@ -2103,7 +2118,7 @@
          "block description\u0004Decorations for section shapes.": [
             ""
          ],
-         "block description\u0004Automatically generate a table of contents by parsing page headers in content.": [
+         "block description\u0004Summarize your post with a list of headings. Add HTML anchors to Heading blocks to link them here.": [
             ""
          ],
          "block description\u0004A single tab within a tabs block.": [
@@ -2248,6 +2263,12 @@
             ""
          ],
          "block keyword\u0004toc": [
+            ""
+         ],
+         "block keyword\u0004summary": [
+            ""
+         ],
+         "block keyword\u0004document outline": [
             ""
          ],
          "block keyword\u0004tabs": [

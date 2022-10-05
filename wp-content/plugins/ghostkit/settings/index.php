@@ -14,13 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class GhostKit_Settings {
     /**
-     * Slug of the plugin screen.
-     *
-     * @var $plugin_screen_hook_suffix
-     */
-    protected $plugin_screen_hook_suffix = null;
-
-    /**
      * GhostKit_Settings constructor.
      */
     public function __construct() {
@@ -132,7 +125,7 @@ class GhostKit_Settings {
             }
 
             // phpcs:ignore
-            wp_redirect( ghostkit()->go_pro_link() . '?utm_source=plugin&utm_medium=' . esc_attr( $medium ) . '&utm_campaign=go_pro&utm_content=2.22.3' );
+            wp_redirect( ghostkit()->go_pro_link() . '?utm_source=plugin&utm_medium=' . esc_attr( $medium ) . '&utm_campaign=go_pro&utm_content=2.24.1' );
             exit();
         }
     }

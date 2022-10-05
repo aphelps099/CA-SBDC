@@ -10,7 +10,10 @@ import ColorPicker from '../../components/color-picker';
 import IconPicker from '../../components/icon-picker';
 import URLPicker from '../../components/url-picker';
 import ColorIndicator from '../../components/color-indicator';
+import ToggleGroup from '../../components/toggle-group';
+import RangeControl from '../../components/range-control';
 import ApplyFilters from '../../components/apply-filters';
+import getIcon from '../../utils/get-icon';
 
 /**
  * WordPress dependencies
@@ -23,16 +26,8 @@ const { Component, Fragment } = wp.element;
 
 const { withSelect } = wp.data;
 
-const {
-  BaseControl,
-  PanelBody,
-  RangeControl,
-  ToggleControl,
-  TabPanel,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarButton,
-} = wp.components;
+const { BaseControl, PanelBody, ToggleControl, TabPanel, Toolbar, ToolbarGroup, ToolbarButton } =
+  wp.components;
 
 const { InspectorControls, InnerBlocks, BlockControls } = wp.blockEditor;
 
@@ -48,18 +43,25 @@ class BlockEdit extends Component {
     const {
       icon,
       iconPosition,
+      iconAlign,
       iconSize,
       showContent,
       iconColor,
       hoverIconColor,
       url,
+      ariaLabel,
       target,
       rel,
     } = attributes;
 
     className = classnames('ghostkit-icon-box', className);
-
     className = applyFilters('ghostkit.editor.className', className, this.props);
+
+    const classNameIcon = classnames(
+      'ghostkit-icon-box-icon',
+      `ghostkit-icon-box-icon-align-${iconPosition || 'left'}`,
+      'top' === iconPosition ? `ghostkit-icon-box-icon-top-align-${iconAlign || 'center'}` : ''
+    );
 
     return (
       <Fragment>
@@ -77,9 +79,10 @@ class BlockEdit extends Component {
                   value={iconSize}
                   onChange={(value) => setAttributes({ iconSize: value })}
                   min={20}
-                  max={100}
                   beforeIcon="editor-textcolor"
                   afterIcon="editor-textcolor"
+                  allowCustomMin
+                  allowCustomMax
                 />
                 <BaseControl label={__('Icon Position', 'ghostkit')}>
                   <div>
@@ -105,20 +108,41 @@ class BlockEdit extends Component {
                     </Toolbar>
                   </div>
                 </BaseControl>
+                {'top' === iconPosition ? (
+                  <ToggleGroup
+                    label={__('Icon Alignment', 'ghostkit')}
+                    value={iconAlign || 'center'}
+                    options={[
+                      {
+                        label: getIcon('icon-horizontal-start'),
+                        value: 'left',
+                      },
+                      {
+                        label: getIcon('icon-horizontal-center'),
+                        value: 'center',
+                      },
+                      {
+                        label: getIcon('icon-horizontal-end'),
+                        value: 'right',
+                      },
+                    ]}
+                    onChange={(value) => {
+                      setAttributes({ iconAlign: value });
+                    }}
+                  />
+                ) : null}
               </Fragment>
-            ) : (
-              ''
-            )}
-            {!showContent || icon ? (
+            ) : null}
+          </PanelBody>
+          {!showContent || icon ? (
+            <PanelBody>
               <ToggleControl
                 label={__('Show Content', 'ghostkit')}
                 checked={!!showContent}
                 onChange={(val) => setAttributes({ showContent: val })}
               />
-            ) : (
-              ''
-            )}
-          </PanelBody>
+            </PanelBody>
+          ) : null}
           <PanelBody
             title={
               <Fragment>
@@ -168,6 +192,7 @@ class BlockEdit extends Component {
         <URLPicker
           url={url}
           rel={rel}
+          ariaLabel={ariaLabel}
           target={target}
           onChange={(data) => {
             setAttributes(data);
@@ -199,16 +224,10 @@ class BlockEdit extends Component {
               />
             </ToolbarGroup>
           </BlockControls>
-        ) : (
-          ''
-        )}
+        ) : null}
         <div className={className}>
           {icon ? (
-            <div
-              className={`ghostkit-icon-box-icon ghostkit-icon-box-icon-align-${
-                iconPosition || 'left'
-              }`}
-            >
+            <div className={classNameIcon}>
               <IconPicker.Dropdown
                 onChange={(value) => setAttributes({ icon: value })}
                 value={icon}
@@ -217,9 +236,7 @@ class BlockEdit extends Component {
                 )}
               />
             </div>
-          ) : (
-            ''
-          )}
+          ) : null}
           {showContent ? (
             <div className="ghostkit-icon-box-content">
               <InnerBlocks
@@ -229,9 +246,7 @@ class BlockEdit extends Component {
                 }
               />
             </div>
-          ) : (
-            ''
-          )}
+          ) : null}
         </div>
       </Fragment>
     );

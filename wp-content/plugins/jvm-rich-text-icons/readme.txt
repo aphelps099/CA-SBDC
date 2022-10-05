@@ -1,21 +1,22 @@
 === JVM Gutenberg Rich Text Icons ===
 Contributors: jorisvanmontfort
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VXZJG9GC34JJU
-Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF
+Donate link: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
+Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF, SVG icons
 Requires at least: 5.4
-Tested up to: 5.9
-Stable tag: 1.0.7
+Tested up to: 6.0.2
+Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Add Font Awesome icons, or icons from a custom icon set to rich text fields anywhere in the Gutenberg block editor!
 
 == Description ==
-Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the Gutenberg block editor.
+Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the Gutenberg block editor. This plugin ships with the free Font Awesome icon set as default icon set. You can choose between version 4.x, 5.x and version 6.x.
+This plugin also provides an easy to use interface for creating a custom icon set based on SVG icons. Custom icons can be upload from the plugin settings using an easy to use drag & drop uploader.
 
-The icon set also creates a new field type for Advanced Custom Fields (ACF) : JVM Icon. This means you can create custom fields that work with a the font awsome icon set or even beter: A custom loaded icon set.
+The plugin also creates a new field type for Advanced Custom Fields (ACF) : JVM Icon. Now you can create custom fields that work with a the font awsome icon set or even beter: A custom created icon set.
 
-This plugin ships with the free Font Awesome 4.7 icon set as default icon set. I am aware this is not the most recent version but 4.7 is entirely free and works fine for my projects mostly. If you want to use some other icon set or a custom created icon set, keep reading.
+If font awesome or the built in custom icon set configurator do not meet your needs you can also create your own custom icon set and load it using hooks provided by the plugin.
 
 The plugin simply inserts icons in the following HTML format:
 
@@ -23,13 +24,15 @@ The plugin simply inserts icons in the following HTML format:
 <i class="icon fa fa-address-book" aria-hidden="true"> </i>
 `
 
-The CSS class names and available icons can be all be modified to your liking if you are prepared to write some PHP hooks for your WordPress theme.
+The CSS class names and available icons can be all be modified to your liking if you are prepared to write some PHP hooks for your WordPress theme. Please note that you should keep the plugin settings set to use 'Font Awesome 4.7'. 
+If you would like to load a custom created webfont or icon set you crafted yourself please read on. If you have the SVG files you can set the plugin settings to 'Custom SVG icon set' and upload your SVG files from the plugin settings.
 
 **CSS file** 
-A slightly customized version of the Font Awesome 4.7 CSS file is loaded by default on the front end and backend to make the plugin work out of the box. If you want to use a custom icon set it is advised to overide the icon set json file and CSS file using hooks provided by this plugin.
+A slightly customized version of the Font Awesome 4.7 CSS file is loaded by default on the front end and backend to make the plugin work out of the box, but you can also choose Font Awesome Free version 5.x or 6.x from the settings screen. 
+If you want to use a custom created icon set it is advised to overide the icon set json file and CSS file using hooks provided by this plugin.
 
 **Custom icon set file** 
-By default the Font Awesome 4.7 icon set is loaded from: wp-content/plugins/jvm-richtext-insert-icons/src/icons.json. The json file contains all css classes that can be turned into icons by Font Awesome 4.7 CSS file. You can load a custom json icon set file  by calling a filter hook in your (child) theme functions.php. 
+If the plugin is set to Font Awesome 4.7 icon set (default behaviour) the icons are loaded from: wp-content/plugins/jvm-richtext-insert-icons/dist/fa-4.7/icons.json. The json file contains all css classes that can be turned into icons by Font Awesome 4.7 CSS file. You can load a custom json icon set file  by calling a filter hook in your (child) theme functions.php. 
 For example:
 
 `
@@ -71,7 +74,32 @@ function my_icon_class($css_class_name) {
 add_filter( 'jvm_richtext_icons_base_class', 'my_icon_class');
 `
 
+Use this hook to disable the entire plugin settings screen that was added in 1.0.9:
+`
+add_filter('jvm_richtext_icons_show_settings', '__return_false');
+`
+
+Please note that settings will still be loaded so please make sure you have set the settings to default font awesome if you are loading a custom icon set with the plugin hooks.
+
 == Changelog ==
+
+= 1.1.2 =
+Added Font Awesome Free 5.15.4 and Font Awesome Free 6.2.0 to the settings. The CSS for these verions are loaded from a CDN. Font Awesome version 4.7 is still the default.
+
+= 1.1.1 =
+Added a notice on the settings screen if a custom icon set is loaded and the SVG icon set is selected. These options won't work together.
+
+= 1.1.0 =
+Added a hook to disable the plugin settings page altogether for those who like a clean WordPress admin.
+
+Use this in your functions.php to disable the settings screen that was added in 1.0.9:
+`add_filter('jvm_richtext_icons_show_settings', '__return_false');`
+
+= 1.0.9 =
+Added a plugin settings screen and a nice interface to upload and create a custom SVG file based icon set. If you like this feature please consinder donating: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
+
+= 1.0.8 =
+Fixed some WordPress coding convenstions and tested and fixed some minor issues for WordPress 6.0.
 
 = 1.0.7 =
 Fixed the styling of the editor pop-over. It was to large since WordPress 5.9.

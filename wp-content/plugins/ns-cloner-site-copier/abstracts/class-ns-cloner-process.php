@@ -95,13 +95,13 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 			);
 			$this->update_batch_progress(
 				$this->batch_key,
-				[
+				array(
 					'total'     => count( $tracked_items ),
 					'completed' => 0,
-				]
+				)
 			);
 			// Clear the data in case this process is reused on the same request for another batch.
-			$this->data = [];
+			$this->data = array();
 		}
 		return $this;
 	}
@@ -128,7 +128,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 			update_site_option( "{$this->identifier}_dispatched", time() );
 			ns_cloner()->log->log( "DISPATCHING *$this->identifier* to " . add_query_arg( $this->get_query_args(), $this->get_query_url() ) );
 			$response = parent::dispatch();
-			ns_cloner()->log->log( [ 'RECEIVED response to dispatch', $response ] );
+			ns_cloner()->log->log( array( 'RECEIVED response to dispatch', $response ) );
 		}
 		return $this;
 	}
@@ -149,6 +149,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 				$this->identifier . '_lock'
 			)
 		);
+		// phpcs:ignore WordPress.Security.NonceVerification -- this is only called after nonce validation
 		if ( isset( $_REQUEST['force_process'] ) ) {
 			ns_cloner()->log->log( "FORCING manual run for *$this->identifier* - overriding any existing instances" );
 			if ( $lock_value ) {
@@ -189,7 +190,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 		ns_cloner()->db->query(
 			ns_prepare_option_query(
 				'INSERT INTO {table} ({key}, {value}) VALUES (%s, %s)',
-				[ $this->identifier . '_lock', $this->lock_id ]
+				array( $this->identifier . '_lock', $this->lock_id )
 			)
 		);
 		// Then wait 0.5 seconds to make sure a simultaneous lock hasn't been set.
@@ -227,7 +228,8 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 		ns_cloner()->process_manager->doing_cloning();
 		ns_cloner()->log->log_break();
 		ns_cloner()->log->log( "HANDLING <b>$this->action</b> async request" );
-		ns_cloner()->log->log( [ 'DISPATCHED from:', isset( $_REQUEST['ajax'] ) ? 'client' : 'server' ] );
+		// phpcs:ignore WordPress.Security.NonceVerification -- no harm to checking for flag
+		ns_cloner()->log->log( array( 'DISPATCHED from:', isset( $_REQUEST['ajax'] ) ? 'client' : 'server' ) );
 		// Remove dispatched flag/timestamp so frontend won't keep dispatching it.
 		delete_site_option( "{$this->identifier}_dispatched" );
 		// Pass back to parent for handling.
@@ -259,7 +261,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 			$progress = $this->get_batch_progress( $this->batch_key );
 			$this->update_batch_progress(
 				$this->batch_key,
-				[ 'completed' => $progress['completed'] + $this->task_count ]
+				array( 'completed' => $progress['completed'] + $this->task_count )
 			);
 			$this->task_count = 0;
 		}
@@ -297,7 +299,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 		$progress = $this->get_batch_progress( $this->batch_key );
 		$this->update_batch_progress(
 			$this->batch_key,
-			[ 'completed' => $progress['completed'] + $this->task_count ]
+			array( 'completed' => $progress['completed'] + $this->task_count )
 		);
 	}
 
@@ -343,7 +345,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 	 *
 	 * @return bool
 	 */
-	public function is_queue_empty() {
+	public function is_queue_empty() { // phpcs:ignore -- needed to change visibility
 		return parent::is_queue_empty();
 	}
 
@@ -409,7 +411,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 	protected function get_memory_limit() {
 		if ( function_exists( 'ini_get' ) ) {
 			$memory_limit = ini_get( 'memory_limit' );
-			if ( ! $memory_limit || -1 == $memory_limit ) {
+			if ( ! $memory_limit || -1 === intval( $memory_limit ) ) {
 				// Unlimited, set to 32GB.
 				$memory_limit = '32G';
 			}
@@ -454,7 +456,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 	 * @return array
 	 */
 	private function get_batches() {
-		$batches = [];
+		$batches = array();
 		// Get all progress records for this bg process.
 		$progress_rows = ns_cloner()->db->get_results(
 			ns_prepare_option_query(
@@ -488,7 +490,7 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 			$progress     = $this->get_batch_progress( $batch_key );
 			$new_progress = wp_json_encode( array_merge( $progress, $data ) );
 			update_site_option( $progress_key, $new_progress );
-			ns_cloner()->log->log( [ 'UPDATING ' . $progress_key, $new_progress ] );
+			ns_cloner()->log->log( array( 'UPDATING ' . $progress_key, $new_progress ) );
 		}
 	}
 
@@ -502,10 +504,10 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 		$progress_key = str_replace( 'batch', 'progress', $batch_key );
 		$progress     = json_decode( get_site_option( $progress_key ), true );
 		if ( ! is_array( $progress ) ) {
-			$progress = [
+			$progress = array(
 				'total'     => 0,
 				'completed' => 0,
-			];
+			);
 		}
 		return $progress;
 	}
@@ -516,10 +518,10 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 	 * @return array|mixed
 	 */
 	public function get_total_progress() {
-		$progress = [
+		$progress = array(
 			'completed' => 0,
 			'total'     => 0,
-		];
+		);
 		// Loop through each batch and aggregate progress data.
 		foreach ( $this->get_batches() as $batch_key => $batch_progress ) {
 			// Add item counts together.

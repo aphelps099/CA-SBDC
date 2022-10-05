@@ -105,9 +105,9 @@ class Kint
     public static $app_root_dirs = [];
 
     /**
-     * @var int max array/object levels to go deep, if zero no limits are applied
+     * @var int depth limit for array/object traversal. 0 for no limit
      */
-    public static $max_depth = 6;
+    public static $depth_limit = 7;
 
     /**
      * @var bool expand all trees by default for rich view
@@ -200,7 +200,7 @@ class Kint
     {
         $this->renderer->setStatics($statics);
 
-        $this->parser->setDepthLimit(isset($statics['max_depth']) ? $statics['max_depth'] : false);
+        $this->parser->setDepthLimit(isset($statics['depth_limit']) ? $statics['depth_limit'] : 0);
         $this->parser->clearPlugins();
 
         if (!isset($statics['plugins'])) {
@@ -212,7 +212,7 @@ class Kint
         foreach ($statics['plugins'] as $plugin) {
             if ($plugin instanceof Plugin) {
                 $plugins[] = $plugin;
-            } elseif (\is_string($plugin) && \is_subclass_of($plugin, 'Kint\\Parser\\Plugin')) {
+            } elseif (\is_string($plugin) && \is_subclass_of($plugin, Plugin::class)) {
                 if (!isset(static::$plugin_pool[$plugin])) {
                     /** @psalm-suppress UnsafeInstantiation */
                     $p = new $plugin();
@@ -234,7 +234,7 @@ class Kint
         $this->renderer->setCallInfo($info);
 
         if (isset($info['modifiers']) && \is_array($info['modifiers']) && \in_array('+', $info['modifiers'], true)) {
-            $this->parser->setDepthLimit(false);
+            $this->parser->setDepthLimit(0);
         }
 
         $this->parser->setCallerClass(isset($info['caller']['class']) ? $info['caller']['class'] : null);
@@ -298,11 +298,11 @@ class Kint
             'aliases' => static::$aliases,
             'app_root_dirs' => static::$app_root_dirs,
             'cli_detection' => static::$cli_detection,
+            'depth_limit' => static::$depth_limit,
             'display_called_from' => static::$display_called_from,
             'enabled_mode' => static::$enabled_mode,
             'expanded' => static::$expanded,
             'file_link_format' => static::$file_link_format,
-            'max_depth' => static::$max_depth,
             'mode_default' => static::$mode_default,
             'mode_default_cli' => static::$mode_default_cli,
             'plugins' => static::$plugins,
@@ -513,7 +513,7 @@ class Kint
         $kintstance->setStatesFromCallInfo($call_info);
 
         $trimmed_trace = [];
-        $trace = \debug_backtrace(true);
+        $trace = \debug_backtrace();
 
         foreach ($trace as $frame) {
             if (Utils::traceFrameIsListed($frame, static::$aliases)) {
@@ -527,7 +527,7 @@ class Kint
 
         $output = $kintstance->dumpAll(
             [$trimmed_trace],
-            [Value::blank('Kint\\Kint::trace()', 'debug_backtrace(true)')]
+            [Value::blank('Kint\\Kint::trace()', 'debug_backtrace()')]
         );
 
         if (static::$return || \in_array('@', $call_info['modifiers'], true)) {
@@ -546,19 +546,19 @@ class Kint
     /**
      * Dumps some data.
      *
-     * Functionally equivalent to Kint::dump(1) or Kint::dump(debug_backtrace(true))
+     * Functionally equivalent to Kint::dump(1) or Kint::dump(debug_backtrace())
+     *
+     * @param mixed ...$args
      *
      * @return int|string
      */
-    public static function dump()
+    public static function dump(...$args)
     {
         if (false === static::$enabled_mode) {
             return 0;
         }
 
         Utils::normalizeAliases(static::$aliases);
-
-        $args = \func_get_args();
 
         $call_info = static::getCallInfo(static::$aliases, \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), \count($args));
 

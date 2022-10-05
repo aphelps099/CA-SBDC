@@ -2,10 +2,11 @@
 
 * Contributors: nko
 * Tags: gutenberg, blocks, gutenberg blocks, wordpress blocks, builder
+* Donate link: https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=donate
 * Requires at least: 5.8
-* Tested up to: 5.9
+* Tested up to: 6.0
 * Requires PHP: 7.2
-* Stable tag: 2.22.3
+* Stable tag: 2.24.1
 * License: GPLv2 or later
 * License URI: <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -16,7 +17,7 @@ Ghost Kit is the powerful page building experience for WordPress.
 **Gutenberg Blocks and Page Builder Plugin For WordPress**
 ★★★★★<br>
 
-**Ghost Kit is the powerful page building experience for WordPress.** Ghost Kip provides a large collection of Gutenberg Blocks, Templates, and Extensions. With this collection, you will gain more control over content just like with popular page builders. Just start with pre-defined templates and you can't stop building the page ;)
+**Ghost Kit is the powerful page building experience for WordPress.** Ghost Kit provides a large collection of Gutenberg Blocks, Templates, and Extensions. With this collection, you will gain more control over content just like with popular page builders. Just start with pre-defined templates and you can't stop building the page ;)
 
 [See Live Demo](https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=head) | [Documentation](https://ghostkit.io/docs/getting-started/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=head) | [GitHub](https://github.com/nk-crew/ghostkit/)
 
@@ -261,9 +262,52 @@ You can extend Gutenberg blocks save attributes using core hooks. Read more here
 
 ## Changelog ##
 
+= 2.24.1 =
+
+* fixed custom Gap settings save number value instead of string
+* changed Tested up to in readme
+
+= 2.24.0 =
+
+* added Vertical Gap support to Grid and Buttons blocks
+* added horizontal align option for top icon/number in the Icon and Number boxes
+* added usage of IntersectionObserver for Animate on Scroll and similar features
+* added aria-label for URL picker
+* updated Swiper script to v8.4.0
+* changed Grid vertical gap from margins to CSS `row-gap`
+* changed Button gap from margins to CSS `gap`
+* changed Spacing control start from the Top input
+* changed RangeControl in all block settings to allow custom values. For example, allow specifying more than 12 columns in the grid
+* fixed Animate on Scroll hide elements even when JS is disabled in browser
+* fixed invalid date in editor Countdown block when block inserted
+* fixed Carousel block making duplicate slides even when Loop option is disabled
+* fixed Carousel block content inside duplicated slides. For example, Tabs block now working correctly inside slides and duplicated slides
+* fixed Images Compare block usage inside Carousel block
+* fixed Form block nonce field ID conflict with block ID
+* fixed Form block send error on some hosts
+* fixed easing function in the Progress block animation
+* fixed rest call permission check
+* minor changes
+
+= 2.23.2 =
+
+* fixed Countdown block wrong date with UTC timezone settings
+* fixed Countdown block possible DatePicker error, when invalid date specified
+
+= 2.23.0 =
+
+* ! Important - breaking change - changed `Auto` Grid Column to flex Auto width (depends on the content width). To restore previous behavior use `Grow` column size
+* added Grow size for Grid Columns
+* updated Google Fonts list
+* fixed custom styles rendering in FSE templates editor
+* fixed automatic heading anchor generation, as we needed it for Table of Contents block. Enabled standard `generateAnchors` setting in the editor by default
+* fixed Table of Contents preview in editor if some of headings does not contain anchors
+* fixed Countdown block dependency of the user's time zone. Now used timezone setting from the WordPress site
+* removed `will-change` styles usage
+
 = 2.22.3 =
 
-* fixes Video block play action
+* fixed Video block play action
 * removed blocks categories fallback used for WP < 5.5
 * minor changes
 

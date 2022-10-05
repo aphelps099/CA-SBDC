@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p><?php esc_html_e( 'Receive updates, beta invites, articles and more!', 'ns-cloner-site-copier' ); ?></p>
 			<!-- Begin Active Campaign Signup Form -->
 			<div class="_form_28" id="ns-subscribe-form"></div>
-			<?php wp_enqueue_script( 'ns-subscribe', 'https://neversettle.activehosted.com/f/embed.php?id=28', [], '28', true ); ?>
+			<?php wp_enqueue_script( 'ns-subscribe', 'https://neversettle.activehosted.com/f/embed.php?id=28', array(), '28', true ); ?>
 			<!-- End Active Campaign Signup Form -->
 		</div>
 	</div>

@@ -24,15 +24,23 @@ const { name } = metadata;
  */
 class BlockSave extends Component {
   render() {
-    const { number, animateInViewport, numberPosition, showContent, url, target, rel } =
-      this.props.attributes;
+    const {
+      number,
+      animateInViewport,
+      numberPosition,
+      numberAlign,
+      showContent,
+      url,
+      ariaLabel,
+      target,
+      rel,
+    } = this.props.attributes;
 
     let { animateInViewportFrom } = this.props.attributes;
 
     animateInViewportFrom = parseFloat(animateInViewportFrom);
 
     let className = classnames('ghostkit-counter-box', url ? 'ghostkit-counter-box-with-link' : '');
-
     className = applyFilters('ghostkit.blocks.className', className, {
       ...{
         name,
@@ -40,25 +48,28 @@ class BlockSave extends Component {
       ...this.props,
     });
 
+    const classNameNumber = classnames(
+      'ghostkit-counter-box-number',
+      `ghostkit-counter-box-number-align-${numberPosition || 'left'}`,
+      'top' === numberPosition
+        ? `ghostkit-counter-box-number-top-align-${numberAlign || 'center'}`
+        : ''
+    );
+
     return (
       <div className={className}>
         {url ? (
           <a
             className="ghostkit-counter-box-link"
             href={url}
-            target={target || false}
-            rel={rel || false}
+            target={target || null}
+            rel={rel || null}
+            aria-label={ariaLabel || null}
           >
             <span />
           </a>
-        ) : (
-          ''
-        )}
-        <div
-          className={`ghostkit-counter-box-number ghostkit-counter-box-number-align-${
-            numberPosition || 'left'
-          }`}
-        >
+        ) : null}
+        <div className={classNameNumber}>
           <RichText.Content
             tagName="div"
             className={`ghostkit-counter-box-number-wrap${
@@ -75,9 +86,7 @@ class BlockSave extends Component {
           <div className="ghostkit-counter-box-content">
             <InnerBlocks.Content />
           </div>
-        ) : (
-          ''
-        )}
+        ) : null}
       </div>
     );
   }

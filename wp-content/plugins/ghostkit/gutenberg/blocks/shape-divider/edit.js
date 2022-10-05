@@ -10,6 +10,7 @@ import ResponsiveTabPanel from '../../components/responsive-tab-panel';
 import ImagePicker from '../../components/image-picker';
 import ColorPicker from '../../components/color-picker';
 import ProNote from '../../components/pro-note';
+import RangeControl from '../../components/range-control';
 import getIcon from '../../utils/get-icon';
 import { maybeEncode, maybeDecode } from '../../utils/encode-decode';
 
@@ -22,7 +23,7 @@ const { __ } = wp.i18n;
 
 const { Component, Fragment } = wp.element;
 
-const { PanelBody, RangeControl, Button, ToolbarGroup, ToolbarButton, Dropdown } = wp.components;
+const { PanelBody, Button, ToolbarGroup, ToolbarButton, Dropdown } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.blockEditor;
 
@@ -147,7 +148,7 @@ class BlockEdit extends Component {
                 <ProNote.Button
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://ghostkit.io/shape-divider/?utm_source=plugin&utm_medium=block_settings&utm_campaign=pro_shapes&utm_content=2.22.3"
+                  href="https://ghostkit.io/shape-divider/?utm_source=plugin&utm_medium=block_settings&utm_campaign=pro_shapes&utm_content=2.24.1"
                 >
                   {__('Read More', 'ghostkit')}
                 </ProNote.Button>
@@ -266,6 +267,7 @@ class BlockEdit extends Component {
                       }}
                       min={1}
                       max={700}
+                      allowCustomMax
                     />
                     <RangeControl
                       label={__('Width', 'ghostkit')}
@@ -277,6 +279,8 @@ class BlockEdit extends Component {
                       }}
                       min={100}
                       max={400}
+                      allowCustomMin
+                      allowCustomMax
                     />
                   </Fragment>
                 );

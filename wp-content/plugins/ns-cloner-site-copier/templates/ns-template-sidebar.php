@@ -46,24 +46,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p><?php esc_html_e( 'Receive updates, beta invites, articles and more!', 'ns-cloner-site-copier' ); ?></p>
 			<!-- Begin Active Campaign Signup Form -->
 			<div class="_form_28" id="ns-subscribe-form"></div>
-			<?php wp_enqueue_script( 'ns-subscribe', 'https://neversettle.activehosted.com/f/embed.php?id=28', [], '28', true ); ?>
+			<?php wp_enqueue_script( 'ns-subscribe', 'https://neversettle.activehosted.com/f/embed.php?id=28', array(), '28', true ); ?>
 			<!-- End Active Campaign Signup Form -->
-		</div>
-	</div>
-
-	<div class="ns-side-widget ns-featured-widget">
-		<div class="ns-side-widget-content">
-			<?php
-			$feed = fetch_feed( 'http://neversettle.it/plugin-widget-status/featured/feed/' );
-			if ( ! is_wp_error( $feed ) && is_array( $feed->get_items() ) && count( $feed->get_items() ) > 0 ) :
-				$items        = $feed->get_items();
-				$featured     = array_shift( $items );
-				$thumbnail_el = $featured->get_item_tags( 'http://neversettle.it/', 'thumbnail' );
-				?>
-				<a href="<?php echo esc_url( $featured->get_link() ); ?>" target="_blank">
-					<img style="max-width:100%; width:100%; margin-bottom:-5px;" src="<?php echo esc_url( $thumbnail_el[0]['data'] ); ?>" alt="Featured Product" />
-				</a>
-			<?php endif; ?>
 		</div>
 	</div>
 

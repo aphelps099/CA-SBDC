@@ -8,13 +8,15 @@ import classnames from 'classnames/dedupe';
  */
 import ColorPicker from '../../components/color-picker';
 import DateTimePicker from '../../components/date-time-picker';
+import RangeControl from '../../components/range-control';
 
 import countDownApi from './api';
+import { TIMEZONELESS_FORMAT } from './constants';
 
 /**
  * WordPress dependencies
  */
-const { moment } = window;
+const { GHOSTKIT, luxon } = window;
 
 const { applyFilters } = wp.hooks;
 
@@ -22,15 +24,13 @@ const { __ } = wp.i18n;
 
 const { Component, Fragment } = wp.element;
 
-const { PanelBody, SelectControl, RangeControl, ToolbarGroup, ToolbarButton } = wp.components;
+const { PanelBody, SelectControl, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, InnerBlocks, BlockControls } = wp.blockEditor;
 
 const { compose } = wp.compose;
 
 const { withSelect } = wp.data;
-
-const TIMEZONELESS_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
 /**
  * Block Edit Class.
@@ -57,7 +57,9 @@ class BlockEdit extends Component {
       const newDate = new Date();
       newDate.setDate(today.getDate() + 1);
 
-      this.updateDate(newDate, units);
+      const formattedDate = luxon.DateTime.fromJSDate(newDate).toFormat(TIMEZONELESS_FORMAT);
+
+      this.updateDate(formattedDate, units);
     } else {
       this.updateDate(date, units);
     }
@@ -65,13 +67,14 @@ class BlockEdit extends Component {
 
   // eslint-disable-next-line class-methods-use-this
   parseData(date, units) {
-    const momentData = moment(date);
-    const formattedDate = momentData.format(TIMEZONELESS_FORMAT);
+    const formattedDate = luxon.DateTime.fromISO(date).toFormat(TIMEZONELESS_FORMAT);
+    const currentDate = new Date(
+      luxon.DateTime.now().setZone(GHOSTKIT.timezone).toFormat(TIMEZONELESS_FORMAT)
+    );
 
-    const apiData = countDownApi(momentData.toDate(), moment().toDate(), units, 0);
+    const apiData = countDownApi(new Date(formattedDate), currentDate, units, 0);
 
     return {
-      momentData,
       formattedDate,
       delay: countDownApi.getDelay(units),
       ...apiData,
@@ -197,6 +200,7 @@ class BlockEdit extends Component {
               onChange={(value) => setAttributes({ numberFontSize: value })}
               beforeIcon="editor-textcolor"
               afterIcon="editor-textcolor"
+              allowCustomMax
             />
             <RangeControl
               label={__('Label Font Size', 'ghostkit')}
@@ -204,6 +208,7 @@ class BlockEdit extends Component {
               onChange={(value) => setAttributes({ labelFontSize: value })}
               beforeIcon="editor-textcolor"
               afterIcon="editor-textcolor"
+              allowCustomMax
             />
             <ColorPicker
               label={__('Number Color', 'ghostkit')}

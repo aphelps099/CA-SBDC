@@ -1,8 +1,13 @@
 .jvm-richtext-icons-popover .components-popover__content {
-    width: 432px;
+    width: 376px;
     max-height: 443px !important;
-    padding: 10px;
+    overflow: hidden !important;
     overflow-y: auto !important;
+    padding: 10px;
+    box-sizing:  border-box !important;
+}
+.jvm-richtext-icons-popover .components-popover__content * {
+    box-sizing:  border-box !important;
 }
 
 .jvm-richtext-icons-popover .components-popover__content > div {
@@ -13,7 +18,18 @@
     width: auto;
     max-width: 100%;
     max-height: 100%;
+
 }
+
+
+/*
+.jvm-richtext-icons-popover .components-base-control {
+    margin: 10px;
+    padding: 0 15px 0 0;
+}
+.jvm-richtext-icons-panel {
+    margin: 10px 0 0 10px;
+}*/
 
 ul.jvm-richtext-icons-list {
     list-style-type: none;

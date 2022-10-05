@@ -1,15 +1,26 @@
 <?php
+/**
+ * Background process for analytics/usage telemetry.
+ *
+ * @package NS_Cloner
+ */
 
 /**
  * Class NS_Cloner_Export_Analytics_Process
  */
 class NS_Cloner_Export_Analytics_Process extends WP_Background_Process {
+
+	/**
+	 * Trigger action slug for this process
+	 *
+	 * @var string
+	 */
 	protected $action = 'background_export_analytics';
 
 	/**
 	 * Process individual analytics entry
 	 *
-	 * @param mixed $item
+	 * @param mixed $item Array of data from a queued item.
 	 *
 	 * @return mixed
 	 */
@@ -17,7 +28,7 @@ class NS_Cloner_Export_Analytics_Process extends WP_Background_Process {
 		$row_data = $item['data'];
 		$result   = ns_cloner_analytics()->export_result_to_client( $row_data );
 		if ( $result ) {
-			//Update row in DB to is_synced = true.
+			// Update row in DB to is_synced = true.
 			$this->set_log_synced( $row_data['id'] );
 		}
 
@@ -27,7 +38,7 @@ class NS_Cloner_Export_Analytics_Process extends WP_Background_Process {
 	/**
 	 * Set log entry as synced
 	 *
-	 * @param $id
+	 * @param int $id Primary ID for a log entry.
 	 *
 	 * @return bool
 	 */
@@ -42,5 +53,5 @@ class NS_Cloner_Export_Analytics_Process extends WP_Background_Process {
 	}
 }
 
-//Instantiate class for background handling.
+// Instantiate class for background handling.
 return new NS_Cloner_Export_Analytics_Process();

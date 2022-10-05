@@ -1,4 +1,5 @@
 {
+  "apiVersion": 2,
   "name": "ghostkit/grid",
   "category": "design",
   "title": "Grid",
@@ -19,6 +20,9 @@
       "default": "md"
     },
     "gapCustom": {
+      "type": "number"
+    },
+    "gapVerticalCustom": {
       "type": "number"
     },
     "verticalAlign": {

@@ -27,7 +27,6 @@ namespace Kint\Parser;
 
 use InvalidArgumentException;
 use Kint\Utils;
-use Kint\Zval\ElidedValues;
 use Kint\Zval\Value;
 
 class ArrayLimitPlugin extends Plugin
@@ -37,14 +36,14 @@ class ArrayLimitPlugin extends Plugin
      *
      * @var int
      */
-    public static $trigger = 100;
+    public static $trigger = 1000;
 
     /**
      * Maximum amount of items to show in a limited array.
      *
      * @var int
      */
-    public static $limit = 20;
+    public static $limit = 50;
 
     /**
      * Don't limit arrays with string keys.
@@ -69,6 +68,16 @@ class ArrayLimitPlugin extends Plugin
             throw new InvalidArgumentException('ArrayLimitPlugin::$limit can not be lower than ArrayLimitPlugin::$trigger');
         }
 
+        $depth = $this->parser->getDepthLimit();
+
+        if (!$depth) {
+            return;
+        }
+
+        if ($o->depth >= $depth - 1) {
+            return;
+        }
+
         if (\count($var) < self::$trigger) {
             return;
         }
@@ -77,27 +86,57 @@ class ArrayLimitPlugin extends Plugin
             return;
         }
 
-        $var2 = \array_slice($var, 0, self::$limit);
-
         $base = clone $o;
-
-        $obj = $this->parser->parse($var2, $base);
+        $base->depth = $depth - 1;
+        $obj = $this->parser->parse($var, $base);
 
         if (!$obj instanceof Value || 'array' != $obj->type) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
-        $sparekeys = \array_slice(\array_keys($var), self::$limit);
-        $skip = new ElidedValues(\count($sparekeys), $sparekeys);
-        $skip->depth = $obj->depth + 1;
+        $obj->depth = $o->depth;
+        $i = 0;
 
-        if (isset($obj->value->contents) && \is_array($obj->value->contents)) {
-            $obj->value->contents[] = $skip;
+        foreach ($obj->value->contents as $child) {
+            // We only bother setting the correct depth for the first child,
+            // any deeper children should be cancelled by the depth limit
+            $child->depth = $o->depth + 1;
+            $this->recalcDepthLimit($child);
         }
 
-        $obj->size = \count($var);
+        $var2 = \array_slice($var, 0, self::$limit, true);
+        $base = clone $o;
+        $slice = $this->parser->parse($var2, $base);
+
+        \array_splice($obj->value->contents, 0, self::$limit, $slice->value->contents);
 
         $o = $obj;
+
         $this->parser->haltParse();
+    }
+
+    protected function recalcDepthLimit(Value $o)
+    {
+        $hintkey = \array_search('depth_limit', $o->hints, true);
+        if (false !== $hintkey) {
+            $o->hints[$hintkey] = 'array_limit';
+        }
+
+        $reps = $o->getRepresentations();
+        if ($o->value) {
+            $reps[] = $o->value;
+        }
+
+        foreach ($reps as $rep) {
+            if ($rep->contents instanceof Value) {
+                $this->recalcDepthLimit($rep->contents);
+            } elseif (\is_array($rep->contents)) {
+                foreach ($rep->contents as $child) {
+                    if ($child instanceof Value) {
+                        $this->recalcDepthLimit($child);
+                    }
+                }
+            }
+        }
     }
 }

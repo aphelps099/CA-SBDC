@@ -32,7 +32,6 @@ class FieldLabel extends Component {
           value={label}
           placeholder={__('Write label…', 'ghostkit')}
           onChange={(val) => setAttributes({ label: val })}
-          keepPlaceholderOnFocus
         />
         {attributes.required ? <span className="required">*</span> : ''}
       </label>

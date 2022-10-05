@@ -9,7 +9,10 @@ import classnames from 'classnames/dedupe';
 import ColorPicker from '../../components/color-picker';
 import URLPicker from '../../components/url-picker';
 import ColorIndicator from '../../components/color-indicator';
+import ToggleGroup from '../../components/toggle-group';
+import RangeControl from '../../components/range-control';
 import ApplyFilters from '../../components/apply-filters';
+import getIcon from '../../utils/get-icon';
 
 /**
  * WordPress dependencies
@@ -26,7 +29,6 @@ const {
   BaseControl,
   PanelBody,
   TextControl,
-  RangeControl,
   ToggleControl,
   TabPanel,
   Toolbar,
@@ -50,18 +52,27 @@ class BlockEdit extends Component {
       animateInViewport,
       animateInViewportFrom,
       numberPosition,
+      numberAlign,
       numberSize,
       showContent,
       numberColor,
       hoverNumberColor,
       url,
+      ariaLabel,
       target,
       rel,
     } = attributes;
 
     className = classnames('ghostkit-counter-box', className);
-
     className = applyFilters('ghostkit.editor.className', className, this.props);
+
+    const classNameNumber = classnames(
+      'ghostkit-counter-box-number',
+      `ghostkit-counter-box-number-align-${numberPosition || 'left'}`,
+      'top' === numberPosition
+        ? `ghostkit-counter-box-number-top-align-${numberAlign || 'center'}`
+        : ''
+    );
 
     return (
       <Fragment>
@@ -71,10 +82,9 @@ class BlockEdit extends Component {
               label={__('Number Size', 'ghostkit')}
               value={numberSize}
               onChange={(value) => setAttributes({ numberSize: value })}
-              min={20}
-              max={100}
               beforeIcon="editor-textcolor"
               afterIcon="editor-textcolor"
+              allowCustomMax
             />
             <BaseControl label={__('Number Position', 'ghostkit')}>
               <div>
@@ -100,17 +110,40 @@ class BlockEdit extends Component {
                 </Toolbar>
               </div>
             </BaseControl>
+            {'top' === numberPosition ? (
+              <ToggleGroup
+                label={__('Number Alignment', 'ghostkit')}
+                value={numberAlign || 'center'}
+                options={[
+                  {
+                    label: getIcon('icon-horizontal-start'),
+                    value: 'left',
+                  },
+                  {
+                    label: getIcon('icon-horizontal-center'),
+                    value: 'center',
+                  },
+                  {
+                    label: getIcon('icon-horizontal-end'),
+                    value: 'right',
+                  },
+                ]}
+                onChange={(value) => {
+                  setAttributes({ numberAlign: value });
+                }}
+              />
+            ) : null}
           </PanelBody>
           <PanelBody>
-            <ToggleControl
-              label={__('Animate in viewport', 'ghostkit')}
-              checked={!!animateInViewport}
-              onChange={(val) => setAttributes({ animateInViewport: val })}
-            />
             <ToggleControl
               label={__('Show Content', 'ghostkit')}
               checked={!!showContent}
               onChange={(val) => setAttributes({ showContent: val })}
+            />
+            <ToggleControl
+              label={__('Animate in viewport', 'ghostkit')}
+              checked={!!animateInViewport}
+              onChange={(val) => setAttributes({ animateInViewport: val })}
             />
             {animateInViewport ? (
               <TextControl
@@ -119,9 +152,7 @@ class BlockEdit extends Component {
                 value={animateInViewportFrom}
                 onChange={(value) => setAttributes({ animateInViewportFrom: parseInt(value, 10) })}
               />
-            ) : (
-              ''
-            )}
+            ) : null}
           </PanelBody>
           <PanelBody
             title={
@@ -172,6 +203,7 @@ class BlockEdit extends Component {
         <URLPicker
           url={url}
           rel={rel}
+          ariaLabel={ariaLabel}
           target={target}
           onChange={(data) => {
             setAttributes(data);
@@ -203,11 +235,7 @@ class BlockEdit extends Component {
           </ToolbarGroup>
         </BlockControls>
         <div className={className}>
-          <div
-            className={`ghostkit-counter-box-number ghostkit-counter-box-number-align-${
-              numberPosition || 'left'
-            }`}
-          >
+          <div className={classNameNumber}>
             <RichText
               tagName="div"
               className="ghostkit-counter-box-number-wrap"
@@ -215,7 +243,6 @@ class BlockEdit extends Component {
               value={number}
               onChange={(value) => setAttributes({ number: value })}
               withoutInteractiveFormatting
-              keepPlaceholderOnFocus
             />
           </div>
           {showContent ? (
@@ -227,9 +254,7 @@ class BlockEdit extends Component {
                 }
               />
             </div>
-          ) : (
-            ''
-          )}
+          ) : null}
         </div>
       </Fragment>
     );
