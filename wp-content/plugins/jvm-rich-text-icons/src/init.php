@@ -236,6 +236,11 @@ class JVM_Richtext_icons {
     public static function get_settings() {
         $settings = get_option('jvm-rich-text-icons');
 
+        // Array if no options
+        if (false == $settings) {
+            $settings = [];
+        }
+
         if (!isset($settings['icon_set'])) {
             $settings['icon_set'] = 'default';
         }

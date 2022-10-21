@@ -54,7 +54,7 @@
 					?>
 				</nav>
 
-				<nav id="header-primary-cta-links">
+				<?php /*<nav id="header-primary-cta-links">
 					<div id="google-translate"></div>
 					<script>
 						function googleTranslateElementInit() {
@@ -71,18 +71,18 @@
 							'fallback_cb' => false
 						) );
 					?>
-				</nav>
+				</nav>*/ ?>
 
-				<div id="header-search">
+				<?php /*<div id="header-search">
 					<button class="toggle">
 						<span class="icon"><?php ct_icon( 'search' ); ?></span>
 						<span class="label">Search</span>
 					</button>
 					<?php echo get_search_form(); ?>
-				</div>
+				</div>*/ ?>
 
 				<button id="mobile-menu-toggle" type="button">
-					<span class="label">Menu</span>
+					<span class="label">Explore</span>
 					<span class="icon"></span>
 				</button>
 

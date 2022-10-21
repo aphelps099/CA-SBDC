@@ -83,6 +83,9 @@ Please note that settings will still be loaded so please make sure you have set 
 
 == Changelog ==
 
+= 1.1.3 =
+Fixed a deprecated warning in php 8.1.
+
 = 1.1.2 =
 Added Font Awesome Free 5.15.4 and Font Awesome Free 6.2.0 to the settings. The CSS for these verions are loaded from a CDN. Font Awesome version 4.7 is still the default.
 
