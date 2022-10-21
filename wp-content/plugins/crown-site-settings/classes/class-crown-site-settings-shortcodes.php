@@ -115,6 +115,14 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 				)
 			));
 
+			self::$shortcodes['center_search'] = new Shortcode(array(
+				'tag' => 'center_search',
+				'getOutputCb' => array( __CLASS__, 'get_center_search_shortcode' ),
+				'defaultAtts' => array(
+					'class' => ''
+				)
+			));
+
 		}
 
 
@@ -623,6 +631,24 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 
 		public static function get_tabbed_content_image_slider_shortcode( $atts, $content ) {
 			return '<div class="tabbed-content-image-slider ' . esc_attr( $atts['class'] ) . '" data-selector="' . esc_attr( $atts['selector'] ) . '"></div>';
+		}
+
+
+		public static function get_center_search_shortcode( $atts, $content ) {
+			$results_page_id = get_option( 'theme_config_index_page_center' );
+			$action = ! empty( $results_page_id ) && ! empty( get_post( $results_page_id ) ) ? get_permalink( $results_page_id ) : '';
+			ob_start();
+			?>
+				<form class="center-search <?php echo esc_attr( $atts['class'] ); ?>" method="get" action="<?php echo esc_attr( $action ); ?>">
+					<div class="field">
+						<input type="text" name="zip" value="" placeholder="Enter Your Zipcode">
+					</div>
+					<footer class="form-footer">
+						<button type="submit" class="btn btn-primary">Search</button>
+					</footer>
+				</form>
+			<?php
+			return ob_get_clean();
 		}
 
 

@@ -58,21 +58,27 @@
   padding: 16px 20px;
   background-color: #eee; }
 
+.wp-block-crown-blocks-center-finder .location-search-form,
+form.center-search {
+  max-width: 360px;
+  margin: 0 0 1rem;
+  display: -ms-flexbox;
+  display: flex; }
+  .wp-block-crown-blocks-center-finder .location-search-form .field,
+  form.center-search .field {
+    -ms-flex: 1 1 auto;
+        flex: 1 1 auto; }
+  .wp-block-crown-blocks-center-finder .location-search-form .form-footer,
+  form.center-search .form-footer {
+    margin-left: 0.25rem; }
+
 .wp-block-crown-blocks-center-finder {
   margin-bottom: 1rem; }
   .wp-block-crown-blocks-center-finder .location-search-form {
-    max-width: 360px;
-    margin: 0 auto 2rem;
-    display: -ms-flexbox;
-    display: flex; }
+    margin: 0 auto 2rem; }
     @media (min-width: 768px) {
       .wp-block-crown-blocks-center-finder .location-search-form {
         margin-bottom: 4rem; } }
-    .wp-block-crown-blocks-center-finder .location-search-form .field {
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto; }
-    .wp-block-crown-blocks-center-finder .location-search-form .form-footer {
-      margin-left: 0.25rem; }
   .wp-block-crown-blocks-center-finder .alert.no-results {
     max-width: 800px;
     margin: 0 auto; }

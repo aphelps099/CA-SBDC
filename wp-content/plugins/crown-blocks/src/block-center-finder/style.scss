@@ -1,18 +1,22 @@
 
+.wp-block-crown-blocks-center-finder .location-search-form,
+form.center-search {
+	max-width: 360px;
+	margin: 0 0 1rem;
+	display: flex;
+	.field {
+		flex: 1 1 auto;
+	}
+	.form-footer {
+		margin-left: 0.25rem;
+	}
+}
 .wp-block-crown-blocks-center-finder {
 	margin-bottom: 1rem;
 	.location-search-form {
-		max-width: 360px;
 		margin: 0 auto 2rem;
-		display: flex;
 		@media (min-width: 768px) {
 			margin-bottom: 4rem;
-		}
-		.field {
-			flex: 1 1 auto;
-		}
-		.form-footer {
-			margin-left: 0.25rem;
 		}
 	}
 	.alert.no-results {
