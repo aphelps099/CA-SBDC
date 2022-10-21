@@ -27204,6 +27204,10 @@ nav.pagination {
           body.header-dropdown-active #header.is-sticky #header-search .search-form input[type=search]::placeholder {
             color: rgba(255, 255, 255, 0.3); }
 
+body.page-header-disabled #site-announcement,
+body.page-header-disabled #header {
+  display: none !important; }
+
 #footer {
   background-color: #edeff2;
   line-height: 1.4; }

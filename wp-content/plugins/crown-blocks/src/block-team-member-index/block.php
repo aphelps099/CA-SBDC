@@ -89,7 +89,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				$query_args['fields'] = 'ids';
 			}
 
-			if ( ! in_array( -1, $filters->category->queried ) && ! is_main_site() ) {
+			if ( ( ! is_array( $filters->category->queried ) || ! in_array( -1, $filters->category->queried ) ) && ! is_main_site() ) {
 				$query_args['post_type'] = array( 'team_member' );
 				$group_by_center = false;
 			}

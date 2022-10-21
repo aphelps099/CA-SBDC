@@ -1066,3 +1066,12 @@
 		}
 	}
 }
+
+
+
+body.page-header-disabled {
+	#site-announcement,
+	#header {
+		display: none !important;
+	}
+}

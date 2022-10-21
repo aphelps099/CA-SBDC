@@ -38,18 +38,18 @@ if ( ! class_exists( 'Crown_Site_Settings_Pages' ) ) {
 			self::$post_types['page'] = new PostType( array(
 				'name' => 'page',
 				'metaBoxes' => array(
-					// new MetaBox( array(
-					// 	'id' => 'page-header',
-					// 	'title' => 'Page Header',
-					// 	'context' => 'side',
-					// 	'fields' => array(
-					// 		new Field( array(
-					// 			'input' => new CheckboxSet( array( 'name' => 'page_header_options', 'options' => array(
-					// 				array( 'value' => 'overlay-header', 'label' => 'Overlay header on page content' )
-					// 			) ) )
-					// 		) )
-					// 	)
-					// ) )
+					new MetaBox( array(
+						'id' => 'page-header',
+						'title' => 'Page Header',
+						'context' => 'side',
+						'fields' => array(
+							new Field( array(
+								'input' => new CheckboxSet( array( 'name' => 'page_header_options', 'options' => array(
+									array( 'value' => 'disabled', 'label' => 'Disable header' )
+								) ) )
+							) )
+						)
+					) )
 				)
 			) );
 
