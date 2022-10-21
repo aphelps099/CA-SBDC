@@ -1071,7 +1071,13 @@
 
 body.page-header-disabled {
 	#site-announcement,
-	#header {
+	#header,
+	#pre-footer,
+	#footer .container > .upper {
 		display: none !important;
+	}
+	#footer .container > .lower {
+		border-top: none;
+		padding-top: 32px;
 	}
 }

@@ -27242,8 +27242,14 @@ form.center-search .form-footer button {
             color: rgba(255, 255, 255, 0.3); }
 
 body.page-header-disabled #site-announcement,
-body.page-header-disabled #header {
+body.page-header-disabled #header,
+body.page-header-disabled #pre-footer,
+body.page-header-disabled #footer .container > .upper {
   display: none !important; }
+
+body.page-header-disabled #footer .container > .lower {
+  border-top: none;
+  padding-top: 32px; }
 
 #footer {
   background-color: #edeff2;
