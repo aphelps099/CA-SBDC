@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/new-posts-block\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: ishitaka\n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: src/new-posts-block/block.jsx:11 src/new-posts-block/edit.jsx:100
+msgid "New Posts"
+msgstr "新着の投稿"
+
+#: src/new-posts-block/block.jsx:14
+msgid "Display a list of new posts."
+msgstr "新着の投稿の一覧を表示します。"
+
+#: src/new-posts-block/block.jsx:15
+msgid "new posts"
+msgstr "新着の投稿"
+
+#: src/new-posts-block/block.jsx:15
+msgid "recent posts"
+msgstr "最近の投稿"
+
+#: src/new-posts-block/edit.jsx:104
+msgid "No posts found."
+msgstr "投稿が見つかりませんでした。"
+
+#: src/new-posts-block/edit.jsx:41 src/new-rss-block/edit.jsx:69
+msgid "New Posts Settings"
+msgstr "新着の投稿設定"
+
+#: src/new-posts-block/edit.jsx:43
+msgid "Post Type"
+msgstr "投稿タイプ"
+
+#: src/new-posts-block/edit.jsx:49
+msgid "Sort order"
+msgstr "並び順"
+
+#: src/new-posts-block/edit.jsx:52
+msgid "Public date"
+msgstr "公開日"
+
+#: src/new-posts-block/edit.jsx:53
+msgid "Update date"
+msgstr "更新日"
+
+#: src/new-posts-block/edit.jsx:58 src/new-rss-block/edit.jsx:71
+msgid "Number of items"
+msgstr "項目数"
+
+#: src/new-posts-block/edit.jsx:65 src/new-rss-block/edit.jsx:78
+msgid "Number of days for new marks"
+msgstr "New マークの日数"
+
+#: src/new-posts-block/edit.jsx:72 src/new-rss-block/edit.jsx:85
+msgid "New mark text"
+msgstr "New マークのテキスト"
+
+#: src/new-posts-block/edit.jsx:77 src/new-rss-block/edit.jsx:90
+msgid "Display new mark"
+msgstr "New マークを表示"
+
+#: src/new-posts-block/edit.jsx:83
+msgid "Post IDs to exclude"
+msgstr "除外する投稿 ID"
+
+#: src/new-rss-block/block.jsx:11
+msgid "New RSS"
+msgstr "新着の RSS"
+
+#: src/new-rss-block/block.jsx:14
+msgid "Display entries from any RSS or Atom feed."
+msgstr "RSS または Atom フィードからの投稿を表示します。"
+
+#: src/new-rss-block/block.jsx:15
+msgid "atom"
+msgstr "atom"
+
+#: src/new-rss-block/block.jsx:15
+msgid "feed"
+msgstr "フィード"
+
+#: src/new-rss-block/edit.jsx:46
+msgid "Enter URL here…"
+msgstr "URL をここに入力..."
+
+#: src/new-rss-block/edit.jsx:52
+msgid "Use URL"
+msgstr "URL を使用"
+
+#: src/new-rss-block/edit.jsx:62
+msgid "Edit RSS URL"
+msgstr "RSS の URL を編集"
+
+#: src/init.php:211
+msgid "RSS Error:"
+msgstr "RSS エラー:"
+
+#: src/init.php:217
+msgid "Could not access feed. Please wait."
+msgstr "フィードにアクセスできませんでした。しばらくお待ちください。"
+
+#: src/init.php:226
+msgid "(Untitled)"
+msgstr "(タイトル無し)"
+
+#. Description of the plugin/theme
+msgid "Add a block to display a list of latest posts."
+msgstr "最新の投稿のリストを表示するブロックを追加します。"

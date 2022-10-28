@@ -251,9 +251,21 @@ if ( ! function_exists( 'ct_nav_mega_menu' ) ) {
 			<ul <?php echo ! empty( $args['id'] ) ? 'id="' . esc_attr( $args['id'] ) . '"' : ''; ?> class="menu mega-menu <?php echo esc_attr( $args['class'] ); ?>">
 				
 				<?php foreach ( $menu->items as $menu_item ) { ?>
-					<li id="menu-item-<?php echo $menu_item->id; ?>" class="menu-item menu-item-<?php echo $menu_item->id; ?> mega-menu-item">
+					<?php
+						$menu_item_atts = array(
+							'id="menu-item-'. $menu_item->id .'"',
+							'class="menu-item mega-menu-item menu-item-'. $menu_item->id .' '. ( !empty($menu_item->class) ? $menu_item->class : '' ) .'"'
+						);
+					?>
+					<li <?php echo implode(' ', $menu_item_atts); ?>>
 
-						<a <?php echo ! empty( $menu_item->link->href ) ? 'href="' . esc_attr( $menu_item->link->href ) . '"' : ''; ?> <?php echo ! empty( $menu_item->link->href ) ? 'target="' . $menu_item->link->target . '"' : ''; ?>>
+						<?php
+							$link_atts = array(
+								'href="'. ( ! empty( $menu_item->link->href ) ? esc_attr( $menu_item->link->href ) : '' ).'"',
+								'target="'. ( ! empty( $menu_item->link->href ) ? $menu_item->link->target : '' ).'"',
+							);
+						?>
+						<a <?php echo implode(' ', $link_atts); ?>>
 							<span class="label"><?php echo $menu_item->title; ?></span>
 						</a>
 

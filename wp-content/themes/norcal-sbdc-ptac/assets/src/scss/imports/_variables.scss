@@ -1,3 +1,44 @@
 
-
 $icomoon-font-folder-path: "../../../norcal-sbdc/assets/fonts/icomoon";
+
+// Colors
+
+$dark-blue:      #282362 !default;
+$darker-blue:    #1a1558 !default;
+$blue:           #147a93 !default;
+$light-med-blue: #8b87a9 !default;
+$white:          #fefefe !default;
+
+
+$colors: () !default;
+$colors: map-merge(
+	(
+		'dark-blue': $dark-blue,
+		'dark-med-blue': $dark-med-blue,
+		'darker-blue': $darker-blue,
+		'blue': $blue,
+		'light-med-blue': $light-med-blue,
+		'light-blue': $light-blue,
+		'x-light-blue': $x-light-blue,
+		'red': $red,
+		'green': $green,
+		'gray': $gray,
+		'rain': $rain,
+		'dark-gray': $dark-gray,
+		'light-gray': $light-gray,
+		'ghost': $ghost,
+		'white': $white
+	),
+	$colors
+);
+
+$primary:       $dark-blue !default;
+$secondary:     $blue !default;
+$light:         $white !default;
+$dark:          $dark-gray !default;
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+	$colors,
+	$theme-colors
+);

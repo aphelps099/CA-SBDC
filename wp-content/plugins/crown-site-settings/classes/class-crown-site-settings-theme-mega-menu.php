@@ -71,14 +71,23 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 													) )
 												)
 											) ),
-											new Field( array(
-												'label' => 'Menu Type',
-												'input' => new RadioSet( array( 'name' => 'type', 'defaultValue' => 'default', 'class' => 'toggle', 'options' => array(
-													array( 'value' => 'default', 'label' => 'Standard' ),
-													array( 'value' => 'events', 'label' => 'Events' ),
-													array( 'value' => 'disabled', 'label' => 'Disabled' )
-												) ) )
-											) )
+											new FieldGroup(array(
+												'class' => 'no-border two-column large-left',
+												'fields' => array(
+													new Field(array(
+														'label' => 'Link Classes',
+														'input' => new TextInput(array('name' => 'link_class'))
+													)),
+													new Field( array(
+														'label' => 'Menu Type',
+														'input' => new RadioSet( array( 'name' => 'type', 'defaultValue' => 'default', 'class' => 'toggle', 'options' => array(
+															array( 'value' => 'default', 'label' => 'Standard' ),
+															array( 'value' => 'events', 'label' => 'Events' ),
+															array( 'value' => 'disabled', 'label' => 'Disabled' )
+														) ) )
+													) ),
+												)
+											))
 										)
 									) ),
 
@@ -340,8 +349,9 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 					'title' => $n['title'],
 					'link' => (object) array(
 						'href' => $n['link_url'],
-						'target' => in_array( 'open-new-window', $n['link_options'] ) ? '_blank' : '_self'
+						'target' => in_array( 'open-new-window', $n['link_options'] ) ? '_blank' : '_self',
 					),
+					'class' => $n['link_class'],
 					'type' => $n['type'],
 					'sections' => (object) array(
 						'primary' => null,

@@ -1,0 +1,8 @@
+ul.new-posts{margin-left:auto;margin-right:auto;padding:0;font-weight:normal;display:block;list-style:none}ul.new-posts li{margin:0;padding:.2em 0;border-bottom:1px solid #eee}ul.new-posts .post-date{float:left;clear:both}ul.new-posts .post-data{margin-left:8.5em}ul.new-posts .post-data a{text-decoration:none;border:0}ul.new-posts .new-mark{padding:.1em .2em;margin-right:.5em;vertical-align:middle;font-size:.6em;color:#fff;font-weight:bold;border-radius:3px;background-color:#f02020}ul.new-posts a:not(:hover){box-shadow:none}.widget_text ul.new-posts{list-style:none}
+
+.editor-styles-wrapper .editor-block-list__block ul.new-posts{list-style:none}.editor-styles-wrapper .editor-block-list__block ul.new-posts a{text-decoration:none}
+
+ul.new-rss{margin-left:auto;margin-right:auto;padding:0;font-weight:normal;display:block;list-style:none}ul.new-rss li{margin:0;padding:.2em 0;border-bottom:1px solid #eee}ul.new-rss .post-date{float:left;clear:both}ul.new-rss .post-data{margin-left:8.5em}ul.new-rss .post-data a{text-decoration:none;border:0}ul.new-rss .new-mark{padding:.1em .2em;margin-right:.5em;vertical-align:middle;font-size:.6em;color:#fff;font-weight:bold;border-radius:3px;background-color:#f02020}ul.new-rss a:not(:hover){box-shadow:none}.widget_text ul.new-rss{list-style:none}
+
+.editor-styles-wrapper .editor-block-list__block ul.new-rss{list-style:none}.editor-styles-wrapper .editor-block-list__block ul.new-rss a{text-decoration:none}
+
