@@ -3,5 +3,8 @@ node_modules
 wp-config.php
 wp-content/uploads
 wp-content/plugins/crown-remote-media
+wp-content/plugins/revslider
 .vscode
 /neoserra
+.mp3
+.mp4
