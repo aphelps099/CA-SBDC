@@ -95,12 +95,12 @@
 						<div class="accreditations">
 							<div class="inner">
 
-								<div class="logo powered-by-sba">
-									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
+								<div class="logo aptac">
+									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/aptac-footer-logo.jpg" alt="association of procurement technical assistance centers"></a>
 								</div>
 
-								<div class="logo ca-gobed">
-									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-osba.png" alt="California Governor's Office of Business and Economic Development"></a>
+								<div class="logo ca-gobiz">
+									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/gobiz-logo.png" alt="California Governor's Office of Business and Economic Development"></a>
 								</div>
 
 							</div>
@@ -109,8 +109,8 @@
 						<div class="logos">
 							<div class="inner">
 
-								<div class="logo sbdc-accredited-member">
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-alt.png" alt="America's SBDC Accredited Member">
+								<div class="logo norcal-ptac">
+									<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/ptac-footer-logo.png" alt="Norcal PTAC Logo">
 								</div>
 
 							</div>
