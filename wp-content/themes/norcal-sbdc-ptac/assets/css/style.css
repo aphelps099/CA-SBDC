@@ -29896,3 +29896,9 @@ body.single-webinar_s #related-content {
       background-color: #a20d32; }
     #header-primary-navigation .mega-menu .mega-menu-item.cta > a .label::after {
       display: none; }
+
+.wp-block-crown-blocks-team-member-index article.type-team_member .entry-headshot-photo .image {
+  mix-blend-mode: initial;
+  -webkit-filter: initial;
+          filter: initial;
+  opacity: 1; }
