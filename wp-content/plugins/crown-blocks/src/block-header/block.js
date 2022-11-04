@@ -50,7 +50,9 @@ registerBlockType('crown-blocks/header', {
 		if(borderColor) {
 			let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 			hrStyle.backgroundColor = borderColor;
-			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+			if(borderColorRGB) {
+				hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+			}
 		}
 
 		let hrSolidStyle = {};
@@ -117,7 +119,9 @@ registerBlockType('crown-blocks/header', {
 		if(borderColor) {
 			let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 			hrStyle.backgroundColor = borderColor;
-			hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+			if(borderColorRGB) {
+				hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+			}
 		}
 
 		let hrSolidStyle = {};
@@ -194,7 +198,9 @@ registerBlockType('crown-blocks/header', {
 				if(borderColor) {
 					let borderColorRGB = CrownBlocks.hexToRgb(borderColor);
 					hrStyle.backgroundColor = borderColor;
-					hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+					if(borderColorRGB) {
+						hrStyle.background = 'linear-gradient(to right, rgba(' + borderColorRGB.r + ', ' + borderColorRGB.g + ', ' + borderColorRGB.b + ', 0), ' + borderColor + ')';
+					}
 				}
 		
 				return (
