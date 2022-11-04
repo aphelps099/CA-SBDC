@@ -133,8 +133,8 @@ if(!class_exists('Crown_Block_Featured_Post_Slider')) {
 						<?php if ( ! empty( $index_page_url ) ) { ?>
 							<p class="block-link">
 								<a href="<?php echo $index_page_url; ?>" class="action-subject-link">
-									<span class="action"><?php _e( 'View All' ); ?></span>
-									<span class="subject"><?php _e( 'SBDC Updates' ); ?></span>
+									<span class="action"><?php _e( apply_filters( 'crown_block_featured_post_slider_link_action', 'View All' ) ); ?></span>
+									<span class="subject"><?php _e( apply_filters( 'crown_block_featured_post_slider_link_subject', 'SBDC Updates' ) ); ?></span>
 								</a>
 							</p>
 						<?php } ?>

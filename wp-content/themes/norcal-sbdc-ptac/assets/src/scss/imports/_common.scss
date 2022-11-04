@@ -42,3 +42,13 @@
 #site-footer-regional-info .contact .branch {
     text-transform: initial;
 }
+
+
+
+.wp-block-crown-blocks-featured-post-slider {
+	article {
+		.entry-date {
+			display: none;
+		}
+	}
+}
