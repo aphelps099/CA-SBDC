@@ -351,7 +351,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Mega_Menu' ) ) {
 						'href' => $n['link_url'],
 						'target' => in_array( 'open-new-window', $n['link_options'] ) ? '_blank' : '_self',
 					),
-					'class' => $n['link_class'],
+					'class' => isset( $n['link_class'] ) ? $n['link_class'] : '',
 					'type' => $n['type'],
 					'sections' => (object) array(
 						'primary' => null,
