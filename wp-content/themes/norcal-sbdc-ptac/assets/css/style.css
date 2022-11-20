@@ -29909,3 +29909,6 @@ body.single-webinar_s #related-content {
 
 .wp-block-crown-blocks-featured-post-slider article .entry-date {
   display: none; }
+
+.wp-block-crown-blocks-featured-post-slider .action-subject-link .subject {
+  text-transform: none; }

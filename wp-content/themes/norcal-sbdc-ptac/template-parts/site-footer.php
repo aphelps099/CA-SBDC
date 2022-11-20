@@ -96,7 +96,7 @@
 							<div class="inner">
 
 								<div class="logo aptac">
-									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/aptac-footer-logo.jpg" alt="association of procurement technical assistance centers"></a>
+									<a href="https://www.aptac-us.org/" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/aptac-footer-logo.png" alt="association of procurement technical assistance centers"></a>
 								</div>
 
 								<div class="logo ca-gobiz">
