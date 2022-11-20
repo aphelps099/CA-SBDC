@@ -49,6 +49,8 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 
 
 		public static function register_admin_pages() {
+			
+			$current_theme = wp_get_theme();
 
 			self::$theme_config_admin_page = new AdminPage( array(
 				'key' => 'theme-config',
@@ -71,6 +73,37 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										'label' => 'Light Logo',
 										'description' => 'This logo will be displayed on darker backgrounds',
 										'input' => new MediaInput( array( 'name' => 'theme_config_site_logo_light', 'mimeType' => 'image', 'buttonLabel' => 'Select Image', 'class' => 'logo light' ) )
+									) )
+								)
+							) ),
+
+							new FieldGroup( array(
+								'label' => 'Site Explore Menu',
+								'fields' => array(
+									new Field( array(
+										'label' => 'Background Image',
+										'input' => new MediaInput( array( 'name' => 'theme_config_explore_menu_bg_image', 'mimeType' => 'image', 'buttonLabel' => 'Select Image' ) )
+									) ),
+									new Field( array(
+										'label' => 'CTA Content',
+										'input' => new Textarea( array( 'name' => 'theme_config_explore_menu_cta_content', 'rows' => 4 ) )
+									) ),
+									new FieldGroup( array(
+										'label' => 'Explore Menu Footer',
+										'fields' => array(
+											new Field( array(
+												'label' => 'Heading',
+												'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_heading' ) )
+											) ),
+											new Field( array(
+												'label' => 'Content',
+												'input' => new Textarea( array( 'name' => 'theme_config_explore_menu_footer_content', 'rows' => 4 ) )
+											) ),
+											new Field( array(
+												'label' => 'Footer',
+												'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_footer' ) )
+											) )
+										)
 									) )
 								)
 							) ),

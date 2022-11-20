@@ -7,6 +7,7 @@
 	$(document).ready(function() {
 		
 		$.wpchildtheme.initHeader();
+		$.wpchildtheme.initMobileMenu();
 		$.wpchildtheme.initContainers();
 		$.wpchildtheme.initScrollReveal();
 
@@ -59,6 +60,22 @@
 				var menuItem = $(el);
 				var img = $('> a', menuItem).data('thumbnail-img');
 				$('> .sub-menu', menuItem).append('<li class="menu-item-thumbnail">' + img + '</li>');
+			});
+
+		};
+
+
+		wpchildtheme.initMobileMenu = function() {
+
+			$(document).on('click', '#mobile-menu-primary-navigation-menu > li > a', function(e) {
+				if($('body').width() >= 992) return;
+				var li = $(this).parent();
+				var toggle = $('> .toggle', li);
+				if(!li.hasClass('active') && toggle.length) {
+					e.preventDefault();
+					toggle.trigger('click');
+					li.siblings('.active').find('> .toggle').trigger('click');
+				}
 			});
 
 		};

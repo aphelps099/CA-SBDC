@@ -6,26 +6,6 @@
 
 				<div id="site-branding">
 
-					<div id="site-logo">
-						<a href="<?php echo home_url( '/' ); ?>">
-
-							<?php $logo = get_option( 'theme_config_site_logo_color' ); ?>
-							<?php if ( ! empty( $logo ) ) { ?>
-								<?php echo wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'dark' ) ); ?>
-							<?php } else { ?>
-								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-180h.png" class="dark" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-							<?php } ?>
-
-							<?php $logo = get_option( 'theme_config_site_logo_light' ); ?>
-							<?php if ( ! empty( $logo ) ) { ?>
-								<?php echo wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'light' ) ); ?>
-							<?php } else { ?>
-								<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-							<?php } ?>
-
-						</a>
-					</div>
-
 					<div id="site-title">
 						<a href="<?php echo home_url( '/' ); ?>">
 							<div class="title"><span class="location">California</span> <span class="sbdc">SBDC</span></div>

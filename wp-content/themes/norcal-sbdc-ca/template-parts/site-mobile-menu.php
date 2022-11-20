@@ -2,71 +2,126 @@
 	<div class="scrollable">
 		<div class="inner">
 			<div class="menu-contents">
+				<div class="bg">
+					<?php $bg_image = wp_get_attachment_image_url( get_option( 'theme_config_explore_menu_bg_image' ), 'fullscreen' ); ?>
+					<?php if ( $bg_image ) { ?>
+						<img src="<?php echo $bg_image; ?>">
+					<?php } ?>
+				</div>
+				<div class="inner">
 
-				<header id="mobile-menu-header">
-					<div class="upper">
-
-						<nav id="mobile-menu-primary-cta-links">
-							<?php
+					<header id="mobile-menu-header">
+						<div class="upper">
+							<div id="mobile-menu-branding">
+								<div id="mobile-menu-title">
+									<a href="<?php echo home_url( '/' ); ?>">
+										<div class="title"><span class="location">California</span> <span class="sbdc">SBDC</span></div>
+									</a>
+								</div>
+							</div>
+							<button id="mobile-menu-close" type="button">
+								<span class="label">Close</span>
+								<span class="icon"></span>
+							</button>
+						</div>
+					</header>
+					<?php echo get_search_form(); ?>
+					<nav id="mobile-menu-primary-navigation">
+						<?php
+							// $mega_menu = apply_filters( 'crown_mega_menu', null );
+							// if ( ! empty( $mega_menu ) ) {
+							// 	ct_nav_mega_menu( array(
+							// 		'menu' => $mega_menu,
+							// 		'id' => 'mobile-menu-primary-navigation-menu'
+							// 	) );
+							// } else {
 								wp_nav_menu( array(
-									'theme_location' => 'header_cta_links',
+									'theme_location' => 'mobile_menu_primary',
 									'container' => '',
-									'menu_id' => 'mobile-menu-primary-cta-links-menu',
-									'depth' => 1,
+									'menu_id' => 'mobile-menu-primary-navigation-menu',
+									'depth' => 2,
 									'fallback_cb' => false
 								) );
-							?>
-						</nav>
-
-						<button id="mobile-menu-search-toggle">
-							<span class="icon"><?php ct_icon( 'search' ); ?></span>
-							<span class="label">Search</span>
-						</button>
-
-						<button id="mobile-menu-close" type="button">
-							<span class="label">Close</span>
-							<span class="icon"></span>
-						</button>
-
-					</div>
-					<div class="lower">
-
-						<div id="mobile-menu-title">
-							<div class="title"><?php echo get_bloginfo( 'name' ); ?></div>
-							<div class="tagline"><?php echo get_bloginfo( 'description' ); ?></div>
+							// }
+						?>
+					</nav>
+					<div id="mobile-menu-extended-cta">
+						<div class="inner">
+							<div class="contents">
+								<div class="logo">
+									<?php $logo = get_option( 'theme_config_site_logo_light' ); ?>
+									<?php if ( ! empty( $logo ) ) { ?>
+										<?php echo wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'light' ) ); ?>
+									<?php } else { ?>
+										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+									<?php } ?>
+								</div>
+								<div class="content">
+									<?php echo apply_filters( 'the_content', get_option( 'theme_config_explore_menu_cta_content' ) ); ?>
+								</div>
+							</div>
+							<nav id="mobile-menu-extended-cta-links">
+								<?php
+									wp_nav_menu( array(
+										'theme_location' => 'header_cta_links',
+										'container' => '',
+										'menu_id' => 'mobile-menu-extended-cta-links-menu',
+										'depth' => 1,
+										'fallback_cb' => false
+									) );
+								?>
+							</nav>
 						</div>
-
-						<?php $phone = do_shortcode( '[contact_info context="primary-phone"]' ); ?>
-						<?php if ( ! empty( $phone ) ) { ?>
-							<div id="mobile-menu-phone"><?php echo $phone; ?></div>
-						<?php } ?>
-
 					</div>
-				</header>
 
-				<?php echo get_search_form(); ?>
-	
-				<nav id="mobile-menu-primary-navigation">
-					<?php
-						// $mega_menu = apply_filters( 'crown_mega_menu', null );
-						// if ( ! empty( $mega_menu ) ) {
-						// 	ct_nav_mega_menu( array(
-						// 		'menu' => $mega_menu,
-						// 		'id' => 'mobile-menu-primary-navigation-menu'
-						// 	) );
-						// } else {
+				</div>
+			</div>
+
+			<footer id="mobile-menu-footer">
+				<div class="upper">
+
+					<nav id="mobile-menu-primary-cta-links">
+						<?php
 							wp_nav_menu( array(
-								'theme_location' => 'mobile_menu_primary',
+								'theme_location' => 'header_cta_links',
 								'container' => '',
-								'menu_id' => 'mobile-menu-primary-navigation-menu',
-								'depth' => 2,
+								'menu_id' => 'mobile-menu-primary-cta-links-menu',
+								'depth' => 1,
 								'fallback_cb' => false
 							) );
-						// }
-					?>
-				</nav>
+						?>
+					</nav>
 
-			</div>
+				</div>
+				<div class="lower">
+					
+					<div id="mobile-menu-footer-contents">
+						<div class="inner">
+							<h3><?php echo get_option( 'theme_config_explore_menu_footer_heading' ); ?></h3>
+							<div class="content">
+								<div class="inner">
+									<?php echo apply_filters( 'the_content', get_option( 'theme_config_explore_menu_footer_content' ) ); ?>
+								</div>
+								<div class="logos">
+									<div class="inner">
+										<div class="logo sbdc-accredited-member">
+											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-red.png" alt="America's SBDC Accredited Member">
+										</div>
+										<div class="logo powered-by-sba">
+											<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<p class="footer"><?php echo get_option( 'theme_config_explore_menu_footer_footer' ); ?></p>
+						</div>
+					</div>
+
+					<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
+
+				</div>
+			</footer>
+
 		</div>
 	</div>
 </div>
