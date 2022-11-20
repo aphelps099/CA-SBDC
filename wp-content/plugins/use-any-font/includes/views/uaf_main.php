@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; 
 if (isset($_GET['tab'])){
-  $currentTab = $_GET['tab'];
+  $currentTab = sanitize_key($_GET['tab']);
 } else {
   $currentTab = 'api';
 }
@@ -11,7 +11,7 @@ if (isset($_GET['tab'])){
     if (!empty($GLOBALS['uaf_action_return'])):
         $actionReturn = $GLOBALS['uaf_action_return'];  
 ?>
-        <div class="updated <?php echo $actionReturn['status']; ?>" id="message"><p><?php echo $actionReturn['body']; ?></p></div>
+        <div class="updated <?php echo esc_attr($actionReturn['status']); ?>" id="message"><p><?php echo esc_html($actionReturn['body']); ?></p></div>
 <?php    
     endif; 
 ?>
@@ -22,7 +22,7 @@ if (isset($_GET['tab'])){
 
     <nav class="nav-tab-wrapper">
         <?php foreach ($uaf_tabs as $tabKey => $tabData) { ?>
-            <a href="?page=use-any-font&tab=<?php echo $tabKey; ?>" class="nav-tab <?php echo $currentTab == $tabKey?'nav-tab-active':''; ?>"><?php echo $tabData['name']; ?></a>
+            <a href="?page=use-any-font&tab=<?php echo esc_attr($tabKey); ?>" class="nav-tab <?php echo $currentTab == $tabKey?'nav-tab-active':''; ?>"><?php echo esc_html($tabData['name']); ?></a>
         <?php } ?>
     </nav>
 

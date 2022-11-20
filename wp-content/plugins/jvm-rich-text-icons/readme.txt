@@ -3,7 +3,7 @@ Contributors: jorisvanmontfort
 Donate link: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
 Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF, SVG icons
 Requires at least: 5.4
-Tested up to: 6.0.2
+Tested up to: 6.0.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -82,6 +82,9 @@ add_filter('jvm_richtext_icons_show_settings', '__return_false');
 Please note that settings will still be loaded so please make sure you have set the settings to default font awesome if you are loading a custom icon set with the plugin hooks.
 
 == Changelog ==
+
+= 1.1.4 =
+Now also load in the site editor. Not all block however.
 
 = 1.1.3 =
 Fixed a deprecated warning in php 8.1.

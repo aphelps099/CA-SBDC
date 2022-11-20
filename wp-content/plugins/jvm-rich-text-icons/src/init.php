@@ -84,6 +84,7 @@ class JVM_Richtext_icons {
             ];
 
         }
+
         return $editor_settings;
     }
 
@@ -93,9 +94,13 @@ class JVM_Richtext_icons {
      */
     public function load_admin_assets($hook_suffix) {
 
+
+
         if( 'post.php' == $hook_suffix 
             || 'post-new.php' == $hook_suffix 
-            || 'widgets.php' == $hook_suffix) {
+            || 'widgets.php' == $hook_suffix
+            || 'site-editor.php' == $hook_suffix) {
+
             // Register block editor script for backend.
             wp_enqueue_script(
                 'jvm-rich-text-icons-js', // Handle.

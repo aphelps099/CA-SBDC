@@ -18,6 +18,10 @@ function open_add_font(){
     jQuery('#font-upload').toggle('fast');
 }
 
+function multi_variation_holder_toggle(){
+	jQuery('.multi_variation_holder').slideToggle('medium');	
+}
+
 function open_assign_font(){
 	jQuery('#open_assign_font').toggle('fast');
     if (jQuery('#open_assign_font_button').val() == 'Assign Font'){
@@ -35,12 +39,12 @@ jQuery('document').ready(function(){
 
 	    breakValidation = false;
 	    jQuery('#open_add_font_form_js .uaf_required').each(function(){
-	        if(!jQuery(this).val()){            
-	            jQuery(this).next('.field_error').show();
-	            breakValidation = true;
-	            return false;
-	        }
-	    });
+	        if(!jQuery(this).val()){
+				jQuery(this).next('.field_error').show();
+				breakValidation = true;
+				return false;
+			}
+		});
 
 	    if(breakValidation){return false;}
 	    

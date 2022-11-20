@@ -1,11 +1,12 @@
 #font_upload_message.ok{display: block; background:#060 url(../img/ajax-loader.gif) no-repeat 5px center; color:#fff; padding:5px 10px; border:none; margin:5px 0px;-webkit-border-radius: 3px;border-radius: 3px; padding-left:40px;}
 #font_upload_message.error{display: block;background:#900; color:#fff;padding:5px 10px; border:none;margin:5px 0px;-webkit-border-radius: 3px;border-radius: 3px;}
 span.active_key{font-weight:bold; color:#060; padding-right: 20px;}
-.font_holder{background: #fff;border-radius: 5px;border: 1px solid #dadce0;}
+.font_holder{background: #fafafa;border-radius: 5px;border: 1px solid #e9e9e9;}
 .font_holder{ padding: 10px; margin: 0px 0px 10px 0px; }
+.font_holder:nth-child(even){ background: #f1f1f1; }
 .font_holder .font_meta .font_name{font-weight: bold; float: left;}
 .font_holder .font_meta .font_name em{font-weight: normal;}
-.font_holder .font_meta .delete_link{ float: right; }
+.font_holder .font_demo .delete_link{ float: right; font-size: 12px; font-weight: normal; }
 .font_holder .font_meta .add_font_link{ float: right; }
 .font_holder .font_demo{ clear: both; padding-top: 10px; font-size: 25px !important; line-height: 30px  !important; }
 .font_holder .fontclassname{text-align: right; float: right;}
@@ -22,7 +23,7 @@ span.active_key{font-weight:bold; color:#060; padding-right: 20px;}
 .dcform p label.error{ color: #900; padding-left: 5px; }
 .dcform p label .required{ color: #900; font-weight: bold; }
 .dcform p input.large, .dcform p textarea.large{ max-width: 500px; width: 100%;}
-.dcform p input.medium, .dcform p textarea.medium{ max-width: 300px; width: 100%;}
+.dcform p input.medium, .dcform p textarea.medium, .dcform p select.medium{ width: 200px; max-width: 100%;}
 .dcform p input.small{ max-width: 85px;}
 .dcinstructions{border:1px solid #ccd0d4;background: #fff;margin-top: 20px; }
 .dcinstructions .instruct-head{border-bottom:1px solid #ccd0d4; font-size: 14px; padding: 10px; font-weight: 600; cursor: pointer;}
@@ -49,10 +50,11 @@ span.active_key{font-weight:bold; color:#060; padding-right: 20px;}
 .dcwidget .dcwidgetbody{ background: #fff; border-radius: 0px 0px 5px 5px;padding:10px; margin-bottom: 20px;}
 span.field_error{ display: none; color: #900; }
 @media ( max-width: 768px) { .dchideMobile { display : none; } }
-
-
 .uaf_search_bar{ padding: 10px 10px 20px 10px; position: relative;width: 80%; max-width: 500px; margin: 10px auto 0px auto; }
 .uaf_search_bar input[type=search]{ display: block; width: 100%; padding: 3px;}
 .uaf_search_bar input[type=submit]{ display: inline-block;  position: absolute;right: 12px;top: 13px;}
-
+body.rtl .uaf_search_bar input[type=submit]{left: 12px !important;right: auto !important;}
 #predefined_font_load_msg{ text-align: center;color:#04a2c7; }
+.font_holder .font_demo{ border-bottom: 1px dashed #d8d8d8; padding-bottom: 10px;}
+.font_holder .font_demo:last-of-type{ border-bottom: none; }
+.font_holder .font_demo .font-weight-style{ font-size: 12px; font-weight: normal; text-transform: capitalize;}

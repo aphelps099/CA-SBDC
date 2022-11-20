@@ -20,22 +20,48 @@ add_thickbox();
                          <span class="field_error">Please give font name.</span>
                      </span>
                  </p>
-
                  <p>
+                     <label>&nbsp;</label>
+                     <span class="field">
+                         <input type="checkbox" name="enable_font_variation" id="enable_font_variation" onclick="multi_variation_holder_toggle();"> Enable Font Weight Variation ( For Advance Users ). <a href="https://dineshkarki.com.np/add-multiple-font-variation-in-use-any-font.html" target="_blank">How to !</a>
+                     </span>
+                 </p>
+                 <div class="multi_variation_holder" style="display:none;">
+                     <p>
+                         <label>Font Weight *</label>
+                         <span class="field">
+                             <select name="font_weight" class="medium">
+                                <?php foreach ($GLOBALS['uaf_fix_settings']['font_weight_variations'] as $variation => $variation_label): ?>
+                                    <option value="<?php echo esc_attr($variation) ?>"><?php echo esc_html($variation_label); ?></option>
+                                <?php endforeach; ?>
+                             </select>
+                         </span>
+                    </p>
+                    <p>
+                         <label>Font Style *</label>
+                         <span class="field">
+                             <select name="font_style" class="medium">
+                                <option value="normal">Normal</option>
+                                <option value="italic">Italic</option>                            
+                             </select>
+                         </span>
+                    </p>
+                </div>
+                <p>
                      <label>Font File *</label>
                      <span class="field">
-                            <input type="file" id="fontfile" name="fontfile" value="" class="uaf_required" accept=".woff,.ttf,.otf" />
+                            <input type="file" id="fontfile" name="fontfile" value="" class="uaf_required" accept=".woff2,.woff,.ttf,.otf" />
                             <span class="field_error">Please select font file.</span>
                             <br/>
-                            <em>Accepted Font Format : <?php echo join(", ",$GLOBALS['uaf_fix_settings']['allowedFontFormats']); ?> | Font Size: Upto <?php echo $GLOBALS['uaf_fix_settings']['allowedFontSize'] ?> MB</em><br/>
+                            <em>Accepted Font Format : <?php echo esc_html(join(", ",$GLOBALS['uaf_fix_settings']['allowedFontFormats'])); ?> | Font Size: Upto <?php echo esc_html($GLOBALS['uaf_fix_settings']['allowedFontSize']) ?> MB</em><br/>
                      </span>
                  </p>
                  <p>
                      <label>&nbsp;</label>
                      <span class="field">
                             <span id="font_upload_message" class=""></span>
-                            <input type="hidden" name="url" value="<?php echo base64_decode($GLOBALS['uaf_user_settings']['uaf_activated_url']); ?>" />
-                            <input type="hidden" name="api_key" value="<?php echo $GLOBALS['uaf_user_settings']['uaf_api_key']; ?>" />
+                            <input type="hidden" name="url" value="<?php echo esc_attr(base64_decode($GLOBALS['uaf_user_settings']['uaf_activated_url'])); ?>" />
+                            <input type="hidden" name="api_key" value="<?php echo esc_attr($GLOBALS['uaf_user_settings']['uaf_api_key']); ?>" />
                             <input type="hidden" name="font_count" value="<?php echo uaf_count_uploaded_fonts(); ?>" />
                             <input type="hidden" name="convert_response" id="convert_response" value="" />
                             <input type="hidden" name="submit-uaf-font-js" id="submit-uaf-font" value="Upload" />
@@ -48,7 +74,7 @@ add_thickbox();
             </form>
         <?php else: ?>
             <div class="dcinfo"><p>You need to add API key in <a href="admin.php?page=use-any-font&tab=api">API key</a> section to upload the fonts.</p></div>
-        <?php endif; ?>     
+        <?php endif; ?>
     </div>
 </div>
 

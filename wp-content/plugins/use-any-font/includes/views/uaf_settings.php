@@ -12,6 +12,7 @@
             </span>
         </p>
 
+        <?php /* NOT in use till API accepts files in binary
         <p>
             <label>Use PHP Uploader</label>
             <span class="field">
@@ -21,7 +22,7 @@
                 </select>
                 ( Only if default javascript uploader doesn't work. <em>Need PHP Curl. </em> )
             </span>
-        </p>
+        </p>*/ ?>
 
         <p>
             <label>Use Absolute Font Path</label>

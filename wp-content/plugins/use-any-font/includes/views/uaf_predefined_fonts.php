@@ -9,7 +9,7 @@ $predefinedUplaodedFonts = uaf_get_uploaded_predefined_fonts();
         </form>
     </div>
 
-    <div id="predefined_fonts_list" class="ready" data-page="1" data-totalPage = '1' data-randnumber="<?php echo rand(1111, 99999); ?>">    
+    <div id="predefined_fonts_list" class="ready" data-page="1" data-totalPage = '1' data-randnumber="<?php echo rand(1111, 99999); ?>">
     </div>
 
     <div id="predefined_font_load_msg"></div>
@@ -33,7 +33,7 @@ $predefinedUplaodedFonts = uaf_get_uploaded_predefined_fonts();
             } else {
                 jQuery('#predefined_font_load_msg').html('No Font Found');
             }
-        });    
+        });
     }
 
     function uaf_font_list_block(font, predefinedUplaodedFonts){
@@ -54,7 +54,7 @@ $predefinedUplaodedFonts = uaf_get_uploaded_predefined_fonts();
     }
 
     function uaf_add_loading_text(e){
-       jQuery(e).html('Adding...');
+        jQuery(e).html('Adding...');
     }
 
     jQuery(document).ready(function(){
@@ -64,7 +64,6 @@ $predefinedUplaodedFonts = uaf_get_uploaded_predefined_fonts();
             uaf_load_predefined_fonts('1', 'all', jQuery('#predefined_search_input').val());
             jQuery('#predefined_fonts_list').attr('data-page', '1');
             return false;
-
         });
 
         jQuery('#TB_ajaxContent').bind('scroll', function() {
@@ -81,6 +80,6 @@ $predefinedUplaodedFonts = uaf_get_uploaded_predefined_fonts();
                     }
                 }
             }
-        });        
+        });
     });
 </script>

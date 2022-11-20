@@ -8,12 +8,11 @@ function uaf_client_assets() {
 	wp_enqueue_style( 'uaf_client_css' );
 }
 
-
 if (!function_exists('array_key_first')) { // FOR OLDER VERSION PHP SUPPORT
     function array_key_first(array $arr) {
         foreach($arr as $key => $unused) {
-            return $key;
-        }
-        return NULL;
-    }
+			return $key;
+		}
+		return NULL;
+	}
 }

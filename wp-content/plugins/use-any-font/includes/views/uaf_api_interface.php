@@ -19,8 +19,8 @@
                             if ($GLOBALS['uaf_user_settings']['uaf_hide_key'] == 'yes'){
                                 echo '##############################';
                             } else {
-                                echo $GLOBALS['uaf_user_settings']['uaf_api_key'];
-                            } ?>                           
+                                echo esc_html($GLOBALS['uaf_user_settings']['uaf_api_key']);
+                            } ?>
 
                         - Active</span>
                         
@@ -37,5 +37,6 @@
                 <br/><br/>
                 <strong>Note</strong> : API key is needed to connect to our server for font conversion. Our server converts your fonts to required types and sends it back. You can get the premium key from <a href="https://dineshkarki.com.np/use-any-font/api-key" target="_blank">here</a>. You can also generate Lite / Test API key from button above. Lite / Test API only allow single font conversion. 
         </p>
+        <?php wp_nonce_field( 'uaf_api_key_actions', 'uaf_nonce' ); ?>
 	</form>
 </div>

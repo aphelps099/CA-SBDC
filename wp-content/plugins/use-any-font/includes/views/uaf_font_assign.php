@@ -1,6 +1,8 @@
 <?php 
 if ( ! defined( 'ABSPATH' ) ) exit; 
-$fontsData		= uaf_get_uploaded_font_data(); ?>
+$fontsData		         = uaf_get_uploaded_font_data();
+$fontsDataWithVariations = uaf_group_fontdata_by_fontname($fontsData);
+?>
 
 <p align="right"><input type="button" name="open_assign_font" onClick="open_assign_font();" class="button-primary" id="open_assign_font_button" value="Assign Font" /><br/></p>
 
@@ -13,10 +15,10 @@ $fontsData		= uaf_get_uploaded_font_data(); ?>
                 <td>
                 	<select name="font_key" class="uaf_required" style="width:200px;">
                     	<option value="">- Select -</option>
-                        <?php 
-						if (!empty($fontsData)):
-							foreach ($fontsData as $key=>$fontData)	: ?>
-								<option value="<?php echo $key ?>"><?php echo $fontData['font_name']; ?></option>
+                        <?php
+                        if (!empty($fontsDataWithVariations)):
+							foreach ($fontsDataWithVariations as $key=>$fontDataVariation)	: ?>
+								<option value="<?php echo array_key_first($fontDataVariation); ?>"><?php echo esc_attr($key) ?></option>
 							<?php endforeach;
 						endif; 
 						?>
@@ -48,8 +50,7 @@ $fontsData		= uaf_get_uploaded_font_data(); ?>
                         <input name="elements[]" value="body.single-post .entry-title" type="checkbox" /> Post Title Only<br/>
                         <input name="elements[]" value="body.page .entry-title" type="checkbox" /> Page Title Only<br/>
                         <input name="elements[]" value="body.category .entry-title" type="checkbox" /> Category Title Only<br/>
-                        <input name="elements[]" value=".widget-title" type="checkbox" /> Widget Title<br/>
-                        
+                        <input name="elements[]" value=".widget-title" type="checkbox" /> Widget Title<br/>                        
                     </div>
 
                     <div class="elements_holder">
@@ -74,18 +75,14 @@ $fontsData		= uaf_get_uploaded_font_data(); ?>
                             if (!empty($menus)){
                                 foreach($menus as $menu){
                         ?>
-                                    <input name="elements[]" value=".menu-<?php echo $menu->slug; ?>-container li a, .menu-<?php echo $menu->slug; ?>-container li span, #menu-<?php echo $menu->slug; ?> li a, #menu-<?php echo $menu->slug; ?> li span" type="checkbox" /> <?php echo $menu->name; ?><br/> 
+                                    <input name="elements[]" value=".menu-<?php echo esc_attr($menu->slug); ?>-container li a, .menu-<?php echo esc_attr($menu->slug); ?>-container li span, #menu-<?php echo esc_attr($menu->slug); ?> li a, #menu-<?php echo esc_attr($menu->slug); ?> li span" type="checkbox" /> <?php echo esc_html($menu->name); ?><br/> 
                         <?php
                                 }
                             } else {
                                 echo 'No Menus Found<br/>';
                             }
                         ?>
-                    </div>
-
-
-
-                    
+                    </div>                    
                 </td>
             </tr>
             <tr>        
@@ -102,7 +99,11 @@ $fontsData		= uaf_get_uploaded_font_data(); ?>
             </tr>
             <tr>        
                 <td>&nbsp;</td>
-                <td><input type="submit" name="submit-uaf-font-assign" class="button-primary" value="Assign Font" /></td>
+                <td>
+                    <?php wp_nonce_field( 'uaf_font_assign', 'uaf_nonce' ); ?>
+                    <input type="submit" name="submit-uaf-font-assign" class="button-primary" value="Assign Font" />
+
+                </td>
             </tr>
         </table>	
     </form>
@@ -132,10 +133,18 @@ $fontsImplementData		= json_decode($fontsImplementRawData, true);
 		$sn++
 		?>
         <tr>
-        	<td><?php echo $sn; ?></td>
-            <td><?php echo @$fontsData[$fontImplementData['font_key']]['font_name']; ?></td>
-            <td><?php echo $fontImplementData['font_elements'] ?></td>
-            <td><a onclick="if (!confirm('Are you sure ?')){return false;}" href="admin.php?page=use-any-font&tab=font_assign&delete_font_assign_key=<?php echo $key; ?>">Delete</a></td>
+        	<td><?php echo esc_html($sn); ?></td>
+            <td>
+                <?php 
+                    if (isset($fontImplementData['font_name']) && !empty(trim($fontImplementData['font_name']))){
+                        echo esc_html($fontImplementData['font_name']);
+                    } else {
+                        echo @esc_html($fontsData[$fontImplementData['font_key']]['font_name']);
+                    }
+                ?>                    
+            </td>
+            <td><?php echo esc_html($fontImplementData['font_elements']) ?></td>
+            <td><a onclick="if (!confirm('Are you sure ?')){return false;}" href="<?php echo wp_nonce_url( 'admin.php?page=use-any-font&tab=font_assign&delete_font_assign_key='.$key, 'uaf_delete_font_assign', 'uaf_nonce' ); ?>">Delete</a></td>
         </tr>
         <?php endforeach; ?>
         <?php else: ?>
@@ -143,6 +152,5 @@ $fontsImplementData		= json_decode($fontsImplementRawData, true);
         	<td colspan="4">No font assign yet. Click on Assign Font to start.</td>
         </tr>
         <?php endif; ?>        
-    </tbody>
-    
+    </tbody>    
 </table>

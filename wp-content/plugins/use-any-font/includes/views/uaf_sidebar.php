@@ -9,8 +9,8 @@ if(is_plugin_active( 'gravityforms/gravityforms.php' ) && !is_plugin_active( 'jq
             Instant javascript validation for your Gravity Forms.<br>
             
             <a href="https://demos.dnesscarkey.com/jquery-validation-for-gravity-forms/" target="_blank">
-                <img src="//146140-421025-1-raikfcquaxqncofqfm.stackpathdns.com/wp-content/uploads/2020/10/jquery-validation-gravity.gif" style="max-width: 100%" />
-            </a>    
+                <img src="<?php plugins_url('../assets/img/jquery-validation-gravity.gif',  __FILE__) ?>" style="max-width: 100%" />
+            </a>
             <strong>Key Features</strong>
             <ul class="uaf_list">
                 <li>Additional Validation rules</li>
@@ -55,14 +55,11 @@ if(is_plugin_active( 'gravityforms/gravityforms.php' ) && !is_plugin_active( 'jq
     </div>
     <div class="dcwidgetbody">
        <ul class="uaf_list">
-            <li><a href="http://goo.gl/3XDDzi" target="_blank">WP Masonry Layout</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/any-mobile-theme-switcher/" target="_blank">Any Mobile Theme Switcher</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/jquery-validation-for-contact-form-7/" target="_blank">Jquery Validation For Contact Form 7</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/add-tags-and-category-to-page/" target="_blank">Add Tags And Category To Page</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/block-specific-plugin-updates/" target="_blank">Block Specific Plugin Updates</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/featured-image-in-rss-feed/" target="_blank">Featured Image In RSS Feed</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/remove-admin-bar-for-client/" target="_blank">Remove Admin Bar</a></li>
-            <li><a href="http://wordpress.org/extend/plugins/html-in-category-and-pages/" target="_blank">.html in category and page url</a></li>
+            <li><a href="http://wordpress.org/plugins/any-mobile-theme-switcher/" target="_blank">Any Mobile Theme Switcher</a></li>
+            <li><a href="http://wordpress.org/plugins/jquery-validation-for-contact-form-7/" target="_blank">Jquery Validation For Contact Form 7</a></li>
+            <li><a href="http://wordpress.org/plugins/add-tags-and-category-to-page/" target="_blank">Add Tags And Category To Page</a></li>
+            <li><a href="http://wordpress.org/plugins/block-specific-plugin-updates/" target="_blank">Block Specific Plugin Updates</a></li>
+            <li><a href="http://wordpress.org/plugins/featured-image-in-rss-feed/" target="_blank">Featured Image In RSS Feed</a></li>            
         </ul>
     </div>
 
@@ -81,5 +78,4 @@ if(is_plugin_active( 'gravityforms/gravityforms.php' ) && !is_plugin_active( 'jq
             <li><a href="https://dineshkarki.com.np/contact" target="_blank">Contact Us</a></li>
         </ul>
     </div>
-
 </div>
