@@ -21642,6 +21642,16 @@ nav.pagination {
 .wp-block-crown-blocks-container.is-style-inset-border.text-color-dark > .container-bg::after {
   border-color: #032040; }
 
+.wp-block-crown-blocks-container.growing-bg > .container-bg > .inner {
+  width: 60vw;
+  height: 60vw;
+  left: 50%;
+  top: 55vh;
+  margin-left: -30vw;
+  margin-top: -30vw;
+  border-radius: 100%;
+  overflow: hidden; }
+
 /*	Multi-Column
 ---------------------------------------------------------*/
 .wp-block-crown-blocks-multi-column.relative-to-container-width > .inner > .multi-column-columns {

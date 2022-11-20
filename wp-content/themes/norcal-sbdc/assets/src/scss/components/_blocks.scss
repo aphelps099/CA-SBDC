@@ -119,6 +119,23 @@
 			border-color: $primary;
 		}
 	}
+	&.growing-bg {
+		> .container-bg {
+			> .inner {
+				width: 60vw;
+				height: 60vw;
+				left: 50%;
+				top: 55vh;
+				margin-left: -30vw;
+				margin-top: -30vw;
+				border-radius: 100%;
+				overflow: hidden;
+			}
+			.bg-image {
+				
+			}
+		}
+	}
 }
 
 

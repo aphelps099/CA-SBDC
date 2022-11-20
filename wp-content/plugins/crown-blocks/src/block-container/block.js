@@ -142,6 +142,7 @@ registerBlockType('crown-blocks/container', {
 		backgroundImageGrayscale: { type: 'number', default: 0 },
 		backgroundImageBlendMode: { type: 'string', default: 'normal' },
 		backgroundImageParallaxEnabled: { type: 'boolean', default: false },
+		backgroundImageGrowingEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeEnabled: { type: 'boolean', default: false },
 		backgroundImageGradientFadeAngle: { type: 'number', default: 180 },
 		backgroundImageGradientFadeStart: { type: 'number', default: 0 },
@@ -204,6 +205,7 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
 			backgroundImageParallaxEnabled,
+			backgroundImageGrowingEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
 			backgroundImageGradientFadeStart,
@@ -288,6 +290,10 @@ registerBlockType('crown-blocks/container', {
 
 		if(backgroundImageParallaxEnabled) {
 			bgMediaClasses.push('rellax');
+		}
+
+		if(backgroundImageGrowingEnabled) {
+			blockClasses.push('growing-bg');
 		}
 
 		let bgMedia = null;
@@ -781,6 +787,12 @@ registerBlockType('crown-blocks/container', {
 						onChange={ (value) => { setAttributes({ backgroundImageParallaxEnabled: value }); } }
 					/> }
 
+					{ !! backgroundImageId && <ToggleControl
+						label={ 'Enable Growing Effect' }
+						checked={ backgroundImageGrowingEnabled }
+						onChange={ (value) => { setAttributes({ backgroundImageGrowingEnabled: value }); } }
+					/> }
+
 					{/* { !! backgroundImageId && <ToggleControl
 						label={ 'Contain background image' }
 						checked={ backgroundImageContain }
@@ -878,6 +890,7 @@ registerBlockType('crown-blocks/container', {
 			backgroundImageGrayscale,
 			backgroundImageBlendMode,
 			backgroundImageParallaxEnabled,
+			backgroundImageGrowingEnabled,
 			backgroundImageGradientFadeEnabled,
 			backgroundImageGradientFadeAngle,
 			backgroundImageGradientFadeStart,
@@ -961,6 +974,10 @@ registerBlockType('crown-blocks/container', {
 
 		if(backgroundImageParallaxEnabled) {
 			bgMediaClasses.push('rellax');
+		}
+
+		if(backgroundImageGrowingEnabled) {
+			blockClasses.push('growing-bg');
 		}
 
 		if(backgroundImageGradientFadeEnabled) {

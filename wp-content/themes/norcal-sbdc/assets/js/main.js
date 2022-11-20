@@ -23,6 +23,7 @@
 		$.wptheme.initPostFeeds();
 		$.wptheme.initParallax();
 		$.wptheme.initScrollReveal();
+		$.wptheme.initGrowingBgs();
 		$.wptheme.initButtons();
 		
 		$.wptheme.initContainerBlocks();
@@ -756,6 +757,32 @@
 			};
 			animateScrollReveal();
 			$(window).on('load scroll', animateScrollReveal);
+
+		};
+
+
+		wptheme.initGrowingBgs = function() {
+
+			var updateGrowingBgs = function() {
+				var scrollTop = $(window).scrollTop();
+				var windowHeight = $(window).height();
+				$('.wp-block-crown-blocks-container.growing-bg.has-bg-image').each(function(i, el) {
+					var container = $(el);
+					var bgInner = $('> .container-bg > .inner', container);
+					var bgImage = $('> .container-bg .bg-image', container);
+					var offsetTop = Math.min(scrollTop, container.offset().top + container.height() - (windowHeight / 2));
+					var scale = (scrollTop + (windowHeight / 2)) / (container.offset().top + (container.height() / 2)) - 1;
+					console.log(scale);
+					bgInner.css({
+						transform: 'translate3d(0, ' + offsetTop + 'px, 0) scale(' + ((scale * .5) + 1) + ')',
+					});
+					bgImage.css({
+						transform: 'translate3d(0, 0, 0) scale(' + ((scrollTop / 2000) + 1) + ')'
+					})
+				});
+			};
+			updateGrowingBgs();
+			$(window).on('load scroll', updateGrowingBgs);
 
 		};
 
