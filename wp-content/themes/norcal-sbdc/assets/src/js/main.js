@@ -728,6 +728,13 @@
 				});
 			}
 
+			if($('.wp-block-crown-blocks-container.rellax').length) {
+				rellax.blockContainers = new Rellax('.wp-block-crown-blocks-container.rellax', {
+					center: true,
+					speed: -1
+				});
+			}
+
 			setTimeout(function() { $(window).trigger('resize'); }, 1000);
 
 		};
