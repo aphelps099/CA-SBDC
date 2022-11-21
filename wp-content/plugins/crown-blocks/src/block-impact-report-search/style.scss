@@ -3,5 +3,46 @@ $spacer: 1rem;
 
 .wp-block-crown-blocks-impact-report-search {
 	margin-bottom: $spacer;
-	
+	form {
+		@media (min-width: 768px) {
+			display: flex;
+			justify-content: center;
+		}
+	}
+	.fields {
+		@media (min-width: 768px) {
+			display: flex;
+		}
+	}
+	.field {
+		margin-bottom: 1rem;
+		border-bottom: 3px solid #ccc;
+		padding-bottom: .5rem;
+		display: flex;
+		align-items: center;
+		@media (min-width: 768px) {
+			margin-bottom: 0;
+			margin-right: 2rem;
+		}
+		label {
+			font-weight: 400;
+			font-size: 1.25rem;
+			flex: 0 0 auto;
+			margin: 0;
+			margin-right: 1rem;
+			color: #1A599A;
+		}
+		select {
+			background-color: #D0E4F8;
+			border-color: #D0E4F8;
+		}
+	}
+	.filters-footer {
+		margin-top: 1rem;
+		@media (min-width: 768px) {
+			margin-top: 0;
+			display: flex;
+			margin-left: -1rem;
+		}
+	}
 }

@@ -8412,6 +8412,47 @@ form.center-search {
 
 .wp-block-crown-blocks-impact-report-search {
   margin-bottom: 1rem; }
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-impact-report-search form {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: center;
+          justify-content: center; } }
+  @media (min-width: 768px) {
+    .wp-block-crown-blocks-impact-report-search .fields {
+      display: -ms-flexbox;
+      display: flex; } }
+  .wp-block-crown-blocks-impact-report-search .field {
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #ccc;
+    padding-bottom: .5rem;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-impact-report-search .field {
+        margin-bottom: 0;
+        margin-right: 2rem; } }
+    .wp-block-crown-blocks-impact-report-search .field label {
+      font-weight: 400;
+      font-size: 1.25rem;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+      margin: 0;
+      margin-right: 1rem;
+      color: #1A599A; }
+    .wp-block-crown-blocks-impact-report-search .field select {
+      background-color: #D0E4F8;
+      border-color: #D0E4F8; }
+  .wp-block-crown-blocks-impact-report-search .filters-footer {
+    margin-top: 1rem; }
+    @media (min-width: 768px) {
+      .wp-block-crown-blocks-impact-report-search .filters-footer {
+        margin-top: 0;
+        display: -ms-flexbox;
+        display: flex;
+        margin-left: -1rem; } }
 .crown-block-general-controls {
   padding: 16px 20px;
   background-color: #eee; }

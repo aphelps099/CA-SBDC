@@ -1309,3 +1309,31 @@ body.mobile-menu-active {
 		}
 	}
 }
+
+
+.wp-block-crown-blocks-impact-report-search {
+	.filters-footer {
+		button[type=submit] {
+			@extend .btn;
+			@extend .btn-md;
+			@extend .btn-darker-blue;
+			@extend .btn-has-arrow-icon;
+			@include media-breakpoint-up(md) {
+				overflow: hidden;
+				text-indent: -100000px;
+				width: 58px;
+				height: 58px;
+				position: relative;
+				&::after {
+					text-indent: 0;
+					position: absolute;
+					left: 50%;
+					top: 50%;
+					transform: translate(-50%, -50%);
+					margin-left: 0;
+					font-size: 1.5rem;
+				}
+			}
+		}
+	}
+}

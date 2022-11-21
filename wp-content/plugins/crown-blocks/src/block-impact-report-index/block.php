@@ -38,14 +38,27 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 				'meta_query' => array()
 			);
 
+			$has_query_params = false;
+
 			$filters->region->queried = isset( $_GET[ $filters->region->key ] ) ? ( is_array( $_GET[ $filters->region->key ] ) ? $_GET[ $filters->region->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->region->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->region->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'ir_region', 'terms' => $filters->region->queried );
+			if ( ! empty( $filters->region->queried ) ) {
+				$query_args['tax_query'][] = array( 'taxonomy' => 'ir_region', 'terms' => $filters->region->queried );
+				$has_query_params = true;
+			}
 
 			$filters->rep_type->queried = isset( $_GET[ $filters->rep_type->key ] ) ? ( is_array( $_GET[ $filters->rep_type->key ] ) ? $_GET[ $filters->rep_type->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->rep_type->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->rep_type->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'ir_rep_type', 'terms' => $filters->rep_type->queried );
+			if ( ! empty( $filters->rep_type->queried ) ) {
+				$query_args['tax_query'][] = array( 'taxonomy' => 'ir_rep_type', 'terms' => $filters->rep_type->queried );
+				$has_query_params = true;
+			}
 
 			$filters->district_no->queried = isset( $_GET[ $filters->district_no->key ] ) ? ( is_array( $_GET[ $filters->district_no->key ] ) ? $_GET[ $filters->district_no->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->district_no->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->district_no->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'ir_district_no', 'terms' => $filters->district_no->queried );
+			if ( ! empty( $filters->district_no->queried ) ) {
+				$query_args['tax_query'][] = array( 'taxonomy' => 'ir_district_no', 'terms' => $filters->district_no->queried );
+				$has_query_params = true;
+			}
+
+			if ( ! $has_query_params ) return '';
 
 			$query = null;
 			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
@@ -84,6 +97,9 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 
 				<div id="<?php echo $block_id; ?>" class="<?php echo implode( ' ', $block_class ); ?>">
 					<div class="inner">
+
+						<h3 class="is-style-spaced-uppercase">SBDC Impact Reports</h3>
+						<hr class="wp-block-separator has-alpha-channel-opacity">
 
 						<form action="<?php echo $filters_action; ?>" method="get" class="feed-filters">
 
@@ -149,7 +165,7 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 										<?php if ( ! $query->have_posts() ) { ?>
 											<div class="alert-wrapper">
 												<div class="alert alert-info no-results">
-													<h4>No Resources Found</h4>
+													<h4>No Reports Found</h4>
 													<p>Please try adjusting your selected filters above.</p>
 												</div>
 											</div>
