@@ -35,3 +35,23 @@ add_filter( 'crown_block_featured_post_slider_link_subject', function( $subject 
 
 add_filter( 'crown_webinars_can_unpublish_syndicated', '__return_true' );
 add_filter( 'crown_syndication_enabled', function( $enabled, $post_type ) { return false; }, 10, 2 );
+
+
+add_action( 'admin_init', function() {
+	if ( isset( $_GET['convert_webinars'] ) && boolval( $_GET['convert_webinars'] ) ) {
+		$posts = get_posts( array(
+			'posts_per_page' => -1,
+			'post_type' => 'resource',
+			'tax_query' => array(
+				array( 'taxonomy' => 'resource_type', 'terms' => 7 )
+			)
+		) );
+		foreach ( $posts as $post ) {
+			wp_update_post( array(
+				'ID' => $post->ID,
+				'post_type' => 'webinar',
+				'post_content' => str_replace( '<!-- wp:crown-blocks/resource-header /-->', '<!-- wp:crown-blocks/webinar-header /-->', $post->post_content )
+			) );
+		}
+	}
+} );
