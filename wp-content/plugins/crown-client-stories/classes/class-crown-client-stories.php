@@ -32,6 +32,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 		public static $client_story_post_type = null;
 		public static $syndicated_client_story_post_type = null;
 		public static $client_story_industry_taxonomy = null;
+		public static $client_story_region_taxonomy = null;
 
 
 		public static function init() {
@@ -50,6 +51,7 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_client_story_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_client_story_industry_taxonomy' ) );
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_client_story_region_taxonomy' ) );
 
 			add_action( 'save_post', array( __CLASS__, 'update_post_center_terms' ), 90 );
 
@@ -310,6 +312,38 @@ if ( ! class_exists( 'Crown_Client_Stories' ) ) {
 					'labels' => array(
 						'menu_name' => 'Industries',
 						'all_items' => 'All Industries'
+					),
+					'capabilities' => array(
+						'manage_terms' => 'manage_client_story_industries',
+						'edit_terms' => 'edit_client_story_industries',
+						'delete_terms' => 'delete_client_story_industries',
+						'assign_terms' => 'assign_client_story_industries'
+					)
+				)
+			) );
+
+		}
+
+
+		public static function register_client_story_region_taxonomy() {
+
+			if ( ! apply_filters( 'crown_client_story_region_taxonomy_enabled', false ) ) return;
+
+			self::$client_story_region_taxonomy = new Taxonomy( array(
+				'name' => 'client_story_region',
+				'singularLabel' => 'Client Story Region',
+				'pluralLabel' => 'Client Story Regions',
+				'postTypes' => array( 'client_story', 'client_story_s' ),
+				'settings' => array(
+					'hierarchical' => true,
+					'rewrite' => array( 'slug' => 'client-story-regions', 'with_front' => false ),
+					'show_in_nav_menus' => false,
+					'show_admin_column' => true,
+					'publicly_queryable' => false,
+					'show_in_rest' => true,
+					'labels' => array(
+						'menu_name' => 'Regions',
+						'all_items' => 'All Regions'
 					),
 					'capabilities' => array(
 						'manage_terms' => 'manage_client_story_industries',

@@ -63,7 +63,10 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 			if ( ! empty( $filters->search->queried ) ) $query_args['s'] = $filters->search->queried;
 
 			$filters->center->queried = isset( $_GET[ $filters->center->key ] ) ? ( is_array( $_GET[ $filters->center->key ] ) ? $_GET[ $filters->center->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->center->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
-			if ( ! empty( $filters->center->queried ) ) $event_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+			if ( ! empty( $filters->center->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'post_center', 'terms' => $filters->center->queried );
+
+			$filters = apply_filters( 'crown_block_client_story_index_filters', $filters );
+			$query_args = apply_filters( 'crown_block_client_story_index_query_args', $query_args, $filters );
 
 			$query = null;
 			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
@@ -74,24 +77,29 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 				$query = new WP_Query( $query_args );
 			}
 
-			$filters_action = remove_query_arg( array(
-				$filters->industry->key,
-				$filters->letter->key,
-				$filters->search->key,
-				$filters->center->key
-			) );
+			// $filters_action = remove_query_arg( array(
+			// 	$filters->industry->key,
+			// 	$filters->letter->key,
+			// 	$filters->search->key,
+			// 	$filters->center->key
+			// ) );
+			$filters_action = remove_query_arg( array_map( function( $n ) { return $n->key; }, (array) $filters ) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
 
-			$filters->industry->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->industry->queried ) );
-			}, get_terms( array( 'taxonomy' => 'client_story_industry' ) ) );
+			if ( property_exists( $filters, 'industry' ) ) {
+				$filters->industry->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->industry->queried ) );
+				}, get_terms( array( 'taxonomy' => 'client_story_industry' ) ) );
+			}
 
-			$filters->letter->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
-			}, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#' ) );
+			if ( property_exists( $filters, 'letter' ) ) {
+				$filters->letter->options = array_map( function( $n ) use ( $filters ) {
+					return (object) array( 'value' => strtolower( $n ), 'label' => $n, 'selected' => strtolower( $n ) == $filters->letter->queried );
+				}, array( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#' ) );
+			}
 
 			$pull_quote = '';
-			if ( ! empty( $atts['quoteContent'] ) ) {
+			if ( ! property_exists( $filters, 'region' ) && ! empty( $atts['quoteContent'] ) ) {
 				ob_start();
 				?>
 					<blockquote class="is-style-large">
@@ -132,20 +140,37 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 
 							<header class="filters-header">
 
-								<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
-								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
-								<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
+								<?php if ( ! property_exists( $filters, 'region' ) ) { ?>
+									<button type="button" class="filters-toggle"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></button>
+									<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
+									<button type="button" class="filters-close"><span><?php _e( 'Close', 'crown_blocks' ); ?></span></button>
+								<?php } ?>
 
-								<button type="button" class="search-field-toggle"><span><?php _e( 'Search', 'crown_blocks' ); ?></span></button>
-								<div class="search-field-spacer"></div>
-								<div class="search-field">
-									<input type="text" name="<?php echo $filters->search->key; ?>" value="<?php echo esc_attr( $filters->search->queried ); ?>" placeholder="<?php echo esc_attr( __( 'Search' ), 'crown_blocks' ); ?>">
-								</div>
+								<?php if ( property_exists( $filters, 'region' ) ) { ?>
+									<ul class="options singular quick-filters">
+										<?php foreach ( $filters->region->options as $option ) { ?>
+											<li class="option">
+												<label>
+													<input type="checkbox" name="<?php echo $filters->region->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+													<span class="label"><?php echo $option->label; ?></span>
+												</label>
+											</li>
+										<?php } ?>
+									</ul>
+								<?php } ?>
+
+								<?php if ( property_exists( $filters, 'search' ) ) { ?>
+									<button type="button" class="search-field-toggle"><span><?php _e( 'Search', 'crown_blocks' ); ?></span></button>
+									<div class="search-field-spacer"></div>
+									<div class="search-field">
+										<input type="text" name="<?php echo $filters->search->key; ?>" value="<?php echo esc_attr( $filters->search->queried ); ?>" placeholder="<?php echo esc_attr( __( 'Search' ), 'crown_blocks' ); ?>">
+									</div>
+								<?php } ?>
 
 								<nav class="filters-nav">
 									<ul>
-										<?php if ( ! empty( $filters->letter->options ) ) { ?><li><button type="button" data-tab="letter"><?php _e( 'Business Name', 'crown_blocks' ); ?></button></li><?php } ?>
-										<?php if ( ! empty( $filters->industry->options ) ) { ?><li><button type="button" data-tab="industry"><?php _e( 'Industry', 'crown_blocks' ); ?></button></li><?php } ?>
+										<?php if ( property_exists( $filters, 'letter' ) && ! empty( $filters->letter->options ) ) { ?><li><button type="button" data-tab="letter"><?php _e( 'Business Name', 'crown_blocks' ); ?></button></li><?php } ?>
+										<?php if ( property_exists( $filters, 'industry' ) && ! empty( $filters->industry->options ) ) { ?><li><button type="button" data-tab="industry"><?php _e( 'Industry', 'crown_blocks' ); ?></button></li><?php } ?>
 									</ul>
 								</nav>
 
@@ -156,7 +181,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 							<div class="filters-tabs">
 								<div class="inner">
 
-									<?php if ( ! empty( $filters->letter->options ) ) { ?>
+									<?php if ( property_exists( $filters, 'letter' ) && ! empty( $filters->letter->options ) ) { ?>
 										<div class="filters-tab" data-tab="letter">
 											<ul class="options singular name">
 												<?php foreach ( $filters->letter->options as $option ) { ?>
@@ -171,7 +196,7 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 										</div>
 									<?php } ?>
 
-									<?php if ( ! empty( $filters->industry->options ) ) { ?>
+									<?php if ( property_exists( $filters, 'industry' ) && ! empty( $filters->industry->options ) ) { ?>
 										<div class="filters-tab" data-tab="industry">
 											<ul class="options industry">
 												<?php foreach ( $filters->industry->options as $option ) { ?>
@@ -268,6 +293,17 @@ if(!class_exists('Crown_Block_Client_Story_Index')) {
 																<?php } ?>
 	
 																<h3 class="entry-title"><?php the_title(); ?></h3>
+
+																<?php if ( property_exists( $filters, 'region' ) ) { ?>
+																	<?php $industries = get_the_terms( get_the_ID(), 'client_story_industry' ); ?>
+																	<?php if ( ! empty( $industries ) ) { ?>
+																		<p class="entry-industries">
+																			<?php foreach ( $industries as $term ) { ?>
+																				<span class="industry"><?php echo $term->name; ?></span>
+																			<?php } ?>
+																		</p>
+																	<?php } ?>
+																<?php } ?>
 
 																<?php if ( ! empty( $post->post_excerpt ) ) { ?>
 																	<div class="entry-excerpt"><?php echo apply_filters( 'the_content', $post->post_excerpt ); ?></div>

@@ -42,6 +42,7 @@ function ctc_setup_editor_stylesheet() {
 
 add_filter( 'crown_webinars_can_unpublish_syndicated', '__return_true' );
 add_filter( 'crown_syndication_enabled', function( $enabled, $post_type ) { return false; }, 10, 2 );
+add_filter( 'crown_client_story_region_taxonomy_enabled', '__return_true' );
 
 
 
@@ -63,3 +64,21 @@ function ctc_filter_nav_menu_link_attributes( $atts, $menu_item, $args, $depth )
 	}
 	return $atts;
 }
+
+
+add_filter( 'crown_block_client_story_index_filters', function( $filters ) {
+	$filters = (object) array(
+		'region' => (object) array( 'key' => 'cs_region', 'queried' => null, 'options' => array() )
+	);
+	$filters->region->queried = isset( $_GET[ $filters->region->key ] ) ? ( is_array( $_GET[ $filters->region->key ] ) ? $_GET[ $filters->region->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->region->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+	$filters->region->options = array_map( function( $n ) use ( $filters ) {
+		return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->region->queried ) );
+	}, get_terms( array( 'taxonomy' => 'client_story_region' ) ) );
+	return $filters;
+} );
+
+add_filter( 'crown_block_client_story_index_query_args', function( $query_args, $filters ) {
+	$query_args['tax_query'] = array();
+	if ( ! empty( $filters->region->queried ) ) $query_args['tax_query'][] = array( 'taxonomy' => 'client_story_region', 'terms' => $filters->region->queried );
+	return $query_args;
+}, 10, 2 );
