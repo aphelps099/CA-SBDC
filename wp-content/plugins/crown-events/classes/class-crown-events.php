@@ -227,7 +227,7 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 
 			update_option( 'crown_event_data_last_synced', $current_time->format( 'Y-m-d H:i:s' ) );
 
-			$sync_interval = 30; // minutes
+			$sync_interval = 30; // minutes, default 30
 			wp_clear_scheduled_hook( 'crown_sync_event_data' );
 			wp_schedule_single_event( time() + ( 60 * $sync_interval ), 'crown_sync_event_data' );
 
