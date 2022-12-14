@@ -407,11 +407,11 @@ if ( ! class_exists( 'Crown_Events' ) ) {
 											) ),
 											new Field( array(
 												'label' => 'Start Time',
-												'input' => new TimeInput( array( 'name' => 'event_start_time', 'defaultValue' => '12:00:00', 'class' => 'input-small' ) )
+												'input' => new TimeInput( array( 'name' => 'event_start_time', 'interval' => 15, 'defaultValue' => '12:00:00', 'class' => 'input-small' ) )
 											) ),
 											new Field( array(
 												'label' => 'End Time',
-												'input' => new TimeInput( array( 'name' => 'event_end_time', 'defaultValue' => '13:00:00', 'class' => 'input-small' ) )
+												'input' => new TimeInput( array( 'name' => 'event_end_time', 'interval' => 15, 'defaultValue' => '13:00:00', 'class' => 'input-small' ) )
 											) ),
 											new Field( array(
 												'label' => 'Timezone',
