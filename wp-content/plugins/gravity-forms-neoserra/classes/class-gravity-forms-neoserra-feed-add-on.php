@@ -38,7 +38,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			'bd_field_map_idea'               => 'Product or Service Description',
 			'other_field_map_referral'        => 'Referral From',
 			'other_field_map_privacy_release' => 'Permit SBA Survey',
-			'other_field_map_consent'         => '641 Agreement (Consent)'
+			'other_field_map_consent'         => '641 Agreement (Consent)',
+			'other_field_map_referral_desc'   => 'Referral From Description'
 		);
 
 	
@@ -260,6 +261,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 					'field_type' => array( 'text', 'select', 'hidden' )
 				),
 				array(
+					'name' => 'referral_desc',
+					'label' => esc_html__( 'Referral Description (other)', 'gfneoserra' ),
+					'required' => false,
+					'field_type' => array( 'text', 'select', 'hidden' )
+				),
+				array(
 					'name' => 'privacy_release',
 					'label' => esc_html__( 'Privacy Release', 'gfneoserra' ),
 					'required' => true,
@@ -322,6 +329,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 						}
 					}
 				}
+				if ( $k == 'other_field_map_referral_desc' ) {
+					$v = substr( $v, 0, 80 );
+				}
 				$row[] = $v;
 			}
 			$csv_rows[] = $row;
@@ -331,6 +341,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 				$lines[] = $this->str_putcsv( $row );
 			}
 			$lines = implode( "\n", $lines );
+			print_r($lines);
 
 			// export to csv file
 			require_once( GFCommon::get_base_path() . '/export.php' );
@@ -339,34 +350,37 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			$export_folder = RGFormsModel::get_upload_root() . 'export/';
 			$file = $export_folder . sanitize_file_name( 'export-' . $export_id . '.csv' );
 
-			// send to neoserra
-			$statuses = $this->export_to_neoserra( $file );
+			echo ' '.$file;
+			die;
 
-			// handle errors
-			$error_messages = array();
-			if ( empty( $statuses ) ) {
-				$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
-				$message = 'Unable to add contact: ' . $name;
-				$message .= ' (API: No response.)';
-				$error_messages[] = $message;
-			}
-			foreach ( $statuses as $status ) {
-				if ( ! isset( $status['Status'] ) || $status['Status'] != 'P' ) {
-					$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
-					$message = 'Unable to add contact: ' . $name;
-					if ( isset( $status['Message'] ) ) $message .= ' (' . $status['Message'] . ')';
-					$error_messages[] = $message;
-				}
-			}
-			foreach ( $error_messages as $error_message ) {
-				$this->add_feed_error( $error_message, $feed, $entry, $form );
-			}
-			if ( ! empty( $error_messages ) ) {
-				gform_update_meta( $entry['id'], 'neoserra_api_errors', $error_messages );
-				GFAPI::send_notifications( $form, $entry, 'neoserra_api_error' );
-			}
+			// // send to neoserra
+			// $statuses = $this->export_to_neoserra( $file );
 
-			unlink( $file );
+			// // handle errors
+			// $error_messages = array();
+			// if ( empty( $statuses ) ) {
+			// 	$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
+			// 	$message = 'Unable to add contact: ' . $name;
+			// 	$message .= ' (API: No response.)';
+			// 	$error_messages[] = $message;
+			// }
+			// foreach ( $statuses as $status ) {
+			// 	if ( ! isset( $status['Status'] ) || $status['Status'] != 'P' ) {
+			// 		$name = $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_first_name'] ) . ' ' . $this->get_field_value( $form, $entry, $feed['meta']['pc_field_map_last_name'] );
+			// 		$message = 'Unable to add contact: ' . $name;
+			// 		if ( isset( $status['Message'] ) ) $message .= ' (' . $status['Message'] . ')';
+			// 		$error_messages[] = $message;
+			// 	}
+			// }
+			// foreach ( $error_messages as $error_message ) {
+			// 	$this->add_feed_error( $error_message, $feed, $entry, $form );
+			// }
+			// if ( ! empty( $error_messages ) ) {
+			// 	gform_update_meta( $entry['id'], 'neoserra_api_errors', $error_messages );
+			// 	GFAPI::send_notifications( $form, $entry, 'neoserra_api_error' );
+			// }
+
+			// unlink( $file );
 			return;
 		}
 

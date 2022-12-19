@@ -91,18 +91,18 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 									new FieldGroup( array(
 										'label' => 'Explore Menu Footer',
 										'fields' => array(
-											new Field( array(
-												'label' => 'Heading',
-												'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_heading' ) )
-											) ),
+											// new Field( array(
+											// 	'label' => 'Heading',
+											// 	'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_heading' ) )
+											// ) ),
 											new Field( array(
 												'label' => 'Content',
 												'input' => new Textarea( array( 'name' => 'theme_config_explore_menu_footer_content', 'rows' => 4 ) )
 											) ),
-											new Field( array(
-												'label' => 'Footer',
-												'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_footer' ) )
-											) )
+											// new Field( array(
+											// 	'label' => 'Footer',
+											// 	'input' => new TextInput( array( 'name' => 'theme_config_explore_menu_footer_footer' ) )
+											// ) )
 										)
 									) )
 								)

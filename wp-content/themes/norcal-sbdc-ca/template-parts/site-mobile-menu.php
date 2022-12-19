@@ -13,9 +13,14 @@
 					<header id="mobile-menu-header">
 						<div class="upper">
 							<div id="mobile-menu-branding">
-								<div id="mobile-menu-title">
+								<div id="mobile-menu-logo">
 									<a href="<?php echo home_url( '/' ); ?>">
-										<div class="title"><span class="location">California</span> <span class="sbdc">SBDC</span></div>
+										<?php $logo = get_option( 'theme_config_site_logo_light' ); ?>
+										<?php if ( ! empty( $logo ) ) { ?>
+											<?php echo wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'light' ) ); ?>
+										<?php } else { ?>
+											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" class="light" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+										<?php } ?>
 									</a>
 								</div>
 							</div>
@@ -25,7 +30,9 @@
 							</button>
 						</div>
 					</header>
+
 					<?php echo get_search_form(); ?>
+
 					<nav id="mobile-menu-primary-navigation">
 						<?php
 							// $mega_menu = apply_filters( 'crown_mega_menu', null );
@@ -45,6 +52,7 @@
 							// }
 						?>
 					</nav>
+
 					<div id="mobile-menu-extended-cta">
 						<div class="inner">
 							<div class="contents">
@@ -74,6 +82,35 @@
 						</div>
 					</div>
 
+					<div id="mobile-menu-footer-contents">
+						<div class="inner">
+							<div class="powered-by-sba">
+								<div class="logo">
+									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba-light.png" alt="Powered by U.S. Small Business Association"></a>
+								</div>
+								<div class="content">
+									<?php echo apply_filters( 'the_content', get_option( 'theme_config_explore_menu_footer_content' ) ); ?>
+								</div>
+							</div>
+							<div class="networked">
+								<h3>Networked With</h3>
+								<div class="logos">
+									<div class="logo">
+										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="">
+									</div>
+								</div>
+							</div>
+							<div class="accreditations">
+								<h3>Accreditations and Certifications</h3>
+								<div class="logos">
+									<div class="logo">
+										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-light.png" alt="America's SBDC Accredited Member">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 
@@ -95,28 +132,6 @@
 				</div>
 				<div class="lower">
 					
-					<div id="mobile-menu-footer-contents">
-						<div class="inner">
-							<h3><?php echo get_option( 'theme_config_explore_menu_footer_heading' ); ?></h3>
-							<div class="content">
-								<div class="inner">
-									<?php echo apply_filters( 'the_content', get_option( 'theme_config_explore_menu_footer_content' ) ); ?>
-								</div>
-								<div class="logos">
-									<div class="inner">
-										<div class="logo sbdc-accredited-member">
-											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-red.png" alt="America's SBDC Accredited Member">
-										</div>
-										<div class="logo powered-by-sba">
-											<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<p class="footer"><?php echo get_option( 'theme_config_explore_menu_footer_footer' ); ?></p>
-						</div>
-					</div>
-
 					<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
 
 				</div>

@@ -3,11 +3,14 @@
 
 add_filter( 'crown_theme_styles', 'ctc_filter_styles' );
 function ctc_filter_styles( $styles ) {
+	if ( get_site_url() == 'https://californiasbdc.norcalsbdc.org.test' ) {
+		$styles[] = array( 'handle' => 'uaf-ca', 'src' => 'https://norcalsbdc.org/wp-content/uploads/sites/34/useanyfont/uaf.css' );
+	}
 	$styles[] = array(
 		'handle' => 'crown-child-theme-style',
 		'src' => get_stylesheet_directory_uri() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css',
 		'ver' => filemtime( get_stylesheet_directory() . '/assets/css/style' . ( ! WP_DEBUG ? '.min' : '' ) . '.css' ),
-		'deps' => array( 'crown-theme-style' )
+		'deps' => array( 'crown-theme-style', 'uaf-ca' )
 	);
 	return $styles;
 }

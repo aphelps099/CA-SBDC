@@ -9,36 +9,59 @@
 
 						<div id="site-footer-logo">
 							<a href="<?php echo home_url( '/' ); ?>">
-								<?php $logo = get_option( 'theme_config_site_logo_color' ); ?>
+								<?php $logo = get_option( 'theme_config_site_logo_light' ); ?>
 								<?php if ( ! empty( $logo ) ) { ?>
 									<?php echo wp_get_attachment_image( $logo, 'medium_large', false ); ?>
 								<?php } else { ?>
-									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-400w.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+									<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/americas-sbdc-norcal-white-180h.png" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 								<?php } ?>
 							</a>
 						</div>
 
-						<div id="site-footer-tagline">
-							<p><?php echo get_bloginfo( 'description' ); ?></p>
-						</div>
-
 					</div>
 
-					<div id="site-footer-links">
+					<div id="site-footer-contents">
 
-						<nav id="footer-primary-cta-links">
+						<nav id="footer-primary-navigation">
 							<?php
 								wp_nav_menu( array(
-									'theme_location' => 'footer_cta_links',
+									'theme_location' => 'mobile_menu_primary',
 									'container' => '',
-									'menu_id' => 'footer-primary-cta-links-menu',
-									'depth' => 1,
+									'menu_id' => 'footer-primary-navigation-menu',
+									'depth' => 2,
 									'fallback_cb' => false
 								) );
 							?>
 						</nav>
 
-						<?php ct_social_links( array( 'title' => 'Stay Connected' ) ); ?>
+						<div id="site-footer-content">
+							<div class="inner">
+								<div class="powered-by-sba">
+									<div class="logo">
+										<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba-light.png" alt="Powered by U.S. Small Business Association"></a>
+									</div>
+									<div class="content">
+										<?php echo apply_filters( 'the_content', get_option( 'theme_config_explore_menu_footer_content' ) ); ?>
+									</div>
+								</div>
+								<div class="networked">
+									<h3>Networked With</h3>
+									<div class="logos">
+										<div class="logo">
+											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="">
+										</div>
+									</div>
+								</div>
+								<div class="accreditations">
+									<h3>Accreditations and Certifications</h3>
+									<div class="logos">
+										<div class="logo">
+											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/sbdc-accredited-member-light.png" alt="America's SBDC Accredited Member">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 					</div>
 
@@ -64,35 +87,6 @@
 							) );
 						?>
 					</nav>
-
-					<div id="site-footer-meta">
-
-						<?php $description = apply_filters( 'crown_site_footer_description', '' ); ?>
-						<?php if ( ! empty( $description ) ) { ?>
-							<div id="site-description">
-								<h3>
-									<span class="icon">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-											<path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
-										</svg>
-									</span>
-									<span>Made with #SmallBusinessLove</span>
-								</h3>
-								<?php echo apply_filters( 'the_content', $description ); ?>
-							</div>
-						<?php } ?>
-	
-						<div class="accreditations">
-							<div class="inner">
-
-								<div class="logo powered-by-sba">
-									<a href="https://www.sba.gov" target="_blank"><img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/powered-by-sba.png" alt="Powered by U.S. Small Business Association"></a>
-								</div>
-
-							</div>
-						</div>
-
-					</div>
 
 				</div>
 			</div>
