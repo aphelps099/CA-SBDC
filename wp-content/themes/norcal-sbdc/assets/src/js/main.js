@@ -774,7 +774,7 @@
 					var scale = (scrollTop + (windowHeight / 2)) / (container.offset().top + (container.height() / 2)) - 1;
 					console.log(scale);
 					bgInner.css({
-						transform: 'translate3d(0, ' + offsetTop + 'px, 0) scale(' + ((scale * .5) + 1) + ')',
+						transform: 'translate3d(0, ' + offsetTop + 'px, 0) scale(' + ((scale * .5) + 1.82) + ')',
 					});
 					bgImage.css({
 						transform: 'translate3d(0, 0, 0) scale(' + ((scrollTop / 2000) + 1) + ')'
