@@ -102,21 +102,43 @@
 		}
 	}
 	&.is-style-inset-border {
+		> .container-bg::before,
 		> .container-bg::after {
 			content: '';
 			display: block;
 			position: absolute;
 			left: 1rem;
 			top: 1rem;
-			right: 1rem;
-			bottom: 1rem;
-			border: 1px solid $primary;
+			right: calc(100% - 1rem);
+			bottom: calc(100% - 1rem);
 		}
+		> .container-bg::before {
+			border-left: 1px solid $primary;
+			border-bottom: 1px solid $primary;
+		}
+		> .container-bg::after {
+			border-right: 1px solid $primary;
+			border-top: 1px solid $primary;
+		}
+		&.text-color-light > .container-bg::before,
 		&.text-color-light > .container-bg::after {
 			border-color: #fff;
 		}
+		&.text-color-dark > .container-bg::before,
 		&.text-color-dark > .container-bg::after {
 			border-color: $primary;
+		}
+		&.animated {
+			> .container-bg::before {
+				transition: bottom .5s ease-in 0s, right .5s ease-out .5s;
+				bottom: 1rem;
+				right: 1rem;
+			}
+			> .container-bg::after {
+				transition: right .5s ease-in 0s, bottom .5s ease-out .5s;
+				bottom: 1rem;
+				right: 1rem;
+			}
 		}
 	}
 	&.growing-bg {

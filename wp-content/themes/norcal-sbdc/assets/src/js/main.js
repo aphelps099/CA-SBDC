@@ -754,6 +754,12 @@
 						element.addClass('animated');
 					}
 				});
+				$('.wp-block-crown-blocks-container.is-style-inset-border').each(function(i, el) {
+					var element = $(el);
+					if(element.offset().top <= scrollTop + (windowHeight * .75)) {
+						element.addClass('animated');
+					}
+				});
 			};
 			animateScrollReveal();
 			$(window).on('load scroll', animateScrollReveal);
