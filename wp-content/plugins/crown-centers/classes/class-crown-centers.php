@@ -100,6 +100,8 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 
 		public static function register_center_post_type() {
 
+			$theme = wp_get_theme();
+
 			self::$center_post_type = new PostType( array(
 				'name' => 'center',
 				'singularLabel' => 'SBDC',
@@ -112,7 +114,7 @@ if ( ! class_exists( 'Crown_Centers' ) ) {
 					'publicly_queryable' => true,
 					'show_in_rest' => true,
 					'show_in_nav_menus' => false,
-					'show_ui' => is_main_site(),
+					'show_ui' => is_main_site() || in_array( $theme->get_stylesheet(), array( 'norcal-sbdc-ca' ) ),
 					'capability_type' => array( 'center', 'centers' ),
 					'map_meta_cap' => true,
 					'menu_position' => 40
