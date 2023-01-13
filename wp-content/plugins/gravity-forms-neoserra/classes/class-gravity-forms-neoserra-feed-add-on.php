@@ -39,7 +39,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Feed_Add_On' ) ) {
 			'other_field_map_referral'        => 'Referral From',
 			'other_field_map_privacy_release' => 'Permit SBA Survey',
 			'other_field_map_consent'         => '641 Agreement (Consent)',
-			// 'other_field_map_referral_desc'   => 'Referral From Description'
+			'other_field_map_referral_desc'   => 'Referral From Description'
 		);
 
 	
