@@ -1031,6 +1031,8 @@ body.mobile-menu-active {
 	}
 	> .menu-item {
 		margin-bottom: 2rem;
+		opacity: 1;
+		transform: none;
 		> a {
 			padding: 0;
 			max-width: none;
@@ -1051,6 +1053,8 @@ body.mobile-menu-active {
 				margin: 0;
 				padding: 0;
 				margin-bottom: .5rem;
+				opacity: 1;
+				transform: none;
 				&:hover {
 					> a {
 						text-decoration: none;
