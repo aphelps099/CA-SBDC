@@ -52,13 +52,13 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 				$has_query_params = true;
 			}
 
-			$filters->district_no->queried = isset( $_GET[ $filters->district_no->key ] ) ? ( is_array( $_GET[ $filters->district_no->key ] ) ? $_GET[ $filters->district_no->key ] : array_filter( array_map( 'trim', explode( ',', $_GET[ $filters->district_no->key ] ) ), function( $n ) { return ! empty( $n ); } ) ) : array();
+			$filters->district_no->queried = isset( $_GET[ $filters->district_no->key ] ) ? trim( $_GET[ $filters->district_no->key ] ) : '';
 			if ( ! empty( $filters->district_no->queried ) ) {
-				$query_args['tax_query'][] = array( 'taxonomy' => 'ir_district_no', 'terms' => $filters->district_no->queried );
+				$query_args['tax_query'][] = array( 'taxonomy' => 'ir_district_no', 'terms' => $filters->district_no->queried, 'field' => 'name' );
 				$has_query_params = true;
 			}
 
-			if ( ! $has_query_params ) return '';
+			// if ( ! $has_query_params ) return '';
 
 			$query = null;
 			if ( function_exists( 'relevanssi_do_query' ) && isset( $query_args['s'] ) && ! empty( $query_args['s'] ) ) {
@@ -71,21 +71,22 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 
 			$filters_action = remove_query_arg( array(
 				$filters->region->key,
-				// $filters->rep_type->key,
-				// $filters->district_no->key
+				$filters->rep_type->key,
+				$filters->district_no->key
 			) );
 			$filters_action = preg_replace( '/\/page\/\d+\/(\?.*)?$/', "/$1", $filters_action );
 
-			$filters->region->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->region->queried ) );
-			}, get_terms( array( 'taxonomy' => 'ir_region' ) ) );
+			// $filters->region->options = array_map( function( $n ) use ( $filters ) {
+			// 	return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->region->queried ) );
+			// }, get_terms( array( 'taxonomy' => 'ir_region' ) ) );
+			$filters->region->options = array();
 
 			$filters->rep_type->options = array_map( function( $n ) use ( $filters ) {
 				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->rep_type->queried ) );
 			}, get_terms( array( 'taxonomy' => 'ir_rep_type' ) ) );
 
 			$filters->district_no->options = array_map( function( $n ) use ( $filters ) {
-				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => in_array( $n->term_id, $filters->district_no->queried ) );
+				return (object) array( 'value' => $n->term_id, 'label' => $n->name, 'selected' => $n->term_id == $filters->district_no->queried );
 			}, get_terms( array( 'taxonomy' => 'ir_district_no' ) ) );
 
 			$block_class = array( 'wp-block-crown-blocks-impact-report-index', 'post-feed-block', $atts['className'] );
@@ -101,25 +102,43 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 						<h3 class="is-style-spaced-uppercase">SBDC Impact Reports</h3>
 						<hr class="wp-block-separator has-alpha-channel-opacity">
 
-						<form action="<?php echo $filters_action; ?>" method="get" class="feed-filters">
+						<form action="<?php echo $filters_action; ?>" method="get" class="feed-filters <?php echo $has_query_params ? 'has-active-filters' : ''; ?>">
 
 							<header class="filters-header">
 
-								<span class="filters-title"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></span>
+								<!-- <span class="filters-title"><span><?php _e( 'Filter', 'crown_blocks' ); ?></span></span> -->
 								<button type="button" class="filters-clear"><span><?php _e( 'Clear', 'crown_blocks' ); ?></span></button>
 
+								<?php if ( ! empty( $filters->rep_type->options ) ) { ?>
+									<ul class="options singular quick-filters">
+										<?php foreach ( $filters->rep_type->options as $option ) { ?>
+											<li class="option">
+												<label>
+													<input type="checkbox" name="<?php echo $filters->rep_type->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+													<span class="label"><?php echo $option->label; ?></span>
+												</label>
+											</li>
+										<?php } ?>
+									</ul>
+								<?php } ?>
+
 								<?php if ( ! empty( $filters->region->options ) ) { ?>
-										<ul class="options singular quick-filters">
-											<?php foreach ( $filters->region->options as $option ) { ?>
-												<li class="option">
-													<label>
-														<input type="checkbox" name="<?php echo $filters->region->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-														<span class="label"><?php echo $option->label; ?></span>
-													</label>
-												</li>
-											<?php } ?>
-										</ul>
-									<?php } ?>
+									<ul class="options singular quick-filters">
+										<?php foreach ( $filters->region->options as $option ) { ?>
+											<li class="option">
+												<label>
+													<input type="checkbox" name="<?php echo $filters->region->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+													<span class="label"><?php echo $option->label; ?></span>
+												</label>
+											</li>
+										<?php } ?>
+									</ul>
+								<?php } ?>
+
+								<div class="search-field">
+									<input type="text" name="<?php echo $filters->district_no->key; ?>" value="<?php echo esc_attr( $filters->district_no->queried ); ?>" placeholder="<?php echo esc_attr( __( 'Search Districts' ), 'crown_blocks' ); ?>">
+								</div>
+								<div class="search-field-spacer"></div>
 
 								<nav class="filters-nav">
 									<ul>
@@ -162,7 +181,7 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 								<div class="post-feed item-count-<?php echo $query->post_count; ?>" data-item-count="<?php echo $query->post_count; ?>">
 									<div class="inner infinite-loader-container">
 	
-										<?php if ( ! $query->have_posts() ) { ?>
+										<?php if ( $has_query_params && ! $query->have_posts() ) { ?>
 											<div class="alert-wrapper">
 												<div class="alert alert-info no-results">
 													<h4>No Reports Found</h4>
@@ -171,6 +190,7 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 											</div>
 										<?php } ?>
 										
+										<?php if ( $has_query_params ) { ?>
 										<?php for ( $i = 0; $i < 1; $i++ ) { ?>
 										<?php while ( $query->have_posts() ) { ?>
 											<?php $query->the_post(); ?>
@@ -195,6 +215,7 @@ if(!class_exists('Crown_Block_Impact_Report_Index')) {
 
 												</a>
 											</article>
+										<?php } ?>
 										<?php } ?>
 										<?php } ?>
 										<?php wp_reset_postdata(); ?>

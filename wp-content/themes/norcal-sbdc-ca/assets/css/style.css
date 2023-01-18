@@ -30843,6 +30843,14 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex; }
+  #header #mobile-menu-toggle:hover .icon::before {
+    -webkit-transform: translateY(-4px);
+        -ms-transform: translateY(-4px);
+            transform: translateY(-4px); }
+  #header #mobile-menu-toggle:hover .icon::after {
+    -webkit-transform: translateY(4px);
+        -ms-transform: translateY(4px);
+            transform: translateY(4px); }
   #header #mobile-menu-toggle .label {
     margin-right: 1rem;
     color: #1A599A; }
@@ -30850,13 +30858,54 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
       #header #mobile-menu-toggle .label {
         font-size: 1rem; } }
   #header #mobile-menu-toggle .icon {
-    width: 1.25rem; }
+    width: 1.25rem;
+    -webkit-transition: -webkit-transform .2s ease-out;
+    transition: -webkit-transform .2s ease-out;
+    transition: transform .2s ease-out;
+    transition: transform .2s ease-out, -webkit-transform .2s ease-out; }
     #header #mobile-menu-toggle .icon, #header #mobile-menu-toggle .icon::before, #header #mobile-menu-toggle .icon::after {
-      background-color: #0381C3; }
+      background-color: #0381C3;
+      -webkit-transition: background-color .2s, width .2s ease-out, -webkit-transform .2s ease-out;
+      transition: background-color .2s, width .2s ease-out, -webkit-transform .2s ease-out;
+      transition: background-color .2s, width .2s ease-out, transform .2s ease-out;
+      transition: background-color .2s, width .2s ease-out, transform .2s ease-out, -webkit-transform .2s ease-out; }
     #header #mobile-menu-toggle .icon::before {
-      width: 120%; }
+      width: 120%;
+      -webkit-transform-origin: 100% 0%;
+          -ms-transform-origin: 100% 0%;
+              transform-origin: 100% 0%; }
     #header #mobile-menu-toggle .icon::after {
-      width: 80%; }
+      width: 80%;
+      -webkit-transform-origin: 100% 100%;
+          -ms-transform-origin: 100% 100%;
+              transform-origin: 100% 100%; }
+  body.mobile-menu-active #header #mobile-menu-toggle .icon {
+    background-color: transparent; }
+    @media (min-width: 768px) {
+      body.mobile-menu-active #header #mobile-menu-toggle .icon {
+        -webkit-transform: translateX(7px);
+            -ms-transform: translateX(7px);
+                transform: translateX(7px); } }
+    @media (min-width: 992px) {
+      body.mobile-menu-active #header #mobile-menu-toggle .icon {
+        -webkit-transform: translateX(15px);
+            -ms-transform: translateX(15px);
+                transform: translateX(15px); } }
+    @media (min-width: 1200px) {
+      body.mobile-menu-active #header #mobile-menu-toggle .icon {
+        -webkit-transform: translateX(22px);
+            -ms-transform: translateX(22px);
+                transform: translateX(22px); } }
+    body.mobile-menu-active #header #mobile-menu-toggle .icon::before {
+      width: 110%;
+      -webkit-transform: rotate(-45deg);
+          -ms-transform: rotate(-45deg);
+              transform: rotate(-45deg); }
+    body.mobile-menu-active #header #mobile-menu-toggle .icon::after {
+      width: 110%;
+      -webkit-transform: rotate(45deg);
+          -ms-transform: rotate(45deg);
+              transform: rotate(45deg); }
 
 #header.is-sticky #mobile-menu-toggle .label {
   color: #fff; }
@@ -30873,8 +30922,6 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
   max-width: none;
   width: 100%;
   left: 0;
-  -webkit-transform: translate3d(0, -2rem, 0);
-          transform: translate3d(0, -2rem, 0);
   -webkit-transition: visibility 0s .2s, opacity .2s, -webkit-transform .2s ease-out, -webkit-transform .2s ease-out;
   transition: visibility 0s .2s, opacity .2s, -webkit-transform .2s ease-out, -webkit-transform .2s ease-out;
   transition: transform .2s ease-out, visibility 0s .2s, transform .2s ease-out, opacity .2s;
@@ -30950,15 +30997,19 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
               -ms-flex-direction: column;
                   flex-direction: column; } }
 
-@media (min-width: 992px) {
-  #mobile-menu-header {
-    padding: 1.5rem 2rem;
-    background-color: transparent; } }
-
-#mobile-menu-header > .upper {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none; }
+#mobile-menu-header {
+  padding: .75rem 1rem; }
+  @media (min-width: 768px) {
+    #mobile-menu-header {
+      padding: 1rem 1rem; } }
+  @media (min-width: 992px) {
+    #mobile-menu-header {
+      padding: 2.6rem 2rem 1rem;
+      background-color: transparent; } }
+  #mobile-menu-header > .upper {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none; }
 
 @media (min-width: 768px) {
   #mobile-menu-branding {
