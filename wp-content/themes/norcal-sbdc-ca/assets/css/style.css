@@ -31052,7 +31052,7 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
       padding: 1rem 1rem; } }
   @media (min-width: 992px) {
     #mobile-menu-header {
-      padding: 2.6rem 2rem 1rem;
+      padding: 1.3rem 2rem 1rem;
       background-color: transparent; } }
   #mobile-menu-header > .upper {
     margin-bottom: 0;
@@ -31067,9 +31067,6 @@ body.header-dropdown-active #header-primary-navigation-menu:hover > .menu-item >
 
 #mobile-menu-logo {
   visibility: inherit; }
-  @media (min-width: 992px) {
-    #mobile-menu-logo {
-      display: none; } }
   #mobile-menu-logo a img.light {
     opacity: 1; }
 

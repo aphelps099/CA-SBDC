@@ -564,7 +564,7 @@ body.mobile-menu-active {
 		padding: 1rem 1rem;
 	}
 	@include media-breakpoint-up(lg) {
-		padding: 2.6rem 2rem 1rem;
+		padding: 1.3rem 2rem 1rem;
 		background-color: transparent;
 	}
 	> .upper {
@@ -583,7 +583,7 @@ body.mobile-menu-active {
 	@extend #site-logo;
 	visibility: inherit;
 	@include media-breakpoint-up(lg) {
-		display: none;
+		// display: none;
 	}
 	a {
 		img.light {
