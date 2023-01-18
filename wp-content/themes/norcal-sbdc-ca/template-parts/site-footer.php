@@ -48,7 +48,7 @@
 									<h3>Networked With</h3>
 									<div class="logos">
 										<div class="logo">
-											<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/ca-gobed.png" alt="">
+										<img src="<?php echo Crown_Theme::get_uri(); ?>/assets/img/logos/gobiz-clearout.png" alt="">
 										</div>
 									</div>
 								</div>
