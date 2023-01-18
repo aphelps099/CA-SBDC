@@ -7,6 +7,7 @@
 					<?php if ( $bg_image ) { ?>
 						<img src="<?php echo $bg_image; ?>">
 					<?php } ?>
+					<div class="logo"><?php echo ct_get_svg( 'assets/img/star.svg' ); ?></div>
 				</div>
 				<div class="inner">
 
