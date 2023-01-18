@@ -610,6 +610,25 @@ body.mobile-menu-active {
 			padding-right: 1.25rem;
 			flex: 1 1 25%;
 			max-width: 25%;
+			transition: transform 0s ease-out, opacity 0s;
+			transform: translateY(20px);
+			transition-delay: .2s;
+			opacity: 0;
+		}
+		@for $i from 1 through 6 {
+			body.mobile-menu-active &:nth-child(#{$i}) {
+				transition-delay: #{($i * .1)}s;
+				@for $j from 1 through 10 {
+					> .sub-menu > .menu-item:nth-child(#{$j}) {
+						transition-delay: #{($i * .1 + $j * .1)}s;
+					}
+				}
+			}
+		}
+		body.mobile-menu-active & {
+			transform: none;
+			opacity: 1;
+			transition-duration: .5s;
 		}
 		&:nth-child(2n-1) {
 			background: transparent;
@@ -681,10 +700,24 @@ body.mobile-menu-active {
 				height: auto !important;
 				margin-top: 0.75rem;
 				font-size: 1rem;
+				
+			}
+			body.mobile-menu-active & {
+				transform: none;
+				opacity: 1;
 			}
 			> .menu-item {
 				@include media-breakpoint-up(lg) {
 					margin-bottom: 0.5rem;
+					transition: transform 0s ease-out, opacity 0s;
+					transform: translateX(20px);
+					transition-delay: .2s;
+					opacity: 0;
+				}
+				body.mobile-menu-active & {
+					transform: none;
+					opacity: 1;
+					transition-duration: .5s;
 				}
 				&:first-child {
 					// padding-top: 1rem;
