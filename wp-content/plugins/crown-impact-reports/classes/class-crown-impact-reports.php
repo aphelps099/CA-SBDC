@@ -322,7 +322,7 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 				'fields' => 'ids',
 				'meta_query' => array(
 					'relation' => 'OR',
-					array( 'key' => 'impact_report_district_no', 'value' => $s, 'compare' => 'LIKE' ),
+					array( 'key' => 'impact_report_district_no', 'value' => $s ),
 					array( 'key' => 'impact_report_rep_name', 'value' => $s, 'compare' => 'LIKE' )
 				)
 			) );
