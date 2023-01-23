@@ -50,7 +50,7 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_impact_report_post_type' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_rep_type_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_region_taxonomy' ) );
-			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_district_no_taxonomy' ) );
+			// add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_district_no_taxonomy' ) );
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_form_shortcode') );
 			add_action( 'wp_ajax_get_impact_reports', array( __CLASS__, 'get_ajax_impact_reports' ) );
@@ -139,6 +139,14 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 										'label' => 'General',
 										'fields' => array(
 											new Field( array(
+												'label' => 'District No.',
+												'input' => new TextInput( array( 'name' => 'impact_report_district_no', 'class' => 'input-small' ) )
+											) ),
+											new Field( array(
+												'label' => 'Representative Name',
+												'input' => new TextInput( array( 'name' => 'impact_report_rep_name' ) )
+											) ),
+											new Field( array(
 												'label' => 'File',
 												'input' => new MediaInput( array( 'name' => 'impact_report_file' ) )
 											) ),
@@ -155,6 +163,24 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 								)
 							) )
 						)
+					) )
+				),
+				'listTableColumns' => array(
+					new ListTableColumn( array(
+						'key' => 'impact-report-rep',
+						'title' => 'Rep Name',
+						'position' => 3,
+						'outputCb' => function( $post_id, $args ) {
+							echo get_post_meta( $post_id, 'impact_report_rep_name', true );
+						}
+					) ),
+					new ListTableColumn( array(
+						'key' => 'impact-report-district',
+						'title' => 'District No.',
+						'position' => 4,
+						'outputCb' => function( $post_id, $args ) {
+							echo get_post_meta( $post_id, 'impact_report_district_no', true );
+						}
 					) )
 				)
 			) );
@@ -265,8 +291,8 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 						<form class="impact-reports <?php echo esc_attr( $atts['class'] ); ?>">
 							<div class="inner row align-items-end">
 								<div class="field col flex-grow-1">
-									<label>District Number</label>
-									<input type="text" class="form-control" name="district_no">
+									<label>District # or Rep Name</label>
+									<input type="text" class="form-control" name="s">
 								</div>
 								<footer class="form-footer col-auto">
 									<button type="submit" class="btn btn-primary">Download Report</button>
@@ -287,15 +313,17 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 				'reports' => array()
 			);
 
-			$district_no = isset( $_GET['district_no'] ) ? trim( $_GET['district_no'] ) : null;
-			if ( empty( $district_no ) ) wp_send_json( $response );
+			$s = isset( $_GET['s'] ) ? trim( $_GET['s'] ) : null;
+			if ( empty( $s ) ) wp_send_json( $response );
 
 			$report_ids = get_posts( array(
 				'posts_per_page' => -1,
 				'post_type' => 'impact_report',
 				'fields' => 'ids',
-				'tax_query' => array(
-					array( 'taxonomy' => 'ir_district_no', 'terms' => $district_no, 'field' => 'name' )
+				'meta_query' => array(
+					'relation' => 'OR',
+					array( 'key' => 'impact_report_district_no', 'value' => $s, 'compare' => 'LIKE' ),
+					array( 'key' => 'impact_report_rep_name', 'value' => $s, 'compare' => 'LIKE' )
 				)
 			) );
 			$response->success = true;
@@ -303,6 +331,8 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 				$report = (object) array(
 					'id' => $n,
 					'rep_types' => array(),
+					'rep_name' => get_post_meta( $n, 'impact_report_rep_name', true ),
+					'district_no' => get_post_meta( $n, 'impact_report_district_no', true ),
 					'link_url' => get_permalink( $n ),
 					'link_label' => get_post_meta( $n, 'impact_report_link_label', true )
 				);

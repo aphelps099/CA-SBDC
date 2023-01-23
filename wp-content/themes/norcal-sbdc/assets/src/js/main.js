@@ -1836,7 +1836,7 @@
 			$(document).on('submit', 'form.impact-reports', function(e) {
 				e.preventDefault();
 				var form = $(this);
-				var districtNo = $('input[name=district_no]', form).val();
+				var s = $('input[name=s]', form).val();
 				var modal = $('#impact-report-downloads-modal');
 				if(!modal.length) {
 					modal = $('<div id="impact-report-downloads-modal" class="modal fade" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Download Impact Reports</h4><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div><div class="modal-body"></div></div></div></div>')
@@ -1846,7 +1846,7 @@
 				$('.modal-body', modal).append('<div class="spinner-container"><div class="spinner-border" role="status"></div></div>');
 				modal.modal('show');
 
-				$.get(crownThemeData.ajaxUrl, { action: 'get_impact_reports', district_no: districtNo }, function(response) {
+				$.get(crownThemeData.ajaxUrl, { action: 'get_impact_reports', s: s }, function(response) {
 					var modal = $('#impact-report-downloads-modal');
 					$('.modal-body', modal).html('');
 					if(!response.reports.length) {
