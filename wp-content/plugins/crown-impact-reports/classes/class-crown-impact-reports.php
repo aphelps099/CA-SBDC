@@ -36,6 +36,8 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 		public static $ir_region_taxonomy = null;
 		public static $ir_district_no_taxonomy = null;
 
+		public static $ir_form_shortcode = null;
+
 
 		public static function init() {
 			if( self::$init ) return;
@@ -49,6 +51,10 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_rep_type_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_region_taxonomy' ) );
 			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_district_no_taxonomy' ) );
+
+			add_action( 'after_setup_theme', array( __CLASS__, 'register_ir_form_shortcode') );
+			add_action( 'wp_ajax_get_impact_reports', array( __CLASS__, 'get_ajax_impact_reports' ) );
+			add_action( 'wp_ajax_nopriv_get_impact_reports', array( __CLASS__, 'get_ajax_impact_reports' ) );
 
 			add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'filter_use_block_editor_for_post_type' ), 10, 2 );
 
@@ -243,6 +249,72 @@ if ( ! class_exists( 'Crown_Impact_Reports' ) ) {
 				)
 			) );
 
+		}
+
+
+		public static function register_ir_form_shortcode() {
+
+			self::$ir_form_shortcode = new Shortcode(array(
+				'tag' => 'ir_form',
+				'defaultAtts' => array(
+					'class' => ''
+				),
+				'getOutputCb' => function( $atts, $content ) {
+					ob_start();
+					?>
+						<form class="impact-reports <?php echo esc_attr( $atts['class'] ); ?>">
+							<div class="inner row align-items-end">
+								<div class="field col flex-grow-1">
+									<label>District Number</label>
+									<input type="text" class="form-control" name="district_no">
+								</div>
+								<footer class="form-footer col-auto">
+									<button type="submit" class="btn btn-primary">Download Report</button>
+								</footer>
+							</div>
+						</form>
+					<?php
+					return ob_get_clean();
+				}
+			));
+
+		}
+
+
+		public static function get_ajax_impact_reports() {
+			$response = (object) array(
+				'success' => false,
+				'reports' => array()
+			);
+
+			$district_no = isset( $_GET['district_no'] ) ? trim( $_GET['district_no'] ) : null;
+			if ( empty( $district_no ) ) wp_send_json( $response );
+
+			$report_ids = get_posts( array(
+				'posts_per_page' => -1,
+				'post_type' => 'impact_report',
+				'fields' => 'ids',
+				'tax_query' => array(
+					array( 'taxonomy' => 'ir_district_no', 'terms' => $district_no, 'field' => 'name' )
+				)
+			) );
+			$response->success = true;
+			$response->reports = array_map( function( $n ) {
+				$report = (object) array(
+					'id' => $n,
+					'rep_types' => array(),
+					'link_url' => get_permalink( $n ),
+					'link_label' => get_post_meta( $n, 'impact_report_link_label', true )
+				);
+				$rep_types = wp_get_object_terms( $n, 'ir_rep_type' );
+				foreach ( $rep_types as $term ) {
+					$report->rep_types[] = $term->name;
+				}
+				if ( empty( $report->link_label ) ) $report->link_label = 'Download';
+				return $report;
+			}, $report_ids );
+
+			wp_send_json( $response );
 		}
 
 

@@ -226,3 +226,40 @@
 		cursor: default;
 	}
 }
+
+
+#impact-report-downloads-modal {
+	.modal-body {
+		.spinner-container {
+			text-align: center;
+		}
+		.report-link {
+			display: block;
+			width: 100%;
+			text-align: left;
+			.name {
+				display: block;
+				font-size: 32px;
+				font-weight: 400;
+				margin-bottom: 6px;
+			}
+			.label {
+				display: block;
+				text-transform: uppercase;
+				letter-spacing: .1em;
+				font-size: 14px;
+				&:after {
+					@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+					position: relative;
+					margin-left: .5em;
+					margin-right: -.5em;
+					top: .08em;
+					right: 0;
+				}
+			}
+			+ .report-link {
+				margin-top: 10px;
+			}
+		}
+	}
+}

@@ -49,6 +49,7 @@
 		$.wptheme.initDevBlocks();
 
 		$.wptheme.initBranchMapShortcodes();
+		$.wptheme.initImpactReportFormShortcodes();
 
 		$.wptheme.initHeaders();
 		$.wptheme.initOdometers();
@@ -1827,6 +1828,41 @@
 		wptheme.initBranchMapShortcodes = function() {
 			$('.branch-map > .google-map').each(function(i, el) {
 				wptheme.initMap($(el));
+			});
+		};
+
+
+		wptheme.initImpactReportFormShortcodes = function() {
+			$(document).on('submit', 'form.impact-reports', function(e) {
+				e.preventDefault();
+				var form = $(this);
+				var districtNo = $('input[name=district_no]', form).val();
+				var modal = $('#impact-report-downloads-modal');
+				if(!modal.length) {
+					modal = $('<div id="impact-report-downloads-modal" class="modal fade" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h4 class="modal-title">Download Impact Reports</h4><button type="button" class="close" data-dismiss="modal"><span>&times;</span></button></div><div class="modal-body"></div></div></div></div>')
+					$('body').append(modal);
+				}
+				$('.modal-body', modal).html('');
+				$('.modal-body', modal).append('<div class="spinner-container"><div class="spinner-border" role="status"></div></div>');
+				modal.modal('show');
+
+				$.get(crownThemeData.ajaxUrl, { action: 'get_impact_reports', district_no: districtNo }, function(response) {
+					var modal = $('#impact-report-downloads-modal');
+					$('.modal-body', modal).html('');
+					if(!response.reports.length) {
+						$('.modal-body', modal).append('<div class="alert alert-info no-results"><h4>No Entries Found</h4><p>Please try adjusting your district number.</p></div>');
+					} else {
+						for(var i = 0; i < response.reports.length; i++) {
+							var report = response.reports[i];
+							var link = $('<a class="report-link btn btn-primary" href="' + report.link_url + '" target="_blank"></a>');
+							link.append('<span class="name">' + report.rep_types.join(', ') + ' Report</span>');
+							link.append('<span class="label">' + report.link_label + '</span>');
+							$('.modal-body', modal).append(link);
+						}
+					}
+				}, 'json');
+
+				return false;
 			});
 		};
 

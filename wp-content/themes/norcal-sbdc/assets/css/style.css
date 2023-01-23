@@ -20539,6 +20539,41 @@ nav.pagination {
   .calendly-overlay .calendly-popup {
     cursor: default; }
 
+#impact-report-downloads-modal .modal-body .spinner-container {
+  text-align: center; }
+
+#impact-report-downloads-modal .modal-body .report-link {
+  display: block;
+  width: 100%;
+  text-align: left; }
+  #impact-report-downloads-modal .modal-body .report-link .name {
+    display: block;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 6px; }
+  #impact-report-downloads-modal .modal-body .report-link .label {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: 14px; }
+    #impact-report-downloads-modal .modal-body .report-link .label:after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      font-family: icomoon;
+      content: "";
+      position: relative;
+      margin-left: .5em;
+      margin-right: -.5em;
+      top: .08em;
+      right: 0; }
+  #impact-report-downloads-modal .modal-body .report-link + .report-link {
+    margin-top: 10px; }
+
 .odometer-statistic.fade-in {
   opacity: 0; }
   .odometer-statistic.fade-in.animated {
