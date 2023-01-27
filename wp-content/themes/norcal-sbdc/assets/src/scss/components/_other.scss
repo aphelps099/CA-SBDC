@@ -841,3 +841,11 @@
 .svg-asset {
 	display: none;
 }
+
+.text-circled {
+	display: inline-block;
+	border: 2px solid $blue;
+	border-radius: 50%;
+	padding-left: .5em;
+	padding-right: 0.5em;
+}

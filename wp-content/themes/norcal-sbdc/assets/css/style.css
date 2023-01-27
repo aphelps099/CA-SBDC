@@ -21547,6 +21547,13 @@ nav.pagination {
 .svg-asset {
   display: none; }
 
+.text-circled {
+  display: inline-block;
+  border: 2px solid #0381C3;
+  border-radius: 50%;
+  padding-left: .5em;
+  padding-right: 0.5em; }
+
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-promo.alignfull,
