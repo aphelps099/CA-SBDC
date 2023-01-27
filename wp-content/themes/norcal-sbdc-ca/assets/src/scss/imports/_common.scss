@@ -1753,3 +1753,10 @@ body.mobile-menu-active {
 	}
 }
 
+
+.wp-block-crown-blocks-hover-container.hover-type-left-aligned {
+	.details::after {
+		font-size: 2rem;
+		@include icon(map-get($icomoon-icons, arrow-right-display), icomoon);
+	}
+}
