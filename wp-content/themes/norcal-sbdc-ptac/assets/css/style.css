@@ -20547,6 +20547,41 @@ nav.pagination {
   .calendly-overlay .calendly-popup {
     cursor: default; }
 
+#impact-report-downloads-modal .modal-body .spinner-container {
+  text-align: center; }
+
+#impact-report-downloads-modal .modal-body .report-link {
+  display: block;
+  width: 100%;
+  text-align: left; }
+  #impact-report-downloads-modal .modal-body .report-link .name {
+    display: block;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 6px; }
+  #impact-report-downloads-modal .modal-body .report-link .label {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-size: 14px; }
+    #impact-report-downloads-modal .modal-body .report-link .label:after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: inline-block;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      font-family: icomoon;
+      content: "";
+      position: relative;
+      margin-left: .5em;
+      margin-right: -.5em;
+      top: .08em;
+      right: 0; }
+  #impact-report-downloads-modal .modal-body .report-link + .report-link {
+    margin-top: 10px; }
+
 .odometer-statistic.fade-in {
   opacity: 0; }
   .odometer-statistic.fade-in.animated {
@@ -21517,6 +21552,9 @@ nav.pagination {
     transition: opacity .75s, transform .75s ease-out;
     transition: opacity .75s, transform .75s ease-out, -webkit-transform .75s ease-out; }
 
+.svg-asset {
+  display: none; }
+
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-promo.alignfull,
@@ -21634,21 +21672,98 @@ nav.pagination {
   min-height: calc(100% + 8vh);
   top: -4vh; }
 
+.wp-block-crown-blocks-container.is-style-inset-border > .container-bg::before,
 .wp-block-crown-blocks-container.is-style-inset-border > .container-bg::after {
   content: '';
   display: block;
   position: absolute;
   left: 1rem;
   top: 1rem;
-  right: 1rem;
-  bottom: 1rem;
-  border: 1px solid #032040; }
+  right: calc(100% - 1rem);
+  bottom: calc(100% - 1rem); }
 
+.wp-block-crown-blocks-container.is-style-inset-border > .container-bg::before {
+  border-left: 1px solid #032040;
+  border-bottom: 1px solid #032040; }
+
+.wp-block-crown-blocks-container.is-style-inset-border > .container-bg::after {
+  border-right: 1px solid #032040;
+  border-top: 1px solid #032040; }
+
+.wp-block-crown-blocks-container.is-style-inset-border.text-color-light > .container-bg::before,
 .wp-block-crown-blocks-container.is-style-inset-border.text-color-light > .container-bg::after {
   border-color: #fff; }
 
+.wp-block-crown-blocks-container.is-style-inset-border.text-color-dark > .container-bg::before,
 .wp-block-crown-blocks-container.is-style-inset-border.text-color-dark > .container-bg::after {
   border-color: #032040; }
+
+.wp-block-crown-blocks-container.is-style-inset-border.animated > .container-bg::before {
+  -webkit-transition: bottom .5s ease-in 0s, right .5s ease-out .5s;
+  transition: bottom .5s ease-in 0s, right .5s ease-out .5s;
+  bottom: 1rem;
+  right: 1rem; }
+
+.wp-block-crown-blocks-container.is-style-inset-border.animated > .container-bg::after {
+  -webkit-transition: right .5s ease-in 0s, bottom .5s ease-out .5s;
+  transition: right .5s ease-in 0s, bottom .5s ease-out .5s;
+  bottom: 1rem;
+  right: 1rem; }
+
+.wp-block-crown-blocks-container.growing-bg > .container-bg > .inner {
+  width: 60vw;
+  height: 60vw;
+  left: 50%;
+  top: 55vh;
+  margin-left: -30vw;
+  margin-top: -30vw;
+  border-radius: 100%;
+  overflow: hidden; }
+
+.wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star {
+  display: block;
+  position: absolute;
+  right: -10%;
+  top: 20%;
+  width: 60%; }
+  .wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star.animated svg #star > path {
+    -webkit-transition: fill 1s 3.2s;
+    transition: fill 1s 3.2s;
+    fill: #fff;
+    -webkit-animation: animated-star-dash 3s linear forwards;
+            animation: animated-star-dash 3s linear forwards;
+    -webkit-animation-delay: .2s;
+            animation-delay: .2s; }
+  .wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star::before {
+    content: '';
+    display: block;
+    height: 0;
+    padding-top: 95.064072%; }
+  .wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star svg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .1; }
+    .wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star svg #star > path {
+      fill: rgba(255, 255, 255, 0);
+      -webkit-transition: fill;
+      transition: fill;
+      -webkit-transition-duration: 0s;
+              transition-duration: 0s;
+      -webkit-transition-delay: .2s;
+              transition-delay: .2s;
+      stroke-dasharray: 10000;
+      stroke-dashoffset: 10000; }
+
+@-webkit-keyframes animated-star-dash {
+  to {
+    stroke-dashoffset: 0; } }
+
+@keyframes animated-star-dash {
+  to {
+    stroke-dashoffset: 0; } }
 
 /*	Multi-Column
 ---------------------------------------------------------*/

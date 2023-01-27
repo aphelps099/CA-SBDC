@@ -761,6 +761,13 @@
 						element.addClass('animated');
 					}
 				});
+				$('.wp-block-crown-blocks-container.has-animated-star-bg > .container-bg > .inner > .animated-star:not(.animated)').each(function(i, el) {
+					var element = $(el);
+					if(element.offset().top <= scrollTop + (windowHeight * .75)) {
+						element.addClass('animated');
+					}
+				});
+	
 			};
 			animateScrollReveal();
 			$(window).on('load scroll', animateScrollReveal);
@@ -820,6 +827,13 @@
 			};
 			adjustContainerBGs();
 			$(window).on('load resize', adjustContainerBGs);
+
+			$('.wp-block-crown-blocks-container.has-animated-star-bg').each(function(i, el) {
+				var container = $(el);
+				var svg = $('#svg-asset-star svg').clone();
+				$('> .container-bg > .inner', container).append(svg);
+				svg.wrap('<div class="animated-star"></div>');
+			});
 
 		};
 

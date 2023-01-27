@@ -23,6 +23,8 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 			add_filter( 'login_headerurl', array( __CLASS__, 'filter_login_headerurl' ) );
 			add_filter( 'login_headertext', array( __CLASS__, 'filter_login_headertext' ) );
 
+			add_action( 'wp_footer', array( __CLASS__, 'output_svg_assets' ) );
+
 		}
 
 
@@ -129,6 +131,11 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 				$text = wp_get_attachment_image( $logo, 'medium_large', false, array( 'class' => 'dark' ) );
 			}
 			return $text;
+		}
+
+
+		public static function output_svg_assets() {
+			echo '<div id="svg-asset-star" class="svg-asset">' . ct_get_svg( 'assets/img/star.svg' ) . '</div>';
 		}
 
 
