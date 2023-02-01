@@ -21555,6 +21555,13 @@ nav.pagination {
 .svg-asset {
   display: none; }
 
+.text-circled {
+  display: inline-block;
+  border: 2px solid #0381C3;
+  border-radius: 50%;
+  padding-left: .5em;
+  padding-right: 0.5em; }
+
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-container-featured-image.alignfull,
 .wp-block-crown-blocks-container.alignfull + .wp-block-crown-blocks-promo.alignfull,
@@ -30027,3 +30034,7 @@ body.single-webinar_s #related-content {
 
 .wp-block-crown-blocks-featured-post-slider .action-subject-link .subject {
   text-transform: none; }
+
+.wp-block-crown-blocks-event-header > .header-bg {
+  background: -webkit-gradient(linear, right top, left bottom, from(#1A599A), to(#032040));
+  background: linear-gradient(to bottom left, #1A599A, #032040); }

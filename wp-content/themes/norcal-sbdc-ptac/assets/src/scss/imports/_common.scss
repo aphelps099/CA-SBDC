@@ -56,3 +56,9 @@
         text-transform: none;
     }
 }
+
+.wp-block-crown-blocks-event-header {
+    > .header-bg {
+        background: linear-gradient(to bottom left, $darker-blue, $dark-blue);
+    }
+}

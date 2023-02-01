@@ -16,3 +16,12 @@ foreach(array_map('trim', explode("\n", $blockImports)) as $line) {
 		}
 	}
 }
+
+// load assets for specific blogs
+$theme = wp_get_theme();
+
+if ( $theme->stylesheet == 'norcal-sbdc-ptac' ) {
+	add_action('enqueue_block_editor_assets', function() {
+		wp_enqueue_script('ptac-crown-blocks', site_url().'/wp-content/plugins/crown-blocks/assets/ptac/ptac-crown-blocks.js', array('lodash'));
+	});
+}

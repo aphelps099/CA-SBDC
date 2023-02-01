@@ -17,6 +17,11 @@ function ctc_enqueue_styles() {
 	wp_enqueue_style( 'crown-child-theme-style' );
 }
 
+add_action( 'enqueue_block_editor_assets', 'ctc_enqueue_block_editor_assets' );
+function ctc_enqueue_block_editor_assets() {
+	wp_enqueue_style('ptac-admin-style', Crown_Theme::get_child_uri() . '/assets/css/editor-style.css?ver=' . filemtime( Crown_Theme::get_child_dir() . '/assets/css/editor-style.css' ));
+}
+
 add_action( 'after_setup_theme', 'ctc_setup_editor_stylesheet', 2);
 function ctc_setup_editor_stylesheet() {
 	add_editor_style( 'assets/css/editor-style.css' );

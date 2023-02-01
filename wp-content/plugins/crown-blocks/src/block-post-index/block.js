@@ -39,6 +39,10 @@ registerBlockType('crown-blocks/post-index', {
 		for(let i = 4; i <= 20; i += 2) {
 			postsPerPageOptions.push({ label: i, value: i });
 		}
+		postsPerPageOptions.push({ label: 30, value: 30 });
+		postsPerPageOptions.push({ label: 50, value: 50 });
+		postsPerPageOptions.push({ label: 75, value: 75 });
+		postsPerPageOptions.push({ label: 100, value: 100 });
 
 		let blockClasses = [ className ];
 
