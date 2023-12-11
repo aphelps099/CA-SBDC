@@ -4,12 +4,13 @@ $files = JVM_Richtext_icons::get_svg_file_list();
 <div id="svg-file-list"<?php echo empty($files) ? ' style="display:none;"' : '';?>>
 <?php
     $css_class = JVM_Richtext_icons::get_class_prefix();
+    $nonce = wp_create_nonce( 'jvm-rich-text-icons-delete-icon' );
     foreach ($files as $file) {
         $pi = pathinfo($file);
         
         $icon_class = sanitize_title($pi['filename']);
 
-        echo '<a id="icon-dialog-link-'.$icon_class.'" href="#icon-dialog" class="icon-dialog-link icon" data-icon-class-full="'.$css_class . ' ' . $icon_class .'" data-icon-class="'. $icon_class .'" data-file="'.esc_js(basename($file)).'">';
+        echo '<a id="icon-dialog-link-'.$icon_class.'" href="#icon-dialog" class="icon-dialog-link icon" data-icon-class-full="'.$css_class . ' ' . $icon_class .'" data-icon-class="'. $icon_class .'" data-file="'.esc_js(basename($file)).'" data-nonce="'.$nonce.'">';
         echo '<i class="' . $css_class . ' ' . $icon_class . '" aria-hidden="true"> </i>';
         echo '</a>'."\n";
     }

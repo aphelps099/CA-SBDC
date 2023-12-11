@@ -1,16 +1,30 @@
 {
-  "apiVersion": 2,
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/grid-column",
   "parent": ["ghostkit/grid"],
-  "category": "design",
+  "category": "ghostkit",
   "title": "Column",
   "description": "A single column within a grid block.",
   "supports": {
+    "awb": true,
+    "ghostkit": {
+      "styles": {
+        "customSelector": ".ghostkit-grid &"
+      }
+    },
     "html": false,
     "className": false,
     "anchor": true,
-    "inserter": false,
-    "reusable": false
+    "reusable": false,
+    "spacing": {
+      "blockGap": true,
+      "__experimentalDefaultControls": {
+        "blockGap": true
+      }
+    },
+    "__experimentalLayout": true,
+    "layout": true
   },
   "attributes": {
     "sm_size": {

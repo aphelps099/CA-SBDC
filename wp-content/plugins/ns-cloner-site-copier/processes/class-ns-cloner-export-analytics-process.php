@@ -5,6 +5,8 @@
  * @package NS_Cloner
  */
 
+use NS_Cloner\WP_Background_Process;
+
 /**
  * Class NS_Cloner_Export_Analytics_Process
  */

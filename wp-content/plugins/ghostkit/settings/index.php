@@ -17,11 +17,6 @@ class GhostKit_Settings {
      * GhostKit_Settings constructor.
      */
     public function __construct() {
-        // work only if Gutenberg available.
-        if ( ! function_exists( 'register_block_type' ) ) {
-            return;
-        }
-
         // Load admin style sheet and JavaScript.
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
@@ -60,27 +55,28 @@ class GhostKit_Settings {
             return;
         }
 
-        $block_categories = array();
-        if ( function_exists( 'get_block_categories' ) ) {
-            $block_categories = get_block_categories( get_post() );
-        } elseif ( function_exists( 'gutenberg_get_block_categories' ) ) {
-            $block_categories = gutenberg_get_block_categories( get_post() );
-        }
+        $block_editor_context = new WP_Block_Editor_Context();
 
-        // enqueue blocks library.
-        wp_enqueue_script( 'wp-block-library' );
+        // Preload server-registered block schemas.
+        wp_add_inline_script(
+            'wp-blocks',
+            'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
+        );
 
         wp_add_inline_script(
             'wp-blocks',
-            sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( $block_categories ) ),
+            sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( $block_editor_context ) ) ),
             'after'
         );
+
+        // phpcs:ignore
+        do_action( 'enqueue_block_editor_assets' );
 
         // Ghost Kit Settings.
         wp_enqueue_script(
             'ghostkit-settings',
             ghostkit()->plugin_url . 'settings/index.min.js',
-            array( 'ghostkit-helper', 'wp-data', 'wp-element', 'wp-components', 'wp-api', 'wp-api-request', 'wp-i18n' ),
+            array( 'ghostkit-helper', 'lodash', 'wp-data', 'wp-element', 'wp-components', 'wp-api', 'wp-api-request', 'wp-i18n' ),
             filemtime( ghostkit()->plugin_path . 'settings/index.min.js' ),
             true
         );
@@ -93,9 +89,6 @@ class GhostKit_Settings {
                 'api_url'   => rest_url( 'ghostkit/v1/' ),
             )
         );
-
-        // phpcs:ignore
-        do_action( 'enqueue_block_editor_assets' );
 
         wp_enqueue_style( 'wp-components' );
 
@@ -125,7 +118,7 @@ class GhostKit_Settings {
             }
 
             // phpcs:ignore
-            wp_redirect( ghostkit()->go_pro_link() . '?utm_source=plugin&utm_medium=' . esc_attr( $medium ) . '&utm_campaign=go_pro&utm_content=2.24.1' );
+            wp_redirect( ghostkit()->go_pro_link() . '?utm_source=plugin&utm_medium=' . esc_attr( $medium ) . '&utm_campaign=go_pro&utm_content=3.1.2' );
             exit();
         }
     }
@@ -187,6 +180,17 @@ class GhostKit_Settings {
             'manage_options',
             'admin.php?page=ghostkit&sub_page=css_js'
         );
+
+        if ( GhostKit_Templates::is_allowed() ) {
+            add_submenu_page(
+                'ghostkit',
+                '',
+                esc_html__( 'Templates', 'ghostkit' ),
+                'manage_options',
+                'edit.php?post_type=ghostkit_template'
+            );
+        }
+
         add_submenu_page(
             'ghostkit',
             '',
@@ -196,15 +200,21 @@ class GhostKit_Settings {
             array( $this, 'go_pro_redirect' )
         );
 
-        add_menu_page(
-            esc_html__( 'Reusable Blocks', 'ghostkit' ),
-            esc_html__( 'Reusable Blocks', 'ghostkit' ),
-            'read',
-            'edit.php?post_type=wp_block',
-            '',
-            'dashicons-editor-table',
-            57
-        );
+        global $wp_version;
+
+        // Since WP 6.3 user have an ability to open the reusable blocks page
+        // From the Appearance -> Editor -> Patterns.
+        if ( ! version_compare( $wp_version, '6.3', '>=' ) ) {
+            add_menu_page(
+                esc_html__( 'Reusable Blocks', 'ghostkit' ),
+                esc_html__( 'Reusable Blocks', 'ghostkit' ),
+                'read',
+                'edit.php?post_type=wp_block',
+                '',
+                'dashicons-editor-table',
+                57
+            );
+        }
     }
 
     /**

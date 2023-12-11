@@ -1,0 +1,376 @@
+# Copyright (C) 2023 Gravity Wiz
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: GP Google Sheets 1.0.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cloned-perk---J7OmtHq\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-10-18T23:18:24+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: gp-google-sheets\n"
+
+#. Plugin Name of the plugin
+#: class-gp-google-sheets.php:2472
+#: class-gp-google-sheets.php:2500
+msgid "GP Google Sheets"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://gravitywiz.com/documentation/gravity-forms-google-sheets/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Automatically send and sync Gravity Forms data with Google Sheets - and unlock new possibilities for your data."
+msgstr ""
+
+#. Author of the plugin
+msgid "Gravity Wiz"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://gravitywiz.com/"
+msgstr ""
+
+#: class-gp-google-sheets.php:514
+#: class-gp-google-sheets.php:3011
+msgid "Create New Sheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:515
+msgid "Create a new sheet inside the configured Google Drive account."
+msgstr ""
+
+#: class-gp-google-sheets.php:519
+#: class-gp-google-sheets.php:2141
+#: class-gp-google-sheets.php:2175
+msgid "Disconnect"
+msgstr ""
+
+#: class-gp-google-sheets.php:520
+msgid "Deletes the authorization token that grants us permission to edit the Google Sheet."
+msgstr ""
+
+#: class-gp-google-sheets.php:524
+#: class-gp-google-sheets.php:2176
+msgid "Insert Test Row"
+msgstr ""
+
+#: class-gp-google-sheets.php:525
+msgid "Creates a new row in the Google Sheet containing sample data."
+msgstr ""
+
+#: class-gp-google-sheets.php:529
+#: class-gp-google-sheets.php:805
+msgid "Add Spreadsheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:530
+msgid "<p>Add a spreadsheet to give Populate Anything access to populate data from that spreadsheet.</p><p><b>Important:</b> Only the Google account connected in the Google Sheets Settings can be used to add new spreadsheets.</p>"
+msgstr ""
+
+#: class-gp-google-sheets.php:534
+#: class-gp-google-sheets.php:2137
+msgid "Legacy Token"
+msgstr ""
+
+#: class-gp-google-sheets.php:535
+msgid "<p>Legacy tokens were created if connecting to Google on Google Sheets Beta 1</p><p><b>Important:</b> It is recommended that you reconnect any feeds with a legacy token as these will be fully deprecated in a future release.</p>"
+msgstr ""
+
+#: class-gp-google-sheets.php:587
+#: class-gp-google-sheets.php:901
+msgid "Open the sheet"
+msgstr ""
+
+#. translators: placeholder is a link to the documentation.
+#: class-gp-google-sheets.php:784
+msgid "Populate Anything has access to the following spreadsheets. To populate data from these spreadsheets, select \"Google Sheet\" as the \"Type\" in the Populate Anything field settings. <a href=\"%s\" target=\"_blank\">Learn more</a>."
+msgstr ""
+
+#: class-gp-google-sheets.php:1626
+#: class-gp-google-sheets.php:2701
+msgid "Missing token. Ensure that the plugin is properly authenticated and the feed is properly configured."
+msgstr ""
+
+#: class-gp-google-sheets.php:1802
+#: class-gp-google-sheets.php:2837
+#: class-gp-google-sheets.php:2842
+msgid "Name"
+msgstr ""
+
+#: class-gp-google-sheets.php:1820
+msgid "Open Spreadsheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:1899
+msgid "Test row insertion failed."
+msgstr ""
+
+#: class-gp-google-sheets.php:1923
+msgid " Choose at least one field to send in the Column Mapping section."
+msgstr ""
+
+#: class-gp-google-sheets.php:1944
+msgid "Test row inserted successfully."
+msgstr ""
+
+#: class-gp-google-sheets.php:2017
+#: class-gp-google-sheets.php:2903
+msgid "Sheet Column"
+msgstr ""
+
+#: class-gp-google-sheets.php:2018
+#: class-gp-google-sheets.php:2904
+msgid "Column heading"
+msgstr ""
+
+#: class-gp-google-sheets.php:2139
+msgid "Connected to Google."
+msgstr ""
+
+#: class-gp-google-sheets.php:2140
+msgid "Connect"
+msgstr ""
+
+#: class-gp-google-sheets.php:2142
+#: class-gp-google-sheets.php:2208
+msgid "Error authenticating with Google:"
+msgstr ""
+
+#. translators: First placeholder is the plugin name, second is the error message
+#: class-gp-google-sheets.php:2144
+msgid "%1$s failed to connect to Google with error message: \"%2$s\". Check your Client ID and Client Secret then try again. If the issue persists, please <a href=\"https://gravitywiz.com/support/\" target=\"_blank\">contact support</a>."
+msgstr ""
+
+#: class-gp-google-sheets.php:2145
+msgid "Connecting to Google Sheets requires a valid <a href=\"https://gravitywiz.com/pricing\" target=\"_blank\">Gravity Perks license</a>."
+msgstr ""
+
+#: class-gp-google-sheets.php:2146
+#: class-gp-google-sheets.php:2207
+msgid "Error picking spreadsheet."
+msgstr ""
+
+#: class-gp-google-sheets.php:2200
+msgid "Obtain a Client ID and Client Secret from Google and save them in the corresponding boxes on this page before trying to use this feature. Alternatively, change Account to use the Default connection and try again."
+msgstr ""
+
+#: class-gp-google-sheets.php:2204
+msgid "Add New Column"
+msgstr ""
+
+#: class-gp-google-sheets.php:2205
+msgid "Select a Column"
+msgstr ""
+
+#. translators: placeholder is form name
+#: class-gp-google-sheets.php:2324
+msgid "%s Feeds"
+msgstr ""
+
+#: class-gp-google-sheets.php:2391
+msgid "Token Health"
+msgstr ""
+
+#: class-gp-google-sheets.php:2400
+msgid "Populate Anything Integration"
+msgstr ""
+
+#: class-gp-google-sheets.php:2420
+msgid "Action Scheduler"
+msgstr ""
+
+#: class-gp-google-sheets.php:2425
+msgid "Danger Zone! Make sure you know what you're doing here."
+msgstr ""
+
+#: class-gp-google-sheets.php:2435
+msgid ""
+"Are you sure you want to purge all uncomplete GP Google Sheets actions?\n"
+"\n"
+"If entries are not already in Google Sheets, you will need to reprocess the feeds to sync these entries."
+msgstr ""
+
+#: class-gp-google-sheets.php:2436
+msgid "Purge Action Scheduler"
+msgstr ""
+
+#: class-gp-google-sheets.php:2471
+msgid "Action Scheduler purge link has expired. Please go back and click the \"Purge Action Scheduler\" button again."
+msgstr ""
+
+#: class-gp-google-sheets.php:2496
+msgid "GP Google Sheets actions have been successfully purged."
+msgstr ""
+
+#. translators: %s is the number of rows deleted.
+#: class-gp-google-sheets.php:2499
+msgid "%s action was deleted."
+msgid_plural "%s actions were deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: class-gp-google-sheets.php:2513
+msgid "Install Populate Anything"
+msgstr ""
+
+#: class-gp-google-sheets.php:2521
+msgid "Upgrade License"
+msgstr ""
+
+#: class-gp-google-sheets.php:2524
+msgid "Activate Populate Anything"
+msgstr ""
+
+#: class-gp-google-sheets.php:2526
+msgid "Learn More"
+msgstr ""
+
+#: class-gp-google-sheets.php:2528
+msgid "Want to populate data from Google Sheets into your forms?"
+msgstr ""
+
+#: class-gp-google-sheets.php:2531
+msgid ""
+"Populate Anything pulls data directly from Google Sheets into Gravity Forms field\n"
+"\t\t\t\tchoices that users can select, or, as values — for calculations, conditional logic, or as defaults.\n"
+"\t\t\t\tFilter Google Sheets data live on your form based on conditions you set, or, dynamically with user input.\n"
+"\t\t\t\tBasically, your favorite Populate Anything features, but with data from Google Sheets."
+msgstr ""
+
+#. translators: placeholder is the plugin short title
+#: class-gp-google-sheets.php:2573
+msgid "Back to %s Settings"
+msgstr ""
+
+#: class-gp-google-sheets.php:2579
+msgid "Activate Perk"
+msgstr ""
+
+#: class-gp-google-sheets.php:2715
+msgid "Entry marked as spam"
+msgstr ""
+
+#: class-gp-google-sheets.php:2842
+msgid "Enter a feed name to uniquely identify this feed. If creating a new sheet, this will be used as the sheet's name."
+msgstr ""
+
+#: class-gp-google-sheets.php:2847
+msgid "Google Sheets Settings"
+msgstr ""
+
+#: class-gp-google-sheets.php:2859
+msgid "Google Sheet URL"
+msgstr ""
+
+#: class-gp-google-sheets.php:2869
+msgid "Google Sheet ID"
+msgstr ""
+
+#: class-gp-google-sheets.php:2880
+msgid "Sheet Was Picked"
+msgstr ""
+
+#: class-gp-google-sheets.php:2886
+msgid "Google Picker Token"
+msgstr ""
+
+#: class-gp-google-sheets.php:2896
+msgid "Column Mapping"
+msgstr ""
+
+#: class-gp-google-sheets.php:2913
+msgid "Additional Options"
+msgstr ""
+
+#: class-gp-google-sheets.php:2937
+msgid "Update &amp; Delete Rows"
+msgstr ""
+
+#: class-gp-google-sheets.php:2940
+msgid "When entries are edited, also edit the corresponding row in the Google Sheet. Delete rows from the Sheet when entries are moved to trash or marked as spam. Entries are re-appended to the bottom of the Sheet after being restored from trash or spam."
+msgstr ""
+
+#: class-gp-google-sheets.php:2943
+msgid "Edit rows when entries are edited, and delete rows when entries are trashed or marked as spam"
+msgstr ""
+
+#: class-gp-google-sheets.php:2953
+msgid "Conditional Logic"
+msgstr ""
+
+#: class-gp-google-sheets.php:2993
+msgid "Select Existing Sheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:2996
+msgid "Select Existing Sheet (enter Gravity Perks license under Forms &raquo; Perks)"
+msgstr ""
+
+#: class-gp-google-sheets.php:3004
+#: class-gp-google-sheets.php:3061
+msgid "Spreadsheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:3007
+msgid "The Google Sheet to be populated with entries. You may create a new sheet or select an existing sheet."
+msgstr ""
+
+#: class-gp-google-sheets.php:3023
+msgid "Please create a new sheet or select an existing sheet."
+msgstr ""
+
+#. translators: %s is an error message.
+#: class-gp-google-sheets.php:3033
+msgid "Unable to create sheet. Error: %s"
+msgstr ""
+
+#: class-gp-google-sheets.php:3041
+msgid "Sheet"
+msgstr ""
+
+#: class-gp-google-sheets.php:3044
+msgid "Select the specific sub-sheet you would like to store Gravity Forms entry in."
+msgstr ""
+
+#: class-gp-google-sheets.php:3064
+msgid "The full web address of the Google Sheet to be populated with entries. This URL will be populated for you when the Sheet is created."
+msgstr ""
+
+#: class-gp-google-sheets.php:3175
+msgid "You must authenticate a Google Account before creating a feed."
+msgstr ""
+
+#: class-gp-google-sheets.php:3177
+msgid "Visit Forms → Settings → "
+msgstr ""
+
+#: class-gp-google-sheets.php:3784
+#: class-gp-google-sheets.php:3785
+msgid "M j, Y \\a\\t g:ia"
+msgstr ""
+
+#: class-gp-google-sheets.php:3807
+msgid "To reprocess this feed, please reauthenticate with Google Sheets."
+msgstr ""
+
+#: includes/class-forms.php:174
+msgid "This is a test."
+msgstr ""
+
+#: includes/class-writer.php:81
+msgid "Unable to write to Google Sheets as row data is empty."
+msgstr ""
+
+#: includes/class-writer.php:85
+msgid "Unable to write to Google Sheets as there are no columns specified for the request."
+msgstr ""
+
+#: includes/class-writer.php:89
+msgid "Unable to write to Google Sheets as there are no rows specified for the request."
+msgstr ""

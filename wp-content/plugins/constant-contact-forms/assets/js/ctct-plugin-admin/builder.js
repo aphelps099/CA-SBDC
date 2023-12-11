@@ -109,7 +109,6 @@ window.CTCTBuilder = {};
 		// If we get a row added, then do our stuff.
 		$( document ).on( 'cmb2_add_row', ( newRow ) => { // eslint-disable-line no-unused-vars
 
-			// Automatically set new rows to be 'custom' field type.
 			$( '#custom_fields_group_repeat .postbox' ).last().find( '.map select' ).val( 'none' );
 
 			that.modifyFields();
@@ -150,6 +149,38 @@ window.CTCTBuilder = {};
 				$( textFields[i] ).val( '' );
 			}
 		} );
+
+		$( document ).ready( () => {
+			var $addressbox = $('#address_settings');
+			if ( $addressbox.length > 0 ) {
+				var $includes_checked = $addressbox.find('.cmb2-id--ctct-address-fields-include input[type="checkbox"]:checked');
+				var required_items = $addressbox.find('.cmb2-id--ctct-address-fields-require input[type="checkbox"]');
+				if ( $includes_checked.length === 0 ) {
+					$(required_items).each( function(){
+						$(this).prop('disabled', true);
+					});
+				}
+
+				$addressbox.find('.cmb2-id--ctct-address-fields-include input[type="checkbox"]').on('change', function () {
+					var checked_value = this;
+					if ( checked_value.checked ) {
+						$(required_items).each(function () {
+							if ( checked_value.value === $(this).val() ) {
+								$(this).prop('disabled', false);
+							}
+						});
+					} else {
+						$(required_items).each(function () {
+							if (checked_value.value === $(this).val()) {
+								$(this).prop('checked', false);
+								$(this).prop('disabled', true);
+							}
+						});
+					}
+				})
+			}
+		} );
+
 	};
 
 	/**
@@ -171,8 +202,34 @@ window.CTCTBuilder = {};
 
 			// Bind our leave warning.
 			that.bindLeaveWarning();
+
+			// Cached? Need to somehow listen for changed amounts.
+			$('.form-field-is-custom-field').on('keyup', that.noUniqueWarning);
 		} );
 	};
+
+	that.validateUniqueFieldLabels = () => {
+		let cfValues = $('.form-field-is-custom-field').map(function(){
+			return $(this).val();
+		}).get();
+		let cfValuesTotal = cfValues.length;
+		let cfValuesFiltered = cfValues.filter(
+			function(item,position) {
+				return cfValues.indexOf(item) === position;
+			}
+		);
+		let cfValuesFilteredTotal = cfValuesFiltered.length;
+
+		return cfValuesTotal === cfValuesFilteredTotal;
+	}
+
+	that.noUniqueWarning = function() {
+		if (that.validateUniqueFieldLabels()) {
+			$(this).siblings('.ctct-warning').removeClass('ctct-warning-no-unqiue');
+		} else {
+			$(this).siblings('.ctct-warning').addClass('ctct-warning-no-unqiue');
+		}
+	}
 
 	/**
 	 * We need to manipulate our form builder a bit. We do this here.
@@ -184,10 +241,10 @@ window.CTCTBuilder = {};
 
 		// Set that we haven't found an email.
 		var foundEmail = false;
+		var cfnumber = 1;
 
 		// Loop through all fields to modify them.
 		$( '#cmb2-metabox-ctct_2_fields_metabox #custom_fields_group_repeat .cmb-repeatable-grouping' ).each( function( key, value ) {
-
 			// Set some of our helper paramaters.
 			var $fieldParent = $( this ).find( '.cmb-field-list' );
 			var $button       = $( $fieldParent ).find( '.cmb-remove-group-row' );
@@ -198,6 +255,12 @@ window.CTCTBuilder = {};
 			var $fieldTitle   = $( this ).find( 'h3' );
 			var $labelField   = $( this ).find( 'input[name*="_ctct_field_label"]' );
 			var $descField    = $( this ).find( 'input[name*="_ctct_field_desc"]' );
+
+			if ( $mapName === 'Custom Text Field' ) {
+				$mapName += ' ';
+				$mapName += cfnumber.toString();
+				cfnumber++;
+			}
 
 			// Set our field row to be the name of the selected option.
 			$fieldTitle.text( $mapName );
@@ -237,6 +300,13 @@ window.CTCTBuilder = {};
 
 				// and the remove button.
 				$button.show();
+
+				let mapvalue = $($map).val();
+				if ( 'custom' === $( $map ).val() ) {
+					$labelField.addClass('form-field-is-custom-field');
+				} else {
+					$labelField.removeClass('form-field-is-custom-field')
+				}
 			}
 
 			// Set the placeholder text if there's something to set.

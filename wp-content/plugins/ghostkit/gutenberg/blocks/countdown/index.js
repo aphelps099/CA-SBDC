@@ -12,41 +12,34 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-countdown', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/countdown/',
     customStylesCallback(attributes) {
       const styles = {
-        '--gkt-countdown--unit-number__font-size':
-          'undefined' !== typeof attributes.numberFontSize
-            ? `${attributes.numberFontSize}px`
-            : undefined,
-        '--gkt-countdown--unit-number__color': attributes.numberColor,
-        '--gkt-countdown--unit-label__font-size':
-          'undefined' !== typeof attributes.labelFontSize
-            ? `${attributes.labelFontSize}px`
-            : undefined,
-        '--gkt-countdown--unit-label__color': attributes.labelColor,
+        '--gkt-countdown--unit-number__font-size': undefined,
+        '--gkt-countdown--unit-number__color': attributes.numberColor || undefined,
+        '--gkt-countdown--unit-label__font-size': undefined,
+        '--gkt-countdown--unit-label__color': attributes.labelColor || undefined,
       };
 
+      if (typeof attributes.numberFontSize !== 'undefined' && attributes.numberFontSize !== '') {
+        styles['--gkt-countdown--unit-number__font-size'] = `${attributes.numberFontSize}px`;
+      }
+      if (typeof attributes.labelFontSize !== 'undefined' && attributes.labelFontSize !== '') {
+        styles['--gkt-countdown--unit-label__font-size'] = `${attributes.labelFontSize}px`;
+      }
+
       return styles;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
     },
   },
   example: {
     attributes: {
       units: ['hours', 'minutes', 'seconds'],
       unitsAlign: 'center',
-      ghostkitId: 'example-countdown',
-      ghostkitClassname: 'ghostkit-custom-example-countdown',
+      ghostkit: {
+        id: 'example-countdown',
+      },
       className: 'ghostkit-custom-example-countdown',
     },
   },

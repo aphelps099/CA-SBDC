@@ -1,10 +1,9 @@
 <?php
-
 /**
  * Plugin Name: EditorsKit
  * Plugin URI: https://editorskit.com/
  * Description: EditorsKit is a suite of <strong>page building block options</strong> for the Gutenberg block editor.
- * Version: 1.34.2
+ * Version: 1.40.3
  * Author: Munir Kamal
  * Author URI: https://www.munirkamal.com/
  * Text Domain: block-options
@@ -71,7 +70,7 @@ if ( ! class_exists( 'EditorsKit' ) ) :
 		 * @return void
 		 */
 		public function __clone() {
-			 // Cloning instances of the class is forbidden.
+			// Cloning instances of the class is forbidden.
 			_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheating huh?', 'block-options' ), '1.0' );
 		}
 
@@ -96,9 +95,10 @@ if ( ! class_exists( 'EditorsKit' ) ) :
 		 */
 		private function setup_constants() {
 			$this->define( 'EDITORSKIT_DEBUG', true );
-			$this->define( 'EDITORSKIT_VERSION', '1.34.2' );
+			$this->define( 'EDITORSKIT_VERSION', '1.40.3' );
 			$this->define( 'EDITORSKIT_HAS_PRO', false );
 			$this->define( 'EDITORSKIT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+			$this->define( 'EDITORSKIT_PLUGIN_ADDON_PATH', plugin_dir_path( __FILE__ ) . 'includes/addons/' );
 			$this->define( 'EDITORSKIT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 			$this->define( 'EDITORSKIT_PLUGIN_FILE', __FILE__ );
 			$this->define( 'EDITORSKIT_PLUGIN_BASE', plugin_basename( __FILE__ ) );
@@ -136,6 +136,10 @@ if ( ! class_exists( 'EditorsKit' ) ) :
 			require_once EDITORSKIT_PLUGIN_DIR . 'includes/helper.php';
 			require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-shortcodes.php';
 			require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-block-locking.php';
+			require_once EDITORSKIT_PLUGIN_DIR . 'includes/notices/class-editorskit-support-notice.php';
+			require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-plugin-shortcuts.php';
+
+			require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-addon-manager.php';
 
 			if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 				require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-welcome.php';
@@ -202,7 +206,7 @@ if ( ! class_exists( 'EditorsKit' ) ) :
 		 * @return void
 		 */
 		public function load_textdomain() {
-			 load_plugin_textdomain( 'block-options', false, dirname( plugin_basename( EDITORSKIT_PLUGIN_DIR ) ) . '/languages/' );
+			load_plugin_textdomain( 'block-options', false, dirname( plugin_basename( EDITORSKIT_PLUGIN_DIR ) ) . '/languages/' );
 		}
 
 		/**
@@ -235,7 +239,7 @@ endif; // End if class_exists check.
  * @return object|EditorsKit The one true EditorsKit Instance.
  */
 function editorskit() {
-	 return EditorsKit::instance();
+	return EditorsKit::instance();
 }
 
 // Get Plugin Running.

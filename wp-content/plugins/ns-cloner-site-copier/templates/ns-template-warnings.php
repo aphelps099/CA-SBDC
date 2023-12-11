@@ -167,7 +167,7 @@ if ( is_wp_error( $test_response ) || 401 === wp_remote_retrieve_response_code( 
 			__( 'If you have basic auth enabled, you can <a href="%s" target="_blank">add a workaround</a>.', 'ns-cloner-site-copier' ),
 			ns_wp_kses_allowed()
 		),
-		'https://neversettle.it/documentation/ns-cloner/cloning-on-a-password-protected-site/'
+		'https://support.neversettle.it/article/16-cloning-on-a-password-protected-site'
 	);
 	if ( is_wp_error( $test_response ) ) {
 		echo esc_html( ' Error: ' . $test_response->get_error_message() . '.' );

@@ -31,8 +31,7 @@ svg.ghostkit-svg-icon {
   border: var(--gkt-icon-spinner__border-size) solid transparent;
   border-left: var(--gkt-icon-spinner__border-size) solid var(--gkt-icon-spinner__color);
   border-radius: 50%;
-  -webkit-animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
-          animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
+  animation: ghostkit-icon-spinner var(--gkt-icon-spinner__speed) infinite linear;
 
   &::after {
     position: absolute;
@@ -45,11 +44,6 @@ svg.ghostkit-svg-icon {
     border: var(--gkt-icon-spinner__border-size) solid var(--gkt-icon-spinner--background__color);
     border-radius: 50%;
     opacity: var(--gkt-icon-spinner--background__opacity);
-  }
-}
-@-webkit-keyframes ghostkit-icon-spinner {
-  100% {
-    transform: rotate(360deg);
   }
 }
 @keyframes ghostkit-icon-spinner {

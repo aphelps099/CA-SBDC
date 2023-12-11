@@ -4,16 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74
+class ComposerStaticInit7c226d4e6b0f128911342650a0b655a4
 {
-    public static $files = array (
-        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
         'R' => 
         array (
-            'React\\Promise\\' => 14,
             'ReCaptcha\\' => 10,
         ),
         'P' => 
@@ -24,12 +19,6 @@ class ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74
         array (
             'Monolog\\' => 8,
         ),
-        'G' => 
-        array (
-            'GuzzleHttp\\Stream\\' => 18,
-            'GuzzleHttp\\Ring\\' => 16,
-            'GuzzleHttp\\' => 11,
-        ),
         'D' => 
         array (
             'Defuse\\Crypto\\' => 14,
@@ -37,10 +26,6 @@ class ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74
     );
 
     public static $prefixDirsPsr4 = array (
-        'React\\Promise\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/promise/src',
-        ),
         'ReCaptcha\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/recaptcha/src/ReCaptcha',
@@ -53,40 +38,22 @@ class ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
-        'GuzzleHttp\\Stream\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/streams/src',
-        ),
-        'GuzzleHttp\\Ring\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/ringphp/src',
-        ),
-        'GuzzleHttp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
-        ),
         'Defuse\\Crypto\\' => 
         array (
             0 => __DIR__ . '/..' . '/defuse/php-encryption/src',
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'C' => 
-        array (
-            'Ctct' => 
-            array (
-                0 => __DIR__ . '/..' . '/constantcontact/constantcontact/src',
-            ),
-        ),
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit14807dcd9d5103e83200a4f9c6a0bf74::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7c226d4e6b0f128911342650a0b655a4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7c226d4e6b0f128911342650a0b655a4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit7c226d4e6b0f128911342650a0b655a4::$classMap;
 
         }, null, ClassLoader::class);
     }

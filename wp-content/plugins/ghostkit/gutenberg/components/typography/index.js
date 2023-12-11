@@ -25,7 +25,7 @@ const { GHOSTKIT } = window;
  * @return {*} - Current font or default label if font is empty.
  */
 function getDefaultFont(fontFamily) {
-  return '' === fontFamily ? __('Default Site Font', 'ghostkit') : fontFamily;
+  return fontFamily === '' ? __('Default Site Font', 'ghostkit') : fontFamily;
 }
 
 /**
@@ -44,11 +44,11 @@ function getFonts(category = 'google-fonts') {
       const fontData = fonts[fontFamilyCategory].fonts[fontKey];
       let fontValue = fontData.name;
 
-      if ('default' === fontFamilyCategory) {
+      if (fontFamilyCategory === 'default') {
         fontValue = '';
       }
 
-      if (category === fontFamilyCategory || 'default' === fontFamilyCategory) {
+      if (category === fontFamilyCategory || fontFamilyCategory === 'default') {
         fontList.push({
           value: fontValue,
           label: fontData.label || fontData.name,
@@ -147,11 +147,11 @@ function getFontWeights(font, fontFamilyCategory) {
   const fontWeights = [];
 
   if (
-    '' !== font &&
-    '' !== fontFamilyCategory &&
-    'undefined' !== typeof font &&
-    'undefined' !== typeof fontFamilyCategory &&
-    'undefined' !== typeof fonts[fontFamilyCategory]
+    font !== '' &&
+    fontFamilyCategory !== '' &&
+    typeof font !== 'undefined' &&
+    typeof fontFamilyCategory !== 'undefined' &&
+    typeof fonts[fontFamilyCategory] !== 'undefined'
   ) {
     Object.keys(fonts[fontFamilyCategory].fonts).forEach((fontKey) => {
       if (fonts[fontFamilyCategory].fonts[fontKey].name === font) {
@@ -171,7 +171,9 @@ function getFontWeights(font, fontFamilyCategory) {
  */
 export default class Typography extends Component {
   render() {
-    const { fontFamilyCategory } = this.props;
+    let { fontFamilyCategory } = this.props;
+
+    fontFamilyCategory = fontFamilyCategory === 'default' ? 'google-fonts' : fontFamilyCategory;
 
     const {
       onChange,
@@ -186,12 +188,10 @@ export default class Typography extends Component {
       fontWeights = getFontWeights(getDefaultFont(fontFamily), fontFamilyCategory),
     } = this.props;
 
-    const fontsIcon = `icon-typography-${
-      'default' === fontFamilyCategory ? 'google-fonts' : fontFamilyCategory
-    }`;
+    const fontsIcon = `icon-typography-${fontFamilyCategory}`;
     const allowFontSelectors = applyFilters(
       'ghostkit.typography.allow.fonts',
-      'adobe-fonts' !== fontFamilyCategory && 'custom-fonts' !== fontFamilyCategory,
+      fontFamilyCategory !== 'adobe-fonts' && fontFamilyCategory !== 'custom-fonts',
       fontFamilyCategory
     );
     const fontFamilyValue = {
@@ -200,14 +200,8 @@ export default class Typography extends Component {
       fontFamilyCategory,
     };
     const fontWeightValue = { value: fontWeight, label: getFontWeightLabel(fontWeight) };
-    const fontSizeValue = 'undefined' === typeof fontSize ? '' : fontSize;
-    let fontFamilies;
-
-    if ('default' === fontFamilyCategory) {
-      fontFamilies = getFonts('google-fonts');
-    } else {
-      fontFamilies = getFonts(fontFamilyCategory);
-    }
+    const fontSizeValue = typeof fontSize === 'undefined' ? '' : fontSize;
+    const fontFamilies = getFonts(fontFamilyCategory);
 
     // Find actual label.
     if (fontFamilyValue.value) {
@@ -226,7 +220,7 @@ export default class Typography extends Component {
       >
         <h4>{label}</h4>
         <div className="ghostkit-control-typography">
-          {'undefined' !== typeof fontFamilyCategory ? (
+          {typeof fontFamilyCategory !== 'undefined' ? (
             <DropdownMenu
               icon={getIcon(fontsIcon, false)}
               label={__('Font Family Category', 'ghostkit')}
@@ -295,26 +289,26 @@ export default class Typography extends Component {
             ''
           )}
           <ApplyFilters name="ghostkit.typography.fontFamilySelector.info" props={this.props}>
-            {'adobe-fonts' === fontFamilyCategory ? (
+            {fontFamilyCategory === 'adobe-fonts' ? (
               <div className="ghostkit-typography-information-control ghostkit-typography-font-control">
                 {__(
                   'Adobe Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ',
                   'ghostkit'
                 )}
-                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=adobe_fonts&utm_content=2.24.1">
+                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=adobe_fonts&utm_content=3.1.2">
                   https://ghostkit.io/pricing/
                 </ExternalLink>
               </div>
             ) : (
               ''
             )}
-            {'custom-fonts' === fontFamilyCategory ? (
+            {fontFamilyCategory === 'custom-fonts' ? (
               <div className="ghostkit-typography-information-control ghostkit-typography-font-control">
                 {__(
                   'Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ',
                   'ghostkit'
                 )}
-                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=custom_fonts&utm_content=2.24.1">
+                <ExternalLink href="https://ghostkit.io/pricing/?utm_source=plugin&utm_medium=settings&utm_campaign=custom_fonts&utm_content=3.1.2">
                   https://ghostkit.io/pricing/
                 </ExternalLink>
               </div>
@@ -322,7 +316,7 @@ export default class Typography extends Component {
               ''
             )}
           </ApplyFilters>
-          {'undefined' !== typeof fontFamily && allowFontSelectors ? (
+          {typeof fontFamily !== 'undefined' && allowFontSelectors ? (
             <div className="ghostkit-typography-font-control">
               <Tooltip text={__('Font Family', 'ghostkit')}>
                 <div>
@@ -332,6 +326,7 @@ export default class Typography extends Component {
                       onChange({
                         fontFamily: opt && opt.value ? opt.value : '',
                         fontWeight: opt && opt.value ? '400' : '',
+                        fontFamilyCategory,
                       });
                     }}
                     options={fontFamilies}
@@ -345,7 +340,7 @@ export default class Typography extends Component {
           ) : (
             ''
           )}
-          {'undefined' !== typeof fontWeight && allowFontSelectors ? (
+          {typeof fontWeight !== 'undefined' && allowFontSelectors ? (
             <div className="ghostkit-typography-weight-control">
               <Tooltip text={__('Font Weight', 'ghostkit')}>
                 <div>
@@ -368,7 +363,7 @@ export default class Typography extends Component {
           ) : (
             ''
           )}
-          {'undefined' !== typeof fontSize ? (
+          {typeof fontSize !== 'undefined' ? (
             <div className="ghostkit-typography-size-control">
               <Tooltip text={__('Font Size', 'ghostkit')}>
                 <div>
@@ -390,7 +385,7 @@ export default class Typography extends Component {
           ) : (
             ''
           )}
-          {'undefined' !== typeof lineHeight ? (
+          {typeof lineHeight !== 'undefined' ? (
             <div className="ghostkit-typography-line-control">
               <Tooltip text={__('Line Height', 'ghostkit')}>
                 <div>
@@ -412,7 +407,7 @@ export default class Typography extends Component {
           ) : (
             ''
           )}
-          {'undefined' !== typeof letterSpacing ? (
+          {typeof letterSpacing !== 'undefined' ? (
             <div className="ghostkit-typography-letter-control">
               <Tooltip text={__('Letter Spacing', 'ghostkit')}>
                 <div>

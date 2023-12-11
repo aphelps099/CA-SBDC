@@ -1,0 +1,57 @@
+@import "../variables";
+
+.ghostkit-pro-google-maps-marker-options {
+  clear: both;
+}
+
+// addition options toggle
+.ghostkit-pro-google-maps-marker-options-toggle {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 4px 0;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: none;
+
+  > span {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%) scale(0.6);
+    transform-origin: 100% 50%;
+  }
+}
+
+.ghostkit-pro-google-maps-marker-options-content {
+  padding-top: 1.5em;
+
+  > div {
+    margin-bottom: 1.5em;
+    clear: both;
+  }
+}
+
+// icon
+.ghostkit-pro-google-maps-marker-options-content-icon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ghostkit-google-maps-icon-reset {
+  float: right;
+}
+
+// info window
+.ghostkit-pro-google-maps-marker-options-content-info-window-text .editor-rich-text {
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

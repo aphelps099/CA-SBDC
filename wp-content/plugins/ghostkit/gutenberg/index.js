@@ -31,7 +31,7 @@ import './plugins';
 /**
  * Icon
  */
-import GhostKitCategoryIcon from './icons/ghostkit-category.svg';
+import GhostKitLogoIcon from './icons/ghostkit-logo.svg';
 
 /**
  * Disable Blocks
@@ -41,21 +41,11 @@ import './disable-blocks';
 /**
  * Internal dependencies
  */
-const { registerBlockCollection, updateCategory } = wp.blocks;
+const { updateCategory } = wp.blocks;
 
 /**
  * Add category icon.
  */
-const categoryIcon = <GhostKitCategoryIcon className="components-panel__icon" />;
-
-// Collections.
-if ('undefined' !== typeof registerBlockCollection) {
-  registerBlockCollection('ghostkit', {
-    title: 'Ghost Kit',
-    icon: categoryIcon,
-  });
-} else if (updateCategory) {
-  updateCategory('ghostkit', {
-    icon: categoryIcon,
-  });
-}
+updateCategory('ghostkit', {
+  icon: <GhostKitLogoIcon />,
+});

@@ -205,10 +205,21 @@ function ns_wp_validate_site( $site_name, $site_title ) {
 			$errors[] = __( 'Sorry, that site already exists!', 'ns-cloner-site-copier' );
 		}
 		// Validate against WP illegal / reserved names.
-		$illegal_names  = get_site_option( 'illegal_names', array() );
-		$illegal_dirs   = get_subdirectory_reserved_names();
+		$illegal_names = get_site_option( 'illegal_names', array() );
+		$illegal_dirs  = get_subdirectory_reserved_names();
+
+		// This should never happen, but there are times the options is empty and this is not an array.
+		if ( ! is_array( $illegal_names ) ) {
+			$illegal_names = array();
+		}
+
+		// Check if directories is array as this can be overriden by a filter.
+		if ( ! is_array( $illegal_dirs ) ) {
+			$illegal_dirs = array();
+		}
+
 		$illegal_values = is_subdomain_install() ? $illegal_names : array_merge( $illegal_names, $illegal_dirs );
-		if ( in_array( $site_name, $illegal_values, true ) ) {
+		if ( is_array( $illegal_values ) && in_array( $site_name, $illegal_values, true ) ) {
 			$errors[] = __( 'That URL is reserved by WordPress.', 'ns-cloner-site-copier' );
 		}
 	}
@@ -359,6 +370,17 @@ function ns_sql_create_table_query( $source_table, $target_table, $source_prefix
 }
 
 /**
+ * Set the foreign key restraint for cloning process.
+ *
+ * @param integer $status Defaults to 1 Set to 0 to remove constraints.
+ *
+ * @return void
+ */
+function ns_sql_foreign_key_checks( $status = 1 ) {
+	ns_cloner()->db->query( ns_cloner()->db->prepare( 'SET foreign_key_checks = %d', $status ) );
+}
+
+/**
  * Add backquotes to tables and db names in SQL queries from phpMyAdmin.
  *
  * @param mixed $value Data to wrap in backquotes.
@@ -470,4 +492,17 @@ function ns_reorder_tables( $tables ) {
 		array_unshift( $tables, $value );
 	}
 	return $tables;
+}
+
+/**
+ * Check if site registration is active network wide.
+ * This does a check on network admin options if site registration is allowed.
+ * This function is mainly used to determine loading the plugin functionality for some frontend actions.
+ *
+ * @return bool
+ */
+function ns_is_signup_allowed() {
+	$active_signup = get_site_option( 'registration', 'none' );
+	$active_signup = apply_filters( 'wpmu_active_signup', $active_signup );
+	return ( 'none' !== $active_signup );
 }

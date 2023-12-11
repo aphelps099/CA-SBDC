@@ -3,21 +3,20 @@
  */
 import getIcon from '../../utils/get-icon';
 import ApplyFilters from '../../components/apply-filters';
+import ColorPalette from '../../components/color-palette';
 
-import { BadgePopover } from './badge-popover';
+import BadgePopover from './badge-popover';
 
 /**
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
 
-const { Component, Fragment } = wp.element;
-
-const { ToolbarGroup, Button } = wp.components;
+const { Component } = wp.element;
 
 const { toggleFormat, applyFormat, getActiveFormat } = wp.richText;
 
-const { RichTextToolbarButton, ColorPalette, BlockControls } = wp.blockEditor;
+const { RichTextToolbarButton } = wp.blockEditor;
 
 export const name = 'ghostkit/badge';
 
@@ -90,7 +89,7 @@ export const settings = {
     }
 
     render() {
-      const { value, isActive } = this.props;
+      const { value, isActive, contentRef } = this.props;
 
       const { openedPopover } = this.state;
 
@@ -101,44 +100,23 @@ export const settings = {
       }
 
       return (
-        <Fragment>
-          {isActive ? (
-            <BlockControls>
-              <ToolbarGroup>
-                <Button
-                  icon={
-                    <Fragment>
-                      {getIcon('icon-badge')}
-                      {currentColor ? (
-                        <span
-                          className="ghostkit-format-badge-button__indicator"
-                          style={{ background: currentColor }}
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </Fragment>
-                  }
-                  onClick={() => {
-                    this.setState({
-                      openedPopover: !openedPopover,
-                    });
-                  }}
-                />
-              </ToolbarGroup>
-            </BlockControls>
-          ) : (
-            <RichTextToolbarButton
-              icon={getIcon('icon-badge')}
-              title={__('Badge', 'ghostkit')}
-              onClick={() => {
+        <>
+          <RichTextToolbarButton
+            icon={getIcon('icon-badge')}
+            title={__('Badge', 'ghostkit')}
+            onClick={() => {
+              if (!isActive) {
                 this.toggleFormat();
-              }}
-              isActive={isActive}
-            />
-          )}
+              }
+
+              this.setState({
+                openedPopover: !openedPopover,
+              });
+            }}
+            isActive={isActive}
+          />
           {isActive && openedPopover ? (
-            <BadgePopover value={value} name={name}>
+            <BadgePopover value={value} name={name} contentRef={contentRef}>
               <ApplyFilters
                 name="ghostkit.editor-format.controls"
                 property="background"
@@ -151,13 +129,13 @@ export const settings = {
                   onChange={(color) => {
                     this.toggleFormat(color, !color);
                   }}
+                  alpha
+                  gradient
                 />
               </ApplyFilters>
             </BadgePopover>
-          ) : (
-            ''
-          )}
-        </Fragment>
+          ) : null}
+        </>
       );
     }
   },

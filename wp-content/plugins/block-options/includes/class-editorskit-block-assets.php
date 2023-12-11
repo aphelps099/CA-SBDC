@@ -181,6 +181,10 @@ class EditorsKit_Block_Assets {
 			'supports' => array(
 				'color_palette' => get_theme_support( 'editorskit-color-palette-classnames' ),
 			),
+			'addons'   => array(
+				'template_library' => Editorskit_Addon_Manager::is_addon_active( 'editorskit-addon-template-library' ),
+				'styles_manager'   => Editorskit_Addon_Manager::is_addon_active( 'editorskit-addon-styles-manager' ),
+			),
 		);
 
 		wp_add_inline_script( $this->slug . '-editor', 'window.editorskitInfo = ' . wp_json_encode( $global ) . ';', 'before' );

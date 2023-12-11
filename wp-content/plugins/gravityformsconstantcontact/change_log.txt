@@ -1,3 +1,8 @@
+### 1.7 | 2022-10-26
+- Updated feed processing to prevent delays in form submission by running in the background.
+- Updated token refresh procedure so that it retries when there is an error, reducing service disconnections.
+
+
 ### 1.6 | 2022-03-10
 - Fixed an issue connecting to new Constant Contact apps.
 - Updated the connection method to prevent existing apps from breaking as of March 31, 2022.

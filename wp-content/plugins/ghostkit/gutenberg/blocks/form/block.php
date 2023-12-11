@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once $this->plugin_path . 'gutenberg/blocks/form/field-attributes/index.php';
-require_once $this->plugin_path . 'gutenberg/blocks/form/field-label/index.php';
-require_once $this->plugin_path . 'gutenberg/blocks/form/field-description/index.php';
+require_once ghostkit()->plugin_path . 'gutenberg/blocks/form/field-attributes/index.php';
+require_once ghostkit()->plugin_path . 'gutenberg/blocks/form/field-label/index.php';
+require_once ghostkit()->plugin_path . 'gutenberg/blocks/form/field-description/index.php';
 
 /**
  * Class GhostKit_Form_Block
@@ -59,21 +59,11 @@ class GhostKit_Form_Block {
      * Save post data and redirect after form submitted.
      */
     public function get_post_data() {
-        if ( ! is_admin() && ! session_id() ) {
-            session_start();
-        }
-
         // phpcs:disable
         if ( ! is_admin() && isset( $_POST['ghostkit_form_id'] ) ) {
-            $_SESSION['ghostkit_form_submit_post'] = $_POST;
-            wp_redirect( $_SERVER['REQUEST_URI'] );
-            exit;
+            $this->form_post_data = $_POST;
         }
         // phpcs:enable
-
-        if ( isset( $_SESSION['ghostkit_form_submit_post'] ) ) {
-            $this->form_post_data = $_SESSION['ghostkit_form_submit_post'];
-        }
     }
 
     /**
@@ -83,19 +73,12 @@ class GhostKit_Form_Block {
         if ( ! empty( $this->form_post_data ) ) {
             $this->form_post_data = array();
         }
-        if ( isset( $_SESSION['ghostkit_form_submit_post'] ) ) {
-            unset( $_SESSION['ghostkit_form_submit_post'] );
-        }
     }
 
     /**
      * Init.
      */
     public function init() {
-        if ( ! function_exists( 'register_block_type' ) ) {
-            return;
-        }
-
         $from_email  = '';
         $admin_email = get_option( 'admin_email' );
         $blogname    = get_option( 'blogname' );
@@ -131,8 +114,8 @@ class GhostKit_Form_Block {
             'confirmationMessage' => esc_html__( 'Thank you for contacting us! We will be in touch with you shortly.', 'ghostkit' ),
         );
 
-        register_block_type(
-            'ghostkit/form',
+        register_block_type_from_metadata(
+            dirname( __FILE__ ),
             array(
                 'render_callback' => array( $this, 'block_render' ),
                 'attributes'      => array(
@@ -190,8 +173,6 @@ class GhostKit_Form_Block {
      * @return string
      */
     public function block_render( $attributes, $inner_blocks ) {
-        ob_start();
-
         $class = 'ghostkit-form';
 
         if ( isset( $attributes['className'] ) ) {
@@ -220,31 +201,36 @@ class GhostKit_Form_Block {
         $recaptcha_site_key   = get_option( 'ghostkit_google_recaptcha_api_site_key' );
         $recaptcha_secret_key = get_option( 'ghostkit_google_recaptcha_api_secret_key' );
 
+        ob_start();
+        // Honeypot protection.
         ?>
-
-        <div class="<?php echo esc_attr( $class ); ?>" id="<?php echo esc_attr( $form_id ); ?>">
-            <form method="POST" name="ghostkit-form" action="<?php echo esc_url( $url ); ?>">
-                <?php
-                // phpcs:ignore
-                echo do_blocks( $inner_blocks );
-
-                // Add `__` prefix to prevent conflict with form id attribute duplicate.
-                wp_nonce_field( 'ghostkit_form', '__' . $form_id );
-                ?>
-                <input type="hidden" name="ghostkit_form_id" value="<?php echo esc_attr( $form_id ); ?>">
-                <?php
-                if ( $recaptcha_site_key && $recaptcha_secret_key ) {
-                    ?>
-                    <input type="hidden" name="ghostkit_form_google_recaptcha" />
-                    <?php
-                }
-                ?>
-            </form>
-        </div>
-
+        <input aria-label="<?php echo esc_attr__( 'Verify your Email', 'ghostkit' ); ?>" type="email" name="ghostkit_verify_email" autocomplete="off" placeholder="<?php echo esc_attr__( 'Email', 'ghostkit' ); ?>" tabindex="-1">
         <?php
 
-        return ob_get_clean();
+        // Add `__` prefix to prevent conflict with form id attribute duplicate.
+        wp_nonce_field( 'ghostkit_form', '__' . $form_id );
+        ?>
+        <input type="hidden" name="ghostkit_form_id" value="<?php echo esc_attr( $form_id ); ?>">
+        <?php
+        if ( $recaptcha_site_key && $recaptcha_secret_key ) {
+            ?>
+            <input type="hidden" name="ghostkit_form_google_recaptcha" />
+            <?php
+        }
+
+        $output = $inner_blocks . ob_get_clean();
+
+        $wrapper_attributes = get_block_wrapper_attributes(
+            array(
+                'method' => 'POST',
+                'name'   => 'ghostkit-form',
+                'action' => esc_url( $url ),
+                'class'  => $class,
+                'id'     => $form_id,
+            )
+        );
+
+        return sprintf( '<form %1$s>%2$s</form>', $wrapper_attributes, $output );
     }
 
     /**
@@ -292,6 +278,11 @@ class GhostKit_Form_Block {
             $nonce = sanitize_text_field( wp_unslash( $this->form_post_data[ '__' . $form_id ] ) );
 
             if ( wp_verify_nonce( $nonce, 'ghostkit_form' ) ) {
+                // check for honeypot.
+                if ( ! $this->verify_honeypot() ) {
+                    $errors[] = esc_html__( 'Your actions look suspicious, the form was not submitted.', 'ghostkit' );
+                }
+
                 // validate Google reCaptcha.
                 if ( ! $this->verify_recaptcha() ) {
                     $errors[] = esc_html__( 'Google reCaptcha form verification failed.', 'ghostkit' );
@@ -373,6 +364,9 @@ class GhostKit_Form_Block {
                 <?php echo $new_content; // phpcs:ignore ?>
             </div>
             <?php
+
+            $this->remove_hash_from_address_bar();
+
             return ob_get_clean();
         }
 
@@ -394,6 +388,19 @@ class GhostKit_Form_Block {
     }
 
     /**
+     * Verify Honeypot Field.
+     *
+     * @return bool
+     */
+    private function verify_honeypot() {
+        if ( ! empty( $this->form_post_data['ghostkit_verify_email'] ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Verify Google reCaptcha.
      *
      * @return bool
@@ -407,13 +414,11 @@ class GhostKit_Form_Block {
             return true;
         }
 
-        // phpcs:disable
         if ( ! isset( $this->form_post_data['ghostkit_form_google_recaptcha'] ) ) {
             return false;
         }
 
         $token = sanitize_text_field( wp_unslash( $this->form_post_data['ghostkit_form_google_recaptcha'] ) );
-        // phpcs:enable
 
         // empty token.
         if ( ! $token ) {
@@ -443,17 +448,41 @@ class GhostKit_Form_Block {
 
         $response = json_decode( $response, true );
 
-        if ( ! isset( $response['success'] ) ) {
-            return false;
-        }
+        $threshold = apply_filters( 'gkt_recaptcha_threshold', 0.5 );
+        $verified  = isset( $response['success'] ) && $response['success'] && 'ghostkit' === $response['action'] && $response['score'] >= $threshold;
 
-        return $response['success'];
+        $verified = apply_filters( 'gkt_recaptcha_verify_response', $verified, $response );
+
+        return $verified;
+    }
+
+    /**
+     * Remove hash from address bar when form submitted.
+     * It will solve the problem when you can submit the submitted form data again after page refresh.
+     */
+    public function remove_hash_from_address_bar() {
+        ?>
+        <script type="text/javascript">
+            (function() {
+                if ( window.history.replaceState && window.location.hash ) {
+                    const $id = window.location.hash.substring( 1 );
+                    const $form = $id ? document.getElementById( $id ) : false;
+
+                    window.history.replaceState( null, null, ' ' );
+
+                    if ( $form ) {
+                        $form.scrollIntoView(true);
+                    }
+                }
+            })();
+        </script>
+        <?php
     }
 
     /**
      * Template string with POST data.
      *
-     * @param String $string - string for template.
+     * @param string $string - string for template.
      *
      * @return string
      */

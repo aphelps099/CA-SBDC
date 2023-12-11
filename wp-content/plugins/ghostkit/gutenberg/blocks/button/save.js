@@ -13,15 +13,9 @@ import metadata from './block.json';
  */
 const { applyFilters } = wp.hooks;
 
-const {
-  useBlockProps,
-  useInnerBlocksProps: __stableUseInnerBlocksProps,
-  __experimentalUseInnerBlocksProps,
-} = wp.blockEditor;
+const { useBlockProps, useInnerBlocksProps } = wp.blockEditor;
 
 const { name } = metadata;
-
-const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
 
 /**
  * Block Save Class.
@@ -32,7 +26,7 @@ export default function BlockSave(props) {
   let className = classnames(
     'ghostkit-button-wrapper',
     gap ? `ghostkit-button-wrapper-gap-${gap}` : false,
-    align && 'none' !== align ? `ghostkit-button-wrapper-align-${align}` : false
+    align && align !== 'none' ? `ghostkit-button-wrapper-align-${align}` : false
   );
 
   className = applyFilters('ghostkit.blocks.className', className, {

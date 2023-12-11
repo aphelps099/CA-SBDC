@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { map, upperFirst } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
@@ -13,9 +8,8 @@ const { compose, ifCondition } = wp.compose;
 const { withSelect } = wp.data;
 const { BlockControls} = wp.blockEditor;
 const { toggleFormat, insert, create } = wp.richText;
-const { Toolbar, IconButton, Popover, Panel, Button, TextControl, Tooltip } = wp.components;
+const { ToolbarGroup, Popover, Panel, ToolbarButton, Button, TextControl, Tooltip } = wp.components;
 
-let anchorRange;
 let Icons = jvm_richtext_icon_settings.iconset;
 let classPrefix = jvm_richtext_icon_settings.base_class;
 
@@ -34,13 +28,13 @@ class IconMap extends Component {
 
     search( keyword ) {
         let filtered = [];
-    
-        map( Icons, ( icon )  => {
+
+        for (let icon of Icons) {    
             if ( icon.toLowerCase().search(
                 keyword.toLowerCase() ) !== -1 ) {
                 filtered.push(icon);
             }
-        } );    
+        }
 
         this.setState( { keyword, icons: filtered } );
     }
@@ -52,39 +46,36 @@ class IconMap extends Component {
 
         this.setState( {  keyword: '', icons: Icons } );
 
-        const selection = window.getSelection();
-        anchorRange = selection.rangeCount > 0 ? selection.getRangeAt( 0 ) : null;
+        //const selection = window.getSelection();
+        //anchorRange = selection.rangeCount > 0 ? selection.getRangeAt( 0 ) : null;
         //onChange( toggleFormat( value, { type: name } ) );
     }
 
     render() {
         const { isOpen, icons, keyword } = this.state;
         const { name, value, onChange } = this.props;
-        const anchorRect = () => {
-            return getRectangleFromRange( anchorRange );
-        };
+    
 
         return (
             <Fragment>
                 <BlockControls>
-                    <Toolbar>
-                        <IconButton
+                    <ToolbarGroup>
+                        <ToolbarButton
                             icon={ "flag" }
                             aria-haspopup="true"
-                            tooltip={ __('Insert Icon', 'jvm-richtext-icons') }
+                            label={ __('Insert Icon', 'jvm-richtext-icons') }
                             onClick={ this.toggle }
                         >
-                        </IconButton>
+                        </ToolbarButton>
                    
-            
                         { isOpen && (
                             <Popover
                                 className="jvm-richtext-icons-popover"
-                                position="bottom center"
+                                position="bottom left"
                                 key="icon-popover"
                                 onClick={ () => {} }
-                                getAnchorRect={ anchorRect }
-                                expandOnMobile={ true }
+                                
+                                expandOnMobile={ false }
                                 headerTitle={ __( 'Insert Icon', 'jvm-richtext-icons' ) }
                                 onClose={ () => {
                                     onChange( toggleFormat( value, { type: name } ) );
@@ -103,7 +94,9 @@ class IconMap extends Component {
                                    
                                     { icons.length > 0 ? (
                                         <ul className="jvm-richtext-icons-list">
-                                            { map( icons, ( icon ) => {
+                                            { 
+                                                //for (let icon of icons) {   
+                                                icons.map(( icon ) => {
                                                 return (
                                                     <li data-key={ icon }>
                                                         <Tooltip text={icon}>
@@ -130,23 +123,13 @@ class IconMap extends Component {
                                 </div>
                             </Popover>
                         ) }
+                        
 
-                        </Toolbar>
+                        </ToolbarGroup>
                     </BlockControls>
                 </Fragment>
         );
     }
 }
 
-export default compose(
-    withSelect( ( select ) => {
-        return {
-            isDisabled: select( 'core/edit-post' ).isFeatureActive(
-                'disableJVMIconMap'
-            ),
-        };
-    } ),
-    ifCondition( ( props ) => {
-        return ! props.isDisabled;
-    } )
-)( IconMap );
+export default compose()( IconMap );

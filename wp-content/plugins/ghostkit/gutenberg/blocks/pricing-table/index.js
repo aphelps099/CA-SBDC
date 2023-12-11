@@ -12,32 +12,25 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-pricing-table', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/pricing-tables/',
     customStylesCallback(attributes) {
       const { gap, gapCustom } = attributes;
 
-      const result = {};
+      const styles = {
+        '--gkt-pricing-table__gap': undefined,
+      };
 
       // Custom Gap.
-      if ('custom' === gap && 'undefined' !== typeof gapCustom) {
+      if (gap === 'custom' && typeof gapCustom !== 'undefined' && gapCustom !== '') {
         // we need to use `%` unit because of conflict with complex calc() and 0 value.
         const unit = gapCustom ? 'px' : '%';
 
-        result['--gkt-pricing-table__gap'] = `${gapCustom}${unit}`;
+        styles['--gkt-pricing-table__gap'] = `${gapCustom}${unit}`;
       }
 
-      return result;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
+      return styles;
     },
   },
   example: {

@@ -1,0 +1,150 @@
+/**
+ * Button.
+ */
+.ghostkit-button {
+  --gkt-pro-button__background-image: var(--gkt-button__background-color);
+  --gkt-pro-button-hover__background-image: var(--gkt-button-hover__background-color);
+
+  &.ghostkit-pro-bg-gradient {
+    position: relative;
+    z-index: 1;
+    background-image: var(--gkt-pro-button__background-image);
+
+    &::before {
+      position: absolute;
+      top: calc(-1 * var(--gkt-button__border-width));
+      right: calc(-1 * var(--gkt-button__border-width));
+      bottom: calc(-1 * var(--gkt-button__border-width));
+      left: calc(-1 * var(--gkt-button__border-width));
+      z-index: -1;
+      display: block;
+      content: "";
+      background-color: var(--gkt-button-hover__background-color);
+      background-image: var(--gkt-pro-button-hover__background-image);
+      background-clip: padding-box;
+      border: var(--gkt-button__border-width) solid transparent;
+      border-radius: var(--gkt-button__border-radius);
+      opacity: 0;
+      transition: var(--gkt-button__transition-duration) opacity var(--gkt-button__transition-easing);
+    }
+
+    &:hover::before,
+    &:focus::before,
+    &:active::before {
+      opacity: 1;
+    }
+  }
+}
+
+/**
+ * Progress.
+ */
+.ghostkit-progress {
+  --gkt-pro-progress--bar__background-image: var(--gkt-progress--bar__background-color);
+  --gkt-pro-progress--bar-hover__background-image: var(--gkt-progress--bar__background-color);
+  --gkt-pro-progress__background-image: var(--gkt-progress__background-color);
+  --gkt-pro-progress-hover__background-image: var(--gkt-progress__background-color);
+
+  &.ghostkit-pro-bg-gradient {
+    // Hover Background.
+    .ghostkit-progress-wrap,
+    .ghostkit-progress-wrap .ghostkit-progress-bar {
+      position: relative;
+      z-index: 1;
+
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        display: block;
+        content: "";
+        background-clip: padding-box;
+        opacity: 0;
+        transition: var(--gkt-progress__transition-duration) opacity var(--gkt-progress__transition-easing);
+      }
+    }
+
+    &.ghostkit-progress:hover {
+      .ghostkit-progress-wrap::before,
+      .ghostkit-progress-wrap .ghostkit-progress-bar::before {
+        opacity: 1;
+      }
+    }
+
+    .ghostkit-progress-wrap {
+      // Background Gradient.
+      background-image: var(--gkt-pro-progress__background-image);
+
+      &::before {
+        background-image: var(--gkt-pro-progress-hover__background-image);
+      }
+
+      // Bar Gradient.
+      .ghostkit-progress-bar {
+        background-image: var(--gkt-pro-progress--bar__background-image);
+
+        &::before {
+          background-image: var(--gkt-pro-progress--bar-hover__background-image);
+        }
+      }
+
+      &.ghostkit-progress-bar-striped .ghostkit-progress-bar {
+        background-image: var(--gkt-progress--bar-striped__background-image), var(--gkt-pro-progress--bar__background-image);
+        background-size: var(--gkt-progress--bar-striped__background-size), 100%;
+
+        &::before {
+          background-image: var(--gkt-progress--bar-striped__background-image), var(--gkt-pro-progress--bar-hover__background-image);
+          background-size: var(--gkt-progress--bar-striped__background-size), 100%;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Counter Box.
+ */
+@supports (-webkit-background-clip: text) {
+  .ghostkit-counter-box {
+    --gkt-pro-counter-box--number__image: var(--gkt-counter-box--number__color);
+
+    &.ghostkit-pro-text-gradient > .ghostkit-counter-box-number {
+      .ghostkit-counter-box-number-wrap {
+        background-color: var(--gkt-counter-box--number__color);
+        background-image: var(--gkt-pro-counter-box--number__image);
+      }
+
+      .ghostkit-counter-box-number-wrap,
+      .editor-rich-text__tinymce {
+        background-color: currentcolor;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+}
+
+/**
+ * Icon Box.
+ */
+@supports (-webkit-background-clip: text) {
+  .ghostkit-icon-box {
+    --gkt-pro-icon-box--icon__image: var(--gkt-icon-box--icon__color);
+
+    &.ghostkit-pro-text-gradient > .ghostkit-icon-box-icon > span {
+      background-color: currentcolor;
+      background-image: var(--gkt-icon-box--icon__color);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+.ghostkit-pro-gradient-mask {
+  position: absolute;
+  left: -9999px;
+  visibility: hidden;
+}

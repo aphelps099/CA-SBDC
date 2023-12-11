@@ -13,18 +13,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-accordion', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/accordion/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
   },
   example: {
     innerBlocks: [

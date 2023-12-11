@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/divider",
-  "category": "design",
+  "category": "ghostkit",
   "title": "Divider",
   "description": "Divide your long texts and blocks.",
   "keywords": ["divider", "spacer"],

@@ -14,17 +14,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-testimonial', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/testimonial/',
-    supports: {
-      styles: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
   },
   example: {
     attributes: {

@@ -1,0 +1,14 @@
+<svg width="200" height="30" viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+  preserveAspectRatio="none">
+  <path opacity="0.2"
+    d="M200 4.64916e-06V30H100L0 30V0C16.5 -3.81481e-06 70.5 18.5 100 30C129.5 18.5 183.5 0 200 4.64916e-06Z"
+    fill="currentColor" />
+  <path opacity="0.2" d="M200 4V30H100H0V4C16.5 4 70.5 18.5 100 30C129.5 18.5 183.5 4 200 4Z" fill="currentColor" />
+  <path opacity="0.2" d="M200 8V30H100H0V8C16.5 8 70.5 18.5 100 30C129.5 18.5 183.5 8 200 8Z" fill="currentColor" />
+  <g opacity="0.2">
+    <path d="M-3.05176e-05 30V12C16.5 12 70.5 18.5 100 30L-3.05176e-05 30Z" fill="currentColor" />
+    <path d="M200 30V12C183.5 12 129.5 18.5 100 30H200Z" fill="currentColor" />
+  </g>
+  <path d="M0 30V16C16.5 16 70.5 18.5 100 30L0 30Z" fill="currentColor" />
+  <path d="M200 30V16C183.5 16 129.5 18.5 100 30H200Z" fill="currentColor" />
+</svg>

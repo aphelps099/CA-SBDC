@@ -7,8 +7,9 @@ import classnames from 'classnames/dedupe';
  * Internal dependencies
  */
 import getIcon from '../../utils/get-icon';
+import useResponsive from '../../hooks/use-responsive';
 import ApplyFilters from '../../components/apply-filters';
-import ResponsiveTabPanel from '../../components/responsive-tab-panel';
+import ResponsiveToggle from '../../components/responsive-toggle';
 import ToggleGroup from '../../components/toggle-group';
 import RangeControl from '../../components/range-control';
 
@@ -18,23 +19,13 @@ const { __, sprintf } = wp.i18n;
 
 const { Fragment } = wp.element;
 
-const { PanelBody, SelectControl, Tooltip } = wp.components;
+const { PanelBody, SelectControl } = wp.components;
 
 const { applyFilters } = wp.hooks;
 
-const {
-  InspectorControls,
-  InnerBlocks,
-  useBlockProps,
-  useInnerBlocksProps: __stableUseInnerBlocksProps,
-  __experimentalUseInnerBlocksProps,
-} = wp.blockEditor;
+const { InspectorControls, InnerBlocks, useBlockProps, useInnerBlocksProps } = wp.blockEditor;
 
 const { useSelect } = wp.data;
-
-const { ghostkitVariables } = window;
-
-const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
 
 /**
  * Get array for Select element.
@@ -57,10 +48,10 @@ const getDefaultColumnSizes = function () {
     },
   ];
 
-  for (let k = 1; 12 >= k; k += 1) {
+  for (let k = 1; k <= 12; k += 1) {
     result.push({
       label: sprintf(
-        1 === k ? __('%d Column (%s)', 'ghostkit') : __('%d Columns (%s)', 'ghostkit'),
+        k === 1 ? __('%d Column (%s)', 'ghostkit') : __('%d Columns (%s)', 'ghostkit'),
         k,
         `${Math.round(((100 * k) / 12) * 100) / 100}%`
       ),
@@ -112,38 +103,18 @@ const getDefaultColumnOrders = function (columns = 12) {
  * Block Edit Class.
  */
 export default function BlockEdit(props) {
-  const { clientId, attributes, setAttributes, isSelected } = props;
+  const { clientId, attributes, setAttributes } = props;
 
   const { stickyContent, stickyContentOffset } = attributes;
 
-  const filledTabs = {};
-  if (
-    ghostkitVariables &&
-    ghostkitVariables.media_sizes &&
-    Object.keys(ghostkitVariables.media_sizes).length
-  ) {
-    Object.keys(ghostkitVariables.media_sizes).forEach((media) => {
-      let sizeName = 'size';
-      let orderName = 'order';
-      let verticalAlignName = 'verticalAlign';
-
-      if ('all' !== media) {
-        sizeName = `${media}_${sizeName}`;
-        orderName = `${media}_${orderName}`;
-        verticalAlignName = `${media}_${verticalAlignName}`;
-      }
-
-      filledTabs[media] =
-        attributes[sizeName] || attributes[orderName] || attributes[verticalAlignName];
-    });
-  }
+  const { device } = useResponsive();
 
   const { hasChildBlocks } = useSelect(
     (select) => {
       const blockEditor = select('core/block-editor');
 
       return {
-        hasChildBlocks: blockEditor ? 0 < blockEditor.getBlockOrder(clientId).length : false,
+        hasChildBlocks: blockEditor ? blockEditor.getBlockOrder(clientId).length > 0 : false,
       };
     },
     [clientId]
@@ -156,76 +127,101 @@ export default function BlockEdit(props) {
     className: classnames(props.attributes.className, getColClass(props)),
   });
 
-  const { children, ...innerBlocksProps } = useInnerBlocksProps(blockProps, {
-    templateLock: false,
-    renderAppender: hasChildBlocks ? undefined : () => <InnerBlocks.ButtonBlockAppender />,
-  });
+  const innerBlocksProps = useInnerBlocksProps(
+    { className: 'ghostkit-col-content' },
+    {
+      templateLock: false,
+      renderAppender: hasChildBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
+    }
+  );
+
+  let sizeName = 'size';
+  let orderName = 'order';
+  let verticalAlignName = 'verticalAlign';
+
+  if (device) {
+    sizeName = `${device}_${sizeName}`;
+    orderName = `${device}_${orderName}`;
+    verticalAlignName = `${device}_${verticalAlignName}`;
+  }
 
   return (
-    <div {...innerBlocksProps}>
+    <div {...blockProps}>
       <InspectorControls>
         <ApplyFilters name="ghostkit.editor.controls" attribute="columnSettings" props={props}>
           <PanelBody>
-            <ResponsiveTabPanel filledTabs={filledTabs}>
-              {(tabData) => {
-                let sizeName = 'size';
-                let orderName = 'order';
-                let verticalAlignName = 'verticalAlign';
-
-                if ('all' !== tabData.name) {
-                  sizeName = `${tabData.name}_${sizeName}`;
-                  orderName = `${tabData.name}_${orderName}`;
-                  verticalAlignName = `${tabData.name}_${verticalAlignName}`;
-                }
-
-                return (
-                  <Fragment>
-                    <SelectControl
-                      label={__('Size', 'ghostkit')}
-                      value={attributes[sizeName]}
-                      onChange={(value) => {
-                        setAttributes({
-                          [sizeName]: value,
-                        });
-                      }}
-                      options={getDefaultColumnSizes()}
-                    />
-                    <SelectControl
-                      label={__('Order', 'ghostkit')}
-                      value={attributes[orderName]}
-                      onChange={(value) => {
-                        setAttributes({
-                          [orderName]: value,
-                        });
-                      }}
-                      options={getDefaultColumnOrders()}
-                    />
-                    <ToggleGroup
-                      label={__('Vertical alignment', 'ghostkit')}
-                      value={attributes[verticalAlignName]}
-                      options={[
-                        {
-                          label: getIcon('icon-vertical-top'),
-                          value: '',
-                        },
-                        {
-                          label: getIcon('icon-vertical-center'),
-                          value: 'center',
-                        },
-                        {
-                          label: getIcon('icon-vertical-bottom'),
-                          value: 'end',
-                        },
-                      ]}
-                      onChange={(value) => {
-                        setAttributes({ [verticalAlignName]: value });
-                      }}
-                      allowReset
-                    />
-                  </Fragment>
-                );
+            <SelectControl
+              label={
+                <>
+                  {__('Size', 'ghostkit')}
+                  <ResponsiveToggle
+                    checkActive={(checkMedia) => {
+                      return !!attributes[`${checkMedia}_size`];
+                    }}
+                  />
+                </>
+              }
+              value={attributes[sizeName]}
+              onChange={(value) => {
+                setAttributes({
+                  [sizeName]: value,
+                });
               }}
-            </ResponsiveTabPanel>
+              options={getDefaultColumnSizes()}
+            />
+            <SelectControl
+              label={
+                <>
+                  {__('Order', 'ghostkit')}
+                  <ResponsiveToggle
+                    checkActive={(checkMedia) => {
+                      return !!attributes[`${checkMedia}_order`];
+                    }}
+                  />
+                </>
+              }
+              value={attributes[orderName]}
+              onChange={(value) => {
+                setAttributes({
+                  [orderName]: value,
+                });
+              }}
+              options={getDefaultColumnOrders()}
+            />
+            <ToggleGroup
+              label={
+                <>
+                  {__('Vertical Alignment', 'ghostkit')}
+                  <ResponsiveToggle
+                    checkActive={(checkMedia) => {
+                      return !!attributes[`${checkMedia}_verticalAlign`];
+                    }}
+                  />
+                </>
+              }
+              value={attributes[verticalAlignName]}
+              options={[
+                {
+                  icon: getIcon('icon-vertical-top'),
+                  label: __('Top', 'ghostkit'),
+                  value: '',
+                },
+                {
+                  icon: getIcon('icon-vertical-center'),
+                  label: __('Center', 'ghostkit'),
+                  value: 'center',
+                },
+                {
+                  icon: getIcon('icon-vertical-bottom'),
+                  label: __('Bottom', 'ghostkit'),
+                  value: 'end',
+                },
+              ]}
+              onChange={(value) => {
+                setAttributes({ [verticalAlignName]: value });
+              }}
+              isDeselectable
+            />
           </PanelBody>
         </ApplyFilters>
         <PanelBody>
@@ -245,7 +241,7 @@ export default function BlockEdit(props) {
             onChange={(value) => {
               setAttributes({ stickyContent: value });
             }}
-            allowReset
+            isDeselectable
           />
           {stickyContent ? (
             <RangeControl
@@ -254,27 +250,14 @@ export default function BlockEdit(props) {
               onChange={(value) => setAttributes({ stickyContentOffset: value })}
               allowCustomMax
             />
-          ) : (
-            ''
-          )}
+          ) : null}
         </PanelBody>
         <div className="ghostkit-background-controls">
           <ApplyFilters name="ghostkit.editor.controls" attribute="background" props={props} />
         </div>
       </InspectorControls>
       {background}
-      <div className="ghostkit-col-content">
-        {!isSelected && hasChildBlocks ? (
-          <div className="ghostkit-column-button-select">
-            <Tooltip text={__('Select Column', 'ghostkit')}>
-              {getIcon('block-grid-column')}
-            </Tooltip>
-          </div>
-        ) : (
-          ''
-        )}
-        {children}
-      </div>
+      <div {...innerBlocksProps} />
     </div>
   );
 }

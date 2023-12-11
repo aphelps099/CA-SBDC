@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -80,6 +80,8 @@ window.tsfPost = function( $ ) {
 
 		if ( ! document.querySelector( '.tsf-flex' ) ) return;
 
+		const wrapper = document.getElementById( 'tsf-flex-inpost-tabs-wrapper' );
+
 		let overflowAnimationFrame = {};
 		const calculateTextOverflow = target => {
 
@@ -107,15 +109,18 @@ window.tsfPost = function( $ ) {
 				} else {
 					// Loop once just to be certain, for the browser may be too slow to notice the offset change.
 					// Usually, this only happens once when the navNames are meant to be displayed (target width growing).
-					setTimeout( () => {
-						cancelAnimationFrame( overflowAnimationFrame[ target.id ] );
-						overflowAnimationFrame[ target.id ] = requestAnimationFrame( () => calculateTextOverflow( target ) );
-					}, 7 ); // 144hz
+					setTimeout(
+						() => {
+							cancelAnimationFrame( overflowAnimationFrame[ target.id ] );
+							overflowAnimationFrame[ target.id ] = requestAnimationFrame( () => calculateTextOverflow( target ) );
+						},
+						7, // 144hz.
+					);
 				}
 			}
 		}
 		const prepareCalculateTextOverflow = event => {
-			const target = event.detail.target || document.getElementById( 'tsf-flex-inpost-tabs-wrapper' );
+			const target = event.detail.target || wrapper;
 			if ( target )
 				overflowAnimationFrame[ target.id ] = requestAnimationFrame( () => calculateTextOverflow( target ) );
 		}
@@ -134,9 +139,9 @@ window.tsfPost = function( $ ) {
 					bubbles:    false,
 					cancelable: false,
 					detail:     {
-						target
+						target,
 					},
-				}
+				},
 			) );
 		}
 		let resizeAnimationFrame = {};
@@ -158,7 +163,7 @@ window.tsfPost = function( $ ) {
 				} );
 			}
 		} );
-		resizeObserver.observe( document.getElementById( 'tsf-flex-inpost-tabs-wrapper' ) );
+		wrapper && resizeObserver.observe( wrapper );
 
 		// Trigger after setup
 		triggerResize();
@@ -371,7 +376,6 @@ window.tsfPost = function( $ ) {
 			tsfTitle.updateStateOf( _titleId, 'addAdditions', state.addAdditions );
 			tsfTitle.updateStateOf( _titleId, 'additionValue', state.additionValue );
 			tsfTitle.updateStateOf( _titleId, 'additionPlacement', state.additionPlacement );
-			tsfTitle.updateStateOf( _titleId, 'hasLegacy', !! ( state.hasLegacy || false ) );
 		}
 
 		/**
@@ -497,7 +501,6 @@ window.tsfPost = function( $ ) {
 		if ( state ) {
 			tsfDescription.updateStateOf( _descId, 'allowReferenceChange', ! state.refDescriptionLocked );
 			tsfDescription.updateStateOf( _descId, 'defaultDescription', state.defaultDescription.trim() );
-			tsfDescription.updateStateOf( _descId, 'hasLegacy', !! ( state.hasLegacy || false ) );
 		}
 
 		tsfDescription.enqueueUnregisteredInputTrigger( _descId );
@@ -570,7 +573,7 @@ window.tsfPost = function( $ ) {
 		tsfSocial.setInputInstance( _socialGroup, _titleId, _descId );
 
 		const groupData = JSON.parse(
-			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0
+			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0,
 		);
 
 		if ( ! groupData ) return;
@@ -617,26 +620,6 @@ window.tsfPost = function( $ ) {
 		// We can't bind to jQuery event listeners via native ES :(
 		$( '#tsf-flex-inpost-tab-general' ).on( 'tsf-flex-tab-toggled', enqueueGeneralInputListeners );
 		window.addEventListener( 'tsf-flex-resize', enqueueGeneralInputListeners );
-	}
-
-	/**
-	 * Initializes tooltip boundaries.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 *
-	 * @function
-	 */
-	const _initTooltipBoundaries = () => {
-
-		if ( ! l10n.states.isGutenbergPage ) return;
-
-		'tsfTT' in window && tsfTT.addBoundary( '#editor' );
-
-		// Listen to the Gutenberg state changes.
-		document.addEventListener( 'tsf-gutenberg-sidebar-opened', () => {
-			'tsfTT' in window && tsfTT.addBoundary( '.edit-post-sidebar .components-panel' );
-		} );
 	}
 
 	/**
@@ -700,7 +683,7 @@ window.tsfPost = function( $ ) {
 					fadeTime,
 					() => {
 						seobarAjaxLoader && tsf.unsetAjaxLoader( seobarAjaxLoader, true );
-						seobar.innerHTML = response.data.seobar
+						seobar.innerHTML = response.data.seobar;
 					}
 				).fadeIn(
 					250, // Magic number: Feels fast, but slow enough to grab attention.
@@ -766,9 +749,6 @@ window.tsfPost = function( $ ) {
 
 		// Initializes flex tab listeners and fixes positions.
 		_initTabs();
-
-		// Sets tooltip boundaries
-		_initTooltipBoundaries();
 
 		// Set Gutenberg update listeners.
 		_initUpdateMetaBox();

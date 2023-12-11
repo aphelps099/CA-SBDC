@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2020 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2020 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -176,7 +176,7 @@ window.tsfTabs = function() {
 				lockHeight();
 				// Hide everything instantly. We don't make false promises here.
 				allContent.forEach( el => { el.classList.remove( stack.HTMLClasses.activeTabContent ) } );
-				// Loop until succesful. Use animationFrame so to not clog up the CPU if this lands in an infinite loop.
+				// Loop until successful. Use animationFrame so to not clog up the CPU if this lands in an infinite loop.
 				requestAnimationFrame( () => {
 					setCorrectTab() && clearPromise()
 				} );

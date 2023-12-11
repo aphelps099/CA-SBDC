@@ -28,6 +28,7 @@ class NS_Cloner_Ajax {
 		add_action( 'wp_ajax_ns_cloner_process_exit', array( $this, 'process_exit' ) );
 		add_action( 'wp_ajax_ns_cloner_delete_schedule', array( $this, 'delete_schedule' ) );
 		add_action( 'wp_ajax_ns_cloner_delete_options', array( $this, 'delete_options' ) );
+		add_action( 'wp_ajax_ns_cloner_maybe_submit_review', array( $this, 'maybe_submit_review' ) );
 	}
 
 	/**
@@ -120,6 +121,17 @@ class NS_Cloner_Ajax {
 		$options_table = is_multisite() ? ns_cloner()->db->sitemeta : ns_cloner()->db->options;
 		$options_key   = is_multisite() ? 'meta_key' : 'option_name';
 		ns_cloner()->db->query( "DELETE FROM $options_table WHERE $options_key LIKE 'ns_cloner%'" );
+		wp_send_json_success();
+	}
+
+	/**
+	 * Submit review.
+	 * Action is only valid for an admin.
+	 */
+	public function maybe_submit_review() {
+		$this->check_nonce();
+		NS_Cloner_Reviews::instance()->process_review();
+
 		wp_send_json_success();
 	}
 

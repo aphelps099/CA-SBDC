@@ -12,17 +12,7 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
-  icon: getIcon('block-tabs', true),
-  ghostkit: {
-    supports: {
-      styles: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
-  },
+  icon: getIcon('block-tab', true),
   getEditWrapperProps(attributes) {
     return { 'data-tab': attributes.slug };
   },

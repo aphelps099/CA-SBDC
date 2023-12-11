@@ -22,27 +22,21 @@ const { __ } = wp.i18n;
 
 const { Fragment, useState } = wp.element;
 
-const { Button, PanelBody, Placeholder, ToolbarGroup, ToolbarButton, Tooltip } = wp.components;
+const { Button, PanelBody, Placeholder, ToolbarGroup, ToolbarButton } = wp.components;
 
-const {
-  InspectorControls,
-  BlockControls,
-  useBlockProps,
-  useInnerBlocksProps: __stableUseInnerBlocksProps,
-  __experimentalUseInnerBlocksProps,
-} = wp.blockEditor;
+const { InspectorControls, BlockControls, useBlockProps, useInnerBlocksProps } = wp.blockEditor;
 
 const { useSelect, useDispatch } = wp.data;
 
 const { createBlock } = wp.blocks;
 
-const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
+const { GHOSTKIT } = window;
 
 /**
  * Block Edit Class.
  */
 export default function BlockEdit(props) {
-  const { clientId, attributes, setAttributes, isSelected } = props;
+  const { clientId, attributes, setAttributes } = props;
 
   const { gap, gapCustom, gapVerticalCustom, verticalAlign, horizontalAlign } = attributes;
 
@@ -75,29 +69,29 @@ export default function BlockEdit(props) {
         size: col,
       };
 
-      if ('a' === col) {
+      if (col === 'a') {
         colAttrs.size = 'auto';
-      } else if ('g' === col) {
+      } else if (col === 'g') {
         colAttrs.size = 'grow';
       }
 
       // responsive.
-      if (2 === columnsData.length) {
+      if (columnsData.length === 2) {
         colAttrs.md_size = '12';
       }
-      if (3 === columnsData.length) {
+      if (columnsData.length === 3) {
         colAttrs.lg_size = '12';
       }
-      if (4 === columnsData.length) {
+      if (columnsData.length === 4) {
         colAttrs.md_size = '12';
         colAttrs.lg_size = '6';
       }
-      if (5 === columnsData.length) {
+      if (columnsData.length === 5) {
         colAttrs.sm_size = '12';
         colAttrs.md_size = '5';
         colAttrs.lg_size = '4';
       }
-      if (6 === columnsData.length) {
+      if (columnsData.length === 6) {
         colAttrs.sm_size = '6';
         colAttrs.md_size = '4';
         colAttrs.lg_size = '3';
@@ -152,7 +146,7 @@ export default function BlockEdit(props) {
     return (
       <Placeholder
         icon={getIcon('block-grid')}
-        label={__('Grid', 'ghostkit')}
+        label={__('Advanced Columns', 'ghostkit')}
         instructions={__('Select one layout to get started.', 'ghostkit')}
         className="ghostkit-select-layout"
       >
@@ -180,14 +174,16 @@ export default function BlockEdit(props) {
             );
           })}
         </div>
-        <Button
-          isPrimary
-          onClick={() => {
-            setIsTemplatesModalOpen(true);
-          }}
-        >
-          {__('Select Template', 'ghostkit')}
-        </Button>
+        {GHOSTKIT.allowTemplates && (
+          <Button
+            isPrimary
+            onClick={() => {
+              setIsTemplatesModalOpen(true);
+            }}
+          >
+            {__('Select Template', 'ghostkit')}
+          </Button>
+        )}
         {isTemplatesModalOpen || props.attributes.isTemplatesModalOnly ? (
           <TemplatesModal
             replaceBlockId={clientId}
@@ -213,7 +209,7 @@ export default function BlockEdit(props) {
    */
   function updateColumns(newColumns) {
     // Remove Grid block.
-    if (1 > newColumns) {
+    if (newColumns < 1) {
       removeBlock(clientId);
 
       // Add new columns.
@@ -264,32 +260,30 @@ export default function BlockEdit(props) {
 
   return (
     <div {...innerBlocksProps}>
-      {0 < columnsCount ? (
+      {columnsCount > 0 ? (
         <BlockControls>
           <ToolbarGroup>
             <ToolbarButton
               icon={getIcon('icon-vertical-top')}
               title={__('Content Vertical Start', 'ghostkit')}
               onClick={() => setAttributes({ verticalAlign: '' })}
-              isActive={'' === verticalAlign}
+              isActive={verticalAlign === ''}
             />
             <ToolbarButton
               icon={getIcon('icon-vertical-center')}
               title={__('Content Vertical Center', 'ghostkit')}
               onClick={() => setAttributes({ verticalAlign: 'center' })}
-              isActive={'center' === verticalAlign}
+              isActive={verticalAlign === 'center'}
             />
             <ToolbarButton
               icon={getIcon('icon-vertical-bottom')}
               title={__('Content Vertical End', 'ghostkit')}
               onClick={() => setAttributes({ verticalAlign: 'end' })}
-              isActive={'end' === verticalAlign}
+              isActive={verticalAlign === 'end'}
             />
           </ToolbarGroup>
         </BlockControls>
-      ) : (
-        ''
-      )}
+      ) : null}
       <InspectorControls>
         <ApplyFilters name="ghostkit.editor.controls" attribute="columns" props={props}>
           <PanelBody>
@@ -304,7 +298,7 @@ export default function BlockEdit(props) {
           </PanelBody>
         </ApplyFilters>
       </InspectorControls>
-      {0 < columnsCount ? (
+      {columnsCount > 0 ? (
         <InspectorControls>
           <PanelBody>
             <ToggleGroup
@@ -312,50 +306,61 @@ export default function BlockEdit(props) {
               value={verticalAlign}
               options={[
                 {
-                  label: getIcon('icon-vertical-top'),
+                  icon: getIcon('icon-vertical-top'),
+                  label: __('Top', 'ghostkit'),
                   value: '',
                 },
                 {
-                  label: getIcon('icon-vertical-center'),
+                  icon: getIcon('icon-vertical-center'),
+                  label: __('Center', 'ghostkit'),
                   value: 'center',
                 },
                 {
-                  label: getIcon('icon-vertical-bottom'),
+                  icon: getIcon('icon-vertical-bottom'),
+                  label: __('Bottom', 'ghostkit'),
                   value: 'end',
                 },
               ]}
               onChange={(value) => {
                 setAttributes({ verticalAlign: value });
               }}
+              isDeselectable
+              isAdaptiveWidth
             />
             <ToggleGroup
               label={__('Horizontal alignment', 'ghostkit')}
               value={horizontalAlign}
               options={[
                 {
-                  label: getIcon('icon-horizontal-start'),
+                  icon: getIcon('icon-horizontal-start'),
+                  label: __('Start', 'ghostkit'),
                   value: '',
                 },
                 {
-                  label: getIcon('icon-horizontal-center'),
+                  icon: getIcon('icon-horizontal-center'),
+                  label: __('Center', 'ghostkit'),
                   value: 'center',
                 },
                 {
-                  label: getIcon('icon-horizontal-end'),
+                  icon: getIcon('icon-horizontal-end'),
+                  label: __('End', 'ghostkit'),
                   value: 'end',
                 },
                 {
-                  label: getIcon('icon-horizontal-around'),
+                  icon: getIcon('icon-horizontal-around'),
+                  label: __('Around', 'ghostkit'),
                   value: 'around',
                 },
                 {
-                  label: getIcon('icon-horizontal-between'),
+                  icon: getIcon('icon-horizontal-between'),
+                  label: __('Space Between', 'ghostkit'),
                   value: 'between',
                 },
               ]}
               onChange={(value) => {
                 setAttributes({ horizontalAlign: value });
               }}
+              isDeselectable
             />
           </PanelBody>
           <PanelBody>
@@ -378,16 +383,9 @@ export default function BlockEdit(props) {
           <ApplyFilters name="ghostkit.editor.controls" attribute="background" props={props} />
         </div>
       </InspectorControls>
-      {0 < columnsCount ? (
+      {columnsCount > 0 ? (
         <Fragment>
           {background}
-          {!isSelected ? (
-            <div className="ghostkit-grid-button-select">
-              <Tooltip text={__('Select Grid', 'ghostkit')}>{getIcon('block-grid')}</Tooltip>
-            </div>
-          ) : (
-            ''
-          )}
           <div className="ghostkit-grid-inner">{children}</div>
         </Fragment>
       ) : (

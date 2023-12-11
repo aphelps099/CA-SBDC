@@ -12,17 +12,20 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-carousel', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/carousel/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
+    customStylesCallback(attributes) {
+      const { fadeEdges, fadeEdgesSize } = attributes;
+      const styles = {
+        '--gkt-carousel--fade-edges__size': undefined,
+      };
+
+      if (fadeEdges && typeof fadeEdgesSize !== 'undefined' && fadeEdgesSize !== '') {
+        styles['--gkt-carousel--fade-edges__size'] = `${fadeEdgesSize}%`;
+      }
+
+      return styles;
     },
   },
   example: {

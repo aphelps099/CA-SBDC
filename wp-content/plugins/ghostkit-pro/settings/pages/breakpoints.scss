@@ -1,0 +1,39 @@
+.ghostkit-settings-breakpoints-loading {
+  pointer-events: none;
+
+  .components-spinner {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    margin-top: 0;
+    opacity: 1;
+
+    ~ * {
+      opacity: 0.3;
+    }
+  }
+}
+
+.ghostkit-settings-breakpoints {
+  &.ghostkit-settings-content-wrapper {
+    padding-top: 0;
+    padding-bottom: 15px;
+  }
+
+  .ghostkit-settings-breakpoints-container > h4 {
+    margin-top: 0;
+  }
+
+  .ghostkit-settings-breakpoints-container {
+    padding-top: 20px;
+    padding-right: 25px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    margin-right: -25px;
+    margin-left: -25px;
+
+    + .ghostkit-settings-breakpoints-container {
+      border-top: 1px solid #e8eaeb;
+    }
+  }
+}

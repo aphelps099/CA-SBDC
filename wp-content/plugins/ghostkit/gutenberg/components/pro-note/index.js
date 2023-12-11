@@ -1,40 +1,61 @@
-/* eslint-disable max-classes-per-file */
 /**
- * WordPress dependencies
+ * External dependencies.
  */
-const { Component } = wp.element;
+import classnames from 'classnames/dedupe';
 
 /**
- * Component Class
+ * Internal dependencies.
  */
-export default class ProNote extends Component {
-  render() {
-    const { title, children, contentBefore = '', contentAfter = '' } = this.props;
+import getIcon from '../../utils/get-icon';
 
-    return (
-      <div className="ghostkit-pro-component-note">
-        {contentBefore}
-        <div className="ghostkit-pro-component-note-inner">
-          {title ? <h3>{title}</h3> : ''}
-          {children ? <div>{children}</div> : ''}
-        </div>
-        {contentAfter}
+/**
+ * WordPress dependencies.
+ */
+const { useState } = wp.element;
+
+const { Button } = wp.components;
+
+/**
+ * Component
+ */
+export default function ProNote(props) {
+  const { title, children } = props;
+
+  const [collapsed, setCollapsed] = useState(props.collapsed);
+
+  return (
+    <div
+      className={classnames(
+        'ghostkit-pro-component-note',
+        collapsed && 'ghostkit-pro-component-note-collapsed'
+      )}
+    >
+      <div className="ghostkit-pro-component-note-inner">
+        {title && <h3>{title}</h3>}
+        {collapsed && (
+          <Button
+            onClick={() => {
+              setCollapsed(!collapsed);
+            }}
+          >
+            {getIcon('icon-arrow-right')}
+          </Button>
+        )}
+        {!collapsed && children && <div>{children}</div>}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 /**
  * Button Component Class
  */
-ProNote.Button = class ProNoteButton extends Component {
-  render() {
-    const { children } = this.props;
+ProNote.Button = function ProNoteButton(props) {
+  const { children } = props;
 
-    return (
-      <a className="ghostkit-pro-component-note-button" {...this.props}>
-        {children}
-      </a>
-    );
-  }
+  return (
+    <a className="ghostkit-pro-component-note-button" {...props}>
+      {children}
+    </a>
+  );
 };

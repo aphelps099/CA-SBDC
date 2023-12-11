@@ -6,9 +6,13 @@
 
 namespace The_SEO_Framework\Internal;
 
+\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
+
+// phpcs:disable, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- That's the whole premise of this file.
+
 /**
  * The SEO Framework plugin
- * Copyright (C) 2018 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -22,10 +26,6 @@ namespace The_SEO_Framework\Internal;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
-
-// phpcs:disable, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- That's the whole premise of this file.
 
 /**
  * Class The_SEO_Framework\Internal\Silencer
@@ -43,9 +43,8 @@ final class Silencer {
 	/**
 	 * Tells if this plugin is loaded.
 	 *
-	 * @NOTE: Only `\The_SEO_Framework\_init_tsf()` should adjust this.
-	 *
 	 * @since 3.1.0
+	 * @since 5.0.0 Deprecated (silently here, shh).
 	 * @access protected
 	 *         Don't alter this variable.
 	 * @var boolean $loaded

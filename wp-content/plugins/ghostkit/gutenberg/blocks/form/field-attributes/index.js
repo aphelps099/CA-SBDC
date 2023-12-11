@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-const { Component, Fragment } = wp.element;
+const { Fragment } = wp.element;
 
 const { __ } = wp.i18n;
 
@@ -37,14 +37,14 @@ export function getFieldAttributes(attributes) {
   Object.keys(attributes).forEach((k) => {
     let val = attributes[k];
 
-    if ('undefined' !== typeof val) {
-      if ('slug' === k) {
+    if (typeof val !== 'undefined') {
+      if (k === 'slug') {
         k = 'id';
       }
 
-      if (-1 !== allowedAttributes.indexOf(k)) {
+      if (allowedAttributes.indexOf(k) !== -1) {
         // boolean value.
-        if ('boolean' === typeof val) {
+        if (typeof val === 'boolean') {
           if (val) {
             val = k;
           } else {
@@ -53,11 +53,11 @@ export function getFieldAttributes(attributes) {
         }
 
         // default attribute.
-        if ('default' === k) {
+        if (k === 'default') {
           k = 'value';
         }
 
-        if (false !== val) {
+        if (val !== false) {
           result[k] = val;
         }
       }
@@ -70,82 +70,80 @@ export function getFieldAttributes(attributes) {
 /**
  * Field Default Settings Class.
  */
-export class FieldDefaultSettings extends Component {
-  render() {
-    const {
-      attributes,
-      setAttributes,
+export function FieldDefaultSettings(props) {
+  const {
+    attributes,
+    setAttributes,
 
-      hideLabelCustom,
-      hideDescriptionCustom,
-      requiredCustom,
-      placeholderCustom,
-      defaultCustom,
-      slugCustom,
-    } = this.props;
+    hideLabelCustom,
+    hideDescriptionCustom,
+    requiredCustom,
+    placeholderCustom,
+    defaultCustom,
+    slugCustom,
+  } = props;
 
-    const {
-      slug,
-      label,
-      description,
-      hideLabel,
-      hideDescription,
-      required,
-      placeholder,
-      default: defaultVal,
-    } = attributes;
+  const {
+    slug,
+    label,
+    description,
+    hideLabel,
+    hideDescription,
+    required,
+    placeholder,
+    default: defaultVal,
+  } = attributes;
 
-    const hideLabelControl = hideLabelCustom || (
-      <ToggleControl
-        label={__('Hide Label', 'ghostkit')}
-        checked={hideLabel}
-        onChange={() => setAttributes({ hideLabel: !hideLabel })}
-      />
-    );
+  const hideLabelControl = hideLabelCustom || (
+    <ToggleControl
+      label={__('Hide Label', 'ghostkit')}
+      checked={hideLabel}
+      onChange={() => setAttributes({ hideLabel: !hideLabel })}
+    />
+  );
 
-    const hideDescriptionControl = hideDescriptionCustom || (
-      <ToggleControl
-        label={__('Hide Description', 'ghostkit')}
-        checked={hideDescription}
-        onChange={() => setAttributes({ hideDescription: !hideDescription })}
-      />
-    );
+  const hideDescriptionControl = hideDescriptionCustom || (
+    <ToggleControl
+      label={__('Hide Description', 'ghostkit')}
+      checked={hideDescription}
+      onChange={() => setAttributes({ hideDescription: !hideDescription })}
+    />
+  );
 
-    return (
-      <Fragment>
-        {slugCustom || (
-          <TextControl
-            label={__('Slug', 'ghostkit')}
-            help={__('Slug is used in form field [name] attribute.', 'ghostkit')}
-            value={slug}
-            onChange={() => {}}
-            readOnly
-          />
-        )}
-        {placeholderCustom || (
-          <TextControl
-            label={__('Placeholder', 'ghostkit')}
-            value={placeholder}
-            onChange={(val) => setAttributes({ placeholder: val })}
-          />
-        )}
-        {defaultCustom || (
-          <TextControl
-            label={__('Default', 'ghostkit')}
-            value={defaultVal}
-            onChange={(val) => setAttributes({ default: val })}
-          />
-        )}
-        {requiredCustom || (
-          <ToggleControl
-            label={__('Required', 'ghostkit')}
-            checked={required}
-            onChange={() => setAttributes({ required: !required })}
-          />
-        )}
-        {label ? hideLabelControl : ''}
-        {description ? hideDescriptionControl : ''}
-      </Fragment>
-    );
-  }
+  return (
+    <Fragment>
+      {slugCustom || (
+        <TextControl
+          label={__('Slug', 'ghostkit')}
+          help={__('Slug is used in form field [name] attribute.', 'ghostkit')}
+          value={slug}
+          onChange={() => {}}
+          readOnly
+        />
+      )}
+      {placeholderCustom || (
+        <TextControl
+          label={__('Placeholder', 'ghostkit')}
+          value={placeholder}
+          onChange={(val) => setAttributes({ placeholder: val })}
+        />
+      )}
+      {defaultCustom || (
+        <TextControl
+          label={__('Default', 'ghostkit')}
+          value={defaultVal}
+          onChange={(val) => setAttributes({ default: val })}
+        />
+      )}
+      {requiredCustom || (
+        <ToggleControl
+          label={__('Required', 'ghostkit')}
+          checked={required}
+          onChange={() => setAttributes({ required: !required })}
+        />
+      )}
+      {label ? hideLabelControl : ''}
+      {description ? hideDescriptionControl : ''}
+    </Fragment>
+  );
 }

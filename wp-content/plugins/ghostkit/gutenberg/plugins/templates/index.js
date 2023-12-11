@@ -31,7 +31,7 @@ const { applyFilters } = wp.hooks;
 
 const { parse } = wp.blocks;
 
-const { TabPanel, Tooltip, Spinner, SelectControl, ExternalLink } = wp.components;
+const { TabPanel, Tooltip, Spinner, SelectControl, ExternalLink, Notice } = wp.components;
 
 const { GHOSTKIT } = window;
 
@@ -63,7 +63,7 @@ class TemplatesModal extends Component {
 
     const result = [];
 
-    categorySelected = null === categorySelected ? this.getSelectedCategory(type) : '';
+    categorySelected = categorySelected === null ? this.getSelectedCategory(type) : '';
 
     templates.forEach((template) => {
       let allow = !type;
@@ -202,6 +202,38 @@ class TemplatesModal extends Component {
           </button>
         </div>
 
+        <Notice
+          status="error"
+          className="ghostkit-plugin-templates-modal-notice"
+          isDismissible={false}
+        >
+          <h3>{__('Templates Deprecated', 'ghostkit')}</h3>
+          <p>
+            {__(
+              'Please avoid using the Templates feature. It has been deprecated since Ghost Kit v3.1.0 and will be removed in future updates.',
+              'ghostkit'
+            )}
+            <br />
+            {sprintf(
+              __(
+                'To create a block template, you can use the built-in WordPress feature named Patterns.',
+                'ghostkit'
+              ),
+              'https://wordpress.org/documentation/article/site-editor-patterns/'
+            )}
+          </p>
+          <p>
+            <a
+              href="https://wordpress.org/documentation/article/site-editor-patterns/"
+              target="_blank"
+              rel="noreferrer"
+              className="button button-primary"
+            >
+              {__('Read About Patterns', 'ghostkit')}
+            </a>
+          </p>
+        </Notice>
+
         {allTemplates && allTemplates.length ? (
           <TabPanel
             className="ghostkit-control-tabs ghostkit-component-modal-tab-panel"
@@ -253,13 +285,13 @@ class TemplatesModal extends Component {
               const currentTemplates = this.getTemplates(tabType);
               const selectedCategory = this.getSelectedCategory(tabType);
 
-              if ('pages' === tabType) {
+              if (tabType === 'pages') {
                 return __('Coming Soon...', 'ghostkit');
               }
 
               return (
                 <Fragment>
-                  {false === currentTemplates ? (
+                  {currentTemplates === false ? (
                     <div className="ghostkit-plugin-templates-spinner">
                       <Spinner />
                     </div>
@@ -268,7 +300,7 @@ class TemplatesModal extends Component {
                   )}
                   {currentTemplates && !currentTemplates.length ? (
                     <div>
-                      {'local' === tabType ? (
+                      {tabType === 'local' ? (
                         <Fragment>
                           <p
                             style={{
@@ -394,7 +426,7 @@ class TemplatesModal extends Component {
                           );
                         })}
                       </Masonry>
-                      {'local' === tabType ? (
+                      {tabType === 'local' ? (
                         <ExternalLink
                           className="components-button is-button is-primary"
                           href={GHOSTKIT.adminTemplatesUrl}
@@ -422,7 +454,7 @@ class TemplatesModal extends Component {
 
 function checkMissingBlocksRecursive(blocks, result = {}) {
   blocks.forEach((item) => {
-    if ('core/missing' === item.name) {
+    if (item.name === 'core/missing') {
       result[item.attributes.originalName] = true;
     }
     if (item.innerBlocks) {
@@ -522,7 +554,7 @@ const TemplatesModalWithSelect = compose([
       templates,
       getTemplateData(data, cb) {
         let { type } = data;
-        if ('local' !== type && 'theme' !== type) {
+        if (type !== 'local' && type !== 'theme') {
           type = 'remote';
         }
 

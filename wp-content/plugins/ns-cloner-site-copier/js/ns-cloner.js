@@ -743,6 +743,45 @@ jQuery(
                 }
             );
         }
+
+		// Click action to dismiss rating on click.
+		$('.ns-cloner-submit-review').on('click', function(e) {
+			// Submit the ajax request.
+			$.ajax(
+				{
+					type: 'POST',
+					url: ns_cloner.ajaxurl,
+					dataType: 'JSON',
+					data: {
+						action: 'ns_cloner_maybe_submit_review',
+						dismiss : 'done',
+						clone_nonce : ns_cloner.nonce,
+					},
+					success: function (response) {
+						if (typeof response.success !== 'undefined' && response.success === true ) {
+							$('.ns-rate-widget').fadeOut('fast',function(){
+								$('.ns-rate-widget').remove();
+							});
+						}
+					},
+					error: function ( xhr, status, error ) {
+						console.error( error );
+					}
+				}
+			);
+		});
+
+		if ( $( '.ns-cloner-slider' ).length ) {
+			// Slider.
+			$( '.ns-cloner-slider' ).slider({
+				'banItemClass': 'ns-cloner-banner',
+				'navItemClass': 'ns-cloner-navli',
+				'navWrapClass': 'ns-cloner-banner_nav',
+				'perpage': 7,
+				'effect': 'slide',
+				'speed': 10000
+			}).data('slider');
+		}
 	}
 );
 

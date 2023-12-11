@@ -17,18 +17,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-changelog', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/changelog/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
   },
   example: {
     attributes: {

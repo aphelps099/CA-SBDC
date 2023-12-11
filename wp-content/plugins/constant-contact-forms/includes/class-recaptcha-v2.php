@@ -40,18 +40,21 @@ class ConstantContact_reCAPTCHA_v2 extends ConstantContact_reCAPTCHA {
 		wp_enqueue_script(
 			'recaptcha-v2',
 			constant_contact()->url() . "assets/js/ctct-plugin-recaptcha-v2{$suffix}.js",
-			[ 'jquery' ],
+			[],
 			Constant_Contact::VERSION,
 			true
 		);
 
 		wp_enqueue_script(
 			'recaptcha-lib-v2',
-			add_query_arg( [
-				'hl'     => $this->lang_code,
-				'onload' => 'renderReCaptcha',
-				'render' => 'explicit',
-			], '//www.google.com/recaptcha/api.js' ),
+			add_query_arg(
+				[
+					'hl'     => $this->lang_code,
+					'onload' => 'renderReCaptcha',
+					'render' => 'explicit',
+				],
+				'//www.google.com/recaptcha/api.js'
+			),
 			[ 'recaptcha-v2' ],
 			Constant_Contact::VERSION,
 			true

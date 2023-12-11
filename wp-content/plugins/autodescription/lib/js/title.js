@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -271,16 +271,7 @@ window.tsfTitle = function() {
 	 * @param {string} id The input element ID.
 	 * @return {HTMLElement[]}
 	 */
-	const _getTitleReferences = id => {
-		let references = [ document.getElementById( `tsf-title-reference_${id}` ) ];
-
-		if ( getStateOf( id, 'hasLegacy' ) ) {
-			let legacy = document.getElementById( 'tsf-title-reference' );
-			legacy && references.unshift( legacy );
-		}
-
-		return references;
-	}
+	const _getTitleReferences = id => [ document.getElementById( `tsf-title-reference_${id}` ) ];
 
 	/**
 	 * Returns title references with no-additions (Na) of ID.
@@ -384,7 +375,7 @@ window.tsfTitle = function() {
 			// if ( reference.innerHTML === referenceValue ) return;
 
 			reference.innerHTML = referenceValue;
-			// Fires change event. Defered to another thread.
+			// Fires change event. Deferred to another thread.
 			setTimeout( () => { reference.dispatchEvent( changeEvent ) }, 0 );
 		} );
 
@@ -393,7 +384,7 @@ window.tsfTitle = function() {
 			// if ( referenceNa.innerHTML === referenceNaValue ) return;
 
 			referenceNa.innerHTML = referenceNaValue;
-			// Fires change event. Defered to another thread.
+			// Fires change event. Deferred to another thread.
 			setTimeout( () => { referenceNa.dispatchEvent( changeEvent ) }, 0 );
 		} );
 	}
@@ -602,10 +593,8 @@ window.tsfTitle = function() {
 						prefixMaxWidth   += additionsMaxWidth;
 						additionsMaxWidth = 0;
 					}
-					additionsMaxWidth = additionsMaxWidth < additionsWidth ? additionsMaxWidth : additionsWidth;
-
-					if ( additionsMaxWidth < 0 )
-						additionsMaxWidth = 0;
+					// At least 0
+					additionsMaxWidth = Math.max( 0, Math.min( additionsMaxWidth, additionsWidth ) );
 
 					totalIndent     += additionsMaxWidth;
 					prefixOffset    += additionsMaxWidth;
@@ -620,17 +609,16 @@ window.tsfTitle = function() {
 						prefixMaxWidth   += additionsMaxWidth;
 						additionsMaxWidth = 0;
 					}
-					additionsMaxWidth = additionsMaxWidth < additionsWidth ? additionsMaxWidth : additionsWidth;
-
-					if ( additionsMaxWidth < 0 )
-						additionsMaxWidth = 0;
+					// At least 0
+					additionsMaxWidth = Math.max( 0, Math.min( additionsMaxWidth, additionsWidth ) );
 
 					// "We" write to the right, so we take the leftoffset. TODO RTL?
 					additionsOffset += leftOffset + textWidth + prefixMaxWidth;
 					break;
 			}
 		}
-		prefixMaxWidth = prefixMaxWidth < 0 ? 0 : prefixMaxWidth;
+		// At least 0
+		prefixMaxWidth = Math.max( 0, prefixMaxWidth );
 
 		if ( hasPrefixValue ) {
 			Object.assign(
@@ -681,14 +669,13 @@ window.tsfTitle = function() {
 	 * @param {Event} event
 	 */
 	const _updateCounter = event => {
-		if ( ! ( 'tsfC' in window ) ) return;
 
-		let counter   = document.getElementById( `${event.target.id}_chars` ),
-			reference = _getTitleReferences( event.target.id )[0];
+		const counter   = document.getElementById( `${event.target.id}_chars` ),
+			  reference = _getTitleReferences( event.target.id )[0];
 
 		if ( ! counter ) return;
 
-		tsfC.updateCharacterCounter( {
+		tsfC?.updateCharacterCounter( {
 			e:     counter,
 			text:  reference.innerHTML,
 			field: 'title',
@@ -706,14 +693,13 @@ window.tsfTitle = function() {
 	 * @param {Event} event
 	 */
 	const _updatePixels = event => {
-		if ( ! ( 'tsfC' in window ) ) return;
 
-		let pixels    = document.getElementById( `${event.target.id}_pixels` ),
-			reference = _getTitleReferences( event.target.id )[0];
+		const pixels    = document.getElementById( `${event.target.id}_pixels` ),
+			  reference = _getTitleReferences( event.target.id )[0];
 
 		if ( ! pixels ) return;
 
-		tsfC.updatePixelCounter( {
+		tsfC?.updatePixelCounter( {
 			e:     pixels,
 			text:  reference.innerHTML,
 			field: 'title',
@@ -734,8 +720,7 @@ window.tsfTitle = function() {
 	const triggerInput = id => {
 
 		if ( id ) {
-			let el = getInputElement( id );
-			el && el.dispatchEvent( new Event( 'input' ) );
+			getInputElement( id )?.dispatchEvent( new Event( 'input' ) );
 		} else {
 			// We don't want it to loop infinitely. Check element.id value first.
 			titleInputInstances.forEach( element => element.id && triggerInput( element.id ) );
@@ -754,8 +739,7 @@ window.tsfTitle = function() {
 	 */
 	const triggerCounter = id => {
 		if ( id ) {
-			let el = getInputElement( id );
-			el && el.dispatchEvent( new CustomEvent( 'tsf-update-title-counter' ) );
+			getInputElement( id )?.dispatchEvent( new CustomEvent( 'tsf-update-title-counter' ) );
 		} else {
 			// We don't want it to loop infinitely. Check element.id value first.
 			titleInputInstances.forEach( element => element.id && triggerCounter( element.id ) );
@@ -884,8 +868,8 @@ window.tsfTitle = function() {
 			case 2:
 				let start, end;
 				if (
-					'additions' === type && 'after' === getStateOf( input.id, 'additionPlacement' )
-				||  'prefix' === type && window.isRtl
+					   'additions' === type && 'after' === getStateOf( input.id, 'additionPlacement' )
+					|| 'prefix' === type && window.isRtl
 				) {
 					start = inputValue.replace( /(\w+|\s+)$/u, '' ).length;
 					end   = inputValue.length;
@@ -965,6 +949,7 @@ window.tsfTitle = function() {
 		// When counters are updated, trigger an input; which will reassess them.
 		window.addEventListener( 'tsf-counter-updated', () => enqueueUnregisteredInputTrigger() );
 	}
+
 	/**
 	 * Initializes the title input action callbacks.
 	 *

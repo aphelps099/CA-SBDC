@@ -12,18 +12,7 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-form-field-radio', true),
-  ghostkit: {
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
-  },
   edit,
   save,
 };

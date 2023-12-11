@@ -2,18 +2,20 @@
 Contributors: Cybr
 Donate link: https://github.com/sponsors/sybrew
 Tags: seo, xml sitemap, google search, open graph, schema.org, twitter card, performance, headless
-Requires at least: 5.5
-Tested up to: 6.1
-Requires PHP: 7.2.0
-Stable tag: 4.2.7.1
+Requires at least: 5.9
+Tested up to: 6.4
+Requires PHP: 7.4.0
+Stable tag: 5.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-The fastest feature-complete SEO plugin for professional WordPress websites. Secure, fast, automated, and ethical SEO. Do less; get better results.
+The fastest feature-complete SEO plugin for professional WordPress websites. Secure, fast, unbranded, and automated SEO. Do less; get better results.
 
 == Description ==
 
 **The fastest and only feature-complete SEO plugin that follows the guidelines and rules imposed by WordPress and search engines.**
+
+**[Preview The SEO Framework in WordPress Playground.](https://playground.wordpress.net/?plugin=autodescription&login=1&url=/wp-admin/edit.php)**
 
 Start using proven methods to optimize your website for SEO. Clean, dedicated, extensible, unrestricted, ad-free, and no strings attached.
 
@@ -23,7 +25,7 @@ It's easy to get started. Activate this plugin, and your site's instantly protec
 
 [Migrate](https://theseoframework.com/?p=511) | [Setup](https://theseoframework.com/?p=2428) | [Improve](https://theseoframework.com/?p=2663) | [Extensions](https://theseoframework.com/extensions/) | [API](https://theseoframework.com/?p=82) | [Support](https://theseoframework.com/?p=3478) | [Privacy](https://theseoframework.com/?p=1701#pluginprivacyinformation)
 
-= We poured over 18&#160;000 hours into this plugin. Here are the results: =
+= We poured over 27&#160;000 hours of love into this plugin.<br>Here are the results: =
 
 * **It is brilliant.**
 The SEO Framework is an [expert system](https://en.wikipedia.org/wiki/Expert_system) for SEO. It is the only solution that can intelligently generate critical SEO meta tags in any language by reading your WordPress environment. This automation saves you a considerable amount of time that could be used to write more content or focus on other tasks. It also removes the need for advanced SEO knowledge.
@@ -35,7 +37,7 @@ With The SEO Framework, we provide an excellent starting point for your website 
 We made the only SEO plugin that follows Google's webmaster guidelines to the letter. It took years of research and tweaking to translate this well inside your WordPress interface. Finally, you can freely optimize your pages without having to worry about making critical mistakes.
 
 * **It creates a beautiful overview.**
-On your post overview pages, you'll find color-coded guidelines. They suggest you how to improve your pages as you hover over them with your mouse. For example, when your titles are unbranded or when WordPress blocks indexing. Instinctively, touch-and keyboard navigation is also supported.
+On your post overview pages, you'll find color-coded guidelines. They suggest how to improve your pages as you hover over them with your mouse cursor. For example, when your titles are unbranded or when WordPress blocks indexing. Instinctively, touch-and keyboard navigation is also supported.
 
 * **It includes exceptional support.**
 We don't outsource our support. We're here for you. Feel free to drop by [our support forums](https://wordpress.org/support/plugin/autodescription/) at any time to ask a question. More than 1400 inquiries have been answered personally, typically within 48 hours in the past five years.
@@ -79,9 +81,9 @@ For additional functionality, check out our free companion plugin [Extension Man
 
 * [Focus](https://theseoframework.com/?p=2305) guides you through the process of writing targeted content that ranks with **focus keywords and synonyms**.
 * [Articles](https://theseoframework.com/?p=2303) **enhances your published posts** by automatically adding important Structured Data.
-* [Transport](https://theseoframework.com/?p=3962) **migrates and transforms metadata** from Rank Math and Yoast SEO to this plugin.
+* [Transport](https://theseoframework.com/?p=3962) **migrates and transforms metadata** from Rank Math, Yoast SEO, and SEOPress to this plugin.
 * [Honeypot](https://theseoframework.com/?p=2300) **catches comment spammers** through four lightweight yet powerful ways.
-* [Cord](https://theseoframework.com/?p=3404) helps you connect your website to **Google Analytics and Facebook Pixel**.
+* [Cord](https://theseoframework.com/?p=3404) helps you connect your website to **Google Analytics and Meta Pixel**.
 * [Local](https://theseoframework.com/?p=2306) lets you set up **important local business information** for search engines to consume.
 * [AMP](https://theseoframework.com/?p=2304) **binds The SEO Framework to the AMP plugin** for AMP supported articles and pages.
 * [Monitor](https://theseoframework.com/?p=2302) **keeps track of your website's SEO** optimizations and statistics.
@@ -110,9 +112,7 @@ The SEO Framework works on many things without notifying you, because the best s
 
 **The SEO Framework supports:**
 
-* PHP 7.2 and higher.
-* WordPress 5.5 and higher.
-* Internationalization through WordPress.org.
+* Internationalization through WordPress.org. You can [contribute here](https://translate.wordpress.org/projects/wp-plugins/autodescription/).
 * Unicode (UTF-8) character recognition and rendering, including Emoji and CJKV (Chinese, Japanese, Korean, Vietnamese).
 * Right to Left (RTL) languages (Arabic, Hebrew, Farsi, et al.), through its interface and metatag generation.
 * Complete color-vision deficiency accessibility thanks to a carefully picked color scheme.
@@ -121,28 +121,22 @@ The SEO Framework works on many things without notifying you, because the best s
 * WordPress Multisite setups, this plugin is in fact built upon one.
 * Detection and output of robots.txt and sitemap.xml files.
 * Full integration with WordPress Core sitemaps.
+* Primary term (category) selection to influence breadcrumbs and links.
 * Output of structured data via Schema.org JSON-LD scripts.
 * Altering oEmbed for improved sharing on Discord.
 * Detection of various other SEO tools to help you switch graciously.
 * Translation plugins like WPML, Polylang, WPGlobus, and MultilingualPress.
-* E-commerce plugins, like WooCommerce and Easy Digital Downloads.
+* E-commerce plugins like WooCommerce and Easy Digital Downloads.
+* Forum plugins like bbPress and wpForo.
 * Editing posts and terms via WordPress's native bulk-and-quick-edit interfaces.
 * Headless mode via a single [constant definition](https://kb.theseoframework.com/?p=136).
-
-= Copyright legislation notice =
-
-In a few words: The SEO Framework allows search engines to do what they've been doing for the past 20 years via its preconfigured copyright settings.
-
-When you activate The SEO Framework on any site, you automatically grant rights to content aggregators, among Google, Bing, and Yandex, to obtain and use information from the site, including written work, images, audio, and video. You can control these rights via the robots-meta settings brought by this plugin. Your rights and the effectiveness of these settings are subject to your website's region and language, and the physical or virtual origin of the platform and their potential users through which your website's information is obtained and shared. It is up to the aggregator to honor your rights and the requests brought via The SEO Framework.
-
-If you wish to learn more, please refer to the [EU commission on copyright](https://ec.europa.eu/digital-single-market/en/modernisation-eu-copyright-rules). These rulings may propagate its effects through regions outside the EU.
 
 == Installation ==
 
 = This plugin requires: =
 
-* PHP 7.2 or higher.
-* WordPress 5.5 or higher.
+* PHP 7.4 or higher.
+* WordPress 5.9 or higher.
 * Any modern browser for administration.
 
 = Installation instructions: =
@@ -240,79 +234,73 @@ The JSON-LD scripts are search engine helpers that tell search engines how to co
 
 They can tell the search engine if your site contains an internal search engine, which social sites you're connected to, and what page structure you're using. This is also referred to as **structured data**.
 
-= I don't see the breadcrumbs! =
+= How do I display breadcrumbs? =
 
-The SEO Framework does not provide the display of breadcrumbs. This is theme-territory. This plugin only annotates them for search engines via a JSON-LD script.
+The SEO Framework outputs hidden breadcrumbs for search engines to find via its Schema.org settings.
 
-If you wish to display breadcrumbs, then your theme should provide this. Alternatively, there are [other plugins](https://wordpress.org/plugins/search/breadcrumbs/) that help you do this.
+You can also output these breadcrumbs visually in your theme by [using a shortcode](https://kb.theseoframework.com/?p=212).
 
 == Changelog ==
 
-= 4.2.7 =
+= 5.0.2 =
 
-This minor update brings you a revamped HTML parser and a new option for tuning its accuracy for descriptions. First-time installers are now notified when metadata can be transported from other SEO plugins, the SEO Bar recognizes syntax from Rank Math, and Advanced Query Protection blocks new SEO attacks that could tank your rankings. We also [fixed a couple of bugs](https://theseoframework.com/?p=4021).
+This minor update fixes more issues our community found after the release of TSF v5.0.0. We also improved the calculation of primary terms with child terms and how breadcrumbs handle post type archives. And again, we [improved the performance](https://theseoframework.com/?p=4174).
 
-*Psst: Check out our [Cyber Sale](https://theseoframework.com/?p=3527).*
+= 5.0.1 =
 
-*v4.7.2.1: Fixed syntax for PHP 7.2. Props [opicron](https://wordpress.org/support/topic/syntax-error-226/#post-16183422).*
+This minor update fixes issues our community found after the release of TSF v5.0.0. We also [improved the performance](https://theseoframework.com/?p=4158).
 
-= 4.2.6 =
+= 5.0.0 - Apex =
 
-This patch resolves an issue with WordPress 6.1, which queries template parts before posts are requested. This premature query causes TSF to fail in recognizing support for Custom Post Types, [preventing all meta output](https://theseoframework.com/?p=4015).
-
-= 4.2.5 =
-
-This minor update addresses a change in WordPress 6.0 that causes taxonomy sitemaps to crash, allows paginated deindexing to supersede forced indexing, and improves image cropping by [preserving metadata](https://theseoframework.com/?p=3929).
-
-= 4.2.4 =
-
-This minor update improves image processing, reducing TSF's load impact by roughly 20% when generating metadata. We also added WordPress 6.0 support for image filesizes, making social sharing [even more robust](https://theseoframework.com/?p=3903).
-
-= 4.2.3 =
-
-This minor update addresses a regression where the singular-archive canonical URLs always [pointed to the first page](https://theseoframework.com/?p=3858).
-
-= 4.2.2 =
-
-This minor update addresses a regression where the homepage canonical URL was [missing a trailing slash](https://theseoframework.com/?p=3841).
-
-= 4.2.1 =
-
-This minor update addresses a few regressions brought in v4.2.0; it fixes the canonical URL for paginated categories, corrects an API typo, and [rectifies a few edge cases](https://theseoframework.com/?p=3836). TSF now also supports PHP 8.1.
-
-= 4.2.0 - Perfect =
-
-*Come with me, and you'll be in a world of pure imagination. - [Gene Wilder, Anthony Newley, Leslie Bricusse](https://www.youtube.com/watch?v=SVi3-PrQ0pY)*
+*We become just by doing just acts, temperate by doing temperate acts, brave by doing brave acts. - [Aristotle](https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0054%3Abook%3D2%3Achapter%3Dpos%3D17%3Asection%3D4)*
 
 **Release highlights**
 
-* This update brings new post-type-archive settings. You can now edit their titles, descriptions, social and visibility settings, and even add redirects on the SEO Settings page.
-* Fancy a custom site title for SEO purposes only? Check out the new title settings.
-* You will find that the sitemap's stylesheet now has its URLs centered; it also supports mobile devices.
-* Developers can now enjoy using the new `tsf()` function -- an alias of `the_seo_framework()`.
-* If you're a developer, you should also check out our perfectly tuned `memo()`. `umemo()`, and `fmemo()` [functions](https://github.com/sybrew/the-seo-framework/blob/4.2.0/inc/functions/api.php#L155-L335), which help make TSF so performant.
+* There's a brand-new relational Schema.org structured data generator.
+* We added a new shortcode (and function) for breadcrumbs to put in your templates.
+* You can now select a preferred Twitter Card type for every post, term, and custom post type.
+* Do you fancy the SEO Bar but find it distracting? Toggle the new dull, low-contrast color scheme.
+* Special characters are now normalized for SEO Bar assertions, so it is now far more accurate.
+* Users with an author role anywhere in a multisite network can now have their SEO meta tweaked from any site.
+* Tooltip backgrounds and various border accents now adhere to the admin color scheme (once more).
 
-**Perfect**
+**Apex**
 
-TSF is finally what I (Sybre) envisioned it to become when I first named it "The SEO Framework": It's lightning-fast, hassle-free, and has all necessary options while giving you the best in class experience. I hope you enjoy what I believe is a perfect product!
+Even though we dubbed TSF v4.2 "perfect," it couldn't be even better because of its legacy codebase. Many features and tweaks weren't possible because those would've created bugs or made maintenance impossible. In v5.0, we overhauled everything while keeping in mind the future. In doing so, we managed to ascend to a new apex, and we can now see the next summit ahead.
 
-To me, The SEO Framework is finished. Done. It's excellent. This doesn't mean its journey ends here. Now, it's time to add features *you* want. A restyled interface, migration support, custom title generation, more structured data fields, and many other community proposals are under consideration.
+Its code is unrecognizable, yet somehow very familiar. TSF v5.0 "Apex" is just the beginning of what comes next, and it won't be downhill from here.
 
-**A perfect tip**
+**New breadcrumb shortcode**
 
-This update comes with updated browser styles and scripts. Not all browsers get these for you; so, the interface might appear broken (and your "inputs" seem to be "removed"). Try a different browser, or [clear your favorite browser's cache](https://kinsta.com/knowledgebase/how-to-clear-browser-cache/#how-to-force-refresh-a-single-page). That ought to do the trick.
+You can now use shortcode `&#91;tsf_breadcrumb&#93;`. This shortcode is meant to be implemented in your theme and will output the current breadcrumb. It will listen to your meta title settings. You can learn more about its syntax in our [Knowledge Base about the Breadcrumb shortcode](https://tsf.fyi/kb/a/212).
+
+**Important for developers**
+
+* We refactored the entire codebase in this update -- over 1.20 million characters were written, and over 0.87 million were removed.
+* The code counts **1229 registered changes**; we added over 70 new classes, 220 new methods, 20 new filters, and a shortcode.
+* For the main object, `tsf()`, we deleted 19 classes, deprecated 388 methods and 1 property, and deleted 110 methods and 10 properties.
+* `uid` is now an accepted custom query parameter for almost all meta-generator methods. If your custom filters for TSF act odd on profile pages, [reach out to us in the forums](https://tsf.fyi/support/tsf/new-topic) and show us your code. **We'll fix it for you.**
+* So, if you ever used the `the_seo_framework()` or `tsf()` function, you almost certainly will get a deprecation notice. If you need assistance resolving this, please [open a new support topic](https://tsf.fyi/support/tsf/new-topic) and **show us your code**.
+
+**New meta tag generator**
+
+TSF now generates all meta tags via a registry. You can alter the population of the registry via filters `the_seo_framework_meta_generator_pools` and `the_seo_framework_meta_generators`, and you can modify the final registry via filter `the_seo_framework_meta_render_data`. For that, you can [find an example at Github](https://gist.github.com/sybrew/272b746296114cd93c3320e9544a1618).
+
+**New Schema.org graph generator**
+
+We added a new Schema.org structured data generator to TSF. This generator supports every page, post, archive, and custom post type. We built it to be referential and expansive by generating an ID-based graph. For example, if you refer to a Person once, their entity will be put right there, but if you refer to it again, it will use an ID-based reference. This keeps the output code neat and will not waste time generating an entity twice. You can filter it via `the_seo_framework_schema_graph_data`.
 
 **Environment upgrade notes**
 
-WordPress 5.1 through 5.4 are no longer supported. Here's why:
+WordPress 5.5 through 5.8 are no longer supported. Here's why:
 
-* [Over 66% of all WordPress sites](https://wordpress.org/about/stats/) are using WordPress v5.5 or later.
-* Newer versions of WordPress are faster, more reliable, and easier to work with; for both you and us.
+* [Over 75% of all WordPress sites](https://wordpress.org/about/stats/) are using WordPress v5.9 or later.
+* Newer versions of WordPress are faster, more reliable, and easier to work with --- for both you and us.
 * Supporting past versions takes time away that's better used implementing new features.
 
-PHP 5.6 through 7.1 are no longer supported. Here's why:
+PHP 7.2 and 7.3 are no longer supported. Here's why:
 
-* [Almost 80% of all WordPress sites](https://wordpress.org/about/stats/) are using PHP v7.2 or later.
+* [Almost 80% of all WordPress sites](https://wordpress.org/about/stats/) are using PHP v7.4 or later.
 * Newer versions of PHP are faster and more secure. For us, they're also easier to work with.
 * Again, supporting past versions takes time away that's better used implementing new features.
 
@@ -322,7 +310,7 @@ We hope you'll love this update as much as we do. Please consider supporting us 
 
 **Detailed log**
 
-Practice makes perfect. So does [working 16 hours a day](https://theseoframework.com/?p=3815#detailed).
+We become brave by training ourselves to despise and endure terrors, and we shall be best able to endure terrors [when we have become brave](https://theseoframework.com/?p=4135#detailed).
 
 = Full changelog =
 
@@ -330,16 +318,11 @@ Practice makes perfect. So does [working 16 hours a day](https://theseoframework
 
 == Upgrade Notice ==
 
+= 5.0.0 =
+
+This is a major upgrade. Make a backup of your database before updating. WordPress v5.9 or higher and PHP v7.4 or higher are now required. If you use the Extension Manager, update it to v2.6.3 or higher before updating this plugin. Downgrading to v4.2.8 is possible, but the description's HTML parsing method will revert to its default setting.
+
 = 4.1.0 =
 The v4.1.0 update brings a major upgrade. Make a backup of your database before updating. WordPress v5.1 (or higher) is now required. Downgrading to v4.0.7 is possible without side effects.
-
-= 4.0.0 =
-The v4.0.0 update brings a major upgrade. Make a backup of your database before updating. WordPress v4.9 (or higher) and PHP v5.6 (or higher) are now required. If you use the Extension Manager, update it to v2.1.0 (or higher) before updating this plugin. Downgrading to v3.2.4 is possible, however with the caveat that the homepage title may flip its output order back.
-
-= 3.1.1 =
-This is a major upgrade. Make a backup of your database before upgrading. WordPress v4.6 (or greater) and PHP v5.4 (or greater) are now required. If you use the Extension Manager, update it to v1.5.2 (or greater) before upgrading this plugin. Downgrading to v3.0.6 possible.
-
-= 3.0.0 =
-A major update. Make a backup of your database before upgrading.
 
 == Other Notes ==

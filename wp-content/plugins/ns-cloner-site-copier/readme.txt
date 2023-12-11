@@ -2,10 +2,10 @@
 Contributors: neversettle
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=53JXD4ENC8MM2&rm=2
 Tags: automate, duplicate, copy, copier, clone, cloner, multisite, network, template
-Requires at least: 4.6.0
-Tested up to: 6.0
+Requires at least: 5.0
+Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 4.2.1
+Stable tag: 4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,7 +51,7 @@ Yes, it really is that easy.
 
 = Pro Features =
 
-For even more powerful functionality, [check out NS Cloner Pro](https://neversettle.it/buy/wordpress-plugins/ns-cloner-pro/). In addition to all the free core features, Pro includes:
+For even more powerful functionality, [check out NS Cloner Pro](https://wpsitecloner.com/pricing/?utm_campaign=in+plugin+referral&utm_source=ns-cloner&utm_medium=plugin&utm_content=pro+pricing). In addition to all the free core features, Pro includes:
 
 * **Teleport** *(new)* - remote cloning power: clone a subsite to a remote network, or even teleport an entire multisite network to a remote location.
 * **Single Site** *(new)* - gain the ability to clone standard single sites, not just multisite, and even clone between single and multisite or vice versa.
@@ -77,10 +77,10 @@ For even more powerful functionality, [check out NS Cloner Pro](https://neverset
 == Frequently Asked Questions ==
 
 = How do I contact support, provide feedback, or make a feature request? =
-You can browse our Knowledge Base, add or vote on Feature Requests, or contact us with an issue at [support.neversettle.it](http://support.neversettle.it/)
+You can browse our Knowledge Base, add or vote on Feature Requests, or contact us with an issue at [wpsitecloner.com/support](https://wpsitecloner.com/support/)
 
 = Where can I find more documentation? =
-[See these articles](https://neversettle.it/documentation/ns-cloner/) for additional information on using NS Cloner.
+[See these articles](https://wpsitecloner.com/support/) for additional information on using NS Cloner.
 
 = What exactly does the NS Cloner copy? =
 The Cloner copies everything you need to have a totally identical twin site: all media uploads, posts, pages, custom post types, taxonomies, comments, menus, WordPress options, theme and plugin settings (including which ones are active).
@@ -100,6 +100,36 @@ You're in luck! NS Cloner V4 has new background cloning capability, so you shoul
 2. Cloning in progress.
 
 == Changelog ==
+
+= 4.4 - 2023.11.20 =
+* New: Updated the admin area for a more modern experience.
+* Enhancement: Code improvements.
+
+= 4.3.3 - 2023.08.23 =
+* Enhancement: Better loading of cloner core files for frontend
+* Fix: Clone templates
+
+= 4.3.2 - 2023.08.15 =
+* Fix: Fix issues with Background process class in initializing clone
+
+= 4.3.1 - 2023.08.11 =
+* Fix vendor paths
+
+= 4.3 - 2023.08.11 =
+* Enhancement: Better dependency management
+* Enhancement: Ability to override and define own custom logs location. Use `NS_CLONER_LOG_DIR` to define a custom log directory. Use `NS_CLONER_LOG_URL` to define a custom log url.
+* Fix: PHP Compatibility with Background process manager
+* Fix: PHP Notices
+
+= 4.2.2.2 - 2023.05.09 =
+* Fix critical php error
+
+= 4.2.2.1 - 2022.12.19 =
+* Remove unnecessary vendor files
+
+= 4.2.2 - 2022.12.16 =
+* Fix table constraint issue when cloning
+* Update plugin url
 
 = 4.2.1 - 2022.09.19 =
 * Fix inaccurate memory limit warning

@@ -1,0 +1,285 @@
+
+# Changelog
+
+## 1.0.25
+
+	- Updated remaining references to `String.prototype.format()` to use `String.prototype.gformFormat()` as the former is removed in Gravity Forms 2.8.
+
+## 1.0.24
+
+	- Added support for disabling auto-progression for a specific page by adding the new `gppt-disable-auto-progress` to the page's CSS Class Name setting.
+
+## 1.0.23
+
+	- Fixed issue where HTML fields below auto-progressable fields would prevent auto-progression from happening.
+
+## 1.0.22
+
+	- Fixed an issue where slides would change after submitting a form that has a confirmation that uses a page or redirect.
+
+## 1.0.21
+
+	- Fixed an issue with Page Transitions' Soft Validation marking all pages as complete when using Multi-Page Navigation, even if not completed.
+
+## 1.0.20
+
+	- Fixed an issue where inputs/elements getting focused in pages could cause Swiper slides to clip off content at the top of the page.
+
+## 1.0.19
+
+	- Improved styling of Soft Validation errors if using the Theme Framework/Orbital.
+	- Fixed issue where the submit spinner/loader would show if there was a Soft Validation error on the last page of a form using the Theme Framework/Orbital.
+
+## 1.0.18
+
+	- Fixed an issue where the page count would sometimes not be correct when using Soft Validation. This could prevent submission when at the end of the form.
+
+## 1.0.17
+
+	- Fixed issue where Soft Validation wouldn't add an error message to fields in certain scenarios.
+	- Fixed issue where Soft Validation could prevent progression on pages containing multi-file upload fields.
+	- Fixed an issue with GP Advanced Select and GP Page Transitions.
+
+## 1.0.16
+
+	- Fixed issue where tabbing could cause the current page/slide to be tabbed away from causing misaligned slides and Soft Validation to be bypassed.
+
+## 1.0.15
+
+	- Fixed an issue with auto-progression not working if an already selected radio button was clicked.
+
+## 1.0.14
+
+	- Fixed issue where having a required Signature field in forms with Soft Validation would prevent page progression even if the Signature field was signed.
+
+## 1.0.13
+
+	- Fixed an issue where forms with Page Transitions enabled but Soft Validation disabled would not work correctly in some cases if using Next Button Conditional Logic.
+
+## 1.0.12
+
+	- Updated Swiper from 8.4.5 to 9.2.4.
+	- Fixed issue where clicking the Save & Continue button will not work as expected if Soft Validation is enabled.
+	- Fixed issue where using the return key on Next/Previous page buttons could trigger multiple page progressions.
+
+## 1.0.11
+
+	- Fixed issue where the form height might not always update after a validation message is added by Soft Validation.
+
+## 1.0.10
+
+	- Updated the scrolling behavior to only scroll to the top of the form if the current scroll top is below the top of the form.
+	- Fixed issue where the `gform_target_page_number_FORMID` hidden input wouldn't always be set to `0` when using Soft Validation. This could cause entries to be inadvertently prevented from submitting if the Spam Honeypot is enabled.
+
+## 1.0.9
+
+	- Improved compatibility with payment add-ons by disabling Soft Validation if a Credit Card field is detected in a form.
+	- Improved user experience by automatically scrolling to the top of the form when navigating pages.
+	- Fixed inconsistent behavior when pressing the enter key when inputs are focused.
+	- Fixed issue where Page Transitions would not change to the correct slide on some forms that use Page Conditional Logic and have Soft Validation disabled.
+
+## 1.0.8
+
+	- Fixed an issue where submitting wouldn't work for some forms using Soft Validation and Page Conditional Logic.
+
+## 1.0.7
+
+	- Added support for auto-progressing with Advanced Phone Fields.
+
+## 1.0.6
+
+	- Fixed issue where `#gform_target_page_number_FORMID` and `#gform_target_page_number_FORMID` hidden inputs were not updated when using soft validation which could create incompatibilities with other plugins such as GP Nested Forms.
+
+## 1.0.5
+
+	- Added compatibility for Gravity Forms' new Theme Framework.
+
+## 1.0.4
+
+	- Updated the plugin URL.
+	- Added check to skip soft validation for unrequire scenario in GP Live Preview.
+
+## 1.0.3
+
+	- Fixed an error that could be thrown by Page Transitions if a form did not have pages.
+	- Improved logic around adjusting form height depending on conditionally displayed/hidden field visibility.
+
+## 1.0.2
+
+	- Fixed an issue where the conditionally hidden fields would not adjust the form height when enabled.
+
+## 1.0.1
+
+	- Fixed PHP warning in the form editor.
+
+## 1.0
+
+    - Updated underlying library for managing transitions. Swiper.js is now used instead of jQuery Cycle. This improves many things across the board including animation smoothness, mobile compatibility, stability, and maintainability.
+    - Added support for conditional page logic when using Soft Validation.
+    - Updated plugin to use `GP_Plugin` as the base class.
+    - Updated minimum required Gravity Forms version to 2.4.
+	- Added support for soft validation and auto-progression when using the survey likert field.
+	- Fixed soft validation for product field without quantity.
+	- Fixed issue where the enter/return key would not progress to the next page or submit the form.
+	- Added [`gppt_enable_extras`](https://gravitywiz.com/documentation/gppt_enable_extras) filter hook to enable loading all of the Swiper library and its modules.
+	- Added [`gppt_swiper_options`](https://gravitywiz.com/documentation/gppt_swiper_options) JavaScript filter hook.
+
+## 1.0-beta-2.8
+
+	- Added new [`gppt_is_enabled`](https://gravitywiz.com/documentation/gppt_is_enabled) filter hook.
+
+## 1.0-beta-2.7
+
+	- Improved compatibility with Gravity Flow, GravityView, and the Gravity Forms Edit Entry screen by disabling page transitions while editing entries through these pages.
+
+## 1.0-beta-2.6
+
+	- Fixed typo in form-specific `gppt_script_args` filter hook. `gppt_script_args_FORMID` now works.
+
+## 1.0-beta-2.5
+
+	- Fixed issue where Page Transitions would throw an error if `GFFormDisplay` was not defined which could interfere with WP Cron events such as GP Notification Scheduler's cron event.
+
+## 1.0-beta-2.4
+
+	- Added support for soft validation and auto-progression when using the Consent field.
+
+## 1.0-beta-2.3
+
+	- Fixed issue where conditionally shown fields would not always trigger Auto-progression.
+
+## 1.0-beta-2.2
+
+	- Added support for soft validating Chained Select fields.
+
+## 1.0-beta-2.1
+
+	- Updated to expose the form-specific Page Transitions object on `window`.
+	- Improved styling of field settings.
+
+## 1.0-beta-2
+
+    - Official release!
+
+## 1.0-beta-1.29
+
+	- Added new [`gppt_auto_submit`](https://gravitywiz.com/documentation/gppt_auto_submit) JavaScript filter.
+	- Fixed JavaScript error that could occur if there is no conditional logic on a form.
+
+## 1.0-beta-1.28
+
+	- Improved support for conditional logic when using Soft Validation.
+
+## 1.0-beta-1.27
+
+	- Fixed notice generated if Page Transitions was enabled but form was no longer a multi-page form.
+
+## 1.0-beta-1.26
+
+	- Improved compatibility with GP Nested Forms when using Soft Validation.
+
+## 1.0-beta-1.25
+
+	- Fixed issue where the previous page button's type attribute could be incorrectly set to `submit` rather than `button`.
+	- Fixed a recursion issue that could occur on submission if no fields are filled in.
+	- Fixed issue with the progress bar incorrectly calculating if the progress bar is configured to be displayed on the confirmation.
+	- Added `gppt_before_transition` and `gppt_after_transition` actions to allow doing something before or after the page transitions.
+
+## 1.0-beta-1.24
+
+	- Fixed issue where transition easing would not be set if transition style used default value.
+
+## 1.0-beta-1.23
+
+	- Added auto-progression support to Consent fields and Checkbox fields with only one choice.
+
+## 1.0-beta-1.22
+
+	- Improved compatibility with GP Multi-page Navigation and its `gpmpn_default_page` filter.
+
+## 1.0-beta-1.21
+
+	- Fixed issue where forms using Page Transitions would not submit in the Form Preview screen.
+
+## 1.0-beta-1.20
+
+	- Fixed a compatibility issue with GPNF.
+
+## 1.0-beta-1.19
+
+	- Fixed an issue where hidden next/previous button break Auto-progression functionality when transitions are disabled.
+
+## 1.0-beta-1.18
+
+	- Fixed issue where Page Transitions would not work when Previewing a form with Soft Validation disabled.
+	- Improved compatibility with Gravity Forms 2.5.
+
+## 1.0-beta-1.17
+
+	- Fixed an issue where GPPT may show a black background on some forms.
+
+## 1.0-beta-1.16
+
+	- Fixed issue where auto-progression did not work as expected for most field types.
+
+## 1.0-beta-1.15
+
+	- Fixed an issue where GPPT may advance prematurely when the last field is conditionally hidden.
+
+## 1.0-beta-1.14
+
+	- Fixed issue where hitting enter would navigate to the previous page.
+
+## 1.0-beta-1.10
+
+	- Fixed issue where page conditional logic caused page animation to fail when submitting a page.
+
+## 1.0
+
+	- Fixed issue where multiple calls to resizeFormBody() (particularly when combined with conditional logic) could result in a long delay before displaying the form.
+	- Fixed issue where validating fields with hidden inputs incorrectly returned a validation error if the hidden field was empty.
+	- Fixed issue where form body did not resize after conditional logic was triggered.
+	- Fixed issue where frontend soft validation was not correctly ignoring conditionally hidden fields.
+	- Fixed styling issue when using soft validation and ready classes for columns.
+	- Fixed styling issue which occured when initializing page transitions *before* conditional logic had been applied.
+	- Added support for handling auto-progression for Radio Buttons w/ "Other" option enabled.
+	- Added inline documentation for hooks.
+
+## 1.0-beta-1.9
+
+	- Fixed notice generated when "cssClass" was not specified on the $form object.
+
+## 1.0.beta1.7
+
+	- Fixed issue where auto-progresion did not trigger for the last *visible* field on the page.
+
+## 1.0.beta1.6
+
+	- Fixed issue where soft validation failed when no fields required validation on the current page. Thanks, @mgratch!
+
+## 1.0.beta1.5
+
+	- Fixed issue where multiple calls to resizeFormBody() (particularly when combined with conditional logic) could result in a long delay before displaying the form.
+	- Fixed issue where validating fields with hidden inputs incorrectly returned a validation error if the hidden field was empty.
+
+## 1.0.beta1.4
+
+	- Fixed issue where form body did not resize after conditional logic was triggered.
+
+## 1.0.beta1.3
+
+	- Fixed issue where frontend soft validation was not correctly ignoring conditionally hidden fields.
+
+## 1.0.beta1.2
+
+	- Fixed styling issue when using soft validation and ready classes for columns.
+	- Fixed styling issue which occured when initializing page transitions *before* conditional logic had been applied.
+
+## 1.0.beta1.1
+
+    - Added support for handling auto-progression for Radio Buttons w/ "Other" option enabled.
+    - Added inline documentation for hooks.
+
+## 1.0.beta1.0
+
+    - Life is pleasant. Death is peaceful. It's the transition that's troublesome.

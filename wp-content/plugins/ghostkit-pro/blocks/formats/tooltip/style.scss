@@ -1,0 +1,81 @@
+@import "./variables";
+
+.ghostkit-pro-tooltip[aria-label] {
+  cursor: pointer;
+  border-bottom: var(--gkt-pro-tooltip-button__border);
+}
+
+.ghostkit-pro-tooltip-popper-wrap {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: var(--gkt-pro-tooltip__z-index);
+}
+
+.ghostkit-pro-tooltip-popper {
+  max-width: 400px;
+  padding: var(--gkt-pro-tooltip__padding-v) var(--gkt-pro-tooltip__padding-h);
+  font-family: var(--gkt-pro-tooltip__font-family);
+  font-size: var(--gkt-pro-tooltip__font-size);
+  font-style: normal;
+  font-weight: 400;
+  color: var(--gkt-pro-tooltip__color);
+  text-indent: 0;
+  text-shadow: none;
+  word-break: break-word;
+  white-space: pre-line;
+  pointer-events: none;
+  background-color: var(--gkt-pro-tooltip__background-color);
+  border-radius: var(--gkt-pro-tooltip__border-radius);
+  opacity: 0;
+  transition-property: opacity, transform;
+
+  // Arrow.
+  [data-popper-arrow] {
+    width: 0;
+    height: 0;
+    border: var(--gkt-pro-tooltip__arrow-size) solid transparent;
+  }
+
+  [data-popper-placement^="top"] & [data-popper-arrow] {
+    bottom: calc(-2 * var(--gkt-pro-tooltip__arrow-size));
+    border-top-color: var(--gkt-pro-tooltip__background-color);
+  }
+
+  [data-popper-placement^="bottom"] & [data-popper-arrow] {
+    top: calc(-2 * var(--gkt-pro-tooltip__arrow-size));
+    border-bottom-color: var(--gkt-pro-tooltip__background-color);
+  }
+
+  [data-popper-placement^="left"] & [data-popper-arrow] {
+    right: calc(-2 * var(--gkt-pro-tooltip__arrow-size));
+    border-left-color: var(--gkt-pro-tooltip__background-color);
+  }
+
+  [data-popper-placement^="right"] & [data-popper-arrow] {
+    left: calc(-2 * var(--gkt-pro-tooltip__arrow-size));
+    border-right-color: var(--gkt-pro-tooltip__background-color);
+  }
+
+  // Transition.
+  [data-popper-placement^="top"] & {
+    transform: translate(0, calc(-1 * var(--gkt-pro-tooltip__show-move)));
+  }
+
+  [data-popper-placement^="bottom"] & {
+    transform: translate(0, var(--gkt-pro-tooltip__show-move));
+  }
+
+  [data-popper-placement^="left"] & {
+    transform: translate(calc(-1 * var(--gkt-pro-tooltip__show-move)), 0);
+  }
+
+  [data-popper-placement^="right"] & {
+    transform: translateX(calc(1 * var(--gkt-pro-tooltip__show-move))) translateY(0);
+  }
+
+  .ghostkit-pro-tooltip-popper-show & {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}

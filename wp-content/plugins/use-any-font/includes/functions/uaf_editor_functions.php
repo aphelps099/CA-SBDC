@@ -295,3 +295,34 @@ add_filter( 'kadence_blocks_add_custom_fonts', 'uaf_kadence_custom_fonts' );
 add_filter( 'kadence_theme_add_custom_fonts', 'uaf_kadence_custom_fonts' );
 
 // EOF Kadence Theme And Block
+
+
+
+// Add custom font to bricks builder 
+add_filter( 'bricks/builder/standard_fonts', function( $standard_fonts ) {
+   $fontsData = uaf_get_font_families();
+	 if (!empty($fontsData)):
+		foreach ($fontsData as $key=>$fontName):
+			$fonts_uaf[$fontName] = $fontName;
+		endforeach;
+		return array_merge($fonts_uaf,$standard_fonts);
+	else:
+		return $standard_fonts;
+	endif;
+} );
+// EOF BRICKS BUILDER
+
+
+// Add custom font to themeisle neva 
+function uaf_themeisle_custom_fonts( $localized_data ) {
+	$fontsData = uaf_get_font_families();
+	 if (!empty($fontsData)):
+		foreach ($fontsData as $key=>$fontName):
+			$localized_data['fonts']['Custom'][] = $fontName;
+		endforeach;		
+	endif;
+	return $localized_data;
+	
+}
+add_filter( 'neve_react_controls_localization', 'uaf_themeisle_custom_fonts' );
+// Add custom font to themeisle neva 

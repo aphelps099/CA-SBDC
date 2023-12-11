@@ -1,0 +1,9 @@
+<svg width="200" height="30" viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+  preserveAspectRatio="none">
+  <path opacity="0.2" d="M120 27C147.5 26.5053 170.5 0 200 0V30H120V27Z" fill="currentColor" />
+  <path opacity="0.2" d="M120 27C147.5 26.5041 170.5 2 200 2V30H120V27Z" fill="currentColor" />
+  <path opacity="0.2" d="M120 27C147.5 26.5304 170.5 4 200 4V30H120V27Z" fill="currentColor" />
+  <path opacity="0.2" d="M120 27C147.5 26.5304 170.5 6 200 6V30H120V27Z" fill="currentColor" />
+  <path d="M200 30H0C31 28 44.5 18 65 18C85.5 18 92.5 26.4952 121.5 26C149 25.5304 170.5 8 200 8V30Z"
+    fill="currentColor" />
+</svg>

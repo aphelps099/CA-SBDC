@@ -1,0 +1,18 @@
+:root {
+  --gkt-pro-tooltip-button__border: 1px dashed #a5a5a5;
+  --gkt-pro-tooltip__font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --gkt-pro-tooltip__padding-v: 0.8em;
+  --gkt-pro-tooltip__padding-h: 1em;
+  --gkt-pro-tooltip__border-radius: 0.4em;
+  --gkt-pro-tooltip__background-color: rgba(16, 16, 16, 95%);
+  --gkt-pro-tooltip__color: #fff;
+  --gkt-pro-tooltip__font-size: 0.9em;
+  --gkt-pro-tooltip__arrow-size: 0.4em;
+  --gkt-pro-tooltip__show-move: 5px;
+  // 30 is used for Gutenberg rich-text toolbar.
+  --gkt-pro-tooltip__z-index: 31;
+
+  // Transitions.
+  --gkt-pro-tooltip__transition-duration: var(--gkt-transition-duration);
+  --gkt-pro-tooltip__transition-easing: var(--gkt-transition-easing);
+}

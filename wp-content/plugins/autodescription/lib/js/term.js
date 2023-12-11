@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -146,7 +146,7 @@ window.tsfTerm = function() {
 		tsfTitle.setInputElement( titleInput );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0
+			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0,
 		);
 
 		if ( state ) {
@@ -156,7 +156,6 @@ window.tsfTerm = function() {
 			tsfTitle.updateStateOf( _titleId, 'useSocialTagline', !! ( state.useSocialTagline || false ) );
 			tsfTitle.updateStateOf( _titleId, 'additionValue', state.additionValue.trim() );
 			tsfTitle.updateStateOf( _titleId, 'additionPlacement', state.additionPlacement );
-			tsfTitle.updateStateOf( _titleId, 'hasLegacy', !! ( state.hasLegacy || false ) );
 		}
 
 		// tsfTitle shouldn't be aware of this--since we remove the prefix on-input.
@@ -183,7 +182,7 @@ window.tsfTerm = function() {
 		}
 
 		//!? Disabled as we don't add prefixes when using a custom title:
-		// const setTermPrefixValue = ( event ) => {
+		// const setTermPrefixValue = event => {
 		// 	let prefixValue    = '';
 		// 	if ( ! event.target.value.length )
 		// 		prefixValue = l10n.params.termPrefix;
@@ -235,12 +234,11 @@ window.tsfTerm = function() {
 		tsfDescription.setInputElement( descInput );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-description-data_${_descId}` )?.dataset.state || 0
+			document.getElementById( `tsf-description-data_${_descId}` )?.dataset.state || 0,
 		);
 		if ( state ) {
 			// tsfDescription.updateState( 'allowReferenceChange', ! state.refDescriptionLocked );
 			tsfDescription.updateStateOf( _descId, 'defaultDescription', state.defaultDescription.trim() );
-			tsfDescription.updateStateOf( _descId, 'hasLegacy', !! ( state.hasLegacy || false ) );
 		}
 
 		// TODO set term-description-content (via ajax) listeners?
@@ -261,7 +259,7 @@ window.tsfTerm = function() {
 		tsfSocial.setInputInstance( _socialGroup, _titleId, _descId );
 
 		const groupData = JSON.parse(
-			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0
+			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0,
 		);
 		if ( ! groupData ) return;
 

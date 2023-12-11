@@ -28,6 +28,28 @@ class JVM_Richtext_icons {
         add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets') );
         add_filter( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
+
+
+        /**
+         * Register Gutenberg block on server-side.
+         *
+         * Register the block on server-side to ensure that the block
+         * scripts and styles for both frontend and backend are
+         * enqueued when the editor loads.
+         *
+         * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
+         * @since 1.16.0
+         */
+        register_block_type(
+            'jvm/single-icon', array(
+                // Enqueue blocks.style.build.css on both frontend & backend.
+                //'style'         => 'jvm_details_summary-cgb-style-css',
+                // Enqueue blocks.build.js in the editor only.
+                'editor_script' => 'jvm-rich-text-icons-js',
+                // Enqueue blocks.editor.build.css in the editor only.
+                'editor_style'  => 'jvm-rich-text-icons-editor-css',
+            )
+        );
     }
 
     /**
@@ -107,7 +129,7 @@ class JVM_Richtext_icons {
                 plugins_url( '/dist/blocks.build.js', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
                 array(),
                 //array( 'wp-i18n', 'wp-element', 'wp-editor' ), // Dependencies, defined above.
-                null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
+                '1.2.3',
                 true // Enqueue the script in the footer.
             );
 

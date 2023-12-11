@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/video",
-  "category": "media",
+  "category": "ghostkit",
   "title": "Video",
   "description": "Plain and Fullscreen YouTube, Vimeo and Self-Hosted videos.",
   "keywords": ["video", "youtube", "vimeo"],
@@ -64,6 +66,13 @@
       "type": "boolean",
       "default": false
     },
+    "videoBackgroundColor": {
+      "type": "string",
+      "default": "#010101"
+    },
+    "videoBackgroundGradient": {
+      "type": "string"
+    },
 
     "iconPlay": {
       "type": "string",
@@ -105,7 +114,16 @@
       "type": "string",
       "default": "plain"
     },
+    "fullscreenVideoBackgroundColor": {
+      "type": "string"
+    },
+    "fullscreenVideoBackgroundGradient": {
+      "type": "string"
+    },
     "fullscreenBackgroundColor": {
+      "type": "string"
+    },
+    "fullscreenBackgroundGradient": {
       "type": "string"
     },
     "fullscreenActionCloseIcon": {

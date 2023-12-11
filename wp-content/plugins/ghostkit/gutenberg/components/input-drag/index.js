@@ -71,9 +71,12 @@ export default class InputDrag extends Component {
   parseValue() {
     let valueNum = parseFloat(this.props.value);
     let unit = '';
+
     // check if value contains units and save it.
     if (this.props.value !== `${valueNum}`) {
-      const matchUnit = this.props.value.match(new RegExp(`${valueNum}(${units.join('|')})`, 'i'));
+      const matchUnit = (this.props.value || '').match(
+        new RegExp(`${valueNum}(${units.join('|')})`, 'i')
+      );
 
       if (matchUnit && matchUnit[1]) {
         // eslint-disable-next-line prefer-destructuring
@@ -83,7 +86,7 @@ export default class InputDrag extends Component {
 
     if (Number.isNaN(valueNum)) {
       valueNum = 0;
-      if ('undefined' !== typeof this.props.defaultUnit) {
+      if (typeof this.props.defaultUnit !== 'undefined') {
         unit = this.props.defaultUnit;
       }
     }
@@ -148,7 +151,7 @@ export default class InputDrag extends Component {
         let step = 1;
         let shiftKeyMultiple = 10;
 
-        if ('undefined' !== typeof this.props.step && !Number.isNaN(this.props.step)) {
+        if (typeof this.props.step !== 'undefined' && !Number.isNaN(this.props.step)) {
           step = this.props.step;
           shiftKeyMultiple *= step;
         }
@@ -159,7 +162,7 @@ export default class InputDrag extends Component {
           (this.initialPosition.y - e.pageY) * (this.initialShiftKey ? shiftKeyMultiple : step);
 
         // conversion for decimal steps
-        if (0 < numbersOfDigit) {
+        if (numbersOfDigit > 0) {
           mouseValue = +mouseValue.toFixed(numbersOfDigit);
         }
 
@@ -171,7 +174,7 @@ export default class InputDrag extends Component {
   }
 
   keyDown(e) {
-    if (this.initialPosition || (40 !== e.keyCode && 38 !== e.keyCode)) {
+    if (this.initialPosition || (e.keyCode !== 40 && e.keyCode !== 38)) {
       return;
     }
 
@@ -181,7 +184,7 @@ export default class InputDrag extends Component {
     let newVal = 1;
     let shiftVal = 10;
 
-    if ('undefined' !== typeof this.props.step && !Number.isNaN(this.props.step)) {
+    if (typeof this.props.step !== 'undefined' && !Number.isNaN(this.props.step)) {
       newVal = this.props.step;
       if (e.shiftKey) {
         shiftVal *= this.props.step;
@@ -198,7 +201,7 @@ export default class InputDrag extends Component {
     }
 
     // conversion for decimal steps
-    if (0 < numbersOfDigit) {
+    if (numbersOfDigit > 0) {
       keyDown = +keyDown.toFixed(numbersOfDigit);
       keyUp = +keyUp.toFixed(numbersOfDigit);
     }
@@ -217,11 +220,11 @@ export default class InputDrag extends Component {
   }
 
   render() {
-    const { value, onChange, icon, placeholder, autoComplete, className } = this.props;
+    const { value, label, help, onChange, icon, placeholder, autoComplete, className } = this.props;
 
     let classHasIcon = 'ghostkit-component-input-drag-no-icon';
 
-    if ('undefined' !== typeof icon) {
+    if (typeof icon !== 'undefined') {
       classHasIcon = 'ghostkit-component-input-drag-has-icon';
     }
 
@@ -229,14 +232,16 @@ export default class InputDrag extends Component {
       <div className={classnames(classHasIcon, className)}>
         {icon}
         <TextControl
+          label={label}
+          help={help}
+          placeholder={placeholder}
+          value={value || ''}
           onMouseDown={this.mouseDown}
           onKeyDown={this.keyDown}
-          value={value}
           onChange={(val) => {
             onChange(val);
           }}
           className="ghostkit-component-input-drag"
-          placeholder={placeholder}
           autoComplete={autoComplete}
         />
       </div>

@@ -1,0 +1,8 @@
+<svg width="200" height="30" viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+  preserveAspectRatio="none">
+  <path opacity="0.2" d="M200 0V30H100H0V0L100 30L200 0Z" fill="currentColor" />
+  <path opacity="0.2" d="M200 4V30H100H0V4L100 30L200 4Z" fill="currentColor" />
+  <path opacity="0.2" d="M200 8V30H100H0V8L100 30L200 8Z" fill="currentColor" />
+  <path opacity="0.2" d="M200 12V30H100H0V12L100 30L200 12Z" fill="currentColor" />
+  <path d="M200 16V30H100H0V16L100 30L200 16Z" fill="currentColor" />
+</svg>

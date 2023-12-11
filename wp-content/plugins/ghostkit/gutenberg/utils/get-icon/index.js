@@ -4,11 +4,11 @@
 import allIcons from '../../icons/index';
 
 export default function getIcon(icon, returnObject) {
-  if (icon && 'undefined' !== typeof allIcons[icon]) {
+  if (icon && typeof allIcons[icon] !== 'undefined') {
     // return object for block registration.
     if (returnObject) {
       return {
-        foreground: '#2F1747',
+        foreground: '#7d7cbf',
         src: allIcons[icon],
       };
     }

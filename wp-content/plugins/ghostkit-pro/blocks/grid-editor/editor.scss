@@ -1,0 +1,238 @@
+@import "../variables";
+
+// resize control inside inspector
+.ghostkit-grid.ghostkit-pro-grid-resize-control,
+.ghostkit-pro-grid-resize-control-workspace {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-right: -3px;
+  margin-bottom: 5px;
+  margin-left: -3px;
+}
+
+.ghostkit-pro-grid-resize-control-col-settings {
+  min-width: 230px;
+}
+
+.ghostkit-grid.ghostkit-pro-grid-resize-control {
+  --gkt-grid__gap: 0%;
+
+  z-index: 1;
+  display: flex;
+
+  .ghostkit-col {
+    position: relative;
+    padding-right: 3px;
+    padding-bottom: 6px;
+    padding-left: 3px;
+    transition: 0.3s width, 0.3s flex, 0.3s transform;
+
+    > .ghostkit-pro-grid-resize-control-col-wrap {
+      width: 100%;
+      height: 65px;
+      background-color: $light-gray-500;
+      border-radius: 2px;
+    }
+
+    // drag handler
+    .ghostkit-pro-grid-resize-control-col-settings-handler {
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      z-index: 5;
+      height: auto;
+      padding: 3px;
+      font-size: 9px;
+      line-height: 10px;
+      text-align: center;
+      background-color: $light-gray-800;
+      border-radius: 2px;
+      opacity: 0;
+      transition: 0.3s opacity;
+    }
+
+    &:hover .ghostkit-pro-grid-resize-control-col-settings-handler {
+      opacity: 0.4;
+    }
+
+    .ghostkit-pro-grid-resize-control-col-settings-handler:hover {
+      opacity: 1;
+    }
+
+    // resize handler
+    > span {
+      position: absolute;
+      top: 0;
+      right: 8px;
+      bottom: 6px;
+      left: 8px;
+    }
+
+    > span > div {
+      max-width: 25px;
+
+      &::before {
+        position: absolute;
+        top: 3px;
+        right: 10px;
+        bottom: 3px;
+        display: block;
+        width: 100%;
+        max-width: 8px;
+        height: auto;
+        background-color: $light-gray-800;
+        border: none;
+        border-radius: 2px;
+        opacity: 0;
+        transition: 0.3s opacity;
+        animation: none;
+      }
+
+      &::after {
+        content: none;
+      }
+    }
+
+    &:hover > span > div::before {
+      opacity: 0.4;
+    }
+
+    > span > div:hover::before {
+      opacity: 1;
+    }
+  }
+
+  // number
+  .ghostkit-pro-grid-resize-control-col-number {
+    position: absolute;
+    bottom: 5px;
+    left: 8px;
+    font-size: 0.8em;
+    color: $light-gray-800;
+    opacity: 0;
+    transition: 0.3s opacity;
+  }
+
+  &:hover .ghostkit-pro-grid-resize-control-col-number {
+    opacity: 1;
+  }
+
+  .ghostkit-col-1 .ghostkit-pro-grid-resize-control-col-number {
+    opacity: 0;
+  }
+
+  // Vertical align.
+  &.ghostkit-grid-align-items-center {
+    align-items: center;
+  }
+
+  &.ghostkit-grid-align-items-end {
+    align-items: flex-end;
+  }
+
+  // Horizontal align.
+  &.ghostkit-grid-justify-content-center {
+    justify-content: center;
+  }
+
+  &.ghostkit-grid-justify-content-end {
+    justify-content: flex-end;
+  }
+
+  &.ghostkit-grid-justify-content-around {
+    justify-content: space-around;
+  }
+
+  &.ghostkit-grid-justify-content-between {
+    justify-content: space-between;
+  }
+
+  .ghostkit-pro-grid-resize-control-inherited {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    padding: 6px;
+    text-align: center;
+    background-color: rgba(#fff, 0.8);
+    transition: 0.3s opacity;
+
+    button {
+      margin-top: 6px;
+    }
+
+    // Hide resizable control.
+    ~ * .components-resizable-box__handle {
+      opacity: 0;
+    }
+  }
+
+  .ghostkit-pro-grid-resize-control-workspace {
+    position: absolute;
+    top: -7px;
+    right: 3px;
+    bottom: -1px;
+    left: 3px;
+    z-index: -1;
+    margin-bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.3s opacity;
+
+    .ghostkit-col {
+      padding-bottom: 0;
+
+      > div {
+        width: 100%;
+        height: 100%;
+        background-color: rgba($blue-wordpress-700, 0.03);
+        border: 1px solid rgba($blue-wordpress-700, 0.03);
+        border-radius: 0;
+      }
+    }
+  }
+
+  &:hover .ghostkit-pro-grid-resize-control-workspace {
+    opacity: 1;
+  }
+
+  // Fixed resizable component height.
+  .components-resizable-box__handle {
+    height: calc(100% - 6px);
+  }
+}
+
+// sortable cloned item
+.ghostkit-pro-grid-resize-control-sortable {
+  z-index: 90;
+  flex: none !important;
+  min-width: 0 !important;
+  padding-right: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+
+  > span {
+    display: none;
+  }
+
+  .ghostkit-pro-grid-resize-control-col-wrap {
+    width: 100%;
+    height: 100%;
+    background-color: $light-gray-500;
+    border-radius: 2px;
+
+    > div {
+      display: none;
+    }
+  }
+}
+
+.ghostkit-pro-grid-resize-control-reset {
+  float: right;
+  margin-top: 5px;
+  margin-left: 5px;
+}

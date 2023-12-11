@@ -12,28 +12,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div class="ns-cloner-sidebar">
 
-	<div class="ns-side-widget ns-support-widget">
-		<h5><?php esc_html_e( 'Support', 'ns-cloner-site-copier' ); ?></h5>
+	<div class="ns-side-widget ns-links-widget">
 		<div class="ns-side-widget-content">
-			<p>
-				<?php esc_html_e( 'Have any issues with the Cloner, or ideas on how to make it better? We\'d love to hear from you.', 'ns-cloner-site-copier' ); ?>
-			</p>
-			<p>
-				<a href="http://support.neversettle.it" class="button" data-cloner-modal="copy-logs" target="_blank">
-					<?php esc_html_e( 'Support & Feature Requests', 'ns-cloner-site-copier' ); ?>
-				</a>
-			</p>
+			<img src="<?php echo esc_url( NS_CLONER_V4_PLUGIN_URL . 'images/neversettle-logo.svg' ); ?>" alt="NeverSettle Logo"/>
+			<h3><?php esc_html_e( 'More Than Just Plugins', 'ns-cloner-site-copier' ); ?></h3>
+			<a class="button transparent-button button-bottom" href="http://neversettle.it/?utm_campaign=in+plugin+referral&utm_source=ns-cloner&utm_medium=plugin&utm_content=social+button+to+ns" target="_blank">
+				<?php esc_html_e( 'Check us out', 'ns-cloner-site-copier' ); ?>
+			</a>
 		</div>
 	</div>
 
-	<div class="ns-side-widget ns-subscribe-widget">
-		<h5><?php esc_html_e( 'Don\'t Miss Anything!', 'ns-cloner-site-copier' ); ?></h5>
+	<div class="ns-side-widget ns-support-widget">
 		<div class="ns-side-widget-content">
-			<p><?php esc_html_e( 'Receive updates, beta invites, articles and more!', 'ns-cloner-site-copier' ); ?></p>
-			<!-- Begin Active Campaign Signup Form -->
-			<div class="_form_28" id="ns-subscribe-form"></div>
-			<?php wp_enqueue_script( 'ns-subscribe', 'https://neversettle.activehosted.com/f/embed.php?id=28', array(), '28', true ); ?>
-			<!-- End Active Campaign Signup Form -->
+			<h3 class="title"><?php esc_html_e( 'Here to help', 'ns-cloner-site-copier' ); ?></h3>
+			<p class="sub-title">
+				<?php esc_html_e( 'Need assistance? Got a great idea?', 'ns-cloner-site-copier' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( 'Got a question? Got stuck? Or just have an awesome idea on how we can make Cloner even better? Our support teams are ready to help you out.', 'ns-cloner-site-copier' ); ?>
+			</p>
+			<p>
+				<a href="https://wpsitecloner.com/support" class="button button-purple button-bottom" data-cloner-modal="copy-logs" target="_blank">
+					<?php esc_html_e( 'Support & Feature Requests', 'ns-cloner-site-copier' ); ?>
+				</a>
+			</p>
 		</div>
 	</div>
 
@@ -49,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</p>
 				<textarea onclick="this.select();return false;"><?php echo esc_textarea( join( "\n", ns_cloner()->log->get_recent_logs() ) ); ?></textarea>
 				<p>
-					<a href="http://support.neversettle.it" class="button" target="_blank"><?php esc_html_e( 'Continue to Support', 'ns-cloner-site-copier' ); ?></a>
+					<a href="https://wpsitecloner.com/support" class="button" target="_blank"><?php esc_html_e( 'Continue to Support', 'ns-cloner-site-copier' ); ?></a>
 				</p>
 			</div>
 		</div>

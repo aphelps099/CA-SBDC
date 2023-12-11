@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2018 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -64,7 +64,7 @@ window.tsfMedia = function( $ ) {
 	 * @param {String} str
 	 * @return {(string|undefined)} HTML to jQuery converted string
 	 */
-	// const escapeKey = ( str ) => {
+	// const escapeKey = str => {
 	// 	if ( str )
 	// 		return str.replace( /(?!\\)(?=[\[\]\/])/g, '\\' );
 	// 	return str;
@@ -209,6 +209,7 @@ window.tsfMedia = function( $ ) {
 	 *
 	 * @since 3.1.0
 	 * @since 4.1.1 Removed second parameter, shifted third to second.
+	 * @since 4.2.8 Now parses button classList data.
 	 * @access private
 	 *
 	 * @function
@@ -226,7 +227,7 @@ window.tsfMedia = function( $ ) {
 		// Don't append another remove button if one's found.
 		if ( document.getElementById( `${inputId}-remove` ) ) return;
 
-		let button = document.createElement( 'button' );
+		const button = document.createElement( 'button' );
 
 		button.type              = 'button';
 		button.id                = `${inputId}-remove`
@@ -234,7 +235,8 @@ window.tsfMedia = function( $ ) {
 		button.dataset.inputType = inputType;
 		button.title             = tsf.decodeEntities( l10n.labels[ inputType ].imgRemoveTitle );
 		button.innerHTML         = tsf.escapeString( tsf.decodeEntities( l10n.labels[ inputType ].imgRemove ) );
-		button.classList.add( 'tsf-remove-image-button', 'button', 'button-small' );
+
+		button.classList.add( 'tsf-remove-image-button', ...( JSON.parse( target.dataset?.buttonClass || 0 )?.remove || [] ) );
 
 		target.insertAdjacentElement( 'afterend', button );
 
@@ -243,7 +245,7 @@ window.tsfMedia = function( $ ) {
 			// TODO use tsf-fade-in CSS?
 			$( button ).css( 'opacity', 0 ).animate(
 				{ opacity: 1 },
-				{ queue: true, duration: 1000 }
+				{ queue: true, duration: 1000 },
 			);
 		}
 
@@ -432,7 +434,7 @@ window.tsfMedia = function( $ ) {
 						nonce:      l10n.nonce,
 						id:         attachment.get( 'id' ),
 						context:    'tsf-image',
-						cropDetails: cropDetails
+						cropDetails: cropDetails,
 					}
 				);
 			}
@@ -509,7 +511,7 @@ window.tsfMedia = function( $ ) {
 			x1:          x1,
 			y1:          y1,
 			x2:          xInit + x1,
-			y2:          yInit + y1
+			y2:          yInit + y1,
 		};
 
 		// @TODO Convert set img min-width/height to output ratio.
@@ -518,9 +520,9 @@ window.tsfMedia = function( $ ) {
 
 		if ( ! control.params.isFlex ) {
 			imgSelectOptions.handles = 'corners';
-			imgSelectOptions.aspectRatio = xInit + ':' + yInit;
+			imgSelectOptions.aspectRatio = `${xInit}:${yInit}`;
 		} else if ( ! flexHeight && ! flexWidth ) {
-			imgSelectOptions.aspectRatio = xInit + ':' + yInit;
+			imgSelectOptions.aspectRatio = `${xInit}:${yInit}`;
 		} else {
 			if ( flexHeight ) {
 				imgSelectOptions.minHeight = control.params.minHeight;
@@ -729,7 +731,7 @@ window.tsfMedia = function( $ ) {
 			 * CSRF should be blocked by the browser, as well. Otherwise, Authors and Editors are able to execute
 			 * these via the default WordPress editor, already.
 			 *
-			 * URLs that aren't trusted are also filtered via sanitization on save, using `the_seo_framework()->s_url_query()`.
+			 * URLs that aren't trusted are also filtered via sanitization on save.
 			 *
 			 * We are NOT creating a document node here, that's something we leave for the tooltip.
 			 */
@@ -753,7 +755,7 @@ window.tsfMedia = function( $ ) {
 			updateToolTip,
 			// High timeout: Don't DoS the inputted URL, plus the delay is quite nice. This equals to about 522ms.
 			// Invoke instantly when removing, otherwise it lags behind the removal button's animation.
-			pageLoaded && src.length ? 1000/(115/60) : 0 // Magic number: 115 Keys/Min is considered a "slow" typer. ISBN: 978-3-319-20498-7
+			pageLoaded && src.length ? 1000/(115/60) : 0, // Magic number: 115 Keys/Min is considered a "slow" typer. ISBN: 978-3-319-20498-7.
 		);
 	}
 

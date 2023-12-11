@@ -8,7 +8,7 @@
          "Ghost Kit": [
             ""
          ],
-         "Blocks collection and extensions for Gutenberg": [
+         "Page Builder Blocks and Extensions for Gutenberg": [
             ""
          ],
          "Ghost Kit Team": [
@@ -20,82 +20,19 @@
          "Go Pro": [
             ""
          ],
-         "This value seems to be invalid.": [
-            ""
-         ],
-         "This value should be a valid email.": [
-            ""
-         ],
-         "This value should be a valid url.": [
-            ""
-         ],
-         "This value should be a valid number.": [
-            ""
-         ],
-         "This value should be a valid integer.": [
-            ""
-         ],
-         "This value should be digits.": [
-            ""
-         ],
-         "This value should be alphanumeric.": [
-            ""
-         ],
-         "This value should not be blank.": [
-            ""
-         ],
-         "This value is required.": [
-            ""
-         ],
-         "This value should be greater than or equal to %s.": [
-            ""
-         ],
-         "This value should be lower than or equal to %s.": [
-            ""
-         ],
-         "This value should be between %s and %s.": [
-            ""
-         ],
-         "This value is too short. It should have %s characters or more.": [
-            ""
-         ],
-         "This value is too long. It should have %s characters or fewer.": [
-            ""
-         ],
-         "This value length is invalid. It should be between %s and %s characters long.": [
-            ""
-         ],
-         "You must select at least %s choices.": [
-            ""
-         ],
-         "You must select %s choices or fewer.": [
-            ""
-         ],
-         "You must select between %s and %s choices.": [
-            ""
-         ],
-         "This value should be the same.": [
-            ""
-         ],
-         "It's not a valid VAT Identification Number.": [
-            ""
-         ],
-         "These emails should match.": [
-            ""
-         ],
-         "Default": [
-            ""
-         ],
-         "Every %d Minutes": [
-            ""
-         ],
          "Default Fonts Site": [
+            ""
+         ],
+         "Google Fonts": [
+            ""
+         ],
+         "User don't have permissions to change options.": [
             ""
          ],
          "User don't have permissions to change Customizer options.": [
             ""
          ],
-         "User don't have permissions to change options.": [
+         "Custom fonts not found.": [
             ""
          ],
          "Options not found.": [
@@ -182,6 +119,9 @@
          "Edit Reusable Block": [
             ""
          ],
+         "Default": [
+            ""
+         ],
          "Wave": [
             ""
          ],
@@ -251,6 +191,18 @@
          "Categories": [
             ""
          ],
+         "Templates Deprecated": [
+            ""
+         ],
+         "Please avoid using the Templates feature. It has been deprecated since Ghost Kit v3.1.0 and will be removed in future updates.": [
+            ""
+         ],
+         "To create a block template, you can use the built-in WordPress feature named Patterns.": [
+            ""
+         ],
+         "Read About Patterns": [
+            ""
+         ],
          "Body": [
             ""
          ],
@@ -281,6 +233,15 @@
          "Thank you for contacting us! We will be in touch with you shortly.": [
             ""
          ],
+         "Verify your Email": [
+            ""
+         ],
+         "Email": [
+            ""
+         ],
+         "Your actions look suspicious, the form was not submitted.": [
+            ""
+         ],
          "Google reCaptcha form verification failed.": [
             ""
          ],
@@ -297,9 +258,6 @@
             ""
          ],
          "Date": [
-            ""
-         ],
-         "Email": [
             ""
          ],
          "Hidden": [
@@ -381,6 +339,27 @@
             ""
          ],
          "Collapse one item only": [
+            ""
+         ],
+         "Collapse Title HTML Element": [
+            ""
+         ],
+         "Default (<div>)": [
+            ""
+         ],
+         "<h2>": [
+            ""
+         ],
+         "<h3>": [
+            ""
+         ],
+         "<h4>": [
+            ""
+         ],
+         "<h5>": [
+            ""
+         ],
+         "<h6>": [
             ""
          ],
          "Add Accordion Item": [
@@ -470,7 +449,16 @@
          "Align": [
             ""
          ],
+         "Settings": [
+            ""
+         ],
          "Slides": [
+            ""
+         ],
+         "Slides per view": [
+            ""
+         ],
+         "Gap": [
             ""
          ],
          "Effect": [
@@ -488,49 +476,40 @@
          "Speed (seconds)": [
             ""
          ],
-         "sec": [
-            ""
-         ],
          "Autoplay (seconds)": [
             ""
          ],
          "Pause autoplay on mouse over": [
             ""
          ],
-         "Slides per view": [
-            ""
-         ],
-         "Gap": [
-            ""
-         ],
-         "Centered slides": [
+         "Centered Slides": [
             ""
          ],
          "Loop": [
             ""
          ],
-         "Free scroll": [
+         "Free Scroll": [
             ""
          ],
-         "Show arrows": [
+         "Fade Edges": [
             ""
          ],
-         "Prev arrow icon": [
+         "Fade Edges Size": [
             ""
          ],
-         "Next arrow icon": [
+         "Show": [
             ""
          ],
-         "Show bullets": [
+         "Prev icon": [
             ""
          ],
-         "Dynamic bullets": [
+         "Next icon": [
             ""
          ],
-         "1.0.0": [
+         "Bullets": [
             ""
          ],
-         "18 September 2019": [
+         "Dynamic": [
             ""
          ],
          "Added": [
@@ -543,6 +522,12 @@
             ""
          ],
          "Improved": [
+            ""
+         ],
+         "1.0.0": [
+            ""
+         ],
+         "18 September 2019": [
             ""
          ],
          "Changed": [
@@ -575,6 +560,9 @@
          "Second": [
             "",
             "Seconds"
+         ],
+         "This countdown has been ended already!": [
+            ""
          ],
          "End Date": [
             ""
@@ -627,9 +615,6 @@
          "Display content after expiration:": [
             ""
          ],
-         "This countdown has been ended already!": [
-            ""
-         ],
          "Number Size": [
             ""
          ],
@@ -640,6 +625,15 @@
             ""
          ],
          "Number Alignment": [
+            ""
+         ],
+         "Start": [
+            ""
+         ],
+         "Center": [
+            ""
+         ],
+         "End": [
             ""
          ],
          "Show Content": [
@@ -786,18 +780,6 @@
          "Submit": [
             ""
          ],
-         "Form": [
-            ""
-         ],
-         "Add contact form to your page with reCaptcha.": [
-            ""
-         ],
-         "form": [
-            ""
-         ],
-         "contact": [
-            ""
-         ],
          "Write your message here...": [
             ""
          ],
@@ -840,9 +822,6 @@
          "Gist Simple plugin is not defined.": [
             ""
          ],
-         "Gist URL": [
-            ""
-         ],
          "File": [
             ""
          ],
@@ -853,6 +832,9 @@
             ""
          ],
          "Show line numbers": [
+            ""
+         ],
+         "Gist URL": [
             ""
          ],
          "Visit GitHub Gist Site": [
@@ -1002,22 +984,55 @@
          "Order": [
             ""
          ],
-         "Vertical alignment": [
-            ""
-         ],
-         "Sticky Content": [
+         "Vertical Alignment": [
             ""
          ],
          "Bottom": [
             ""
          ],
+         "Sticky Content": [
+            ""
+         ],
          "Sticky Offset": [
             ""
          ],
-         "Select Column": [
+         "Image": [
             ""
          ],
-         "Grid": [
+         "Video": [
+            ""
+         ],
+         "Select image": [
+            ""
+         ],
+         "Background size": [
+            ""
+         ],
+         "Cover": [
+            ""
+         ],
+         "Contain": [
+            ""
+         ],
+         "Pattern": [
+            ""
+         ],
+         "Remove image": [
+            ""
+         ],
+         "Background Color": [
+            ""
+         ],
+         "Overlay": [
+            ""
+         ],
+         "Install AWB plugin to set video backgrounds and images with parallax support.": [
+            ""
+         ],
+         "Install": [
+            ""
+         ],
+         "Advanced Columns": [
             ""
          ],
          "Select one layout to get started.": [
@@ -1038,16 +1053,73 @@
          "Columns": [
             ""
          ],
+         "Vertical alignment": [
+            ""
+         ],
          "Horizontal alignment": [
             ""
          ],
-         "Select Grid": [
+         "Around": [
+            ""
+         ],
+         "Space Between": [
             ""
          ],
          "Icon Alignment": [
             ""
          ],
+         "Justify Icon Start": [
+            ""
+         ],
+         "Justify Icon Center": [
+            ""
+         ],
+         "Justify Icon End": [
+            ""
+         ],
+         "Justify Icon": [
+            ""
+         ],
+         "Flip Horizontal": [
+            ""
+         ],
+         "Flip Vertical": [
+            ""
+         ],
+         "Width": [
+            ""
+         ],
+         "Vertical": [
+            ""
+         ],
+         "General": [
+            ""
+         ],
          "Start Position": [
+            ""
+         ],
+         "Direction": [
+            ""
+         ],
+         "Horizontal": [
+            ""
+         ],
+         "Trigger": [
+            ""
+         ],
+         "Click": [
+            ""
+         ],
+         "Labels": [
+            ""
+         ],
+         "Show Labels": [
+            ""
+         ],
+         "Horizontal Align": [
+            ""
+         ],
+         "Vertical Align": [
             ""
          ],
          "Before Image Settings": [
@@ -1062,10 +1134,16 @@
          "Remove Image": [
             ""
          ],
-         "Image Size": [
+         "Resolution": [
+            ""
+         ],
+         "Select the size of the source image.": [
             ""
          ],
          "After Image Settings": [
+            ""
+         ],
+         "Divider Icon": [
             ""
          ],
          "Image Compare": [
@@ -1081,6 +1159,12 @@
             ""
          ],
          "Image After": [
+            ""
+         ],
+         "Before label…": [
+            ""
+         ],
+         "After label…": [
             ""
          ],
          "Photos Number": [
@@ -1123,6 +1207,33 @@
             ""
          ],
          "A valid Access Token is required to use Instagram feed. You can fill it in the block settings in Inspector.": [
+            ""
+         ],
+         "Play Animation On": [
+            ""
+         ],
+         "Page Load": [
+            ""
+         ],
+         "Viewport": [
+            ""
+         ],
+         "Scroll": [
+            ""
+         ],
+         "Reverse": [
+            ""
+         ],
+         "Lottie File": [
+            ""
+         ],
+         "Clear": [
+            ""
+         ],
+         "Lottie JSON": [
+            ""
+         ],
+         "lottie": [
             ""
          ],
          "Write your _Markdown_ **here**...": [
@@ -1218,10 +1329,10 @@
          "Write caption…": [
             ""
          ],
-         "PRO Shapes": [
+         "Pro Shapes": [
             ""
          ],
-         "Additional 30 shapes available for Pro users only": [
+         "Additional 30 shapes available in the Ghost Kit Pro plugin only": [
             ""
          ],
          "Read More": [
@@ -1234,9 +1345,6 @@
             ""
          ],
          "Shapes": [
-            ""
-         ],
-         "Width": [
             ""
          ],
          "Allowed Headers": [
@@ -1275,61 +1383,16 @@
          "Dotted List Styled": [
             ""
          ],
+         "Write title…": [
+            ""
+         ],
          "Table of Contents": [
             ""
          ],
          "Start adding Heading blocks to create a table of contents. Headings with HTML anchors will be linked here.": [
             ""
          ],
-         "Write title…": [
-            ""
-         ],
-         "Tab %d": [
-            ""
-         ],
-         "This Tabs block has a legacy structure. To use new tabs, add it again from blocks inserter.": [
-            ""
-         ],
-         "Tabs": [
-            ""
-         ],
-         "Tabs align": [
-            ""
-         ],
-         "Start": [
-            ""
-         ],
-         "Center": [
-            ""
-         ],
-         "End": [
-            ""
-         ],
          "Tab label": [
-            ""
-         ],
-         "Tabs (legacy)": [
-            ""
-         ],
-         "Tabs.": [
-            ""
-         ],
-         "tabs": [
-            ""
-         ],
-         "tab": [
-            ""
-         ],
-         "Tab": [
-            ""
-         ],
-         "A single tab within a tabs block.": [
-            ""
-         ],
-         "Vertical Tabs": [
-            ""
-         ],
-         "Tabs Align": [
             ""
          ],
          "Remove tab?": [
@@ -1338,7 +1401,37 @@
          "Add Tab": [
             ""
          ],
-         "Pills": [
+         "Buttons Justify Start": [
+            ""
+         ],
+         "Buttons Justify Center": [
+            ""
+         ],
+         "Buttons Justify End": [
+            ""
+         ],
+         "Buttons Justify Stretch": [
+            ""
+         ],
+         "Buttons Vertical Start": [
+            ""
+         ],
+         "Buttons Vertical Center": [
+            ""
+         ],
+         "Buttons Vertical End": [
+            ""
+         ],
+         "Buttons Vertical Align": [
+            ""
+         ],
+         "Buttons Justify Align": [
+            ""
+         ],
+         "Select Tab Trigger": [
+            ""
+         ],
+         "Vertical Tabs": [
             ""
          ],
          "Photo": [
@@ -1422,7 +1515,73 @@
          "A valid API data is required to use Twitter feed. You can fill it in the block settings in Inspector.": [
             ""
          ],
+         "Video Background": [
+            ""
+         ],
+         "Video Fullscreen Background": [
+            ""
+         ],
+         "Fullscreen Background": [
+            ""
+         ],
+         "YouTube / Vimeo": [
+            ""
+         ],
+         "Self Hosted": [
+            ""
+         ],
+         "Video URL": [
+            ""
+         ],
+         "Select Video": [
+            ""
+         ],
+         "MP4": [
+            ""
+         ],
+         "OGV": [
+            ""
+         ],
+         "WEBM": [
+            ""
+         ],
+         "Volume": [
+            ""
+         ],
+         "Play Icon": [
+            ""
+         ],
+         "Loading Icon": [
+            ""
+         ],
+         "Icon Align": [
+            ""
+         ],
+         "Click Action": [
+            ""
+         ],
          "Plain": [
+            ""
+         ],
+         "Fullscreen": [
+            ""
+         ],
+         "Fullscreen Close Icon": [
+            ""
+         ],
+         "Autoplay": [
+            ""
+         ],
+         "Automatically play video when block reaches the viewport. The video will be play muted due to browser Autoplay policy.": [
+            ""
+         ],
+         "Autopause": [
+            ""
+         ],
+         "Automatically pause video when block out of the viewport.": [
+            ""
+         ],
+         "Poster Image": [
             ""
          ],
          "Icon Only": [
@@ -1434,13 +1593,13 @@
          "--- Select Sidebar ---": [
             ""
          ],
-         "Custom Color Picker": [
-            ""
-         ],
-         "Color Palette": [
+         "Clear Media": [
             ""
          ],
          "Select Date": [
+            ""
+         ],
+         ":hover": [
             ""
          ],
          "None": [
@@ -1455,10 +1614,49 @@
          "L": [
             ""
          ],
-         "Horizontal": [
+         "Italic": [
             ""
          ],
-         "Vertical": [
+         "Font": [
+            ""
+         ],
+         "Weight": [
+            ""
+         ],
+         "The font has been successfully edited": [
+            ""
+         ],
+         "You should specify the `Name` to add new font.": [
+            ""
+         ],
+         "The font has already been added with style.": [
+            ""
+         ],
+         "Edit Font": [
+            ""
+         ],
+         "The font has already been added. To edit, use the font edit button in the table.": [
+            ""
+         ],
+         "Add Font": [
+            ""
+         ],
+         "Font Family": [
+            ""
+         ],
+         "Font Weights": [
+            ""
+         ],
+         "Font Style": [
+            ""
+         ],
+         "Actions": [
+            ""
+         ],
+         "Remove": [
+            ""
+         ],
+         "Edit": [
             ""
          ],
          "Search Icon": [
@@ -1479,25 +1677,100 @@
          "No icons found.": [
             ""
          ],
-         "Icon Picker": [
+         "!important": [
+            ""
+         ],
+         "Aspect Ratio": [
             ""
          ],
          "Remove Block?": [
             ""
          ],
-         "Remove": [
-            ""
-         ],
          "Cancel": [
-            ""
-         ],
-         "No media sizes found.": [
             ""
          ],
          "All devices": [
             ""
          ],
          "Devices with screen width <= %s": [
+            ""
+         ],
+         "-- Presets --": [
+            ""
+         ],
+         "Bezier": [
+            ""
+         ],
+         "Duration": [
+            ""
+         ],
+         "Delay": [
+            ""
+         ],
+         "Linear": [
+            ""
+         ],
+         "Ease In": [
+            ""
+         ],
+         "Ease Out": [
+            ""
+         ],
+         "Ease In Out": [
+            ""
+         ],
+         "Ease In Back": [
+            ""
+         ],
+         "Ease Out Back": [
+            ""
+         ],
+         "Ease In Out Back": [
+            ""
+         ],
+         "Fade In": [
+            ""
+         ],
+         "Zoom In": [
+            ""
+         ],
+         "Zoom In From Bottom": [
+            ""
+         ],
+         "Zoom In From Left": [
+            ""
+         ],
+         "Zoom In From Right": [
+            ""
+         ],
+         "Easing": [
+            ""
+         ],
+         "Spring": [
+            ""
+         ],
+         "Add...": [
+            ""
+         ],
+         "Stiffness": [
+            ""
+         ],
+         "Damping": [
+            ""
+         ],
+         "Mass": [
+            ""
+         ],
+         "Gentle": [
+            ""
+         ],
+         "Wobbly": [
+            ""
+         ],
+         "Slow": [
+            ""
+         ],
+         "Molasses": [
             ""
          ],
          "Default Site Font": [
@@ -1557,9 +1830,6 @@
          "Font Family Category": [
             ""
          ],
-         "Google Fonts": [
-            ""
-         ],
          "Adobe Fonts": [
             ""
          ],
@@ -1573,9 +1843,6 @@
             ""
          ],
          "Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ": [
-            ""
-         ],
-         "Font Family": [
             ""
          ],
          "--- Select Font Family ---": [
@@ -1596,58 +1863,286 @@
          "Letter Spacing": [
             ""
          ],
+         "Attributes": [
+            ""
+         ],
+         "Adding custom attributes to block available in the Ghost Kit Pro plugin only.": [
+            ""
+         ],
+         "Copy extensions": [
+            ""
+         ],
+         "Paste extensions": [
+            ""
+         ],
+         "Paste All": [
+            ""
+         ],
+         "Unable to paste extensions. This feature is only available on secure (https) sites in supporting browsers.": [
+            ""
+         ],
+         "Unable to paste extensions. Please allow browser clipboard permissions before continuing.": [
+            ""
+         ],
+         "Unable to paste extensions. Block extensions couldn't be found within the copied content.": [
+            ""
+         ],
+         "Effects": [
+            ""
+         ],
+         "Position": [
+            ""
+         ],
+         "Spacings": [
+            ""
+         ],
+         "Frame": [
+            ""
+         ],
+         "Transform": [
+            ""
+         ],
+         "Custom CSS": [
+            ""
+         ],
+         "Clip Path": [
+            ""
+         ],
+         "Round": [
+            ""
+         ],
+         "Circle": [
+            ""
+         ],
+         "Rhombus": [
+            ""
+         ],
+         "Pentagon": [
+            ""
+         ],
+         "Hexagon": [
+            ""
+         ],
+         "Heptagon": [
+            ""
+         ],
+         "Octagon": [
+            ""
+         ],
+         "Bevel": [
+            ""
+         ],
+         "Star": [
+            ""
+         ],
+         "Cursor": [
+            ""
+         ],
+         "Pointer": [
+            ""
+         ],
+         "Not Allowed": [
+            ""
+         ],
+         "Progress": [
+            ""
+         ],
+         "Move": [
+            ""
+         ],
+         "Grab": [
+            ""
+         ],
+         "Grabbing": [
+            ""
+         ],
+         "Zoom Out": [
+            ""
+         ],
+         "Copy": [
+            ""
+         ],
+         "No Drop": [
+            ""
+         ],
+         "Context Menu": [
+            ""
+         ],
+         "Help": [
+            ""
+         ],
+         "Wait": [
+            ""
+         ],
+         "Cell": [
+            ""
+         ],
+         "Crosshair": [
+            ""
+         ],
+         "Alias": [
+            ""
+         ],
+         "Vertical Text": [
+            ""
+         ],
+         "NW Resize": [
+            ""
+         ],
+         "N Resize": [
+            ""
+         ],
+         "E Resize": [
+            ""
+         ],
+         "SE Resize": [
+            ""
+         ],
+         "S Resize": [
+            ""
+         ],
+         "SW Resize": [
+            ""
+         ],
+         "W Resize": [
+            ""
+         ],
+         "EW Resize": [
+            ""
+         ],
+         "NS Resize": [
+            ""
+         ],
+         "NWSE Resize": [
+            ""
+         ],
+         "NESW Resize": [
+            ""
+         ],
+         "Col Resize": [
+            ""
+         ],
+         "Row Resize": [
+            ""
+         ],
+         "Block Selector": [
+            ""
+         ],
+         "Edit CSS": [
+            ""
+         ],
+         "Examples to use selector": [
+            ""
+         ],
          "Use %s rule to change block styles.": [
             ""
          ],
          "Example:": [
             ""
          ],
-         "Custom CSS": [
+         "Opacity": [
             ""
          ],
-         "Open in Modal": [
-            ""
-         ],
-         "Inherit": [
-            ""
-         ],
-         "Show": [
-            ""
-         ],
-         "Hide": [
-            ""
-         ],
-         "Display": [
-            ""
-         ],
-         "Frame": [
-            ""
-         ],
-         "Border Color": [
-            ""
-         ],
-         "Border Radius": [
-            ""
-         ],
-         "Top Left": [
-            ""
-         ],
-         "Top Right": [
-            ""
-         ],
-         "Bottom Right": [
-            ""
-         ],
-         "Bottom Left": [
-            ""
-         ],
-         "Shadow": [
+         "Overflow": [
             ""
          ],
          "X": [
             ""
          ],
+         "Visible": [
+            ""
+         ],
+         "Clip": [
+            ""
+         ],
          "Y": [
+            ""
+         ],
+         "Transition": [
+            ""
+         ],
+         "Transition and transform configurations are available in the Ghost Kit Pro plugin only.": [
+            ""
+         ],
+         "User Select": [
+            ""
+         ],
+         "Display Conditions": [
+            ""
+         ],
+         "Inherit": [
+            ""
+         ],
+         "Hide": [
+            ""
+         ],
+         "Screen Size": [
+            ""
+         ],
+         "There are effects added to the current block. To change these options open the \"Effects\" block settings panel.": [
+            ""
+         ],
+         "Reset all effects of the current block:": [
+            ""
+         ],
+         "Reset All": [
+            ""
+         ],
+         "Mouse Hover": [
+            ""
+         ],
+         "Mouse Press": [
+            ""
+         ],
+         "Mouse Move": [
+            ""
+         ],
+         "Advanced Effects": [
+            ""
+         ],
+         "Advanced effects are available in the Ghost Kit Pro plugin only.": [
+            ""
+         ],
+         "Reveal": [
+            ""
+         ],
+         "Scale": [
+            ""
+         ],
+         "Rotate": [
+            ""
+         ],
+         "Pro Settings": [
+            ""
+         ],
+         "Advanced reveal settings are available in the Ghost Kit Pro plugin only:": [
+            ""
+         ],
+         "3D Rotation": [
+            ""
+         ],
+         "Custom Viewport": [
+            ""
+         ],
+         "Replay Animation": [
+            ""
+         ],
+         "Border Radius": [
+            ""
+         ],
+         "TL": [
+            ""
+         ],
+         "TR": [
+            ""
+         ],
+         "BR": [
+            ""
+         ],
+         "BL": [
+            ""
+         ],
+         "Shadow": [
             ""
          ],
          "Blur": [
@@ -1656,43 +2151,28 @@
          "Spread": [
             ""
          ],
-         "Fade in": [
-            ""
-         ],
-         "Zoom in": [
-            ""
-         ],
-         "Zoom in from Bottom": [
-            ""
-         ],
-         "Zoom in from Left": [
-            ""
-         ],
-         "Zoom in from Right": [
-            ""
-         ],
-         "Animate on Scroll": [
-            ""
-         ],
-         "Remove animation": [
-            ""
-         ],
-         "Advanced options are placed in the block settings panel.": [
-            ""
-         ],
          "Distance": [
             ""
          ],
-         "Scale": [
+         "Min Max Height": [
             ""
          ],
-         "Duration": [
+         "Min Max Width": [
             ""
          ],
-         "Delay": [
+         "Please note! Custom positioning is not considered best practice for responsive web design and should not be used too frequently.": [
             ""
          ],
-         "Spacings": [
+         "Absolute": [
+            ""
+         ],
+         "Relative": [
+            ""
+         ],
+         "Sticky": [
+            ""
+         ],
+         "zIndex": [
             ""
          ],
          "Margin": [
@@ -1707,7 +2187,22 @@
          "Templates Library": [
             ""
          ],
-         "Variants": [
+         "Translate": [
+            ""
+         ],
+         "Skew": [
+            ""
+         ],
+         "Perspective": [
+            ""
+         ],
+         "Origin": [
+            ""
+         ],
+         "Pro Transformations": [
+            ""
+         ],
+         "Adding transformations for normal and hover state are available in the Ghost Kit Pro plugin only.": [
             ""
          ],
          "Badge": [
@@ -1716,7 +2211,13 @@
          "Highlight": [
             ""
          ],
+         "Lorem Ipsum": [
+            ""
+         ],
          "Uppercase": [
+            ""
+         ],
+         "Color Palette": [
             ""
          ],
          "Default Colors": [
@@ -1776,6 +2277,27 @@
          "Default:": [
             ""
          ],
+         "Desktop": [
+            ""
+         ],
+         "Mobile": [
+            ""
+         ],
+         "Mobile Landscape": [
+            ""
+         ],
+         "Tablet": [
+            ""
+         ],
+         "Laptop": [
+            ""
+         ],
+         "View options": [
+            ""
+         ],
+         "Responsive Preview": [
+            ""
+         ],
          "-- Select Category --": [
             ""
          ],
@@ -1821,6 +2343,9 @@
          "Install Plugin": [
             ""
          ],
+         "You are using FSE theme. Typography settings have been moved to block settings": [
+            ""
+         ],
          "Hide Advanced": [
             ""
          ],
@@ -1831,9 +2356,6 @@
             ""
          ],
          "Styled": [
-            ""
-         ],
-         "Columns Settings": [
             ""
          ],
          "Columns Count": [
@@ -1908,6 +2430,9 @@
          "block title\u0004Divider": [
             ""
          ],
+         "block title\u0004Form": [
+            ""
+         ],
          "block title\u0004Checkbox": [
             ""
          ],
@@ -1959,16 +2484,22 @@
          "block title\u0004Column": [
             ""
          ],
-         "block title\u0004Grid": [
+         "block title\u0004Advanced Columns": [
             ""
          ],
          "block title\u0004Icon Box": [
+            ""
+         ],
+         "block title\u0004Icon": [
             ""
          ],
          "block title\u0004Image Compare": [
             ""
          ],
          "block title\u0004Instagram": [
+            ""
+         ],
+         "block title\u0004Lottie Animation": [
             ""
          ],
          "block title\u0004Markdown": [
@@ -2040,6 +2571,9 @@
          "block description\u0004Divide your long texts and blocks.": [
             ""
          ],
+         "block description\u0004Add contact form to your page with reCaptcha.": [
+            ""
+         ],
          "block description\u0004Form field checkbox.": [
             ""
          ],
@@ -2097,10 +2631,16 @@
          "block description\u0004Icons are one of the best visual replacement for text descriptions.": [
             ""
          ],
+         "block description\u0004Insert SVG icons": [
+            ""
+         ],
          "block description\u0004Compare two images with a slider.": [
             ""
          ],
          "block description\u0004Show Instagram feed and user data.": [
+            ""
+         ],
+         "block description\u0004Add Lottie SVG animations.": [
             ""
          ],
          "block description\u0004Lightweight markup language with plain-text-formatting syntax.": [
@@ -2190,6 +2730,12 @@
          "block keyword\u0004spacer": [
             ""
          ],
+         "block keyword\u0004form": [
+            ""
+         ],
+         "block keyword\u0004contact": [
+            ""
+         ],
          "block keyword\u0004animated": [
             ""
          ],
@@ -2226,10 +2772,28 @@
          "block keyword\u0004icon-box": [
             ""
          ],
+         "block keyword\u0004picker": [
+            ""
+         ],
+         "block keyword\u0004svg": [
+            ""
+         ],
          "block keyword\u0004compare": [
             ""
          ],
+         "block keyword\u0004before": [
+            ""
+         ],
+         "block keyword\u0004after": [
+            ""
+         ],
          "block keyword\u0004instagram": [
+            ""
+         ],
+         "block keyword\u0004lottie": [
+            ""
+         ],
+         "block keyword\u0004animation": [
             ""
          ],
          "block keyword\u0004formatting": [
@@ -2254,9 +2818,6 @@
             ""
          ],
          "block keyword\u0004shape": [
-            ""
-         ],
-         "block keyword\u0004svg": [
             ""
          ],
          "block keyword\u0004table of contents": [
@@ -2302,6 +2863,15 @@
             ""
          ],
          "block keyword\u0004sidebar": [
+            ""
+         ],
+         "block style label\u0004Tabs": [
+            ""
+         ],
+         "block style label\u0004Pills": [
+            ""
+         ],
+         "block style label\u0004Radio Buttons": [
             ""
          ]
       }

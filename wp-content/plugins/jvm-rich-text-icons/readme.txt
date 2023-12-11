@@ -3,7 +3,7 @@ Contributors: jorisvanmontfort
 Donate link: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
 Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF, SVG icons
 Requires at least: 5.4
-Tested up to: 6.0.3
+Tested up to: 6.4.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,7 +11,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Add Font Awesome icons, or icons from a custom icon set to rich text fields anywhere in the Gutenberg block editor!
 
 == Description ==
-Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the Gutenberg block editor. This plugin ships with the free Font Awesome icon set as default icon set. You can choose between version 4.x, 5.x and version 6.x.
+This plugin is a nice toolset for anyone wanting to integrate icons into the Gutenberg editor or options created with Advanced Custom Fields. 
+
+Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the Gutenberg block editor, or add a dedicated icon block from within the Gutenberg editor.
+
+This plugin ships with the free Font Awesome icon set as default icon set. You can choose between version 4.x, 5.x and version 6.x.
 This plugin also provides an easy to use interface for creating a custom icon set based on SVG icons. Custom icons can be upload from the plugin settings using an easy to use drag & drop uploader.
 
 The plugin also creates a new field type for Advanced Custom Fields (ACF) : JVM Icon. Now you can create custom fields that work with a the font awsome icon set or even beter: A custom created icon set.
@@ -82,6 +86,36 @@ add_filter('jvm_richtext_icons_show_settings', '__return_false');
 Please note that settings will still be loaded so please make sure you have set the settings to default font awesome if you are loading a custom icon set with the plugin hooks.
 
 == Changelog ==
+
+= 1.2.7 =
+Security update. File name now sanitize in delete icon ajax call.
+
+= 1.2.6 =
+Security update. Fixed a vulnerabilities in plugin settings upload and delete icon options.
+
+= 1.2.3 =
+Fixed the thick border around the toolbar button by using the correct toolbar button markup.
+
+= 1.2.2 =
+Bugfix WordPress 6.2 site editor rich text blocks not editable.
+
+= 1.2.1 =
+Bugfix for the single icon block using incomplete css classes.
+
+= 1.2.0 =
+Added a dedicated single icon block for Gutenberg.
+
+= 1.1.9 =
+Fixed some deprecation errors to get this plugin compatible with the site editor and future WordPress versions. Some work is still needed on this.
+
+= 1.1.8 =
+Got rid of position relative for custom icon sets.
+
+= 1.1.7 =
+Fixed editor dialog position on smaller screens.
+
+= 1.1.5 =
+Font Awesome 4.7 webfont URL's fixed.
 
 = 1.1.4 =
 Now also load in the site editor. Not all block however.

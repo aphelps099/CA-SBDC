@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable max-classes-per-file */
 /**
  * External dependencies
  */
@@ -18,7 +17,7 @@ const { GHOSTKIT } = window;
 /**
  * WordPress dependencies
  */
-const { Component, Fragment } = wp.element;
+const { Fragment, useRef, useEffect, useState } = wp.element;
 
 const { __ } = wp.i18n;
 
@@ -35,7 +34,7 @@ function eachIcons(callback) {
 
   Object.keys(icons).forEach((key) => {
     const allow =
-      'undefined' === typeof settings[`icon_pack_${key}`] || settings[`icon_pack_${key}`];
+      typeof settings[`icon_pack_${key}`] === 'undefined' || settings[`icon_pack_${key}`];
 
     if (allow) {
       callback(icons[key]);
@@ -61,21 +60,19 @@ function getIconTip(iconData) {
 }
 
 // we need this lazy loading component to prevent a huge lags while first loading SVG icons
-class Icon extends Component {
-  render() {
-    const { iconData, onClick, active } = this.props;
+function Icon(props) {
+  const { iconData, onClick, active } = props;
 
-    return (
-      <IconPicker.Preview
-        className={classnames(
-          'ghostkit-component-icon-picker-button',
-          active ? 'ghostkit-component-icon-picker-button-active' : ''
-        )}
-        onClick={onClick}
-        data={iconData}
-      />
-    );
-  }
+  return (
+    <IconPicker.Preview
+      className={classnames(
+        'ghostkit-component-icon-picker-button',
+        active ? 'ghostkit-component-icon-picker-button-active' : ''
+      )}
+      onClick={onClick}
+      data={iconData}
+    />
+  );
 }
 
 const hiddenIconCategories = {};
@@ -83,35 +80,31 @@ const hiddenIconCategories = {};
 /**
  * Dropdown
  */
-class IconPickerDropdown extends Component {
-  constructor(props) {
-    super(props);
+function IconPickerDropdown(props) {
+  const cellMCache = useRef();
 
-    this.cellMCache = new CellMeasurerCache({
+  const { onChange, value, label, className, renderToggle, insideInspector } = props;
+
+  const [search, setSearch] = useState('');
+  const [hiddenCategories, setHiddenCategories] = useState(hiddenIconCategories);
+  const [customizeIcon, setCustomizeIcon] = useState(false);
+
+  // Mounted.
+  useEffect(() => {
+    cellMCache.current = new CellMeasurerCache({
       defaultHeight: 65,
       fixedWidth: true,
     });
+  }, []);
 
-    this.state = {
-      search: '',
-      hiddenCategories: hiddenIconCategories,
-      customizeIcon: false,
-    };
-
-    this.getDropdownContent = this.getDropdownContent.bind(this);
-  }
-
-  componentDidUpdate() {
-    if (this.cellMCache) {
-      this.cellMCache.clearAll();
+  // Mounted and updated.
+  useEffect(() => {
+    if (cellMCache.current) {
+      cellMCache.current.clearAll();
     }
-  }
+  });
 
-  getDropdownContent() {
-    const { onChange, value } = this.props;
-
-    const { customizeIcon } = this.state;
-
+  function getDropdownContent() {
     const rows = [
       {
         key: 'form',
@@ -119,8 +112,8 @@ class IconPickerDropdown extends Component {
           <Fragment key="form">
             <TextControl
               label={__('Search Icon', 'ghostkit')}
-              value={maybeDecode(this.state.search)}
-              onChange={(searchVal) => this.setState({ search: maybeEncode(searchVal) })}
+              value={maybeDecode(search)}
+              onChange={(searchVal) => setSearch(maybeEncode(searchVal))}
               placeholder={__('Type to Search...', 'ghostkit')}
               autoComplete="off"
               autoFocus
@@ -140,7 +133,7 @@ class IconPickerDropdown extends Component {
                 <Button
                   isSmall
                   isSecondary
-                  onClick={() => this.setState({ customizeIcon: true })}
+                  onClick={() => setCustomizeIcon(true)}
                   style={{
                     marginRight: 5,
                   }}
@@ -158,19 +151,18 @@ class IconPickerDropdown extends Component {
     ];
 
     eachIcons((iconsData) => {
-      const { hiddenCategories } = this.state;
       const showCategory =
-        'undefined' !== typeof hiddenCategories[iconsData.name]
+        typeof hiddenCategories[iconsData.name] !== 'undefined'
           ? hiddenCategories[iconsData.name]
           : true;
-      const searchString = this.state.search.toLowerCase();
+      const searchString = search.toLowerCase();
 
       // prepare all icons.
       const allIcons = iconsData.icons
         .filter((iconData) => {
           if (
             !searchString ||
-            (searchString && -1 < iconData.keys.indexOf(searchString.toLowerCase()))
+            (searchString && iconData.keys.indexOf(searchString.toLowerCase()) > -1)
           ) {
             return true;
           }
@@ -221,19 +213,17 @@ class IconPickerDropdown extends Component {
               <Button
                 className="components-panel__body-toggle"
                 onClick={() => {
-                  this.setState({
-                    hiddenCategories: {
-                      ...hiddenCategories,
-                      [iconsData.name]: !showCategory,
-                    },
+                  setHiddenCategories({
+                    ...hiddenCategories,
+                    [iconsData.name]: !showCategory,
                   });
                 }}
                 aria-expanded={showCategory}
               >
                 {/*
-                                    Firefox + NVDA don't announce aria-expanded because the browser
-                                    repaints the whole element, so this wrapping span hides that.
-                                */}
+                    Firefox + NVDA don't announce aria-expanded because the browser
+                    repaints the whole element, so this wrapping span hides that.
+                */}
                 <span aria-hidden="true">
                   {showCategory ? (
                     <SVG
@@ -283,7 +273,7 @@ class IconPickerDropdown extends Component {
       allIcons.forEach((icon, i) => {
         currentIcons.push(icon);
 
-        if (3 === currentIcons.length || allIcons.length === i + 1) {
+        if (currentIcons.length === 3 || allIcons.length === i + 1) {
           rows.push({
             key: 'icons',
             render: <div className="ghostkit-component-icon-picker-list">{currentIcons}</div>,
@@ -295,7 +285,7 @@ class IconPickerDropdown extends Component {
     });
 
     // No icons.
-    if (1 === rows.length) {
+    if (rows.length === 1) {
       rows.push({
         key: 'icons',
         render: __('No icons found.', 'ghostkit'),
@@ -310,13 +300,13 @@ class IconPickerDropdown extends Component {
             width={width}
             height={height}
             rowCount={rows.length}
-            rowHeight={this.cellMCache.rowHeight}
+            rowHeight={cellMCache?.current?.rowHeight}
             rowRenderer={(data) => {
               const { index, style, parent, key } = data;
 
               return (
                 <CellMeasurer
-                  cache={this.cellMCache}
+                  cache={cellMCache?.current}
                   columnIndex={0}
                   key={key}
                   rowIndex={index}
@@ -339,66 +329,62 @@ class IconPickerDropdown extends Component {
     );
   }
 
-  render() {
-    const { label, className, renderToggle } = this.props;
+  const dropdown = (
+    <Dropdown
+      className={className}
+      contentClassName="ghostkit-component-icon-picker-content"
+      renderToggle={renderToggle}
+      focusOnMount={false}
+      renderContent={() => getDropdownContent()}
+      {...(insideInspector
+        ? {
+            popoverProps: {
+              placement: 'left-start',
+              offset: 36,
+              shift: true,
+            },
+          }
+        : {})}
+    />
+  );
 
-    const dropdown = (
-      <Dropdown
-        className={className}
-        contentClassName="ghostkit-component-icon-picker-content"
-        renderToggle={renderToggle}
-        focusOnMount={false}
-        renderContent={this.getDropdownContent}
-      />
-    );
-
-    return label ? (
-      <BaseControl label={label} className={className}>
-        {dropdown}
-      </BaseControl>
-    ) : (
-      dropdown
-    );
-  }
+  return label ? (
+    <BaseControl label={label} className={className}>
+      {dropdown}
+    </BaseControl>
+  ) : (
+    dropdown
+  );
 }
 
-export default class IconPicker extends Component {
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
+export default function IconPicker(props) {
+  const { value, label, onChange, insideInspector } = props;
 
-  handleChange(value) {
-    const { onChange } = this.props;
-    onChange(maybeEncode(value));
-  }
-
-  render() {
-    const { value, label } = this.props;
-
-    return (
+  return (
+    <BaseControl className="ghostkit-component-icon-picker-wrapper">
       <IconPicker.Dropdown
-        label={label}
-        className="ghostkit-component-icon-picker-wrapper"
-        onChange={this.handleChange}
+        onChange={(val) => onChange(maybeEncode(val))}
         value={maybeDecode(value)}
+        insideInspector={insideInspector}
         renderToggle={({ isOpen, onToggle }) => (
-          <Tooltip text={__('Icon Picker', 'ghostkit')}>
-            {/* We need this <div> just because Tooltip don't work without it */}
-            <div>
-              <IconPicker.Preview
-                className="ghostkit-component-icon-picker-button hover"
-                aria-expanded={isOpen}
-                onClick={onToggle}
-                name={maybeDecode(value)}
-                alwaysRender
-              />
-            </div>
-          </Tooltip>
+          <Button
+            className={classnames(
+              'ghostkit-component-icon-picker-toggle',
+              isOpen ? 'ghostkit-component-icon-picker-toggle-active' : ''
+            )}
+            onClick={onToggle}
+          >
+            <IconPicker.Preview
+              className="ghostkit-component-icon-picker-toggle-indicator"
+              name={maybeDecode(value)}
+              alwaysRender
+            />
+            <span className="ghostkit-component-icon-picker-toggle-label">{label}</span>
+          </Button>
         )}
       />
-    );
-  }
+    </BaseControl>
+  );
 }
 
 // dropdown
@@ -459,41 +445,22 @@ IconPicker.Preview = function (props) {
 
 // render icon.
 IconPicker.Render = function (props) {
-  const {
-    tag = 'span',
-    className,
-    onClick,
-    onKeyPress,
-    role,
-    tabIndex,
-    alwaysRender = false,
-  } = props;
-
-  let { name } = props;
+  const { tag = 'span', name, alwaysRender = false, ...restProps } = props;
 
   const Tag = tag;
   let result = '';
 
-  name = maybeDecode(name);
+  const decodedName = maybeDecode(name);
 
-  if (name && /^</g.test(name)) {
-    result = name;
-  } else if (name) {
-    result = `<span class="${name}"></span>`;
+  if (decodedName && /^</g.test(decodedName)) {
+    result = decodedName;
+  } else if (decodedName) {
+    result = `<span class="${decodedName}"></span>`;
   }
 
   if (!result && !alwaysRender) {
     return null;
   }
 
-  return (
-    <Tag
-      dangerouslySetInnerHTML={{ __html: result }}
-      className={className}
-      onClick={onClick}
-      onKeyPress={onKeyPress}
-      role={role}
-      tabIndex={tabIndex}
-    />
-  );
+  return <Tag dangerouslySetInnerHTML={{ __html: result }} {...restProps} />;
 };

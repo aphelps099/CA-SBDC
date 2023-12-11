@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -62,7 +62,6 @@ window.tsfSettings = function( $ ) {
 	 * Eases programming, trims minified script size.
 	 *
 	 * @since 4.2.0
-	 * @FIXME: disPatch should be dispatch...
 	 * @access private
 	 * @ignore
 	 *
@@ -96,7 +95,7 @@ window.tsfSettings = function( $ ) {
 			document.querySelectorAll( '.tsf-counter-wrap' ).forEach( el => {
 				el.style.display = event.target.checked ? '' : 'none';
 			} );
-			event.target.checked && tsfC.triggerCounterUpdate();
+			event.target.checked && tsfC?.triggerCounterUpdate();
 		}
 		document.getElementById( _getSettingsId( 'display_character_counter' ) )
 			?.addEventListener( 'click', toggleCharCounterDisplay );
@@ -114,7 +113,7 @@ window.tsfSettings = function( $ ) {
 			document.querySelectorAll( '.tsf-pixel-counter-wrap' ).forEach( el => {
 				el.style.display = event.target.checked ? '' : 'none';
 			} );
-			event.target.checked && tsfC.triggerCounterUpdate();
+			event.target.checked && tsfC?.triggerCounterUpdate();
 		}
 		document.getElementById( _getSettingsId( 'display_pixel_counter' ) )
 			?.addEventListener( 'click', togglePixelCounterDisplay );
@@ -154,16 +153,6 @@ window.tsfSettings = function( $ ) {
 			} );
 		}
 		document.body.addEventListener( 'tsf-post-type-support-changed', validateTaxonomyState );
-
-		const validateTaxonomiesCache    = new Map(),
-			  getValidateTaxonomiesCache = key => validateTaxonomiesCache.get( key ) || ( new Set() );
-		const validateTaxonomies = event => {
-			// Create new pointers in the memory by shadowcloning the object.
-			validateTaxonomiesCache.set( 'excludedTaxonomiesAll', new Set( excludedTaxonomiesAll ) );
-			validateTaxonomiesCache.set( 'excludedTaxonomies', new Set( excludedTaxonomies ) );
-			validateTaxonomiesCache.set( 'excludedPtTaxonomies', new Set( excludedPtTaxonomies ) );
-		}
-		document.body.addEventListener( 'tsf-taxonomy-support-changed', validateTaxonomies );
 
 		const refreshTaxonomies = () => {
 			// Refresh and concatenate.
@@ -329,7 +318,7 @@ window.tsfSettings = function( $ ) {
 				'tsf-update-title-rem-additions',
 				{
 					detail: {
-						removeAdditions: !! event.target.checked
+						removeAdditions: !! event.target.checked,
 					}
 				}
 			) );
@@ -351,7 +340,8 @@ window.tsfSettings = function( $ ) {
 			let value;
 
 			document.getElementsByName( event.target.name ).forEach( el => {
-				if ( el.checked ) value = el.value;
+				if ( el.checked )
+					value = el.value;
 			} );
 
 			const showLeft      = 'left' === value,
@@ -453,28 +443,31 @@ window.tsfSettings = function( $ ) {
 			el.addEventListener( 'click', addNoFocusClass );
 		} );
 
-		const homeTitleId    = _getSettingsId( 'homepage_title' ),
-			  siteTitleInput = document.getElementById( _getSettingsId( 'site_title' ) );
+		const homeTitleId        = _getSettingsId( 'homepage_title' ),
+			  siteTitleInput     = document.getElementById( _getSettingsId( 'site_title' ) );
 		/**
 		 * Adjusts homepage left/right title example part.
 		 *
 		 * @function
 		 * @param {Event} event
 		 */
-		 const adjustSiteTitleExampleOuput = event => {
+		 const adjustSiteTitleExampleOutput = event => {
 			let examples = document.querySelectorAll( '.tsf-site-title-js' ),
 				newVal   = tsf.decodeEntities( tsf.sDoubleSpace( event.target.value.trim() ) );
 
 			newVal ||= tsf.decodeEntities( event.target.placeholder );
 
-			tsfTitle.updateStateOf( homeTitleId, 'defaultTitle', newVal );
+			// If the home-as-page has a title, don't overwrite.
+			if ( ! tsfTitle.getStateOf( homeTitleId, '_defaultTitleLocked' ) )
+				tsfTitle.updateStateOf( homeTitleId, 'defaultTitle', newVal );
+
 			tsfTitle.updateStateAll( 'additionValue', newVal, homeTitleId );
 
 			let htmlVal = tsf.escapeString( newVal );
 			examples.forEach( el => { el.innerHTML = htmlVal } );
 		}
 		if ( siteTitleInput ) {
-			siteTitleInput.addEventListener( 'input', adjustSiteTitleExampleOuput );
+			siteTitleInput.addEventListener( 'input', adjustSiteTitleExampleOutput );
 			_dispatchAtInteractive( siteTitleInput, 'input' );
 		}
 	}
@@ -483,6 +476,7 @@ window.tsfSettings = function( $ ) {
 	 * Initializes Homepage's meta title input.
 	 *
 	 * @since 4.0.0
+	 * @since 4.2.8 Now parses custom state _defaultTitleLocked.
 	 * @access private
 	 *
 	 * @function
@@ -500,7 +494,7 @@ window.tsfSettings = function( $ ) {
 		tsfTitle.setInputElement( titleInput );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0
+			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0,
 		);
 
 		tsfTitle.updateStateOf( _titleId, 'allowReferenceChange', ! state.refTitleLocked );
@@ -509,7 +503,7 @@ window.tsfSettings = function( $ ) {
 		tsfTitle.updateStateOf( _titleId, 'useSocialTagline', !! ( state.useSocialTagline || false ) );
 		tsfTitle.updateStateOf( _titleId, 'additionValue', state.additionValue );
 		tsfTitle.updateStateOf( _titleId, 'additionPlacement', state.additionPlacement );
-		tsfTitle.updateStateOf( _titleId, 'hasLegacy', !! ( state.hasLegacy || false ) );
+		tsfTitle.updateStateOf( _titleId, '_defaultTitleLocked', !! ( state._defaultTitleLocked || false ) );
 
 		tsfTitle.enqueueUnregisteredInputTrigger( _titleId );
 
@@ -521,12 +515,16 @@ window.tsfSettings = function( $ ) {
 		 * @function
 		 */
 		const toggleHoverAdditionsPlacement = event => {
-			let newPlacement = 'left' === event.target.value ? 'before' : 'after';
-			tsfTitle.updateStateOf( _titleId, 'additionPlacement', newPlacement );
+			tsfTitle.updateStateOf(
+				_titleId,
+				'additionPlacement',
+				'left' === event.target.value ? 'before' : 'after',
+			);
 		}
 		document.querySelectorAll( '#tsf-home-title-location input' ).forEach( el => {
 			el.addEventListener( 'change', toggleHoverAdditionsPlacement );
-			_dispatchAtInteractive( el, 'change' );
+			if ( el.checked )
+				_dispatchAtInteractive( el, 'change' );
 		} );
 
 		/**
@@ -592,24 +590,27 @@ window.tsfSettings = function( $ ) {
 		 */
 		const updateHomePageTaglineExampleOutput = () => {
 			clearTimeout( updateHomePageTaglineExampleOutputBuffer );
-			updateHomePageTaglineExampleOutputBuffer = setTimeout( () => {
-				let value = tsfTitle.getStateOf( _titleId, 'additionValue' );
+			updateHomePageTaglineExampleOutputBuffer = setTimeout(
+				() => {
+					let value = tsfTitle.getStateOf( _titleId, 'additionValue' );
 
-				value = tsf.decodeEntities( tsf.sDoubleSpace( value.trim() ) );
+					value = tsf.decodeEntities( tsf.sDoubleSpace( value.trim() ) );
 
-				if ( value.length && tsfTitle.getStateOf( _titleId, 'addAdditions' ) ) {
-					document.querySelectorAll( '.tsf-custom-tagline-js' ).forEach( el => {
-						el.innerHTML = tsf.escapeString( value );
-					} );
-					document.querySelectorAll( '.tsf-custom-blogname-js' ).forEach( el => {
-						el.style.display = null;
-					} );
-				} else {
-					document.querySelectorAll( '.tsf-custom-blogname-js' ).forEach( el => {
-						el.style.display = 'none';
-					} );
-				}
-			}, 1000/60 ); // 60fps
+					if ( value.length && tsfTitle.getStateOf( _titleId, 'addAdditions' ) ) {
+						document.querySelectorAll( '.tsf-custom-tagline-js' ).forEach( el => {
+							el.innerHTML = tsf.escapeString( value );
+						} );
+						document.querySelectorAll( '.tsf-custom-blogname-js' ).forEach( el => {
+							el.style.display = null;
+						} );
+					} else {
+						document.querySelectorAll( '.tsf-custom-blogname-js' ).forEach( el => {
+							el.style.display = 'none';
+						} );
+					}
+				},
+				1000/60 // 60fps.
+			);
 		}
 
 		/**
@@ -684,13 +685,12 @@ window.tsfSettings = function( $ ) {
 		tsfDescription.setInputElement( document.getElementById( descId ) );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-description-data_${descId}` )?.dataset.state || 0
+			document.getElementById( `tsf-description-data_${descId}` )?.dataset.state || 0,
 		);
 
 		if ( state ) {
 			// tsfDescription.updateState( 'allowReferenceChange', ! state.refDescriptionLocked );
 			tsfDescription.updateStateOf( descId, 'defaultDescription', state.defaultDescription.trim() );
-			tsfDescription.updateStateOf( descId, 'hasLegacy', !! ( state.hasLegacy || false ) );
 		}
 
 		tsfDescription.enqueueUnregisteredInputTrigger( descId );
@@ -710,11 +710,11 @@ window.tsfSettings = function( $ ) {
 		tsfSocial.setInputInstance(
 			_socialGroup,
 			_getSettingsId( 'homepage_title' ),
-			_getSettingsId( 'homepage_description' )
+			_getSettingsId( 'homepage_description' ),
 		);
 
 		const groupData = JSON.parse(
-			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0
+			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0,
 		);
 
 		if ( ! groupData ) return;
@@ -740,6 +740,26 @@ window.tsfSettings = function( $ ) {
 				twDesc:  groupData.tw.state?.descPhLock || false,
 			}
 		);
+
+		const twitterCardType = document.getElementById( _getSettingsId( 'homepage_twitter_card_type' ) );
+		const updateTitleRemoveAdditions = event => {
+			const { cardType } = event.detail;
+
+			const _defaultIndexOption = twitterCardType.querySelector( '[value=""]' ),
+				  _data               = twitterCardType.dataset || {};
+
+			const newHTML = _data.defaultI18n?.replace(
+				'%s',
+				_data.defaultLocked
+					? _data.defaultValue
+					: cardType,
+			);
+
+			_defaultIndexOption.innerHTML = newHTML;
+			twitterCardType.dispatchEvent( new Event( 'change' ) );
+		}
+		if ( twitterCardType )
+			document.body.addEventListener( 'tsf-update-twitter-card-type', updateTitleRemoveAdditions );
 	}
 
 	/**
@@ -884,39 +904,41 @@ window.tsfSettings = function( $ ) {
 			_detailsEl;
 		const switchPostTypeSettingsView = event => {
 			clearTimeout( _debounceSwitch );
-			_debounceSwitch = setTimeout( () => {
-				// Remove old details (if any).
-				_detailsEl && headerWrap?.removeChild( _detailsEl );
+			_debounceSwitch = setTimeout(
+				() => {
+					// Remove old details (if any).
+					_detailsEl && headerWrap?.removeChild( _detailsEl );
 
-				document.querySelectorAll( '.tsf-post-type-archive-wrap' ).forEach( el => {
-					if ( event.target.value === el.dataset.postType ) {
-						el.style.display = null;
-						_detailsEl = el.querySelector( '.tsf-post-type-archive-details' )?.cloneNode( true );
-					} else {
-						el.style.display = 'none';
-					}
-					// This class is redundant now; remove it for it hides permanently.
-					el.classList.remove( 'hide-if-tsf-js' );
-				} );
-
-				_detailsEl && headerWrap?.appendChild( _detailsEl );
-
-				document.body.dispatchEvent(
-					new CustomEvent( 'tsf-post-type-archive-switched', {
-						detail: {
-							postType:                      event.target.value,
-							hasKompaanChocolateBananaBeer: false, // sad day.
+					document.querySelectorAll( '.tsf-post-type-archive-wrap' ).forEach( el => {
+						if ( event.target.value === el.dataset.postType ) {
+							el.style.display = null;
+							_detailsEl = el.querySelector( '.tsf-post-type-archive-details' )?.cloneNode( true );
+						} else {
+							el.style.display = 'none';
 						}
-					} )
-				);
-			}, 1000/60 ); // 60fps
+						// This class is redundant now; remove it for it hides permanently.
+						el.classList.remove( 'hide-if-tsf-js' );
+					} );
+
+					_detailsEl && headerWrap?.appendChild( _detailsEl );
+
+					document.body.dispatchEvent(
+						new CustomEvent( 'tsf-post-type-archive-switched', {
+							detail: {
+								postType:                      event.target.value,
+								hasKompaanChocolateBananaBeer: false, // sad day.
+							}
+						} )
+					);
+				},
+				1000/60, // 60fps.
+			);
 		}
 
 		if ( select ) {
 			select.addEventListener( 'change', switchPostTypeSettingsView );
 			_dispatchAtInteractive( select, 'change' );
 		}
-
 	}
 
 	/**
@@ -970,7 +992,7 @@ window.tsfSettings = function( $ ) {
 		tsfTitle.setInputElement( titleInput );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0
+			document.getElementById( `tsf-title-data_${_titleId}` )?.dataset.state || 0,
 		);
 
 		if ( state ) {
@@ -1060,7 +1082,7 @@ window.tsfSettings = function( $ ) {
 		tsfDescription.setInputElement( descInput );
 
 		const state = JSON.parse(
-			document.getElementById( `tsf-description-data_${_descId}` )?.dataset.state || 0
+			document.getElementById( `tsf-description-data_${_descId}` )?.dataset.state || 0,
 		);
 
 		if ( state )
@@ -1083,13 +1105,13 @@ window.tsfSettings = function( $ ) {
 		const _socialGroup = `pta_social_settings_${postType}`;
 
 		const groupData = JSON.parse(
-			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0
+			document.getElementById( `tsf-social-data_${_socialGroup}` )?.dataset.settings || 0,
 		);
 
 		tsfSocial.setInputInstance(
 			_socialGroup,
 			_getPtaInputId( postType, 'doctitle' ),
-			_getPtaInputId( postType, 'description' )
+			_getPtaInputId( postType, 'description' ),
 		);
 		tsfSocial.updateStateOf( _socialGroup, 'addAdditions', groupData.og.state.addAdditions ); // tw Also has one. Maybe future.
 
@@ -1103,6 +1125,24 @@ window.tsfSettings = function( $ ) {
 				twDesc:  groupData.tw.state.defaultDesc,
 			}
 		);
+
+		const twitterCardType = document.getElementById( _getPtaInputId( postType, 'tw_card_type' ) );
+		const updateTitleRemoveAdditions = event => {
+			const { cardType } = event.detail;
+
+			const _defaultIndexOption = twitterCardType.querySelector( '[value=""]' ),
+				  _data               = twitterCardType.dataset || {};
+
+			const newHTML = _data.defaultI18n?.replace(
+				'%s',
+				cardType,
+			);
+
+			_defaultIndexOption.innerHTML = newHTML;
+			twitterCardType.dispatchEvent( new Event( 'change' ) );
+		}
+		if ( twitterCardType )
+			document.body.addEventListener( 'tsf-update-twitter-card-type', updateTitleRemoveAdditions );
 	}
 
 	/**
@@ -1134,10 +1174,10 @@ window.tsfSettings = function( $ ) {
 			const _defaultIndexOption = robotsSelect?.querySelector( '[value="0"]' ),
 				  _data               = robotsSelect?.dataset || {};
 
-			let newHTML = _data.defaultI18n?.replace(
+			const newHTML = _data.defaultI18n?.replace(
 				'%s',
 				tsf.decodeEntities(
-					isOff( robotsType ) ? _data.defaultOff : _data.defaultOn
+					isOff( robotsType ) ? _data.defaultOff : _data.defaultOn,
 				)
 			);
 
@@ -1270,6 +1310,7 @@ window.tsfSettings = function( $ ) {
 	 * @function
 	 */
 	const _initSocialSettings = () => {
+
 		const socialTitleRemoveAdditions = document.getElementById( _getSettingsId( 'social_title_rem_additions' ) );
 		/**
 		 * Changes the useSocialTagline state for dynamic social-title-placeholder updates.
@@ -1287,6 +1328,205 @@ window.tsfSettings = function( $ ) {
 		if ( socialTitleRemoveAdditions ) {
 			socialTitleRemoveAdditions.addEventListener( 'change', updateSocialAdditions );
 			_dispatchAtInteractive( socialTitleRemoveAdditions, 'change' );
+		}
+
+		const ogTagsToggle = document.getElementById( _getSettingsId( 'og_tags' ) );
+		/**
+		 * Hides Open Graph fields if Open Graph is disabled.
+		 *
+		 * @function
+		 * @param {Event} event
+		 */
+		const displayOgFields = event => {
+			document.getElementById( 'multi_og_image_wrapper' )
+				?.classList
+				.toggle( 'hidden', ! event.target.checked );
+		}
+		if ( ogTagsToggle ) {
+			ogTagsToggle.addEventListener( 'change', displayOgFields );
+			_dispatchAtInteractive( ogTagsToggle, 'change' );
+		}
+
+		/**
+		 * Changes the tabs visibility and selectability during option toggles.
+		 *
+		 * @function
+		 * @param {Event} event
+		 */
+		const registerTagToggle = toggleData => {
+
+			if ( ! toggleData.id ) return;
+
+			const toggle   = document.getElementById( _getSettingsId( toggleData.id ) ),
+				  tabRadio = document.getElementById( `tsf-social-tab-${toggleData.tab}` );
+
+			const tabLabel = document.getElementById( 'social-tabs-wrapper' )
+				?.querySelector( `[for=tsf-social-tab-${toggleData.tab}]` );
+
+			/**
+			 * @function
+			 * @param {Event} event
+			 */
+			const hideDisableTab = event => {
+				tabLabel?.classList.toggle(
+					'hidden',
+					! event.target.checked
+				);
+				event.target.checked
+					? tabRadio?.removeAttribute( 'disabled' )
+					: tabRadio?.setAttribute( 'disabled', '' );
+			}
+
+			if ( toggle ) {
+				toggle.addEventListener( 'change', hideDisableTab );
+				_dispatchAtInteractive( toggle, 'change' );
+			}
+		};
+		[
+			{
+				id:  'og_tags', // option ID.
+				tab: 'postdates',
+			},
+			{
+				id:  'facebook_tags',
+				tab: 'facebook',
+			},
+			{
+				id:  'twitter_tags',
+				tab: 'twitter',
+			},
+			{
+				id:  'oembed_scripts',
+				tab: 'oembed',
+			},
+		].forEach( registerTagToggle );
+
+		const toggleCheckRegistry = new Set();
+		/**
+		 * Changes the settings visibility and selectability during all option toggles.
+		 *
+		 * @function
+		 * @param {Event} event
+		 */
+		const checkAllDisabled = event => {
+			if ( event.target.checked ) {
+				toggleCheckRegistry.add( event.target.name );
+			} else {
+				toggleCheckRegistry.delete( event.target.name );
+			}
+
+			document.getElementById( 'tsf-social-settings-wrapper' )
+				?.classList
+				.toggle( 'hidden', ! toggleCheckRegistry.size );
+		}
+		[ 'og_tags', 'facebook_tags', 'twitter_tags', 'oembed_scripts' ].forEach( id => {
+			const toggle = document.getElementById( _getSettingsId( id ) );
+			toggle.addEventListener( 'change', checkAllDisabled );
+			_dispatchAtInteractive( toggle, 'change' );
+		} );
+
+		/**
+		 * Emits hooks for when the Twitter Card is toggled.
+		 * @function
+		 */
+		const dispatchCardToggleEvent = event => {
+			document.body.dispatchEvent( new CustomEvent(
+				'tsf-update-twitter-card-type',
+				{
+					detail: {
+						cardType: event.target.value,
+					}
+				}
+			) );
+		}
+		document.querySelectorAll( '#tsf-twitter-cards input' ).forEach( el => {
+			el.addEventListener( 'change', dispatchCardToggleEvent );
+			if ( el.checked )
+				_dispatchAtInteractive( el, 'change' );
+		} );
+	}
+
+	/**
+	 * Initializes Schema settings inputs.
+	 *
+	 * @since 5.0.0
+	 * @access private
+	 *
+	 * @function
+	 */
+	const _initSchemaSettings = () => {
+
+		const sdToggle = document.getElementById( _getSettingsId( 'ld_json_enabled' ) );
+		/**
+		 * @function
+		 * @param {Event} event
+		 */
+		const toggleSettingsDisplay = event => {
+			document.getElementById( 'tsf-advanced-structured-data-settings-wrapper' )
+				?.classList
+				.toggle( 'hidden', ! event.target.checked );
+
+			togglePresenceTab();
+		}
+		if ( sdToggle ) {
+			sdToggle.addEventListener( 'change', toggleSettingsDisplay );
+			_dispatchAtInteractive( sdToggle, 'change' );
+		}
+
+		const presenceTab = {
+			id:  'knowledge_output', // option ID.
+			tab: 'presence',
+		};
+		const presenceToggle   = document.getElementById( _getSettingsId( presenceTab.id ) ),
+			  presenceTabRadio = document.getElementById( `tsf-social-tab-${presenceTab.tab}` );
+		const presenceTabLabel = document.getElementById( 'schema-tabs-wrapper' )
+			?.querySelector( `[for=tsf-schema-tab-${presenceTab.tab}]` );
+
+		/**
+		 * @function
+		 */
+		const togglePresenceTab = () => {
+			let show = sdToggle?.checked && presenceToggle?.checked;
+
+			presenceTabLabel?.classList.toggle( 'hidden', ! show );
+
+			show
+				? presenceTabRadio?.removeAttribute( 'disabled' )
+				: presenceTabRadio?.setAttribute( 'disabled', '' );
+		}
+		if ( presenceToggle ) {
+			presenceToggle.addEventListener( 'change', togglePresenceTab );
+			togglePresenceTab( presenceToggle, 'change' );
+		}
+
+		const knowledgeTypeSelect = document.getElementById( _getSettingsId( 'knowledge_type' ) );
+		/**
+		 * @function
+		 * @param {Event} event
+		 */
+		const toggleKnowledgeType = event => {
+			document.getElementById( 'tsf-logo-structured-data-settings-wrapper' )
+				?.classList
+				.toggle( 'hidden', event.target.value === 'person' );
+		}
+		if ( knowledgeTypeSelect ) {
+			knowledgeTypeSelect.addEventListener( 'change', toggleKnowledgeType );
+			_dispatchAtInteractive( knowledgeTypeSelect, 'change' );
+		}
+
+		const logoToggle = document.getElementById( _getSettingsId( 'knowledge_logo' ) );
+		/**
+		 * @function
+		 * @param {Event} event
+		 */
+		const toggleDisplayLogo = event => {
+			document.getElementById( 'tsf-logo-upload-structured-data-settings-wrapper' )
+				?.classList
+				.toggle( 'hidden', ! event.target.checked );
+		}
+		if ( logoToggle ) {
+			logoToggle.addEventListener( 'change', toggleDisplayLogo );
+			_dispatchAtInteractive( logoToggle, 'change' );
 		}
 	}
 
@@ -1694,10 +1934,10 @@ window.tsfSettings = function( $ ) {
 
 			if ( val ) {
 				// Extrude tag paste's content value and set that as a value.
-				let match = /<meta[^>]+content=(\"|\')?([^\"\'>\s]+)\1?.*?>/i.exec( val );
+				let match = /<meta\b[^>]+?\bcontent=(["'])?([^"'>\s]+)\1?[^>]*?>/i.exec( val );
 				if ( match?.[2]?.length ) {
 					event.stopPropagation();
-					event.preventDefault(); // Prevents save listener
+					event.preventDefault(); // Prevents save listener.. TODO why?
 					event.target.value = match[2];
 					// Tell change:
 					tsfAys.registerChange();
@@ -1728,10 +1968,13 @@ window.tsfSettings = function( $ ) {
 
 		_initSocialSettings();
 
+		_initSchemaSettings();
+
 		_initRobotsInputs();
 		_initRobotsSupport();
 
 		_initWebmastersInputs();
+
 		_initColorPicker();
 	}
 

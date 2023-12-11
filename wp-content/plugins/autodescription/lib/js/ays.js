@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -288,7 +288,7 @@ window.tsfAys = function() {
 				'.tsf-term-meta input[type=checkbox][name]',
 				'.tsf-term-meta select[name]',
 			],
-			'change'
+			'change',
 		);
 
 		//= Text input
@@ -301,26 +301,26 @@ window.tsfAys = function() {
 				'.tsf-term-meta input:not([type=radio]):not([type=checkbox])[name]',
 				'.tsf-term-meta textarea[name]',
 			],
-			'input'
+			'input',
 		);
 
 		//= Non-redirect, Gutenberg save action.
 		registerResetListener(
 			document,
-			'tsf-gutenberg-onsave-completed'
+			'tsf-gutenberg-onsave-completed',
 		);
 
 		//= Redirect-save actions.
 		registerUnloadListener(
 			[
-				'.tsf-metaboxes input[type="submit"]',
-				'#publishing-action input[type="submit"]',
-				'#save-action input[type="submit"]',
+				'.tsf-metaboxes input[type=submit]',
+				'#publishing-action input[type=submit]',
+				'#save-action input[type=submit]',
 				'a.submitdelete',
-				'.edit-tag-actions input[type="submit"]',
+				'.edit-tag-actions input[type=submit]',
 				'.edit-tag-actions .delete',
 			],
-			'click'
+			'click',
 		);
 
 		document.dispatchEvent( new CustomEvent( 'tsf-registered-ays-listeners' ) );
@@ -390,7 +390,7 @@ window.tsfAys = function() {
 		registerChangeListener,
 		registerResetListener,
 		registerUnloadListener,
-		reloadDefaultListeners
+		reloadDefaultListeners,
 	}, {
 		l10n
 	} );

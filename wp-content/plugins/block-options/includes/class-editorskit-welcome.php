@@ -123,7 +123,8 @@ if ( ! class_exists( 'EditorsKit_Welcome' ) ) {
 				$block_editor_settings = 'block_editor_settings';
 			}
 
-			$default_editor_settings = function_exists( 'gutenberg_get_default_block_editor_settings' ) ? gutenberg_get_default_block_editor_settings() : array();
+			$context  = new WP_Block_Editor_Context();
+			$settings = get_block_editor_settings( array(), $context );
 
 			$global = array(
 				'url'             => EDITORSKIT_PLUGIN_URL,
@@ -133,25 +134,29 @@ if ( ! class_exists( 'EditorsKit_Welcome' ) ) {
 					'dir' => EDITORSKIT_PLUGIN_DIR,
 				),
 				'version'         => $this->version,
-				'editor_settings' => apply_filters( $block_editor_settings, $default_editor_settings, '' ),
+				'editor_settings' => $settings,
 			);
 
 			wp_add_inline_script( $this->slug . '-admin', 'window.editorskitSettings = ' . wp_json_encode( $global ) . ';', 'before' );
 			wp_add_inline_script( $this->slug . '-admin', 'window.editorskitInfo = ' . wp_json_encode( $global ) . ';', 'before' );
+			require_once EDITORSKIT_PLUGIN_DIR . 'includes/class-editorskit-plugin-images-links.php';
 		}
 
 		/**
 		 * Setup the admin menu.
 		 */
 		public function screen_page() {
-			add_submenu_page(
-				'options-general.php',
+			add_menu_page(
 				__( 'Getting started with EditorsKit', 'block-options' ),
 				__( 'EditorsKit', 'block-options' ),
 				apply_filters( 'blockopts_welcome_cap', 'manage_options' ),
 				'editorskit-getting-started',
-				array( $this, 'welcome_content' )
+				array( $this, 'welcome_content' ),
+				'dashicons-edit',
+				50
 			);
+
+			do_action( 'after_editorskit_menu_registration' );
 		}
 
 		/**

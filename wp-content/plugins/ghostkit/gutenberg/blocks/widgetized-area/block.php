@@ -14,6 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class GhostKit_Widgetized_Area_Block {
     /**
+     * Is in rendering loop.
+     * We have to check if sidebar is rendering and prevent render another sidebar.
+     * In short, of you insert the dynamic sidebar inside the same sidebar, there will be an infinite loop and PHP fatal error.
+     *
+     * @var boolean
+     */
+    private $rendering;
+
+    /**
      * GhostKit_Widgetized_Area_Block constructor.
      */
     public function __construct() {
@@ -24,14 +33,12 @@ class GhostKit_Widgetized_Area_Block {
      * Init.
      */
     public function init() {
-        if ( function_exists( 'register_block_type' ) ) {
-            register_block_type(
-                'ghostkit/widgetized-area',
-                array(
-                    'render_callback' => array( $this, 'block_render' ),
-                )
-            );
-        }
+        register_block_type_from_metadata(
+            dirname( __FILE__ ),
+            array(
+                'render_callback' => array( $this, 'block_render' ),
+            )
+        );
     }
 
     /**
@@ -42,6 +49,12 @@ class GhostKit_Widgetized_Area_Block {
      * @return string
      */
     public function block_render( $attributes ) {
+        if ( $this->rendering ) {
+            return '';
+        }
+
+        $this->rendering = true;
+
         ob_start();
 
         $class  = isset( $attributes['className'] ) ? $attributes['className'] : '';
@@ -52,6 +65,8 @@ class GhostKit_Widgetized_Area_Block {
                 dynamic_sidebar( $attributes['id'] );
             echo '</div>';
         }
+
+        $this->rendering = false;
 
         return ob_get_clean();
     }

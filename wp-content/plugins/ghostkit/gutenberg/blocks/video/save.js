@@ -11,134 +11,125 @@ import metadata from './block.json';
  */
 const { applyFilters } = wp.hooks;
 
-const { Component } = wp.element;
+const { useBlockProps } = wp.blockEditor;
 
 const { name } = metadata;
 
 /**
  * Block Save Class.
  */
-class BlockSave extends Component {
-  render() {
-    const { attributes } = this.props;
+export default function BlockSave(props) {
+  const { attributes } = props;
 
-    const {
-      type,
-      video,
-      videoMp4,
-      videoOgv,
-      videoWebm,
-      videoAspectRatio,
-      videoVolume,
-      videoAutoplay,
-      videoAutopause,
-      videoLoop,
+  const {
+    type,
+    video,
+    videoMp4,
+    videoOgv,
+    videoWebm,
+    videoAspectRatio,
+    videoVolume,
+    videoAutoplay,
+    videoAutopause,
+    videoLoop,
 
-      iconPlay,
-      iconLoading,
+    iconPlay,
+    iconLoading,
 
-      posterId,
-      posterUrl,
-      posterAlt,
-      posterWidth,
-      posterHeight,
+    posterId,
+    posterUrl,
+    posterAlt,
+    posterWidth,
+    posterHeight,
 
-      clickAction,
-      fullscreenActionCloseIcon,
-      fullscreenBackgroundColor,
+    clickAction,
+    fullscreenActionCloseIcon,
+    fullscreenVideoBackgroundColor,
+    fullscreenVideoBackgroundGradient,
+    fullscreenBackgroundColor,
+    fullscreenBackgroundGradient,
 
-      className,
-    } = attributes;
+    className,
+  } = attributes;
 
-    const resultAttrs = {};
+  const resultAttrs = {};
 
-    resultAttrs.className = 'ghostkit-video';
+  resultAttrs.className = 'ghostkit-video';
+  resultAttrs.className = applyFilters('ghostkit.blocks.className', resultAttrs.className, {
+    ...{
+      name,
+    },
+    ...props,
+  });
 
-    resultAttrs.className = applyFilters('ghostkit.blocks.className', resultAttrs.className, {
-      ...{
-        name,
-      },
-      ...this.props,
-    });
+  resultAttrs['data-video-type'] = type;
 
-    resultAttrs['data-video-type'] = type;
-
-    resultAttrs['data-video'] = '';
-    if ('video' === type) {
-      if (videoMp4) {
-        resultAttrs['data-video'] += `mp4:${videoMp4}`;
-      }
-      if (videoOgv) {
-        resultAttrs['data-video'] += `${
-          resultAttrs['data-video'].length ? ',' : ''
-        }ogv:${videoOgv}`;
-      }
-      if (videoWebm) {
-        resultAttrs['data-video'] += `${
-          resultAttrs['data-video'].length ? ',' : ''
-        }webm:${videoWebm}`;
-      }
-    } else {
-      resultAttrs['data-video'] = video;
+  resultAttrs['data-video'] = '';
+  if (type === 'video') {
+    if (videoMp4) {
+      resultAttrs['data-video'] += `mp4:${videoMp4}`;
     }
-
-    resultAttrs['data-video-aspect-ratio'] = videoAspectRatio;
-
-    resultAttrs['data-video-volume'] = videoVolume;
-
-    resultAttrs['data-click-action'] = clickAction;
-
-    if ('fullscreen' === clickAction) {
-      resultAttrs['data-fullscreen-background-color'] = fullscreenBackgroundColor;
-    } else {
-      if (videoAutoplay) {
-        resultAttrs['data-video-autoplay'] = 'true';
-      }
-      if (videoAutopause) {
-        resultAttrs['data-video-autopause'] = 'true';
-      }
-      if (videoLoop) {
-        resultAttrs['data-video-loop'] = 'true';
-      }
+    if (videoOgv) {
+      resultAttrs['data-video'] += `${resultAttrs['data-video'].length ? ',' : ''}ogv:${videoOgv}`;
     }
-
-    return (
-      <div {...resultAttrs}>
-        {posterUrl && !hasClass(className, 'is-style-icon-only') ? (
-          <div className="ghostkit-video-poster">
-            <img
-              src={posterUrl}
-              alt={posterAlt}
-              className={posterId ? `wp-image-${posterId}` : null}
-              width={posterWidth}
-              height={posterHeight}
-            />
-          </div>
-        ) : (
-          ''
-        )}
-        {iconPlay ? (
-          <IconPicker.Render name={iconPlay} tag="div" className="ghostkit-video-play-icon" />
-        ) : (
-          ''
-        )}
-        {iconLoading ? (
-          <IconPicker.Render name={iconLoading} tag="div" className="ghostkit-video-loading-icon" />
-        ) : (
-          ''
-        )}
-        {'fullscreen' === clickAction && fullscreenActionCloseIcon ? (
-          <IconPicker.Render
-            name={fullscreenActionCloseIcon}
-            tag="div"
-            className="ghostkit-video-fullscreen-close-icon"
-          />
-        ) : (
-          ''
-        )}
-      </div>
-    );
+    if (videoWebm) {
+      resultAttrs['data-video'] += `${
+        resultAttrs['data-video'].length ? ',' : ''
+      }webm:${videoWebm}`;
+    }
+  } else {
+    resultAttrs['data-video'] = video;
   }
-}
 
-export default BlockSave;
+  resultAttrs['data-video-aspect-ratio'] = videoAspectRatio;
+  resultAttrs['data-video-volume'] = videoVolume;
+  resultAttrs['data-click-action'] = clickAction;
+
+  if (clickAction === 'fullscreen') {
+    resultAttrs['data-fullscreen-video-background-color'] = fullscreenVideoBackgroundColor;
+    resultAttrs['data-fullscreen-video-background-gradient'] = fullscreenVideoBackgroundGradient;
+    resultAttrs['data-fullscreen-background-color'] = fullscreenBackgroundColor;
+    resultAttrs['data-fullscreen-background-gradient'] = fullscreenBackgroundGradient;
+  } else {
+    if (videoAutoplay) {
+      resultAttrs['data-video-autoplay'] = 'true';
+    }
+    if (videoAutopause) {
+      resultAttrs['data-video-autopause'] = 'true';
+    }
+    if (videoLoop) {
+      resultAttrs['data-video-loop'] = 'true';
+    }
+  }
+
+  const blockProps = useBlockProps.save(resultAttrs);
+
+  return (
+    <div {...blockProps}>
+      {posterUrl && !hasClass(className, 'is-style-icon-only') ? (
+        <div className="ghostkit-video-poster">
+          <img
+            src={posterUrl}
+            alt={posterAlt}
+            className={posterId ? `wp-image-${posterId}` : null}
+            width={posterWidth}
+            height={posterHeight}
+          />
+        </div>
+      ) : null}
+      {iconPlay ? (
+        <IconPicker.Render name={iconPlay} tag="div" className="ghostkit-video-play-icon" />
+      ) : null}
+      {iconLoading ? (
+        <IconPicker.Render name={iconLoading} tag="div" className="ghostkit-video-loading-icon" />
+      ) : null}
+      {clickAction === 'fullscreen' && fullscreenActionCloseIcon ? (
+        <IconPicker.Render
+          name={fullscreenActionCloseIcon}
+          tag="div"
+          className="ghostkit-video-fullscreen-close-icon"
+        />
+      ) : null}
+    </div>
+  );
+}

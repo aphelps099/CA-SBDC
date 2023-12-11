@@ -17,38 +17,30 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-grid-column', true),
   ghostkit: {
-    customSelector(selector) {
-      // extend selector to add possibility to override default column spacings without !important
-      selector = `.ghostkit-grid ${selector}`;
-
-      return selector;
-    },
     customStylesCallback(attributes) {
-      const { stickyContent, stickyContentOffset, awb_image: image } = attributes;
+      const { stickyContent, stickyContentOffset } = attributes;
 
-      let result = {};
+      const styles = {
+        '--gkt-grid--column-sticky__offset': undefined,
+        ...getBackgroundStyles(attributes),
+      };
 
       // Sticky styles.
-      if (stickyContent && 'undefined' !== typeof stickyContentOffset) {
-        result['--gkt-grid--column-sticky__offset'] = `${stickyContentOffset}px`;
+      if (
+        stickyContent &&
+        typeof stickyContentOffset !== 'undefined' &&
+        stickyContentOffset !== ''
+      ) {
+        styles['--gkt-grid--column-sticky__offset'] = `${stickyContentOffset}px`;
       }
 
-      // Image styles.
-      if (image) {
-        result = {
-          ...result,
-          ...getBackgroundStyles(attributes),
-        };
-      }
-
-      return result;
+      return styles;
     },
     customStylesFilter(styles, data, isEditor, attributes) {
       // change custom styles in Editor.
-      if (isEditor && attributes.ghostkitClassname) {
+      if (isEditor && attributes?.ghostkit?.id) {
         // background.
         styles = styles.replace(
           // eslint-disable-next-line prefer-regex-literals
@@ -57,14 +49,6 @@ export const settings = {
         );
       }
       return styles;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
     },
   },
   edit,

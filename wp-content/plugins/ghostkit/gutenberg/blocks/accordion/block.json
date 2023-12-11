@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/accordion",
-  "category": "design",
+  "category": "ghostkit",
   "title": "Accordion",
   "description": "Toggle the visibility of content across your project.",
   "keywords": ["accordion", "collapsible", "collapse"],
@@ -18,6 +20,13 @@
     "collapseOne": {
       "type": "boolean",
       "default": false
+    },
+    "collapseTitleTag": {
+      "type": "string",
+      "default": "div"
     }
+  },
+  "providesContext": {
+    "ghostkit/collapseTitleTag": "collapseTitleTag"
   }
 }

@@ -38,13 +38,11 @@ class ConstantContact_Mail {
 	}
 
 	/**
-	 * Fire hoosk for actions.
+	 * Fire hooks for actions.
 	 *
 	 * @since 1.0.0
 	 */
-	protected function hooks() {
-		add_action( 'ctct_schedule_form_opt_in', [ $this, 'opt_in_user' ] );
-	}
+	protected function hooks() {}
 
 	/**
 	 * Process our form values.
@@ -61,26 +59,7 @@ class ConstantContact_Mail {
 			return false;
 		}
 
-		$values = constant_contact()->process_form->clean_values( $values );
-
-		if ( $add_to_opt_in && constant_contact()->api->is_connected() ) {
-
-			$maybe_bypass = constant_contact_get_option( '_ctct_bypass_cron', '' );
-
-			if ( 'on' !== $maybe_bypass ) {
-				/**
-				 * Filters the delay between scheduling of the opt-in e-mail event.
-				 *
-				 * @since 1.0.2
-				 *
-				 * @param int $schedule_delay The time to add to `time()` for the event.
-				 */
-				$schedule_delay = apply_filters( 'constant_contact_opt_in_delay', MINUTE_IN_SECONDS );
-
-				wp_schedule_single_event( current_time( 'timestamp' ) + absint( $schedule_delay ), 'ctct_schedule_form_opt_in', [ $values ] );
-			}
-		}
-
+		$values         = constant_contact()->process_form->clean_values( $values );
 		$opt_in_details = ( isset( $values['ctct-opt-in'] ) ) ? $values['ctct-opt-in'] : [];
 
 		// Preserve form ID for mail() method. Lost in pretty_values() pass.
@@ -321,6 +300,18 @@ class ConstantContact_Mail {
 		$content_before = $content_notice_note . $content_before . $content_notice_reasons;
 
 		$content_title  = '<p><strong>' . esc_html__( 'Form title: ', 'constant-contact-forms' ) . '</strong>' . get_the_title( $submission_details['form_id'] ) . '<br/>';
+
+		$list_ids = get_post_meta( (int) $submission_details['form_id'], '_ctct_list', true );
+		if ( ! is_array( $list_ids ) ) {
+			$list_ids = [ $list_ids ];
+		}
+		foreach ( $list_ids as $list_id ) {
+			$list_info = constant_contact()->api->cc()->get_list( $list_id );
+			if ( ! empty( $list_info ) && isset( $list_info['name'] ) ) {
+				$content_title .= '<strong>' . esc_html__( 'List name: ', 'constant-contact-forms' ) . '</strong>' . esc_html( $list_info['name'] ) . '<br/>';
+			}
+		}
+
 		$content_title .= '<strong>' . esc_html__( 'Form information: ', 'constant-contact-forms' ) . '</strong></p>';
 
 		$content = $content_title . $content;
@@ -328,9 +319,9 @@ class ConstantContact_Mail {
 		$content_after = sprintf(
 			/* Translators: placeholders provide Constant Contact link information. */
 			esc_html__( "Email marketing is a great way to stay connected and engage with visitors after they've left your site. Visit %1\$shttps://www.constantcontact.com/index?pn=miwordpress%2\$s to sign up for a Free Trial.", 'constant-contact-forms' ),
-				'<a href="https://www.constantcontact.com/index?pn=miwordpress">',
-				'</a>'
-			);
+			'<a href="https://www.constantcontact.com/index?pn=miwordpress">',
+			'</a>'
+		);
 
 		/**
 		 * Filters the final constructed email content to be sent to an admin.

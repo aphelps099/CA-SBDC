@@ -1,13 +1,16 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/image-compare",
-  "category": "media",
+  "category": "ghostkit",
   "title": "Image Compare",
   "description": "Compare two images with a slider.",
-  "keywords": ["image", "compare"],
+  "keywords": ["image", "compare", "before", "after"],
   "supports": {
     "html": false,
     "className": false,
-    "anchor": true
+    "anchor": true,
+    "align": ["wide", "full"]
   },
   "attributes": {
     "align": {
@@ -17,6 +20,13 @@
       "type": "number",
       "default": 50
     },
+    "direction": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "string"
+    },
+
     "beforeId": {
       "type": "number"
     },
@@ -42,6 +52,7 @@
     "beforeSizeSlug": {
       "type": "string"
     },
+
     "afterId": {
       "type": "number"
     },
@@ -67,6 +78,35 @@
     "afterSizeSlug": {
       "type": "string"
     },
+
+    "showLabels": {
+      "type": "boolean",
+      "default": false
+    },
+    "labelBeforeText": {
+      "type": "string",
+      "source": "html",
+      "selector": ".ghostkit-image-compare-image-before-label",
+      "default": "Before"
+    },
+    "labelAfterText": {
+      "type": "string",
+      "source": "html",
+      "selector": ".ghostkit-image-compare-image-after-label",
+      "default": "After"
+    },
+    "labelAlign": {
+      "type": "string",
+      "default": "end"
+    },
+
+    "colorDivider": {
+      "type": "string"
+    },
+    "colorDividerIcon": {
+      "type": "string"
+    },
+
     "caption": {
       "type": "string",
       "source": "html",

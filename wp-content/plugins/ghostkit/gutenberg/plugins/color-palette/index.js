@@ -103,7 +103,7 @@ class ColorPaletteModal extends Component {
               return null;
             }
 
-            const colorName = `palette-item-${data.slug}-${i}`;
+            const colorName = `palette-item-${i}`;
 
             return (
               <ColorPicker
@@ -196,8 +196,6 @@ const ColorPaletteModalWithSelect = compose([
   withSelect((select) => {
     const { getSettings } = select('core/block-editor');
     const settings = getSettings();
-
-    // const colorPalette = select( 'ghostkit/plugins/color-palette' ).getColorPalette();
 
     return {
       colors: settings.colors || [],

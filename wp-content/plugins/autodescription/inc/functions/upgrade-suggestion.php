@@ -6,9 +6,18 @@
 
 namespace The_SEO_Framework\Suggestion;
 
+\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
+
+use \The_SEO_Framework\{
+	Admin,
+	Helper\Format\Markdown,
+};
+
+// phpcs:disable, VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- includes.
+
 /**
  * The SEO Framework plugin
- * Copyright (C) 2018 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2018 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -22,10 +31,6 @@ namespace The_SEO_Framework\Suggestion;
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-// phpcs:disable, VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- includes.
-
-\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
 /**
  * This file holds functions for installing TSFEM.
@@ -64,12 +69,12 @@ function _prepare( $previous_version, $current_version ) {
 	// phpcs:ignore, WordPress.PHP.StrictComparisons.LooseComparison -- might be mixed types.
 	if ( $previous_version == $current_version ) return;
 	// 1
-	if ( \defined( 'TSF_DISABLE_SUGGESTIONS' ) && TSF_DISABLE_SUGGESTIONS ) return;
+	if ( \defined( 'TSF_DISABLE_SUGGESTIONS' ) && \TSF_DISABLE_SUGGESTIONS ) return;
 	// 2
 	if ( ! \is_main_site() ) return;
 
 	$show_sale = true;
-	if ( \function_exists( '\\tsf_extension_manager' ) && method_exists( \tsf_extension_manager(), 'is_connected_user' ) ) {
+	if ( \function_exists( 'tsf_extension_manager' ) && method_exists( \tsf_extension_manager(), 'is_connected_user' ) ) {
 		$show_sale = ! \tsf_extension_manager()->is_connected_user();
 	}
 	if ( $show_sale ) {
@@ -93,17 +98,15 @@ function _prepare( $previous_version, $current_version ) {
  */
 function _suggest_temp_sale( $previous_version, $current_version ) {
 
-	if ( $previous_version < '4270' && $current_version < '4280' ) {
-		$tsf = \tsf();
-
-		$tsf->register_dismissible_persistent_notice(
-			$tsf->convert_markdown(
+	if ( $previous_version < '4300' && $current_version < '5010' ) {
+		Admin\Notice\Persistent::register_notice(
+			Markdown::convert(
 				sprintf(
-					'<p>The SEO Framework: [Cyber Sale &ndash; 50%% off](%s). This notification will self-destruct when the sale ends, or when you dismiss it.</p>',
-					'https://theseoframework.com/?p=3527'
+					'<p>For The SEO Framework v5.0, we added over 1000 improvements in the past 7 months.</p><p>To celebrate this update (and Black Friday), we are offering a [50%% lifetime discount on our extensions](%s).</p><p>This notification will vanish December 2nd or when you dismiss it.</p>',
+					'https://theseoframework.com/?p=3527',
 				),
 				[ 'a' ],
-				[ 'a_internal' => false ]
+				[ 'a_internal' => false ],
 			),
 			'suggest-sale',
 			[
@@ -116,9 +119,9 @@ function _suggest_temp_sale( $previous_version, $current_version ) {
 				'excl_screens' => [ 'update-core', 'post', 'term', 'upload', 'media', 'plugin-editor', 'plugin-install', 'themes', 'widgets', 'user', 'nav-menus', 'theme-editor', 'profile', 'export', 'site-health', 'export-personal-data', 'erase-personal-data' ],
 				'capability'   => 'install_plugins',
 				'user'         => 0,
-				'count'        => 4,
-				'timeout'      => strtotime( 'December 4th, 2022, 23:00GMT+1' ) - time(),
-			]
+				'count'        => 42,
+				'timeout'      => strtotime( 'December 2nd, 2023, 23:00GMT+1' ) - time(),
+			],
 		);
 	}
 }

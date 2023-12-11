@@ -11,7 +11,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2022 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -98,7 +98,7 @@ window.tsfGBC = function( $ ) {
 	 * @return {mixed|null}
 	 */
 	function getData( type ) {
-		return postData[ type ] || null;
+		return postData?.[ type ];
 	}
 
 	/**
@@ -111,7 +111,7 @@ window.tsfGBC = function( $ ) {
 	 * @function
 	 */
 	function assessData() {
-		let oldData = postData;
+		const oldData = postData;
 		setData();
 		if ( oldData.title !== postData.title ) {
 			triggerUpdate( 'title' );
@@ -262,7 +262,7 @@ window.tsfGBC = function( $ ) {
 				new CustomEvent(
 					'tsf-gutenberg-saved-document',
 					{
-						detail: { savedType }
+						detail: { savedType },
 					}
 				)
 			);

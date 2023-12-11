@@ -16,16 +16,11 @@ import ApplyFilters from '../../components/apply-filters';
  * WordPress dependencies
  */
 const { applyFilters } = wp.hooks;
-
 const { __ } = wp.i18n;
-
-const { Fragment } = wp.element;
-
-const { withSelect } = wp.data;
-
+const { useSelect } = wp.data;
 const { PanelBody, ToggleControl, ToolbarGroup, ToolbarDropdownMenu, TabPanel } = wp.components;
-
-const { InspectorControls, InnerBlocks, BlockControls } = wp.blockEditor;
+const { InspectorControls, InnerBlocks, BlockControls, useBlockProps, useInnerBlocksProps } =
+  wp.blockEditor;
 
 /**
  * Block Edit Class.
@@ -34,19 +29,39 @@ const { InspectorControls, InnerBlocks, BlockControls } = wp.blockEditor;
  *
  * @return {JSX} component.
  */
-function BlockEdit(props) {
-  const { attributes, setAttributes, hasChildBlocks } = props;
-
+export default function BlockEdit(props) {
+  const { attributes, setAttributes } = props;
   let { className = '' } = props;
 
   const { color, hoverColor, icon, iconSize, hideButton } = attributes;
+
+  const hasChildBlocks = useSelect(
+    (select) => {
+      const blockEditor = select('core/block-editor');
+
+      return blockEditor ? blockEditor.getBlockOrder(props.clientId).length > 0 : false;
+    },
+    [props.clientId]
+  );
 
   className = classnames('ghostkit-alert', className);
 
   className = applyFilters('ghostkit.editor.className', className, props);
 
+  const blockProps = useBlockProps({ className });
+
+  const innerBlockProps = useInnerBlocksProps(
+    {
+      className: 'ghostkit-alert-content',
+    },
+    {
+      renderAppender: hasChildBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
+      templateLock: false,
+    }
+  );
+
   return (
-    <Fragment>
+    <>
       <BlockControls>
         <ToolbarGroup>
           <ToolbarDropdownMenu
@@ -56,26 +71,31 @@ function BlockEdit(props) {
               {
                 title: __('Primary', 'ghostkit'),
                 icon: 'editor-help',
+                isActive: color === '#2E77C3',
                 onClick: () => setAttributes({ color: '#2E77C3' }),
               },
               {
                 title: __('Success', 'ghostkit'),
                 icon: 'marker',
+                isActive: color === '#22CF6E',
                 onClick: () => setAttributes({ color: '#22CF6E' }),
               },
               {
                 title: __('Danger', 'ghostkit'),
                 icon: 'dismiss',
+                isActive: color === '#DC3232',
                 onClick: () => setAttributes({ color: '#DC3232' }),
               },
               {
                 title: __('Warning', 'ghostkit'),
                 icon: 'warning',
+                isActive: color === '#E47F3B',
                 onClick: () => setAttributes({ color: '#E47F3B' }),
               },
               {
                 title: __('Info', 'ghostkit'),
                 icon: 'info',
+                isActive: color === '#2DC7E8',
                 onClick: () => setAttributes({ color: '#2DC7E8' }),
               },
             ]}
@@ -88,6 +108,7 @@ function BlockEdit(props) {
             label={__('Icon', 'ghostkit')}
             value={icon}
             onChange={(value) => setAttributes({ icon: value })}
+            insideInspector
           />
           {icon ? (
             <RangeControl
@@ -114,10 +135,10 @@ function BlockEdit(props) {
         </PanelBody>
         <PanelBody
           title={
-            <Fragment>
+            <>
               {__('Colors', 'ghostkit')}
               <ColorIndicator colorValue={color} />
-            </Fragment>
+            </>
           }
           initialOpen={false}
         >
@@ -137,7 +158,7 @@ function BlockEdit(props) {
             ]}
           >
             {(tabData) => {
-              const isHover = 'hover' === tabData.name;
+              const isHover = tabData.name === 'hover';
               return (
                 <ApplyFilters
                   name="ghostkit.editor.controls"
@@ -158,7 +179,7 @@ function BlockEdit(props) {
           </TabPanel>
         </PanelBody>
       </InspectorControls>
-      <div className={className}>
+      <div {...blockProps}>
         {icon ? (
           <div className="ghostkit-alert-icon">
             <IconPicker.Dropdown
@@ -170,12 +191,7 @@ function BlockEdit(props) {
         ) : (
           ''
         )}
-        <div className="ghostkit-alert-content">
-          <InnerBlocks
-            templateLock={false}
-            renderAppender={hasChildBlocks ? undefined : () => <InnerBlocks.ButtonBlockAppender />}
-          />
-        </div>
+        <div {...innerBlockProps} />
         {hideButton ? (
           <div className="ghostkit-alert-hide-button">
             <svg
@@ -196,15 +212,6 @@ function BlockEdit(props) {
           ''
         )}
       </div>
-    </Fragment>
+    </>
   );
 }
-
-export default withSelect((select, props) => {
-  const { clientId } = props;
-  const blockEditor = select('core/block-editor');
-
-  return {
-    hasChildBlocks: blockEditor ? 0 < blockEditor.getBlockOrder(clientId).length : false,
-  };
-})(BlockEdit);

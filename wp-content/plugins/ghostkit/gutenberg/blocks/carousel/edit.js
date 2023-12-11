@@ -9,46 +9,75 @@ import classnames from 'classnames/dedupe';
 import IconPicker from '../../components/icon-picker';
 import ToggleGroup from '../../components/toggle-group';
 import RangeControl from '../../components/range-control';
+import EditorStyles from '../../components/editor-styles';
 
 /**
  * WordPress dependencies
  */
 const { applyFilters } = wp.hooks;
-
 const { __ } = wp.i18n;
-
-const { Component, Fragment } = wp.element;
-
-const { PanelBody, ToggleControl } = wp.components;
-
-const { InspectorControls, InnerBlocks } = wp.blockEditor;
-
-const { compose } = wp.compose;
-
-const { withSelect, withDispatch } = wp.data;
-
+const {
+  PanelBody,
+  ToggleControl,
+  NumberControl: __stableNumberControl,
+  __experimentalNumberControl,
+} = wp.components;
+const { useSelect, useDispatch } = wp.data;
 const { createBlock } = wp.blocks;
+
+const { InspectorControls, useBlockProps, useInnerBlocksProps } = wp.blockEditor;
+
+const NumberControl = __stableNumberControl || __experimentalNumberControl;
+
+const slideBlockName = 'ghostkit/carousel-slide';
 
 /**
  * Block Edit Class.
  */
-class BlockEdit extends Component {
-  constructor(props) {
-    super(props);
+export default function BlockEdit(props) {
+  const { attributes, setAttributes, clientId } = props;
 
-    this.updateSlidesCount = this.updateSlidesCount.bind(this);
-  }
+  let { className = '' } = props;
+
+  const {
+    effect,
+    speed,
+    autoplay,
+    autoplayHoverPause,
+    slidesPerView,
+    centeredSlides,
+    loop,
+    freeScroll,
+    fadeEdges,
+    fadeEdgesSize,
+    showArrows,
+    arrowPrevIcon,
+    arrowNextIcon,
+    showBullets,
+    dynamicBullets,
+    gap,
+  } = attributes;
+
+  const { getBlocks, slidesCount, block } = useSelect((select) => {
+    const blockEditorData = select('core/block-editor');
+
+    return {
+      getBlocks: blockEditorData.getBlocks,
+      slidesCount: blockEditorData.getBlockCount(clientId),
+      block: blockEditorData.getBlock(clientId),
+    };
+  });
+
+  const { removeBlock, replaceInnerBlocks } = useDispatch('core/block-editor');
 
   /**
    * Updates the slides count
    *
    * @param {number} newSlidesCount New slides count.
    */
-  updateSlidesCount(newSlidesCount) {
-    const { block, getBlocks, replaceInnerBlocks, slidesCount, removeBlock } = this.props;
-
+  const updateSlidesCount = (newSlidesCount) => {
     // Remove slider block.
-    if (1 > newSlidesCount) {
+    if (newSlidesCount < 1) {
       removeBlock(block.clientId);
 
       // Add new slides.
@@ -57,7 +86,7 @@ class BlockEdit extends Component {
       const newInnerBlocks = [...getBlocks(block.clientId)];
 
       for (let i = 1; i <= newCount; i += 1) {
-        newInnerBlocks.push(createBlock('ghostkit/carousel-slide', { size: 3 }));
+        newInnerBlocks.push(createBlock(slideBlockName, { size: 3 }));
       }
 
       replaceInnerBlocks(block.clientId, newInnerBlocks, false);
@@ -69,205 +98,204 @@ class BlockEdit extends Component {
 
       replaceInnerBlocks(block.clientId, newInnerBlocks, false);
     }
-  }
+  };
 
-  render() {
-    const { attributes, setAttributes, slidesCount } = this.props;
+  className = classnames(
+    className,
+    'ghostkit-carousel',
+    fadeEdges && 'ghostkit-carousel-fade-edges'
+  );
 
-    let { className = '' } = this.props;
+  className = applyFilters('ghostkit.editor.className', className, props);
 
-    const {
-      effect,
-      speed,
-      autoplay,
-      autoplayHoverPause,
-      slidesPerView,
-      centeredSlides,
-      loop,
-      freeScroll,
-      showArrows,
-      arrowPrevIcon,
-      arrowNextIcon,
-      showBullets,
-      dynamicBullets,
-      gap,
-    } = attributes;
+  const blockProps = useBlockProps({ className });
+  const innerBlockProps = useInnerBlocksProps(
+    { className: 'ghostkit-carousel-items' },
+    {
+      template: [[slideBlockName], [slideBlockName], [slideBlockName]],
+      allowedBlocks: [slideBlockName],
+      templateLock: false,
+      orientation: 'horizontal',
+    }
+  );
 
-    className = classnames(className, 'ghostkit-carousel');
-
-    className = applyFilters('ghostkit.editor.className', className, this.props);
-
-    return (
-      <Fragment>
-        <InspectorControls>
-          <PanelBody>
-            <RangeControl
-              label={__('Slides', 'ghostkit')}
-              value={slidesCount}
-              onChange={(value) => this.updateSlidesCount(value)}
-              min={2}
-              max={20}
-              allowCustomMax
-            />
-          </PanelBody>
-          <PanelBody>
-            <ToggleGroup
-              label={__('Effect', 'ghostkit')}
-              value={effect}
-              options={[
-                {
-                  value: 'slide',
-                  label: __('Slide', 'ghostkit'),
-                },
-                {
-                  value: 'coverflow',
-                  label: __('Coverflow', 'ghostkit'),
-                },
-                {
-                  value: 'fade',
-                  label: __('Fade', 'ghostkit'),
-                },
-              ]}
-              onChange={(value) => {
-                setAttributes({ effect: value });
-              }}
-              isAdaptiveWidth
-            />
-          </PanelBody>
-          <PanelBody>
-            <RangeControl
-              label={__('Speed (seconds)', 'ghostkit')}
-              suffix={__('sec', 'ghostkit')}
-              value={speed}
-              onChange={(value) => setAttributes({ speed: value })}
-              min={0}
-              max={10}
-              step={0.1}
-              allowCustomMax
-            />
-            <RangeControl
-              label={__('Autoplay (seconds)', 'ghostkit')}
-              value={autoplay}
-              onChange={(value) => setAttributes({ autoplay: value })}
-              min={0}
-              max={20}
-              step={0.3}
-              allowCustomMax
-            />
-            {autoplay ? (
-              <ToggleControl
-                label={__('Pause autoplay on mouse over', 'ghostkit')}
-                checked={!!autoplayHoverPause}
-                onChange={(val) => setAttributes({ autoplayHoverPause: val })}
-              />
-            ) : null}
-            {'fade' !== effect ? (
-              <Fragment>
-                <RangeControl
-                  label={__('Slides per view', 'ghostkit')}
-                  value={slidesPerView}
-                  onChange={(value) => setAttributes({ slidesPerView: value })}
-                  min={1}
-                  max={8}
-                  allowCustomMax
-                />
-                <RangeControl
-                  label={__('Gap', 'ghostkit')}
-                  value={gap}
-                  onChange={(value) => setAttributes({ gap: value })}
-                  min={0}
-                  max={60}
-                  allowCustomMax
-                />
-              </Fragment>
-            ) : (
-              ''
-            )}
-          </PanelBody>
-          <PanelBody>
-            <ToggleControl
-              label={__('Centered slides', 'ghostkit')}
-              checked={!!centeredSlides}
-              onChange={(val) => setAttributes({ centeredSlides: val })}
-            />
-            <ToggleControl
-              label={__('Loop', 'ghostkit')}
-              checked={!!loop}
-              onChange={(val) => setAttributes({ loop: val })}
-            />
-            <ToggleControl
-              label={__('Free scroll', 'ghostkit')}
-              checked={!!freeScroll}
-              onChange={(val) => setAttributes({ freeScroll: val })}
-            />
-            <ToggleControl
-              label={__('Show arrows', 'ghostkit')}
-              checked={!!showArrows}
-              onChange={(val) => setAttributes({ showArrows: val })}
-            />
-            {showArrows ? (
-              <Fragment>
-                <IconPicker
-                  label={__('Prev arrow icon', 'ghostkit')}
-                  value={arrowPrevIcon}
-                  onChange={(value) => setAttributes({ arrowPrevIcon: value })}
-                />
-                <IconPicker
-                  label={__('Next arrow icon', 'ghostkit')}
-                  value={arrowNextIcon}
-                  onChange={(value) => setAttributes({ arrowNextIcon: value })}
-                />
-              </Fragment>
-            ) : (
-              ''
-            )}
-            <ToggleControl
-              label={__('Show bullets', 'ghostkit')}
-              checked={!!showBullets}
-              onChange={(val) => setAttributes({ showBullets: val })}
-            />
-            {showBullets ? (
-              <ToggleControl
-                label={__('Dynamic bullets', 'ghostkit')}
-                checked={!!dynamicBullets}
-                onChange={(val) => setAttributes({ dynamicBullets: val })}
-              />
-            ) : (
-              ''
-            )}
-          </PanelBody>
-        </InspectorControls>
-        <div className={className}>
-          <InnerBlocks
-            template={[['ghostkit/carousel-slide'], ['ghostkit/carousel-slide']]}
-            allowedBlocks={['ghostkit/carousel-slide']}
-            orientation="horizontal"
-            renderAppender={false}
+  return (
+    <>
+      <InspectorControls>
+        <PanelBody title={__('Settings', 'ghostkit')}>
+          <RangeControl
+            label={__('Slides', 'ghostkit')}
+            value={slidesCount}
+            onChange={updateSlidesCount}
+            min={2}
+            max={20}
+            allowCustomMax
           />
+          {effect !== 'fade' ? (
+            <>
+              <RangeControl
+                label={__('Slides per view', 'ghostkit')}
+                value={slidesPerView}
+                onChange={(value) => setAttributes({ slidesPerView: value })}
+                min={1}
+                max={8}
+                allowCustomMax
+              />
+              <RangeControl
+                label={__('Gap', 'ghostkit')}
+                value={gap}
+                onChange={(value) => setAttributes({ gap: value })}
+                min={0}
+                max={60}
+                allowCustomMax
+              />
+            </>
+          ) : (
+            false
+          )}
+          <ToggleGroup
+            label={__('Effect', 'ghostkit')}
+            value={effect}
+            options={[
+              {
+                value: 'slide',
+                label: __('Slide', 'ghostkit'),
+              },
+              {
+                value: 'coverflow',
+                label: __('Coverflow', 'ghostkit'),
+              },
+              {
+                value: 'fade',
+                label: __('Fade', 'ghostkit'),
+              },
+            ]}
+            onChange={(value) => {
+              setAttributes({ effect: value });
+            }}
+            isBlock
+          />
+
+          <div style={{ borderTop: '1px solid #E0E0E0', marginBottom: '16px' }} />
+
+          <RangeControl
+            label={__('Speed (seconds)', 'ghostkit')}
+            suffix="s&nbsp;"
+            value={speed}
+            onChange={(value) => setAttributes({ speed: value })}
+            min={0}
+            max={10}
+            step={0.1}
+            allowCustomMax
+          />
+          <RangeControl
+            label={__('Autoplay (seconds)', 'ghostkit')}
+            value={autoplay}
+            onChange={(value) => setAttributes({ autoplay: value })}
+            min={0}
+            max={20}
+            step={0.3}
+            allowCustomMax
+          />
+          {autoplay ? (
+            <ToggleControl
+              label={__('Pause autoplay on mouse over', 'ghostkit')}
+              checked={!!autoplayHoverPause}
+              onChange={(val) => setAttributes({ autoplayHoverPause: val })}
+            />
+          ) : null}
+
+          <div style={{ borderTop: '1px solid #E0E0E0', marginBottom: '16px' }} />
+
+          <ToggleControl
+            label={__('Centered Slides', 'ghostkit')}
+            checked={!!centeredSlides}
+            onChange={(val) => setAttributes({ centeredSlides: val })}
+          />
+          <ToggleControl
+            label={__('Loop', 'ghostkit')}
+            checked={!!loop}
+            onChange={(val) => setAttributes({ loop: val })}
+          />
+          <ToggleControl
+            label={__('Free Scroll', 'ghostkit')}
+            checked={!!freeScroll}
+            onChange={(val) => setAttributes({ freeScroll: val })}
+          />
+          <ToggleControl
+            label={__('Fade Edges', 'ghostkit')}
+            checked={!!fadeEdges}
+            onChange={(val) => setAttributes({ fadeEdges: val })}
+          />
+          {fadeEdges && (
+            <NumberControl
+              label={__('Fade Edges Size', 'ghostkit')}
+              suffix="%&nbsp;"
+              value={fadeEdgesSize}
+              onChange={(val) => setAttributes({ fadeEdgesSize: parseFloat(val) })}
+              labelPosition="edge"
+              __unstableInputWidth="100px"
+              disableUnits
+              min={0}
+              max={50}
+            />
+          )}
+        </PanelBody>
+        <PanelBody title={__('Arrow', 'ghostkit')}>
+          <ToggleControl
+            label={__('Show', 'ghostkit')}
+            checked={!!showArrows}
+            onChange={(val) => setAttributes({ showArrows: val })}
+          />
+          {showArrows ? (
+            <>
+              <IconPicker
+                label={__('Prev icon', 'ghostkit')}
+                value={arrowPrevIcon}
+                onChange={(value) => setAttributes({ arrowPrevIcon: value })}
+                insideInspector
+              />
+              <IconPicker
+                label={__('Next icon', 'ghostkit')}
+                value={arrowNextIcon}
+                onChange={(value) => setAttributes({ arrowNextIcon: value })}
+                insideInspector
+              />
+            </>
+          ) : (
+            ''
+          )}
+        </PanelBody>
+        <PanelBody title={__('Bullets', 'ghostkit')}>
+          <ToggleControl
+            label={__('Show', 'ghostkit')}
+            checked={!!showBullets}
+            onChange={(val) => setAttributes({ showBullets: val })}
+          />
+          {showBullets ? (
+            <ToggleControl
+              label={__('Dynamic', 'ghostkit')}
+              checked={!!dynamicBullets}
+              onChange={(val) => setAttributes({ dynamicBullets: val })}
+            />
+          ) : (
+            ''
+          )}
+        </PanelBody>
+      </InspectorControls>
+      <div {...blockProps}>
+        <div className="block-editor-inner-blocks">
+          <div {...innerBlockProps} />
         </div>
-      </Fragment>
-    );
-  }
+      </div>
+      <EditorStyles
+        styles={`
+            [data-block="${props.clientId}"] > .ghostkit-carousel {
+              --gkt-carousel-gap: ${gap}px;
+              --gkt-carousel-slides-per-view: ${effect === 'fade' ? 1 : slidesPerView};
+            }
+          `}
+      />
+    </>
+  );
 }
-
-export default compose([
-  withSelect((select, ownProps) => {
-    const { getBlock, getBlocks, getBlockCount } = select('core/block-editor');
-
-    const { clientId } = ownProps;
-
-    return {
-      getBlocks,
-      slidesCount: getBlockCount(clientId),
-      block: getBlock(clientId),
-    };
-  }),
-  withDispatch((dispatch) => {
-    const { removeBlock, replaceInnerBlocks } = dispatch('core/block-editor');
-
-    return {
-      removeBlock,
-      replaceInnerBlocks,
-    };
-  }),
-])(BlockEdit);

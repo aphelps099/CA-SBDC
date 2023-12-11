@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/google-maps",
-  "category": "media",
+  "category": "ghostkit",
   "title": "Google Maps",
   "description": "Show maps with custom styles, markers and settings.",
   "keywords": ["maps", "google"],

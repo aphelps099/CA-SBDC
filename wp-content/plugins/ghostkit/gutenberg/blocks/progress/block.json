@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/progress",
-  "category": "design",
+  "category": "ghostkit",
   "title": "Progress",
   "description": "Show the progress of your work, skills or earnings.",
   "keywords": ["progress", "bar"],

@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/tabs-v2",
-  "category": "design",
+  "category": "ghostkit",
   "title": "Tabs",
   "description": "Separate content on the tabs with titles.",
   "keywords": ["tabs", "tab"],
@@ -14,6 +16,9 @@
     "tabActive": {
       "type": "string",
       "default": "tab-1"
+    },
+    "trigger": {
+      "type": "string"
     },
     "buttonsVerticalAlign": {
       "type": "boolean",
@@ -36,5 +41,10 @@
         }
       ]
     }
-  }
+  },
+  "styles": [
+    { "name": "default", "label": "Tabs", "isDefault": true },
+    { "name": "pills", "label": "Pills" },
+    { "name": "radio", "label": "Radio Buttons" }
+  ]
 }

@@ -12,22 +12,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-table-of-contents', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/table-of-contents/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      customCSS: true,
-    },
-  },
-  supports: {
-    html: false,
-    className: false,
-    align: ['wide', 'full'],
   },
   edit,
   save,

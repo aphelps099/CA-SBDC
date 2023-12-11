@@ -7,29 +7,30 @@ import metadata from './block.json';
 import edit from './edit';
 import save from './save';
 import transforms from './transforms';
-import deprecated from './deprecated';
+
+const { name } = metadata;
+export { metadata, name };
 
 /**
  * WordPress dependencies
  */
 const { __ } = wp.i18n;
 
-const { name } = metadata;
-
-export { metadata, name };
-
 export const settings = {
-  ...metadata,
   icon: getIcon('block-video', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/video/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
+    customStylesCallback(attributes) {
+      const { videoBackgroundColor, videoBackgroundGradient } = attributes;
+
+      const styles = {
+        video: {
+          'background-color': videoBackgroundColor || undefined,
+          'background-image': videoBackgroundGradient || undefined,
+        },
+      };
+
+      return styles;
     },
   },
   example: {
@@ -52,5 +53,4 @@ export const settings = {
   edit,
   save,
   transforms,
-  deprecated,
 };

@@ -7,6 +7,7 @@ if ( ! current_user_can( 'upload_files' ) ) {
 //wp_enqueue_script( 'plupload-handlers' );
 
 $form_class = 'media-upload-form type-form validate';
+$nonce = wp_create_nonce( 'jvm-rich-text-icons-upload-icon' );
 
 if ( get_user_setting( 'uploader' ) || isset( $_GET['browser-uploader'] ) ) {
     $form_class .= ' html-uploader';
@@ -32,7 +33,7 @@ if ( get_user_setting( 'uploader' ) || isset( $_GET['browser-uploader'] ) ) {
         <button id="upload-dismiss-errors" type="button" class="button upload-dismiss-errors" style="display:none;"><?php _e('Dismiss errors');?></button>
     </div>
 </div>
-<form id="jvm-rich-text-icons_custom_icon_uploader" action="<?php echo admin_url( 'admin-ajax.php' );?>?action=jvm-rich-text-icons-upload-icon" class="dropzone" style="display: none;">
+<form id="jvm-rich-text-icons_custom_icon_uploader" action="<?php echo admin_url( 'admin-ajax.php' );?>?action=jvm-rich-text-icons-upload-icon&nonce=<?php echo $nonce;?>" class="dropzone" style="display: none;">
     <div class="media-frame wp-core-ui mode-grid">
         <div class="uploader-inline">
             <button class="close dashicons dashicons-no"><span class="screen-reader-text"><?php _e('Close uploader');?></span></button>

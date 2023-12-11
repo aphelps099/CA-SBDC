@@ -19,18 +19,25 @@ class JVM_Richtext_icons_settings {
      * Only load the settings screen if it was not disabled by a hook.
      */
     public function try_add_settings() {
-        $show_settings = apply_filters('jvm_richtext_icons_show_settings', true);
-        if ($show_settings) {
-            add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
-            add_action( 'admin_init', array( $this, 'page_init' ) );
-            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ));
+        $user = wp_get_current_user();
+        // Only admin users have access to the settings.
+        if (in_array( 'administrator', (array) $user->roles ) ) {
 
-            // Ajax calls
-            add_action('wp_ajax_jvm-rich-text-icons-delete-icon', array( $this, 'ajax_delete_icon'));
-            add_action('wp_ajax_jvm-rich-text-icons-upload-icon', array( $this, 'ajax_upload_icon'));
+            $show_settings = apply_filters('jvm_richtext_icons_show_settings', true);
+            if ($show_settings) {
+                add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
+                add_action( 'admin_init', array( $this, 'page_init' ) );
+                add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ));
 
-            // Notice on settings screen if a custom icon set is loaded
-            add_action('admin_notices', array($this, 'admin_notice'));
+                // Ajax calls
+                if (current_user_can( 'upload_files' )) {
+                    add_action('wp_ajax_jvm-rich-text-icons-delete-icon', array( $this, 'ajax_delete_icon'));
+                    add_action('wp_ajax_jvm-rich-text-icons-upload-icon', array( $this, 'ajax_upload_icon'));
+                }
+
+                // Notice on settings screen if a custom icon set is loaded
+                add_action('admin_notices', array($this, 'admin_notice'));
+            }
         }
     }
 
@@ -72,7 +79,7 @@ class JVM_Richtext_icons_settings {
                 'jvm-rich-text-icons-settings-js', // Handle.
                 plugins_url( '/dist/settings.js', dirname( __FILE__ ) ),
                 array( 'jquery-ui-dialog'), // Dependencies, defined above.
-                null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
+                '1.2.5', // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
                 true // Enqueue the script in the footer.
             );
 
@@ -95,9 +102,8 @@ class JVM_Richtext_icons_settings {
      * Remove an icon
      */
     public function ajax_delete_icon() {
-
-        if (isset($_POST['file'])) {
-            $file = $_POST['file'];
+        if (isset($_POST['file']) && wp_verify_nonce($_POST['nonce'], 'jvm-rich-text-icons-delete-icon' )) {
+            $file = sanitize_file_name($_POST['file']);
             $base = JVM_Richtext_icons::get_svg_directory();
 
             if (file_exists($base.$file)) {
@@ -116,9 +122,10 @@ class JVM_Richtext_icons_settings {
      * Upload an icon
      */
     public function ajax_upload_icon() {
-        if (isset($_FILES['file'])) {
+        if (isset($_FILES['file']) && wp_verify_nonce($_GET['nonce'], 'jvm-rich-text-icons-upload-icon' )) {
             // Check if file is SVG as we only accept SVG files
-            if ($_FILES['file']['type'] == 'image/svg+xml') {
+            $pi = pathinfo($_FILES['file']['name']);
+            if ($_FILES['file']['type'] == 'image/svg+xml' && strtolower($pi['extension']) == 'svg') {
                 
                 $base = JVM_Richtext_icons::get_svg_directory();
                 $new_file_name = $this->generate_unique_svg_file_name($_FILES['file']['name']);
@@ -131,6 +138,7 @@ class JVM_Richtext_icons_settings {
                         "icon_class_full" => $css_class.' '.$icon_class,
                         "icon_class" => $icon_class,
                         "file" => $new_file_name,
+                        "nonce" => wp_create_nonce('jvm-rich-text-icons-delete-icon'),
                         'css_code' => JVM_Richtext_icons::parse_dynamic_css()
                     ]);
                     exit();

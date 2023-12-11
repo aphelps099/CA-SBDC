@@ -465,7 +465,7 @@ if(defined('CROWN_FRAMEWORK_VERSION') && !class_exists('CrownOrdering')) {
 			global $wpdb;
 
 			$orderby = $query->get('orderby');
-			if(!empty($orderby) && preg_match('/^tax_(.+)_([0-9]+)_order$/', $orderby, $matches)) {
+			if(!empty($orderby) && is_string($orderby) && preg_match('/^tax_(.+)_([0-9]+)_order$/', $orderby, $matches)) {
 
 				$metaKey = '_'.$matches[1].'_'.$matches[2].'_order';
 				$clauses['join'] .= ' LEFT OUTER JOIN '.$wpdb->postmeta.' AS pm_order ON pm_order.post_id = wp_posts.ID AND pm_order.meta_key = \''.$metaKey.'\'';

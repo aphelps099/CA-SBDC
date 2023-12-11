@@ -1,0 +1,549 @@
+# Copyright (C) 2022 Ghost Kit Team
+# This file is distributed under the same license as the Ghost Kit Pro plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ghost Kit Pro 1.7.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/src\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-09-24T20:14:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: ghostkit-pro\n"
+
+#. Plugin Name of the plugin
+msgid "Ghost Kit Pro"
+msgstr ""
+
+#. Description of the plugin
+msgid "Professional addon, that extends the functionality of Ghost Kit plugin"
+msgstr ""
+
+#. Author of the plugin
+msgid "Ghost Kit Team"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://ghostkit.io/?utm_source=plugin_pro&utm_medium=readme&utm_campaign=byline"
+msgstr ""
+
+#: class-ghost-kit-pro.php:151
+msgid "Ghost Kit Pro is not working because you need to activate the Ghost Kit plugin."
+msgstr ""
+
+#: class-ghost-kit-pro.php:152
+msgid "Activate Ghost Kit Now"
+msgstr ""
+
+#: class-ghost-kit-pro.php:160
+msgid "Ghost Kit Pro is not working because you need to install the Ghost Kit plugin."
+msgstr ""
+
+#: class-ghost-kit-pro.php:161
+msgid "Install Ghost Kit Now"
+msgstr ""
+
+#: classes/class-adobe-fonts.php:79
+#: settings/pages/fonts.js:63
+msgid "Adobe Fonts"
+msgstr ""
+
+#: classes/class-custom-fonts.php:122
+#: settings/pages/fonts.js:72
+msgid "Custom Fonts"
+msgstr ""
+
+#: classes/class-rest.php:106
+#: classes/class-rest.php:119
+#: classes/class-rest.php:132
+#: classes/class-rest.php:145
+#: classes/class-rest.php:158
+msgid "User don't have permissions to change options."
+msgstr ""
+
+#: classes/class-rest.php:179
+msgid "Custom fonts not found."
+msgstr ""
+
+#: classes/class-rest.php:323
+msgid "Breakpoints not found."
+msgstr ""
+
+#: classes/class-rest.php:345
+msgid "The value of breakpoint Extra Small cannot be more than Small."
+msgstr ""
+
+#: classes/class-rest.php:348
+msgid "The value of breakpoint Extra Small cannot be less than 1."
+msgstr ""
+
+#: classes/class-rest.php:352
+msgid "The value of breakpoint Small cannot be more than Medium."
+msgstr ""
+
+#: classes/class-rest.php:355
+msgid "The value of breakpoint Small cannot be less than Extra Small."
+msgstr ""
+
+#: classes/class-rest.php:359
+msgid "The value of breakpoint Medium cannot be more than Large."
+msgstr ""
+
+#: classes/class-rest.php:362
+msgid "The value of breakpoint Medium cannot be less than Small."
+msgstr ""
+
+#: classes/class-rest.php:366
+msgid "The value of breakpoint Large cannot be more than 3840."
+msgstr ""
+
+#: classes/class-rest.php:369
+msgid "The value of breakpoint Large cannot be less than Medium."
+msgstr ""
+
+#: classes/class-shapes.php:28
+msgid "PRO"
+msgstr ""
+
+#: classes/class-shapes.php:31
+msgid "Wave Particles"
+msgstr ""
+
+#: classes/class-shapes.php:38
+msgid "Wave Particles 2"
+msgstr ""
+
+#: classes/class-shapes.php:45
+msgid "Ellipse Ragged"
+msgstr ""
+
+#: classes/class-shapes.php:52
+msgid "Waves"
+msgstr ""
+
+#: classes/class-shapes.php:59
+msgid "Waves 2"
+msgstr ""
+
+#: classes/class-shapes.php:66
+msgid "Waves 3"
+msgstr ""
+
+#: classes/class-shapes.php:73
+msgid "Waves 4"
+msgstr ""
+
+#: classes/class-shapes.php:80
+msgid "Waves 5"
+msgstr ""
+
+#: classes/class-shapes.php:87
+msgid "Storm"
+msgstr ""
+
+#: classes/class-shapes.php:94
+msgid "Hills"
+msgstr ""
+
+#: classes/class-shapes.php:101
+msgid "Hill"
+msgstr ""
+
+#: classes/class-shapes.php:108
+msgid "Hill 2"
+msgstr ""
+
+#: classes/class-shapes.php:115
+msgid "Tilts"
+msgstr ""
+
+#: classes/class-shapes.php:122
+msgid "Pit"
+msgstr ""
+
+#: classes/class-shapes.php:129
+msgid "Pit Angle"
+msgstr ""
+
+#: classes/class-shapes.php:136
+msgid "Pit Angle Asymm"
+msgstr ""
+
+#: classes/class-shapes.php:143
+msgid "Pit Wave"
+msgstr ""
+
+#: classes/class-shapes.php:150
+msgid "Pit Wave Asymm"
+msgstr ""
+
+#: classes/class-shapes.php:157
+msgid "Waves Cross"
+msgstr ""
+
+#: classes/class-shapes.php:164
+msgid "Waves Cross 2"
+msgstr ""
+
+#: classes/class-shapes.php:171
+msgid "Floor"
+msgstr ""
+
+#: classes/class-shapes.php:178
+msgid "Lines"
+msgstr ""
+
+#: classes/class-shapes.php:185
+msgid "Equalizer"
+msgstr ""
+
+#: classes/class-shapes.php:192
+msgid "Burrow"
+msgstr ""
+
+#: classes/class-shapes.php:199
+msgid "Paint"
+msgstr ""
+
+#: classes/class-shapes.php:206
+msgid "Flame"
+msgstr ""
+
+#: classes/class-shapes.php:213
+msgid "Rock"
+msgstr ""
+
+#: classes/class-shapes.php:220
+msgid "City"
+msgstr ""
+
+#: classes/class-shapes.php:227
+msgid "Fence"
+msgstr ""
+
+#: classes/class-shapes.php:234
+msgid "Diamond"
+msgstr ""
+
+#. translators: %2$s - purchase page.
+#: classes/class-updater.php:37
+msgid "To enable updates, please enter your license key on the <a href=\"%1$s\">Updates</a> page. If you don't have a license key, please see <a href=\"%2$s\" target=\"_blank\">details & pricing</a>."
+msgstr ""
+
+#: classes/class-updater.php:78
+#: settings/pages/updates.js:157
+msgid "Updates"
+msgstr ""
+
+#: classes/class-updater.php:118
+#: classes/class-updater.php:161
+#: classes/class-updater.php:169
+msgid "An error occurred, please try again."
+msgstr ""
+
+#: classes/class-updater.php:139
+msgid "Purchase code was not specified."
+msgstr ""
+
+#: icon-packs/7-stroke.php:58
+msgid "Pe 7s Icons"
+msgstr ""
+
+#: icon-packs/feather.php:51
+msgid "Feather"
+msgstr ""
+
+#: icon-packs/heroicons-outline.php:58
+msgid "Heroicons Outline"
+msgstr ""
+
+#: icon-packs/heroicons-solid.php:58
+msgid "Heroicons Solid"
+msgstr ""
+
+#: icon-packs/octicons.php:56
+msgid "Octicons"
+msgstr ""
+
+#: icon-packs/unicons.php:53
+msgid "Unicons"
+msgstr ""
+
+#: icon-packs/zwicon.php:54
+msgid "Zwicon"
+msgstr ""
+
+#: blocks/formats/animated-text/index.js:27
+#: blocks/formats/animated-text/index.js:290
+msgid "Animated Text"
+msgstr ""
+
+#: blocks/formats/animated-text/index.js:233
+msgid "Cursor"
+msgstr ""
+
+#: blocks/formats/animated-text/index.js:251
+msgid "Text animation will be only visible on Frontend."
+msgstr ""
+
+#: blocks/formats/animated-text/index.js:261
+msgid "Remove Format"
+msgstr ""
+
+#: blocks/formats/tooltip/index.js:23
+#: blocks/formats/tooltip/index.js:157
+msgid "Tooltip"
+msgstr ""
+
+#: blocks/formats/tooltip/index.js:121
+msgid "Tooltip Text"
+msgstr ""
+
+#: blocks/grid-fullheight/index.js:72
+msgid "FullHeight"
+msgstr ""
+
+#: blocks/_components/color-picker/index.js:117
+msgid "Solid"
+msgstr ""
+
+#: blocks/_components/color-picker/index.js:121
+msgid "Gradient"
+msgstr ""
+
+#: blocks/_components/color-picker/index.js:168
+msgid "Custom Color Picker"
+msgstr ""
+
+#: components/fonts-adobe/index.js:109
+msgid "Log in to your"
+msgstr ""
+
+#: components/fonts-adobe/index.js:112
+msgid "Adobe Fonts account"
+msgstr ""
+
+#: components/fonts-adobe/index.js:116
+msgid "To get your API key, go to"
+msgstr ""
+
+#: components/fonts-adobe/index.js:123
+msgid "this link"
+msgstr ""
+
+#: components/fonts-adobe/index.js:126
+msgid "Copy your API key:"
+msgstr ""
+
+#: components/fonts-adobe/index.js:151
+msgid "Refresh Fonts"
+msgstr ""
+
+#: components/fonts-adobe/index.js:152
+msgid "Get Projects"
+msgstr ""
+
+#: components/fonts-adobe/index.js:158
+#: settings/pages/breakpoints.js:196
+msgid "Errors"
+msgstr ""
+
+#: components/fonts-adobe/index.js:180
+msgid "Web Project"
+msgstr ""
+
+#: components/fonts-adobe/index.js:193
+msgid "-- Select Web Project --"
+msgstr ""
+
+#: components/fonts-adobe/index.js:206
+#: components/fonts-custom/index.js:56
+msgid "Name"
+msgstr ""
+
+#: components/fonts-adobe/index.js:207
+#: components/fonts-custom/index.js:245
+msgid "Font Family"
+msgstr ""
+
+#: components/fonts-adobe/index.js:208
+#: components/fonts-custom/index.js:246
+msgid "Font Weight"
+msgstr ""
+
+#: components/fonts-adobe/index.js:209
+#: components/fonts-custom/index.js:247
+msgid "Font Style"
+msgstr ""
+
+#: components/fonts-custom/index.js:46
+msgid "Upload font files in woff and woff2 formats"
+msgstr ""
+
+#: components/fonts-custom/index.js:48
+msgid "Add each font separately for Weight and Style with the same names"
+msgstr ""
+
+#: components/fonts-custom/index.js:64
+msgid "Font .woff"
+msgstr ""
+
+#: components/fonts-custom/index.js:69
+#: components/fonts-custom/index.js:100
+msgid "Select font file..."
+msgstr ""
+
+#: components/fonts-custom/index.js:95
+msgid "Font .woff2"
+msgstr ""
+
+#: components/fonts-custom/index.js:127
+msgid "Weight"
+msgstr ""
+
+#: components/fonts-custom/index.js:137
+msgid "100"
+msgstr ""
+
+#: components/fonts-custom/index.js:141
+msgid "200"
+msgstr ""
+
+#: components/fonts-custom/index.js:145
+msgid "300"
+msgstr ""
+
+#: components/fonts-custom/index.js:149
+msgid "400 (Regular)"
+msgstr ""
+
+#: components/fonts-custom/index.js:153
+msgid "500"
+msgstr ""
+
+#: components/fonts-custom/index.js:157
+msgid "600"
+msgstr ""
+
+#: components/fonts-custom/index.js:161
+msgid "700"
+msgstr ""
+
+#: components/fonts-custom/index.js:165
+msgid "800"
+msgstr ""
+
+#: components/fonts-custom/index.js:169
+msgid "900"
+msgstr ""
+
+#: components/fonts-custom/index.js:174
+msgid "Style"
+msgstr ""
+
+#: components/fonts-custom/index.js:184
+msgid "Normal"
+msgstr ""
+
+#: components/fonts-custom/index.js:188
+msgid "Italic"
+msgstr ""
+
+#: components/fonts-custom/index.js:223
+msgid "You should specify the `Name` to add new font."
+msgstr ""
+
+#: components/fonts-custom/index.js:227
+msgid "You should specify the `woff` or `woff2` files to add new font."
+msgstr ""
+
+#: components/fonts-custom/index.js:235
+msgid "Add Font"
+msgstr ""
+
+#: components/fonts-custom/index.js:248
+msgid "Actions"
+msgstr ""
+
+#: components/fonts-custom/index.js:272
+msgid "Remove"
+msgstr ""
+
+#: components/typography/index.js:29
+msgid "To use Adobe Fonts you need to add your fonts collections first here - "
+msgstr ""
+
+#: components/typography/index.js:48
+msgid "To use Custom Fonts you need to add your font files first here - "
+msgstr ""
+
+#: settings/pages/breakpoints.js:245
+msgid "Large"
+msgstr ""
+
+#: settings/pages/breakpoints.js:257
+msgid "Sets the breakpoint on large screen sizes (Default: %s)."
+msgstr ""
+
+#: settings/pages/breakpoints.js:263
+msgid "Medium"
+msgstr ""
+
+#: settings/pages/breakpoints.js:275
+msgid "Sets the breakpoint on medium screen sizes (Default: %s)."
+msgstr ""
+
+#: settings/pages/breakpoints.js:281
+msgid "Small"
+msgstr ""
+
+#: settings/pages/breakpoints.js:293
+msgid "Sets the breakpoint on small screen sizes (Default: %s)."
+msgstr ""
+
+#: settings/pages/breakpoints.js:299
+msgid "Extra Small"
+msgstr ""
+
+#: settings/pages/breakpoints.js:311
+msgid "Sets the breakpoint on extra small screen sizes (Default: %s)."
+msgstr ""
+
+#: settings/pages/breakpoints.js:326
+msgid "Save"
+msgstr ""
+
+#: settings/pages/updates.js:75
+msgid "License deactivated."
+msgstr ""
+
+#: settings/pages/updates.js:79
+msgid "License activated."
+msgstr ""
+
+#: settings/pages/updates.js:104
+msgid "PRO Addon License Activation"
+msgstr ""
+
+#: settings/pages/updates.js:106
+msgid "To unlock updates, please enter your license key below. If you don't have a licence key, please see"
+msgstr ""
+
+#: settings/pages/updates.js:112
+msgid "details & pricing"
+msgstr ""
+
+#: settings/pages/updates.js:117
+msgid "License Key"
+msgstr ""
+
+#: settings/pages/updates.js:134
+msgid "Deactivate License"
+msgstr ""
+
+#: settings/pages/updates.js:135
+msgid "Activate License"
+msgstr ""

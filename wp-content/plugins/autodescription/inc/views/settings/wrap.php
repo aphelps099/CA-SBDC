@@ -4,63 +4,83 @@
  * @subpackage The_SEO_Framework\Admin\Settings
  */
 
-// phpcs:disable, VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable -- includes.
+namespace The_SEO_Framework;
+
+\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) and Helper\Template::verify_secret( $secret ) or die;
+
+use \The_SEO_Framework\Admin\Settings\Layout\Input;
+
 // phpcs:disable, WordPress.WP.GlobalVariablesOverride -- This isn't the global scope.
 
-use The_SEO_Framework\Interpreters\HTML,
-	The_SEO_Framework\Interpreters\Settings_Input as Input;
+/**
+ * The SEO Framework plugin
+ * Copyright (C) 2017 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as published
+ * by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-defined( 'THE_SEO_FRAMEWORK_PRESENT' ) and tsf()->_verify_include_secret( $_secret ) or die;
-
-if ( function_exists( 'tsf_extension_manager' )
-	&& in_array(
-		tsf_extension_manager()->seo_extensions_page_slug ?? null,
-		array_column( $GLOBALS['submenu'][ $this->seo_settings_page_slug ] ?? [], 2 ),
-		true
+if ( \function_exists( 'tsf_extension_manager' )
+	&& \in_array(
+		\tsf_extension_manager()->seo_extensions_page_slug ?? null,
+		array_column( $GLOBALS['submenu'][ \THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG ] ?? [], 2 ),
+		true,
 	)
 ) {
 	$_extensions_button = sprintf(
-		'<a href="%s" class="button">%s</a>',
-		menu_page_url( tsf_extension_manager()->seo_extensions_page_slug, false ),
-		esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' )
+		'<a href="%s" class=button>%s</a>',
+		// menu_page_url() escapes
+		\menu_page_url( \tsf_extension_manager()->seo_extensions_page_slug, false ),
+		\esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' ),
 	);
 } else {
-	$_extensions_button = $this->_display_extension_suggestions() ? sprintf(
-		'<a href="%s" class="button" rel="noreferrer noopener" target=_blank>%s</a>',
+	$_extensions_button = Admin\Utils::display_extension_suggestions() ? sprintf(
+		'<a href="%s" class=button rel="noreferrer noopener" target=_blank>%s</a>',
 		'https://theseoframework.com/?p=3599',
-		esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' )
+		\esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' )
 	) : '';
 }
 
-$_save_button = get_submit_button(
-	__( 'Save Settings', 'autodescription' ),
+$_save_button = \get_submit_button(
+	\__( 'Save Settings', 'autodescription' ),
 	[ 'primary' ],
 	'submit',
 	false,
-	[ 'id' => '' ] // we ouput this twice, don't set ID.
+	[ 'id' => '' ] // we output this twice, don't set ID.
 );
 
-$_ays_reset    = esc_js( __( 'Are you sure you want to reset all SEO settings to their defaults?', 'autodescription' ) );
-$_reset_button = get_submit_button(
-	__( 'Reset Settings', 'autodescription' ),
+$_ays_reset    = \esc_js( \__( 'Are you sure you want to reset all SEO settings to their defaults?', 'autodescription' ) );
+$_reset_button = \get_submit_button(
+	\__( 'Reset Settings', 'autodescription' ),
 	[ 'secondary' ],
 	Input::get_field_name( 'tsf-settings-reset' ),
 	false,
 	[
-		'id'      => '', // we ouput this twice, don't set ID.
-		'onclick' => "return confirm(`{$_ays_reset}`)", // this passes through esc_attr() unscathed.
-	]
+		'id'      => '', // we output this twice, don't set ID.
+		'onclick' => "return confirm(`{$_ays_reset}`)", // this passes through \esc_attr() unscathed.
+	],
 );
+
+$hook_name = Admin\Menu::get_page_hook_name();
 
 ?>
 <div class="wrap tsf-metaboxes">
 	<form method=post action=options.php autocomplete=off data-form-type=other>
-		<?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
-		<?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
-		<?php settings_fields( THE_SEO_FRAMEWORK_SITE_OPTIONS ); ?>
+		<?php \wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
+		<?php \wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
+		<?php \settings_fields( \THE_SEO_FRAMEWORK_SITE_OPTIONS ); ?>
 
 		<div class=tsf-top-wrap>
-			<h1><?= esc_html( get_admin_page_title() ) ?></h1>
+			<h1><?= \esc_html( \get_admin_page_title() ) ?></h1>
 			<div class="tsf-top-buttons tsf-end">
 				<?php
 				// phpcs:ignore, WordPress.Security.EscapeOutput.OutputNotEscaped -- submit_button() escapes (mostly...)
@@ -73,12 +93,12 @@ $_reset_button = get_submit_button(
 
 		<div class=tsf-notice-wrap>
 			<?php
-			do_action( 'the_seo_framework_setting_notices' );
+			\do_action( 'the_seo_framework_setting_notices' );
 			?>
 		</div>
 
 		<?php
-		do_action( "{$this->seo_settings_page_hook}_settings_page_boxes", $this->seo_settings_page_hook );
+		\do_action( "{$hook_name}_settings_page_boxes", $hook_name );
 		?>
 
 		<div class=tsf-bottom-wrap>
@@ -103,7 +123,7 @@ $_reset_button = get_submit_button(
 		// close postboxes that should be closed
 		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
 		// postboxes setup
-		postboxes.add_postbox_toggles('<?= esc_js( $this->seo_settings_page_hook ) ?>');
+		postboxes.add_postbox_toggles('<?= \esc_js( $hook_name ) ?>');
 	} );
 	//]]>
 </script>

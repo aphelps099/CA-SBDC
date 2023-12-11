@@ -24,14 +24,9 @@ class GhostKit_Form_Field_Email_Block {
      * Init.
      */
     public function init() {
-        if ( ! function_exists( 'register_block_type' ) ) {
-            return;
-        }
-
-        register_block_type(
-            'ghostkit/form-field-email',
+        register_block_type_from_metadata(
+            dirname( __FILE__ ),
             array(
-                'parent'          => array( 'ghostkit/form' ),
                 'render_callback' => array( $this, 'block_render' ),
                 'attributes'      => GhostKit_Form_Field_Attributes::get_block_attributes(
                     array(
@@ -111,7 +106,7 @@ class GhostKit_Form_Field_Email_Block {
             <?php if ( $attributes['emailConfirmation'] ) : ?>
                     </div>
                     <div class="ghostkit-form-field-email-confirm">
-                        <input type="email" <?php GhostKit_Form_Field_Attributes::get( $confirmation_attributes ); ?> data-parsley-confirm-email="[name='<?php echo esc_attr( $attributes['slug'] ); ?>[value]']" data-parsley-validate-if-empty />
+                        <input type="email" <?php GhostKit_Form_Field_Attributes::get( $confirmation_attributes ); ?> data-confirm-email="[name='<?php echo esc_attr( $attributes['slug'] ); ?>[value]']" />
 
                         <?php GhostKit_Form_Field_Description::get( $confirmation_attributes ); ?>
                     </div>

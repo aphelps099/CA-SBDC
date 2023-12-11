@@ -13,34 +13,42 @@ import metadata from './block.json';
  */
 const { applyFilters } = wp.hooks;
 
-const { InnerBlocks, RichText } = wp.blockEditor;
-
-const { Component } = wp.element;
+const { RichText, useBlockProps, useInnerBlocksProps } = wp.blockEditor;
 
 const { name } = metadata;
 
 /**
  * Block Save Class.
  */
-class BlockSave extends Component {
-  render() {
-    const { heading, active, slug } = this.props.attributes;
+export default function BlockSave(props) {
+  const { attributes } = props;
+  const { heading, active, slug, titleTag } = attributes;
 
-    let className = classnames(
-      'ghostkit-accordion-item',
-      active ? 'ghostkit-accordion-item-active' : ''
-    );
+  let className = classnames(
+    'ghostkit-accordion-item',
+    active ? 'ghostkit-accordion-item-active' : ''
+  );
 
-    className = applyFilters('ghostkit.blocks.className', className, {
-      ...{
-        name,
-      },
-      ...this.props,
-    });
+  className = applyFilters('ghostkit.blocks.className', className, {
+    ...{
+      name,
+    },
+    ...props,
+  });
 
-    return (
-      <div className={className}>
-        <a href={`#${slug}`} className="ghostkit-accordion-item-heading">
+  const TitleTag = titleTag || 'div';
+
+  const blockProps = useBlockProps.save({
+    className,
+  });
+  const innerBlocksProps = useInnerBlocksProps.save({
+    className: 'ghostkit-accordion-item-content',
+  });
+
+  return (
+    <div {...blockProps}>
+      <TitleTag className="ghostkit-accordion-item-heading">
+        <a href={`#${slug}`}>
           <RichText.Content
             className="ghostkit-accordion-item-label"
             tagName="span"
@@ -62,12 +70,8 @@ class BlockSave extends Component {
             </svg>
           </span>
         </a>
-        <div className="ghostkit-accordion-item-content">
-          <InnerBlocks.Content />
-        </div>
-      </div>
-    );
-  }
+      </TitleTag>
+      <div {...innerBlocksProps} />
+    </div>
+  );
 }
-
-export default BlockSave;

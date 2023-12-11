@@ -1,3 +1,33 @@
+= 4.4 - 2023.11.20 =
+* New: Updated the admin area for a more modern experience.
+* Enhancement: Code improvements.
+
+= 4.3.3 - 2023.08.23 =
+* Enhancement: Better loading of cloner core files for frontend
+* Fix: Clone templates
+
+= 4.3.2 - 2023.08.15 =
+* Fix: Fix issues with Background process class in initializing clone
+
+= 4.3.1 - 2023.08.11 =
+* Fix vendor paths
+
+= 4.3 - 2023.08.11 =
+* Enhancement: Better dependency management
+* Enhancement: Ability to override and define own custom logs location. Use `NS_CLONER_LOG_DIR` to define a custom log directory. Use `NS_CLONER_LOG_URL` to define a custom log url.
+* Fix: PHP Compatibility with Background process manager
+* Fix: PHP Notices
+
+= 4.2.2.2 - 2023.05.09 =
+* Fix critical php error
+
+= 4.2.2.1 - 2022.12.19 =
+* Remove unnecessary vendor files
+
+= 4.2.2 - 2022.12.16 =
+* Fix table constraint issue when cloning
+* Update plugin url
+
 = 4.2.1 - 2022.09.19 =
 * Fix inaccurate memory limit warning
 * Fix default cloning mode selection

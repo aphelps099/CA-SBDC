@@ -1,0 +1,29 @@
+.ghostkit-shape-divider-control-styles .ghostkit-component-image-picker-item.ghostkit-shape-divider-control-styles-item-pro {
+  &-wave-particles svg,
+  &-wave-particles-2 svg,
+  &-ellipse-ragged svg,
+  &-storm svg {
+    height: 25px;
+  }
+
+  &-hills svg,
+  &-hill svg,
+  &-hill-2 svg {
+    height: 15px;
+  }
+
+  &-lines svg,
+  &-equalizer svg,
+  &-burrow svg,
+  &-paint svg,
+  &-flame svg,
+  &-rock svg,
+  &-city svg {
+    height: 25px;
+  }
+
+  &-fence svg,
+  &-diamond svg {
+    height: 10px;
+  }
+}

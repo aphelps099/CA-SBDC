@@ -1,8 +1,3 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="5.6" y="19.4" width="14.8" height="14.8" rx="2.4" transform="rotate(-90 5.6 19.4)" stroke="currentColor"
-    stroke-width="1.2" fill="transparent" />
-  <line opacity="0.7" x1="3.2" y1="17.4" x2="3.2" y2="6.6" stroke="currentColor" stroke-width="1.2"
-    stroke-linecap="round" fill="transparent" />
-  <line opacity="0.4" x1="0.9" y1="15.4" x2="0.9" y2="8.6" stroke="currentColor" stroke-width="1.2"
-    stroke-linecap="round" fill="transparent" />
+<path fill-rule="evenodd" clip-rule="evenodd" d="M6.25 4C5.00736 4 4 5.00736 4 6.25V17.25C4 18.4926 5.00736 19.5 6.25 19.5H17.25C18.4926 19.5 19.5 18.4926 19.5 17.25V6.25C19.5 5.00736 18.4926 4 17.25 4H6.25ZM5.5 6.25C5.5 5.83579 5.83579 5.5 6.25 5.5H17.25C17.6642 5.5 18 5.83579 18 6.25V17.25C18 17.6642 17.6642 18 17.25 18H6.25C5.83579 18 5.5 17.6642 5.5 17.25V6.25ZM13.0303 8.71967L12.5 8.18934L11.4393 9.25L11.9697 9.78033L13.1893 11H8.25H7.5V12.5H8.25H13.1893L11.9697 13.7197L11.4394 14.25L12.5 15.3107L13.0304 14.7803L15.5303 12.2804L16.0607 11.75L15.5303 11.2197L13.0303 8.71967Z" fill="currentColor"/>
 </svg>

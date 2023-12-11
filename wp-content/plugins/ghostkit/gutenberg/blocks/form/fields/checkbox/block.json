@@ -1,7 +1,9 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/form-field-checkbox",
   "parent": ["ghostkit/form"],
-  "category": "design",
+  "category": "ghostkit",
   "title": "Checkbox",
   "description": "Form field checkbox.",
   "supports": {

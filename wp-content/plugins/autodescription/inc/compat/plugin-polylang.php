@@ -6,52 +6,20 @@
 
 namespace The_SEO_Framework;
 
-\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) and \tsf()->_verify_include_secret( $_secret ) or die;
+\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
-\add_filter( 'the_seo_framework_sitemap_base_path', __NAMESPACE__ . '\\_polylang_fix_sitemap_base_bath' );
-/**
- * Sets the correct Polylang base path language when using cookie-based language settings.
- * This resolves an issue where the sitemap would otherwise return a 404 error after a
- * cookie has been set.
- *
- * This function uses the same methods as the main filter.
- * HOWEVER, because of the languid asinine catabolic implementation of the black/block-list in Polylang,
- * this method returns a different value. It's truly astounding how one cannot trust the API.
-
- * @since 4.1.2
- * @access private
- *
- * @param string $path The home path.
- * @return string Polylang-aware home path.
- */
-function _polylang_fix_sitemap_base_bath( $path ) {
-
-	$_options = \get_option( 'polylang' );
-
-	if ( isset( $_options['force_lang'] ) ) {
-		switch ( $_options['force_lang'] ) {
-			case 0:
-				// Polylang determines language sporadically from content: can't be trusted.
-				// NOTE: Thanks to '_polylang_blocklist_tsf_urls', this yields a different value albeit the same code.
-				// That's Polylang for you: can't trust your own code.
-				$path = rtrim(
-					parse_url(
-						\get_home_url(),
-						PHP_URL_PATH
-					) ?? '',
-					'/'
-				);
-				break;
-			default:
-				// Polylang can differentiate languages by (sub)domain/directory name early. No need to interfere.
-				break;
-		}
-	}
-
-	return $path;
-}
+use \The_SEO_Framework\Helper\Query;
 
 \add_action( 'the_seo_framework_sitemap_header', __NAMESPACE__ . '\\_polylang_set_sitemap_language' );
+\add_filter( 'the_seo_framework_sitemap_hpt_query_args', __NAMESPACE__ . '\\_polylang_sitemap_append_non_translatables' );
+\add_filter( 'the_seo_framework_sitemap_nhpt_query_args', __NAMESPACE__ . '\\_polylang_sitemap_append_non_translatables' );
+\add_filter( 'the_seo_framework_title_from_custom_field', __NAMESPACE__ . '\\pll__' );
+\add_filter( 'the_seo_framework_title_from_generation', __NAMESPACE__ . '\\pll__' );
+\add_filter( 'the_seo_framework_generated_description', __NAMESPACE__ . '\\pll__' );
+\add_filter( 'the_seo_framework_custom_field_description', __NAMESPACE__ . '\\pll__' );
+\add_action( 'the_seo_framework_cleared_sitemap_transients', __NAMESPACE__ . '\\_polylang_flush_sitemap', 10 );
+\add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\_defunct_badly_coded_polylang_script', 11 );
+
 /**
  * Sets the correct Polylang query language for the sitemap based on the 'lang' GET parameter.
  *
@@ -59,13 +27,13 @@ function _polylang_fix_sitemap_base_bath( $path ) {
  * This is a fallback solution because we get endless support requests for Polylang, and we wish that plugin would be
  * rewritten from scratch.
  *
+ * @hook the_seo_framework_sitemap_header 10
  * @since 4.1.2
  * @access private
  */
 function _polylang_set_sitemap_language() {
 
-	if ( ! \function_exists( '\\PLL' ) ) return;
-	if ( ! ( \PLL() instanceof \PLL_Frontend ) ) return;
+	if ( ! \function_exists( 'PLL' ) || ! ( \PLL() instanceof \PLL_Frontend ) ) return;
 
 	// phpcs:ignore, WordPress.Security.NonceVerification.Recommended -- Arbitrary input expected.
 	$lang = $_GET['lang'] ?? '';
@@ -78,7 +46,7 @@ function _polylang_set_sitemap_language() {
 			switch ( $_options['force_lang'] ) {
 				case 0:
 					// Polylang determines language sporadically from content: can't be trusted. Overwrite.
-					$lang = \pll_default_language();
+					$lang = \function_exists( 'pll_default_language' ) ? \pll_default_language() : $lang;
 					break;
 				default:
 					// Polylang can differentiate languages by (sub)domain/directory name early. No need to interfere. Cancel.
@@ -94,8 +62,6 @@ function _polylang_set_sitemap_language() {
 		\PLL()->curlang = $new_lang;
 }
 
-\add_filter( 'the_seo_framework_sitemap_hpt_query_args', __NAMESPACE__ . '\\_polylang_sitemap_append_non_translatables' );
-\add_filter( 'the_seo_framework_sitemap_nhpt_query_args', __NAMESPACE__ . '\\_polylang_sitemap_append_non_translatables' );
 /**
  * Appends nontranslatable post types to the sitemap query arguments.
  * Only appends when the default sitemap language is displayed.
@@ -104,6 +70,8 @@ function _polylang_set_sitemap_language() {
  *      found "translated" by this query. This query, however, is forwarded to WP_Query, which Polylang can filter.
  *      It wouldn't surprise me if they added another black/white list for that. So, my investigation stops here.
  *
+ * @hook the_seo_framework_sitemap_hpt_query_args 10
+ * @hook the_seo_framework_sitemap_nhpt_query_args 10
  * @since 4.1.2
  * @since 4.2.0 Now relies on the term_id, instead of mixing term_taxonomy_id and term_id.
  *              This is unlike Polylang, which relies on term_taxonomy_id somewhat consistently; however,
@@ -117,7 +85,7 @@ function _polylang_set_sitemap_language() {
  */
 function _polylang_sitemap_append_non_translatables( $args ) {
 
-	if ( ! \tsf()->can_i_use( [
+	if ( ! Helper\Compatibility::can_i_use( [
 		'functions' => [
 			'PLL',
 			'pll_languages_list',
@@ -127,7 +95,6 @@ function _polylang_sitemap_append_non_translatables( $args ) {
 
 	if ( ! ( \PLL() instanceof \PLL_Frontend ) ) return $args;
 
-	// Redundantly prefixed \, OBJECT is actually a constant; however, the linter derps out, thinking it's a cast.
 	$default_lang = \pll_default_language( \OBJECT );
 
 	if ( ! isset( $default_lang->slug, $default_lang->term_id ) ) return $args;
@@ -153,21 +120,12 @@ function _polylang_sitemap_append_non_translatables( $args ) {
 }
 
 /**
- * Warns homepage global title and description about receiving input.
- *
- * @since 3.1.0
- */
-\add_filter( 'the_seo_framework_warn_homepage_global_title', '__return_true' );
-\add_filter( 'the_seo_framework_warn_homepage_global_description', '__return_true' );
-\add_filter( 'the_seo_framework_tell_multilingual_sitemap', '__return_true' );
-
-\add_filter( 'the_seo_framework_title_from_custom_field', __NAMESPACE__ . '\\pll__' );
-\add_filter( 'the_seo_framework_title_from_generation', __NAMESPACE__ . '\\pll__' );
-\add_filter( 'the_seo_framework_generated_description', __NAMESPACE__ . '\\pll__' );
-\add_filter( 'the_seo_framework_custom_field_description', __NAMESPACE__ . '\\pll__' );
-/**
  * Enables string translation support on titles and descriptions.
  *
+ * @hook the_seo_framework_title_from_custom_field 10
+ * @hook the_seo_framework_title_from_generation 10
+ * @hook the_seo_framework_generated_description 10
+ * @hook the_seo_framework_custom_field_description 10
  * @since 3.1.0
  * @access private
  *
@@ -175,105 +133,63 @@ function _polylang_sitemap_append_non_translatables( $args ) {
  * @return string
  */
 function pll__( $string ) {
-	if ( \function_exists( '\\PLL' ) && \function_exists( '\\pll__' ) )
+	if ( \function_exists( 'PLL' ) && \function_exists( 'pll__' ) )
 		if ( \PLL() instanceof \PLL_Frontend )
 			return \pll__( $string );
 
 	return $string;
 }
 
-\add_filter( 'pll_home_url_white_list', __NAMESPACE__ . '\\_polylang_allowlist_tsf_urls' );
-/**
- * Accompany the most broken and asinine idea in WordPress's history.
- * Adds The SEO Framework's files to their allowlist of autoincompatible doom.
- *
- * @since 3.2.4
- * @since 4.1.0 Renamed function and parameters to something racially neutral.
- * @access private
- *
- * @param array $allowlist The wildcard file parts that are allowlisted.
- * @return array
- */
-function _polylang_allowlist_tsf_urls( $allowlist ) {
-	$allowlist[] = [ 'file' => 'autodescription/inc' ];
-	return $allowlist;
-}
-
-\add_filter( 'pll_home_url_black_list', __NAMESPACE__ . '\\_polylang_blocklist_tsf_urls' );
-/**
- * Accompany the most broken and asinine idea in WordPress's history.
- * ...and stop messing with the rewrite system while doing so.
- * Also, you should add support for class methods. Stop living in the PHP 4 era.
- *
- * @since 3.2.4
- * @since 4.1.0 Renamed function and parameters to something racially neutral.
- * @since 4.1.2 Prefixed function name with _polylang.
- * @access private
- *
- * @param array $blocklist The wildcard file parts that are blocklisted.
- * @return array
- */
-function _polylang_blocklist_tsf_urls( $blocklist ) {
-	$blocklist[] = [ 'file' => 'autodescription/inc/compat/plugin-polylang.php' ];
-	return $blocklist;
-}
-
-\add_filter( 'the_seo_framework_rel_canonical_output', __NAMESPACE__ . '\\_polylang_fix_home_url', 10, 1 );
-\add_filter( 'the_seo_framework_ogurl_output', __NAMESPACE__ . '\\_polylang_fix_home_url', 10, 1 );
-/**
- * Adds a trailing slash to whatever's deemed as the homepage URL.
- * This fixes user_trailingslashit() issues.
- *
- * @since 3.2.4
- * @since 4.1.2 Prefixed function name with _polylang.
- * @since 4.2.0 No longer uses the second parameter, and relies on theq query to find the homepage, instead.
- * @access private
- *
- * @param string $url The url to fix.
- * @return string The fixed home URL.
- */
-function _polylang_fix_home_url( $url ) {
-	return \tsf()->is_real_front_page() && \get_option( 'permalink_structure' ) ? \trailingslashit( $url ) : $url;
-}
-
-\add_action( 'the_seo_framework_delete_cache_sitemap', __NAMESPACE__ . '\\_polylang_flush_sitemap', 10, 4 );
 /**
  * Deletes all sitemap transients, instead of just one.
- * Can only clear once per request.
  *
+ * @hook the_seo_framework_cleared_sitemap_transients 10
  * @since 4.0.5
+ * @since 5.0.0 Removed clearing once-per-request restriction.
  * @global \wpdb $wpdb
  * @access private
- *
- * @param string $type    The flush type. Comes in handy when you use a catch-all function.
- * @param int    $id      The post, page or TT ID. Defaults to tsf()->get_the_real_ID().
- * @param array  $args    Additional arguments. They can overwrite $type and $id.
- * @param bool   $success Whether the action cleared.
  */
-function _polylang_flush_sitemap( $type, $id, $args, $success ) {
+function _polylang_flush_sitemap() {
+	global $wpdb;
 
-	static $cleared = false;
-	if ( $cleared ) return;
+	$wpdb->query( $wpdb->prepare(
+		"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
+		$wpdb->esc_like( '_transient_tsf_sitemap_' ) . '%',
+	) );
 
-	if ( $success ) {
-		global $wpdb;
+	// We didn't use a wildcard after "_transient_" to reduce scans.
+	// A second query is faster on saturated sites.
+	$wpdb->query( $wpdb->prepare(
+		"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
+		$wpdb->esc_like( '_transient_timeout_tsf_sitemap_' ) . '%',
+	) );
+}
 
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
-				$wpdb->esc_like( '_transient_tsf_sitemap_' ) . '%'
-			)
-		); // No cache OK. DB call ok.
+/**
+ * Polylang breaks the admin interface quick-edit and terms-addition functionality.
+ * This hack seeks to remove their broken code, letting WordPress take over
+ * correctly once more with full forward and backward compatibility, as we proposed.
+ *
+ * @hook admin_enqueue_scripts 11
+ * @see https://github.com/polylang/polylang/issues/928
+ * @since 5.0.0
+ */
+function _defunct_badly_coded_polylang_script() {
 
-		// We didn't use a wildcard after "_transient_" to reduce scans.
-		// A second query is faster on saturated sites.
-		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
-				$wpdb->esc_like( '_transient_timeout_tsf_sitemap_' ) . '%'
-			)
-		); // No cache OK. DB call ok.
+	// Find last ajaxSuccess handler.
+	// Since this code runs directly after Polylang, it should grab theirs.
+	$remove_ajax_success = <<<'JS'
+	jQuery( () => {
+		const handler = jQuery._data( document, 'events' )?.ajaxSuccess?.pop().handler;
+		handler && jQuery( document ).off( 'ajaxSuccess', handler );
+	} );
+	JS;
 
-		$cleared = true;
-	}
+	// Remove PLL term handler on ajaxSuccess. It is redundant, achieves nothing,
+	// creates redundant secondary requests, and breaks all plugins but Yoast SEO.
+	\wp_add_inline_script( 'pll_term', $remove_ajax_success );
+
+	// Remove PLL post handler on ajaxSuccess. It is redundant, achieves nothing,
+	// creates redundant secondary requests, and breaks all plugins but Yoast SEO.
+	\wp_add_inline_script( 'pll_post', $remove_ajax_success );
 }

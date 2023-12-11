@@ -1,0 +1,16 @@
+@import "../variables";
+
+// Fullheight
+// 32px - wordpress top bar
+// 56px - gutenberg top bar
+// 28px - block padding
+.ghostkit-pro-grid-fullheight > .ghostkit-grid-inner {
+  min-height: calc(100vh - 32px - 56px);
+
+  @media screen and (max-width: 782px) {
+    min-height: calc(100vh - 42px - 56px);
+  }
+  @media screen and (max-width: 600px - 56px) {
+    min-height: calc(100vh - 56px);
+  }
+}

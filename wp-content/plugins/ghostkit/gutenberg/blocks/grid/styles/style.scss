@@ -144,7 +144,6 @@
 
 // Columns Sticky.
 .ghostkit-col-sticky-top > .ghostkit-col-content {
-  position: -webkit-sticky;
   position: sticky;
   top: var(--gkt-grid--column-sticky__offset);
 }
@@ -154,7 +153,6 @@
   flex-direction: column;
 
   > .ghostkit-col-content {
-    position: -webkit-sticky;
     position: sticky;
     bottom: var(--gkt-grid--column-sticky__offset);
     margin-top: auto;

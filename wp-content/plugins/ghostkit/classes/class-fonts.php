@@ -15,12 +15,68 @@ class GhostKit_Fonts {
      * GhostKit_Fonts constructor.
      */
     public function __construct() {
-        add_filter( 'gkt_fonts_list', array( $this, 'add_google_fonts' ) );
+        add_action( 'init', array( $this, 'enqueue_fonts' ), 20 );
         add_filter( 'gkt_fonts_list', array( $this, 'add_default_site_fonts' ), 9 );
+        add_filter( 'gkt_fonts_list', array( $this, 'add_google_fonts' ) );
+    }
 
-        // enqueue fonts.
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_all_fonts_assets' ), 12 );
-        add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_all_fonts_assets' ), 12 );
+    /**
+     * Enqueue fonts.
+     *
+     * @return void
+     */
+    public function enqueue_fonts() {
+        // enqueue fonts for FSE.
+        if ( current_theme_supports( 'block-templates' ) && ! GhostKit_Typography::typography_exist() && class_exists( 'WP_Fonts' ) ) {
+            $this->add_fonts();
+        } else {
+            // enqueue fonts.
+            add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_all_fonts_assets' ), 12 );
+            add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_all_fonts_assets' ), 12 );
+        }
+    }
+
+    /**
+     * Registered Google Fonts for FSE Themes.
+     *
+     * @return void
+     */
+    public function add_fonts() {
+        if ( ! function_exists( 'wp_register_fonts' ) ) {
+            return;
+        }
+
+        wp_register_font_provider( 'google', 'Ghostkit_Fonts_Google_Provider' );
+
+        $fonts        = get_option( 'ghostkit_fonts_settings', array() );
+        $google_fonts = $fonts['google'] ?? false;
+
+        if ( $google_fonts ) {
+            $register_fonts = array();
+            foreach ( $google_fonts as $font ) {
+                $variants   = array();
+                $font_style = $font['style'];
+                foreach ( $font['weight'] as $weight ) {
+                    $variants[] = array(
+                        'font-family'  => $font['name'],
+                        'font-weight'  => $weight,
+                        'font-style'   => $font_style,
+                        'provider'     => 'google',
+                    );
+                }
+                $register_fonts[ $font['name'] ] = $variants;
+
+                wp_register_fonts(
+                    array(
+                        $font['name'] => $variants,
+                    )
+                );
+
+                if ( ! is_admin() ) {
+                    wp_enqueue_fonts( array( $font['name'] ) );
+                }
+            }
+        }
     }
 
     /**
@@ -53,7 +109,7 @@ class GhostKit_Fonts {
                 'display' => 'swap',
             );
 
-            wp_enqueue_style( 'ghostkit-fonts-google', add_query_arg( $query_args, 'https://fonts.googleapis.com/css' ), array(), '2.24.1' );
+            wp_enqueue_style( 'ghostkit-fonts-google', add_query_arg( $query_args, 'https://fonts.googleapis.com/css' ), array(), '3.1.2' );
         }
     }
 
@@ -286,6 +342,23 @@ class GhostKit_Fonts {
     }
 
     /**
+     * Get Default Site Font.
+     *
+     * @return array
+     */
+    private function get_default_site_font() {
+        return array(
+            'name'     => 'Default Site Font',
+            'widths'   => array(
+                '',
+                '400',
+                '700',
+            ),
+            'category' => 'sans-serif',
+        );
+    }
+
+    /**
      * Add Default fonts list.
      *
      * @param array $fonts - fonts list.
@@ -293,18 +366,11 @@ class GhostKit_Fonts {
      * @return array
      */
     public function add_default_site_fonts( $fonts ) {
+
         $fonts['default'] = array(
             'name'  => __( 'Default Fonts Site', 'ghostkit' ),
             'fonts' => array(
-                array(
-                    'name'     => 'Default Site Font',
-                    'widths'   => array(
-                        '',
-                        '400',
-                        '700',
-                    ),
-                    'category' => 'sans-serif',
-                ),
+                $this->get_default_site_font(),
             ),
         );
         return $fonts;
@@ -313,15 +379,14 @@ class GhostKit_Fonts {
     /**
      * Add Google fonts list.
      *
+     * @link https://developers.google.com/fonts/docs/developer_api?apix_params=%7B%22alt%22%3A%22json%22%2C%22fields%22%3A%22items(family%2Ckind%2Ccategory%2Cvariants%2Csubsets%2Cversion%2ClastModified)%22%2C%22prettyPrint%22%3Afalse%7D - get new fonts.
+     *
      * @param array $fonts - fonts list.
      *
      * @return array
      */
     public function add_google_fonts( $fonts ) {
         $result = get_transient( 'ghostkit_google_fonts_list' );
-
-        // Get new fonts:
-        // https://developers.google.com/fonts/docs/developer_api?apix_params=%7B%22alt%22%3A%22json%22%2C%22fields%22%3A%22items(family%2Ckind%2Ccategory%2Cvariants%2Csubsets%2Cversion%2ClastModified)%22%2C%22prettyPrint%22%3Afalse%7D .
 
         if ( ! $result ) {
             $result       = array();
@@ -357,8 +422,10 @@ class GhostKit_Fonts {
             }
         }
 
+        $result[] = $this->get_default_site_font();
+
         $fonts['google-fonts'] = array(
-            'name'  => 'Google Fonts',
+            'name'  => esc_attr__( 'Google Fonts', 'ghostkit' ),
             'fonts' => $result,
         );
 

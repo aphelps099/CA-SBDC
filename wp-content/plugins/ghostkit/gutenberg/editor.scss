@@ -12,29 +12,41 @@
 @import "./components/color-indicator/editor";
 @import "./components/color-picker/editor";
 @import "./components/date-time-picker/editor";
+@import "./components/dropdown-picker/editor";
+@import "./components/element-state-toggle/editor";
 @import "./components/gap-settings/editor";
 @import "./components/icon-picker/editor";
 @import "./components/image-picker/editor";
+@import "./components/important-toggle/editor";
 @import "./components/input-drag/editor";
+@import "./components/input-group/editor";
 @import "./components/modal/editor";
+@import "./components/notice/editor";
 @import "./components/pro-note/editor";
 @import "./components/range-control/editor";
 @import "./components/remove-button/editor";
 @import "./components/responsive-tab-panel/editor";
+@import "./components/responsive-toggle/editor";
 @import "./components/select/editor";
 @import "./components/toggle-group/editor";
+@import "./components/transition-selector/editor";
+@import "./components/transition-preview/editor";
 @import "./components/typography/editor";
 @import "./components/url-picker/editor";
 
 /**
  * Extensions.
  */
+@import "./extend/deprecated/editor";
+@import "./extend/block-actions-copy-paste/editor";
+@import "./extend/effects/editor";
 @import "./extend/custom-css/editor";
 @import "./extend/frame/editor";
+@import "./extend/position/editor";
 @import "./extend/display/editor";
-@import "./extend/scroll-reveal/editor";
 @import "./extend/spacings/editor";
 @import "./extend/toolbar-templates/editor";
+@import "./extend/transform/editor";
 
 /**
  * Formats.
@@ -48,6 +60,7 @@
 @import "./plugins/color-palette/editor";
 @import "./plugins/custom-code/editor";
 @import "./plugins/customizer/editor";
+@import "./plugins/editor-iframe-resize/editor";
 @import "./plugins/ghostkit/editor";
 @import "./plugins/templates/editor";
 @import "./plugins/typography/editor";
@@ -57,6 +70,7 @@
 */
 @import "./style-variants/core-heading/editor";
 @import "./style-variants/core-list/editor";
+@import "./style-variants/core-paragraph/editor";
 
 /**
 * SVG Icons.
@@ -79,19 +93,19 @@
 @import "./blocks/gist/styles/editor";
 @import "./blocks/google-maps/styles/editor";
 @import "./blocks/grid/styles/editor";
+@import "./blocks/icon/styles/editor";
 @import "./blocks/icon-box/styles/editor";
 @import "./blocks/image-compare/styles/editor";
 @import "./blocks/instagram/styles/editor";
+@import "./blocks/lottie/styles/editor";
 @import "./blocks/pricing-table/styles/editor";
 @import "./blocks/progress/styles/editor";
 @import "./blocks/shape-divider/styles/editor";
 @import "./blocks/table-of-contents/styles/editor";
 @import "./blocks/tabs/styles/editor";
-@import "./blocks/tabs-legacy/styles/editor";
 @import "./blocks/testimonial/styles/editor";
 @import "./blocks/twitter/styles/editor";
 @import "./blocks/video/styles/editor";
-@import "./blocks/widgetized-area/styles/editor";
 
 .ghostkit-help-text {
   font-size: 90%;
@@ -138,6 +152,44 @@
 }
 
 /**
+ * Better appender styles for blocks:
+ * - Grid
+ * - Alert
+ * - Counter Box
+ * - Icon Box
+ * - Testimonial
+ * - Tabs
+ * - Accordion
+ * - Carousel
+ */
+.ghostkit-grid-inner > .block-editor-block-list__block:not(.is-selected) > .ghostkit-col-content > .block-list-appender:only-child,
+[data-type="ghostkit/alert"]:not(.is-selected) > .ghostkit-alert > .ghostkit-alert-content > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/counter-box"]:not(.is-selected) > .ghostkit-counter-box > .ghostkit-counter-box-content > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/icon-box"]:not(.is-selected) > .ghostkit-icon-box > .ghostkit-icon-box-content > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/testimonial"]:not(.is-selected) > .ghostkit-testimonial > .ghostkit-testimonial-content > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/tabs-tab-v2"]:not(.is-selected) > .ghostkit-tab > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/accordion-item"]:not(.is-selected) > .ghostkit-accordion-item > .ghostkit-accordion-item-content > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child,
+[data-type="ghostkit/carousel-slide"]:not(.is-selected) > .ghostkit-carousel-slide > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender:only-child {
+  pointer-events: none;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    content: "";
+    border: 1px dashed;
+    border-radius: 2px;
+  }
+
+  .block-editor-inserter {
+    visibility: hidden;
+  }
+}
+
+/**
  * Extensions icon in panel body
  */
 .components-panel__body-toggle > .ghostkit-ext-icon {
@@ -152,6 +204,20 @@
 
   + span {
     margin-left: 35px;
+  }
+}
+
+/**
+ * Extensions icon in tools panel
+ */
+.components-tools-panel-header > h2 {
+  > .ghostkit-ext-icon {
+    position: absolute;
+    margin-top: -4px;
+
+    + span {
+      margin-left: 35px;
+    }
   }
 }
 

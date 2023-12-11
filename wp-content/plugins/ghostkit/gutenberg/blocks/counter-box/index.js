@@ -14,40 +14,32 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-counter-box', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/number-box/',
     customStylesCallback(attributes) {
       const styles = {
-        '--gkt-counter-box--number__font-size':
-          'undefined' !== typeof attributes.numberSize ? `${attributes.numberSize}px` : undefined,
-        '--gkt-counter-box--number__color': attributes.numberColor,
+        '--gkt-counter-box--number__font-size': undefined,
+        '--gkt-counter-box--number__color': attributes.numberColor || undefined,
+        '&:hover': {
+          '--gkt-counter-box--number__color': attributes.hoverNumberColor || undefined,
+        },
       };
 
-      if (attributes.hoverNumberColor) {
-        styles['&:hover'] = {
-          '--gkt-counter-box--number__color': attributes.hoverNumberColor,
-        };
+      if (typeof attributes.numberSize !== 'undefined' && attributes.numberSize !== '') {
+        styles['--gkt-counter-box--number__font-size'] = `${attributes.numberSize}px`;
       }
 
       return styles;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
     },
   },
   example: {
     attributes: {
       number: '77',
       numberColor: '#0366d6',
-      ghostkitId: 'example-counter-box',
-      ghostkitClassname: 'ghostkit-custom-example-counter-box',
+      ghostkit: {
+        id: 'example-counter-box',
+      },
       className: 'ghostkit-custom-example-counter-box',
     },
     innerBlocks: [

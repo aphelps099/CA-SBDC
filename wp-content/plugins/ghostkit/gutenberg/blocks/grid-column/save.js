@@ -14,15 +14,9 @@ import metadata from './block.json';
  */
 const { applyFilters } = wp.hooks;
 
-const {
-  useBlockProps,
-  useInnerBlocksProps: __stableUseInnerBlocksProps,
-  __experimentalUseInnerBlocksProps,
-} = wp.blockEditor;
+const { useBlockProps, useInnerBlocksProps } = wp.blockEditor;
 
 const { name } = metadata;
-
-const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
 
 /**
  * Block Save Class.
@@ -45,12 +39,12 @@ export default function BlockSave(props) {
   const blockProps = useBlockProps.save({
     className,
   });
-  const { children, ...innerBlocksProps } = useInnerBlocksProps.save(blockProps);
+  const innerBlocksProps = useInnerBlocksProps.save({ className: 'ghostkit-col-content' });
 
   return (
-    <div {...innerBlocksProps}>
+    <div {...blockProps}>
       {background}
-      <div className="ghostkit-col-content">{children}</div>
+      <div {...innerBlocksProps} />
     </div>
   );
 }

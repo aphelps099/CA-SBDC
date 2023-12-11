@@ -5,35 +5,34 @@
 
 .ghostkit-accordion-item {
   // Heading.
-  &-heading {
-    position: relative;
-    display: block;
-    padding: var(--gkt-accordion--heading__padding-v) var(--gkt-accordion--heading__padding-h);
-    padding-right: var(--gkt-accordion--heading-collapse-icon__width);
+  .ghostkit-accordion-item-heading {
+    margin: var(--gkt-accordion--heading__margin);
+    font-size: var(--gkt-accordion--heading__font-size);
     font-weight: var(--gkt-accordion--heading__font-weight);
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
+    line-height: var(--gkt-accordion--heading__line-height);
     border-bottom: none;
     box-shadow: none;
   }
 
+  a.ghostkit-accordion-item-heading,
+  .ghostkit-accordion-item-heading > a {
+    position: relative;
+    display: flex;
+    gap: var(--gkt-accordion--heading__gap);
+    align-items: center;
+    padding: var(--gkt-accordion--heading__padding-v) var(--gkt-accordion--heading__padding-h);
+    color: inherit;
+    text-decoration: none;
+  }
+
   // Collapse.
   &-collapse {
-    position: absolute;
-    top: 0;
-    right: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--gkt-accordion--heading-collapse-icon__width);
-    height: 100%;
+    margin-left: auto;
     font-size: var(--gkt-accordion--heading-collapse-icon__font-size);
     color: inherit;
-    cursor: pointer;
-    background: none;
-    border: none;
-    outline: none;
     transition: var(--gkt-accordion__transition-duration) transform var(--gkt-accordion__transition-easing);
   }
 

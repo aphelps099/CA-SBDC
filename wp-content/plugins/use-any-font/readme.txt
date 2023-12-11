@@ -2,10 +2,10 @@
 Contributors: dnesscarkey
 Tags: custom fonts, font embed, font uploader, typography, install font 
 Requires at least: 3.0
-Tested up to: 6.1
-Stable tag: 6.2.98
+Tested up to: 6.3
+Stable tag: 6.3.04
 
-Embed any custom font using font uploader and assign to elements. Upload font in 1 format and other needed formats are auto converted even woff2.
+Upload custom fonts using font uploader. Custom fonts are auto converted to compressed woff2 for better performance. Self Hosted & GDPR compliant custom font plugin.
 
 == Description ==
 Upload any custom fonts you wish and give your site a elegant look. Quickly change font without need of css knowledge. Or you can select from our 23,871+ predefined font collection to add in your site. It even has google fonts which you can store in your own server. 
@@ -17,7 +17,8 @@ Use Any Font gives you freedom to intall custom fonts in your wordpress website.
 <strong>Features</strong>
 
 * Quick and easy to setup. Change font with ease.
-* Support all major browsers including IE, Edge, Firefox, Chrome, Safari, IOS, Andriod, Opera and more.
+* Supports all browsers.
+* Uploaded custom fonts are automatically converted to compressed woff2 format for faster loading. 
 * Font conversion within the font uploader and quick font assign interface. You can select pre defined html tags or assign it to custom css.
 * Use uploaded custom fonts directly from Wordpress Editor, Gutenberg Editor, 
 <a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=39880" title="custom font in Divi builder" target="_blank">Divi Builder</a>, 
@@ -30,11 +31,13 @@ Use Any Font gives you freedom to intall custom fonts in your wordpress website.
 <a href="https://wordpress.org/themes/generatepress/" title="custom font in Generate Press" target="_blank">Generate Press</a>,
 <a href="https://wordpress.org/themes/astra/" title="custom font in Astra Theme" target="_blank">Astra Theme</a>,
 <a href="https://wordpress.org/themes/oceanwp/" title="custom font in Revolution Slider" target="_blank">Ocean WP Theme</a>,
+<a href="https://bricksbuilder.io/" title="custom font in Bricks Builder" target="_blank">Bricks Builder</a>,
+<a href="https://themeisle.com/" title="custom font in themeisle neva theme" target="_blank">Themeisle</a>,
 <a href="https://bit.ly/3auJKzt" title="custom font in Revolution Slider" target="_blank">Revolution Slider</a>,
 <a href="https://wpbakery.com/" title="custom font in WPBakery Page Builder" target="_blank">WPBakery Page Builder ( Js Composer )</a>,
 and any visual builder using the class. 
 * Custom fonts uploaded can be directly used from Theme options panel for major themeforest themes like <a href="https://bit.ly/3auJKzt" target="_blank">Avada, X Theme, Flatsome, Salient, Porto, Shopkeeper, Oshine, WPLMS Learning Management System Theme, KLEO, WoodMart, ListingPro, SimpleMag, ROSA 1, 907, Voice, Grand Restaurant, LeadEngine, Service Finder, MagPlus, Hostiko, Adifier, Puca, GreenMart, Reco, VidoRev, Halena and many more known themes. (1000+). Check out full list here.</a>
-* Supports font format including ttf, otf, woff but you only need to upload font in 1 format. Other required fonts are converted automatically by our font convertor.
+* Supports font format including ttf, otf, woff, woff2 but you only need to upload font in 1 format. Other required fonts are converted automatically by our font convertor.
 * Accepts custom font file upto 25 MB.
 * Embed fonts using @font-face css. SEO friendly and quick loading due to woff2 compression.
 * Multiple custom fonts can be used.
@@ -148,6 +151,18 @@ Please do write us after integration and we will add it in our supported list.
 1. Screenshot #6. Assign fonts to custom elements.
 
 == Changelog ==
+
+= 6.3.04 =
+* Fixed null issue in typography
+
+= 6.3.03 =
+* Fixed error for theme.json file missing scenario. 
+
+= 6.3.02 =
+* Add typography selection for block style themes and Gutenberg Editor
+
+= 6.3.01 =
+* Added support for Bricks Builder and Themeisle
 
 = 6.2.98 =
 * Fixed font assign issue in Poly Lang

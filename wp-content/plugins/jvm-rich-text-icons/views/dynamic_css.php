@@ -13,8 +13,7 @@ i.<?php echo $prefix_class;?> {
     -webkit-mask-size:contain;
     mask-position: 0% 50%;
     -webkit-mask-position: 0% 50%;
-    position: relative;
-    top: 0.1em;
+    white-space: break-spaces;
 }
 
 

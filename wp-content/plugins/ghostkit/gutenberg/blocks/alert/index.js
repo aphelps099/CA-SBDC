@@ -7,48 +7,39 @@ import metadata from './block.json';
 import edit from './edit';
 import save from './save';
 import transforms from './transforms';
-import deprecated from './deprecated';
 
 const { name } = metadata;
 
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-alert', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/alert/',
     customStylesCallback(attributes) {
       const styles = {
-        '--gkt-alert__border-color': attributes.color,
-        '--gkt-alert--icon__font-size':
-          'undefined' !== typeof attributes.iconSize ? `${attributes.iconSize}px` : undefined,
-        '--gkt-alert--icon__color': attributes.color,
+        '--gkt-alert__border-color': attributes.color || undefined,
+        '--gkt-alert--icon__font-size': undefined,
+        '--gkt-alert--icon__color': attributes.color || undefined,
+        '&:hover': {
+          '--gkt-alert__border-color': attributes.hoverColor || undefined,
+          '--gkt-alert--icon__color': attributes.hoverColor || undefined,
+        },
       };
 
-      if (attributes.hoverColor) {
-        styles['&:hover'] = {
-          '--gkt-alert__border-color': attributes.hoverColor,
-          '--gkt-alert--icon__color': attributes.hoverColor,
-        };
+      if (typeof attributes.iconSize !== 'undefined' && attributes.iconSize !== '') {
+        styles['--gkt-alert--icon__font-size'] = `${attributes.iconSize}px`;
       }
 
       return styles;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
     },
   },
   example: {
     attributes: {
       color: '#E47F3B',
-      ghostkitId: 'example-alert',
-      ghostkitClassname: 'ghostkit-custom-example-alert',
+      ghostkit: {
+        id: 'example-alert',
+      },
       className: 'ghostkit-custom-example-alert',
     },
     innerBlocks: [
@@ -63,6 +54,5 @@ export const settings = {
   },
   edit,
   save,
-  deprecated,
   transforms,
 };

@@ -83,7 +83,7 @@ class GF_ConstantContact extends GFFeedAddOn {
 	 * @access protected
 	 * @var string
 	 */
-	protected $_url = 'http://gravityforms.com';
+	protected $_url = 'https://gravityforms.com';
 	/**
 	 * Defines the title of this add-on.
 	 *
@@ -151,9 +151,25 @@ class GF_ConstantContact extends GFFeedAddOn {
 	 *
 	 * @since  1.0
 	 * @access protected
-	 * @var    object $api If available, contains an instance of the Constant Contact API library.
+	 * @var    GF_ConstantContact_API $api If available, contains an instance of the Constant Contact API library.
 	 */
 	protected $api = null;
+
+	/**
+	 * Enabling background feed processing to prevent API performance and token refresh issues delaying form submission completion.
+	 *
+	 * @since 1.7
+	 *
+	 * @var bool
+	 */
+	protected $_async_feed_processing = true;
+
+	/**
+	 * Defines how many times the add-on should retry to refresh the token before disconnecting.
+	 *
+	 * @since 1.7
+	 */
+	const CC_REFRESH_RETRIES_BEFORE_DISCONNECT = 6;
 
 	/**
 	 * Returns an instance of this class, and stores it in the $_instance property.
@@ -190,7 +206,6 @@ class GF_ConstantContact extends GFFeedAddOn {
 				'option_label' => esc_html__( 'Subscribe contact to Constant Contact only when payment is received.', 'gravityformsconstantcontact' ),
 			)
 		);
-
 	}
 
 	/**
@@ -988,14 +1003,49 @@ class GF_ConstantContact extends GFFeedAddOn {
 			// refresh token.
 			$auth_token = $this->api->refresh_token( $auth_token['refresh_token'] );
 
-			if ( rgblank( $auth_token['access_token'] ) || rgblank( $auth_token['refresh_token'] ) ) {
-				$this->api = null;
+			if ( empty( $auth_token['access_token'] ) || empty( $auth_token['refresh_token'] ) ) {
+				$this->log_debug( __METHOD__ . '(): Failed refreshing token.' );
+				$this->maybe_disconnect();
 
-				return false;
+				if ( ! $this->is_plugin_settings( $this->get_slug() ) ) {
+					return false;
+				}
 			}
 		}
 
 		return true;
+	}
+
+	/*
+	 * Decides if the add-on should disconnect after failed attempts to refresh the token in different requests.
+	 *
+	 * @since 1.7
+	 */
+	public function maybe_disconnect() {
+		$settings                = $this->get_plugin_settings();
+		$failed_refresh_attempts = (int) rgar( $settings, 'failed_refresh_attempts', 3 );
+
+		if ( empty( $settings['first_refresh_failure_timestamp'] ) ) {
+			$settings['first_refresh_failure_timestamp'] = time();
+			$settings['failed_refresh_attempts']         = $failed_refresh_attempts;
+			$this->update_plugin_settings( $settings );
+
+			return;
+		}
+
+		$settings['failed_refresh_attempts'] = $failed_refresh_attempts + 3;
+
+		$seconds_since_first_failure = time() - (int) $settings['first_refresh_failure_timestamp'];
+
+		if ( $seconds_since_first_failure < DAY_IN_SECONDS || $failed_refresh_attempts < self::CC_REFRESH_RETRIES_BEFORE_DISCONNECT ) {
+			$this->update_plugin_settings( $settings );
+
+			return;
+		}
+
+		$this->log_debug( __METHOD__ . sprintf( '(): Disconnecting after %d failed refresh attempts in %d seconds.', $settings['failed_refresh_attempts'], $seconds_since_first_failure ) );
+		unset( $settings['auth_token'], $settings['first_refresh_failure_timestamp'], $settings['failed_refresh_attempts'] );
+		$this->update_plugin_settings( $settings );
 	}
 
 	/**
@@ -1383,12 +1433,26 @@ class GF_ConstantContact extends GFFeedAddOn {
 
 		// If there was an error, return false.
 		if ( is_wp_error( $response ) ) {
+
+			$this->log_error( __METHOD__ . '(): API errors when attempting to ' . ( empty( $code ) ? 'refresh' : 'exchange code for' ) . ' token: ' . print_r( $response->get_error_messages(), true ) );
+
 			return false;
 		}
 
 		// Get response body.
 		$response_body = wp_remote_retrieve_body( $response );
+
+		$this->log_debug( __METHOD__ . sprintf( '(): API response after attempting to %s token: code: %s; body: %s', ( empty( $code ) ? 'refresh' : 'exchange code for' ), wp_remote_retrieve_response_code( $response ), $response_body ) );
+
 		$response_body = json_decode( $response_body, true );
+
+		if ( ! rgar( $response_body, 'access_token' ) ) {
+			$this->log_error( __METHOD__ . "(): API response doesn't contain a valid token." );
+
+			return false;
+		}
+
+		$this->log_debug( __METHOD__ . '(): Token retrieved successfully' );
 
 		return array(
 			'access_token'  => rgar( $response_body, 'access_token' ),

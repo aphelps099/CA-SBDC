@@ -8,8 +8,10 @@ import { throttle } from 'throttle-debounce';
 /**
  * Internal dependencies
  */
-import './fallback-2-5';
-import { replaceClass } from '../../utils/classes-replacer';
+// We can't use lodash merge, because it skip the specified undefined value
+// which we use to reset styles.
+import merge from '../../utils/merge';
+import { hasClass, replaceClass } from '../../utils/classes-replacer';
 import { maybeEncode, maybeDecode } from '../../utils/encode-decode';
 import EditorStyles from '../../components/editor-styles';
 
@@ -18,17 +20,62 @@ import getStyles from './get-styles';
 /**
  * WordPress dependencies
  */
+const { cloneDeep } = window.lodash;
+
 const { applyFilters, addFilter } = wp.hooks;
 
-const { getBlockType } = wp.blocks;
+const { getBlockType, getBlockSupport } = wp.blocks;
 
-const { Fragment, useRef, useEffect } = wp.element;
+const { useRef, useEffect, useCallback } = wp.element;
 
 const { useSelect } = wp.data;
 
 const { createHigherOrderComponent } = wp.compose;
 
-const { GHOSTKIT } = window;
+function cleanBlockCustomStyles(styles) {
+  const newStyles = {};
+
+  Object.keys(styles).forEach((key) => {
+    if (typeof styles[key] !== 'undefined') {
+      if (typeof styles[key] === 'object' && !Array.isArray(styles[key]) && styles[key] !== null) {
+        const innerStyles = cleanBlockCustomStyles(styles[key]);
+
+        if (innerStyles && Object.keys(innerStyles).length) {
+          newStyles[key] = innerStyles;
+        }
+      } else {
+        newStyles[key] = styles[key];
+      }
+    }
+  });
+
+  return newStyles;
+}
+
+/**
+ * Get recursive all blocks in list.
+ *
+ * @param {boolean} blocks - block list
+ *
+ * @return {array} block list
+ */
+function getAllBlocks(blocks = false) {
+  let result = [];
+
+  if (!blocks) {
+    return result;
+  }
+
+  blocks.forEach((data) => {
+    result.push(data);
+
+    if (data.innerBlocks && data.innerBlocks.length) {
+      result = [...result, ...getAllBlocks(data.innerBlocks)];
+    }
+  });
+
+  return result;
+}
 
 /**
  * Custom Styles Component.
@@ -36,194 +83,173 @@ const { GHOSTKIT } = window;
 function CustomStylesComponent(props) {
   const { setAttributes, attributes, clientId, name } = props;
 
-  const { blockSettings } = useSelect(
-    () => ({
-      blockSettings: getBlockType(name),
-    }),
+  const { ghostkit, className } = attributes;
+
+  const customSelector = getBlockSupport(name, ['ghostkit', 'styles', 'customSelector']);
+
+  const { allBlocks, blockSettings } = useSelect(
+    (select) => {
+      const { getBlocks } = select('core/block-editor');
+
+      return {
+        allBlocks: getBlocks(),
+        blockSettings: getBlockType(name),
+      };
+    },
     [name]
   );
 
-  function cleanBlockCustomStyles(styles) {
-    const newStyles = {};
+  const getGhostKitID = useCallback(
+    (checkDuplicates) => {
+      let id = ghostkit?.id;
 
-    Object.keys(styles).forEach((key) => {
-      if ('undefined' !== typeof styles[key]) {
-        if (
-          'object' === typeof styles[key] &&
-          !Array.isArray(styles[key]) &&
-          null !== styles[key]
-        ) {
-          const innerStyles = cleanBlockCustomStyles(styles[key]);
+      // create block ID.
+      if (!id || checkDuplicates) {
+        const usedIds = {};
 
-          if (innerStyles && Object.keys(innerStyles).length) {
-            newStyles[key] = innerStyles;
-          }
-        } else {
-          newStyles[key] = styles[key];
-        }
-      }
-    });
+        // prevent unique ID duplication after block duplicated.
+        if (checkDuplicates) {
+          const blocks = getAllBlocks(allBlocks);
+          blocks.forEach((data) => {
+            if (data.clientId && data?.attributes?.ghostkit?.id) {
+              usedIds[data.attributes.ghostkit.id] = data.clientId;
 
-    return newStyles;
-  }
-
-  /**
-   * Get recursive all blocks of the current page
-   *
-   * @param {boolean} blocks - block list
-   *
-   * @return {array} block list
-   */
-  function getAllBlocks(blocks = false) {
-    let result = [];
-
-    if (!blocks) {
-      blocks = wp.data.select('core/block-editor').getBlocks();
-    }
-
-    if (!blocks) {
-      return result;
-    }
-
-    blocks.forEach((data) => {
-      result.push(data);
-
-      if (data.innerBlocks && data.innerBlocks.length) {
-        result = [...result, ...getAllBlocks(data.innerBlocks)];
-      }
-    });
-
-    return result;
-  }
-
-  function getGhostKitAtts(checkDuplicates) {
-    let { ghostkitId, ghostkitClassname } = attributes;
-
-    // create block ID.
-    if (!ghostkitId || checkDuplicates) {
-      const usedIds = {};
-
-      // prevent unique ID duplication after block duplicated.
-      if (checkDuplicates) {
-        const allBlocks = getAllBlocks();
-        allBlocks.forEach((data) => {
-          if (data.clientId && data.attributes && data.attributes.ghostkitId) {
-            usedIds[data.attributes.ghostkitId] = data.clientId;
-
-            if (data.clientId !== clientId && data.attributes.ghostkitId === ghostkitId) {
-              ghostkitId = '';
+              if (data.clientId !== clientId && data.attributes.ghostkit.id === id) {
+                id = '';
+              }
             }
-          }
-        });
-      }
-
-      // prepare new block id.
-      if (clientId && !ghostkitId && 'undefined' !== typeof ghostkitId) {
-        let ID = ghostkitId || '';
-
-        // check if ID already exist.
-        let tryCount = 10;
-        while (
-          !ID ||
-          ('undefined' !== typeof usedIds[ID] && usedIds[ID] !== clientId && 0 < tryCount)
-        ) {
-          ID = shorthash.unique(clientId);
-          tryCount -= 1;
-        }
-
-        if (ID && 'undefined' === typeof usedIds[ID]) {
-          usedIds[ID] = clientId;
-        }
-
-        if (ID !== ghostkitId) {
-          ghostkitId = ID;
-          ghostkitClassname = `ghostkit-custom-${ID}`;
-        }
-      }
-    }
-
-    if (ghostkitId && ghostkitClassname) {
-      return {
-        ghostkitId,
-        ghostkitClassname,
-      };
-    }
-
-    return {};
-  }
-
-  function onUpdate(checkDuplicates) {
-    let { className } = attributes;
-
-    const newAttrs = {};
-
-    // prepare custom block styles.
-    let blockCustomStyles = applyFilters(
-      'ghostkit.blocks.customStyles',
-      blockSettings.ghostkit && blockSettings.ghostkit.customStylesCallback
-        ? blockSettings.ghostkit.customStylesCallback(attributes, props)
-        : {},
-      props
-    );
-
-    // We need to clean undefined and empty statements from custom styles list.
-    blockCustomStyles = cleanBlockCustomStyles(blockCustomStyles);
-
-    const thereIsCustomStyles = blockCustomStyles && Object.keys(blockCustomStyles).length;
-    const thereIsCustomCSS = !!maybeDecode(attributes.ghostkitCustomCSS);
-
-    if (thereIsCustomStyles || thereIsCustomCSS) {
-      const ghostkitAtts = getGhostKitAtts(checkDuplicates);
-
-      if (ghostkitAtts.ghostkitClassname) {
-        let updateAttrs = false;
-
-        let customClassName = `.${attributes.ghostkitClassname}`;
-
-        if (blockSettings.ghostkit && blockSettings.ghostkit.customSelector) {
-          customClassName = blockSettings.ghostkit.customSelector(customClassName, props);
-        }
-
-        if (thereIsCustomStyles) {
-          newAttrs.ghostkitStyles = maybeEncode({
-            [customClassName]: blockCustomStyles,
           });
         }
 
-        if (ghostkitAtts.ghostkitClassname !== attributes.ghostkitClassname) {
-          newAttrs.ghostkitClassname = ghostkitAtts.ghostkitClassname;
-          updateAttrs = true;
-        }
-        if (ghostkitAtts.ghostkitId !== attributes.ghostkitId) {
-          newAttrs.ghostkitId = ghostkitAtts.ghostkitId;
-          updateAttrs = true;
-        }
+        // prepare new block id.
+        if (clientId && !id) {
+          let newID = id || '';
 
-        // Regenerate custom classname if it was removed or changed.
-        const newClassName = replaceClass(className, 'ghostkit-custom', ghostkitAtts.ghostkitId);
-        if (newClassName !== className) {
-          newAttrs.className = newClassName;
-        }
+          // check if id already exist.
+          let tryCount = 10;
+          while (
+            !newID ||
+            (typeof usedIds[newID] !== 'undefined' && usedIds[newID] !== clientId && tryCount > 0)
+          ) {
+            newID = shorthash.unique(clientId);
+            tryCount -= 1;
+          }
 
-        if (thereIsCustomStyles && !updateAttrs) {
-          updateAttrs = !deepEqual(attributes.ghostkitStyles, newAttrs.ghostkitStyles);
-        }
+          if (newID && typeof usedIds[newID] === 'undefined') {
+            usedIds[newID] = clientId;
+          }
 
-        if (updateAttrs) {
-          setAttributes(newAttrs);
+          if (newID !== id) {
+            id = newID;
+          }
         }
       }
-    } else if (attributes.ghostkitStyles) {
-      className = replaceClass(className, 'ghostkit-custom', '');
 
-      setAttributes({
-        ghostkitClassname: '',
-        ghostkitId: '',
-        ghostkitStyles: '',
-        className,
-      });
-    }
-  }
+      return id || false;
+    },
+    [ghostkit, allBlocks, clientId]
+  );
+
+  const onUpdate = useCallback(
+    (checkDuplicates) => {
+      const newAttrs = {};
+
+      // prepare custom block styles.
+      const blockCustomStyles = applyFilters(
+        'ghostkit.blocks.customStyles',
+        blockSettings.ghostkit && blockSettings.ghostkit.customStylesCallback
+          ? blockSettings.ghostkit.customStylesCallback(attributes, props)
+          : {},
+        props
+      );
+
+      const withBlockCustomStyles = blockCustomStyles && Object.keys(blockCustomStyles).length;
+      const withExtensionCustomStyles = ghostkit?.styles && Object.keys(ghostkit.styles).length;
+
+      let reset = !withBlockCustomStyles && !withExtensionCustomStyles;
+
+      if (withBlockCustomStyles || withExtensionCustomStyles) {
+        let newStyles = cloneDeep(ghostkit?.styles || {});
+
+        if (withBlockCustomStyles) {
+          newStyles = merge(newStyles, maybeEncode(blockCustomStyles));
+        }
+
+        // Clean undefined and empty statements from custom styles list.
+        if (newStyles) {
+          newStyles = cleanBlockCustomStyles(newStyles);
+        }
+
+        const hasCustomStyles = Object.keys(newStyles).length;
+        const ghostkitID = hasCustomStyles && getGhostKitID(checkDuplicates);
+
+        if (!ghostkitID) {
+          reset = true;
+        } else {
+          if (ghostkitID !== ghostkit?.id) {
+            if (!newAttrs.ghostkit) {
+              newAttrs.ghostkit = cloneDeep(ghostkit || {});
+            }
+
+            newAttrs.ghostkit.id = ghostkitID;
+          }
+
+          // Regenerate custom classname if it was removed or changed.
+          // We have to check if class name contains ghostkit-custom-<id> because
+          // it can be changed while your edit the custom block class.
+          if (!hasClass(className, `ghostkit-custom-${ghostkitID}`)) {
+            const newClassName = replaceClass(className, 'ghostkit-custom', ghostkitID);
+            if (newClassName !== className) {
+              newAttrs.className = newClassName;
+            }
+          }
+
+          // Check if styles changes and update it.
+          if (!deepEqual(ghostkit?.styles, newStyles)) {
+            if (!newAttrs.ghostkit) {
+              newAttrs.ghostkit = cloneDeep(ghostkit || {});
+            }
+
+            newAttrs.ghostkit.styles = newStyles;
+          }
+        }
+      }
+
+      // Reset unused styles and ID.
+      if (reset) {
+        const newClassName = replaceClass(className, 'ghostkit-custom', '');
+
+        if (newClassName !== className) {
+          newAttrs.className = !newClassName ? undefined : newClassName;
+        }
+
+        if (ghostkit?.styles || ghostkit?.id) {
+          if (!newAttrs.ghostkit) {
+            newAttrs.ghostkit = cloneDeep(ghostkit || {});
+          }
+
+          if (newAttrs?.ghostkit?.styles) {
+            delete newAttrs.ghostkit.styles;
+          }
+
+          if (newAttrs?.ghostkit?.id) {
+            delete newAttrs.ghostkit.id;
+          }
+        }
+
+        // Reset ghostkit attribute if empty.
+        if (newAttrs?.ghostkit && !Object.keys(newAttrs.ghostkit).length) {
+          newAttrs.ghostkit = undefined;
+        }
+      }
+
+      // Update attributes.
+      if (Object.keys(newAttrs).length) {
+        setAttributes(newAttrs);
+      }
+    },
+    [blockSettings, attributes, ghostkit, props, className, setAttributes]
+  );
 
   const onUpdateThrottle = throttle(60, onUpdate);
 
@@ -245,17 +271,35 @@ function CustomStylesComponent(props) {
   let styles = '';
 
   // generate custom styles.
-  if (
-    attributes.ghostkitClassname &&
-    attributes.ghostkitStyles &&
-    Object.keys(attributes.ghostkitStyles).length
-  ) {
-    styles = getStyles(maybeDecode(attributes.ghostkitStyles), '', false);
+  if (ghostkit?.id) {
+    // New custom styles.
+    if (ghostkit?.styles && Object.keys(ghostkit?.styles).length) {
+      let selector = `.ghostkit-custom-${ghostkit?.id}`;
 
-    if (blockSettings && blockSettings.ghostkit && blockSettings.ghostkit.customStylesFilter) {
+      if (customSelector) {
+        selector = customSelector.replace('&', selector);
+      }
+
+      styles +=
+        (styles ? ' ' : '') +
+        getStyles(
+          maybeDecode({
+            [selector]: ghostkit?.styles,
+          }),
+          '',
+          false
+        );
+    }
+
+    if (
+      styles &&
+      blockSettings &&
+      blockSettings.ghostkit &&
+      blockSettings.ghostkit.customStylesFilter
+    ) {
       styles = blockSettings.ghostkit.customStylesFilter(
         styles,
-        maybeDecode(attributes.ghostkitStyles),
+        maybeDecode(attributes?.ghostkit?.styles),
         true,
         attributes
       );
@@ -273,95 +317,6 @@ function CustomStylesComponent(props) {
 }
 
 /**
- * Extend block attributes with styles.
- *
- * @param {Object} blockSettings Original block settings.
- * @param {String} name Original block name.
- *
- * @return {Object} Filtered block settings.
- */
-function addAttribute(blockSettings, name) {
-  let allow = false;
-
-  // prepare settings of block + deprecated blocks.
-  const eachSettings = [blockSettings];
-  if (blockSettings.deprecated && blockSettings.deprecated.length) {
-    blockSettings.deprecated.forEach((item) => {
-      eachSettings.push(item);
-    });
-  }
-
-  eachSettings.forEach((settings) => {
-    allow = false;
-
-    if (settings && settings.attributes) {
-      if (GHOSTKIT.hasBlockSupport(settings || blockSettings, 'styles', false)) {
-        allow = true;
-      } else {
-        allow = applyFilters(
-          'ghostkit.blocks.allowCustomStyles',
-          false,
-          settings,
-          settings.name || blockSettings.name
-        );
-      }
-    }
-
-    if (allow) {
-      if (!settings.attributes.ghostkitStyles) {
-        settings.attributes.ghostkitStyles = {
-          type: 'object',
-          default: '',
-        };
-      }
-      if (!settings.attributes.ghostkitClassname) {
-        settings.attributes.ghostkitClassname = {
-          type: 'string',
-          default: '',
-        };
-      }
-      if (!settings.attributes.ghostkitId) {
-        settings.attributes.ghostkitId = {
-          type: 'string',
-          default: '',
-        };
-      }
-
-      settings = applyFilters('ghostkit.blocks.withCustomStyles', settings, name);
-    }
-  });
-
-  return blockSettings;
-}
-
-/**
- * Extend block attributes with styles after block transformation
- *
- * @param {Object} transformedBlock Original transformed block.
- * @param {Object} blocks           Blocks on which transform was applied.
- *
- * @return {Object} Modified transformed block, with layout preserved.
- */
-function addAttributeTransform(transformedBlock, blocks) {
-  if (
-    blocks &&
-    blocks[0] &&
-    blocks[0].clientId === transformedBlock.clientId &&
-    blocks[0].attributes &&
-    blocks[0].attributes.ghostkitStyles &&
-    Object.keys(blocks[0].attributes.ghostkitStyles).length
-  ) {
-    Object.keys(blocks[0].attributes).forEach((attrName) => {
-      if (/^ghostkit/.test(attrName)) {
-        transformedBlock.attributes[attrName] = blocks[0].attributes[attrName];
-      }
-    });
-  }
-
-  return transformedBlock;
-}
-
-/**
  * Override the default edit UI to include a new block inspector control for
  * assigning the custom styles if needed.
  *
@@ -373,20 +328,14 @@ const withNewAttrs = createHigherOrderComponent(
   (BlockEdit) =>
     function (props) {
       return (
-        <Fragment>
+        <>
           <BlockEdit {...props} />
           <CustomStylesComponent {...props} />
-        </Fragment>
+        </>
       );
     },
   'withNewAttrs'
 );
 
 // Init filters.
-addFilter('blocks.registerBlockType', 'ghostkit/styles/additional-attributes', addAttribute);
-addFilter(
-  'blocks.switchToBlockType.transformedBlock',
-  'ghostkit/styles/additional-attributes',
-  addAttributeTransform
-);
 addFilter('editor.BlockEdit', 'ghostkit/styles/additional-attributes', withNewAttrs);

@@ -1,7 +1,9 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/form-field-phone",
   "parent": ["ghostkit/form"],
-  "category": "design",
+  "category": "ghostkit",
   "title": "Phone",
   "description": "Form field phone.",
   "supports": {

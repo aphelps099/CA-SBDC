@@ -12,6 +12,8 @@ use Gravity_Forms\Gravity_Forms\Settings\Settings;
 use Gravity_Forms\Gravity_Forms\TranslationsPress_Updater;
 use Gravity_Forms\Gravity_Forms\Save_Form\GF_Save_Form_Service_Provider;
 use Gravity_Forms\Gravity_Forms\Save_Form\GF_Save_Form_Helper;
+use Gravity_Forms\Gravity_Forms\Theme_Layers\Framework\Engines\Output_Engines\Form_CSS_Properties_Output_Engine;
+use Gravity_Forms\Gravity_Forms\Theme_Layers\API\Fluent\Theme_Layer_Builder;
 
 /**
  * Class GFAddOn
@@ -25,9 +27,24 @@ abstract class GFAddOn {
 	 */
 	protected $_version;
 	/**
+	 * The minimum Gravity Forms version required for the add-on to load.
+	 *
 	 * @var string Gravity Forms minimum version requirement
 	 */
 	protected $_min_gravityforms_version;
+
+	/**
+	 * The minimum Gravity Forms version required to support all the features of an add-on.
+	 *
+	 * Failing to meet this version won't prevent the add-on from loading, but some features of the add-on will not work as expected or will be disabled,
+	 * A notice will be displayed in the admin asking the user to upgrade to the latest Gravity Form version.
+	 *
+	 * @var string Gravity Forms minimum version for supporting all features.
+	 *
+	 * @since 2.7.12
+	 */
+	protected $_min_compatible_gravityforms_version;
+
 	/**
 	 * @var string URL-friendly identifier used for form settings, add-on settings, text domain localization...
 	 */
@@ -37,7 +54,7 @@ abstract class GFAddOn {
 	 */
 	protected $_path;
 	/**
-	 * @var string Full path the the plugin. Example: __FILE__
+	 * @var string Full path to the plugin. Example: __FILE__
 	 */
 	protected $_full_path;
 	/**
@@ -110,6 +127,10 @@ abstract class GFAddOn {
 	 */
 	protected $_enable_rg_autoupgrade = false;
 
+	// ----------- Enable Theme Layer ------
+
+	protected $_enable_theme_layer = false;
+
 	// ------------ Private -----------
 
 	private $_no_conflict_scripts = array();
@@ -168,6 +189,24 @@ abstract class GFAddOn {
 	 */
 	public function bootstrap() {
 		add_action( 'init', array( $this, 'init' ), 15 );
+		if ( $this->_enable_theme_layer ) {
+			add_action( 'init', array( $this, 'init_theme_layer' ), 0, 0 );
+		}
+	}
+
+	public function init_theme_layer() {
+		$layer = new Theme_Layer_Builder();
+		$layer->set_name( $this->theme_layer_slug() )
+		      ->set_short_title( $this->theme_layer_title() )
+		      ->set_priority( $this->theme_layer_priority() )
+		      ->set_icon( $this->theme_layer_icon() )
+		      ->set_settings_fields( $this->theme_layer_settings_fields() )
+		      ->set_overidden_fields( $this->theme_layer_overridden_fields() )
+		      ->set_form_css_properties( array( $this, 'theme_layer_form_css_properties' ) )
+		      ->set_styles( array( $this, 'theme_layer_styles' ) )
+		      ->set_scripts( array( $this, 'theme_layer_scripts' ) )
+		      ->register();
+		add_action( 'gform_form_after_open', array( $this, 'output_third_party_styles' ), 998, 2 );
 	}
 
 	/**
@@ -315,9 +354,13 @@ abstract class GFAddOn {
 
 		$this->setup();
 
-		// Add form settings only when there are form settings fields configured or form_settings() method is implemented
-		if ( self::has_form_settings_page() ) {
-			$this->form_settings_init();
+		// Add form settings only when there are form settings fields configured or form_settings() method is implemented.
+		if ( $this::has_form_settings_page() ) {
+			/*
+			 * Despite the "init_admin" name, the parent function is executed at init hook,
+			 * so we need to run form_settings_init in admin_init to allow addons filter the settings.
+			 */
+			add_action( 'admin_init', array( $this, 'form_settings_init' ) );
 		}
 
 		// Add plugin page when there is a plugin page configured or plugin_page() method is implemented
@@ -373,6 +416,7 @@ abstract class GFAddOn {
 		add_filter( 'gform_noconflict_scripts', array( $this, 'register_noconflict_scripts' ) );
 		add_filter( 'gform_noconflict_styles', array( $this, 'register_noconflict_styles' ) );
 		add_action( 'gform_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10, 2 );
+		add_action( 'admin_notices', array( $this, 'maybe_display_upgrade_notice' ) );
 
 	}
 
@@ -866,6 +910,13 @@ abstract class GFAddOn {
 	 *                // post - Specifies a set of post ($_POST) values.
 	 *                // If all specified posted values match the current request, the script will be enqueued
 	 *                array( 'post' => 'posted_field=val' )
+	 *
+	 *                // If a nested condition is used, it will be considered a "match" if ALL sub-conditions match.
+	 *                // In the following example, the condition will match if you are on the plugin settings page AND on the signature tab
+	 *                array(
+	 *                    'admin_page' => array( 'plugin_settings' )
+	 *                    'tab'        => 'signature',
+	 *                ),
 	 *            )
 	 *        ),
 	 *        array(
@@ -882,7 +933,7 @@ abstract class GFAddOn {
 	 *            "enqueue"  => array(
 	 *                // field_types - Specifies one or more field types that requires this script.
 	 *                // The script will only be enqueued if the current form has a field of any of the specified field types.
-	 *                // Only applies when a current form is available.
+	 *                // Only applies when a current form is available (website front end, but also in the form editor, preview, entry details, results, etc...)
 	 *                array( 'field_types' => array( 'signature' ) )
 	 *            )
 	 *        )
@@ -1049,6 +1100,176 @@ abstract class GFAddOn {
 		return array_merge( $print_styles, $this->_print_styles );
 	}
 
+	//--------------  Theme Layers  ---------------
+
+	/**
+	 * The title to display for this theme layer - defaults to the addon short title.
+	 *
+	 * @since 2.7
+	 *
+	 * @return string
+	 */
+	public function theme_layer_title() {
+		return $this->_short_title;
+	}
+
+	/**
+	 * The slug to display for this theme layer - defaults to the addon slug.
+	 *
+	 * @since 2.7
+	 *
+	 * @return string
+	 */
+	public function theme_layer_slug() {
+		return $this->_slug;
+	}
+
+	/**
+	 * The icon to use for displaying on settings pages, etc. Defaults to user icon.
+	 *
+	 * @since 2.7
+	 *
+	 * @return string
+	 */
+	public function theme_layer_icon() {
+		return 'gform-icon--user';
+	}
+
+	/**
+	 * Provides the priority for this theme layer.
+	 *
+	 * @since 2.7
+	 *
+	 * @return int
+	 */
+	public function theme_layer_priority() {
+		return 0;
+	}
+
+	/**
+	 * Defines the various setting fields to display on the Form Settings screen for this theme layer.
+	 *
+	 * @since 2.7
+	 *
+	 * @return array[]
+	 */
+	public function theme_layer_settings_fields() {
+		return array();
+	}
+
+	/**
+	 * The fields/views to override for this theme layer.
+	 *
+	 * @since 2.7
+	 *
+	 * @return string[]
+	 */
+	public function theme_layer_overridden_fields() {
+		return array();
+	}
+
+	/**
+	 * The form CSS properties to output based on settings, block settings, or arbitrary conditions.
+	 *
+	 * These styles are output as a style block both at the top of every form wrapper, as well as
+	 * at the top of the Full Screen template.
+	 *
+	 * @since 2.7
+	 *
+	 * @param $form_id
+	 * @param $settings
+	 * @param $block_settings
+	 *
+	 * @return array|null[]
+	 */
+	public function theme_layer_form_css_properties( $form_id, $settings, $block_settings ) {
+		return array();
+	}
+
+	/**
+	 * An array of styles to enqueue.
+	 *
+	 * @since 2.7
+	 *
+	 * @param $form
+	 * @param $ajax
+	 * @param $settings
+	 * @param $block_settings
+	 *
+	 * @return array
+	 */
+	public function theme_layer_styles( $form, $ajax, $settings, $block_settings = array() ) {
+		return array();
+	}
+
+	/**
+	 * An array of scripts to enqueue.
+	 *
+	 * @since 2.7
+	 *
+	 * @param $form
+	 * @param $ajax
+	 * @param $settings
+	 * @param $block_settings
+	 *
+	 * @return array
+	 */
+	public function theme_layer_scripts( $form, $ajax, $settings, $block_settings = array() ) {
+		return array();
+	}
+
+	/**
+	 * Provides third party styles to apply for this theme layer.
+	 *
+	 * @since 2.7
+	 *
+	 * @return array
+	 */
+	public function theme_layer_third_party_styles( $form_id, $settings, $block_settings ) {
+		return array();
+	}
+
+	/**
+	 * Outputs third-party styles to pass to JS-powered widgets like payment modals, etc.
+	 *
+	 * @since 2.7
+	 *
+	 * @param $markup
+	 * @param $form
+	 *
+	 * @return mixed|string
+	 */
+	public function output_third_party_styles( $markup, $form ) {
+		$settings           = $this->get_current_settings();
+		$all_block_settings = apply_filters( 'gform_form_block_attribute_values', array() );
+		$block_settings     = isset( $all_block_settings[ $form['id'] ][ $form['page_instance'] ] ) ? $all_block_settings[ $form['id'] ][ $form['page_instance'] ] : array();
+		$properties         = call_user_func_array( array( $this, 'theme_layer_third_party_styles' ), array( $form['id'], $settings, $block_settings ) );
+
+		if ( empty( $properties ) ) {
+			return $markup;
+		}
+
+		$page_instance   = isset( $form['page_instance'] ) ? $form['page_instance'] : 0;
+		$base_identifier = sprintf( 'gform.extensions.styles.%s', $this->get_slug() );
+		$form_identifier = sprintf( 'gform.extensions.styles.%s[%s]', $this->get_slug(), $form['id'] );
+		$full_identifier = sprintf( 'gform.extensions.styles.%s[%s][%s]', $this->get_slug(), $form['id'], $page_instance );
+
+		ob_start(); ?>
+
+		<script>
+			gform.extensions = gform.extensions || {};
+			gform.extensions.styles = gform.extensions.styles || {};
+			<?php echo $base_identifier; ?> = <?php echo $base_identifier; ?> || {};
+			<?php echo $form_identifier; ?> = <?php echo $form_identifier; ?> || {};
+			<?php echo $full_identifier; ?> = <?php echo json_encode( $properties ); ?>;
+		</script>
+
+		<?php
+
+		$props = ob_get_clean();
+		return $markup . $props;
+	}
+
 
 	/**
 	 * Adds scripts to the list of white-listed no conflict scripts.
@@ -1128,83 +1349,89 @@ abstract class GFAddOn {
 
 		foreach ( $pages as $page ) {
 			switch ( $page ) {
-				case 'form_editor' :
+				case 'form_editor':
 					if ( $this->is_form_editor() ) {
 						return true;
 					}
 
 					break;
 
-				case 'form_list' :
+				case 'form_list':
 					if ( $this->is_form_list() ) {
 						return true;
 					}
 
 					break;
 
-				case 'form_settings' :
+				case 'form_settings':
 					if ( $this->is_form_settings( $tab ) ) {
 						return true;
 					}
 
 					break;
 
-				case 'plugin_settings' :
+				case 'plugin_settings':
 					if ( $this->is_plugin_settings( $tab ) ) {
 						return true;
 					}
 
 					break;
 
-				case 'app_settings' :
+				case 'app_settings':
 					if ( $this->is_app_settings( $tab ) ) {
 						return true;
 					}
 
 					break;
 
-				case 'plugin_page' :
+				case 'plugin_page':
 					if ( $this->is_plugin_page() ) {
 						return true;
 					}
 
 					break;
 
-				case 'entry_list' :
+				case 'entry_list':
 					if ( $this->is_entry_list() ) {
 						return true;
 					}
 
 					break;
 
-				case 'entry_view' :
+				case 'entry_view':
 					if ( $this->is_entry_view() ) {
 						return true;
 					}
 
 					break;
 
-				case 'entry_edit' :
+				case 'entry_edit':
 					if ( $this->is_entry_edit() ) {
 						return true;
 					}
 
 					break;
 
-				case 'results' :
+				case 'results':
 					if ( $this->is_results() ) {
 						return true;
 					}
 
 					break;
 
-				case 'customizer' :
+				case 'customizer':
 					if ( is_customize_preview() ) {
 						return true;
 					}
 
 					break;
 
+				case 'block_editor':
+					if ( $this->is_block_editor() ) {
+						return true;
+					}
+
+					break;
 			}
 		}
 
@@ -3968,6 +4195,20 @@ abstract class GFAddOn {
 
 				// Get fields.
 				$sections = array_values( $this->form_settings_fields( $form ) );
+
+				/**
+				 * Allows code to modify the settings fields displayed on a given form settings page.
+				 *
+				 * @since 2.7
+				 *
+				 * @param array  $sections The current sections and fields.
+				 * @parem string $form     The current form.
+				 *
+				 * @return array
+				 */
+				$sections = gf_apply_filters( array( 'gform_addon_form_settings_fields', rgar( $form, 'id' ), $this->_slug ), $sections, $form );
+
+
 				$sections = $this->prepare_settings_sections( $sections, 'form_settings' );
 
 				// Initialize new settings renderer.
@@ -5271,6 +5512,11 @@ abstract class GFAddOn {
 			self::display_plugin_message( $message, true );
 		}
 
+		if ( self::is_gravityforms_supported( $this->_min_gravityforms_version ) && ! self::is_gravityforms_compatible() ) {
+			$message = $this->compatibility_message();
+			self::display_plugin_message( $message, true );
+		}
+
 		if ( ! $this->_enable_rg_autoupgrade ) {
 			return;
 		}
@@ -5285,6 +5531,19 @@ abstract class GFAddOn {
 	 */
 	public function plugin_message() {
 		$message = sprintf( esc_html__( 'Gravity Forms %s is required. Activate it now or %spurchase it today!%s', 'gravityforms' ), $this->_min_gravityforms_version, "<a href='https://www.gravityforms.com'>", '</a>' );
+
+		return $message;
+	}
+
+	/**
+	 * Returns the message that will be displayed if the current version of Gravity Forms is not compatible with the add-on.
+	 *
+	 * Override this method to display a custom message.
+	 *
+	 * @since 2.7.12
+	 */
+	public function compatibility_message() {
+		$message = esc_html__( 'Some features of the add-on are not available on the current version of Gravity Forms. Please update to the latest Gravity Forms version for full compatibility.', 'gravityforms' );
 
 		return $message;
 	}
@@ -5818,6 +6077,60 @@ abstract class GFAddOn {
 	}
 
 	/**
+	 * Checks whether the current version of Gravity Forms is compatible with all features of an add-on.
+	 *
+	 * @since 2.7.12
+	 *
+	 * @param string $min_compatible_gravityforms_version The version to compare the current version with.
+	 *
+	 * @return bool|mixed
+	 */
+	public function is_gravityforms_compatible( $min_compatible_gravityforms_version = '' ) {
+		if ( isset( $this->_min_gravityforms_version ) && empty( $min_compatible_gravityforms_version ) ) {
+			$min_compatible_gravityforms_version = $this->_min_compatible_gravityforms_version;
+		}
+
+		if ( empty( $min_compatible_gravityforms_version ) ) {
+			return true;
+		}
+
+		static $results = array();
+
+		if ( ! isset( $results[ $min_compatible_gravityforms_version ] ) ) {
+			$results[ $min_compatible_gravityforms_version ] = version_compare( GFForms::$version, $min_compatible_gravityforms_version, '>=' );
+		}
+
+		return $results[ $min_compatible_gravityforms_version ];
+	}
+
+	/**
+	 * Display an upgrade notice if the current version of Gravity Forms is not fully supported.
+	 *
+	 * @since 2.7.12
+	 */
+	public function maybe_display_upgrade_notice() {
+		if ( $this->is_gravityforms_compatible() ) {
+			return;
+		}
+
+		$message = sprintf(
+			/* translators: 1: Add-on title */
+			esc_html__(
+				'Some features of the %1$s Add-on are not available on this version of Gravity Forms. Please update to the latest version for full compatibility.',
+				'gravityforms'
+			),
+			$this->get_short_title()
+		);
+		?>
+
+		<div class="gf-notice notice notice-error">
+			<p><?php echo wp_kses( $message, array( 'a' => array( 'href' => true ) ) ); ?></p>
+		</div>
+		<?php
+	}
+
+
+	/**
 	 * Returns this plugin's short title. Used to display the plugin title in small areas such as tabs
 	 */
 	public function get_short_title() {
@@ -6072,6 +6385,17 @@ abstract class GFAddOn {
 		return false;
 	}
 
+	/**
+	 * Determines if the current page is the block editor.
+	 *
+	 * @since 2.7
+	 *
+	 * @return bool Returns true if this is the block editor page. Otherwise, returns false.
+	 */
+	public function is_block_editor() {
+		return GFCommon::is_block_editor_page();
+	}
+
 	public function has_deprecated_elements() {
 		$deprecated = GFAddOn::get_all_deprecated_protected_methods( get_class( $this ) );
 		if ( ! empty( $deprecated ) ) {
@@ -6165,6 +6489,10 @@ abstract class GFAddOn {
 	 * @since 2.4.17
 	 */
 	public function update_path() {
+		if ( ! $this->_path || ! $this->_full_path ) {
+			return;
+		}
+
 		$path_dirname = dirname( $this->_path );
 		if ( $path_dirname !== '.' ) {
 			$full_path_dirname = basename( dirname( $this->_full_path ) );

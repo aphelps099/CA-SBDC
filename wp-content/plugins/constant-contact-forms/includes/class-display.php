@@ -69,7 +69,7 @@ class ConstantContact_Display {
 		wp_register_script(
 			'ctct_frontend_forms',
 			constant_contact()->url() . 'assets/js/ctct-plugin-frontend' . $suffix . '.js',
-			[ 'jquery' ],
+			[],
 			Constant_Contact::VERSION,
 			true
 		);
@@ -352,6 +352,17 @@ class ConstantContact_Display {
 
 		$return .= ob_get_clean();
 
+		if ( ! empty( $form_data['options']['description'] ) ) {
+			$return .= $this->description( $form_data['options']['description'], $form_id );
+		}
+
+		if ( $form_id && current_user_can( 'edit_posts' ) ) {
+			$edit_link = get_edit_post_link( absint( $form_id ) );
+			if ( $edit_link ) {
+				$return .= '<a class="button ctct-button" href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Edit Form', 'constant-contact-forms' ) . '</a>';
+			}
+		}
+
 		$return .= '<form class="' . esc_attr( $form_classes ) . '" id="' . $rf_id . '" ';
 		$return .= 'data-doajax="' . esc_attr( $do_ajax ) . '" ';
 		$return .= 'style="' . esc_attr( $form_styles ) . '" ';
@@ -369,6 +380,8 @@ class ConstantContact_Display {
 			}
 		}
 
+		$return .= $this->submit( $form_id );
+
 		$return .= $this->build_honeypot_field();
 
 		$return .= $this->add_verify_fields( $form_data );
@@ -377,13 +390,11 @@ class ConstantContact_Display {
 
 		$return .= $this->build_timestamp();
 
-		$return .= $this->submit( $form_id );
-
-		$return .= wp_kses_post( $this->maybe_add_disclose_note( $form_data ) );
-
 		$return .= $this->must_opt_in( $form_data );
 
 		$return .= '</form>';
+
+		$return .= wp_kses_post( $this->maybe_add_disclose_note( $form_data ) );
 
 		ob_start();
 
@@ -497,13 +508,6 @@ class ConstantContact_Display {
 		$return  = '';
 		$form_id = absint( $form_data['options']['form_id'] );
 
-		if ( isset( $form_data['options'] ) && isset( $form_data['options']['form_id'] ) ) {
-			$desc = isset( $form_data['options']['description'] ) ? $form_data['options']['description'] : '';
-
-			$return .= $this->description( $desc, $form_id );
-
-		}
-
 		$label_placement = constant_contact_get_css_customization( $form_id, '_ctct_form_label_placement' );
 		if ( empty( $label_placement ) ) {
 			$label_placement = 'top';
@@ -518,13 +522,20 @@ class ConstantContact_Display {
 		if ( constant_contact()->api->is_connected() && isset( $form_data['options'] ) ) {
 			$lists = maybe_unserialize( isset( $form_data['options']['optin']['list'] ) ? $form_data['options']['optin']['list'] : '' );
 
-			$return .= $this->field( [
-				'name'     => __( 'Select list(s) to subscribe to', 'constant-contact-forms' ),
-				'map_to'   => 'lists',
-				'type'     => 'checkbox',
-				'required' => true,
-				'value'    => $lists,
-			], $old_values, $req_errors, $form_id, $label_placement, $instance );
+			$return .= $this->field(
+				[
+					'name'     => __( 'Select list(s) to subscribe to', 'constant-contact-forms' ),
+					'map_to'   => 'lists',
+					'type'     => 'checkbox',
+					'required' => true,
+					'value'    => $lists,
+				],
+				$old_values,
+				$req_errors,
+				$form_id,
+				$label_placement,
+				$instance
+			);
 			$return .= $this->opt_in( $form_data['options'], $instance );
 		}
 
@@ -545,7 +556,8 @@ class ConstantContact_Display {
 			'<div ' .
 				'class="ctct_usage"' .
 				'style="border: 0 none; clip: rect( 0, 0, 0, 0 ); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px;"' .
-			'><label for="ctct_usage_field">%s</label><input type="text" value="" id="ctct_usage_field" name="ctct_usage_field" class="ctct_usage_field" tabindex="-1" /></div>', esc_html__( 'Constant Contact Use. Please leave this field blank.', 'constant-contact-forms' )
+			'><label for="ctct_usage_field">%s</label><input type="text" value="" id="ctct_usage_field" name="ctct_usage_field" class="ctct_usage_field" tabindex="-1" /></div>',
+			esc_html__( 'Constant Contact Use. Please leave this field blank.', 'constant-contact-forms' )
 		);
 	}
 
@@ -662,14 +674,17 @@ class ConstantContact_Display {
 			return '';
 		}
 
-		$field = wp_parse_args( $field, [
-			'name'             => '',
-			'map_to'           => '',
-			'type'             => '',
-			'description'      => '',
-			'field_custom_css' => [],
-			'required'         => false,
-		] );
+		$field = wp_parse_args(
+			$field,
+			[
+				'name'             => '',
+				'map_to'           => '',
+				'type'             => '',
+				'description'      => '',
+				'field_custom_css' => [],
+				'required'         => false,
+			]
+		);
 
 		$name  = sanitize_text_field( $field['name'] );
 		$map   = sanitize_text_field( $field['map_to'] );
@@ -726,7 +741,7 @@ class ConstantContact_Display {
 			case 'text_field':
 				return $this->input( 'text', $name, $map, $value, $desc, $req, false, $field_error, $form_id, $label_placement, $instance );
 			case 'custom_text_area':
-				return $this->textarea( $name, $map, $value, $desc, $req, $field_error, 'maxlength="500"', $label_placement, $instance );
+				return $this->textarea( $name, $map, $value, $desc, $req, $field_error, 'maxlength="2000"', $label_placement, $instance );
 			case 'email':
 				return $this->input( 'email', $name, $map, $value, $desc, $req, false, $field_error, $form_id, $label_placement, $instance );
 			case 'hidden':
@@ -736,7 +751,7 @@ class ConstantContact_Display {
 			case 'submit':
 				return $this->input( 'submit', $name, $map, $value, $desc, $req, false, $field_error, $form_id, $label_placement, $instance );
 			case 'address':
-				return $this->address( $name, $map, $value, $desc, $req, $field_error, $label_placement, $instance );
+				return $this->address( $name, $map, $value, $desc, $req, $field_error, $form_id, $label_placement, $instance );
 			case 'anniversery':
 			case 'birthday':
 				// Need this to be month / day / year.
@@ -771,7 +786,7 @@ class ConstantContact_Display {
 		foreach ( $submitted_vals as $post ) {
 
 			if ( isset( $post['key'] ) && $post['key'] ) {
-				$post_map = filter_input( INPUT_POST, esc_attr( $map ), FILTER_SANITIZE_STRING );
+				$post_map = filter_input( INPUT_POST, esc_attr( $map ), FILTER_SANITIZE_SPECIAL_CHARS );
 
 				if ( 'address' === $field['name'] ) {
 
@@ -780,7 +795,7 @@ class ConstantContact_Display {
 						$addr_key = explode( '___', $post['key'] );
 
 						if ( isset( $addr_key[0] ) && $addr_key[0] ) {
-							$post_key = filter_input( INPUT_POST, esc_attr( $post['key'] ), FILTER_SANITIZE_STRING );
+							$post_key = filter_input( INPUT_POST, esc_attr( $post['key'] ), FILTER_SANITIZE_SPECIAL_CHARS );
 							$post_key = empty( $post_key ) ? '' : sanitize_text_field( wp_unslash( $post_key ) );
 
 							$return[ esc_attr( $addr_key[0] ) ] = $post_key;
@@ -856,15 +871,6 @@ class ConstantContact_Display {
 
 		$display      = '';
 		$inline_style = $this->get_description_inline_styles();
-
-		if ( $form_id && current_user_can( 'edit_posts' ) ) {
-
-			$edit_link = get_edit_post_link( absint( $form_id ) );
-
-			if ( $edit_link ) {
-				$display .= '<a class="button ctct-button" href="' . esc_url( $edit_link ) . '">' . __( 'Edit Form', 'constant-contact-forms' ) . '</a>';
-			}
-		}
 
 		return '<span class="ctct-form-description" ' . $inline_style . '>' . wpautop( wp_kses_post( $desc ) ) . '</span>' . $display;
 	}
@@ -1065,7 +1071,7 @@ class ConstantContact_Display {
 		if ( false !== strpos( $id, 'custom___' ) ) {
 			$max_length = $truncate_max_length ? $this->get_max_length_attr( $name ) : $this->get_max_length_attr();
 		} elseif ( false !== strpos( $id, 'first_name___' ) || false !== strpos( $id, 'last_name___' ) ) {
-			$max_length = 'maxlength="50"';
+			$max_length = 'maxlength="255"';
 		}
 
 		if ( $field_error ) {
@@ -1204,12 +1210,14 @@ class ConstantContact_Display {
 
 			// Retrieve list names for label.
 			if ( 'lists' === $key_pieces[0] ) {
-				$list = get_posts( [
-					'numberposts' => 1,
-					'post_type'   => 'ctct_lists',
-					'meta_key'    => '_ctct_list_id',
-					'meta_value'  => $input_label,
-				] );
+				$list = get_posts(
+					[
+						'numberposts' => 1,
+						'post_type'   => 'ctct_lists',
+						'meta_key'    => '_ctct_list_id',
+						'meta_value'  => $input_label,
+					]
+				);
 
 				// Skip list IDs that don't have corresponding post.
 				if ( empty( $list ) ) {
@@ -1276,15 +1284,19 @@ class ConstantContact_Display {
 			 *
 			 * @param string $value Submit button text.
 			 */
-			apply_filters( 'constant_contact_submit_text', __( 'Send', 'constant-contact-forms' )
-		);
+			apply_filters(
+				'constant_contact_submit_text',
+				__( 'Send', 'constant-contact-forms' )
+			);
 
-		return $this->field( [
-			'type'   => 'submit',
-			'name'   => 'ctct-submitted',
-			'map_to' => 'ctct-submitted',
-			'value'  => esc_html( $button_text ),
-		] );
+		return $this->field(
+			[
+				'type'   => 'submit',
+				'name'   => 'ctct-submitted',
+				'map_to' => 'ctct-submitted',
+				'value'  => esc_html( $button_text ),
+			]
+		);
 	}
 
 	/**
@@ -1302,11 +1314,14 @@ class ConstantContact_Display {
 			return '';
 		}
 
-		$optin = wp_parse_args( $form_data['optin'], [
-			'list'         => false,
-			'show'         => false,
-			'instructions' => '',
-		] );
+		$optin = wp_parse_args(
+			$form_data['optin'],
+			[
+				'list'         => false,
+				'show'         => false,
+				'instructions' => '',
+			]
+		);
 
 		if ( isset( $optin['list'] ) && $optin['list'] ) {
 			return $this->optin_display( $optin, $instance );
@@ -1386,7 +1401,7 @@ class ConstantContact_Display {
 	 * @param  int     $instance        Current form instance.
 	 * @return string                   HTML markup.
 	 */
-	public function address( $name = '', $field_key = '', $value = [], $desc = '', $req = false, $field_error = '', $label_placement = 'top', $instance = 0 ) {
+	public function address( $name = '', $field_key = '', $value = [], $desc = '', $req = false, $field_error = '', $form_id = 0, $label_placement = 'top', $instance = 0 ) {
 		$field_id = "{$field_key}_{$instance}";
 		$street   = esc_html__( 'Street Address', 'constant-contact-forms' );
 		$line_2   = esc_html__( 'Address Line 2', 'constant-contact-forms' );
@@ -1394,177 +1409,299 @@ class ConstantContact_Display {
 		$state    = apply_filters( 'constant_contact_address_state', esc_html__( 'State', 'constant-contact-forms' ) );
 		$zip      = apply_filters( 'constant_contact_address_zip_code', esc_html__( 'ZIP Code', 'constant-contact-forms' ) );
 
-		$v_street = isset( $value['street_address'] ) ? $value['street_address'] : '';
-		$v_line_2 = isset( $value['line_2_address'] ) ? $value['line_2_address'] : '';
-		$v_city   = isset( $value['city_address'] ) ? $value['city_address'] : '';
-		$v_state  = isset( $value['state_address'] ) ? $value['state_address'] : '';
-		$v_zip    = isset( $value['zip_address'] ) ? $value['zip'] : '';
-
 		$req_label             = $req ? ' ' . $this->display_required_indicator() : '';
 		$req_class             = $req ? ' ctct-form-field-required ' : '';
 		$req                   = $req ? ' required ' : '';
 		$label_placement_class = 'ctct-label-' . $label_placement;
 		$inline_font_styles    = $this->get_inline_font_color();
 
-		$label_street1 = sprintf(
-			'<span class="%1$s"><label for="street_%2$s" style="%3$s">%4$s</label></span>',
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_id ),
-			esc_attr( $inline_font_styles ),
-			esc_attr( $street ) . $req_label
-		);
-		$input_street1 = sprintf(
-			'<input %1$stype="text" class="ctct-text ctct-address-street %2$s street_%3$s" name="street_%4$s" value="%5$s" id="street_%6$s">',
-			$req,
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_key ),
-			esc_attr( $field_key ),
-			esc_attr( $v_street ),
-			esc_attr( $field_id )
-		);
-
-		$input_street1_whole = '';
-		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
-			$input_street1_whole = $label_street1 . $input_street1;
-		}
-		if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
-			$input_street1_whole = $input_street1 . $label_street1;
+		if ( ! empty( $form_id ) ) {
+			$included_address_fields = get_post_meta( $form_id, '_ctct_address_fields_include', true );
+			$required_address_fields = get_post_meta( $form_id, '_ctct_address_fields_require', true );
 		}
 
-		$label_street2 = sprintf(
-			'<span class="%1$s"><label for="line_2_%2$s" style="%3$s">%4$s</label></span>',
-			$label_placement_class,
-			esc_attr( $field_id ),
-			esc_attr( $inline_font_styles ),
-			esc_attr( $line_2 )
-		);
+		if ( ! empty( $included_address_fields ) ) {
+			$fields = [];
+			foreach( $included_address_fields as $field ) {
+				// These can be left alone for each iteration. No need to make field-specific variables.
+				$is_required_bool = ( ! empty( $required_address_fields ) && in_array( $field, $required_address_fields, true ) );
+				$is_required = ( ! empty( $required_address_fields ) && in_array( $field, $required_address_fields, true ) ) ? 'required ' : '';
 
-		$input_street2 = sprintf(
-			'<input type="text" class="ctct-text ctct-address-line-2 %1$s line_2_%2$s" name="line_2_%3$s" value="%4$s" id="line_2_%5$s">',
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_key ),
-			esc_attr( $field_key ),
-			esc_attr( $v_line_2 ),
-			esc_attr( $field_id )
-		);
+				// Reassigning in this context
+				$req_class = $is_required_bool ? 'ctct-form-field-required' : '';
+				$field_label = '';
+				switch ( $field ) {
+					case 'country':
+						$field_label = esc_html__( 'Country', 'constant-contact-forms' );
+						$input_numbered_class = 'input_2_1_2_container';
+						break;
+					case 'street':
+						$field_label = esc_html__( 'Street', 'constant-contact-forms' );
+						$input_numbered_class = 'input_2_1_2_container';
+						break;
+					case 'city':
+						$field_label = esc_html__( 'City', 'constant-contact-forms' );
+						$input_numbered_class = 'input_2_1_3_container';
+						break;
+					case 'state':
+						$field_label = esc_html__( 'State/Province', 'constant-contact-forms' );
+						$input_numbered_class = 'input_2_1_4_container';
+						break;
+					case 'zip':
+						$field_label = esc_html__( 'Postal Code', 'constant-contact-forms' );
+						$input_numbered_class = 'input_2_1_5_container';
+						break;
+					default:
+						break;
+				}
+				if ( 'country' !== $field ) {
+					$field_value      = isset( $value[ $field ] ) ? $value[ $field ] : '';
+					$label_placement_tmpl = '<span class="%1$s"><label for="%2$s_%3$s" style="%4$s">%5$s %6$s</label></span><input %7$s type="text" class="ctct-text ctct-address-%2$s %1$s %2$s_%8$s" name="%2$s_%8$s" value="%9$s" id="%2$s_%3$s">';
 
-		$input_street2_whole = '';
+					if ( in_array( $label_placement_class, [ 'ctct-label-bottom', 'ctct-label-right'], true ) ) {
+						$label_placement_tmpl = '<input %7$s type="text" class="ctct-text ctct-address-%2$s %1$s %2$s_%8$s" name="%2$s_%8$s" value="%9$s" id="%2$s_%3$s"><span class="%1$s"><label for="%2$s_%3$s" style="%4$s">%5$s %6$s</label></span>';
+					}
+					$fields[ $field ] = sprintf(
+						'<div class="ctct-form-field ctct-field-full address-%1$s %2$s %3$s">%4$s</div>',
+						$field,
+						esc_attr( $req_class ),
+						$input_numbered_class,
+						sprintf(
+							$label_placement_tmpl,
+							esc_attr( $label_placement_class ), // 1
+							$field, // 2
+							esc_attr( $field_id ), // 3
+							esc_attr( $inline_font_styles ), // 4
+							$field_label, // 5
+							( $is_required_bool ) ? $this->display_required_indicator() : '', // 6
+							$is_required, // 7
+							esc_attr( $field_key ), // 8
+							esc_attr( $field_value ) // 9
+						)
+					);
+				} else {
+					$countries = constant_contact_countries_array();
+					$select_options = [
+						'<option value="">' . esc_html__( 'Please choose an option', 'constant-contact-forms' ) . '</option>'
+					];
+					$field_value = isset( $value[ $field ] ) ? $value[ $field ] : '';
+					foreach ( $countries as $country ) {
+						$select_options[] = sprintf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( $country ),
+							selected( $field_value, esc_attr( $country ) ),
+							esc_html( $country )
+						);
+					}
 
-		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
-			$input_street2_whole = $label_street2 . $input_street2;
+					$label_placement_tmpl = '<span class="%1$s"><label for="%2$s_%3$s" style="%4$s">%5$s %6$s</label></span><select %7$s class="ctct-dropdown ctct-address-%2$s %1$s %2$s_%8$s" name="%2$s_%8$s" id="%2$s_%3$s">%9$s</select>';
+
+					if ( in_array( $label_placement_class, [ 'ctct-label-bottom', 'ctct-label-right' ], true ) ) {
+						$label_placement_tmpl = '<select %7$s class="ctct-dropdown ctct-address-%2$s %1$s %2$s_%8$s" name="%2$s_%8$s" id="%2$s_%3$s">%9$s</select><span class="%1$s"><label for="%2$s_%3$s" style="%4$s">%5$s %6$s</label></span>';
+					}
+
+					$fields[ $field ] = sprintf(
+						'<div class="ctct-form-field ctct-field-full address-%1$s %2$s %3$s">%4$s</div>',
+						$field,
+						esc_attr( $req_class ),
+						$input_numbered_class,
+						sprintf(
+							$label_placement_tmpl,
+							esc_attr( $label_placement_class ), // 1
+							$field, // 2
+							esc_attr( $field_id ), // 3
+							esc_attr( $inline_font_styles ), // 4
+							$field_label, // 5
+							( $is_required_bool ) ? $this->display_required_indicator() : '', // 6
+							$is_required, // 7
+							esc_attr( $field_key ), // 8
+							implode( $select_options ) // 9
+						)
+					);
+				}
+			}
+
+			$return = '
+			<fieldset class="ctct-address">
+				<legend style="%s">%s</legend>
+				%s
+			</fieldset>
+			';
+			return sprintf(
+				$return,
+				esc_attr( $inline_font_styles ),
+				esc_html( $name ),
+				implode( '', $fields )
+			);
+		} else {
+			// !!!!!! LEGACY-ISH VERSION !!!!!!
+
+			$v_street = isset( $value['street_address'] ) ? $value['street_address'] : '';
+			$v_line_2 = isset( $value['line_2_address'] ) ? $value['line_2_address'] : '';
+			$v_city   = isset( $value['city_address'] ) ? $value['city_address'] : '';
+			$v_state  = isset( $value['state_address'] ) ? $value['state_address'] : '';
+			$v_zip    = isset( $value['zip_address'] ) ? $value['zip'] : '';
+
+			$label_street1 = sprintf(
+				'<span class="%1$s"><label for="street_%2$s" style="%3$s">%4$s</label></span>',
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_id ),
+				esc_attr( $inline_font_styles ),
+				esc_attr( $street ) . $req_label
+			);
+			$input_street1 = sprintf(
+				'<input %1$stype="text" class="ctct-text ctct-address-street %2$s street_%3$s" name="street_%4$s" value="%5$s" id="street_%6$s">',
+				$req,
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_key ),
+				esc_attr( $field_key ),
+				esc_attr( $v_street ),
+				esc_attr( $field_id )
+			);
+
+			$input_street1_whole = '';
+			if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
+				$input_street1_whole = $label_street1 . $input_street1;
+			}
+			if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
+				$input_street1_whole = $input_street1 . $label_street1;
+			}
+
+			$label_street2 = sprintf(
+				'<span class="%1$s"><label for="line_2_%2$s" style="%3$s">%4$s</label></span>',
+				$label_placement_class,
+				esc_attr( $field_id ),
+				esc_attr( $inline_font_styles ),
+				esc_attr( $line_2 )
+			);
+
+			$input_street2 = sprintf(
+				'<input type="text" class="ctct-text ctct-address-line-2 %1$s line_2_%2$s" name="line_2_%3$s" value="%4$s" id="line_2_%5$s">',
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_key ),
+				esc_attr( $field_key ),
+				esc_attr( $v_line_2 ),
+				esc_attr( $field_id )
+			);
+
+			$input_street2_whole = '';
+
+			if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
+				$input_street2_whole = $label_street2 . $input_street2;
+			}
+
+			if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
+				$input_street2_whole = $input_street2 . $label_street2;
+			}
+
+			$label_city = sprintf(
+				'<span class="%1$s"><label for="city_%2$s" style="%3$s">%4$s</label></span>',
+				$label_placement_class,
+				esc_attr( $field_id ),
+				esc_attr( $inline_font_styles ),
+				esc_attr( $city ) . $req_label
+			);
+
+			$input_city = sprintf(
+				'<input %1$stype="text" class="ctct-text ctct-address-city %2$s city_%3$s" name="city_%4$s" value="%5$s" id="city_%6$s">',
+				$req,
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_key ),
+				esc_attr( $field_key ),
+				esc_attr( $v_city ),
+				esc_attr( $field_id )
+			);
+
+			$input_city_whole = '';
+
+			if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
+				$input_city_whole = $label_city . $input_city;
+			}
+
+			if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
+				$input_city_whole = $input_city . $label_city;
+			}
+
+			$label_state = sprintf(
+				'<span class="%1$s"><label for="state_%2$s" style="%3$s">%4$s</label></span>',
+				$label_placement_class,
+				esc_attr( $field_id ),
+				esc_attr( $inline_font_styles ),
+				esc_attr( $state ) . $req_label
+			);
+
+			$input_state = sprintf(
+				'<input %1$stype="text" class="ctct-text ctct-address-state %2$s state_%3$s" name="state_%4$s" value="%5$s" id="state_%6$s">',
+				$req,
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_key ),
+				esc_attr( $field_key ),
+				esc_attr( $v_state ),
+				esc_attr( $field_id )
+			);
+
+			$input_state_whole = '';
+
+			if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
+				$input_state_whole = $label_state . $input_state;
+			}
+
+			if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
+				$input_state_whole = $input_state . $label_state;
+			}
+
+			$label_zip = sprintf(
+				'<span class="%1$s"><label for="zip_%2$s" style="%3$s">%4$s</label></span>',
+				$label_placement_class,
+				esc_attr( $field_id ),
+				esc_attr( $inline_font_styles ),
+				esc_attr( $zip ) . $req_label
+			);
+
+			$input_zip = sprintf(
+				'<input %1$stype="text" class="ctct-text ctct-address-zip %2$s zip_%3$s" name="zip_%4$s" value="%5$s" id="zip_%6$s">',
+				$req,
+				esc_attr( $label_placement_class ),
+				esc_attr( $field_key ),
+				esc_attr( $field_key ),
+				esc_attr( $v_zip ),
+				esc_attr( $field_id )
+			);
+
+			$input_zip_whole = '';
+
+			if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
+				$input_zip_whole = $label_zip . $input_zip;
+			}
+
+			if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
+				$input_zip_whole = $input_zip . $label_zip;
+			}
+
+			$return = '<fieldset class="ctct-address"><legend style="%s">%s</legend>';
+			$return .= '<div class="ctct-form-field ctct-field-full address-line-1%s">%s</div>';
+			$return .= '<div class="ctct-form-field ctct-field-full address-line-2%s input_2_1_2_container">%s</div>';
+			$return .= '<div class="ctct-form-field ctct-field-third address-city%s input_2_1_3_container">%s</div>';
+			$return .= '<div class="ctct-form-field ctct-field-third address-state%s input_2_1_4_container">%s</div>';
+			$return .= '<div class="ctct-form-field ctct-field-third address-zip%s input_2_1_5_container">%s</div>';
+			$return .= '</fieldset>';
+
+			return sprintf(
+				$return,
+				esc_attr( $inline_font_styles ),
+				esc_html( $name ),
+				$req_class,
+				$input_street1_whole,
+				$req_class,
+				$input_street2_whole,
+				$req_class,
+				$input_city_whole,
+				$req_class,
+				$input_state_whole,
+				$req_class,
+				$input_zip_whole
+			);
 		}
-
-		if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
-			$input_street2_whole = $input_street2 . $label_street2;
-		}
-
-		$label_city = sprintf(
-			'<span class="%1$s"><label for="city_%2$s" style="%3$s">%4$s</label></span>',
-			$label_placement_class,
-			esc_attr( $field_id ),
-			esc_attr( $inline_font_styles ),
-			esc_attr( $city ) . $req_label
-		);
-
-		$input_city = sprintf(
-			'<input %1$stype="text" class="ctct-text ctct-address-city %2$s city_%3$s" name="city_%4$s" value="%5$s" id="city_%6$s">',
-			$req,
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_key ),
-			esc_attr( $field_key ),
-			esc_attr( $v_city ),
-			esc_attr( $field_id )
-		);
-
-		$input_city_whole = '';
-
-		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
-			$input_city_whole = $label_city . $input_city;
-		}
-
-		if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
-			$input_city_whole = $input_city . $label_city;
-		}
-
-		$label_state = sprintf(
-			'<span class="%1$s"><label for="state_%2$s" style="%3$s">%4$s</label></span>',
-			$label_placement_class,
-			esc_attr( $field_id ),
-			esc_attr( $inline_font_styles ),
-			esc_attr( $state ) . $req_label
-		);
-
-		$input_state = sprintf(
-			'<input %1$stype="text" class="ctct-text ctct-address-state %2$s state_%3$s" name="state_%4$s" value="%5$s" id="state_%6$s">',
-			$req,
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_key ),
-			esc_attr( $field_key ),
-			esc_attr( $v_state ),
-			esc_attr( $field_id )
-		);
-
-		$input_state_whole = '';
-
-		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
-			$input_state_whole = $label_state . $input_state;
-		}
-
-		if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
-			$input_state_whole = $input_state . $label_state;
-		}
-
-		$label_zip = sprintf(
-			'<span class="%1$s"><label for="zip_%2$s" style="%3$s">%4$s</label></span>',
-			$label_placement_class,
-			esc_attr( $field_id ),
-			esc_attr( $inline_font_styles ),
-			esc_attr( $zip ) . $req_label
-		);
-
-		$input_zip = sprintf(
-			'<input %1$stype="text" class="ctct-text ctct-address-zip %2$s zip_%3$s" name="zip_%4$s" value="%5$s" id="zip_%6$s">',
-			$req,
-			esc_attr( $label_placement_class ),
-			esc_attr( $field_key ),
-			esc_attr( $field_key ),
-			esc_attr( $v_zip ),
-			esc_attr( $field_id )
-		);
-
-		$input_zip_whole = '';
-
-		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
-			$input_zip_whole = $label_zip . $input_zip;
-		}
-
-		if ( 'bottom' === $label_placement || 'right' === $label_placement ) {
-			$input_zip_whole = $input_zip . $label_zip;
-		}
-
-		$return  = '<fieldset class="ctct-address"><legend style="%s">%s</legend>';
-		$return .= '<div class="ctct-form-field ctct-field-full address-line-1%s">%s</div>';
-		$return .= '<div class="ctct-form-field ctct-field-full address-line-2%s input_2_1_2_container">%s</div>';
-		$return .= '<div class="ctct-form-field ctct-field-third address-city%s input_2_1_3_container">%s</div>';
-		$return .= '<div class="ctct-form-field ctct-field-third address-state%s input_2_1_4_container">%s</div>';
-		$return .= '<div class="ctct-form-field ctct-field-third address-zip%s input_2_1_5_container">%s</div>';
-		$return .= '</fieldset>';
-
-		return sprintf(
-			$return,
-			esc_attr( $inline_font_styles ),
-			esc_html( $name ),
-			$req_class,
-			$input_street1_whole,
-			$req_class,
-			$input_street2_whole,
-			$req_class,
-			$input_city_whole,
-			$req_class,
-			$input_state_whole,
-			$req_class,
-			$input_zip_whole
-		);
 	}
 
 	/**
@@ -1699,20 +1836,23 @@ class ConstantContact_Display {
 				 *
 				 * @param array $value Array of months from calendar.
 				 */
-				$return = apply_filters( 'constant_contact_dates_month', [
-					'january'   => esc_html__( 'January', 'constant-contact-forms' ),
-					'february'  => esc_html__( 'February', 'constant-contact-forms' ),
-					'march'     => esc_html__( 'March', 'constant-contact-forms' ),
-					'april'     => esc_html__( 'April', 'constant-contact-forms' ),
-					'may'       => esc_html__( 'May', 'constant-contact-forms' ),
-					'june'      => esc_html__( 'June', 'constant-contact-forms' ),
-					'july '     => esc_html__( 'July ', 'constant-contact-forms' ),
-					'august'    => esc_html__( 'August', 'constant-contact-forms' ),
-					'september' => esc_html__( 'September', 'constant-contact-forms' ),
-					'october'   => esc_html__( 'October', 'constant-contact-forms' ),
-					'november'  => esc_html__( 'November', 'constant-contact-forms' ),
-					'december'  => esc_html__( 'December', 'constant-contact-forms' ),
-				] );
+				$return = apply_filters(
+					'constant_contact_dates_month',
+					[
+						'january'   => esc_html__( 'January', 'constant-contact-forms' ),
+						'february'  => esc_html__( 'February', 'constant-contact-forms' ),
+						'march'     => esc_html__( 'March', 'constant-contact-forms' ),
+						'april'     => esc_html__( 'April', 'constant-contact-forms' ),
+						'may'       => esc_html__( 'May', 'constant-contact-forms' ),
+						'june'      => esc_html__( 'June', 'constant-contact-forms' ),
+						'july '     => esc_html__( 'July ', 'constant-contact-forms' ),
+						'august'    => esc_html__( 'August', 'constant-contact-forms' ),
+						'september' => esc_html__( 'September', 'constant-contact-forms' ),
+						'october'   => esc_html__( 'October', 'constant-contact-forms' ),
+						'november'  => esc_html__( 'November', 'constant-contact-forms' ),
+						'december'  => esc_html__( 'December', 'constant-contact-forms' ),
+					]
+				);
 				break;
 			case 'year':
 				/**
@@ -1795,6 +1935,7 @@ class ConstantContact_Display {
 
 		$label_placement_class = 'ctct-label-' . $label_placement;
 		$textarea_classes[]    = $label_placement_class;
+		$inline_font_styles    = $this->get_inline_font_color();
 
 		$req_label = '';
 
@@ -1803,9 +1944,10 @@ class ConstantContact_Display {
 		}
 
 		$return            = '<p class="' . implode( ' ', $classes ) . '">';
-		$label             = '<span class="' . $label_placement_class . '"><label for="' . esc_attr( $field_id ) . '">' . esc_attr( $name ) . ' ' . $req_label . '</label></span>';
+		$label             = '<span class="' . $label_placement_class . '" style="' . $inline_font_styles . '"><label for="' . esc_attr( $field_id ) . '">' . esc_attr( $name ) . ' ' . $req_label . '</label></span>';
 		$textarea          = '<textarea class="' . esc_attr( implode( ' ', $textarea_classes ) ) . '" ' . $req_text . ' name="' . esc_attr( $map ) . '" id="' . esc_attr( $field_id ) . '" placeholder="' . esc_attr( $desc ) . '" ' . $extra_attrs . '>' . esc_html( $value ) . '</textarea>';
-		$instructions_span = '<span class="ctct-textarea-warning-label">' . esc_html__( 'Limit 500 Characters', 'constant-contact-forms' ) . '</span>';
+
+		$instructions_span = '<span class="ctct-textarea-warning-label" style="' . $inline_font_styles . '">' . esc_html__( 'Limit 2000 Characters', 'constant-contact-forms' ) . '</span>';
 
 		if ( 'top' === $label_placement || 'left' === $label_placement || 'hidden' === $label_placement ) {
 			$return .= $label . $textarea;
@@ -1876,7 +2018,9 @@ class ConstantContact_Display {
 			sprintf(
 				'<div class="ctct-disclosure" style="%s"><hr><small>%s</small></div>',
 				esc_attr( $this->get_inline_font_color() ),
-				$this->get_inner_disclose_text() ) );
+				$this->get_inner_disclose_text()
+			)
+		);
 	}
 
 	/**
@@ -1894,7 +2038,8 @@ class ConstantContact_Display {
 			return sprintf(
 				// Translators: placeholder will hold company info for site owner.
 				__(
-					'By submitting this form, you are consenting to receive marketing emails from: %1$s. You can revoke your consent to receive emails at any time by using the SafeUnsubscribe&reg; link, found at the bottom of every email. %2$s', 'constant-contact-forms'
+					'By submitting this form, you are consenting to receive marketing emails from: %1$s. You can revoke your consent to receive emails at any time by using the SafeUnsubscribe&reg; link, found at the bottom of every email. %2$s',
+					'constant-contact-forms'
 				),
 				$this->plugin->api->get_disclosure_info(),
 				sprintf(
@@ -1917,7 +2062,7 @@ class ConstantContact_Display {
 	 * @return string
 	 */
 	public function get_max_length_attr( $optional_label = '' ) {
-		$length       = 48; // Two less than 50char custom field limit for ": ".
+		$length       = 253; // Two less than 255char custom field limit for ": ".
 		$label_length = 0;
 
 		if ( ! empty( $optional_label ) ) {

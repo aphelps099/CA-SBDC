@@ -4,13 +4,8 @@
 @import "./variables";
 
 .ghostkit-form {
-  &-field + &-field,
-  &-submit-button + &-field,
-  &-field + &-submit-button {
-    margin-top: var(--gkt-form--field__gap);
-  }
-
   &-field-label {
+    display: inline-block;
     margin-bottom: var(--gkt-form--field-label__margin-bottom);
 
     .required {
@@ -40,7 +35,7 @@
   &-field-row {
     display: grid;
     grid-template-columns: var(--gkt-form--field-row__template-columns);
-    grid-gap: var(--gkt-form--field-row__gap);
+    gap: var(--gkt-form--field-row__gap);
 
     @include media-breakpoint-down(md) {
       grid-template-columns: 1fr;
@@ -56,10 +51,21 @@
     }
   }
 
-  // Field Select
-  &-field-select select {
-    width: 100%;
-    max-width: 100%;
+  // Fields default sizes.
+  &-field {
+    input:not([type="checkbox"], [type="radio"]),
+    textarea,
+    select {
+      width: 100%;
+      max-width: 100%;
+      min-height: var(--gkt-form--field__min-height);
+      font-family: var(--gkt-form--field__font-family);
+      font-size: var(--gkt-form--field__font-size);
+    }
+
+    textarea {
+      min-height: var(--gkt-form--field-textarea__min-height);
+    }
   }
 
   // Field Radio
@@ -108,27 +114,29 @@
 
   // Alert
   .ghostkit-alert-form-success {
-    border-left-color: var(--gkt-form--alert-success__color);
+    --gkt-alert__border-color: var(--gkt-form--alert-success__color);
   }
 
   .ghostkit-alert-form-error {
-    border-left-color: var(--gkt-form--alert-error__color);
+    --gkt-alert__border-color: var(--gkt-form--alert-error__color);
   }
 
-  // Parsley validation.
-  input.parsley-success,
-  select.parsley-success,
-  textarea.parsley-success {
-    border-color: var(--gkt-form--field-success__border-color);
+  // Form validation.
+  &-was-validated {
+    input:valid,
+    select:valid,
+    textarea:valid {
+      border-color: var(--gkt-form--field-success__border-color);
+    }
+
+    input:invalid,
+    select:invalid,
+    textarea:invalid {
+      border-color: var(--gkt-form--field-error__border-color);
+    }
   }
 
-  input.parsley-error,
-  select.parsley-error,
-  textarea.parsley-error {
-    border-color: var(--gkt-form--field-error__border-color);
-  }
-
-  .parsley-errors-list {
+  .ghostkit-form-field-error {
     padding: 0;
     margin: 0;
     margin-top: var(--gkt-form--errors__margin-top);
@@ -136,20 +144,21 @@
     font-size: var(--gkt-form--errors__font-size);
     line-height: var(--gkt-form--errors__line-height);
     color: var(--gkt-form--errors__color);
-    list-style-type: none;
-    opacity: 0;
-    transition: var(--gkt-form__transition-duration) all var(--gkt-form__transition-easing);
 
-    li {
-      margin-left: 0;
+    &:empty,
+    &[aria-hidden="true"] {
+      display: none;
     }
   }
 
-  .parsley-errors-list.filled {
-    opacity: 1;
-  }
-
-  .parsley-errors-list:empty {
-    display: none;
+  // Honeypot field.
+  [name="ghostkit_verify_email"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 0;
+    height: 0;
+    opacity: 0;
   }
 }

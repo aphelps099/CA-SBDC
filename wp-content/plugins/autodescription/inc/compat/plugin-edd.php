@@ -6,12 +6,17 @@
 
 namespace The_SEO_Framework;
 
-\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) and \tsf()->_verify_include_secret( $_secret ) or die;
+\defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
+
+use \The_SEO_Framework\Helper\Query;
 
 \add_filter( 'the_seo_framework_is_product', __NAMESPACE__ . '\\_set_edd_is_product', 10, 2 );
+\add_filter( 'the_seo_framework_is_product_admin', __NAMESPACE__ . '\\_set_edd_is_product_admin' );
+
 /**
  * Sets the is_product query.
  *
+ * @hook the_seo_framework_is_product 10
  * @since 4.0.5
  * @access private
  *
@@ -21,23 +26,19 @@ namespace The_SEO_Framework;
  */
 function _set_edd_is_product( $is_product, $post ) {
 
-	if ( ! $is_product ) {
-		if ( \function_exists( '\\edd_get_download' ) ) {
-			$download = \edd_get_download(
-				$post ? \get_post( $post ) : \tsf()->get_the_real_ID()
-			);
+	if ( $is_product || ! \function_exists( 'edd_get_download' ) ) return $is_product;
 
-			$is_product = ! empty( $download->ID );
-		}
-	}
+	$download = \edd_get_download(
+		$post ? \get_post( $post ) : Query::get_the_real_id()
+	);
 
-	return $is_product;
+	return ! empty( $download->ID );
 }
 
-\add_filter( 'the_seo_framework_is_product_admin', __NAMESPACE__ . '\\_set_edd_is_product_admin' );
 /**
  * Sets the is_product_admin query.
  *
+ * @hook the_seo_framework_is_product_admin 10
  * @since 4.0.5
  * @access private
  * @TODO is this redundant for TSF?
@@ -47,11 +48,8 @@ function _set_edd_is_product( $is_product, $post ) {
  */
 function _set_edd_is_product_admin( $is_product_admin ) {
 
-	if ( ! $is_product_admin ) {
-		$tsf = \tsf();
-		// Checks for "is_singular_admin()" because the post type is non-hierarchical.
-		$is_product_admin = $tsf->is_singular_admin() && 'download' === $tsf->get_admin_post_type();
-	}
+	if ( $is_product_admin ) return $is_product_admin;
 
-	return $is_product_admin;
+	// Checks for "is_singular_admin()" because the post type is non-hierarchical.
+	return Query::is_singular_admin() && 'download' === Query::get_admin_post_type();
 }

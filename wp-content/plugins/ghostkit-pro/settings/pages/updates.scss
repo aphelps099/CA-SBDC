@@ -1,0 +1,25 @@
+.ghostkit-settings-updates {
+  > h4 {
+    margin-top: 0;
+  }
+
+  .components-notice {
+    margin: 15px 0;
+  }
+}
+
+.ghostkit-settings-updates-loading {
+  pointer-events: none;
+
+  .components-spinner {
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    margin-top: 0;
+    opacity: 1;
+
+    ~ * {
+      opacity: 0.3;
+    }
+  }
+}

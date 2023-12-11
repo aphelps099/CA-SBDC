@@ -159,6 +159,8 @@ class NS_Cloner_Process_Manager {
 		// Most modes will update and save it again later, but this makes sure the base request is always saved.
 		ns_cloner_request()->save();
 
+		ns_sql_foreign_key_checks( 0 );
+
 		// Trigger all the actions registered for this clone mode (start background processes, etc).
 		$clone_mode = ns_cloner_request()->get( 'clone_mode' );
 		do_action( "ns_cloner_process_{$clone_mode}" );
@@ -287,6 +289,8 @@ class NS_Cloner_Process_Manager {
 				);
 			}
 		}
+
+		ns_sql_foreign_key_checks( 1 );
 
 		// Flush cache if checkbox to flush cache is enabled.
 		// Do not flush cache if sites are different servers.

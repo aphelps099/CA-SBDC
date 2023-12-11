@@ -3,6 +3,18 @@
  */
 @import "../../variables";
 
+.ghostkit-plugin-templates-modal-notice.components-notice {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-right: -15px;
+  margin-bottom: 15px;
+  margin-left: -15px;
+
+  h3 {
+    font-size: 14px;
+  }
+}
+
 .ghostkit-plugin-templates-modal {
   &.ghostkit-plugin-templates-modal-hide-header .components-modal__content > .components-modal__header:first-of-type {
     display: none;
@@ -10,10 +22,6 @@
 
   .components-modal__header {
     border-bottom: none;
-  }
-
-  .ghostkit-component-modal-tab-panel .components-tab-panel__tabs {
-    margin-top: -24px;
   }
 
   // loading while trying to insert selected template.

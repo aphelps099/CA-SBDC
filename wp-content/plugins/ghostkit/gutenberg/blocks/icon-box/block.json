@@ -1,6 +1,8 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "ghostkit/icon-box",
-  "category": "design",
+  "category": "ghostkit",
   "title": "Icon Box",
   "description": "Icons are one of the best visual replacement for text descriptions.",
   "keywords": ["icon", "icon-box"],
@@ -8,7 +10,15 @@
     "html": false,
     "className": false,
     "anchor": true,
-    "align": ["wide", "full"]
+    "align": ["wide", "full"],
+    "spacing": {
+      "blockGap": true,
+      "__experimentalDefaultControls": {
+        "blockGap": true
+      }
+    },
+    "__experimentalLayout": true,
+    "layout": true
   },
   "attributes": {
     "icon": {

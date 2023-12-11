@@ -1,0 +1,9 @@
+<svg width="200" height="22" viewBox="0 0 200 22" fill="none" xmlns="http://www.w3.org/2000/svg"
+  preserveAspectRatio="none">
+  <path opacity="0.3"
+    d="M1.52588e-05 22V2C16 2.00001 35.5 -3.49998 65 9.00002C115.671 30.4706 157.5 -11.5 200 18V22H100H1.52588e-05Z"
+    fill="currentColor" />
+  <path opacity="0.3" d="M200 22V0C167.5 7 154.5 -1.20175 124 9.50001C102.5 17.0439 82.5 20.5 0 11V22H100H200Z"
+    fill="currentColor" />
+  <path d="M200 22V2C101.5 24.5 98.5 24.5 2.38419e-07 2V22H100H200Z" fill="currentColor" />
+</svg>

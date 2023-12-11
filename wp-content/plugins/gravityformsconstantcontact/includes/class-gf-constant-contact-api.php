@@ -32,6 +32,23 @@ class GF_ConstantContact_API {
 	protected $auth_token = null;
 
 	/**
+	 * When refreshing token fails, the add-on retries to refresh again.
+	 * This var stores how many failed tries the add-on made.
+	 *
+	 * @since 1.7
+	 *
+	 * @var int $failed_refresh_retries Number of refresh token retries.
+	 */
+	protected static $failed_refresh_retries = 0;
+
+	/**
+	 * Defines how many times the refresh_token() method should retry to refresh within the current request.
+	 *
+	 * @since 1.7
+	 */
+	const CC_REFRESH_RETRIES = 2;
+
+	/**
 	 * Initialize Slack API library.
 	 *
 	 * @since  1.0
@@ -137,7 +154,7 @@ class GF_ConstantContact_API {
 
 		$auth_token = gf_constantcontact()->get_tokens( $refresh_token );
 
-		if ( ! rgblank( $auth_token['access_token'] ) && ! rgblank( $auth_token['refresh_token'] ) ) {
+		if ( ! empty( $auth_token['access_token'] ) && ! empty( $auth_token['refresh_token'] ) ) {
 			gf_constantcontact()->log_debug( __METHOD__ . '(): API tokens refreshed successfully.' );
 
 			// Add access token to plugin settings.
@@ -148,17 +165,28 @@ class GF_ConstantContact_API {
 				'expires_in'    => $auth_token['expires_in'],
 			);
 
+			unset( $settings['first_refresh_failure_timestamp'], $settings['failed_refresh_attempts'] );
+
+			gf_constantcontact()->update_plugin_settings( $settings );
+
 			$this->auth_token = $auth_token;
-		} else {
-			gf_constantcontact()->log_debug( __METHOD__ . '(): API tokens expired, failed to refresh. If the error persists, please make sure the application registered on Constant Contact is only used by this website.' );
-			// Empty the settings so the user can re-auth the app.
-			unset( $settings['auth_token'] );
+
+			return $auth_token;
 		}
 
-		// Save plugin settings.
-		gf_constantcontact()->update_plugin_settings( $settings );
+		if ( self::$failed_refresh_retries === self::CC_REFRESH_RETRIES ) {
+			gf_constantcontact()->log_debug( __METHOD__ . '(): API tokens expired, failed to refresh after re-trying for ' . self::CC_REFRESH_RETRIES . ' times, If the error persists, please make sure the application registered on Constant Contact is only used by this website.' );
 
-		return $auth_token;
+			return false;
+		}
+
+		gf_constantcontact()->log_debug( __METHOD__ . '(): API tokens expired, failed to refresh. retrying to refresh, retries remaining: ' . ( self::CC_REFRESH_RETRIES - self::$failed_refresh_retries ) );
+		self::$failed_refresh_retries += 1;
+		// To space out the requests, delay the execution by an interval that increases after every try.
+		sleep( 2 * self::$failed_refresh_retries );
+		gf_constantcontact()->log_debug( __METHOD__ . '(): Calling refresh again after waiting for ' . ( 2 * self::$failed_refresh_retries . ' seconds' ) );
+
+		return $this->refresh_token( $refresh_token );
 	}
 
 	/**

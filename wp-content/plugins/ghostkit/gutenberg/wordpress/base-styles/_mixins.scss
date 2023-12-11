@@ -223,16 +223,14 @@
 
 	@else if $property == "animation" {
 		@media (prefers-reduced-motion: reduce) {
-			-webkit-animation-duration: 1ms;
-			        animation-duration: 1ms;
+			animation-duration: 1ms;
 		}
 	}
 
 	@else {
 		@media (prefers-reduced-motion: reduce) {
 			transition-duration: 0s;
-			-webkit-animation-duration: 1ms;
-			        animation-duration: 1ms;
+			animation-duration: 1ms;
 		}
 	}
 

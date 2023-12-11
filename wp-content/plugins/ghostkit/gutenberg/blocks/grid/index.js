@@ -22,45 +22,40 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-grid', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/grid/',
     customStylesCallback(attributes) {
-      const { awb_image: image, gap, gapCustom, gapVerticalCustom } = attributes;
+      const { gap, gapCustom, gapVerticalCustom } = attributes;
 
-      let result = {};
-
-      // Image styles.
-      if (image) {
-        result = {
-          ...result,
-          ...getBackgroundStyles(attributes),
-        };
-      }
+      const styles = {
+        '--gkt-grid__gap': undefined,
+        '--gkt-grid__gap-vertical': undefined,
+        ...getBackgroundStyles(attributes),
+      };
 
       // Custom Gap.
-      if ('custom' === gap) {
-        if ('undefined' !== typeof gapCustom) {
+      if (gap === 'custom') {
+        if (typeof gapCustom !== 'undefined' && gapCustom !== '') {
           // we need to use `%` unit because of conflict with complex calc() and 0 value.
           const unit = gapCustom ? 'px' : '%';
 
-          result['--gkt-grid__gap'] = `${gapCustom}${unit}`;
+          styles['--gkt-grid__gap'] = `${gapCustom}${unit}`;
         }
 
-        if ('undefined' !== typeof gapVerticalCustom) {
+        if (typeof gapVerticalCustom !== 'undefined' && gapVerticalCustom !== '') {
           // we need to use `%` unit because of conflict with complex calc() and 0 value.
           const unit = gapVerticalCustom ? 'px' : '%';
 
-          result['--gkt-grid__gap-vertical'] = `${gapVerticalCustom}${unit}`;
+          styles['--gkt-grid__gap-vertical'] = `${gapVerticalCustom}${unit}`;
         }
       }
 
-      return result;
+      return styles;
     },
     customStylesFilter(styles, data, isEditor, attributes) {
       // change custom styles in Editor.
-      if (isEditor && attributes.ghostkitClassname) {
+      if (isEditor && attributes?.ghostkit?.id) {
         // background.
         styles = styles.replace(
           // eslint-disable-next-line prefer-regex-literals
@@ -69,14 +64,6 @@ export const settings = {
         );
       }
       return styles;
-    },
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
     },
   },
   example: {
@@ -126,7 +113,7 @@ export const withClasses = createHigherOrderComponent(
     function (props) {
       const { name: blockName } = props;
 
-      if ('ghostkit/grid' === blockName && props.attributes.isTemplatesModalOnly) {
+      if (blockName === 'ghostkit/grid' && props.attributes.isTemplatesModalOnly) {
         return <BlockListBlock {...props} data-ghostkit-grid-templates-modal-only="true" />;
       }
 

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: JVM rich text icons
- * Description: Add Font Awesome icons, or icons from a custom icon set to rich text fields in the Gutenberg block editor.
- * Version: 1.1.4
+ * Description: Add Font Awesome icons, or icons from a custom icon set to the Gutenberg editor.
+ * Version: 1.2.7
  * Author: Joris van Montfort
  * Author URI: https://jorisvm.nl
  * Text Domain: jvm-richtext-icons
@@ -10,7 +10,7 @@
  *
  * @category Gutenberg
  * @author Joris van Montfort
- * @version 1.1.4
+ * @version 1.2.7
  * @package JVM rich text icons
  */
 
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once plugin_dir_path( __FILE__ ) . 'src/init.php';
 
 if (is_admin()) {
-    require_once plugin_dir_path( __FILE__ ) . 'src/settings.php';
+   require_once plugin_dir_path( __FILE__ ) . 'src/settings.php';
 }
 
 // Load the ACF field only for sites using the ACF plugin.

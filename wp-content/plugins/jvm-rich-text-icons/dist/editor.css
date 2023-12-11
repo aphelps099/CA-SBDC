@@ -1,5 +1,5 @@
 .jvm-richtext-icons-popover .components-popover__content {
-    width: 376px;
+    width: 261px;
     max-height: 443px !important;
     overflow: hidden !important;
     overflow-y: auto !important;
@@ -61,4 +61,10 @@ ul.jvm-richtext-icons-list li .components-button {
 ul.jvm-richtext-icons-list li .components-button:hover {
     border-color: #111;
     color: #000 !important;
+}
+
+@media (min-width: 460px) {
+    .jvm-richtext-icons-popover .components-popover__content {
+        width: 376px;
+    }
 }

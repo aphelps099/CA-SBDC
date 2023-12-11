@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+use NS_Cloner\WP_Background_Process;
+
 /**
  * NS_Cloner_Process base class.
  *
@@ -433,8 +435,10 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 		// background processes from writing to the same log file forever and making it gigantic.
 		ns_cloner()->log->refresh();
 		// Get batch and store key.
-		$batch           = parent::get_batch();
+		$batch = parent::get_batch();
+
 		$this->batch_key = $batch->key;
+
 		return $batch;
 	}
 
@@ -453,9 +457,11 @@ abstract class NS_Cloner_Process extends WP_Background_Process {
 	 * been completed and deleted yet), but the more often used progress data is the
 	 * the easiest to access (provided right in the returned result).
 	 *
+	 * @param int $limit Number of batches to return, defaults to all.
+	 *
 	 * @return array
 	 */
-	private function get_batches() {
+	public function get_batches( $limit = 0 ) {
 		$batches = array();
 		// Get all progress records for this bg process.
 		$progress_rows = ns_cloner()->db->get_results(

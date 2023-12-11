@@ -53,7 +53,7 @@
     complete: function(file) {
       var res = JSON.parse(file.xhr.response);
       if (res.success) {
-        var icon = '<a id="icon-dialog-link-'+res.icon_class+'" href="#icon-dialog" class="icon-dialog-link icon" data-icon-class-full="'+res.icon_class_full+'" data-icon-class="'+res.icon_class+'" data-file="'+res.file+'"><i class="icon '+res.icon_class_full+'" aria-hidden="true"> </i></a>\n';
+        var icon = '<a id="icon-dialog-link-'+res.icon_class+'" href="#icon-dialog" class="icon-dialog-link icon" data-icon-class-full="'+res.icon_class_full+'" data-icon-class="'+res.icon_class+'" data-file="'+res.file+'" data-nonce="'+res.nonce+'"><i class="icon '+res.icon_class_full+'" aria-hidden="true"> </i></a>\n';
         $svgFileList.prepend(icon);
         $svgFileList.show();
         $('#svg-file-list-empty').hide();
@@ -92,7 +92,8 @@
             // Ajax call for delete file
             var data = {
               action : 'jvm-rich-text-icons-delete-icon',
-              file : $(this).data('file')
+              file : $(this).data('file'),
+              nonce : $(this).data('nonce')
             }
             $.ajax({
               type: "POST",
@@ -148,6 +149,7 @@
     // Modify the icon preview
     $('#icon-dialog-preview').attr('class', $this.data('icon-class-full'));
     $info.data('file', $this.data('file'));
+    $info.data('nonce', $this.data('nonce'));
     $info.data('icon-class', $this.data('icon-class'));
 
     $info.dialog('open');

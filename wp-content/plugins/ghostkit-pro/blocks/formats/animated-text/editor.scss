@@ -1,0 +1,42 @@
+.ghostkit-pro-animated-text-popover {
+  > div {
+    padding: 0 !important;
+  }
+
+  &:not(.is-without-arrow):not(.is-mobile).is-bottom {
+    margin-top: 15px;
+  }
+
+  &:not(.is-mobile) .components-popover__content {
+    min-width: 275px;
+  }
+
+  .components-popover__content {
+    padding: 20px 18px;
+  }
+
+  .components-button-group {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 15px;
+
+    .components-base-control__field {
+      margin-bottom: 0;
+    }
+
+    .components-button {
+      height: 31.5px;
+    }
+  }
+}
+
+.ghostkit-pro-animated-text::after {
+  content: attr(data-cursor);
+  opacity: 1;
+  animation: 0.9s ghostkit-pro-animated-text-blink infinite;
+}
+@keyframes ghostkit-pro-animated-text-blink {
+  0% { opacity: 1; }
+  44% { opacity: 0; }
+  88% { opacity: 1; }
+}

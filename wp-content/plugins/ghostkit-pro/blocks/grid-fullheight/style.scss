@@ -1,0 +1,16 @@
+// Fullheight
+// 32px - wordpress top bar
+.ghostkit-pro-grid-fullheight > .ghostkit-grid-inner {
+  min-height: 100vh;
+
+  body.admin-bar & {
+    min-height: calc(100vh - 32px);
+
+    @media screen and (max-width: 782px) {
+      min-height: calc(100vh - 42px);
+    }
+    @media screen and (max-width: 600px) {
+      min-height: 100vh;
+    }
+  }
+}

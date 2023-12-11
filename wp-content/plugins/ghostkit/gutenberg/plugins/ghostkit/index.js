@@ -24,7 +24,7 @@ const { GHOSTKIT } = window;
 
 export const name = 'ghostkit';
 
-export const icon = <div className="ghostkit-plugin-icon">{getIcon('plugin-ghostkit')}</div>;
+export const icon = <div className="ghostkit-plugin-icon">{getIcon('ghostkit-logo')}</div>;
 
 export class Plugin extends Component {
   constructor(props) {
@@ -50,19 +50,7 @@ export class Plugin extends Component {
             <PanelBody className="plugin-ghostkit-panel">
               <Button
                 className="plugin-ghostkit-panel-button"
-                isSecondary
-                isLarge
-                onClick={() => {
-                  this.setState({ isModalOpen: 'templates' });
-                }}
-              >
-                {getIcon('plugin-templates')}
-                {__('Templates', 'ghostkit')}
-              </Button>
-              <Button
-                className="plugin-ghostkit-panel-button"
-                isSecondary
-                isLarge
+                variant="secondary"
                 onClick={() => {
                   this.setState({ isModalOpen: 'typography' });
                 }}
@@ -72,8 +60,7 @@ export class Plugin extends Component {
               </Button>
               <Button
                 className="plugin-ghostkit-panel-button"
-                isSecondary
-                isLarge
+                variant="secondary"
                 onClick={() => {
                   this.setState({ isModalOpen: 'custom-code' });
                 }}
@@ -81,22 +68,34 @@ export class Plugin extends Component {
                 {getIcon('plugin-custom-code')}
                 {__('CSS & JavaScript', 'ghostkit')}
               </Button>
-              <Button
-                className="plugin-ghostkit-panel-button"
-                isSecondary
-                isLarge
-                onClick={() => {
-                  this.setState({ isModalOpen: 'color-palette' });
-                }}
-              >
-                {getIcon('plugin-color-palette')}
-                {__('Color Palette', 'ghostkit')}
-              </Button>
+              {GHOSTKIT.allowTemplates && (
+                <Button
+                  className="plugin-ghostkit-panel-button"
+                  variant="secondary"
+                  onClick={() => {
+                    this.setState({ isModalOpen: 'templates' });
+                  }}
+                >
+                  {getIcon('plugin-templates')}
+                  {__('Templates', 'ghostkit')}
+                </Button>
+              )}
+              {GHOSTKIT.allowPluginColorPalette ? (
+                <Button
+                  className="plugin-ghostkit-panel-button"
+                  variant="secondary"
+                  onClick={() => {
+                    this.setState({ isModalOpen: 'color-palette' });
+                  }}
+                >
+                  {getIcon('plugin-color-palette')}
+                  {__('Color Palette', 'ghostkit')}
+                </Button>
+              ) : null}
               {GHOSTKIT.allowPluginCustomizer ? (
                 <Button
                   className="plugin-ghostkit-panel-button"
-                  isSecondary
-                  isLarge
+                  variant="secondary"
                   onClick={() => {
                     this.setState({ isModalOpen: 'customizer' });
                   }}
@@ -108,31 +107,21 @@ export class Plugin extends Component {
             </PanelBody>
           </PluginSidebar>
         ) : null}
-        {'templates' === isModalOpen ? (
+        {isModalOpen === 'templates' ? (
           <TemplatesModal onRequestClose={() => this.setState({ isModalOpen: false })} />
-        ) : (
-          ''
-        )}
-        {'typography' === isModalOpen ? (
+        ) : null}
+        {isModalOpen === 'typography' ? (
           <TypographyModal onRequestClose={() => this.setState({ isModalOpen: false })} />
-        ) : (
-          ''
-        )}
-        {'custom-code' === isModalOpen ? (
+        ) : null}
+        {isModalOpen === 'custom-code' ? (
           <CustomCodeModal onRequestClose={() => this.setState({ isModalOpen: false })} />
-        ) : (
-          ''
-        )}
-        {'color-palette' === isModalOpen ? (
+        ) : null}
+        {isModalOpen === 'color-palette' ? (
           <ColorPaletteModal onRequestClose={() => this.setState({ isModalOpen: false })} />
-        ) : (
-          ''
-        )}
-        {'customizer' === isModalOpen ? (
+        ) : null}
+        {isModalOpen === 'customizer' ? (
           <CustomizerModal onRequestClose={() => this.setState({ isModalOpen: false })} />
-        ) : (
-          ''
-        )}
+        ) : null}
       </Fragment>
     );
   }

@@ -1,35 +1,38 @@
 /**
  * Block Gist
  */
-const { GHOSTKIT, jQuery: $ } = window;
-const $doc = $(document);
+const {
+  GHOSTKIT: { events },
+  gistSimple,
+} = window;
 
 /**
  * Prepare Gists.
  */
-$doc.on('initBlocks.ghostkit', (e, self) => {
-  if ('undefined' === typeof $.fn.gistsimple) {
+events.on(document, 'init.blocks.gkt', () => {
+  if (typeof gistSimple === 'undefined') {
     return;
   }
 
-  GHOSTKIT.triggerEvent('beforePrepareGist', self);
+  document.querySelectorAll('.ghostkit-gist:not(.ghostkit-gist-ready)').forEach(($this) => {
+    $this.classList.add('ghostkit-gist-ready');
 
-  $('.ghostkit-gist:not(.ghostkit-gist-ready)').each(function () {
-    const $this = $(this);
-    $this.addClass('ghostkit-gist-ready');
+    const match = /^https:\/\/gist.github.com?.+\/(.+)/g.exec($this.getAttribute('data-url'));
 
-    const match = /^https:\/\/gist.github.com?.+\/(.+)/g.exec($this.attr('data-url'));
-
-    if (match && 'undefined' !== typeof match[1]) {
-      $this.gistsimple({
+    if (match && typeof match[1] !== 'undefined') {
+      const options = {
         id: match[1],
-        file: $this.attr('data-file'),
-        caption: $this.attr('data-caption'),
-        showFooter: 'true' === $this.attr('data-show-footer'),
-        showLineNumbers: 'true' === $this.attr('data-show-line-numbers'),
-      });
+        file: $this.getAttribute('data-file'),
+        caption: $this.getAttribute('data-caption'),
+        showFooter: $this.getAttribute('data-show-footer') === 'true',
+        showLineNumbers: $this.getAttribute('data-show-line-numbers') === 'true',
+      };
+
+      events.trigger($this, 'prepare.gist.gkt', { options });
+
+      gistSimple($this, options);
+
+      events.trigger($this, 'prepared.gist.gkt', { options });
     }
   });
-
-  GHOSTKIT.triggerEvent('afterPrepareGist', self);
 });

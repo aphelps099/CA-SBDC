@@ -12,18 +12,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-  ...metadata,
   icon: getIcon('block-gif', true),
   ghostkit: {
     previewUrl: 'https://ghostkit.io/blocks/gif/',
-    supports: {
-      styles: true,
-      frame: true,
-      spacings: true,
-      display: true,
-      scrollReveal: true,
-      customCSS: true,
-    },
   },
   edit,
   save,

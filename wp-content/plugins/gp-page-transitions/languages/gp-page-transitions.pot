@@ -1,0 +1,120 @@
+# Copyright (C) 2023 Gravity Wiz
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: GP Page Transitions 1.0.25\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/cloned-perk-4fpZJIiM5\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-12-07T22:14:10+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: gp-page-transitions\n"
+
+#. Plugin Name of the plugin
+msgid "GP Page Transitions"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "http://gravitywiz.com/documentation/gravity-forms-page-transitions/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Animate your Gravity Forms page transitions and automatically progress to the next page when the current page is complete."
+msgstr ""
+
+#. Author of the plugin
+msgid "Gravity Wiz"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://gravitywiz.com/"
+msgstr ""
+
+#: class-gp-page-transitions.php:71
+msgid "Page Transitions"
+msgstr ""
+
+#: class-gp-page-transitions.php:71
+msgid "Enable animated transitions when navigating from page to page."
+msgstr ""
+
+#: class-gp-page-transitions.php:72
+msgid "Auto-progression"
+msgstr ""
+
+#: class-gp-page-transitions.php:72
+msgid "Automatically progress to the next page when the last field of the current page has been completed. Some field types do not support auto-progression."
+msgstr ""
+
+#: class-gp-page-transitions.php:73
+msgid "Soft Validation"
+msgstr ""
+
+#: class-gp-page-transitions.php:73
+msgid "Provides the smoothest experience. Pages are not submitted as you progress through the form. Required fields are validated on the frontend to catch obvious mistakes. Full validation for all pages is processed on the final page submission."
+msgstr ""
+
+#: class-gp-page-transitions.php:74
+#: class-gp-page-transitions.php:586
+msgid "Transition Style"
+msgstr ""
+
+#: class-gp-page-transitions.php:74
+msgid "Select the desired transition style. <b>Slide</b> will scroll the form pages horizontally. <b>Fade</b> will fade the current page out before fading the next page in."
+msgstr ""
+
+#: class-gp-page-transitions.php:75
+msgid "Hide Next/Prev Buttons"
+msgstr ""
+
+#: class-gp-page-transitions.php:75
+msgid "Check the corresponding checkbox to hide the next and previous buttons when auto-progression is enabled."
+msgstr ""
+
+#: class-gp-page-transitions.php:577
+msgid "Enable Page Transitions"
+msgstr ""
+
+#: class-gp-page-transitions.php:599
+msgid "Enable Soft Validation"
+msgstr ""
+
+#: class-gp-page-transitions.php:613
+msgid "Enable Auto-progression"
+msgstr ""
+
+#: class-gp-page-transitions.php:621
+msgid "Hide:"
+msgstr ""
+
+#: class-gp-page-transitions.php:626
+msgid "Next Button"
+msgstr ""
+
+#: class-gp-page-transitions.php:630
+msgid "Previous Button"
+msgstr ""
+
+#: class-gp-page-transitions.php:635
+msgid "You have opted to hide the Next button. Make sure that each form page ends with a field that supports auto-progression to ensure the form can be completed."
+msgstr ""
+
+#: class-gp-page-transitions.php:707
+msgid "Soft Validation is disabled due to a Credit Card field existing in this form."
+msgstr ""
+
+#: class-gp-page-transitions.php:805
+msgid "Perks"
+msgstr ""
+
+#: class-gp-page-transitions.php:975
+msgid "Slide"
+msgstr ""
+
+#: class-gp-page-transitions.php:976
+msgid "Fade"
+msgstr ""

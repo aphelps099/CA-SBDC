@@ -24,15 +24,12 @@ const {
   BlockControls,
   BlockAlignmentToolbar,
   useBlockProps,
-  useInnerBlocksProps: __stableUseInnerBlocksProps,
-  __experimentalUseInnerBlocksProps,
+  useInnerBlocksProps,
 } = wp.blockEditor;
 
 const { createBlock } = wp.blocks;
 
 const { useSelect, useDispatch } = wp.data;
-
-const useInnerBlocksProps = __stableUseInnerBlocksProps || __experimentalUseInnerBlocksProps;
 
 const buttonBlockName = 'ghostkit/button-single';
 
@@ -75,7 +72,7 @@ export default function BlockEdit(props) {
   className = classnames(
     'ghostkit-button-wrapper',
     gap ? `ghostkit-button-wrapper-gap-${gap}` : false,
-    align && 'none' !== align ? `ghostkit-button-wrapper-align-${align}` : false,
+    align && align !== 'none' ? `ghostkit-button-wrapper-align-${align}` : false,
     className
   );
 

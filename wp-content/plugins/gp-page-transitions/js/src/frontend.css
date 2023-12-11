@@ -1,0 +1,46 @@
+/**
+ * GP Page Transitions - Frontend Styles
+ */
+
+.gppt-has-page-transitions .swiper-wrapper {
+	transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gppt-hide {
+	visibility: hidden;
+	position: absolute;
+	left: -9999%;
+}
+
+.gppt-no-buttons .gform_page_footer {
+	visibility: hidden;
+	position: absolute;
+}
+
+.gppt-no-buttons .gform_page:last-child .gform_page_footer {
+	visibility: visible;
+	position: static;
+}
+
+.gf_progressbar_percentage {
+	transition: all 1.0s ease !important; /* !important is for overriding Theme Framework reset */
+}
+
+.gf_step {
+	transition: all 1.0s ease !important; /* !important is for overriding Theme Framework reset */
+}
+
+/**
+ * Theme Framework compatibility
+ */
+
+/* Add padding to prevent borders/drop shadows from being cut off, especially with Orbital */
+.gform-theme--framework .gppt-has-page-transitions .swiper-slide  {
+	padding: var(--gform-theme-control-box-shadow-size-focus);
+	box-sizing: border-box;
+}
+
+.gform-theme--framework .gppt-has-page-transitions  .gf_progressbar_wrapper,
+.gform-theme--framework .gppt-has-page-transitions  .gf_page_steps {
+	padding: var(--gform-theme-control-box-shadow-size-focus); /* Add padding to match the slides. */
+}

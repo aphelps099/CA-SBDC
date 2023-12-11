@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:  Ghost Kit
- * Description:  Blocks collection and extensions for Gutenberg
- * Version:      2.24.1
+ * Description:  Page Builder Blocks and Extensions for Gutenberg
+ * Version:      3.1.2
  * Author:       Ghost Kit Team
  * Author URI:   https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline
  * License:      GPLv2 or later
@@ -118,25 +118,20 @@ class GhostKit {
         // icons.
         require_once $this->plugin_path . 'classes/class-icons.php';
 
-        // icons fallback.
-        require_once $this->plugin_path . 'classes/class-icons-fallback.php';
-
         // shapes.
         require_once $this->plugin_path . 'classes/class-shapes.php';
 
-        // color palette.
-        require_once $this->plugin_path . 'classes/class-color-palette.php';
+        // typography.
+        require_once $this->plugin_path . 'classes/class-typography.php';
 
         // fonts.
         require_once $this->plugin_path . 'classes/class-fonts.php';
-
-        // typography.
-        require_once $this->plugin_path . 'classes/class-typography.php';
 
         // templates.
         require_once $this->plugin_path . 'classes/class-templates.php';
 
         // scss compiler.
+        require_once $this->plugin_path . 'classes/class-scss-replace-modules.php';
         require_once $this->plugin_path . 'classes/class-scss-compiler.php';
 
         // breakpoints background.
@@ -145,20 +140,21 @@ class GhostKit {
         // breakpoints.
         require_once $this->plugin_path . 'classes/class-breakpoints.php';
 
-        // scroll reveal extension.
-        require_once $this->plugin_path . 'classes/class-scroll-reveal.php';
-
         // utils encode/decode.
         require_once $this->plugin_path . 'gutenberg/utils/encode-decode/index.php';
 
-        // custom block styles class.
-        require_once $this->plugin_path . 'gutenberg/extend/styles/get-styles.php';
-
-        // block users custom CSS class.
-        require_once $this->plugin_path . 'gutenberg/extend/custom-css/get-custom-css.php';
+        // Extensions.
+        require_once $this->plugin_path . 'gutenberg/extend/index.php';
 
         // 3rd.
+        require_once $this->plugin_path . 'classes/3rd/class-astra.php';
+        require_once $this->plugin_path . 'classes/3rd/class-page-builder-framework.php';
+        require_once $this->plugin_path . 'classes/3rd/class-blocksy.php';
         require_once $this->plugin_path . 'classes/3rd/class-rank-math.php';
+        require_once $this->plugin_path . 'classes/google-fonts/class-fonts-google-provider.php';
+
+        // Migration.
+        require_once $this->plugin_path . 'classes/class-migration.php';
     }
 
     /**
@@ -176,13 +172,17 @@ class GhostKit {
         add_action( 'enqueue_block_editor_assets', array( $this, 'js_translation_editor' ) );
 
         // add Ghost Kit blocks category.
-        add_filter( 'block_categories_all', array( $this, 'block_categories_all' ), 9 );
+        add_filter( 'block_categories_all', array( $this, 'block_categories_all' ), 9999 );
 
         // we need to enqueue the main script earlier to let 3rd-party plugins add custom styles support.
         add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 9 );
 
         // add support for excerpts to some blocks.
         add_filter( 'excerpt_allowed_blocks', array( $this, 'excerpt_allowed_blocks' ) );
+
+        // add support for additional mimes.
+        add_filter( 'upload_mimes', array( $this, 'upload_mimes' ), 100 );
+        add_filter( 'wp_check_filetype_and_ext', array( $this, 'wp_check_filetype_and_ext' ), 100, 3 );
     }
 
     /**
@@ -240,7 +240,7 @@ class GhostKit {
         global $current_screen;
 
         $css_deps = array();
-        $js_deps  = array( 'ghostkit-helper', 'wp-block-editor', 'wp-blocks', 'wp-date', 'wp-i18n', 'wp-element', 'wp-edit-post', 'wp-compose', 'underscore', 'wp-hooks', 'wp-components', 'wp-keycodes', 'jquery' );
+        $js_deps  = array( 'ghostkit-helper', 'wp-block-editor', 'wp-blocks', 'wp-date', 'wp-i18n', 'wp-element', 'wp-edit-post', 'wp-compose', 'underscore', 'wp-hooks', 'wp-components', 'wp-keycodes', 'lodash', 'jquery' );
 
         // Fix for Widgets screen.
         if ( isset( $current_screen->id ) && 'widgets' === $current_screen->id ) {
@@ -257,14 +257,19 @@ class GhostKit {
             $js_deps[] = 'jarallax-video';
         }
 
-        // ScrollReveal.
-        if ( apply_filters( 'gkt_enqueue_plugin_scrollreveal', true ) ) {
-            $js_deps[] = 'scrollreveal';
+        // Motion.
+        if ( apply_filters( 'gkt_enqueue_plugin_motion', true ) ) {
+            $js_deps[] = 'motion';
         }
 
         // Luxon.
         if ( apply_filters( 'gkt_enqueue_plugin_luxon', true ) ) {
             $js_deps[] = 'luxon';
+        }
+
+        // Lottie Player.
+        if ( apply_filters( 'gkt_enqueue_plugin_lottie_player', true ) ) {
+            $js_deps[] = 'lottie-player';
         }
 
         // GistEmbed.
@@ -323,6 +328,46 @@ class GhostKit {
     }
 
     /**
+     * Allow JSON uploads
+     *
+     * @param array $mimes supported mimes.
+     *
+     * @return array
+     */
+    public function upload_mimes( $mimes ) {
+        if ( ! isset( $mimes['json'] ) ) {
+            $mimes['json'] = 'application/json';
+        }
+
+        return $mimes;
+    }
+
+    /**
+     * Allow JSON file uploads
+     *
+     * @param array  $data File data.
+     * @param array  $file File object.
+     * @param string $filename File name.
+     *
+     * @return array
+     */
+    public function wp_check_filetype_and_ext( $data, $file, $filename ) {
+        $ext = isset( $data['ext'] ) ? $data['ext'] : '';
+
+        if ( ! $ext ) {
+            $exploded = explode( '.', $filename );
+            $ext      = strtolower( end( $exploded ) );
+        }
+
+        if ( 'json' === $ext ) {
+            $data['type'] = 'application/json';
+            $data['ext']  = 'json';
+        }
+
+        return $data;
+    }
+
+    /**
      * Init variables
      */
     public function admin_init() {
@@ -330,7 +375,7 @@ class GhostKit {
         $data                        = get_plugin_data( __FILE__ );
         $this->plugin_name           = $data['Name'];
         $this->plugin_version        = $data['Version'];
-        $this->plugin_slug           = plugin_basename( __FILE__, '.php' );
+        $this->plugin_slug           = plugin_basename( __FILE__ );
         $this->plugin_name_sanitized = basename( __FILE__, '.php' );
     }
 
@@ -356,8 +401,8 @@ class GhostKit {
     /**
      * Equivalent of GHOSTKIT.replaceVars method.
      *
-     * @param String $str styles string.
-     * @return String string with replaced vars.
+     * @param string $str styles string.
+     * @return string string with replaced vars.
      */
     public function replace_vars( $str ) {
         $breakpoints = GhostKit_Breakpoints::get_breakpoints();
@@ -379,7 +424,7 @@ class GhostKit {
     /**
      * Add Go Pro link to plugins page.
      *
-     * @param Array $links - available links.
+     * @param array $links - available links.
      *
      * @return array
      */
