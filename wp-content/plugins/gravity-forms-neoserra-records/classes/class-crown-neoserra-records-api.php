@@ -1,0 +1,143 @@
+<?php
+
+if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
+	class Crown_Neoserra_Records_Api {
+
+		public static $init = false;
+
+		protected static $api_uri = 'https://norcal.neoserra.com/api/v1/';
+		protected static $api_token = null;
+
+
+		public static function init() {
+			if ( self::$init ) return;
+			self::$init = true;
+
+			if ( defined( 'NEOSERRA_API_TOKEN' ) ) self::$api_token = NEOSERRA_API_TOKEN;
+
+		}
+
+
+		public static function get_contacts( $args = array() ) {
+			$response = self::query( 'contacts', $args );
+			return $response;
+		}
+
+		public static function get_contact( $id, $args = array() ) {
+			$response = self::query( 'contacts/' . $id, $args );
+			return $response;
+		}
+		
+		public static function create_contact( $args = array() ) {
+			$response = self::query( 'contacts/new', $args, 'post' );
+			return $response;
+		}
+
+		public static function update_contact( $id, $args = array() ) {
+			$response = self::query( 'contacts/' . $id, $args, 'post' );
+			return $response;
+		}
+
+
+		public static function get_clients( $args = array() ) {
+			$response = self::query( 'clients', $args );
+			return $response;
+		}
+
+		public static function get_client( $id, $args = array() ) {
+			$response = self::query( 'clients/' . $id, $args );
+			return $response;
+		}
+		
+		public static function create_client( $args = array() ) {
+			$response = self::query( 'clients/new', $args, 'post' );
+			return $response;
+		}
+
+		public static function update_client( $id, $args = array() ) {
+			$response = self::query( 'clients/' . $id, $args, 'post' );
+			return $response;
+		}
+
+
+		public static function get_tfg_application( $id, $args = array() ) {
+			$response = self::query( '100100/' . $id, $args );
+			return $response;
+		}
+		
+		public static function create_tfg_application( $args = array() ) {
+			$response = self::query( '100100/new', $args, 'post' );
+			return $response;
+		}
+
+		public static function update_tfg_application( $id, $args = array() ) {
+			$response = self::query( '100100/' . $id, $args, 'post' );
+			return $response;
+		}
+
+
+		public static function set_relationship( $id_a, $id_b, $args = array() ) {
+			$response = self::query( 'relationships/' . $id_a . '/' . $id_b, $args, 'post' );
+			return $response;
+		}
+
+
+		protected static function query( $endpoint, $query_args = array(), $method = 'get' ) {
+			self::init();
+
+			// $query_args = array_merge( array(), $query_args );
+
+			$query_string = '';
+
+			$headers = array(
+				'Authorization' => 'Bearer ' . self::$api_token,
+				'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+			);
+
+			if ( $method == 'get' ) {
+				$query_args = array_combine( array_keys( $query_args ), array_map( function($n) { return urlencode( is_object( $n ) || is_array( $n ) ? json_encode( $n ) : $n ); }, $query_args ) );
+				$query_params = array();
+				foreach ( $query_args as $k => $v ) $query_params[] = $k . '=' . $v;
+				$query_string = implode( '&', $query_params );
+			}
+
+			$url = self::$api_uri . $endpoint . ( ! empty( $query_string ) ? '?' . $query_string : '' );
+
+			$ch = curl_init();
+			curl_setopt( $ch, CURLOPT_URL, $url );
+			curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+			curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 30 );
+			curl_setopt( $ch, CURLOPT_TIMEOUT, 0 );
+			curl_setopt( $ch, CURLOPT_HEADER, 0 );
+			curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+			curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+
+			if ( $method == 'post' ) {
+				$headers['Content-Type'] = 'application/json';
+				curl_setopt( $ch, CURLOPT_POST, 1 );
+				curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $query_args ) );
+			}
+
+			if ( ! empty( $headers ) ) {
+				$http_headers = array();
+				foreach ( $headers as $k => $v ) $http_headers[] = $k . ': ' . $v;
+				curl_setopt( $ch, CURLOPT_HTTPHEADER, $http_headers );
+			}
+
+			// if ( curl_errno( $ch ) ) {
+			// 	print_r( curl_error( $ch ) );
+			// }
+
+			$response = curl_exec( $ch );
+			curl_close( $ch );
+			unset( $ch );
+
+			$response = json_decode( $response );
+
+			return $response;
+
+		}
+
+
+	}
+}
