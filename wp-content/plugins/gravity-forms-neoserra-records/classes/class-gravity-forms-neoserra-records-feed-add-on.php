@@ -138,7 +138,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 									'name' => 'last',
 									'label' => esc_html__( 'Last Name', 'gfneoserra' ),
 									'field_type' => array( 'name', 'text', 'hidden' ),
-									'default_value' => $this->get_first_field_by_type( 'name', 5 ),
+									'default_value' => $this->get_first_field_by_type( 'name', 6 ),
 								),
 								array(
 									'name' => 'email',
