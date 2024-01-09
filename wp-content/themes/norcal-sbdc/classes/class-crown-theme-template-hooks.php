@@ -25,6 +25,28 @@ if ( ! class_exists( 'Crown_Theme_Template_Hooks' ) ) {
 
 			add_action( 'wp_footer', array( __CLASS__, 'output_svg_assets' ) );
 
+			add_filter( 'gform_progress_bar', function( $progress_bar, $form, $confirmation_message ) {
+				if ( in_array( $form['cssClass'], array( 'intake-form' ) ) ) {
+					if ( preg_match( '/class=[\'"]gf_step_current_page[\'"]>(\d+)<\//', $progress_bar, $matches ) ) {
+						$page = intval( $matches[1] );
+						if ( $page == 1 ) {
+							$progress_bar = '';
+						} else {
+							$page_count = GFFormDisplay::get_max_page_number( $form );
+							$page_name = rgars( $form['pagination'], sprintf( 'pages/%d', $page - 1 ) );
+							$page_name = ! empty( $page_name ) ? ' <span class="gf_stap_page_name">' . $page_name . '</span>' : '';
+							if ( ! empty( $confirmation_message ) ) {
+								$page_name    = ! empty( $form['pagination']['progressbar_completion_text'] ) ? $form['pagination']['progressbar_completion_text'] : '';
+							}
+							$title = '<span class="gf_step_pages">Step <span class="gf_step_current_page">' . $page . '</span> of <span class="gf_step_page_count">' . $page_count . '</span></span>';
+							$title .= $page_name;
+							$progress_bar = preg_replace( '/class=[\'"]gf_progressbar_title[\'"]>(?s).*<\/h3/', 'class="gf_progressbar_title">' . $title . '</h3', $progress_bar );
+						}
+					}
+				}
+				return $progress_bar;
+			}, 10, 3 );
+
 		}
 
 
