@@ -224,6 +224,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 							'key_field' => array(
 								'title' => 'Property Name',
 								'allow_custom'  => true,
+								'allow_duplicates' => true,
 								'choices' => self::get_client_record_optional_property_choices()
 							),
 							'value_field' => array(
@@ -573,6 +574,16 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 			$client_props_optional = $this->get_generic_map_fields( $feed, 'client_props_optional' );
 			$client_props = array_merge( $client_props_mandatory, $client_props_optional );
 
+			$notes_field_ids = array();
+			foreach ( $feed['meta']['client_props_optional'] as $mapping ) {
+				if ( $mapping['key'] == 'notes' && ! empty( $mapping['value'] ) ) {
+					$notes_field_ids[] = $mapping['value'];
+				}
+			}
+			if ( count( $notes_field_ids ) > 1 ) {
+				$client_props['notes'] = $notes_field_ids;
+			}
+
 			$tfg_application_props_optional = $this->get_generic_map_fields( $feed, 'tfg_application_props_optional' );
 			$tfg_application_props = array_merge( $tfg_application_props_optional );
 
@@ -664,7 +675,19 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 					'centerId' => $center_id
 				);
 				foreach ( $client_props as $prop => $field_id ) {
-					$value = $this->get_field_value( $form, $entry, $field_id );
+					$value = null;
+					if ( is_array( $field_id ) ) {
+						$values = array();
+						foreach ( $field_id as $fid ) {
+							$v = $this->get_field_value( $form, $entry, $fid );
+							if ( empty( $v ) ) continue;
+							$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
+							$values[] = $label . ': ' . $v;
+						}
+						$value = implode( "\n", $values );
+					} else {
+						$value = $this->get_field_value( $form, $entry, $field_id );
+					}
 					if ( ! empty( $value ) ) $client[ $prop ] = $value;
 				}
 				if ( ! isset( $client['company'] ) || empty( $client['company'] ) ) {

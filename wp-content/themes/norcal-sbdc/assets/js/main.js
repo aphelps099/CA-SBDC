@@ -48,6 +48,8 @@
 
 		$.wptheme.initDevBlocks();
 
+		$.wptheme.initGFBlocks();
+
 		$.wptheme.initBranchMapShortcodes();
 		$.wptheme.initImpactReportFormShortcodes();
 
@@ -1833,6 +1835,23 @@
 					arrows: true,
 					fade: true,
 					adaptiveHeight: false
+				});
+			});
+
+		};
+
+
+		wptheme.initGFBlocks = function() {
+
+			$(document).on('click', '.intake-form_wrapper .gfield.accordion .gfield_label', function(e) {
+				var field = $(this).closest('.gfield');
+				field.toggleClass('expanded');
+			});
+
+			jQuery(document).on('gform_post_render', function(event, form_id, current_page) {
+				$('.intake-form_wrapper .gfield.accordion').each(function(i, el) {
+					if($(el).is('.gfield--type-checkbox') && $('input[type=checkbox]:checked', el).length) $(el).addClass('expanded');
+					if($(el).is('.gfield--type-text') && $('input[type=text]', el).val() != '') $(el).addClass('expanded');
 				});
 			});
 

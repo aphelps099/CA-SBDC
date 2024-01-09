@@ -640,6 +640,77 @@ $gform-gutter-width: 10px;
 		margin-top: 2rem;
 		font-size: 1.25rem;
 	}
+	.gfield.accordion {
+		&.expanded {
+			.gfield_label {
+				background-color: $darker-blue;
+				color: #fff;
+				&::before {
+					content: '\2013';
+				}
+			}
+			.ginput_container {
+				height: auto;
+				padding: 1rem 1.5rem 1.5rem;
+			}
+		}
+		.gfield_label {
+			cursor: pointer;
+			display: flex;
+			align-items: flex-start;
+			margin-bottom: 0;
+			background-color: $light-blue;
+			font-size: 1.125rem;
+			padding: 1rem 1.5rem;
+			padding-left: 1rem;
+			position: relative;
+			transition: background-color .2s, color .2s;
+			&::before {
+				content: '+';
+				flex: 0 0 2rem;
+				margin: -.5rem 0;
+				font-size: 2rem;
+				text-align: center;
+				margin-right: 1rem;
+			}
+		}
+		.ginput_container {
+			height: 0;
+			overflow: hidden;
+			.gfield_checkbox {
+				display: flex;
+				flex-wrap: wrap;
+				margin: 0 -4px -8px;
+				li.gchoice {
+					margin: 0 4px 8px;
+					padding: 0;
+					border: none;
+					input {
+						display: none;
+					}
+					input:checked + label {
+						background-color: rgb(83, 183, 133);
+						border-color: rgb(83, 183, 133);
+						color: #fff;
+					}
+					label {
+						display: block;
+						padding: .5rem .75rem;
+						border-radius: 10rem;
+						border: 2px solid $primary;
+						font-weight: 700;
+						font-size: 0.875rem;
+						color: $darker-blue;
+						transition: background-color .15s, border-color .15s, color .15s;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+		+ .gfield.accordion {
+			margin-top: -1rem;
+		}
+	}
 	@each $selector in $form-control-selectors {
 		#{$selector} {
 			padding: add($input-padding-y, $input-border-width) $input-padding-x;
