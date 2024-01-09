@@ -29535,19 +29535,108 @@ body.mobile-menu-active {
   margin-top: 2rem;
   font-size: 1.25rem; }
 
+.intake-form_wrapper input[type="text"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="text"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="password"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="password"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="datetime"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="datetime"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="datetime-local"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="datetime-local"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="date"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="date"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="month"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="month"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="time"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="time"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="week"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="week"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="number"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="number"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="email"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="email"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="url"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="url"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="search"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="search"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="tel"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="tel"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
+.intake-form_wrapper input[type="color"] {
+  padding: calc(0.8rem + 1px) 0.8rem;
+  background-color: rgba(3, 32, 64, 0.05); }
+  .intake-form_wrapper input[type="color"]:focus {
+    background-color: rgba(3, 32, 64, 0.05); }
+
 .intake-form_wrapper textarea {
   border: none;
-  padding: calc(0.8rem + 1px) 0.55rem;
+  padding: calc(0.8rem + 1px) 0.8rem;
   -webkit-box-shadow: inset 0 -2px #032040;
           box-shadow: inset 0 -2px #032040;
-  padding-left: 0;
-  padding-right: 0;
-  background-color: transparent; }
+  background-color: rgba(3, 32, 64, 0.05); }
   .intake-form_wrapper textarea:focus {
     -webkit-box-shadow: inset 0 -2px #0381C3;
-            box-shadow: inset 0 -2px #0381C3; }
+            box-shadow: inset 0 -2px #0381C3;
+    background-color: rgba(3, 32, 64, 0.05); }
   .intake-form_wrapper textarea.small {
     height: 100px; }
+
+.intake-form_wrapper .gfield.signature .ginput_container_text::before {
+  left: .5rem; }
+
+.intake-form_wrapper .gfield.signature .ginput_container_text input[type=text] {
+  padding-left: 2rem; }
 
 .intake-form_wrapper .gfield--type-consent {
   padding-left: 3rem;

@@ -640,19 +640,35 @@ $gform-gutter-width: 10px;
 		margin-top: 2rem;
 		font-size: 1.25rem;
 	}
+	@each $selector in $form-control-selectors {
+		#{$selector} {
+			padding: add($input-padding-y, $input-border-width) $input-padding-x;
+			background-color: rgba($primary, 0.05);
+			&:focus {
+				background-color: rgba($primary, 0.05);
+			}
+		}
+	}
 	textarea {
 		@extend .form-control;
 		border: none;
-		padding: add($input-padding-y, $input-border-width) add($input-padding-x, -.25rem);
+		padding: add($input-padding-y, $input-border-width) $input-padding-x;
 		box-shadow: inset 0 -2px $primary;
-		padding-left: 0;
-		padding-right: 0;
-		background-color: transparent;
+		background-color: rgba($primary, 0.05);
 		&:focus {
 			box-shadow: inset 0 -2px $secondary;
+			background-color: rgba($primary, 0.05);
 		}
 		&.small {
 			height: 100px;
+		}
+	}
+	.gfield.signature .ginput_container_text {
+		&::before {
+			left: .5rem;
+		}
+		input[type=text] {
+			padding-left: 2rem;
 		}
 	}
 	.gfield--type-consent {
