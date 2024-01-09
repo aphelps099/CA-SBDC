@@ -29520,7 +29520,8 @@ body.mobile-menu-active {
 
 .intake-form_wrapper .gsection.form-title .gsection_title {
   margin-top: 0;
-  font-size: 2rem; }
+  font-size: 2rem;
+  text-align: center; }
 
 .intake-form_wrapper .gsection.form-title .gsection_description {
   text-align: center;
