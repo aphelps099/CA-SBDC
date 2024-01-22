@@ -1848,11 +1848,25 @@
 				field.toggleClass('expanded');
 			});
 
-			jQuery(document).on('gform_post_render', function(event, form_id, current_page) {
+			$(document).on('gform_post_render', function(event, form_id, current_page) {
+
+				$('#gform_' + form_id + ' .gfield.helper-description').each(function(i, el) {
+					var tooltipContent = $('.gfield_description', el).html();
+					var tooltipToggle = $('<span class="gfield-tooltip" data-toggle="tooltip" data-html="true">Info</span>');
+					tooltipToggle.attr('title', tooltipContent);
+					var container = $('.gform-field-label', el);
+					if($(el).hasClass('hidden_label') && $(el).prev('.gfield.gsection').length) {
+						container = $(el).prev('.gfield.gsection').find('.gsection_title');
+					}
+					container.append(tooltipToggle);
+					tooltipToggle.tooltip();
+				});
+
 				$('.intake-form_wrapper .gfield.accordion').each(function(i, el) {
 					if($(el).is('.gfield--type-checkbox') && $('input[type=checkbox]:checked', el).length) $(el).addClass('expanded');
 					if($(el).is('.gfield--type-text') && $('input[type=text]', el).val() != '') $(el).addClass('expanded');
 				});
+
 			});
 
 		};

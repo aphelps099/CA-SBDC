@@ -23,14 +23,14 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 		public static function register_scripts() {
 
 			$scripts = array(
-				array(
-					'handle' => 'popperjs',
-					'local_path' => '/lib/popperjs/dist/umd/popper.min.js'
-				),
+				// array(
+				// 	'handle' => 'popperjs',
+				// 	'local_path' => '/lib/popperjs/dist/umd/popper.min.js'
+				// ),
 				array(
 					'handle' => 'bootstrap',
-					'local_path' => '/lib/bootstrap/dist/js/bootstrap.min.js',
-					'deps' => array( 'jquery', 'popperjs' )
+					'local_path' => '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
+					'deps' => array( 'jquery' )
 				),
 				array(
 					'handle' => 'slick',

@@ -640,6 +640,29 @@ $gform-gutter-width: 10px;
 		margin-top: 2rem;
 		font-size: 1.25rem;
 	}
+	.gfield-tooltip {
+		margin-left: 0.5em;
+		width: 1em;
+		height: 1em;
+		overflow: hidden;
+		text-indent: -10000px;
+		display: inline-block;
+		position: relative;
+		vertical-align: middle;
+		opacity: .5;
+		&::before {
+			@include icon(fa-content($fa-var-info-circle));
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-indent: 0;
+		}
+	}
 	.gfield.accordion {
 		&.expanded {
 			.gfield_label {
@@ -734,6 +757,29 @@ $gform-gutter-width: 10px;
 			height: 100px;
 		}
 	}
+	.gfield.gfield--type-radio.inline-options {
+		.gfield_radio {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -10px -10px;
+			justify-content: center;
+			.gchoice {
+				margin: 0 10px 10px;
+				padding-left: 2.5rem;
+				display: flex;
+				align-items: center;
+				input {
+					width: 2rem;
+					height: 2rem;
+					margin-left: -2.5rem;
+					margin-right: 0.5rem;
+				}
+				.gform-field-label {
+					font-weight: 700;
+				}
+			}
+		}
+	}
 	.gfield.signature .ginput_container_text {
 		&::before {
 			left: .5rem;
@@ -761,6 +807,11 @@ $gform-gutter-width: 10px;
 			height: 2rem;
 		}
 		.gfield_consent_label {
+			display: none;
+		}
+	}
+	.gfield.helper-description {
+		.gfield_description {
 			display: none;
 		}
 	}
