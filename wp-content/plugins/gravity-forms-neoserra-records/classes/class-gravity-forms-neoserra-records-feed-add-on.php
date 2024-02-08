@@ -267,6 +267,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 				'Work Phone Number' => 'phone2',
 				'Cell Phone' => 'mobileph',
 				'Fax Number' => 'fax',
+				'Center ID (override)' => 'centerId',
 				'Address' => 'mailaddr',
 				'City' => 'mailcity',
 				'State' => 'mailst',
@@ -644,6 +645,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 				$value = $this->get_field_value( $form, $entry, $field_id );
 				if ( ! empty( $value ) ) $contact[ $prop ] = $value;
 			}
+
+			$center_id = $contact['centerId'];
 
 			if ( empty( $client_props ) ) {
 
