@@ -37,8 +37,13 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 		}
 
 
+		public static function current_site_has_program_mapping() {
+			return is_main_site() || in_array( get_current_blog_id(), array( 21 ) );
+		}
+
+
 		public static function register_admin_pages() {
-			if ( ! is_main_site() ) return;
+			if ( ! self::current_site_has_program_mapping() ) return;
 
 			self::$signup_admin_page = new AdminPage( array(
 				'key' => 'signup',
@@ -101,7 +106,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Signup' ) ) {
 			$program = null;
 
 			$programs = array();
-			if ( is_main_site() ) {
+			if ( self::current_site_has_program_mapping() ) {
 				$programs = get_repeater_entries( 'blog', 'theme_config_signup_programs' );
 			} else {
 				switch_to_blog( get_main_site_id() );

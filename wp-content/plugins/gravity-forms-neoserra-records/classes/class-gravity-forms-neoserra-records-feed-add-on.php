@@ -91,11 +91,18 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 							),
 						),
 						array(
-							'label' => esc_html__( 'Center ID', 'gfneoserra' ),
+							'label' => esc_html__( 'Default Center ID', 'gfneoserra' ),
 							'type' => 'text',
 							'name' => 'center_id',
 							'tooltip' => esc_html__( 'Provide the center ID to send this Neoserra data to.', 'gfneoserra' ),
 							'required' => true
+						),
+						array(
+							'label' => esc_html__( 'Program', 'gfneoserra' ),
+							'name' => 'program',
+							'type' => 'field_select',
+							'field_type' => array( 'text', 'select', 'hidden' ),
+							'tooltip' => esc_html__( 'Use this field to map to a Neoserra center ID to override the default one provided above based on the linked program.', 'gfneoserra' ),
 						),
 						array(
 							'name'     => 'lookup_email',
@@ -267,7 +274,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 				'Work Phone Number' => 'phone2',
 				'Cell Phone' => 'mobileph',
 				'Fax Number' => 'fax',
-				'Center ID (override)' => 'centerId',
+				// 'Center ID (override)' => 'centerId',
 				'Address' => 'mailaddr',
 				'City' => 'mailcity',
 				'State' => 'mailst',
@@ -566,6 +573,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 			$error_messages = array();
 
 			$center_id = $feed['meta']['center_id'];
+
+			$program_field_id = $feed['meta']['program'];
+			$queried_program = ! empty( $program_field_id ) ? $this->get_field_value( $form, $entry, $program_field_id ) : '';
+			if ( ! empty( $queried_program ) && class_exists( 'Crown_Site_Settings_Signup' ) ) {
+				$program = Crown_Site_Settings_Signup::get_program( $queried_program );
+				if ( $program && !empty( trim( $program->neoserra_center_id ) ) ) {
+					$center_id = trim( $program->neoserra_center_id );
+				}
+			}
 
 			$contact_props_mandatory = $this->get_field_map_fields( $feed, 'contact_props_mandatory' );
 			$contact_props_optional = $this->get_generic_map_fields( $feed, 'contact_props_optional' );
