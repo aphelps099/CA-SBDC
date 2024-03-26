@@ -1867,6 +1867,25 @@
 					if($(el).is('.gfield--type-text') && $('input[type=text]', el).val() != '') $(el).addClass('expanded');
 				});
 
+				$('.gfield.gsection.hide-if-fields-completed').each(function(i, el) {
+					var section = $(el);
+					var fields = section.nextUntil('.gsection');
+					var allFilled = true;
+					fields.each(function(j, el2) {
+						if($('input', el2).val() == '') {
+							allFilled = false;
+							return false;
+						}
+					});
+					if(allFilled) {
+						section.hide();
+						fields.hide();
+					} else {
+						section.show();
+						fields.show();
+					}
+				});
+
 			});
 
 		};
