@@ -162,6 +162,7 @@ $gform-gutter-width: 10px;
 
 .gfield {
 	@extend .form-group;
+	clear: both;
 	&.gfield_error {
 
 		label,
@@ -742,6 +743,9 @@ $gform-gutter-width: 10px;
 				background-color: rgba($primary, 0.05);
 			}
 		}
+	}
+	select {
+		box-shadow: inset 0 -2px $primary;
 	}
 	textarea {
 		@extend .form-control;

@@ -13,6 +13,7 @@ var assetsSassIncludePaths = [
 
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+const sass = require('gulp-sass')(require('sass'));
 
 
 // core tasks
@@ -20,7 +21,7 @@ var $ = require('gulp-load-plugins')();
 gulp.task('css:style', function() {
 	return gulp.src(assetsPath + '/src/scss/style.scss')
 		.pipe($.sourcemaps.init())
-		.pipe($.sass({ includePaths: assetsSassIncludePaths })
+		.pipe(sass({ includePaths: assetsSassIncludePaths })
 			.on('error', $.notify.onError({ title: 'SASS Compilation Error', message: '<%= error.message %>' })))
 		.pipe($.autoprefixer({ overrideBrowserslist: [ 'last 2 versions', 'ie >= 9' ] }))
 		.pipe(gulp.dest(assetsPath + '/css/'))
@@ -34,7 +35,7 @@ gulp.task('css:style', function() {
 gulp.task('css:editor-style', function() {
 	return gulp.src(assetsPath + '/src/scss/editor-style.scss')
 		.pipe($.sourcemaps.init())
-		.pipe($.sass({ includePaths: assetsSassIncludePaths })
+		.pipe(sass({ includePaths: assetsSassIncludePaths })
 			.on('error', $.notify.onError({ title: 'SASS Compilation Error', message: '<%= error.message %>' })))
 		.pipe($.autoprefixer({ overrideBrowserslist: [ 'last 2 versions', 'ie >= 9' ] }))
 		.pipe(gulp.dest(assetsPath + '/css/'))
@@ -48,7 +49,7 @@ gulp.task('css:editor-style', function() {
 gulp.task('css:login', function() {
 	return gulp.src(assetsPath + '/src/scss/login.scss')
 		.pipe($.sourcemaps.init())
-		.pipe($.sass({ includePaths: assetsSassIncludePaths })
+		.pipe(sass({ includePaths: assetsSassIncludePaths })
 			.on('error', $.notify.onError({ title: 'SASS Compilation Error', message: '<%= error.message %>' })))
 		.pipe($.autoprefixer({ overrideBrowserslist: [ 'last 2 versions', 'ie >= 9' ] }))
 		.pipe(gulp.dest(assetsPath + '/css/'))
