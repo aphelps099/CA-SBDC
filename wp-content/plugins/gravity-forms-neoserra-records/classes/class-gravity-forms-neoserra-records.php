@@ -64,10 +64,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records' ) ) {
 
 			define( 'GRAVITY_FORMS_NEOSERRA_RECORDS_ADD_ON_VERSION', self::get_version() );
 			define( 'GRAVITY_FORMS_NEOSERRA_RECORDS_ADD_ON_PATH_DIR', preg_replace( '/^' . preg_quote( WP_PLUGIN_DIR, '/' ) . '\/?/', '', dirname( __FILE__ ) ) );
-
 			include_once( 'class-gravity-forms-neoserra-records-feed-add-on.php' );
-
 			GFAddOn::register( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' );
+
+			define( 'GRAVITY_FORMS_NEOSERRA_UPDATE_CLIENT_RECORDS_ADD_ON_VERSION', self::get_version() );
+			define( 'GRAVITY_FORMS_NEOSERRA_UPDATE_CLIENT_RECORDS_ADD_ON_PATH_DIR', preg_replace( '/^' . preg_quote( WP_PLUGIN_DIR, '/' ) . '\/?/', '', dirname( __FILE__ ) ) );
+			include_once( 'class-gravity-forms-neoserra-update-client-records-feed-add-on.php' );
+			GFAddOn::register( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' );
 
 		}
 

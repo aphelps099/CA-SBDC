@@ -76,6 +76,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 		}
 
 
+		public static function create_milestone( $args = array() ) {
+			$response = self::query( 'milestones/new', $args, 'post' );
+			return $response;
+		}
+
+
 		public static function set_relationship( $id_a, $id_b, $args = array() ) {
 			$response = self::query( 'relationships/' . $id_a . '/' . $id_b, $args, 'post' );
 			return $response;
