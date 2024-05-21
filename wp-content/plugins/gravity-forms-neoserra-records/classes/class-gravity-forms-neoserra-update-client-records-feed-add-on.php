@@ -196,6 +196,37 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							)
 						),
 					)
+				),
+				array(
+					'title'  => esc_html__( 'Add New Capital Funding Record', 'gfneoserra' ),
+					'fields' => array(
+						array(
+							'type'    => 'checkbox',
+							'name'    => 'capital_funding_record_options',
+							// 'label'   => esc_html__( 'Capital Funding Record Options', 'gfneoserra' ),
+							'choices' => array(
+								array(
+									'label' => esc_html__( 'Enable Capital Funding Record Creation', 'gfneoserra' ),
+									'name' => 'capital_funding_record_create_enabled',
+									'default_value' => 0
+								)
+							)
+						),
+						array(
+							// 'label' => esc_html__( 'Capital Funding Record Properties', 'gfneoserra' ),
+							'name' => 'capital_funding_props',
+							'type' => 'generic_map',
+							'key_field' => array(
+								'title' => 'Property Name',
+								'allow_custom'  => true,
+								'allow_duplicates' => true,
+								'choices' => self::get_capital_funding_record_property_choices()
+							),
+							'value_field' => array(
+								'title' => 'Form Field'
+							)
+						),
+					)
 				)
 			);
 		}
@@ -468,6 +499,28 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			return self::convert_properties_to_choices( $properties );
 		}
 
+		protected static function get_capital_funding_record_property_choices() {
+			$properties = array(
+				'Reporting Date' => 'date',
+				'Application Date' => 'appdate',
+				'Completion Status' => 'status',
+				'Date Completed' => 'dateCompleted',
+				'Funding Type' => 'type',
+				'Institution' => 'institution',
+				'Amount Requested' => 'amountReq',
+				'Amount Approved' => 'amountApproved',
+				'Subject' => 'text',
+				// 'Center ID' => 'centerId',
+				'Funding Source' => 'fundarea',
+				'Notes' => 'memo',
+				'Attribution Statement' => 'attribStatement',
+				'Attribution Source' => 'attribution',
+				'Attribution Signature' => 'attribSignature',
+				'Attribution Date' => 'attribDate',
+			);
+			return self::convert_properties_to_choices( $properties );
+		}
+
 
 		protected static function convert_properties_to_choices( $properties ) {
 			$choices = array();
@@ -507,6 +560,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			// $contact_props = $this->get_generic_map_fields( $feed, 'contact_props' );
 			$client_props = $this->get_generic_map_fields( $feed, 'client_props' );
 			$milestone_props = $this->get_generic_map_fields( $feed, 'milestone_props' );
+			$capital_funding_props = $this->get_generic_map_fields( $feed, 'capital_funding_props' );
 
 			$notes_field_ids = array();
 			foreach ( $feed['meta']['client_props'] as $mapping ) {
@@ -583,6 +637,32 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				}
 				$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
+			}
+
+			// add new capital funding record
+			if ( $client && boolval( $feed['meta']['capital_funding_record_create_enabled'] ) ) {
+				$capital_funding_args = array(
+					'clientId' => $client->id,
+					'centerId' => $client->centerId
+				);
+				foreach ( $capital_funding_props as $prop => $field_id ) {
+					$value = null;
+					if ( is_array( $field_id ) ) {
+						$values = array();
+						foreach ( $field_id as $fid ) {
+							$v = $this->get_field_value( $form, $entry, $fid );
+							if ( empty( $v ) ) continue;
+							$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
+							$values[] = $label . ': ' . $v;
+						}
+						$value = implode( "\n", $values );
+					} else {
+						$value = $this->get_field_value( $form, $entry, $field_id );
+					}
+					if ( ! empty( $value ) ) $capital_funding_args[ $prop ] = $value;
+				}
+				$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
+				$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
 			}
 
 			// handle error messages
