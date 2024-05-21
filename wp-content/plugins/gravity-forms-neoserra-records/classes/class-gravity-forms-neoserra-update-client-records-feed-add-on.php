@@ -643,7 +643,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			if ( $client && boolval( $feed['meta']['capital_funding_record_create_enabled'] ) ) {
 				$capital_funding_args = array(
 					'clientId' => $client->id,
-					'centerId' => $client->centerId
+					'centerId' => $client->centerId,
+					'fundarea' => $client->defaultfundarea
 				);
 				foreach ( $capital_funding_props as $prop => $field_id ) {
 					$value = null;
