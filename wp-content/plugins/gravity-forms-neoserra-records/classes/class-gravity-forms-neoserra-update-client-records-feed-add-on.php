@@ -17,6 +17,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 		private static $_instance = null;
 
+		// TODO: add email notification to center director when business start form is submitted
+
 
 		public function init() {
 			parent::init();
@@ -561,6 +563,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$milestone_args = array(
 					'clientId' => $client->id,
 					'centerId' => $client->centerId,
+					'fundarea' => $client->defaultfundarea
 				);
 				foreach ( $milestone_props as $prop => $field_id ) {
 					$value = null;
