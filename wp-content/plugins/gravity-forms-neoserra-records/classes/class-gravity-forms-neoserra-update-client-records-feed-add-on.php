@@ -17,7 +17,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 		private static $_instance = null;
 
-		// TODO: add email notification to center director when business start form is submitted
+		// TODO: add email notification to center director when business start form is submitted with link to record(s) created
+		// TODO: add auto company status for business start
+		// TODO: multiple business handling, make radio selection stand out
+		// TODO: action fields to buttons
+		// TODO: provide link upon to completion to submit again
 
 
 		public function init() {
