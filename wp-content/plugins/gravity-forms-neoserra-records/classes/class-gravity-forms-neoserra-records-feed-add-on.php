@@ -61,32 +61,32 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 				return $form;
 			}, 10, 3 );
 
-			add_action( 'gform_pre_submission', function( $form ) {
+			// add_action( 'gform_pre_submission', function( $form ) {
 
-				$neoserra_record_check_field_id = null;
-				$neoserra_contact_id_field_id = null;
-				foreach ( $form['fields'] as $field ) {
-					if ( !$neoserra_record_check_field_id && $field->type == 'email' ) {
-						$neoserra_record_check_field_id = $field->id;
-					}
-					if ( ! $neoserra_contact_id_field_id && $field->inputName == 'neoserra_contact_id' ) {
-						$neoserra_contact_id_field_id = $field->id;
-					}
-				}
-				if ( ! $neoserra_record_check_field_id ) return;
-				if ( ! $neoserra_contact_id_field_id ) return;
+			// 	$neoserra_record_check_field_id = null;
+			// 	$neoserra_contact_id_field_id = null;
+			// 	foreach ( $form['fields'] as $field ) {
+			// 		if ( !$neoserra_record_check_field_id && $field->type == 'email' ) {
+			// 			$neoserra_record_check_field_id = $field->id;
+			// 		}
+			// 		if ( ! $neoserra_contact_id_field_id && $field->inputName == 'neoserra_contact_id' ) {
+			// 			$neoserra_contact_id_field_id = $field->id;
+			// 		}
+			// 	}
+			// 	if ( ! $neoserra_record_check_field_id ) return;
+			// 	if ( ! $neoserra_contact_id_field_id ) return;
 
-				$lookup_email = rgpost( 'input_' . $neoserra_record_check_field_id );
-				if ( empty( $lookup_email ) ) return;
+			// 	$lookup_email = rgpost( 'input_' . $neoserra_record_check_field_id );
+			// 	if ( empty( $lookup_email ) ) return;
 
-				$contact_search_response = Crown_Neoserra_Records_Api::get_contacts( array( 'email' => $lookup_email ) );
-				$contact_id = is_object( $contact_search_response ) && property_exists( $contact_search_response, 'rows' ) && is_array( $contact_search_response->rows ) && ! empty( $contact_search_response->rows ) ? $contact_search_response->rows[0]->indivId : null;
+			// 	$contact_search_response = Crown_Neoserra_Records_Api::get_contacts( array( 'email' => $lookup_email ) );
+			// 	$contact_id = is_object( $contact_search_response ) && property_exists( $contact_search_response, 'rows' ) && is_array( $contact_search_response->rows ) && ! empty( $contact_search_response->rows ) ? $contact_search_response->rows[0]->indivId : null;
 
-				if ( $contact_id ) {
-					$_POST[ 'input_' . $neoserra_contact_id_field_id ] = $contact_id;
-				}
+			// 	if ( $contact_id ) {
+			// 		$_POST[ 'input_' . $neoserra_contact_id_field_id ] = $contact_id;
+			// 	}
 
-			} );
+			// } );
 
 		}
 	

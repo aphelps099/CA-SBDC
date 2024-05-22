@@ -14,6 +14,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		protected $_title = 'Gravity Forms Neoserra Update Client Records Add-On';
 		protected $_short_title = 'Neoserra Update Client Records';
 
+		protected static $session_neoserra_contact = null;
+		protected static $session_neoserra_clients = array();
+
 
 		private static $_instance = null;
 
@@ -31,6 +34,43 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 			// add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
 			// add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
+
+
+			add_action( 'gform_pre_submission', function( $form ) {
+
+				$email = null;
+				$field_ids = array(
+					'neoserra_contact_id' => null,
+					'neoserra_client_id' => null
+				);
+				foreach ( $form['fields'] as $field ) {
+					if ( ! $email && $field->type == 'email' ) {
+						$email = rgpost( 'input_' . $field->id );
+					}
+					if ( array_key_exists( $field->inputName, $field_ids ) ) {
+						$field_ids[ $field->inputName ] = $field->id;
+					}
+				}
+				if ( empty( $email ) ) return;
+
+				if ( $field_ids['neoserra_contact_id'] ) {
+					$contact_search_response = Crown_Neoserra_Records_Api::get_contacts( array( 'email' => $email ) );
+					$contact_id = is_object( $contact_search_response ) && property_exists( $contact_search_response, 'rows' ) && is_array( $contact_search_response->rows ) && ! empty( $contact_search_response->rows ) ? $contact_search_response->rows[0]->indivId : null;
+					if ( $contact_id ) {
+						$_POST[ 'input_' . $field_ids['neoserra_contact_id'] ] = $contact_id;
+					}
+				}
+
+				if ( $field_ids['neoserra_client_id'] ) {
+					$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $email ) );
+					$client_results = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
+					if ( $client_results ) {
+						$_POST[ 'input_' . $field_ids['neoserra_client_id'] ] = implode( ',', array_map( function( $n ) { return $n->clientId; }, $client_results ) );
+					}
+				}
+
+			} );
+
 
 			add_filter( 'gform_pre_render', function( $form, $ajax, $field_values ) {
 				if ( empty( $form['id'] ) ) return $form;
@@ -50,44 +90,155 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					}
 				}
 				if ( ! $field_indices[ 'neoserra_client_id' ] ) return $form;
+				if ( ! in_array( $form['fields'][ $field_indices[ 'neoserra_client_id' ] ]->type, array( 'radio', 'select' ) ) ) return $form;
 
-				$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
-				if ( ! $contact_id ) return $form;
+				$contact = self::$session_neoserra_contact;
+				if ( ! $contact ) {
 
-				// fetch contact record
-				$contact_response = Crown_Neoserra_Records_Api::get_contact( $contact_id );
-				$contact = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response : null;
-				if ( ! $contact ) return $form;
+					$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
+					if ( ! $contact_id ) return $form;
 
-				// search for clients associated with contact email
-				$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $contact->email ) );
-				$client_results = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
-				if ( ! $client_results ) return $form;
+					$contact_response = Crown_Neoserra_Records_Api::get_contact( $contact_id );
+					$contact = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response : null;
+					if ( ! $contact ) return $form;
 
-				// print_r($client_results);
-
-				// fetch client records
-				$clients = array();
-				foreach ( $client_results as $client_result ) {
-					$client_response = Crown_Neoserra_Records_Api::get_client( $client_result->clientId );
-					$client = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response : null;
-					if ( $client ) $clients[] = $client;
+					self::$session_neoserra_contact = $contact;
 				}
-				if ( empty( $clients ) ) return $form;
 
-				$client = $clients[0];
+				$clients = self::$session_neoserra_clients;
+				if ( ! $clients ) {
+					
+					$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $contact->email ) );
+					$client_results = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
+					if ( ! $client_results ) return $form;
 
-				if ( $field_indices[ 'neoserra_client_id' ] ) $form['fields'][ $field_indices[ 'neoserra_client_id' ] ]->defaultValue = $client->id;
-				if ( $field_indices[ 'neoserra_client_ftEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ftEmps' ] ]->defaultValue = $client->ftEmps;
-				if ( $field_indices[ 'neoserra_milestone_ns_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_ns_amount' ] ]->defaultValue = $client->ftEmps;
-				if ( $field_indices[ 'neoserra_client_ptEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ptEmps' ] ]->defaultValue = $client->ptEmps;
-				if ( $field_indices[ 'neoserra_milestone_nspt_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_nspt_amount' ] ]->defaultValue = $client->ptEmps;
-				if ( $field_indices[ 'neoserra_client_grossSales' ] ) $form['fields'][ $field_indices[ 'neoserra_client_grossSales' ] ]->defaultValue = $client->grossSales;
-				if ( $field_indices[ 'neoserra_milestone_is_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_is_amount' ] ]->defaultValue = $client->grossSales;
+					$clients = array();
+					foreach ( $client_results as $client_result ) {
+						$client_response = Crown_Neoserra_Records_Api::get_client( $client_result->clientId );
+						$client = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response : null;
+						if ( $client ) $clients[] = $client;
+					}
+					if ( empty( $clients ) ) return $form;
+
+					self::$session_neoserra_clients = $clients;
+				}
+
+				$default_client = $clients[0];
+				if ( isset( $_GET['client'] ) ) {
+					foreach ( $clients as $client ) {
+						if ( $_GET['client'] == $client->id ) {
+							$default_client = $client;
+						}
+					}
+				}
+
+				// build list of client options
+				$client_choices = array_map( function( $client ) {
+					return array(
+						'text' => $client->company,
+						'value' => $client->id,
+						'isSelected' => isset( $_GET['client'] ) && $_GET['client'] == $client->id
+					);
+				}, $clients );
+				if ( count( $client_choices ) == 1 ) $client_choices[0]['isSelected'] = true;
+				$form['fields'][ $field_indices[ 'neoserra_client_id' ] ]->choices = $client_choices;
+
+				// assign default values from default client
+				if ( $field_indices[ 'neoserra_client_ftEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ftEmps' ] ]->defaultValue = $default_client->ftEmps;
+				if ( $field_indices[ 'neoserra_milestone_ns_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_ns_amount' ] ]->defaultValue = $default_client->ftEmps;
+				if ( $field_indices[ 'neoserra_client_ptEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ptEmps' ] ]->defaultValue = $default_client->ptEmps;
+				if ( $field_indices[ 'neoserra_milestone_nspt_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_nspt_amount' ] ]->defaultValue = $default_client->ptEmps;
+				if ( $field_indices[ 'neoserra_client_grossSales' ] ) $form['fields'][ $field_indices[ 'neoserra_client_grossSales' ] ]->defaultValue = $default_client->grossSales;
+				if ( $field_indices[ 'neoserra_milestone_is_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_is_amount' ] ]->defaultValue = $default_client->grossSales;
+
+				// assign css classes to fields
+				foreach ( $field_indices as $k => $field_index ) {
+					if ( $field_index ) {
+						$form['fields'][ $field_index ]->cssClass .= ' ' . 'field-' . $k;
+					}
+				}
 
 				return $form;
 			}, 10, 3 );
 
+
+			add_action( 'wp_footer', function() {
+				if ( empty( self::$session_neoserra_clients ) ) return;
+				?>
+					<script>
+						var sessionNeoserraClients = <?php echo json_encode( self::$session_neoserra_clients ); ?>;
+						(function($) {
+							$(document).on('change', '.field-neoserra_client_id input[type=radio], .field-neoserra_client_id select', function(e) {
+								var form = $(this).closest('form');
+								var clientId = $(this).val();
+								if($(this).is('input[type=radio]')) {
+									clientId = form.find('input[name=' + $(this).attr('name') + ']:checked').val();
+								}
+								for(var i in sessionNeoserraClients) {
+									var client = sessionNeoserraClients[i];
+									if(client.id == clientId) {
+
+										if((matches = $('.field-neoserra_client_ftEmps input', form).val(client.ftEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ftEmps;
+										}
+
+										if((matches = $('.field-neoserra_milestone_ns_amount input', form).val(client.ftEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ftEmps;
+										}
+
+										if((matches = $('.field-neoserra_client_ptEmps input', form).val(client.ptEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ptEmps;
+										}
+
+										if((matches = $('.field-neoserra_milestone_nspt_amount input', form).val(client.ptEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ptEmps;
+										}
+
+										if((matches = $('.field-neoserra_client_grossSales input', form).val(client.grossSales).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.grossSales;
+										}
+
+										if((matches = $('.field-neoserra_milestone_is_amount input', form).val(client.grossSales).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
+											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.grossSales;
+										}
+
+
+										break;
+									}
+								}
+							});
+						})(jQuery);
+					</script>
+				<?php
+			} );
+
+
+			// add_filter( 'gform_pre_render', array( __CLASS__, 'populate_client_field_options' ) );
+			// add_filter( 'gform_pre_validation', array( __CLASS__, 'populate_client_field_options' ) );
+			// add_filter( 'gform_pre_submission_filter', array( __CLASS__, 'populate_client_field_options' ) );
+			// // add_filter( 'gform_admin_pre_render', array( __CLASS__, 'populate_client_field_options' ) );
+
+		}
+
+
+		public static function populate_client_field_options( $form ) {
+			// print_r($form['fields']); die;
+			$client_choices = array_map( function( $client ) {
+				return array(
+					'text' => $client->company,
+					'value' => $client->id,
+					'isSelected' => isset( $_GET['client'] ) && $_GET['client'] == $client->id
+				);
+			}, self::$session_neoserra_clients );
+			if ( count( $client_choices ) == 1 ) {
+				$client_choices[0]['isSelected'] = true;
+			}
+			foreach ( $form['fields'] as $field ) {
+				if ( $field->inputName == 'client' && in_array( $field->type, array( 'radio', 'select' ) ) ) {
+					$field->choices = $client_choices;
+				}
+			}
+			return $form;
 		}
 	
 

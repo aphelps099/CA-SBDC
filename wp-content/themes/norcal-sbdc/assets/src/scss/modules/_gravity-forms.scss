@@ -163,6 +163,9 @@ $gform-gutter-width: 10px;
 .gfield {
 	@extend .form-group;
 	clear: both;
+	&.gfield--type-hidden {
+		clear: none;
+	}
 	&.gfield_error {
 
 		label,

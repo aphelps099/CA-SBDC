@@ -36256,6 +36256,9 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .gfield {
   clear: both;
 }
+.gfield.gfield--type-hidden {
+  clear: none;
+}
 .gfield.gfield_error label,
 .gfield.gfield_error .validation_message {
   color: #D11141;
