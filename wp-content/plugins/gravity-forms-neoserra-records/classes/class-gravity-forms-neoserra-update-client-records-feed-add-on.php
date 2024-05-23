@@ -799,7 +799,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							$value = GFCommon::replace_variables( $field_id, $form, $entry );
 						}
 					}
-					if ( ! empty( $value ) ) $client_args[ $prop ] = $value;
+					if ( ! empty( $value ) ) {
+						$client_args[ $prop ] = $value;
+					}
 				}
 				$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
@@ -831,7 +833,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							$value = GFCommon::replace_variables( $field_id, $form, $entry );
 						}
 					}
-					if ( ! empty( $value ) ) $milestone_args[ $prop ] = $value;
+					if ( ! empty( $value ) ) {
+						if ( in_array( $prop, array( 'amount', 'initialAmount' ) ) ) {
+							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
+						}
+						$milestone_args[ $prop ] = $value;
+					}
 				}
 				$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
@@ -862,7 +869,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							$value = GFCommon::replace_variables( $field_id, $form, $entry );
 						}
 					}
-					if ( ! empty( $value ) ) $capital_funding_args[ $prop ] = $value;
+					if ( ! empty( $value ) ) {
+						if ( in_array( $prop, array( 'amountReq', 'amountApproved' ) ) ) {
+							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
+						}
+						$capital_funding_args[ $prop ] = $value;
+					}
 				}
 				$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
