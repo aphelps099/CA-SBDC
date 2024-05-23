@@ -803,8 +803,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						$client_args[ $prop ] = $value;
 					}
 				}
-				$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
-				$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
+				if ( ! empty( $client_args ) ) {
+					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
+					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
+				}
 			}
 
 			// add new milestone record
@@ -849,7 +851,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$capital_funding_args = array(
 					'clientId' => $client->id,
 					'centerId' => $center->id,
-					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S'
+					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
+					'counselors' => $center->counselId
 				);
 				foreach ( $capital_funding_props as $prop => $field_id ) {
 					$value = null;
