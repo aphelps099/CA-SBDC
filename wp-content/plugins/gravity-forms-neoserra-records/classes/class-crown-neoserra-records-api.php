@@ -8,6 +8,8 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 		protected static $api_uri = 'https://norcal.neoserra.com/api/v1/';
 		protected static $api_token = null;
 
+		protected static $cache_duration = MINUTE_IN_SECONDS * 5;
+
 
 		public static function init() {
 			if ( self::$init ) return;
@@ -76,6 +78,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 		}
 
 
+		public static function get_center( $id, $args = array() ) {
+			$response = self::query( 'centers/' . $id, $args );
+			return $response;
+		}
+
+
 		public static function create_milestone( $args = array() ) {
 			$response = self::query( 'milestones/new', $args, 'post' );
 			return $response;
@@ -98,6 +106,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 			self::init();
 
 			// $query_args = array_merge( array(), $query_args );
+
+			$query_hash = 'neoserra_api_query_' . md5( json_encode( array( $endpoint, $query_args, $method ) ) );
+			$cached_response = get_transient( $query_hash );
+			if ( $cached_response !== false ) {
+				return $cached_response;
+			}
 
 			$query_string = '';
 
@@ -145,6 +159,8 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 			unset( $ch );
 
 			$response = json_decode( $response );
+
+			set_transient( $query_hash, $response, self::$cache_duration );
 
 			return $response;
 

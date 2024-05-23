@@ -101,8 +101,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					'ptEmps',
 					'grossSales'
 				) ) ) );
-				$clients = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
-				if ( ! $clients || ! is_array( $clients ) || empty( $clients ) ) return $form;
+				$clients = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : array();
+				if ( empty( $clients ) ) return $form;
+
+				self::$session_neoserra_clients = $clients;
 
 				$default_client = $clients[0];
 				if ( isset( $_GET['client'] ) ) {
@@ -157,7 +159,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 								}
 								for(var i in sessionNeoserraClients) {
 									var client = sessionNeoserraClients[i];
-									if(client.id == clientId) {
+									if(client.clientId == clientId) {
 
 										if((matches = $('.field-neoserra_client_ftEmps input', form).val(client.ftEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
 											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ftEmps;
@@ -183,7 +185,6 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.grossSales;
 										}
 
-
 										break;
 									}
 								}
@@ -191,6 +192,21 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						})(jQuery);
 					</script>
 				<?php
+			} );
+
+
+			add_filter( 'gform_pre_validation', function( $form ) {
+				$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
+				$client_id = isset( $_GET['client'] ) ? intval( $_GET['client'] ) : null;
+				$form = self::set_contact_client_field_options( $form, $contact_id, $client_id );
+				return $form;
+			} );
+
+			add_filter( 'gform_pre_submission_filter', function( $form ) {
+				$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
+				$client_id = isset( $_GET['client'] ) ? intval( $_GET['client'] ) : null;
+				$form = self::set_contact_client_field_options( $form, $contact_id, $client_id );
+				return $form;
 			} );
 
 
@@ -219,6 +235,35 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					$field->choices = $client_choices;
 				}
 			}
+			return $form;
+		}
+
+
+		protected static function set_contact_client_field_options( $form, $contact_id, $default = null ) {
+			
+			$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'indiv_id' => $contact_id, 'columns' => implode( ',', array(
+				'clientId',
+				'company'
+			) ) ) );
+			$clients = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : array();
+
+			$client_choices = array_map( function( $client ) {
+				return array(
+					'text' => $client->company,
+					'value' => $client->clientId,
+					'isSelected' => ! empty( $default ) && $default == $client->clientId
+				);
+			}, $clients );
+			if ( count( $client_choices ) == 1 ) {
+				$client_choices[0]['isSelected'] = true;
+			}
+
+			foreach ( $form['fields'] as $field ) {
+				if ( $field->inputName == 'client' && in_array( $field->type, array( 'radio', 'select' ) ) ) {
+					$field->choices = $client_choices;
+				}
+			}
+
 			return $form;
 		}
 	
@@ -631,6 +676,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				'Attribution Source' => 'attribution',
 				'Attribution Signature' => 'attribSignature',
 				'Attribution Date' => 'attribDate',
+				'Verified' => 'verify'
 			);
 			return self::convert_properties_to_choices( $properties );
 		}
@@ -653,6 +699,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				'Attribution Source' => 'attribution',
 				'Attribution Signature' => 'attribSignature',
 				'Attribution Date' => 'attribDate',
+				'Required Attribution' => 'reqattrib'
 			);
 			return self::convert_properties_to_choices( $properties );
 		}
@@ -725,6 +772,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$error_messages[] = '[update_client] ' . 'Client not found.';
 			}
 
+			$center = null;
+			if ( $client ) {
+				$center_response = Crown_Neoserra_Records_Api::get_center( $client->centerId );
+				$center = is_object( $center_response ) && property_exists( $center_response, 'id' ) ? $center_response : null;
+			}
+
 			// update client record
 			if ( $client ) {
 				$client_args = array();
@@ -740,7 +793,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						}
 						$value = implode( "\n", $values );
 					} else {
-						$value = $this->get_field_value( $form, $entry, $field_id );
+						if ( array_key_exists( $field_id, $entry ) ) {
+							$value = $this->get_field_value( $form, $entry, $field_id );
+						} else {
+							$value = GFCommon::replace_variables( $field_id, $form, $entry );
+						}
 					}
 					if ( ! empty( $value ) ) $client_args[ $prop ] = $value;
 				}
@@ -752,8 +809,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			if ( $client && boolval( $feed['meta']['milestone_record_create_enabled'] ) ) {
 				$milestone_args = array(
 					'clientId' => $client->id,
-					'centerId' => $client->centerId,
-					'fundarea' => $client->defaultfundarea
+					'centerId' => $center->id,
+					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
+					'counselors' => $center->counselId
 				);
 				foreach ( $milestone_props as $prop => $field_id ) {
 					$value = null;
@@ -767,7 +825,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						}
 						$value = implode( "\n", $values );
 					} else {
-						$value = $this->get_field_value( $form, $entry, $field_id );
+						if ( array_key_exists( $field_id, $entry ) ) {
+							$value = $this->get_field_value( $form, $entry, $field_id );
+						} else {
+							$value = GFCommon::replace_variables( $field_id, $form, $entry );
+						}
 					}
 					if ( ! empty( $value ) ) $milestone_args[ $prop ] = $value;
 				}
@@ -779,8 +841,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			if ( $client && boolval( $feed['meta']['capital_funding_record_create_enabled'] ) ) {
 				$capital_funding_args = array(
 					'clientId' => $client->id,
-					'centerId' => $client->centerId,
-					'fundarea' => $client->defaultfundarea
+					'centerId' => $center->id,
+					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S'
 				);
 				foreach ( $capital_funding_props as $prop => $field_id ) {
 					$value = null;
@@ -794,7 +856,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						}
 						$value = implode( "\n", $values );
 					} else {
-						$value = $this->get_field_value( $form, $entry, $field_id );
+						if ( array_key_exists( $field_id, $entry ) ) {
+							$value = $this->get_field_value( $form, $entry, $field_id );
+						} else {
+							$value = GFCommon::replace_variables( $field_id, $form, $entry );
+						}
 					}
 					if ( ! empty( $value ) ) $capital_funding_args[ $prop ] = $value;
 				}
