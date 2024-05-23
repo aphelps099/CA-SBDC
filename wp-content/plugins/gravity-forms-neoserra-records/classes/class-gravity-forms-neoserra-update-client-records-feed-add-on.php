@@ -14,7 +14,6 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		protected $_title = 'Gravity Forms Neoserra Update Client Records Add-On';
 		protected $_short_title = 'Neoserra Update Client Records';
 
-		protected static $session_neoserra_contact = null;
 		protected static $session_neoserra_clients = array();
 
 
@@ -92,41 +91,23 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				if ( ! $field_indices[ 'neoserra_client_id' ] ) return $form;
 				if ( ! in_array( $form['fields'][ $field_indices[ 'neoserra_client_id' ] ]->type, array( 'radio', 'select' ) ) ) return $form;
 
-				$contact = self::$session_neoserra_contact;
-				if ( ! $contact ) {
+				$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
+				if ( ! $contact_id ) return $form;
 
-					$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
-					if ( ! $contact_id ) return $form;
-
-					$contact_response = Crown_Neoserra_Records_Api::get_contact( $contact_id );
-					$contact = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response : null;
-					if ( ! $contact ) return $form;
-
-					self::$session_neoserra_contact = $contact;
-				}
-
-				$clients = self::$session_neoserra_clients;
-				if ( ! $clients ) {
-					
-					$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $contact->email ) );
-					$client_results = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
-					if ( ! $client_results ) return $form;
-
-					$clients = array();
-					foreach ( $client_results as $client_result ) {
-						$client_response = Crown_Neoserra_Records_Api::get_client( $client_result->clientId );
-						$client = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response : null;
-						if ( $client ) $clients[] = $client;
-					}
-					if ( empty( $clients ) ) return $form;
-
-					self::$session_neoserra_clients = $clients;
-				}
+				$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'indiv_id' => $contact_id, 'columns' => implode( ',', array(
+					'clientId',
+					'company',
+					'ftEmps',
+					'ptEmps',
+					'grossSales'
+				) ) ) );
+				$clients = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
+				if ( ! $clients || ! is_array( $clients ) || empty( $clients ) ) return $form;
 
 				$default_client = $clients[0];
 				if ( isset( $_GET['client'] ) ) {
 					foreach ( $clients as $client ) {
-						if ( $_GET['client'] == $client->id ) {
+						if ( $_GET['client'] == $client->clientId ) {
 							$default_client = $client;
 						}
 					}
@@ -136,8 +117,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$client_choices = array_map( function( $client ) {
 					return array(
 						'text' => $client->company,
-						'value' => $client->id,
-						'isSelected' => isset( $_GET['client'] ) && $_GET['client'] == $client->id
+						'value' => $client->clientId,
+						'isSelected' => isset( $_GET['client'] ) && $_GET['client'] == $client->clientId
 					);
 				}, $clients );
 				if ( count( $client_choices ) == 1 ) $client_choices[0]['isSelected'] = true;
