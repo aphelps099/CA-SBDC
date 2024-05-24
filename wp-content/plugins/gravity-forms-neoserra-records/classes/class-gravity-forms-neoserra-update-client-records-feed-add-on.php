@@ -14,6 +14,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		protected $_title = 'Gravity Forms Neoserra Update Client Records Add-On';
 		protected $_short_title = 'Neoserra Update Client Records';
 
+		protected static $neoserra_dashboard_uri = 'https://norcal.neoserra.com/';
 		protected static $session_neoserra_clients = array();
 
 
@@ -778,6 +779,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$center = is_object( $center_response ) && property_exists( $center_response, 'id' ) ? $center_response : null;
 			}
 
+			$center_director_notification_links = array();
+
 			// update client record
 			if ( $client ) {
 				$client_args = array();
@@ -806,6 +809,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				if ( ! empty( $client_args ) ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
 					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
+					if ( in_array( 'estab', $client_args ) ) {
+						$center_director_notification_links['client_estab'] = self::$neoserra_dashboard_uri . 'clients/' . $client->id;
+					}
 				}
 			}
 
@@ -838,12 +844,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					if ( ! empty( $value ) ) {
 						if ( in_array( $prop, array( 'amount', 'initialAmount' ) ) ) {
 							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
+						} else if ( in_array( $prop, array( 'date', 'initialDate', 'attribDate' ) ) ) {
+							$value = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $value );
 						}
 						$milestone_args[ $prop ] = $value;
 					}
 				}
 				$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
+				// $center_director_notification_links['milestone'] = self::$neoserra_dashboard_uri . 'activity/view?formid=7&eid=' . $milestone_id . '&url=/clients/' . $client->id;
 			}
 
 			// add new capital funding record
@@ -875,12 +884,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					if ( ! empty( $value ) ) {
 						if ( in_array( $prop, array( 'amountReq', 'amountApproved' ) ) ) {
 							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
+						} else if ( in_array( $prop, array( 'date', 'appdate', 'dateCompleted', 'attribDate' ) ) ) {
+							$value = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $value );
 						}
 						$capital_funding_args[ $prop ] = $value;
 					}
 				}
 				$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
+				// $center_director_notification_links['capital_funding'] = self::$neoserra_dashboard_uri . 'activity/view?formid=20&eid=' . $capital_funding_response . '&url=/clients/' . $client->id;
 			}
 
 			// handle error messages
