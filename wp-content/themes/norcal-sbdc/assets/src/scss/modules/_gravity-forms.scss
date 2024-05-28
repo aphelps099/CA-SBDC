@@ -787,6 +787,70 @@ $gform-gutter-width: 10px;
 			}
 		}
 	}
+	.gfield--type-radio.buttons {
+		.gfield_radio {
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0 -4px -8px;
+			.gchoice {
+				margin: 0 4px 8px;
+				padding-left: 0;
+				input {
+					display: none;
+					&:checked + .gform-field-label {
+						@extend .btn-dark-blue;
+					}
+				}
+				.gform-field-label {
+					@extend .btn;
+					@extend .btn-outline-dark-blue;
+					border-radius: 100px;
+					border-width: 1px;
+				}
+			}
+		}
+	}
+	.gfield--type-radio.menu-options {
+		.gfield_radio {
+			margin: 0;
+			.gchoice {
+				margin: 0;
+				padding-left: 0;
+				+ .gchoice {
+					margin-top: -1px;
+				}
+				input {
+					display: none;
+					&:checked + .gform-field-label {
+						@extend .btn-dark-blue;
+						padding-left: 40px;
+						&::before {
+							opacity: 1;
+						}
+					}
+				}
+				.gform-field-label {
+					@extend .btn;
+					@extend .btn-outline-dark-blue;
+					border-width: 1px;
+					display: block;
+					width: 100%;
+					text-align: left;
+					position: relative;
+					transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out, padding .15s ease-out;
+					&::before {
+						@include icon(map-get($icomoon-icons, arrow-right), icomoon);
+						position: absolute;
+						display: block;
+						left: 18px;
+						top: 12px;
+						opacity: 0;
+						transition: opacity .15s;
+					}
+				}
+			}
+		}
+	}
 	.gfield.signature .ginput_container_text {
 		&::before {
 			left: .5rem;
