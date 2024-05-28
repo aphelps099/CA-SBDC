@@ -20,11 +20,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 		private static $_instance = null;
 
-		// TODO: add email notification to center director when business start form is submitted with link to record(s) created
-		// TODO: add auto company status for business start
+		// X TODO: add email notification to center director when business start form is submitted with link to record(s) created
+		// X TODO: add auto company status for business start
 		// TODO: multiple business handling, make radio selection stand out
 		// TODO: action fields to buttons
-		// TODO: provide link upon to completion to submit again
+		// X TODO: provide link upon to completion to submit again
 
 
 		public function init() {
@@ -805,6 +805,12 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					if ( ! empty( $value ) ) {
 						$client_args[ $prop ] = $value;
 					}
+				}
+				if ( array_key_exists( 'estab', $client_args ) && ! array_key_exists( 'status', $client_args ) ) {
+					$date_estab = new DateTime( $client_args['estab'] );
+					$now = new DateTime();
+					$diff = $now->diff( $date_estab );
+					$client_args['status'] = intval( $diff->format('%y') ) > 0 ? 'B' : 'S';
 				}
 				if ( ! empty( $client_args ) ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
