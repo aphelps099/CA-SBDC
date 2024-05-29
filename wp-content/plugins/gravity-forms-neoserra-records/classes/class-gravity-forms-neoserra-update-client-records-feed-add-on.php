@@ -30,10 +30,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		public function init() {
 			parent::init();
 	
-			// add_filter( 'gform_notification_events', array( &$this, 'add_neoserra_api_error_event' ) );
+			add_filter( 'gform_notification_events', array( &$this, 'add_notification_events' ) );
 
-			// add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
-			// add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
+			add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
+			add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
 
 
 			add_action( 'gform_pre_submission', function( $form ) {
@@ -917,28 +917,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			}
 
 			if ( ! empty( $center_director_notification_links ) && ! empty( $center->diremail ) ) {
-				// email $center->diremail ($center->dirname)
-				$headers = array(
-					'MIME-Version: 1.0',
-					'X-Mailer: PHP',
-					'From: ' . get_option('blogname') . ' <noreply@norcalsbdc.org>',
-					'Content-Type: text/html; charset=UTF-8'
-				);
-				foreach ( $center_director_notification_links as $k => $v ) {
-					$subject = 'New Neoserra Record Submission';
-					$body = $v;
-					if ( $k == 'client_estab' ) {
-						$subject = 'New Neoserra Client Date Established Submission';
-						$body = '<a href="' . $v . '">View Client Record</a>';
-					} else if ( $k == 'milestone' ) {
-						$subject = 'New Neoserra Milestone Record Submission';
-						$body = '<a href="' . $v . '">View Milestone Record</a>';
-					} else if ( $k == 'capital_funding' ) {
-						$subject = 'New Neoserra Capital Funding Record Submission';
-						$body = '<a href="' . $v . '">View Capital Funding Record</a>';
-					}
-					wp_mail( $center->diremail, $subject, $body, $headers );
-				}
+				gform_update_meta( $entry['id'], 'neoserra_center_diremail', $center->diremail );
+				gform_update_meta( $entry['id'], 'neoserra_record_links', $center_director_notification_links );
+				GFAPI::send_notifications( $form, $entry, 'neoserra_center_director_notification' );
 			}
 
 			return;
@@ -971,32 +952,56 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		}
 
 
-		// public function add_neoserra_api_error_event( $notification_events ) {
-		// 	$notification_events['neoserra_api_error'] = __( 'Neoserra API Error', 'gfneoserra' );
-		// 	return $notification_events;
-		// }
+		public function add_notification_events( $notification_events ) {
+			$notification_events['neoserra_api_error'] = __( 'Neoserra API Error', 'gfneoserra' );
+			$notification_events['neoserra_center_director_notification'] = __( 'Neoserra Center Director Email', 'gfneoserra' );
+			return $notification_events;
+		}
 
 		
-		// public function add_custom_merge_tags( $merge_tags, $form_id, $fields, $element_id ) {
-		// 	$merge_tags[] = array( 'label' => 'Neoserra API Errors', 'tag' => '{neoserra_api_errors}' );
-		// 	return $merge_tags;
-		// }
+		public function add_custom_merge_tags( $merge_tags, $form_id, $fields, $element_id ) {
+			$merge_tags[] = array( 'label' => 'Neoserra API Errors', 'tag' => '{neoserra_api_errors}' );
+			$merge_tags[] = array( 'label' => 'Neoserra Center Director Email', 'tag' => '{neoserra_center_diremail}' );
+			$merge_tags[] = array( 'label' => 'Neoserra Record Links', 'tag' => '{neoserra_record_links}' );
+			return $merge_tags;
+		}
 
 
-		// public function replace_custom_merge_tags( $text, $form, $entry, $url_encode, $esc_html, $nl2br, $format ) {
-		// 	$merge_tag = '{neoserra_api_errors}';
-		// 	if ( strpos( $text, $merge_tag ) === false ) {
-		// 		return $text;
-		// 	} else {
-		// 		$errors = gform_get_meta( $entry['id'], 'neoserra_api_errors' );
-		// 		if ( ! empty( $errors ) ) {
-		// 			$text = str_replace( $merge_tag, implode( "\n", $errors ), $text );
-		// 		} else {
-		// 			$text = str_replace( $merge_tag, '', $text );
-		// 		}
-		// 	}
-		// 	return $text;
-		// }
+		public function replace_custom_merge_tags( $text, $form, $entry, $url_encode, $esc_html, $nl2br, $format ) {
+
+			$merge_tag = '{neoserra_api_errors}';
+			if ( strpos( $text, $merge_tag ) !== false ) {
+				$errors = gform_get_meta( $entry['id'], 'neoserra_api_errors' );
+				if ( ! empty( $errors ) ) {
+					$text = str_replace( $merge_tag, implode( "\n", $errors ), $text );
+				} else {
+					$text = str_replace( $merge_tag, '', $text );
+				}
+			}
+
+			$merge_tag = '{neoserra_center_diremail}';
+			if ( strpos( $text, $merge_tag ) !== false ) {
+				$email = gform_get_meta( $entry['id'], 'neoserra_center_diremail' );
+				if ( ! empty( $email ) ) {
+					$text = str_replace( $merge_tag, $email, $text );
+				} else {
+					$text = str_replace( $merge_tag, '', $text );
+				}
+			}
+
+			$merge_tag = '{neoserra_record_links}';
+			if ( strpos( $text, $merge_tag ) !== false ) {
+				$links = gform_get_meta( $entry['id'], 'neoserra_record_links' );
+				$links = array_map( function( $n ) { return '<a href="' . $n . '" target="_blank">' . $n . '</a>'; }, $links );
+				if ( ! empty( $links ) ) {
+					$text = str_replace( $merge_tag, '<ul><li>' . implode( '</li><li>', $links ) . '</li></ul>', $text );
+				} else {
+					$text = str_replace( $merge_tag, '', $text );
+				}
+			}
+
+			return $text;
+		}
 
 
 	}

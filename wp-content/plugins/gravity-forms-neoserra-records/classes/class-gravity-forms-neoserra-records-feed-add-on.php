@@ -21,10 +21,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Records_Feed_Add_On' ) ) {
 		public function init() {
 			parent::init();
 	
-			add_filter( 'gform_notification_events', array( &$this, 'add_neoserra_api_error_event' ) );
+			// add_filter( 'gform_notification_events', array( &$this, 'add_neoserra_api_error_event' ) );
 
-			add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
-			add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
+			// add_filter( 'gform_custom_merge_tags', array( &$this, 'add_custom_merge_tags' ), 10, 4);
+			// add_filter( 'gform_replace_merge_tags', array( &$this, 'replace_custom_merge_tags' ), 10, 7 );
 
 			add_filter( 'gform_pre_render', function( $form, $ajax, $field_values ) {
 				if ( empty( $form['id'] ) ) return $form;
