@@ -815,9 +815,6 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				if ( ! empty( $client_args ) ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
 					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
-					if ( array_key_exists( 'estab', $client_args ) ) {
-						$center_director_notification_links['client_estab'] = self::$neoserra_dashboard_uri . 'clients/' . $client->id;
-					}
 				}
 			}
 
@@ -992,9 +989,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			$merge_tag = '{neoserra_record_links}';
 			if ( strpos( $text, $merge_tag ) !== false ) {
 				$links = gform_get_meta( $entry['id'], 'neoserra_record_links' );
-				$links = array_map( function( $n ) { return '<a href="' . $n . '" target="_blank">' . $n . '</a>'; }, $links );
 				if ( ! empty( $links ) ) {
-					$text = str_replace( $merge_tag, '<ul><li>' . implode( '</li><li>', $links ) . '</li></ul>', $text );
+					$html_links = array();
+					foreach ( $links as $k => $link ) {
+						$label = 'Record';
+						if ( $k == 'milestone' ) $label = 'Milestone Record';
+						if ( $k == 'capital_funding' ) $label = 'Capital Funding Record';
+						$html_links[] = '<strong>' . $label . ':</strong> <a href="' . $link . '" target="_blank">' . $link . '</a>';
+					}
+					$text = str_replace( $merge_tag, '<ul><li>' . implode( '</li><li>', $html_links ) . '</li></ul>', $text );
 				} else {
 					$text = str_replace( $merge_tag, '', $text );
 				}
