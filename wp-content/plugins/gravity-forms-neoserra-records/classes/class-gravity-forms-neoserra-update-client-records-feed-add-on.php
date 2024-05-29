@@ -997,7 +997,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						if ( $k == 'capital_funding' ) $label = 'Capital Funding Record';
 						$html_links[] = '<strong>' . $label . ':</strong> <a href="' . $link . '" target="_blank">' . $link . '</a>';
 					}
-					$text = str_replace( $merge_tag, '<ul><li>' . implode( '</li><li>', $html_links ) . '</li></ul>', $text );
+					$text = str_replace( $merge_tag, implode( "\n", $html_links ), $text );
 				} else {
 					$text = str_replace( $merge_tag, '', $text );
 				}
