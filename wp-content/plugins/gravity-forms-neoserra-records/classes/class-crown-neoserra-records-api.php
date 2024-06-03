@@ -45,9 +45,17 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 			$response = self::query( 'clients', $args );
 			return $response;
 		}
+		public static function clear_cached_get_clients( $args = array() ) {
+			$response = self::clear_cached_query( 'clients', $args );
+			return $response;
+		}
 
 		public static function get_client( $id, $args = array() ) {
 			$response = self::query( 'clients/' . $id, $args );
+			return $response;
+		}
+		public static function clear_cached_get_client( $id, $args = array() ) {
+			$response = self::clear_cached_query( 'clients/' . $id, $args );
 			return $response;
 		}
 		
@@ -58,6 +66,11 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 
 		public static function update_client( $id, $args = array() ) {
 			$response = self::query( 'clients/' . $id, $args, 'post' );
+			return $response;
+		}
+
+		public static function get_client_relationships( $id, $args = array() ) {
+			$response = self::query( 'relationships/' . $id, $args );
 			return $response;
 		}
 
@@ -164,6 +177,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 
 			return $response;
 
+		}
+
+
+		private static function clear_cached_query( $endpoint, $query_args = array(), $method = 'get' ) {
+			$query_hash = 'neoserra_api_query_' . md5( json_encode( array( $endpoint, $query_args, $method ) ) );
+			return delete_transient( $query_hash );
 		}
 
 

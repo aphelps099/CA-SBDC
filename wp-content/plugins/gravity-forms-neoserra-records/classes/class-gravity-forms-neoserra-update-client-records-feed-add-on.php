@@ -832,6 +832,20 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				if ( ! empty( $client_args ) ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
 					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
+
+					$relationship_response = Crown_Neoserra_Records_Api::get_client_relationships( $client_id );
+					if ( is_object( $relationship_response ) && property_exists( $relationship_response, 'indivId' ) && is_array( $relationship_response->individId ) ) {
+						foreach ( $relationship_response->individId as $contact_id ) {
+							Crown_Neoserra_Records_Api::clear_cached_get_clients( array( 'indiv_id' => $contact_id, 'columns' => implode( ',', array(
+								'clientId',
+								'company',
+								'ftEmps',
+								'ptEmps',
+								'grossSales'
+							) ) ) );
+						}
+					}
+
 				}
 			}
 
