@@ -53,6 +53,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				}
 				if ( empty( $email ) ) return;
 
+				$contact_id = null;
 				if ( $field_ids['neoserra_contact_id'] ) {
 					$contact_search_response = Crown_Neoserra_Records_Api::get_contacts( array( 'email' => $email ) );
 					$contact_id = is_object( $contact_search_response ) && property_exists( $contact_search_response, 'rows' ) && is_array( $contact_search_response->rows ) && ! empty( $contact_search_response->rows ) ? $contact_search_response->rows[0]->indivId : null;
@@ -61,11 +62,17 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					}
 				}
 
+				$client_ids = array();
 				if ( $field_ids['neoserra_client_id'] ) {
-					$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $email ) );
-					$client_results = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? $client_search_response->rows : null;
-					if ( $client_results ) {
-						$_POST[ 'input_' . $field_ids['neoserra_client_id'] ] = implode( ',', array_map( function( $n ) { return $n->clientId; }, $client_results ) );
+					if ( $contact_id ) {
+						$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'indiv_id' => $contact_id, 'columns' => implode( ',', array( 'clientId' ) ) ) );
+						$client_ids = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? array_map( function( $n ) { return $n->clientId; }, $client_search_response->rows ) : array();
+					} else {
+						$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'email' => $email ) );
+						$client_ids = is_object( $client_search_response ) && property_exists( $client_search_response, 'rows' ) && is_array( $client_search_response->rows ) && ! empty( $client_search_response->rows ) ? array_map( function( $n ) { return $n->clientId; }, $client_search_response->rows ) : array();
+					}
+					if ( $client_ids ) {
+						$_POST[ 'input_' . $field_ids['neoserra_client_id'] ] = implode( ',', $client_ids );
 					}
 				}
 
