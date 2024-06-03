@@ -37892,7 +37892,7 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper .gfield_date_day,
 .intake-form_wrapper .gfield_date_year,
 .intake-form_wrapper .ginput_container_date input {
-  padding: calc(0.8rem + 1px) 0.8rem;
+  padding: calc(0.8rem + 1px) 0.8rem !important;
 }
 .intake-form_wrapper select {
   -webkit-box-shadow: inset 0 -2px #032040;

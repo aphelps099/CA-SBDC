@@ -751,7 +751,7 @@ $gform-gutter-width: 10px;
 	.gfield_date_day, 
 	.gfield_date_year,
 	.ginput_container_date input {
-		padding: add($input-padding-y, $input-border-width) $input-padding-x;
+		padding: add($input-padding-y, $input-border-width) $input-padding-x !important;
 	}
 	select {
 		box-shadow: inset 0 -2px $primary;
