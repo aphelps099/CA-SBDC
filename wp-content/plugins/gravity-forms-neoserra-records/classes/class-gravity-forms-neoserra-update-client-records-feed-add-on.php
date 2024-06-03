@@ -136,11 +136,11 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 				// assign default values from default client
 				if ( $field_indices[ 'neoserra_client_ftEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ftEmps' ] ]->defaultValue = $default_client->ftEmps;
-				if ( $field_indices[ 'neoserra_milestone_ns_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_ns_amount' ] ]->defaultValue = $default_client->ftEmps;
+				// if ( $field_indices[ 'neoserra_milestone_ns_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_ns_amount' ] ]->defaultValue = $default_client->ftEmps;
 				if ( $field_indices[ 'neoserra_client_ptEmps' ] ) $form['fields'][ $field_indices[ 'neoserra_client_ptEmps' ] ]->defaultValue = $default_client->ptEmps;
-				if ( $field_indices[ 'neoserra_milestone_nspt_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_nspt_amount' ] ]->defaultValue = $default_client->ptEmps;
+				// if ( $field_indices[ 'neoserra_milestone_nspt_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_nspt_amount' ] ]->defaultValue = $default_client->ptEmps;
 				if ( $field_indices[ 'neoserra_client_grossSales' ] ) $form['fields'][ $field_indices[ 'neoserra_client_grossSales' ] ]->defaultValue = $default_client->grossSales;
-				if ( $field_indices[ 'neoserra_milestone_is_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_is_amount' ] ]->defaultValue = $default_client->grossSales;
+				// if ( $field_indices[ 'neoserra_milestone_is_amount' ] ) $form['fields'][ $field_indices[ 'neoserra_milestone_is_amount' ] ]->defaultValue = $default_client->grossSales;
 
 				// assign css classes to fields
 				foreach ( $field_indices as $k => $field_index ) {
@@ -174,7 +174,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 										}
 
 										if((matches = $('.field-neoserra_milestone_ns_amount input', form).val(client.ftEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
-											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ftEmps;
+											// if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ftEmps;
 										}
 
 										if((matches = $('.field-neoserra_client_ptEmps input', form).val(client.ptEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
@@ -182,7 +182,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 										}
 
 										if((matches = $('.field-neoserra_milestone_nspt_amount input', form).val(client.ptEmps).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
-											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ptEmps;
+											// if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.ptEmps;
 										}
 
 										if((matches = $('.field-neoserra_client_grossSales input', form).val(client.grossSales).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
@@ -190,7 +190,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 										}
 
 										if((matches = $('.field-neoserra_milestone_is_amount input', form).val(client.grossSales).trigger('change').attr('id').match(/^input_(\d+)_(\d+)/))) {
-											if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.grossSales;
+											// if(gf_form_conditional_logic[matches[1]] && gf_form_conditional_logic[matches[1]].defaults[matches[2]]) gf_form_conditional_logic[matches[1]].defaults[matches[2]] = client.grossSales;
 										}
 
 										break;
