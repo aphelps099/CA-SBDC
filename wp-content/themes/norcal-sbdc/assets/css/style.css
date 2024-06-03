@@ -37887,6 +37887,12 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=color]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper .gfield_date_month,
+.intake-form_wrapper .gfield_date_day,
+.intake-form_wrapper .gfield_date_year,
+.intake-form_wrapper .ginput_container_date input {
+  padding: calc(0.8rem + 1px) 0.8rem;
+}
 .intake-form_wrapper select {
   -webkit-box-shadow: inset 0 -2px #032040;
           box-shadow: inset 0 -2px #032040;
