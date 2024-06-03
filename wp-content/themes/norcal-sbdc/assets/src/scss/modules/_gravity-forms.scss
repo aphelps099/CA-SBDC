@@ -787,26 +787,25 @@ $gform-gutter-width: 10px;
 			}
 		}
 	}
-	.gfield--type-radio.buttons {
-		.gfield_radio {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -4px -8px;
-			.gchoice {
-				margin: 0 4px 8px;
-				padding-left: 0;
-				input {
-					display: none;
-					&:checked + .gform-field-label {
-						@extend .btn-dark-blue;
-					}
+	.gfield--type-radio.buttons .gfield_radio,
+	.gfield--type-checkbox.buttons .gfield_checkbox {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0 -4px -8px;
+		.gchoice {
+			margin: 0 4px 8px;
+			padding-left: 0;
+			input {
+				display: none;
+				&:checked + .gform-field-label {
+					@extend .btn-dark-blue;
 				}
-				.gform-field-label {
-					@extend .btn;
-					@extend .btn-outline-dark-blue;
-					border-radius: 100px;
-					border-width: 1px;
-				}
+			}
+			.gform-field-label {
+				@extend .btn;
+				@extend .btn-outline-dark-blue;
+				border-radius: 100px;
+				border-width: 1px;
 			}
 		}
 	}
