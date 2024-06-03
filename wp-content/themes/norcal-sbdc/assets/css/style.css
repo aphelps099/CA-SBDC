@@ -37797,12 +37797,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=text]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=text]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=text]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=password] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=password]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=password]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=password]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=datetime] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37811,12 +37827,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=datetime]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=datetime]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=datetime]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=datetime-local] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=datetime-local]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=datetime-local]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=datetime-local]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=date] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37825,12 +37857,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=date]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=date]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=date]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=month] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=month]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=month]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=month]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=time] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37839,12 +37887,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=time]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=time]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=time]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=week] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=week]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=week]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=week]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=number] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37853,12 +37917,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=number]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=number]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=number]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=email] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=email]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=email]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=email]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=url] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37867,12 +37947,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=url]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=url]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=url]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=search] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=search]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=search]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=search]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper input[type=tel] {
   padding: calc(0.8rem + 1px) 0.8rem;
@@ -37881,12 +37977,28 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
 .intake-form_wrapper input[type=tel]:focus {
   background-color: rgba(3, 32, 64, 0.05);
 }
+.intake-form_wrapper input[type=tel]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=tel]:read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
 .intake-form_wrapper input[type=color] {
   padding: calc(0.8rem + 1px) 0.8rem;
   background-color: rgba(3, 32, 64, 0.05);
 }
 .intake-form_wrapper input[type=color]:focus {
   background-color: rgba(3, 32, 64, 0.05);
+}
+.intake-form_wrapper input[type=color]:-moz-read-only {
+  background-color: #ddd;
+  color: #aaa;
+}
+.intake-form_wrapper input[type=color]:read-only {
+  background-color: #ddd;
+  color: #aaa;
 }
 .intake-form_wrapper .gfield_date_month,
 .intake-form_wrapper .gfield_date_day,

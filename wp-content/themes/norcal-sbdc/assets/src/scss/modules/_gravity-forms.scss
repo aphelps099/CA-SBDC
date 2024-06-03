@@ -745,6 +745,10 @@ $gform-gutter-width: 10px;
 			&:focus {
 				background-color: rgba($primary, 0.05);
 			}
+			&:read-only {
+				background-color: #ddd;
+				color: #aaa;
+			}
 		}
 	}
 	.gfield_date_month, 

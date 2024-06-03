@@ -197,6 +197,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 									}
 								}
 							});
+							$('.field-employee_type').closest('form').find('.field-neoserra_milestone_ns_amount input, .field-neoserra_milestone_nspt_amount input').prop('readonly', true);
+							$(document).on('change', '.field-employee_type input[type=checkbox]', function(e) {
+								var form = $(this).closest('form');
+								var selectedOptions = [];
+								$(this).closest('.gfield').find('input:checked').each(function(i, el2) {
+									selectedOptions.push($(el2).val());
+								});
+								console.log(selectedOptions);
+							});
 						})(jQuery);
 					</script>
 				<?php
