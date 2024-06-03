@@ -64,7 +64,7 @@ label {
 	border: 1px solid #888;
 	border-radius: $input-border-radius;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
-	font-size: $font-size-base;
+	font-size: 1rem;
 	line-height: $line-height-base;
 	overflow: hidden;
 	margin-top: 4px;
@@ -117,6 +117,7 @@ label {
 	}
 	table.ui-datepicker-calendar {
 		margin: 0;
+		width: 100%;
 		> thead {
 			> tr {
 				> th {

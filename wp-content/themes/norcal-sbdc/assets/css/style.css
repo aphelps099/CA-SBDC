@@ -23044,7 +23044,7 @@ label {
   border-radius: 0;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.4;
   overflow: hidden;
   margin-top: 4px;
@@ -23115,6 +23115,7 @@ label {
 }
 .ui-datepicker table.ui-datepicker-calendar {
   margin: 0;
+  width: 100%;
 }
 .ui-datepicker table.ui-datepicker-calendar > thead > tr > th {
   font-weight: 300;
