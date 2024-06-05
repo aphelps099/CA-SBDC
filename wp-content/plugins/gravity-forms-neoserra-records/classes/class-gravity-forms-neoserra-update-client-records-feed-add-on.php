@@ -83,6 +83,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				if ( empty( $form['id'] ) ) return $form;
 
 				$field_indices = array(
+					'neoserra_contact_email' => null,
 					'neoserra_client_id' => null,
 					'neoserra_client_ftEmps' => null,
 					'neoserra_milestone_ns_amount' => null,
@@ -101,6 +102,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 				$contact_id = isset( $_GET['contact'] ) ? intval( $_GET['contact'] ) : null;
 				if ( ! $contact_id ) return $form;
+
+				if ( $field_indices[ 'neoserra_contact_email' ] ) {
+					$contact = Crown_Neoserra_Records_Api::get_contact( $contact_id );
+					if ( is_object( $contact ) && property_exists( $contact, 'id' ) ) {
+						$form['fields'][ $field_indices[ 'neoserra_contact_email' ] ]->defaultValue = $contact->email;
+					}
+				}
 
 				$client_search_response = Crown_Neoserra_Records_Api::get_clients( array( 'indiv_id' => $contact_id, 'columns' => implode( ',', array(
 					'clientId',
