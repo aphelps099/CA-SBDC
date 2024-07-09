@@ -74,6 +74,11 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 			return $response;
 		}
 
+		public static function update_client_relationship( $client_id, $contact_id, $args = array() ) {
+			$response = self::query( 'relationships/' . $client_id . '/' . $contact_id, $args, 'post' );
+			return $response;
+		}
+
 
 		public static function get_tfg_application( $id, $args = array() ) {
 			$response = self::query( '100100/' . $id, $args );

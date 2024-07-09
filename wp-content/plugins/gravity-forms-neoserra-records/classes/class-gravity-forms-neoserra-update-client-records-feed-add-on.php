@@ -321,13 +321,29 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							),
 						),
 						array(
-							'name'     => 'client_id_field',
-							'label'    => esc_html__( 'Client ID', 'gfneoserra' ),
+							'name'     => 'contact_id_field',
+							'label'    => esc_html__( 'Contact ID', 'gfneoserra' ),
 							'type'     => 'field_select',
-							'tooltip' => esc_html__( 'Select the client ID field to use for updating the corresponding client record in Neoserra.', 'gfneoserra' ),
+							'tooltip' => esc_html__( 'Select the contact ID field to use for updating the corresponding contact record in Neoserra. If the provided contact ID is blank, a new contact record will be created.', 'gfneoserra' ),
 							'args'     => array(
 								// 'input_types' => array( 'email' )
 							)
+						),
+						array(
+							'name'     => 'client_id_field',
+							'label'    => esc_html__( 'Client ID', 'gfneoserra' ),
+							'type'     => 'field_select',
+							'tooltip' => esc_html__( 'Select the client ID field to use for updating the corresponding client record in Neoserra. If the provided client ID is blank, a new client record will be created and associated with the contact record.', 'gfneoserra' ),
+							'args'     => array(
+								// 'input_types' => array( 'email' )
+							)
+						),
+						array(
+							'name' => 'default_center_id',
+							'label' => esc_html__( 'Default Center ID', 'gfneoserra' ),
+							'type' => 'text',
+							'class' => 'small',
+							'tooltip' => esc_html__( 'When creating a new contact/client record, this is the center ID which it should be assigned (if not defined elsewhere).', 'gfneoserra' ),
 						),
 						array(
 							'type'  => 'feed_condition',
@@ -336,24 +352,25 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 						)
 					)
 				),
-				// array(
-				// 	'title'  => esc_html__( 'Update Contact Record', 'gfneoserra' ),
-				// 	'fields' => array(
-				// 		array(
-				// 			'label' => esc_html__( 'Contact Record Properties', 'gfneoserra' ),
-				// 			'name' => 'contact_props',
-				// 			'type' => 'generic_map',
-				// 			'key_field' => array(
-				// 				'title' => 'Property Name',
-				// 				'allow_custom'  => true,
-				// 				'choices' => self::get_contact_record_property_choices()
-				// 			),
-				// 			'value_field' => array(
-				// 				'title' => 'Form Field'
-				// 			)
-				// 		),
-				// 	)
-				// ),
+				array(
+					'title'  => esc_html__( 'Update Contact Record', 'gfneoserra' ),
+					'fields' => array(
+						array(
+							// 'label' => esc_html__( 'Contact Record Properties', 'gfneoserra' ),
+							'name' => 'contact_props',
+							'type' => 'generic_map',
+							'key_field' => array(
+								'title' => 'Property Name',
+								'allow_custom'  => true,
+								'allow_duplicates' => true,
+								'choices' => self::get_contact_record_property_choices()
+							),
+							'value_field' => array(
+								'title' => 'Form Field'
+							)
+						),
+					)
+				),
 				array(
 					'title'  => esc_html__( 'Update Client Record', 'gfneoserra' ),
 					'fields' => array(
@@ -766,7 +783,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 			$error_messages = array();
 
-			// $contact_props = $this->get_generic_map_fields( $feed, 'contact_props' );
+			$contact_props = $this->get_generic_map_fields( $feed, 'contact_props' );
 			$client_props = $this->get_generic_map_fields( $feed, 'client_props' );
 			$milestone_props = $this->get_generic_map_fields( $feed, 'milestone_props' );
 			$capital_funding_props = $this->get_generic_map_fields( $feed, 'capital_funding_props' );
@@ -781,66 +798,87 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$client_props['notes'] = $notes_field_ids;
 			}
 
+			$contact_id_field_id = $feed['meta']['contact_id_field'];
+			$contact_id = ! empty( $contact_id_field_id ) ? $this->get_field_value( $form, $entry, $contact_id_field_id ) : '';
+
 			$client_id_field_id = $feed['meta']['client_id_field'];
 			$client_id = ! empty( $client_id_field_id ) ? $this->get_field_value( $form, $entry, $client_id_field_id ) : '';
 
-			// $contact = null;
+			$contact = null;
 			$client = null;
+
+			if ( ! empty( $contact_id ) ) {
+				$contact_response = Crown_Neoserra_Records_Api::get_contact( $contact_id );
+				$contact = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response : null;
+			}
 
 			if ( ! empty( $client_id ) ) {
 				$client_response = Crown_Neoserra_Records_Api::get_client( $client_id );
 				$client = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response : null;
 			}
 
-			if ( $client ) {
-				gform_update_meta( $entry['id'], 'neoserra_client_id', $client->id );
-			} else {
-				$error_messages[] = '[update_client] ' . 'Client not found.';
-			}
+			$default_center_id = $feed['meta']['default_center_id'];
+			$center_id = $contact ? $contact->centerId : ( $client ? $client->centerId : $default_center_id );
 
-			$center = null;
-			if ( $client ) {
-				$center_response = Crown_Neoserra_Records_Api::get_center( $client->centerId );
+			$contact_args = $this->get_record_args_from_props( $contact_props, $entry, $form );
+			$client_args = $this->get_record_args_from_props( $client_props, $entry, $form );
+			$milestone_args = boolval( $feed['meta']['milestone_record_create_enabled'] ) ? $this->get_record_args_from_props( $milestone_props, $entry, $form ) : array();
+			$capital_funding_args = boolval( $feed['meta']['capital_funding_record_create_enabled'] ) ? $this->get_record_args_from_props( $capital_funding_props, $entry, $form ) : array();
+
+			$counselor_notification_links = array();
+			$counselor_id = '';
+			$counselor_email = '';
+			if ( $client && ! empty( $client->counselId ) ) {
+				$counselor_id = $client->counselId;
+				// TODO: fetch & set counselor's email address
+			}
+			if ( ! empty( $center_id ) ) {
+				$center_response = Crown_Neoserra_Records_Api::get_center( $center_id );
 				$center = is_object( $center_response ) && property_exists( $center_response, 'id' ) ? $center_response : null;
+				if ( $center ) {
+					$counselor_id = empty( $counselor_id ) ? $center->counselId : $counselor_id;
+					$counselor_email = empty( $counselor_email ) ? $center->diremail : $counselor_email;
+				}
 			}
 
-			$center_director_notification_links = array();
 
-			// update client record
-			if ( $client ) {
-				$client_args = array();
-				foreach ( $client_props as $prop => $field_id ) {
-					$value = null;
-					if ( is_array( $field_id ) ) {
-						$values = array();
-						foreach ( $field_id as $fid ) {
-							$v = $this->get_field_value( $form, $entry, $fid );
-							if ( empty( $v ) ) continue;
-							$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
-							$values[] = $label . ': ' . $v;
-						}
-						$value = implode( "\n", $values );
-					} else {
-						if ( array_key_exists( $field_id, $entry ) ) {
-							$value = $this->get_field_value( $form, $entry, $field_id );
-						} else {
-							$value = GFCommon::replace_variables( $field_id, $form, $entry );
-						}
-					}
-					if ( ! empty( $value ) ) {
-						$client_args[ $prop ] = $value;
+			// create/update contact record
+			if ( ! empty( $contact_args ) ) {
+				$contact_args = array_merge( array(
+					'centerId' => $center_id
+				), $contact_args );
+				$contact_response = null;
+				if ( $contact ) {
+					$contact_response = Crown_Neoserra_Records_Api::update_contact( $contact_id, $contact_args );
+				} else if ( empty( $contact_id ) ) {
+					$contact_response = Crown_Neoserra_Records_Api::create_contact( $contact_args );
+				} else {
+					$error_messages[] = '[update_contact] ' . 'Contact record #' . $contact_id . ' not found.';
+				}
+				if ( $contact_response ) {
+					$error_messages = array_merge( $error_messages, self::get_error_messages( $contact_response, $contact ? 'update_contact' : 'create_contact' ) );
+					$contact_id = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response->id : null;
+					if ( $contact_id ) {
+						gform_update_meta( $entry['id'], 'neoserra_contact_id', $contact_id );
 					}
 				}
+			}
+
+
+			// create/update client record
+			if ( ! empty( $client_args ) ) {
+				$client_args = array_merge( array(
+					'centerId' => $center_id
+				), $client_args );
 				if ( array_key_exists( 'estab', $client_args ) && ! array_key_exists( 'status', $client_args ) ) {
 					$date_estab = new DateTime( $client_args['estab'] );
 					$now = new DateTime();
 					$diff = $now->diff( $date_estab );
 					$client_args['status'] = intval( $diff->format('%y') ) > 0 ? 'B' : 'S';
 				}
-				if ( ! empty( $client_args ) ) {
+				$client_response = null;
+				if ( $client ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
-					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, 'update_client' ) );
-
 					$relationship_response = Crown_Neoserra_Records_Api::get_client_relationships( $client_id );
 					if ( is_object( $relationship_response ) && property_exists( $relationship_response, 'indivId' ) && is_array( $relationship_response->indivId ) ) {
 						foreach ( $relationship_response->indivId as $contact_id ) {
@@ -853,95 +891,82 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							) ) ) );
 						}
 					}
-
+				} else if ( empty( $client_id ) ) {
+					$client_response = Crown_Neoserra_Records_Api::create_client( $client_args );
+				} else {
+					$error_messages[] = '[update_client] ' . 'Client record #' . $client_id . ' not found.';
+				}
+				if ( $client_response ) {
+					$error_messages = array_merge( $error_messages, self::get_error_messages( $client_response, $client ? 'update_client' : 'create_client' ) );
+					$client_id = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response->id : null;
+					if ( $client_id ) {
+						gform_update_meta( $entry['id'], 'neoserra_client_id', $client_id );
+					}
 				}
 			}
 
-			// add new milestone record
-			if ( $client && boolval( $feed['meta']['milestone_record_create_enabled'] ) ) {
-				$milestone_args = array(
-					'clientId' => $client->id,
-					'centerId' => $center->id,
+
+			// add new contact/client relationship
+			if ( $contact_id && ! $contact && $client_id ) {
+				$relationship_response = Crown_Neoserra_Records_Api::update_client_relationship( $client_id, $contact_id );
+				$error_messages = array_merge( $error_messages, self::get_error_messages( $relationship_response, 'update_client_relationship' ) );
+			}
+
+
+			// if client just created and info needed for other records, fetch client data
+			if ( ! $client && $client_id && ( empty( $milestone_args ) || empty( $capital_funding_args ) ) ) {
+				$client_response = Crown_Neoserra_Records_Api::get_client( $client_id );
+				$client = is_object( $client_response ) && property_exists( $client_response, 'id' ) ? $client_response : null;
+			}
+
+
+			// create milestone record
+			if ( $client && ! empty( $milestone_args ) ) {
+				$milestone_args = array_merge( array(
+					'clientId' => $client_id,
+					'centerId' => $center_id,
 					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
-					'counselors' => $center->counselId
-				);
-				foreach ( $milestone_props as $prop => $field_id ) {
-					$value = null;
-					if ( is_array( $field_id ) ) {
-						$values = array();
-						foreach ( $field_id as $fid ) {
-							$v = $this->get_field_value( $form, $entry, $fid );
-							if ( empty( $v ) ) continue;
-							$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
-							$values[] = $label . ': ' . $v;
-						}
-						$value = implode( "\n", $values );
-					} else {
-						if ( array_key_exists( $field_id, $entry ) ) {
-							$value = $this->get_field_value( $form, $entry, $field_id );
-						} else {
-							$value = GFCommon::replace_variables( $field_id, $form, $entry );
-						}
-					}
-					if ( ! empty( $value ) ) {
-						if ( in_array( $prop, array( 'amount', 'initialAmount' ) ) ) {
-							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
-						} else if ( in_array( $prop, array( 'date', 'initialDate', 'attribDate' ) ) ) {
-							$value = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $value );
-						}
-						$milestone_args[ $prop ] = $value;
-					}
+					'counselors' => $counselor_id
+				), $milestone_args );
+				foreach ( array( 'amount', 'initialAmount' ) as $prop ) {
+					if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = floatval( preg_replace( '/[^\d\.\-]/', '', $milestone_args[ $prop ] ) );
+				}
+				foreach ( array( 'date', 'initialDate', 'attribDate' ) as $prop ) {
+					if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $milestone_args[ $prop ] );
 				}
 				$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
 				$milestone_id = is_object( $milestone_response ) && property_exists( $milestone_response, 'id' ) ? $milestone_response->id : null;
 				if ( $milestone_id ) {
-					$center_director_notification_links['milestone'] = self::$neoserra_dashboard_uri . 'activity/view?formid=7&eid=' . $milestone_id . '&url=/clients/' . $client->id;
+					gform_update_meta( $entry['id'], 'neoserra_milestone_id', $milestone_id );
+					$counselor_notification_links['milestone'] = self::$neoserra_dashboard_uri . 'activity/view?formid=7&eid=' . $milestone_id . '&url=/clients/' . $client->id;
 				}
 			}
 
-			// add new capital funding record
-			if ( $client && boolval( $feed['meta']['capital_funding_record_create_enabled'] ) ) {
-				$capital_funding_args = array(
-					'clientId' => $client->id,
-					'centerId' => $center->id,
+
+			// create capital funding record
+			if ( $client && ! empty( $capital_funding_args ) ) {
+				$capital_funding_args = array_merge( array(
+					'clientId' => $client_id,
+					'centerId' => $center_id,
 					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
-					'counselors' => $center->counselId
-				);
-				foreach ( $capital_funding_props as $prop => $field_id ) {
-					$value = null;
-					if ( is_array( $field_id ) ) {
-						$values = array();
-						foreach ( $field_id as $fid ) {
-							$v = $this->get_field_value( $form, $entry, $fid );
-							if ( empty( $v ) ) continue;
-							$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
-							$values[] = $label . ': ' . $v;
-						}
-						$value = implode( "\n", $values );
-					} else {
-						if ( array_key_exists( $field_id, $entry ) ) {
-							$value = $this->get_field_value( $form, $entry, $field_id );
-						} else {
-							$value = GFCommon::replace_variables( $field_id, $form, $entry );
-						}
-					}
-					if ( ! empty( $value ) ) {
-						if ( in_array( $prop, array( 'amountReq', 'amountApproved' ) ) ) {
-							$value = floatval( preg_replace( '/[^\d\.\-]/', '', $value ) );
-						} else if ( in_array( $prop, array( 'date', 'appdate', 'dateCompleted', 'attribDate' ) ) ) {
-							$value = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $value );
-						}
-						$capital_funding_args[ $prop ] = $value;
-					}
+					'counselors' => $counselor_id
+				), $capital_funding_args );
+				foreach ( array( 'amountReq', 'amountApproved' ) as $prop ) {
+					if ( array_key_exists( $prop, $capital_funding_args ) ) $capital_funding_args[ $prop ] = floatval( preg_replace( '/[^\d\.\-]/', '', $capital_funding_args[ $prop ] ) );
+				}
+				foreach ( array( 'date', 'appdate', 'dateCompleted', 'attribDate' ) as $prop ) {
+					if ( array_key_exists( $prop, $capital_funding_args ) ) $capital_funding_args[ $prop ] = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $capital_funding_args[ $prop ] );
 				}
 				$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
 				$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
 				$capital_funding_id = is_object( $capital_funding_response ) && property_exists( $capital_funding_response, 'id' ) ? $capital_funding_response->id : null;
 				if ( $capital_funding_id ) {
-					$center_director_notification_links['capital_funding'] = self::$neoserra_dashboard_uri . 'activity/view?formid=20&eid=' . $capital_funding_id . '&url=/clients/' . $client->id;
+					gform_update_meta( $entry['id'], 'neoserra_capital_funding_id', $capital_funding_id );
+					$counselor_notification_links['capital_funding'] = self::$neoserra_dashboard_uri . 'activity/view?formid=20&eid=' . $capital_funding_id . '&url=/clients/' . $client->id;
 				}
 			}
+
 
 			// handle error messages
 			foreach ( $error_messages as $error_message ) {
@@ -952,13 +977,44 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				GFAPI::send_notifications( $form, $entry, 'neoserra_api_error' );
 			}
 
-			if ( ! empty( $center_director_notification_links ) && ! empty( $center->diremail ) ) {
-				gform_update_meta( $entry['id'], 'neoserra_center_diremail', $center->diremail );
-				gform_update_meta( $entry['id'], 'neoserra_record_links', $center_director_notification_links );
-				GFAPI::send_notifications( $form, $entry, 'neoserra_center_director_notification' );
+
+			// send counselor notifications
+			if ( ! empty( $counselor_notification_links ) && ! empty( $counselor_email ) ) {
+				gform_update_meta( $entry['id'], 'neoserra_counselor_email', $counselor_email );
+				gform_update_meta( $entry['id'], 'neoserra_record_links', $counselor_notification_links );
+				GFAPI::send_notifications( $form, $entry, 'neoserra_counselor_notification' );
 			}
 
 			return;
+		}
+
+		protected function get_record_args_from_props( $props, $entry, $form ) {
+			$args = array();
+			foreach ( $props as $prop => $field_id ) {
+				if ( empty( $field_id ) ) continue;
+				$value = null;
+				if ( is_array( $field_id ) ) {
+					$values = array();
+					foreach ( $field_id as $fid ) {
+						$v = $this->get_field_value( $form, $entry, $fid );
+						if ( empty( $v ) ) continue;
+						$label = GFCommon::get_label( RGFormsModel::get_field( $form, $fid ) );
+						$values[] = $label . ': ' . $v;
+					}
+					$value = implode( "\n", $values );
+				} else {
+					if ( array_key_exists( $field_id, $entry ) ) {
+						$value = $this->get_field_value( $form, $entry, $field_id );
+					} else {
+						$value = GFCommon::replace_variables( $field_id, $form, $entry );
+					}
+				}
+				// if ( ! empty( $value ) ) {
+				// 	$args[ $prop ] = $value;
+				// }
+				$args[ $prop ] = $value;
+			}
+			return $args;
 		}
 
 		protected static function get_error_messages( $response, $context ) {
@@ -990,14 +1046,14 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 		public function add_notification_events( $notification_events ) {
 			$notification_events['neoserra_api_error'] = __( 'Neoserra API Error', 'gfneoserra' );
-			$notification_events['neoserra_center_director_notification'] = __( 'Neoserra Center Director Email', 'gfneoserra' );
+			$notification_events['neoserra_counselor_notification'] = __( 'Neoserra Counselor Email', 'gfneoserra' );
 			return $notification_events;
 		}
 
 		
 		public function add_custom_merge_tags( $merge_tags, $form_id, $fields, $element_id ) {
 			$merge_tags[] = array( 'label' => 'Neoserra API Errors', 'tag' => '{neoserra_api_errors}' );
-			$merge_tags[] = array( 'label' => 'Neoserra Center Director Email', 'tag' => '{neoserra_center_diremail}' );
+			$merge_tags[] = array( 'label' => 'Neoserra Counselor Email', 'tag' => '{neoserra_counselor_email}' );
 			$merge_tags[] = array( 'label' => 'Neoserra Record Links', 'tag' => '{neoserra_record_links}' );
 			return $merge_tags;
 		}
@@ -1015,9 +1071,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				}
 			}
 
-			$merge_tag = '{neoserra_center_diremail}';
+			$merge_tag = '{neoserra_counselor_email}';
 			if ( strpos( $text, $merge_tag ) !== false ) {
-				$email = gform_get_meta( $entry['id'], 'neoserra_center_diremail' );
+				$email = gform_get_meta( $entry['id'], 'neoserra_counselor_email' );
 				if ( ! empty( $email ) ) {
 					$text = str_replace( $merge_tag, $email, $text );
 				} else {
