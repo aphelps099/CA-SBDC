@@ -37712,6 +37712,9 @@ body.single-event #main .container > .inner > .wp-block-crown-blocks-webinar-hea
           justify-content: center;
   text-indent: 0;
 }
+.intake-form_wrapper .gfield.gfield-lg input {
+  font-size: 1.75rem;
+}
 .intake-form_wrapper .gfield.accordion.expanded .gfield_label {
   background-color: #1A599A;
   color: #fff;

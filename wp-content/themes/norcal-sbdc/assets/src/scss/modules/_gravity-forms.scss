@@ -667,6 +667,11 @@ $gform-gutter-width: 10px;
 			text-indent: 0;
 		}
 	}
+	.gfield.gfield-lg {
+		input {
+			font-size: 1.75rem;
+		}
+	}
 	.gfield.accordion {
 		&.expanded {
 			.gfield_label {
