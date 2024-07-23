@@ -1888,6 +1888,46 @@
 
 			});
 
+			$(document).on('celebrate', function(e) {
+				var duration = 5 * 1000,
+				animationEnd = Date.now() + duration,
+				defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+				var randomInRange = function(min, max) {
+					return Math.random() * (max - min) + min;
+				}
+				var interval = setInterval(function() {
+					var timeLeft = animationEnd - Date.now();
+					if (timeLeft <= 0) {
+						return clearInterval(interval);
+					}
+					var particleCount = 50 * (timeLeft / duration);
+					confetti(
+						Object.assign({}, defaults, {
+							particleCount,
+							origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+						})
+					);
+					confetti(
+						Object.assign({}, defaults, {
+							particleCount,
+							origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+						})
+					);
+				}, 250);
+			});
+			$(window).on('load', function(e) {
+				if($('.gform_confirmation_wrapper.celebrate-success').length) {
+					$(document).trigger('celebrate');
+				} else if($('.trigger-celebrate-success').length) {
+					$(document).trigger('celebrate');
+				}
+			});
+			$(document).on('gform_confirmation_loaded', function (e, form_id) {
+				if($('#gform_confirmation_wrapper_' + form_id + '.gform_confirmation_wrapper.celebrate-success').length) {
+					$(document).trigger('celebrate');
+				}
+			});
+
 		};
 
 

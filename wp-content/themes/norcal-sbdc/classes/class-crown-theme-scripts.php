@@ -64,9 +64,13 @@ if ( ! class_exists( 'Crown_Theme_Scripts' ) ) {
 					'local_path' => '/lib/atcb/js/atcb.min.js'
 				),
 				array(
+					'handle' => 'confetti',
+					'src' => 'https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js'
+				),
+				array(
 					'handle' => 'crown-theme-main',
 					'local_path' => '/assets/js/main' . ( ! WP_DEBUG ? '.min' : '' ) . '.js',
-					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed', 'rellax' )
+					'deps' => array( 'jquery-effects-core', 'bootstrap', 'slick', 'blueimp-gallery', 'odometer', 'jquery-oembed', 'rellax', 'confetti' )
 				)
 			);
 			
