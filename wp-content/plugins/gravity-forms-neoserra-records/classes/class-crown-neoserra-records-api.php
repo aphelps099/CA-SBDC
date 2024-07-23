@@ -8,7 +8,7 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 		protected static $api_uri = 'https://norcal.neoserra.com/api/v1/';
 		protected static $api_token = null;
 
-		protected static $cache_duration = MINUTE_IN_SECONDS * 5;
+		protected static $cache_duration = MINUTE_IN_SECONDS * 60;
 
 
 		public static function init() {
@@ -29,6 +29,11 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 			$response = self::query( 'contacts/' . $id, $args );
 			return $response;
 		}
+
+		public static function clear_cached_get_contact( $id, $args = array() ) {
+			$response = self::clear_cached_query( 'contacts/' . $id, $args );
+			return $response;
+		}
 		
 		public static function create_contact( $args = array() ) {
 			$response = self::query( 'contacts/new', $args, 'post' );
@@ -37,6 +42,51 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 
 		public static function update_contact( $id, $args = array() ) {
 			$response = self::query( 'contacts/' . $id, $args, 'post' );
+			return $response;
+		}
+
+		public static function get_contact_relationships( $id, $args = array() ) {
+			$args = array_merge( array( 'reverse' => 1 ), $args );
+			$response = self::query( 'relationships/' . $id, $args );
+			return $response;
+		}
+
+		public static function clear_cached_get_contact_relationships( $id, $args = array() ) {
+			$args = array_merge( array( 'reverse' => 1 ), $args );
+			$response = self::clear_cached_query( 'relationships/' . $id, $args );
+			return $response;
+		}
+
+		public static function get_contact_clients( $id, $args = array() ) {
+			$args = array_merge( array(
+				'any_indiv_id' => $id,
+				'columns' => implode( ',', array(
+					'clientId',
+					'company',
+					'ftEmps',
+					'ptEmps',
+					'grossSales'
+				) )
+			) );
+			$response = self::get_clients( $args );
+			if ( is_object( $response ) && property_exists( $response, 'rows' ) && is_array( $response->rows ) ) {
+				$response->rows = array_map( function( $n ) { $n->id = $n->clientId; return $n; }, $response->rows );
+			}
+			return $response;
+		}
+
+		public static function clear_cached_get_contact_clients( $id, $args = array() ) {
+			$args = array_merge( array(
+				'any_indiv_id' => $id,
+				'columns' => implode( ',', array(
+					'clientId',
+					'company',
+					'ftEmps',
+					'ptEmps',
+					'grossSales'
+				) )
+			) );
+			$response = self::clear_cached_get_clients( $args );
 			return $response;
 		}
 
@@ -98,6 +148,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 
 		public static function get_center( $id, $args = array() ) {
 			$response = self::query( 'centers/' . $id, $args );
+			return $response;
+		}
+
+
+		public static function get_counselor( $id, $args = array() ) {
+			$response = self::query( 'counselors/' . $id, $args );
 			return $response;
 		}
 
