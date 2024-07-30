@@ -604,7 +604,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		protected static function get_client_record_property_choices() {
 			$properties = array(
 				'Business Idea' => 'product_alt',
+				'Is Intake?' => 'intake',
+				'Intake Memo' => 'intakeMemo',
 				'Client/Pre-client Type' => 'type2',
+				'Stakeholder Type' => 'stakeholderType',
 				'Services Sought' => 'serviceSeeking',
 				'Company Name' => 'company',
 				'DBA' => 'dba',
