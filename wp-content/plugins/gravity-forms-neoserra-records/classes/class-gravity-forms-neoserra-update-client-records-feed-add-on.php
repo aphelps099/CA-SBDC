@@ -20,12 +20,6 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 		private static $_instance = null;
 
-		// X TODO: add email notification to center director when business start form is submitted with link to record(s) created
-		// X TODO: add auto company status for business start
-		// X TODO: multiple business handling, make radio selection stand out
-		// X TODO: action fields to buttons
-		// X TODO: provide link upon to completion to submit again
-
 
 		public function init() {
 			parent::init();
@@ -968,6 +962,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					$contact_id = is_object( $contact_response ) && property_exists( $contact_response, 'id' ) ? $contact_response->id : null;
 					if ( $contact_id ) {
 						gform_update_meta( $entry['id'], 'neoserra_contact_id', $contact_id );
+						$counselor_notification_links['contact'] = self::$neoserra_dashboard_uri . 'contacts/' . $contact_id;
 					}
 				}
 			}
@@ -978,7 +973,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				$client_args = array_merge( array(
 					'centerId' => $center_id
 				), $client_args );
-				if ( array_key_exists( 'estab', $client_args ) && ! array_key_exists( 'status', $client_args ) ) {
+				if ( array_key_exists( 'estab', $client_args ) && ! empty( $client_args['estab'] ) && ! array_key_exists( 'status', $client_args ) ) {
 					$date_estab = new DateTime( $client_args['estab'] );
 					$now = new DateTime();
 					$diff = $now->diff( $date_estab );
@@ -1079,11 +1074,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				GFAPI::send_notifications( $form, $entry, 'neoserra_api_error' );
 			}
 
+			$links = gform_get_meta( $entry['id'], 'neoserra_record_links' );
+			if ( empty( $links ) ) $links = array();
+			$links = array_merge( $links, $counselor_notification_links );
+			gform_update_meta( $entry['id'], 'neoserra_record_links', $links );
+
+			gform_update_meta( $entry['id'], 'neoserra_counselor_email', $counselor_email );
 
 			// send counselor notifications
 			if ( boolval( $feed['meta']['notification_counselor_enabled'] ) && ! empty( $counselor_notification_links ) && ! empty( $counselor_email ) ) {
-				gform_update_meta( $entry['id'], 'neoserra_counselor_email', $counselor_email );
-				gform_update_meta( $entry['id'], 'neoserra_record_links', $counselor_notification_links );
 				GFAPI::send_notifications( $form, $entry, 'neoserra_counselor_notification' );
 			}
 
@@ -1190,6 +1189,8 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					$html_links = array();
 					foreach ( $links as $k => $link ) {
 						$label = 'Record';
+						if ( $k == 'contact' ) $label = 'Contact Record';
+						if ( $k == 'client' ) $label = 'Client Record';
 						if ( $k == 'milestone' ) $label = 'Milestone Record';
 						if ( $k == 'capital_funding' ) $label = 'Capital Funding Record';
 						$html_links[] = '<strong>' . $label . ':</strong> <a href="' . $link . '" target="_blank">' . $link . '</a>';

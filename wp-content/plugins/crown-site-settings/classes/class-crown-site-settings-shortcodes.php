@@ -474,6 +474,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Shortcodes' ) ) {
 			$value = isset( $_GET[ $atts['parameter'] ] ) ? trim( $_GET[ $atts['parameter'] ] ) : '';
 			$value = wp_unslash( strip_tags( $value ) );
 			if ( empty( $value ) ) return $atts['fallback'];
+			if ( in_array( $atts['parameter'], array( 'first_name', 'last_name' ) ) ) $value = ucwords( $value );
 			return sprintf( $atts['template'], $value );
 		}
 
