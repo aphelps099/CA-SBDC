@@ -1928,6 +1928,69 @@
 				}
 			});
 
+			$(document).on('submit', '.gform_wrapper form.confirm-submission', function(e) {
+				var form = $(this);
+				var formId = form.data('formid');
+				if(window['gf_submitting_confirmed_' + formId]) return true;
+				e.preventDefault();
+				window['gf_submitting_' + formId] = false;
+				$('.gform_ajax_spinner').remove();
+				$('#form-confirm-modal button.btn-primary').data('formid', formId);
+				$('#form-confirm-modal').modal('show');
+				var formData = $('#form-confirm-modal .form-data');
+				formData.html('');
+				$('.gfield:visible', form).each(function(i, el) {
+					var field = $(el);
+					if(field.is('.gfield--type-section')) {
+						var title = $('.gsection_title', field).text();
+						formData.append('<h4 style="margin-bottom: 1rem; font-size: .75rem; margin-top: 1.5rem; border-bottom: 1px solid rgb(3, 32, 64); text-transform: uppercase; letter-spacing: .1em; padding-bottom: 2px;">' + title + '</h4>');
+					} else {
+						var label = $('.gfield_label', field).text();
+						label = label.replace(/\(Required\)$/, '');
+						var value = '';
+						if(field.is('.gfield--type-choice')) {
+							value = [];
+							$('.ginput_container input:checked + label', field).each(function(j, el2) {
+								value.push($(el2).text());
+							});
+							value = value.join(', ');
+						} else if(field.is('.gfield--type-select')) {
+							value = [];
+							$('.ginput_container select option:selected', field).each(function(j, el2) {
+								value.push($(el2).text());
+							});
+							value = value.join(', ');
+						} else if($('.ginput_complex', field).length) {
+							value = [];
+							$('.ginput_complex input:visible, .ginput_complex select:visible option:selected', field).each(function(j, el2) {
+								if($(el2).is('option')) {
+									value.push($(el2).text());
+								} else {
+									value.push($(el2).val());
+								}
+							});
+							value = value.join(', ');
+						} else if($('.ginput_container input', field).length) {
+							value = $('.ginput_container input', field).val();
+						}
+						if(value == '') {
+							value = '<span style="opacity: .5;">[N/A]</span>';
+						}
+						formData.append('<p style="margin-bottom: .5rem;"><strong style="display: block; font-size: 0.875rem; opacity: .5; font-weight: 400;">' + label + ':</strong>' + value + '</p>');
+					}
+				});
+				return false;
+			});
+
+			var modal = $('<div id="form-confirm-modal" class="modal" tabindex="-1"><div class="modal-dialog" style="max-width: 600px;"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Confirm Form Submission</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Please verify that the following data provided is accurate:</p><div class="form-data"></div></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" data-dismiss="modal">Confirm & Continue</button></div></div></div></div>');
+			$('body').append(modal);
+			$('button.btn-primary').on('click', function(e) {
+				var formId = $(this).data('formid');
+				console.log('Confirmed ' + formId);
+				window['gf_submitting_confirmed_' + formId] = true;
+				$('#gform_' + formId).trigger('submit');
+			});
+
 		};
 
 
