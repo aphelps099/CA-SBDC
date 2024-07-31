@@ -1939,7 +1939,7 @@
 				$('#form-confirm-modal').modal('show');
 				var formData = $('#form-confirm-modal .form-data');
 				formData.html('');
-				$('.gfield:visible', form).each(function(i, el) {
+				$('.gfield:visible:not(.gfield--type-html)', form).each(function(i, el) {
 					var field = $(el);
 					if(field.is('.gfield--type-section')) {
 						var title = $('.gsection_title', field).text();

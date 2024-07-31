@@ -26462,6 +26462,10 @@ nav.pagination .nav-links span.page-numbers {
   min-height: 400px;
 }
 
+.modal-dialog .modal-content {
+  padding: 0;
+}
+
 .modal-content {
   border: none;
 }
