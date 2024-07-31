@@ -1977,7 +1977,7 @@
 							value = $('.ginput_container input', field).val();
 						}
 						if(value == '') {
-							value = '<span style="opacity: .5;">[N/A]</span>';
+							value = '<span style="opacity: .5;">[BLANK]</span>';
 						}
 						formData.append('<p style="margin-bottom: .5rem;"><strong style="display: block; font-size: 0.875rem; opacity: .5; font-weight: 400;">' + label + ':</strong>' + value + '</p>');
 					}
