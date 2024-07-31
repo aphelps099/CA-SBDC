@@ -1943,7 +1943,9 @@
 					var field = $(el);
 					if(field.is('.gfield--type-section')) {
 						var title = $('.gsection_title', field).text();
-						formData.append('<h4 style="margin-bottom: 1rem; font-size: .75rem; margin-top: 1.5rem; border-bottom: 1px solid rgb(3, 32, 64); text-transform: uppercase; letter-spacing: .1em; padding-bottom: 2px;">' + title + '</h4>');
+						if(title != '') {
+							formData.append('<h4 style="margin-bottom: 1rem; font-size: .75rem; margin-top: 1.5rem; border-bottom: 1px solid rgb(3, 32, 64); text-transform: uppercase; letter-spacing: .1em; padding-bottom: 2px;">' + title + '</h4>');
+						}
 					} else {
 						var label = $('.gfield_label', field).text();
 						if($('.gfield_label .gftt-label', field).length) label = $('.gfield_label .gftt-label', field).text();
