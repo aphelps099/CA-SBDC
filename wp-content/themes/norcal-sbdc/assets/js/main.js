@@ -1939,14 +1939,15 @@
 				$('#form-confirm-modal').modal('show');
 				var formData = $('#form-confirm-modal .form-data');
 				formData.html('');
-				$('.gfield:visible:not(.gfield--type-html)', form).each(function(i, el) {
+				$('.gfield:visible:not(.gfield--type-html, .gfield--type-hidden)', form).each(function(i, el) {
 					var field = $(el);
 					if(field.is('.gfield--type-section')) {
 						var title = $('.gsection_title', field).text();
 						formData.append('<h4 style="margin-bottom: 1rem; font-size: .75rem; margin-top: 1.5rem; border-bottom: 1px solid rgb(3, 32, 64); text-transform: uppercase; letter-spacing: .1em; padding-bottom: 2px;">' + title + '</h4>');
 					} else {
 						var label = $('.gfield_label', field).text();
-						label = label.replace(/\(Required\)$/, '');
+						if($('.gfield_label .gftt-label').length) label = $('.gfield_label .gftt-label').text();
+						label = label.replace(/\(Required\)|\*$/, '');
 						var value = '';
 						if(field.is('.gfield--type-choice')) {
 							value = [];
