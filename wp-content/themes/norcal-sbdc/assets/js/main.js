@@ -1953,21 +1953,21 @@
 						var value = '';
 						if(field.is('.gfield--type-choice')) {
 							value = [];
-							$('.ginput_container input:checked + label', field).each(function(j, el2) {
-								value.push($(el2).text());
+							$('.ginput_container input:checked', field).each(function(j, el2) {
+								if($(el2).val() != '') value.push($('+ label', el2).text());
 							});
 							value = value.join(', ');
 						} else if(field.is('.gfield--type-select')) {
 							value = [];
 							$('.ginput_container select option:selected', field).each(function(j, el2) {
-								value.push($(el2).text());
+								if($(el2).val() != '') value.push($(el2).text());
 							});
 							value = value.join(', ');
 						} else if($('.ginput_complex', field).length) {
 							value = [];
 							$('.ginput_complex input:visible, .ginput_complex select:visible option:selected', field).each(function(j, el2) {
 								if($(el2).is('option')) {
-									value.push($(el2).text());
+									if($(el2).val() != '') value.push($(el2).text());
 								} else {
 									value.push($(el2).val());
 								}
