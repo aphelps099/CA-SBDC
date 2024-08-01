@@ -1975,6 +1975,8 @@
 							value = value.join(', ');
 						} else if($('.ginput_container input', field).length) {
 							value = $('.ginput_container input', field).val();
+						} else if($('.ginput_container textarea', field).length) {
+							value = $('.ginput_container textarea', field).val();
 						}
 						if(value == '') {
 							value = '<span style="opacity: .5;">[BLANK]</span>';
