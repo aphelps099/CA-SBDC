@@ -14,7 +14,6 @@ const { PanelBody, Popover, BaseControl, RadioControl, ColorPicker, ColorPalette
 const { getColorObjectByColorValue } = wp.blockEditor;
 const { serverSideRender: ServerSideRender } = wp;
 
-
 registerBlockType('crown-blocks/team-member-index', {
 	title: 'Team Member Index',
 	description: 'Displays all the members of the team.',
@@ -27,13 +26,14 @@ registerBlockType('crown-blocks/team-member-index', {
 	attributes: {
 		groupByCenter: { type: 'boolean', default: false },
 		postsPerPage: { type: 'string', default: '10' },
-		filterCenters: { type: 'array', default: [] }
+		filterCenters: { type: 'array', default: [] },
+		filterLangs: { type: 'array', default: [] }
 	},
 
 
 	edit: withSelect((select) => {
 		return {
-			centers: select('core').getEntityRecords('taxonomy', 'post_center', { per_page: -1 })
+			centers: select('core').getEntityRecords('taxonomy', 'post_center', { per_page: -1 }),
 		};
     })(({ centers, attributes, className, isSelected, setAttributes }) => {
 		if(!centers) return '';
@@ -41,7 +41,8 @@ registerBlockType('crown-blocks/team-member-index', {
 		const {
 			groupByCenter,
 			postsPerPage,
-			filterCenters
+			filterCenters,
+			filterLangs
 		} = attributes;
 
 		let postsPerPageOptions = [];
@@ -56,6 +57,27 @@ registerBlockType('crown-blocks/team-member-index', {
 			availableCenters[token] = centers[i];
 			centerSuggestions.push(token);
 		}
+
+		let langOptions = [
+			{ value : 'ar', label: 'Arabic' },
+			{ value : 'zh-hk', label: 'Cantonese' },
+			{ value : 'da', label: 'Danish' },
+			{ value : 'prs', label: 'Dari' },
+			{ value : 'fa', label: 'Farsi' },
+			{ value : 'fr', label: 'French' },
+			{ value : 'de', label: 'German' },
+			{ value : 'hi', label: 'Hindi' },
+			{ value : 'hmn', label: 'Hmong' },
+			{ value : 'it', label: 'Italian' },
+			{ value : 'ja', label: 'Japanese' },
+			{ value : 'ko', label: 'Korean' },
+			{ value : 'lv', label: 'Latvian' },
+			{ value : 'zh', label: 'Mandarin' },
+			{ value : 'ps', label: 'Pashto' },
+			{ value : 'pt', label: 'Portuguese' },
+			{ value : 'es', label: 'Spanish' },
+			{ value : 'vi', label: 'Vietnamese' },
+		];
 
 		let blockClasses = [ className ];
 
@@ -103,6 +125,16 @@ registerBlockType('crown-blocks/team-member-index', {
 							setAttributes({ filterCenters: filterCenters })
 						} }
 						placeholder="Search centers..."
+					/>
+
+					<SelectControl
+						multiple
+						label={ __( 'Filter by language' ) }
+						value={ filterLangs }
+						onChange={ ( langs ) => {
+							setAttributes({ filterLangs: langs })
+						} }
+						options={ langOptions }
 					/>
 
 				</PanelBody> }
