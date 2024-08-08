@@ -232,18 +232,28 @@ class JVM_Richtext_icons_settings {
             'general' // Section           
         );
 
-        /*add_settings_field(
-            'technology', // ID
-            __('Technology', 'jvm-rich-text-icons'), // Title 
-            function () {
-                echo '<select name="jvm-rich-text-icons[icon_set]">';
-                echo '<option value="html-css">'.__('HTML + CSS', 'jvm-rich-text-icons').'</option>';
-                echo '<option value="inline-svg">'.__('Inline SVG elements', 'jvm-rich-text-icons').'</option>';
-                echo '</select>';
-            }, 
-            'jvm-rich-text-icons', // Page
-            'general' // Section           
-        );*/
+        if ($this->options['icon_set'] == 'custom-svg') {
+            add_settings_field(
+                'technology', // ID
+                __('Render technology', 'jvm-rich-text-icons'), // Title 
+                function () {
+                    echo '<select name="jvm-rich-text-icons[technology]">';
+                    
+                    $checked = $this->options['technology'] == 'html-css' ? ' selected' : '';
+                    echo '<option value="html-css"'.$checked.'>'.__('HTML + CSS', 'jvm-rich-text-icons').'</option>';
+                    $checked = $this->options['technology'] == 'html-css-before' ? ' selected' : '';
+                    echo '<option value="html-css-before"'.$checked.'>'.__('HTML + CSS ::before pseudo-element', 'jvm-rich-text-icons').'</option>';
+
+                    $checked = $this->options['technology'] == 'html-css-after' ? ' selected' : '';
+                    echo '<option value="html-css-after"'.$checked.'>'.__('HTML + CSS ::after pseudo-element', 'jvm-rich-text-icons').'</option>';
+
+                    //echo '<option value="inline-svg">'.__('Inline SVG elements', 'jvm-rich-text-icons').'</option>';
+                    echo '</select>';
+                }, 
+                'jvm-rich-text-icons', // Page
+                'general' // Section           
+            );
+        }
 
         register_setting(
             'jvm-rich-text-icons', // Option group

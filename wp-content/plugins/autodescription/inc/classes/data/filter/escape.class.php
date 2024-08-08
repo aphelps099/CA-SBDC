@@ -10,7 +10,7 @@ namespace The_SEO_Framework\Data\Filter;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -54,8 +54,6 @@ class Escape {
 
 	/**
 	 * Escapes value via JSON encoding for script elements.
-	 *
-	 * Unused internally.
 	 *
 	 * @since 5.0.0
 	 *

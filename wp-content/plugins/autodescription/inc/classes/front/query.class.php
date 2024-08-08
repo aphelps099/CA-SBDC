@@ -16,7 +16,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2020 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2020 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -205,8 +205,7 @@ final class Query {
 
 		static $has_filter = null;
 
-		if ( null === $has_filter )
-			$has_filter = \has_filter( 'the_seo_framework_do_adjust_archive_query' );
+		$has_filter ??= \has_filter( 'the_seo_framework_do_adjust_archive_query' );
 
 		/**
 		 * This filter affects both 'search-"archives"' and terms/taxonomies.
@@ -221,6 +220,7 @@ final class Query {
 		if ( ! \did_action( 'wp_loaded' ) )
 			return true;
 
+		// TODO WP 6.5+ https://core.trac.wordpress.org/ticket/42061
 		if ( \defined( 'REST_REQUEST' ) && \REST_REQUEST ) {
 			$referer = \wp_get_referer();
 			if ( str_contains( $referer, 'post.php' ) || str_contains( $referer, 'post-new.php' ) ) {

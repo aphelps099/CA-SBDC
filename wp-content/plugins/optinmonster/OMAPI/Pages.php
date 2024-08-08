@@ -409,10 +409,8 @@ class OMAPI_Pages {
 			return;
 		}
 
-		// TODO: wp_redirect() found. Using wp_safe_redirect(), along with the
-		// `allowed_redirect_hosts` filter if needed, can help avoid any chances
-		// of malicious redirects within code.
-		wp_redirect( esc_url_raw( $pages[ $plugin_page ]['redirect'] ) );
+		add_filter( 'allowed_redirect_hosts', 'OMAPI_Urls::allowed_redirect_hosts' );
+		wp_safe_redirect( esc_url_raw( $pages[ $plugin_page ]['redirect'] ) );
 		exit;
 	}
 
@@ -502,8 +500,8 @@ class OMAPI_Pages {
 
 			$creds = $this->base->get_api_credentials();
 
-			$admin_parts = OMAPI_Utils::parse_url( admin_url( 'admin.php' ) );
-			$url_parts   = OMAPI_Utils::parse_url( $this->base->url );
+			$admin_parts = wp_parse_url( admin_url( 'admin.php' ) );
+			$url_parts   = wp_parse_url( $this->base->url );
 
 			$current_user = wp_get_current_user();
 

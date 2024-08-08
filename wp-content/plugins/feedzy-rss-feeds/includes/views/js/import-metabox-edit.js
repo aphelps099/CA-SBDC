@@ -46,7 +46,7 @@
 			return false;
 		}
 
-		outsideWrap.find( '.form-control' ).val('');
+		outsideWrap.find( '.form-control .tag-list' )?.val('');
 		if ( outsideWrap.next( '.tag-list' ).length > 0 ) {
 			outsideWrap.
 			next( '.tag-list' )
@@ -214,6 +214,7 @@
 						options += "</optgroup>";
 					}
 				});
+				tax_selected = tax_selected.filter( function(item) { return '' !== item; } );
 				if ( tax_selected.length > 0 && $("#feedzy_post_terms").hasClass('fz-chosen-custom-tag') ) {
 					$.each(tax_selected, function (index, customTag) {
 						options += '<option value="' + customTag + '" selected>' + customTag + '</option>';
@@ -244,6 +245,7 @@
 		feedzyAccordion();
 		feedzyTab();
 		feedzyMediaUploader();
+		initRemoveFallbackImageBtn();
 	});
 
 	function initImportScreen() {
@@ -264,7 +266,7 @@
 		$( '.feedzy-keyword-filter, #feedzy-import-source' ).on('keyup keypress', function(e) {
 			var keyCode = e.keyCode || e.which;
 			var addTagBtn = $( this ).parents( '.fz-input-icon' ).find( '.add-outside-tags' );
-			
+
 			if ( '' === $( this ).val() ) {
 				addTagBtn.attr( 'disabled', true );
 			} else if ( addTagBtn.hasClass( 'fz-plus-btn' ) ) {
@@ -467,13 +469,48 @@
 		} );
 
 		// Tagify for normal textbox.
-		$( '.fz-input-tagify' ).tagify( {
+		$( '.fz-input-tagify:not(.fz-tagify-image):not([name="feedzy_meta_data[import_post_title]"])' ).tagify( {
 			editTags: false,
 			originalInputValueFormat: function( valuesArr ) {
 				return valuesArr.map( function( item ) {
 					return item.value;
 				} )
 				.join( ', ' );
+			}
+		} );
+
+		// Tagify for normal mix content field.
+		$( '.fz-tagify-image' ).tagify( {
+			mode: 'mix',
+			editTags: true,
+			userInput: true,
+			addTagOn: [],
+			templates: {
+				tag: function(tagData) {
+					try{
+						var decodeTagData = decodeURIComponent(tagData.value);
+						var isEncoded = typeof tagData.value === "string" && decodeTagData !== tagData.value;
+						var tagLabel = tagData.value;
+						if ( isEncoded ) {
+							decodeTagData = JSON.parse( decodeTagData );
+							decodeTagData = decodeTagData[0] || {};
+							tagLabel = decodeTagData.tag.replaceAll( '_', ' ' );
+							tagData['data-actions'] = tagData.value;
+							tagData['data-field_id'] = 'fz-image-action-tags';
+						}
+						return `
+						<tag title='${tagLabel}' contenteditable='false' spellcheck="false" class='tagify__tag ${isEncoded ? 'fz-content-action' : ''}'>
+							<x title='remove tag' class='tagify__tag__removeBtn'></x>
+							<div>
+								<span class='tagify__tag-text'>${tagLabel}</span>
+								${tagData['data-actions'] ?
+									`<a href="javascript:;" class="tagify__filter-icon" ${this.getAttributes(tagData)}></a>` : ''
+								}
+							</div>
+						</tag>`
+					}
+					catch(err){}
+				}
 			}
 		} );
 
@@ -492,6 +529,7 @@
 							decodeTagData = decodeTagData[0] || {};
 							tagLabel = decodeTagData.tag.replaceAll( '_', ' ' );
 							tagData['data-actions'] = tagData.value;
+							tagData['data-field_id'] = 'fz-content-action-tags';
 						}
 						return `
 						<tag title='${tagLabel}' contenteditable='false' spellcheck="false" class='tagify__tag ${isEncoded ? 'fz-content-action' : ''}'>
@@ -505,6 +543,40 @@
 						</tag>`
 					}
 					catch(err){}
+				}
+			}
+		} );
+
+		$( '.fz-input-tagify[name="feedzy_meta_data[import_post_title]"]:not(.fz-tagify-image)' ).tagify( {
+			mode: 'mix',
+			editTags: false,
+			templates: {
+				tag: function( tagData ) {
+					try{
+						var decodeTagData = decodeURIComponent(tagData.value);
+						var isEncoded = typeof tagData.value === "string" && decodeTagData !== tagData.value;
+						var tagLabel = tagData.value;
+						if ( isEncoded ) {
+							decodeTagData = JSON.parse( decodeTagData );
+							decodeTagData = decodeTagData[0] || {};
+							tagLabel = decodeTagData.tag.replaceAll( '_', ' ' );
+							tagData['data-actions'] = tagData.value;
+							tagData['data-field_id'] = 'fz-title-action-tags';
+						}
+						return `
+						<tag title='${tagLabel}' contenteditable='false' spellcheck="false" class='tagify__tag ${isEncoded ? 'fz-content-action' : ''}'>
+							<x title='remove tag' class='tagify__tag__removeBtn'></x>
+							<div>
+								<span class='tagify__tag-text'>${tagLabel}</span>
+								${tagData['data-actions'] ?
+									`<a href="javascript:;" class="tagify__filter-icon" ${this.getAttributes(tagData)}></a>` : ''
+								}
+							</div>
+						</tag>`
+					}
+					catch(err){
+						console.error(err);
+					}
 				}
 			}
 		} );
@@ -788,15 +860,23 @@
 			$( '.feedzy-open-media' ).html( feedzy.i10n.action_btn_text_2 );
 		} ).open();
 		});
-
-		// on remove button click
-		$( 'body' ).on( 'click', '.feedzy-remove-media', function( e ) {
-			e.preventDefault();
-			var button = $( this );
-			button.parent().prev( '.feedzy-media-preview' ).remove();
-			button.removeClass( 'is-show' );
-			button.parent().find( 'input:hidden' ).val( '' ).trigger( 'change' );
-			$( '.feedzy-open-media' ).html( feedzy.i10n.action_btn_text_1 );
-		});
 	}
-})(jQuery, feedzy);
+}(jQuery, feedzy));
+
+/**
+ * Initialize the remove fallback image button from General Feed Settings tab.
+ */
+function initRemoveFallbackImageBtn() {
+	const removeFallbackImage = document.querySelector('.feedzy-remove-media');
+	removeFallbackImage?.addEventListener('click', (e) => {
+		e.preventDefault();
+
+		// Reset the image preview.
+		document.querySelector('.feedzy-media-preview').remove();
+		removeFallbackImage.classList.remove('is-show');
+
+		// Reset the input.
+		document.querySelector('input[name="feedzy_meta_data[default_thumbnail_id]"]').value = '0';
+		document.querySelector('.feedzy-open-media').innerHTML = feedzy.i10n.action_btn_text_1;
+	});
+}

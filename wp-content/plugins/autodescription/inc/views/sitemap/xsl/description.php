@@ -17,7 +17,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -85,7 +85,7 @@ printf(
 	// phpcs:ignore, WordPress.Security.EscapeOutput.OutputNotEscaped -- convert_markdown escapes.
 	echo Markdown::convert(
 		/* translators: URLs are in Markdown. Don't forget to localize the URLs. */
-		\esc_xml( \__( 'This is a generated XML Sitemap, meant to be consumed by search engines like [Google](https://www.google.com/) or [Bing](https://www.bing.com/).', 'autodescription' ) ),
+		\esc_xml( \__( 'This is an optimized XML sitemap meant to be processed quickly by search engines like [Google](https://www.google.com/) or [Bing](https://www.bing.com/).', 'autodescription' ) ),
 		[ 'a' ],
 		[ 'a_internal' => false ],
 	);

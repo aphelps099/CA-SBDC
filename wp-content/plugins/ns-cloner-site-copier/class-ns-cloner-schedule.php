@@ -35,6 +35,8 @@ class NS_Cloner_Schedule {
 	 * NS_Cloner_Schedule constructor.
 	 */
 	public function __construct() {
+		// Schedule cron.
+		add_action( 'init', array( $this, 'maybe_schedule_cron' ) );
 		// Register handler for cloner cron events.
 		add_action( $this->cron_id, array( $this, 'handle' ) );
 		// Add new (default 2 min) interval to existing wp cron intervals.
@@ -56,6 +58,18 @@ class NS_Cloner_Schedule {
 			'display'  => sprintf( 'Every %d Minutes', $minutes ),
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Schedule cron event for background processes to work well.
+	 * This should always be set to avoid issues on other addons.
+	 *
+	 * @return void
+	 */
+	public function maybe_schedule_cron() {
+		if ( ! wp_next_scheduled( $this->cron_id ) ) {
+			wp_schedule_event( time(), $this->cron_id . '_interval', $this->cron_id );
+		}
 	}
 
 	/**
@@ -86,12 +100,6 @@ class NS_Cloner_Schedule {
 		if ( $time <= time() && ! ns_cloner()->process_manager->is_in_progress() ) {
 			// Run now if applicable (no need to wait for scheduler).
 			$this->handle();
-		} else {
-			// Schedule for future.
-			$next = wp_next_scheduled( $this->cron_id );
-			if ( ! $next || $next > $time ) {
-				wp_schedule_event( $time, $this->cron_id . '_interval', $this->cron_id );
-			}
 		}
 	}
 
@@ -135,7 +143,9 @@ class NS_Cloner_Schedule {
 	 */
 	public function handle() {
 		// Ensure that plugin functions are available in cron environment.
-		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
 		$scheduled = $this->get();
 		if ( ns_cloner()->process_manager->is_in_progress() ) {
 			// Do wrap up for any hanging operations that didn't call their own finish() for one reason or another.

@@ -17,7 +17,7 @@ use \The_SEO_Framework\Admin\Settings\Layout\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2016 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2016 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -60,7 +60,7 @@ switch ( $instance ) : // Quite useless, but prepared for expansion.
 			true,
 		);
 		HTML::description(
-			\__( "Open Graph and Twitter require descriptions. So, it's best to leave description generation enabled.", 'autodescription' )
+			\__( "Open Graph requires descriptions. So, it's best to leave description generation enabled.", 'autodescription' )
 		);
 
 		?>

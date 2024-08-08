@@ -23,11 +23,11 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		private static $instance;
 
 		/**
-		 * Content actions.
+		 * Serialized content actions. It can contain a mix of magic tags and simple text.
 		 *
-		 * @var string $actions Content actions.
+		 * @var string $raw_serialized_actions Content actions.
 		 */
-		private $actions;
+		private $raw_serialized_actions;
 
 		/**
 		 * Setting options.
@@ -39,7 +39,7 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		/**
 		 * Extract tags.
 		 *
-		 * @var string $extract_tags Extract tags.
+		 * @var array $extract_tags Extract tags.
 		 */
 		private $extract_tags;
 
@@ -72,11 +72,25 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		public $result = '';
 
 		/**
-		 * Post content.
+		 * The field content (title, description, post content, date, etc.)
 		 *
-		 * @var string $post_content
+		 * @var string $field_content
 		 */
-		public $post_content = '';
+		public $field_content = '';
+
+		/**
+		 * Default value.
+		 *
+		 * @var string $default_value
+		 */
+		public $default_value = '';
+
+		/**
+		 * Action type.
+		 *
+		 * @var string $type
+		 */
+		public $type = '';
 
 		/**
 		 * Language code.
@@ -115,13 +129,13 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		/**
 		 * Run actions.
 		 *
-		 * @param string $actions Item content actions.
-		 * @return string
+		 * @param string $raw_serialized_actions Item content actions.
+		 * @return string|array
 		 */
-		public function set_actions( $actions = '' ) {
-			$this->actions = $actions;
-			if ( empty( $this->actions ) ) {
-				return $this->actions;
+		public function set_raw_serialized_actions( $raw_serialized_actions = '' ) {
+			$this->raw_serialized_actions = $raw_serialized_actions;
+			if ( empty( $this->raw_serialized_actions ) ) {
+				return $this->raw_serialized_actions;
 			}
 			$this->extract_tags = $this->extract_magic_tags();
 			return $this->extract_tags;
@@ -140,10 +154,27 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		/**
 		 * Extract magic tags.
 		 *
-		 * @return string
+		 * @return array|array[]
 		 */
 		public function extract_magic_tags() {
-			preg_match_all( '/\[\[\{(.*)\}\]\]/U', $this->actions, $item_magic_tags, PREG_PATTERN_ORDER );
+			/**
+			 * Transform the serialized string of magic tags to array.
+			 *
+			 * Input(string): [[{"value":"[{"id":"chat_gpt_rewrite","tag":"item_title","data":{"ChatGPT":"Create a long description: {content}"}},{"id":"fz_summarize","tag":"item_title","data":{"fz_summarize":true}}]"}]] with a nice weather.
+			 *
+			 * Output:
+			 * [
+			 *  [
+			 *    [replace_to]   => [[{"value":"[{"id":"chat_gpt_rewrite","tag":"item_title","data":{"ChatGPT":"Create a long description: {content}"}},{"id":"fz_summarize","tag":"item_title","data":{"fz_summarize":true}}]"}]]
+			 *    [replace_with] => [{"id":"chat_gpt_rewrite","tag":"item_title","data":{"ChatGPT":"Create a long description: {content}"}},{"id":"fz_summarize","tag":"item_title","data":{"fz_summarize":true}}]
+			 *  ]
+			 * ]
+			 */
+			$can_process = preg_match_all( '/\[\[\{(.*)\}\]\]/U', $this->raw_serialized_actions, $item_magic_tags, PREG_PATTERN_ORDER );
+			if ( ! $can_process ) {
+				return array();
+			}
+
 			$extract_tags = array();
 			if ( ! empty( $item_magic_tags[0] ) ) {
 				$extract_tags = array_map(
@@ -161,12 +192,18 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		}
 
 		/**
-		 * Get magic tags.
+		 * Get the extracted serialized actions from the Tagify tags. The actions can be a mix of Tagify tags and simple text.
+		 *
+		 * @return string The serialized actions.
 		 */
-		public function get_tags() {
+		public function get_serialized_actions() {
+			if ( ! is_array( $this->get_extract_tags() ) ) {
+				return '';
+			}
+
 			$replace_to   = array_column( $this->get_extract_tags(), 'replace_to' );
 			$replace_with = array_column( $this->get_extract_tags(), 'replace_with' );
-			return str_replace( $replace_to, $replace_with, $this->actions );
+			return str_replace( $replace_to, $replace_with, $this->raw_serialized_actions );
 		}
 
 		/**
@@ -177,17 +214,25 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		}
 
 		/**
-		 * Get actions.
+		 * Get actions. Return pairs of serialized actions and their deserialized versions.
+		 *
+		 * Deserialized version is used to run the action job. While serialized version is used to replace the job result in the input content.
+		 *
+		 * @return array
 		 */
 		public function get_actions() {
+			if ( ! is_array( $this->get_extract_tags() ) ) {
+				return array();
+			}
+
 			$replace_with = array_column( $this->get_extract_tags(), 'replace_with' );
 			$actions      = array_map(
-				function( $action ) {
-					$replace_with = json_decode( $action );
-					if ( $replace_with ) {
+				function( $serialized_actions ) {
+					$job_actions = json_decode( $serialized_actions );
+					if ( $job_actions ) {
 						return array(
-							'replace_to'   => wp_json_encode( $replace_with ),
-							'replace_with' => $replace_with,
+							'serialized_actions'   => $serialized_actions,
+							'job_actions' => $job_actions,
 						);
 					}
 					return false;
@@ -200,37 +245,47 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		/**
 		 * Run action job.
 		 *
-		 * @param string $post_content Post content.
+		 * @param string $field_content Field content. It can contain a mix of magic tags and simple text.
 		 * @param string $import_translation_lang Translation language code.
 		 * @param object $job Post object.
 		 * @param string $language_code Feed language code.
 		 * @param array  $item Feed item.
+		 * @param string $default_value Default value.
 		 * @return string
 		 */
-		public function run_action_job( $post_content, $import_translation_lang, $job, $language_code, $item ) {
+		public function run_action_job( $field_content, $import_translation_lang, $job, $language_code, $item, $default_value = '' ) {
 			$this->item             = $item;
 			$this->job              = $job;
 			$this->language_code    = $language_code;
 			$this->translation_lang = $import_translation_lang;
-			$this->post_content     = $post_content;
+			$this->field_content    = $field_content;
+			$this->default_value    = $default_value;
 			$actions                = $this->get_actions();
 
 			if ( ! empty( $actions ) ) {
 				foreach ( $actions as $key => $jobs ) {
-					if ( ! isset( $jobs['replace_with'] ) ) {
+					if ( ! isset( $jobs['job_actions'] ) ) {
 						continue;
 					}
+
 					$this->result = null;
-					$replace_with = isset( $jobs['replace_with'] ) ? $jobs['replace_with'] : array();
-					$replace_to   = isset( $jobs['replace_to'] ) ? $jobs['replace_to'] : '';
-					foreach ( $replace_with as $job ) {
+					$jobs_actions = $jobs['job_actions'];
+					$replace_to   = isset( $jobs['serialized_actions'] ) ? $jobs['serialized_actions'] : '';
+					foreach ( $jobs_actions as $job ) {
 						$this->current_job = $job;
 						$this->result      = $this->action_process();
 					}
-					$this->post_content = str_replace( $replace_to, $this->result, $this->post_content );
+					if ( 'item_image' === $this->type ) {
+						$this->field_content = str_replace( $replace_to, $this->result, wp_json_encode( $jobs_actions ) );
+					} else {
+						$this->field_content = str_replace( $replace_to, $this->result, $this->field_content );
+					}
 				}
 			}
-			return $this->post_content;
+			if ( empty( $actions ) && 'item_image' === $this->type ) {
+				return $default_value;
+			}
+			return $this->field_content;
 		}
 
 		/**
@@ -256,6 +311,8 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 					return $this->chat_gpt_rewrite();
 				case 'fz_summarize':
 					return $this->summarize_content();
+				case 'fz_image':
+					return $this->generate_image();
 				default:
 					return $this->default_content();
 			}
@@ -301,6 +358,16 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 				return $this->result;
 			}
 			return ! empty( $this->item['item_description'] ) ? $this->item['item_description'] : '';
+		}
+
+		/**
+		 * Get item item_title.
+		 */
+		private function item_title() {
+			if ( ! empty( $this->result ) ) {
+				return $this->result;
+			}
+			return ! empty( $this->item['item_title'] ) ? $this->item['item_title'] : '';
 		}
 
 		/**
@@ -379,7 +446,7 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 		 */
 		private function default_content() {
 			if ( ! method_exists( $this, $this->current_job->tag ) ) {
-				return '';
+				return $this->default_value;
 			}
 			return call_user_func( array( $this, $this->current_job->tag ) );
 		}
@@ -415,6 +482,28 @@ if ( ! class_exists( 'Feedzy_Rss_Feeds_Actions' ) ) {
 			$openai  = new \Feedzy_Rss_Feeds_Pro_Openai();
 			$content = $openai->call_api( $this->settings, $content, 'summarize', array() );
 			return $content;
+		}
+
+		/**
+		 * Generate item image using OpenAI.
+		 * Return default value if OpenAI is not available or `Generate only for missing images` option is enabled and feed has image.
+		 *
+		 * @return string Image URL to download.
+		 */
+		private function generate_image() {
+
+			if ( ! class_exists( '\Feedzy_Rss_Feeds_Pro_Openai' ) ) {
+				return isset( $this->default_value ) ? $this->default_value : '';
+			}
+
+			$feed_has_image = false !== filter_var( $this->default_value, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED );
+			if ( ( ! isset( $this->current_job->data->generateOnlyMissingImages ) || ! empty( $this->current_job->data->generateOnlyMissingImages ) ) && $feed_has_image ) {
+				return isset( $this->default_value ) ? $this->default_value : '';
+			}
+
+			$prompt = call_user_func( array( $this, 'item_title' ) );
+			$openai = new \Feedzy_Rss_Feeds_Pro_Openai();
+			return $openai->call_api( $this->settings, $prompt, 'image', array() );
 		}
 	}
 }

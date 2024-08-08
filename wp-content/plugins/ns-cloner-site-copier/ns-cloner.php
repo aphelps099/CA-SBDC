@@ -3,11 +3,11 @@
  * Plugin Name: NS Cloner - Site Copier
  * Plugin URI: https://wpsitecloner.com/
  * Description: The amazing NS Cloner creates a new site as an exact clone / duplicate / copy of an existing site with theme and all plugins and settings intact in just a few steps. Check out NS Cloner Pro for additional powerful add-ons and features!
- * Version: 4.4
+ * Version: 4.4.6
  * Author: Never Settle
  * Author URI: https://neversettle.it
  * Requires at least: 5.0
- * Tested up to: 6.4
+ * Tested up to: 6.6
  * License: GPLv2 or later
  *
  * Text Domain: ns-cloner-site-copier
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants.
-define( 'NS_CLONER_PRO_PLUGIN', 'ns-cloner-pro-v4/ns-cloner-pro.php' );
+define( 'NS_CLONER_PRO_PLUGIN', 'ns-cloner-pro/ns-cloner-pro.php' );
 define( 'NS_CLONER_PRO_URL', 'https://wpsitecloner.com/pricing/?utm_campaign=in+plugin+referral&utm_source=ns-cloner&utm_medium=plugin&utm_content=pro+pricing' );
 define( 'NS_CLONER_V4_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'NS_CLONER_V4_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

@@ -4,9 +4,9 @@ Plugin URI: https://editorskit.com
 Contributors: munirkamal
 Tags: Gutenberg blocks, WordPress blocks, gutenberg, blocks, Gutenberg editor
 Requires at least: 5.0
-Tested up to: 6.3
+Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 1.40.3
+Stable tag: 1.40.6
 License: GPL-3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -196,6 +196,15 @@ e.g.
 10. Link rel attributes nofollow and sponsored option
 
 == Changelog ==
+
+= 1.40.6
+* Fix: Consecutive 3 paragraph space issue.
+
+= 1.40.5
+* Fix: Add allowed tags restriction in editorskit shortcode.
+
+= 1.40.4
+* Fix: Added a check for file type in styles importer to improve security.
 
 = 1.40.3
 * Fix: Styles manager conflicting with other post types.

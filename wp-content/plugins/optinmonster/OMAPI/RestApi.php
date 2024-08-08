@@ -430,8 +430,6 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 *
 	 * @since 2.4.0
 	 *
-	 * @param  WP_REST_Request $request The REST Request.
-	 *
 	 * @return WP_REST_Response
 	 */
 	public function rule_debug_enable() {
@@ -444,8 +442,6 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * Route: GET omapp/v1/support/debug/disable
 	 *
 	 * @since 2.4.0
-	 *
-	 * @param  WP_REST_Request $request The REST Request.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -520,6 +516,8 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 *
 	 * @param WP_REST_Request $request The REST Request.
 	 * @return WP_REST_Response The API Response
+	 *
+	 * @throws OMAPI_WpErrorException If there is a WordPress error during the process.
 	 */
 	public function get_campaign_data( $request ) {
 		try {
@@ -703,7 +701,9 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 
 			// Posts query.
 			$post_types = implode( '","', esc_sql( get_post_types( array( 'public' => true ) ) ) );
-			$posts      = $wpdb->get_results( "SELECT ID AS `value`, post_title AS `name` FROM {$wpdb->prefix}posts WHERE post_type IN (\"{$post_types}\") AND post_status IN('publish', 'future') ORDER BY post_title ASC", ARRAY_A );
+
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Already prepared.
+			$posts = $wpdb->get_results( "SELECT ID AS `value`, post_title AS `name` FROM {$wpdb->prefix}posts WHERE post_type IN (\"{$post_types}\") AND post_status IN('publish', 'future') ORDER BY post_title ASC", ARRAY_A );
 		}
 
 		$post_types = ! in_array( 'post_types', $excluded, true )
@@ -722,10 +722,11 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 				? $this->base->mailpoet->get_lists()
 				: array(),
 			'mailPoetFields'  => $mailpoet && ! in_array( 'mailPoetFields', $excluded, true )
-				? $this->base->mailpoet->get_custom_fields()
+				? $this->base->mailpoet->get_custom_fields_dropdown_values()
 				: array(),
 		);
 
+		$omapi_plugins = new OMAPI_Plugins();
 		$response_data = apply_filters(
 			'optin_monster_api_setting_ui_data',
 			array(
@@ -736,7 +737,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 				'post_types'  => $post_types,
 				'siteId'      => $this->base->get_site_id(),
 				'siteIds'     => $this->base->get_site_ids(),
-				'pluginsInfo' => ( new OMAPI_Plugins() )->get_active_plugins_header_value(),
+				'pluginsInfo' => $omapi_plugins->get_active_plugins_header_value(),
 			)
 		);
 
@@ -947,7 +948,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * @param WP_REST_Request $request The REST Request.
 	 *
 	 * @return WP_REST_Response The API Response
-	 * @throws Exception If plugin action fails.
+	 * @throws Exception|OMAPI_WpErrorException If plugin action fails or API Key is missing.
 	 */
 	public function init_api_key_connection( $request ) {
 		try {
@@ -977,6 +978,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * @param  WP_REST_Request $request The REST Request.
 	 *
 	 * @return bool
+	 * @throws Exception|OMAPI_WpErrorException If plugin action fails.
 	 */
 	public function can_store_api_key( $request ) {
 		try {
@@ -1011,6 +1013,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * @param WP_REST_Request $request The REST Request.
 	 *
 	 * @return WP_REST_Response The API Response
+	 * @throws Exception If plugin action fails.
 	 */
 	public function store_regenerated_api_key( $request ) {
 		try {
@@ -1043,6 +1046,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * @param  WP_REST_Request $request The REST Request.
 	 *
 	 * @return bool
+	 * @throws Exception If plugin action fails.
 	 */
 	public function can_store_regenerated_api_key( $request ) {
 		try {
@@ -1103,6 +1107,7 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 	 * @param  WP_REST_Request $request The REST Request.
 	 *
 	 * @return bool
+	 * @throws Exception If plugin action fails.
 	 */
 	public function can_delete_api_key( $request ) {
 		try {

@@ -1,18 +1,18 @@
 === Zapier for WordPress ===
 Contributors: zapier
 Tags: zapier, automation, integration, workflow, dataflow
-Requires at least: 5.0
-Tested up to: 5.9
-Requires PHP: 7.0
-Stable tag: 1.0.3
+Requires at least: 5.5
+Tested up to: 6.5
+Requires PHP: 7.4
+Stable tag: 1.5.1
 License: Expat (MIT License)
 License URI: https://spdx.org/licenses/MIT.html
 
-Zapier automatically moves info between WordPress and the other apps you use every day, so you can save time, reduce tedious tasks, and focus on your most important work.
+Zapier saves you time on tedious tasks by moving info between WordPress and your other favorite apps, so you can focus on your most important work.
 
 == Description ==
 
-Zapier is an automation platform that supports thousands of the most popular apps, like Instagram, Facebook, and Pinterest. In just a few minutes, you can set up automated workflows (called _Zaps_) that connect WordPress with the other apps you use most. You can share your latest WordPress posts to Facebook or Instagram, create drafts from an RSS feed or Mailchimp newsletter, or be notified when you get new comments and much more–no manual work or coding required.
+Zapier is the #1 workflow automation platform for small and midsize businesses that supports 7,000+ of the most popular apps, like Instagram, Facebook, and Pinterest. In just a few minutes, you can set up automated workflows (called _Zaps_) that connect WordPress with the other apps you use most. You can share your latest WordPress posts to Facebook or Instagram, create drafts from an RSS feed or Mailchimp newsletter, or be notified when you get new comments and much more–no manual work or coding required.
 
 = Some things you can do with Zapier + WordPress =
 
@@ -63,3 +63,66 @@ Zapier is an automation platform that supports thousands of the most popular app
 == Get Help ==
 
 If you have any feature requests, issues, or questions with Zapier for WordPress, please contact us using our [help form](https://zapier.com/app/get-help?utm_source=partner_wordpress_support&utm_medium=plugin_listing&utm_campaign=partner_wordpress).
+
+== Changelog ==
+
+= 1.0.0 =
+
+* Initial release.
+
+= 1.0.1 =
+
+* Improved verification of headers.
+
+= 1.0.2 =
+
+* Updated readme.
+
+= 1.0.3 =
+
+* Added a leeway value for JWT token validation.
+
+= 1.0.4 =
+
+* Updated register_rest_route to match >5.6 required arguments.
+* Updated latest tested Wordpress version to 5.9.
+
+= 1.0.5 =
+
+* Updated latest tested Wordpress version to 6.4.
+* Updated description.
+
+= 1.0.6 =
+
+* Updated short description.
+
+= 1.0.7 =
+
+* Updated assets.
+* Updated description.
+* Hotfix: Fix User-Agent header validation.
+
+= 1.1.0 =
+
+* Add endpoint to retrieve support fields for custom-type posts.
+
+= 1.2.0 =
+
+* Add endpoint to retrieve user roles.
+* Add session validation for custom endpoints.
+
+= 1.3.0 =
+
+* Updated Firebase JWT lib to ^6.10
+
+= 1.4.0 =
+
+* Add support for webhooks & add user updated hook
+
+= 1.5.0 =
+
+* Add updated post hook
+
+= 1.5.1 =
+
+* Reduce login attempts by increasing expiration of auth tokens

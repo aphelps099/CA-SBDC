@@ -176,14 +176,16 @@ class OMAPI_Menu {
 
 		if ( $submenu ) {
 			// Register link under the "Dashboard" menu for "Marketing Education" which directs to the "University".
-			$submenu['index.php'][] = array(  // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$submenu['index.php'][] = array(
 				esc_html__( 'Marketing Education', 'optin-monster-api' ),
 				$this->base->access_capability( self::SLUG ),
 				esc_url_raw( OMAPI_Urls::university() ),
 			);
 
 			// Register link under the appearance menu for "Popup Builder".
-			$submenu['themes.php'][] = array(  // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$submenu['themes.php'][] = array(
 				esc_html__( 'Popup Builder', 'optin-monster-api' ),
 				$this->base->access_capability( self::SLUG ),
 				esc_url_raw( OMAPI_Urls::templates() ),
@@ -233,7 +235,8 @@ class OMAPI_Menu {
 		$icon = str_replace( 'fill="currentColor"', 'fill="' . $fill . '"', $icon );
 
 		if ( $return_encoded ) {
-			$icon = 'data:image/svg+xml;base64,' . base64_encode( $icon ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+			$icon = 'data:image/svg+xml;base64,' . base64_encode( $icon );
 		}
 
 		return $icon;
@@ -254,14 +257,17 @@ class OMAPI_Menu {
 			$after  = array();
 			$at_end = array( 'optin-monster-about', 'optin-monster-upgrade', 'optin-monster-bfcm' );
 			foreach ( $submenu[ self::SLUG ] as $key => $menu ) {
-				if ( isset( $menu[2] ) && in_array( $menu[2], $at_end ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+				// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+				if ( isset( $menu[2] ) && in_array( $menu[2], $at_end ) ) {
 					$after[] = $menu;
 					unset( $submenu[ self::SLUG ][ $key ] );
 				}
 			}
-			$submenu[ self::SLUG ] = array_values( $submenu[ self::SLUG ] ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$submenu[ self::SLUG ] = array_values( $submenu[ self::SLUG ] );
 			foreach ( $after as $menu ) {
-				$submenu[ self::SLUG ][] = $menu; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				$submenu[ self::SLUG ][] = $menu;
 			}
 		}
 

@@ -736,7 +736,7 @@ span.ns-cloner-validating-spinner, .ns-cloner-loader-icon {
             font-size: 1.4em;
           }
         }
-    
+
         p {
           font-size: 1.1em;
           margin-bottom: 1em;
@@ -1215,6 +1215,11 @@ body.folded .ns-cloner-button-wrapper {
   top: 32px;
   padding: 3% 5% 5%;
   border-radius: 0 0 .7em .7em;
+
+  .ns-cloner-report-collapsible {
+      display: none;
+  }
+
 }
 
 .ns-cloner-report-content h5 {

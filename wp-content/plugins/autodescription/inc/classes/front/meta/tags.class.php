@@ -10,7 +10,7 @@ namespace The_SEO_Framework\Front\Meta;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -157,7 +157,8 @@ final class Tags {
 		foreach ( $attributes as $name => $value ) {
 			$name = trim( $name );
 
-			switch ( $name ) {
+			// Test lowercase for sanitization, but don't confuse devs in outputting it lowercase.
+			switch ( strtolower( $name ) ) {
 				case 'href':
 				case 'xlink:href':
 				case 'src':

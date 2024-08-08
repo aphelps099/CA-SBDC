@@ -1,131 +1,94 @@
-/**
- * Internal dependencies
- */
-import ResponsiveToggle from '../../../components/responsive-toggle';
+import {
+	__experimentalToolsPanelItem as ExperimentalToolsPanelItem,
+	__stableToolsPanelItem as StableToolsPanelItem,
+} from '@wordpress/components';
+import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
 import InputGroup from '../../../components/input-group';
-import InputDrag from '../../../components/input-drag';
-import ImportantToggle from '../../../components/important-toggle';
-import useStyles from '../../../hooks/use-styles';
 import useResponsive from '../../../hooks/use-responsive';
+import useStyles from '../../../hooks/use-styles';
 
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
+const ToolsPanelItem = StableToolsPanelItem || ExperimentalToolsPanelItem;
 
-const { addFilter } = wp.hooks;
+import { getBlockSupport, hasBlockSupport } from '@wordpress/blocks';
 
-const { ToolsPanelItem: __stableToolsPanelItem, __experimentalToolsPanelItem } = wp.components;
-
-const ToolsPanelItem = __stableToolsPanelItem || __experimentalToolsPanelItem;
-
-const { hasBlockSupport } = wp.blocks;
-
-const allProps = ['min-width', 'max-width'];
+const allOptions = [
+	{
+		name: 'min-width',
+		label: __('Min', 'ghostkit'),
+	},
+	{
+		name: 'max-width',
+		label: __('Max', 'ghostkit'),
+	},
+];
 
 function PositionMinMaxWidthTools(props) {
-  const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
+	const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
 
-  const { device, allDevices } = useResponsive();
+	const { allDevices } = useResponsive();
 
-  let hasMinMaxWidth = false;
+	let hasMinMaxWidth = false;
 
-  ['', ...Object.keys(allDevices)].forEach((thisDevice) => {
-    hasMinMaxWidth =
-      hasMinMaxWidth || hasStyle('min-width', thisDevice) || hasStyle('max-width', thisDevice);
-  });
+	['', ...Object.keys(allDevices)].forEach((thisDevice) => {
+		allOptions.forEach((thisMinMax) => {
+			hasMinMaxWidth =
+				hasMinMaxWidth || hasStyle(thisMinMax.name, thisDevice);
+		});
+	});
 
-  return (
-    <ToolsPanelItem
-      label={__('Min Max Width', 'ghostkit')}
-      hasValue={() => !!hasMinMaxWidth}
-      onDeselect={() => {
-        resetStyles(allProps, true);
-      }}
-      isShownByDefault={false}
-    >
-      <InputGroup
-        label={
-          <>
-            {__('Min Max Width', 'ghostkit')}
-            <ResponsiveToggle
-              checkActive={(checkMedia) => {
-                let isActive = false;
-
-                allProps.forEach((thisProp) => {
-                  isActive = isActive || hasStyle(thisProp, checkMedia);
-                });
-
-                return isActive;
-              }}
-            />
-          </>
-        }
-      >
-        {allProps.map((propName) => {
-          let label = __('Min', 'ghostkit');
-
-          if (propName === 'max-width') {
-            label = __('Max', 'ghostkit');
-          }
-
-          let value = getStyle(propName, device);
-
-          const withImportant = / !important$/.test(value);
-          if (withImportant) {
-            value = value.replace(/ !important$/, '');
-          }
-
-          return (
-            <div key={propName}>
-              <InputDrag
-                help={label}
-                value={value}
-                placeholder="-"
-                onChange={(val) => {
-                  const newValue = val ? `${val}${withImportant ? ' !important' : ''}` : undefined;
-
-                  setStyles({ [propName]: newValue }, device);
-                }}
-                autoComplete="off"
-              />
-              <ImportantToggle
-                onClick={(newWithImportant) => {
-                  if (value) {
-                    const newValue = `${value}${newWithImportant ? ' !important' : ''}`;
-
-                    setStyles({ [propName]: newValue }, device);
-                  }
-                }}
-                isActive={withImportant}
-              />
-            </div>
-          );
-        })}
-      </InputGroup>
-    </ToolsPanelItem>
-  );
+	return (
+		<ToolsPanelItem
+			label={__('Min Max Width', 'ghostkit')}
+			hasValue={() => !!hasMinMaxWidth}
+			onDeselect={() => {
+				resetStyles(
+					allOptions.map((item) => {
+						return item.name;
+					}),
+					true
+				);
+			}}
+			isShownByDefault={false}
+		>
+			<InputGroup
+				label={__('Min Max Width', 'ghostkit')}
+				inputs={allOptions}
+				hasValue={(name, media) => hasStyle(name, media)}
+				getValue={(name, media) => getStyle(name, media)}
+				onChange={(name, value, media) =>
+					setStyles({ [name]: value }, media)
+				}
+				withResponsive
+				withImportant
+				expandOnFocus={17}
+			/>
+		</ToolsPanelItem>
+	);
 }
 
 addFilter(
-  'ghostkit.extension.position.tools',
-  'ghostkit/extension/position/tools/min-max-width',
-  (children, { props }) => {
-    const hasMinMaxWidthSupport = hasBlockSupport(props.name, [
-      'ghostkit',
-      'position',
-      'minMaxWidth',
-    ]);
+	'ghostkit.extension.position.tools',
+	'ghostkit/extension/position/tools/min-max-width',
+	(children, { props }) => {
+		const hasMinMaxWidthSupport =
+			hasBlockSupport(props.name, [
+				'ghostkit',
+				'position',
+				'minMaxWidth',
+			]) ||
+			getBlockSupport(props.name, ['ghostkit', 'position']) === true;
 
-    if (!hasMinMaxWidthSupport) {
-      return children;
-    }
+		if (!hasMinMaxWidthSupport) {
+			return children;
+		}
 
-    return (
-      <>
-        {children}
-        <PositionMinMaxWidthTools {...props} />
-      </>
-    );
-  }
+		return (
+			<>
+				{children}
+				<PositionMinMaxWidthTools {...props} />
+			</>
+		);
+	}
 );

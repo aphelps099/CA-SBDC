@@ -1,3 +1,23 @@
+= 4.4.6 - 2024.08.08 =
+* Better handling of scheduled actions.
+* Code improvements.
+
+= 4.4.5 - 2024.06.20 =
+* Add hooks to bypass immediate cloning in the admin ajax action.
+* Fix initial form setting option loading. Hide those that are not for current clone option.
+
+= 4.4.4 - 2024.05.13 =
+* Code updates and other improvements.
+
+= 4.4.2 - 2024.01.30 =
+* Enhancement: Improved locale loading.
+* Fix: PHP notices.
+
+= 4.4.1 - 2024.01.25 =
+* New: Introduce new function `ns_cloner_perform_clone` to make it easier to perform cloning from other plugins.
+* Enhancement: Improved checks for file loading.
+* Fix: PHP notices.
+
 = 4.4 - 2023.11.20 =
 * New: Updated the admin area for a more modern experience.
 * Enhancement: Code improvements.

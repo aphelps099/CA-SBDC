@@ -3,14 +3,16 @@
 /**
  * Plugin Name:       Zapier for WordPress
  * Description:       Zapier enables you to automatically share your posts to social media, create WordPress posts from Mailchimp newsletters, and much more. Visit https://zapier.com/apps/wordpress/integrations for more details.
- * Version:           1.0.4
+ * Version:           1.5.1
  * Author:            Zapier
  * Author URI:        https://zapier.com
  * License:           Expat (MIT License)
  * License URI:       https://spdx.org/licenses/MIT.html
  */
+
 require_once dirname(__FILE__) . '/vendor/autoload.php';
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 
 class Zapier_Auth_Loader
@@ -78,6 +80,10 @@ class Zapier_Auth
         $this->loader->add_plugin_action('rest_api_init', $this, 'add_api_routes');
         $this->loader->add_plugin_filter('rest_pre_dispatch', $this, 'rest_pre_dispatch');
         $this->loader->add_plugin_filter('determine_current_user', $this, 'determine_current_user');
+
+        // Webhooks
+        $this->loader->add_plugin_action('wp_update_user', $this, 'updated_user');
+        $this->loader->add_plugin_action('post_updated', $this, 'updated_post', 10, 3);
     }
 
     public function run()
@@ -90,6 +96,30 @@ class Zapier_Auth
         register_rest_route($this->namespace, '/token', array(
             'methods' => "POST",
             'callback' => array($this, 'generate_token'),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace, '/(?P<type>[a-zA-Z0-9_-]+)/supports', array(
+            'methods' => "GET",
+            'callback' => array($this, 'get_custom_type_supports'),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace, '/roles', array(
+            'methods' => "GET",
+            'callback' => array($this, 'get_roles'),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace, '/webhook', array(
+            'methods' => "POST",
+            'callback' => array($this, 'add_webhook'),
+            'permission_callback' => '__return_true'
+        ));
+
+        register_rest_route($this->namespace, '/webhook', array(
+            'methods' => "DELETE",
+            'callback' => array($this, 'remove_webhook'),
             'permission_callback' => '__return_true'
         ));
     }
@@ -117,15 +147,174 @@ class Zapier_Auth
             'iss' => get_bloginfo('url'),
             'iat' => $issuedAt,
             'nbf' => $issuedAt,
-            'exp' => $issuedAt + 300,
+            'exp' => $issuedAt + (60 * 20),
             'data' => array(
                 'user_id' => $user->data->ID,
             ),
         );
 
         return array(
-            'token' => JWT::encode($token, $secret_key),
+            'token' => JWT::encode($token, $secret_key, 'HS256'),
         );
+    }
+
+    public function get_custom_type_supports($request)
+    {
+
+        if(!is_user_logged_in()) {
+            return new WP_Error(
+                'not_logged_in',
+                'You are not logged in',
+                array(
+                    'status' => 401,
+                )
+            );
+        }
+
+        $type = $request['type'];
+        $types = get_post_types(array());
+
+        if(!in_array($type, $types)) {
+            return new WP_Error(
+                'invalid_post_type',
+                'Invalid post type',
+                array(
+                    'status' => 404,
+                )
+            );
+        }
+        
+        return array('supports' => get_all_post_type_supports($type));
+    }
+
+    public function get_roles()
+    {
+        if(!is_user_logged_in()) {
+            return new WP_Error(
+                'not_logged_in',
+                'You are not logged in',
+                array(
+                    'status' => 401,
+                )
+            );
+        }
+        
+        $roles = array();
+        foreach (wp_roles()->roles as $key => $role) {
+            $roles[] = (array('id' => $key, 'name' => $role['name']));
+        }
+
+        return array('roles' => $roles);
+    }
+
+    public function add_webhook($request) {
+
+        if(!is_user_logged_in()) {
+            return new WP_Error(
+                'not_logged_in',
+                'You are not logged in',
+                array(
+                    'status' => 401,
+                )
+            );
+        }
+
+        $ALLOWED_ACTIONS = array('wp_update_user','post_updated');
+
+        $action = $request->get_param("action");
+        $endpoint_url = $request->get_param("endpoint_url");
+
+        if(!in_array($action, $ALLOWED_ACTIONS)) {
+            return new WP_Error(
+                'invalid_action',
+                'Invalid action',
+                array(
+                    'status' => 400,
+                )
+            );
+        }
+
+        if(empty($endpoint_url)) {
+            return new WP_Error(
+                'invalid_endpoint_url',
+                'Invalid endpoint url',
+                array(
+                    'status' => 400,
+                )
+            );
+        }
+
+        $option_key = "zapier_hooks_$action";
+
+        $hooks = get_option($option_key, []);
+
+        if(!in_array($endpoint_url, $hooks)) {
+            $hooks[] = $endpoint_url;
+            update_option($option_key, $hooks);
+        }
+
+        return array('success' => true);
+    }
+
+    public function remove_webhook($request) {
+
+        if(!is_user_logged_in()) {
+            return new WP_Error(
+                'not_logged_in',
+                'You are not logged in',
+                array(
+                    'status' => 401,
+                )
+            );
+        }
+
+        $action = $request->get_param("action");
+        $endpoint_url = $request->get_param("endpoint_url");
+
+        $option_key = "zapier_hooks_$action";
+        $hooks = get_option($option_key, []);
+
+        if(($key = array_search($endpoint_url, $hooks)) !== false) {
+            unset($hooks[$key]);
+            update_option($option_key, $hooks);
+        }
+
+        return array('success' => true);
+    }
+
+    public function updated_user($user_id) {
+        $option_key = "zapier_hooks_wp_update_user";
+
+        $hooks = get_option($option_key, []);
+
+        foreach($hooks as $hook) {
+            $response = wp_remote_post($hook, array(
+                'body' => json_encode(array('user_id' => $user_id)),
+                'headers' => array('Content-Type' => 'application/json'),
+            ));
+        }
+    }
+
+    public function updated_post($post_id, $post_after, $post_before) {
+        $option_key = "zapier_hooks_post_updated";
+        
+        $rest_base = get_post_type_object($post_after->post_type)->rest_base;
+        $changed_properties = $this->compareObjects($post_after, $post_before);
+        
+        $hooks = get_option($option_key, []);
+
+        foreach($hooks as $hook) {
+            $response = wp_remote_post($hook, array(
+                'body' => json_encode(array(
+                    'post_id' => $post_id,
+                    'rest_base' => $rest_base,
+                    'post_after_status' => $post_after->post_status,
+                    'post_before_status' => $post_before->post_status,
+                    'post_changed_properties' => $changed_properties
+                )),
+                'headers' => array('Content-Type' => 'application/json'),
+            ));
+        }
     }
 
     public function get_user_from_token()
@@ -134,8 +323,7 @@ class Zapier_Auth
             JWT::$leeway = 240; // $leeway in seconds
             $token = JWT::decode(
                 $_SERVER['HTTP_X_ZAPIER_AUTH'],
-                get_option('zapier_secret'),
-                array('HS256')
+                new Key(get_option('zapier_secret'), 'HS256')
             );
 
             if ($token->iss != get_bloginfo('url')) {
@@ -173,7 +361,7 @@ class Zapier_Auth
         $rest_api_slug = rest_get_url_prefix();
         $is_valid_rest_api_uri = strpos($_SERVER['REQUEST_URI'], $rest_api_slug);
         $is_valid_token_uri = strpos($_SERVER['REQUEST_URI'], $this->namespace . '/token');
-        $is_zapier_request = $_SERVER['HTTP_USER_AGENT'] === 'Zapier' && isset($_SERVER['HTTP_X_ZAPIER_AUTH']);
+        $is_zapier_request = isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] === 'Zapier' && isset($_SERVER['HTTP_X_ZAPIER_AUTH']);
 
         if ($is_zapier_request && $is_valid_rest_api_uri && !$is_valid_token_uri) {
             $user_id = $this->get_user_from_token();
@@ -191,6 +379,32 @@ class Zapier_Auth
             return $this->error;
         }
         return $request;
+    }
+
+    private function compareObjects($obj1, $obj2) {
+        $reflect1 = new ReflectionClass($obj1);
+        $reflect2 = new ReflectionClass($obj2);
+
+        if ($reflect1->getName() !== $reflect2->getName()) {
+            throw new Exception('Objects must be instances of the same class');
+        }
+
+        $properties1 = $reflect1->getProperties();
+        $changed_properties = [];
+
+        foreach ($properties1 as $property) {
+            // Make property accessible if it's private or protected
+            $property->setAccessible(true);
+
+            $value1 = $property->getValue($obj1);
+            $value2 = $property->getValue($obj2);
+
+            if ($value1 !== $value2) {
+                $changed_properties[] = str_replace('post_', '', $property->getName());
+            }
+        }
+
+        return $changed_properties;
     }
 }
 

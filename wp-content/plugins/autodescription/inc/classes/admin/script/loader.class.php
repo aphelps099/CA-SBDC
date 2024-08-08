@@ -22,7 +22,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -511,7 +511,7 @@ class Loader {
 			[
 				'id'       => 'tsf-gbc',
 				'type'     => 'js',
-				'deps'     => [ 'jquery', 'tsf', 'wp-editor', 'wp-data', 'lodash', 'react' ],
+				'deps'     => [ 'jquery', 'tsf', 'wp-editor', 'wp-data', 'react' ],
 				'autoload' => true,
 				'name'     => 'gbc',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -714,7 +714,7 @@ class Loader {
 				'id'   => 'tsf-pt-gb',
 				'name' => 'pt-gb',
 			];
-			$deps = [ 'tsf', 'wp-hooks', 'wp-element', 'wp-components', 'wp-url', 'wp-api-fetch', 'lodash', 'react', 'wp-util' ];
+			$deps = [ 'tsf', 'wp-hooks', 'wp-element', 'wp-components', 'wp-url', 'wp-api-fetch', 'react', 'wp-util' ];
 		} else {
 			$vars = [
 				'id'   => 'tsf-pt',

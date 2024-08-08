@@ -115,9 +115,6 @@ class JVM_Richtext_icons {
      * Enqueue Gutenberg block assets for both admin backend.
      */
     public function load_admin_assets($hook_suffix) {
-
-
-
         if( 'post.php' == $hook_suffix 
             || 'post-new.php' == $hook_suffix 
             || 'widgets.php' == $hook_suffix
@@ -272,6 +269,10 @@ class JVM_Richtext_icons {
             $settings['icon_set'] = 'default';
         }
 
+        if (!isset($settings['technology'])) {
+            $settings['technology'] = 'html-css';
+        }
+
         return $settings;
     }
 
@@ -304,7 +305,16 @@ class JVM_Richtext_icons {
      * @return [string] [css styling]
      */
     public static function parse_dynamic_css() {
-        return JVM_Richtext_icons::render_view('dynamic_css.php', ['files' => JVM_Richtext_icons::get_svg_file_list(), 'settings', JVM_Richtext_icons::get_settings()]);
+        $settings = self::get_settings();
+        $view = 'dynamic_css.php';
+
+        if ($settings['technology'] == 'html-css-before') {
+            $view = 'dynamic_css_before.php';
+        }else  if ($settings['technology'] == 'html-css-after') {
+            $view = 'dynamic_css_after.php';
+        }
+
+        return JVM_Richtext_icons::render_view($view, ['files' => JVM_Richtext_icons::get_svg_file_list(), 'settings', JVM_Richtext_icons::get_settings()]);
     }
 
     /**

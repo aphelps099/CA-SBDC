@@ -16,7 +16,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -690,16 +690,6 @@ final class Plugin {
 	 */
 	public static function _sitemaps_metabox_metadata_tab() {
 		Template::output_view( 'settings/metaboxes/sitemaps', 'metadata' );
-	}
-
-	/**
-	 * Sitemaps Meta Box Notify Tab output.
-	 *
-	 * @since 4.0.0
-	 * @see static::sitemaps_metabox() Callback for Sitemaps Settings box.
-	 */
-	public static function _sitemaps_metabox_notify_tab() {
-		Template::output_view( 'settings/metaboxes/sitemaps', 'notify' );
 	}
 
 	/**

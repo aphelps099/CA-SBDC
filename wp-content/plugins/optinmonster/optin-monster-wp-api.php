@@ -5,15 +5,15 @@
  * Description: OptinMonster is the best WordPress popup builder plugin that helps you grow your email newsletter list and sales with email popups, exit intent popups, floating bars and more!
  * Author:      OptinMonster Popup Builder Team
  * Author URI:  https://optinmonster.com
- * Version:     2.15.1
+ * Version:     2.16.4
  * Text Domain: optin-monster-api
  * Domain Path: languages
  *
  * WC requires at least: 3.2
- * WC tested up to:      8.1.1
+ * WC tested up to:      8.6
  * Requires at least:    4.7
  * Requires PHP:         5.3
- * Tested up to:         6.4
+ * Tested up to:         6.5
  *
  * @package OMAPI
  *
@@ -69,7 +69,7 @@ class OMAPI {
 	 *
 	 * @var string
 	 */
-	public $version = '2.15.1';
+	public $version = '2.16.4';
 
 	/**
 	 * The name of the plugin.
@@ -401,7 +401,7 @@ class OMAPI {
 	 * @since 1.0.0
 	 *
 	 * @param string $slug The optin slug used to retrieve a optin.
-	 * @return array|bool  Array of optin data or false if none found.
+	 * @return WP_Post|null  Array of optin data or false if none found.
 	 */
 	public function get_optin_by_slug( $slug ) {
 		$optin = get_page_by_path( sanitize_text_field( $slug ), OBJECT, OMAPI_Type::SLUG );
@@ -499,7 +499,7 @@ class OMAPI {
 	 *
 	 * @since 2.6.8
 	 *
-	 * @param WP_Post $post Optin post object.
+	 * @param WP_Post|null $post Optin post object.
 	 */
 	public function add_campaign_properties( $post ) {
 		$post = $this->validate_is_campaign_type( $post );
@@ -725,6 +725,7 @@ class OMAPI {
 	 * @param  mixed  $data Arbitrary data to be made available to the view file.
 	 *
 	 * @return void
+	 *
 	 * phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 	 */
 	public function output_view( $file, $data = array() ) {

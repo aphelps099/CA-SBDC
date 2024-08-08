@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2015 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2015 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -190,7 +190,23 @@ window.tsf = function( $ ) {
 	 * @param {string} str
 	 * @return {string}
 	 */
-	 const sTabs = str => str.replace( /\x09/g, ' ' );
+	const sTabs = str => str.replace( /\x09/g, ' ' );
+
+	/**
+	 * A helper function allows coalescing based on string length.
+	 * If the string is of length 0, it'll return null. Otherwise, it'll return the string.
+	 *
+	 * E.g., coalesceStrlen( '0' ) ?? '1'; will return '0'.
+	 * But, coalesceStrlen( '' ) ?? '1'; will return '1'.
+	 *
+	 * @since 5.0.5
+	 * @access public
+	 *
+	 * @function
+	 * @param {string} str The string to coalesce.
+	 * @return {?string} The input string if it's at least 1 byte, null otherwise.
+	 */
+	const coalesceStrlen = str => str?.length ? str : null;
 
 	/**
 	 * Gets string length.
@@ -534,7 +550,7 @@ window.tsf = function( $ ) {
 
 	let _debounceResize,
 		_debounceResizeTrigger,
-	    _throttleResize = false;
+		_throttleResize = false;
 	const _throttleResizeDebounceDelay = 50;
 	/**
 	 * Dispatches tsf-resize event on window.
@@ -639,8 +655,8 @@ window.tsf = function( $ ) {
 
 		if ( _isReady ) return;
 
-		document.removeEventListener( "DOMContentLoaded", _doReady );
-		document.removeEventListener( "load", _doReady );
+		document.removeEventListener( 'DOMContentLoaded', _doReady );
+		document.removeEventListener( 'load', _doReady );
 
 		// Triggers tsf-onload event.
 		_triggerOnLoad();
@@ -693,13 +709,13 @@ window.tsf = function( $ ) {
 			 *
 			 * @source jQuery 3.5.1
 			 */
-			if ( document.readyState === "complete" ||
-				( document.readyState !== "loading" && ! document.documentElement.doScroll ) ) {
+			if ( document.readyState === 'complete' ||
+				( document.readyState !== 'loading' && ! document.documentElement.doScroll ) ) {
 				// Handle it asynchronously to allow scripts the opportunity to delay ready.
 				setTimeout( _doReady() );
 			} else {
-				document.addEventListener( "DOMContentLoaded", _doReady );
-				document.addEventListener( "load", _doReady );
+				document.addEventListener( 'DOMContentLoaded', _doReady );
+				document.addEventListener( 'load', _doReady );
 			}
 
 			// Trigger tsf-resize event.
@@ -713,6 +729,7 @@ window.tsf = function( $ ) {
 		sDoubleSpace,
 		sSingleLine,
 		sTabs,
+		coalesceStrlen,
 		getStringLength,
 		selectByValue,
 		convertJSONResponse,

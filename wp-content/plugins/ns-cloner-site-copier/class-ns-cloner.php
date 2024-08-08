@@ -19,7 +19,7 @@ final class NS_Cloner {
 	 *
 	 * @var string
 	 */
-	public $version = '4.4';
+	public $version = '4.4.6';
 
 	/**
 	 * Menu Slug
@@ -188,11 +188,7 @@ final class NS_Cloner {
 	 * The difference between this and the constructor is that anything that needs to use localization has to go here.
 	 */
 	public function init() {
-		load_plugin_textdomain(
-			'ns-cloner-site-copier',
-			false,
-			NS_CLONER_V4_PLUGIN_DIR . 'languages/'
-		);
+		$this->load_text_domain();
 
 		// Setup class instances.
 		$this->process_manager = new NS_Cloner_Process_Manager();
@@ -273,6 +269,29 @@ final class NS_Cloner {
 		 */
 		do_action( 'ns_cloner_init' );
 
+	}
+
+	/**
+	 * Load the plugin text domain.
+	 *
+	 * @return void
+	 */
+	public function load_text_domain() {
+		$locale = determine_locale();
+
+		/**
+		 * Filter to adjust the NS Cloner locale to use for translations.
+		 */
+		$locale = apply_filters( 'plugin_locale', $locale, 'ns-cloner-site-copier' );
+
+		unload_textdomain( 'ns-cloner-site-copier' );
+		load_textdomain( 'ns-cloner-site-copier', WP_LANG_DIR . '/ns-cloner-site-copier/ns-cloner-' . $locale . '.mo' );
+
+		load_plugin_textdomain(
+			'ns-cloner-site-copier',
+			false,
+			NS_CLONER_V4_PLUGIN_DIR . 'languages/'
+		);
 	}
 
 	/*
@@ -417,8 +436,14 @@ final class NS_Cloner {
 	public static function render( $template, $plugin_dir = NS_CLONER_V4_PLUGIN_DIR ) {
 		$template_file = apply_filters( 'ns_cloner_template_file', 'ns-template-' . $template . '.php', $template );
 		$template_dir  = apply_filters( 'ns_cloner_template_dir', $plugin_dir . '/templates/', $template );
+
 		do_action( "ns_cloner_before_render_{$template}", $plugin_dir );
-		include_once $template_dir . $template_file;
+
+		$full_path = $template_dir . $template_file;
+		if ( file_exists( $full_path ) ) {
+			include_once $full_path;
+		}
+
 		do_action( "ns_cloner_after_render_{$template}", $plugin_dir );
 	}
 
@@ -537,6 +562,10 @@ final class NS_Cloner {
 		$path      = apply_filters( 'ns_cloner_addon_path', untrailingslashit( $dir ) . "/addons/{$filename}", $id );
 		$suffix    = str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $id ) ) );
 		$classname = "NS_Cloner_Addon_{$suffix}";
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
+
 		include_once $path;
 		if ( class_exists( $classname ) ) {
 			$this->addons[ $id ] = new $classname();
@@ -587,6 +616,10 @@ final class NS_Cloner {
 			)
 		);
 		$classname = "NS_Cloner_{$suffix}_Process";
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
+
 		include_once $path;
 		if ( class_exists( $classname ) ) {
 			$this->processes[ $id ] = new $classname();
@@ -629,6 +662,11 @@ final class NS_Cloner {
 		$path      = apply_filters( 'ns_cloner_section_path', trailingslashit( $dir ) . "sections/{$filename}", $id );
 		$suffix    = str_replace( ' ', '_', ucwords( str_replace( '-', ' ', $id ) ) );
 		$classname = "NS_Cloner_Section_{$suffix}";
+
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
+
 		include_once $path;
 		if ( class_exists( $classname ) ) {
 			$this->sections[ $id ] = new $classname();
@@ -680,7 +718,9 @@ final class NS_Cloner {
 			'description'    => '',
 			'multisite_only' => true,
 			'steps'          => array(),
-			'report'         => function(){},
+			'report'         => function() {
+
+			},
 		);
 		// Register by adding to the clone_modes array.
 		$this->clone_modes[ $id ] = (object) wp_parse_args( $details, $defaults );

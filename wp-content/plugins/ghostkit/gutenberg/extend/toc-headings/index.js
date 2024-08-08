@@ -1,45 +1,36 @@
-/**
- * External dependencies
- */
 import { debounce } from 'throttle-debounce';
 
-/**
- * Internal dependencies
- */
-import { getSlug } from '../../utils/get-unique-slug';
+import { select, subscribe } from '@wordpress/data';
 
-/**
- * WordPress dependencies
- */
-const { subscribe, select } = wp.data;
+import { getSlug } from '../../utils/get-unique-slug';
 
 /**
  * Get available TOC block.
  *
- * @param {Array|Boolean} blocks blocks array.
+ * @param {Array | boolean} blocks blocks array.
  *
  * @return {Array} toc block data.
  */
 function getTOC(blocks = false) {
-  let result = false;
+	let result = false;
 
-  if (!blocks) {
-    const { getBlocks } = select('core/block-editor');
+	if (!blocks) {
+		const { getBlocks } = select('core/block-editor');
 
-    blocks = getBlocks();
-  }
+		blocks = getBlocks();
+	}
 
-  blocks.forEach((block) => {
-    if (!result) {
-      if (block.name === 'ghostkit/table-of-contents') {
-        result = block;
-      } else if (block.innerBlocks && block.innerBlocks.length) {
-        result = getTOC(block.innerBlocks);
-      }
-    }
-  });
+	blocks.forEach((block) => {
+		if (!result) {
+			if (block.name === 'ghostkit/table-of-contents') {
+				result = block;
+			} else if (block.innerBlocks && block.innerBlocks.length) {
+				result = getTOC(block.innerBlocks);
+			}
+		}
+	});
 
-  return result;
+	return result;
 }
 
 /**
@@ -50,23 +41,23 @@ function getTOC(blocks = false) {
  * @return {Array} toc block data.
  */
 function getHeadings(blocks = false) {
-  let result = [];
+	let result = [];
 
-  if (!blocks) {
-    const { getBlocks } = select('core/block-editor');
+	if (!blocks) {
+		const { getBlocks } = select('core/block-editor');
 
-    blocks = getBlocks();
-  }
+		blocks = getBlocks();
+	}
 
-  blocks.forEach((block) => {
-    if (block.name === 'core/heading') {
-      result.push(block);
-    } else if (block.innerBlocks && block.innerBlocks.length) {
-      result = [...result, ...getHeadings(block.innerBlocks)];
-    }
-  });
+	blocks.forEach((block) => {
+		if (block.name === 'core/heading') {
+			result.push(block);
+		} else if (block.innerBlocks && block.innerBlocks.length) {
+			result = [...result, ...getHeadings(block.innerBlocks)];
+		}
+	});
 
-  return result;
+	return result;
 }
 
 let prevHeadings = '';
@@ -75,44 +66,44 @@ let prevHeadings = '';
  * Update heading ID.
  */
 function updateHeadingIDs() {
-  const tocBlock = getTOC();
+	const tocBlock = getTOC();
 
-  if (!tocBlock) {
-    return;
-  }
+	if (!tocBlock) {
+		return;
+	}
 
-  const headings = getHeadings();
+	const headings = getHeadings();
 
-  if (prevHeadings && prevHeadings === JSON.stringify(headings)) {
-    return;
-  }
+	if (prevHeadings && prevHeadings === JSON.stringify(headings)) {
+		return;
+	}
 
-  const collisionCollector = {};
+	const collisionCollector = {};
 
-  headings.forEach((block) => {
-    let { anchor } = block.attributes;
+	headings.forEach((block) => {
+		let { anchor } = block.attributes;
 
-    const { content } = block.attributes;
+		const { content } = block.attributes;
 
-    // create new
-    if (content && !anchor) {
-      anchor = getSlug(content);
-      block.attributes.anchor = anchor;
-    }
+		// create new
+		if (content && !anchor) {
+			anchor = getSlug(content);
+			block.attributes.anchor = anchor;
+		}
 
-    // check collisions.
-    if (anchor) {
-      if (typeof collisionCollector[anchor] !== 'undefined') {
-        collisionCollector[anchor] += 1;
-        anchor += `-${collisionCollector[anchor]}`;
-        block.attributes.anchor = anchor;
-      } else {
-        collisionCollector[anchor] = 1;
-      }
-    }
-  });
+		// check collisions.
+		if (anchor) {
+			if (typeof collisionCollector[anchor] !== 'undefined') {
+				collisionCollector[anchor] += 1;
+				anchor += `-${collisionCollector[anchor]}`;
+				block.attributes.anchor = anchor;
+			} else {
+				collisionCollector[anchor] = 1;
+			}
+		}
+	});
 
-  prevHeadings = JSON.stringify(headings);
+	prevHeadings = JSON.stringify(headings);
 }
 
 const updateHeadingIDsDebounce = debounce(300, updateHeadingIDs);
@@ -122,12 +113,11 @@ const updateHeadingIDsDebounce = debounce(300, updateHeadingIDs);
  * We don't need to run this code in WordPress >= 5.9, as anchors already adds automatically.
  */
 if (
-  // eslint-disable-next-line no-underscore-dangle
-  !wp.blockEditor.__experimentalBlockPatternSetup &&
-  !wp.blockEditor.BlockPatternSetup &&
-  !wp.blockEditor.blockPatternSetup
+	!wp.blockEditor.__experimentalBlockPatternSetup &&
+	!wp.blockEditor.BlockPatternSetup &&
+	!wp.blockEditor.blockPatternSetup
 ) {
-  subscribe(() => {
-    updateHeadingIDsDebounce();
-  });
+	subscribe(() => {
+		updateHeadingIDsDebounce();
+	});
 }

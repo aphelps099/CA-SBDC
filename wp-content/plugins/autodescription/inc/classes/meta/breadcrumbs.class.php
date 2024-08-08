@@ -22,7 +22,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -54,6 +54,9 @@ class Breadcrumbs {
 	 * @todo add extra parameter for $options; create (class?) constants for them.
 	 *       -> Is tsf()->breadcrumbs()::CONSTANT possible?
 	 *       -> Then, forward the options to a class variable, and build therefrom. Use as argument for memo().
+	 *       -> Requested features (for shortcode): Remove home, remove current page.
+	 *       -> Requested features (globally): Remove/show archive prefixes, hide PTA/terms, select home name, select SEO vs custom title (popular).
+	 *       -> Add generation args to every crumb; this way we can perform custom lookups for titles after the crumb is generated.
 	 *
 	 * @param array|null $args   The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
 	 *                           Leave null to autodetermine query.
@@ -427,7 +430,7 @@ class Breadcrumbs {
 			static::get_front_breadcrumb(),
 			[
 				'url'  => Meta\URI::get_search_url(),
-				'name' => Meta\Title::get_search_query_title(),
+				'name' => Meta\Title::get_search_query_title(), // discrepancy
 			],
 		];
 	}
@@ -447,7 +450,7 @@ class Breadcrumbs {
 			static::get_front_breadcrumb(),
 			[
 				'url'  => '',
-				'name' => Meta\Title::get_404_title(),
+				'name' => Meta\Title::get_404_title(), // discrepancy
 			],
 		];
 	}
@@ -465,7 +468,7 @@ class Breadcrumbs {
 	private static function get_front_breadcrumb() {
 		return [
 			'url'  => Meta\URI::get_bare_front_page_url(),
-			'name' => Meta\Title::get_front_page_title(),
+			'name' => Meta\Title::get_front_page_title(), // discrepancy
 		];
 	}
 }

@@ -90,11 +90,12 @@ abstract class NS_Cloner_Section {
 	 * @param string $title Title to be shown on admin page settings box.
 	 * @param string $step_label Label to be shown in list of steps in clone bar at the bottom of the admin screen.
 	 * @param string $help_text Additional help text to explain section usage.
+	 * @param string $additional_style Additional style attribute.
 	 */
-	public function open_section_box( $title, $step_label = '', $help_text = '' ) {
+	public function open_section_box( $title, $step_label = '', $help_text = '', $additional_style = '' ) {
 		$mode_list = join( ' ', $this->modes_supported );
 		?>
-		<section class="ns-cloner-section" id="ns-cloner-section-<?php echo esc_attr( $this->id ); ?>" data-modes="<?php echo esc_attr( $mode_list ); ?>" data-button-step="<?php echo esc_attr( $step_label ); ?>">
+		<section class="ns-cloner-section" id="ns-cloner-section-<?php echo esc_attr( $this->id ); ?>" data-modes="<?php echo esc_attr( $mode_list ); ?>" data-button-step="<?php echo esc_attr( $step_label ); ?>" style="<?php echo esc_attr( $additional_style ); ?>" >
 		<div class="ns-cloner-section-header">
 			<h4><?php echo esc_html( $title ); ?></h4>
 			<span class="ns-cloner-section-help"><?php echo esc_html( $help_text ); ?></span>

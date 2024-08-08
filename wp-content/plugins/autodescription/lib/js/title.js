@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -307,8 +307,10 @@ window.tsfTitle = function() {
 
 		const allowReferenceChange = getStateOf( event.target.id, 'allowReferenceChange' );
 
-		let text   = allowReferenceChange && event.target.value.trim() || getStateOf( event.target.id, 'defaultTitle' ) || '',
-			textNa = text;
+		let text = tsf.coalesceStrlen( allowReferenceChange && event.target.value.trim() )
+			?? tsf.coalesceStrlen( getStateOf( event.target.id, 'defaultTitle' ) )
+			?? '';
+		let textNa = text;
 
 		if ( text.length && allowReferenceChange ) {
 			let prefix    = _getPrefixValue( event.target.id ),

@@ -7,7 +7,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -58,7 +58,6 @@ window.tsfPTGB = function() {
 	const { createElement, Fragment, Component, useState, useEffect } = wp.element;
 	const { SelectControl } = wp.components;
 	const { useSelect } = wp.data;
-	const { unescape } = lodash;
 
 	/**
 	 * Arrays are unique objects, meaning [] !== [].
@@ -237,7 +236,7 @@ window.tsfPTGB = function() {
 					selectedTerms.includes( term?.id )
 						&& {
 							value: term.id,
-							label: unescape( term?.name )
+							label: tsf.decodeEntities( term?.name ), // TODO, consider using https://github.com/WordPress/gutenberg/pull/47561/files.
 						}
 				).filter( Boolean ) || '';
 			};

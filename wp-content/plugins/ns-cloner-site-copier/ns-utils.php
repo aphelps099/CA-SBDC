@@ -506,3 +506,107 @@ function ns_is_signup_allowed() {
 	$active_signup = apply_filters( 'wpmu_active_signup', $active_signup );
 	return ( 'none' !== $active_signup );
 }
+
+/**
+ * Perform a clone.
+ *
+ * @param array $args {
+ *     Required. An array of arguments.
+ *
+ *     @type string $clone_mode           Required. The clone mode. Default 'core'. Accepts 'core', 'clone_over', 'search_replace', 'clone_teleport'.
+ *     @type int    $source_id            Required. The source site id.
+ *     @type int    $user_id              Optional. The user id to assign to the site.
+ *     @type string $target_name          Required. The new site subdomain or sub directory.
+ *     @type string $target_title         Required. The source site title.
+ *     @type array  $tables_to_clone      Optional. The source site tables to clone. These should have the prefix.
+ *     @type int    $do_copy_posts        Optional. Copy posts. Default 1. Accepts 1, 0. Set to 1 to copy and 0 not to copy.
+ *     @type array  $post_types_to_clone  Optional. Post types to clone. Defaults to all
+ *     @type int    $debug                Optional. Default 0. Accepts 1, 0. Set to 1 to debug and 0 not to debug.
+ * }
+ *
+ * @return WP_Error|array Return WP_Error when there is an error with parameters or cloning action.
+ *                        Return an array when successful.
+ */
+function ns_cloner_perform_clone( $args = array() ) {
+	if ( ! function_exists( 'ns_cloner' ) ) {
+		return new \WP_Error( 'broke', __( 'This function must be called with the cloner plugin active', 'ns-cloner-site-copier' ) );
+	}
+
+	// Check if the action was already called. If not, call it again.
+	if ( ! did_action( 'ns_cloner_init' ) ) {
+		ns_cloner()->init();
+	}
+
+	$args = wp_parse_args(
+		$args,
+		array(
+			'clone_mode'          => 'core',
+			'source_id'           => 0, // any blog/site id on network.
+			'user_id'             => 1, // Optional user id to assign to the site.
+			'target_name'         => '',
+			'target_title'        => '',
+			'tables_to_clone'     => array(), // tables to clone.
+			'do_copy_posts'       => 1,
+			'post_types_to_clone' => array(), // can customize post types. This is mainly for clone over.
+			'debug'               => 0,
+		)
+	);
+
+	if ( $args['source_id'] <= 0 ) {
+		return new \WP_Error( 'broke', __( 'Source id is required', 'ns-cloner-site-copier' ) );
+	}
+
+	if ( empty( $args['target_name'] ) ) {
+		return new \WP_Error( 'broke', __( 'Target name is required', 'ns-cloner-site-copier' ) );
+	}
+
+	if ( empty( $args['target_title'] ) ) {
+		return new \WP_Error( 'broke', __( 'Target title is required', 'ns-cloner-site-copier' ) );
+	}
+
+	if ( ! is_array( $args['tables_to_clone'] ) || empty( $args['tables_to_clone'] ) ) {
+		$args['tables_to_clone'] = ns_reorder_tables( ns_cloner()->get_site_tables( $args['source_id'] ) );
+	}
+
+	$args['clone_nonce'] = wp_create_nonce( 'ns_cloner' );
+
+	foreach ( $args as $key => $value ) {
+		ns_cloner_request()->set( $key, $value );
+	}
+
+	ns_cloner_request()->set_up_vars();
+	ns_cloner_request()->save();
+	// Run init to begin. This will run in the background.
+	ns_cloner()->process_manager->init();
+
+	if ( ! empty( ns_cloner()->process_manager->get_errors() ) ) {
+		ns_cloner()->report->clear_all_reports();
+		return new \WP_Error( 'broke', ns_cloner_implode( '', ns_cloner()->process_manager->get_errors() ) );
+	} else {
+		return array( 'message' => __( 'Success', 'ns-cloner-site-copier' ) );
+	}
+
+}
+
+/**
+ * Implode multidimenional array
+ *
+ * @param string $glue  The separator.
+ * @param array  $array The array.
+ *
+ * @return string
+ */
+function ns_cloner_implode( $glue, $array = null ) {
+	if ( ! is_array( $array ) ) {
+		return $array;
+	}
+
+	$flat = array();
+	array_walk_recursive(
+		$array,
+		function ( $element ) use ( &$flat ) {
+			$flat[] = $element;
+		}
+	);
+	return implode( $glue, $flat );
+}

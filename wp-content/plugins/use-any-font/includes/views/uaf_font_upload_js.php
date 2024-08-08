@@ -50,7 +50,7 @@ add_thickbox();
                 <p>
                      <label>Font File *</label>
                      <span class="field">
-                            <input type="file" id="fontfile" name="fontfile" value="" class="uaf_required" accept=".woff2,.woff,.ttf,.otf" />
+                            <input type="file" id="fontfile" name="fontfile" value="" class="uaf_required" accept=".woff2,.woff,.ttf,.otf,.eot" />
                             <span class="field_error">Please select font file.</span>
                             <br/>
                             <em>Accepted Font Format : <?php echo esc_html(join(", ",$GLOBALS['uaf_fix_settings']['allowedFontFormats'])); ?> | Font Size: Upto <?php echo esc_html($GLOBALS['uaf_fix_settings']['allowedFontSize']) ?> MB</em><br/>

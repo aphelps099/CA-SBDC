@@ -12,7 +12,7 @@ use \The_SEO_Framework\Data;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -101,6 +101,19 @@ class Cache {
 	}
 
 	/**
+	 * Returns the transient prefix.
+	 * We're using a function instead of a variable or constant, because variables can be overwritten (pre PHP 8.1),
+	 * and constants cannot be deprecated via the static deprecator (must use `defined( get_class( ... ), '::constant' )`).
+	 *
+	 * @since 5.0.5
+	 *
+	 * @return string The transient prefix of the sitemap.
+	 */
+	public static function get_transient_prefix() {
+		return 'tsf_sitemap_';
+	}
+
+	/**
 	 * Returns the sitemap's storage transient name.
 	 *
 	 * @since 5.0.0
@@ -116,7 +129,7 @@ class Cache {
 
 		$cache_key = $ep_list[ $sitemap_id ]['cache_id'] ?? $sitemap_id;
 
-		return static::build_sitemap_cache_key( "tsf_sitemap_{$cache_key}" );
+		return static::build_sitemap_cache_key( static::get_transient_prefix() . $cache_key );
 	}
 
 	/**

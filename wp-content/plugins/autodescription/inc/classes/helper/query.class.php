@@ -17,7 +17,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -115,7 +115,7 @@ class Query {
 			 */
 			$id = \apply_filters(
 				'the_seo_framework_real_id',
-				\is_feed() ? \get_the_ID() : 0,
+				\is_feed() ? \get_the_id() : 0,
 			);
 		}
 
@@ -151,7 +151,7 @@ class Query {
 		return (int) \apply_filters(
 			'the_seo_framework_current_admin_id',
 			// Get in the loop first, fall back to globals or get parameters.
-			   \get_the_ID()
+			   \get_the_id()
 			?: static::get_admin_post_id()
 			?: static::get_admin_term_id()
 		);
@@ -273,7 +273,6 @@ class Query {
 	 * @since 4.0.0
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
 	 * @see static::is_attachment()
-	 * @global \WP_Screen $current_screen;
 	 *
 	 * @return bool
 	 */
@@ -298,6 +297,7 @@ class Query {
 	public static function is_singular_archive( $post = null ) {
 
 		if ( isset( $post ) ) {
+			// Keep this an integer, even if 0. Only "null" may tell it's in the loop.
 			$id = \is_int( $post )
 				? $post
 				: ( \get_post( $post )->ID ?? 0 );
@@ -313,7 +313,7 @@ class Query {
 				 * @param bool     $is_singular_archive Whether the post ID is a singular archive.
 				 * @param int|null $id                  The supplied post ID. Null when in the loop.
 				 */
-				\apply_filters(
+				(bool) \apply_filters(
 					'the_seo_framework_is_singular_archive',
 					static::is_blog_as_page( $id ),
 					$id,
@@ -342,7 +342,6 @@ class Query {
 		if ( \is_archive() && false === static::is_singular() )
 			return Query\Cache::memo( true );
 
-		// The $can_cache check is used here because it asserted $wp_query is valid on the front-end.
 		if ( isset( $GLOBALS['wp_query']->query ) && false === static::is_singular() ) {
 			global $wp_query;
 
@@ -475,6 +474,8 @@ class Query {
 	 * @since 4.2.0 Added the first parameter to allow custom query testing.
 	 * @since 5.0.0 1. Renamed from `is_home()`.
 	 *              2. Moved from `\The_SEO_Framework\Load`.
+	 * @since 5.0.3 1. Will no longer validate `0` as a plausible blog page.
+	 *              2. Will no longer validate `is_home()` when the blog page is not assigned.
 	 *
 	 * @param int|WP_Post|null $post Optional. Post ID or post object.
 	 *                               Do not supply from WP_Query's main loop-query.
@@ -484,13 +485,14 @@ class Query {
 
 		if ( isset( $post ) ) {
 			$id = \is_int( $post )
-				? $post
-				: ( \get_post( $post )->ID ?? 0 );
+				? ( $post ?: null )
+				: ( \get_post( $post )->ID ?? null );
 
-			return (int) \get_option( 'page_for_posts' ) === $id;
+			return ( (int) \get_option( 'page_for_posts' ) ) === $id;
 		}
 
-		return \is_home();
+		// If not blog page is assigned, it won't exist. Ignore whatever WP thinks.
+		return Query\Utils::has_blog_page() && \is_home();
 	}
 
 	/**
@@ -650,7 +652,7 @@ class Query {
 	 * @since 2.6.0
 	 * @since 4.0.0 This is now deemed a secure method.
 	 *              1. Added is_user_logged_in() check.
-	 *              2. Added is_singular() check, so get_the_ID() won't cross with blog pages.
+	 *              2. Added is_singular() check, so get_the_id() won't cross with blog pages.
 	 *              3. Added current_user_can() check.
 	 *              4. Added wp_verify_nonce() check.
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
@@ -665,7 +667,7 @@ class Query {
 			   \is_preview()
 			&& \is_user_logged_in()
 			&& \is_singular()
-			&& \current_user_can( 'edit_post', \get_the_ID() )
+			&& \current_user_can( 'edit_post', \get_the_id() )
 			&& isset( $_GET['preview_id'], $_GET['preview_nonce'] )
 			&& \wp_verify_nonce( $_GET['preview_nonce'], 'post_preview_' . (int) $_GET['preview_id'] )
 		) {
@@ -793,7 +795,7 @@ class Query {
 		$front_id = umemo( __METHOD__ )
 			?? umemo(
 				__METHOD__,
-				'page' === \get_option( 'show_on_front' )
+				Query\Utils::has_assigned_page_on_front()
 					? (int) \get_option( 'page_on_front' )
 					: false,
 			);
@@ -870,7 +872,7 @@ class Query {
 				 * @param bool $is_shop Whether the post ID is a shop.
 				 * @param int  $id      The current or supplied post ID.
 				 */
-				\apply_filters( 'the_seo_framework_is_shop', false, $post ),
+				(bool) \apply_filters( 'the_seo_framework_is_shop', false, $post ),
 				$post,
 			);
 	}
@@ -1153,6 +1155,62 @@ class Query {
 	 */
 	public static function is_multipage() {
 		return static::numpages() > 1;
+	}
+
+	/**
+	 * Detects paginated comment pages thoroughly.
+	 *
+	 * WordPress 6.0 introduced a last minute function called `build_comment_query_vars_from_block()`.
+	 * This function exists to workaround a bug in comment blocks as sub-query by adjusting the main query.
+	 *
+	 * @since 5.0.5
+	 *
+	 * @return bool
+	 */
+	public static function is_comment_paged() {
+
+		// phpcs:ignore, WordPress.CodeAnalysis.AssignmentInCondition
+		if ( null !== $memo = Query\Cache::memo() )
+			return $memo;
+
+		/**
+		 * N.B. WordPress protects this query variable with options 'page_comments'
+		 * and 'default_comments_page' via `redirect_canonical()`, so we don't have to.
+		 * For reference, it fires `remove_query_arg( 'cpage', $redirect['query'] )`;
+		 */
+		$is_cpaged = (int) \get_query_var( 'cpage', 0 ) > 0;
+
+		// WP 6.0 bugged this. Let's scrutinize if $cpage might be incorrectly set.
+		// If comments haven't yet been parsed, we can safely assume there's no bug active.
+		if ( $is_cpaged && \did_action( 'parse_comment_query' ) ) {
+			// core/comments only works on singular; this bug doesn't invoke otherwise anyway.
+			if ( ! static::is_singular() )
+				return Query\Cache::memo( false );
+
+			/**
+			 * Any of these blocks can invoke `set_query_var( 'cpage', 1+ )`.
+			 * 'core/comment-template',            // parent core/comments
+			 * 'core/comments-pagination-next',    // parent core/comments-pagination, parent core/comments
+			 * 'core/comments-pagination-numbers', // parent core/comments-pagination, parent core/comments
+			 *
+			 * If we'd had to loop, it'd be best to call has_blocks( $content ) first.
+			 *
+			 * 'core/comments-pagination-previous' doesn't invoke this; yet to be determined why.
+			 */
+			// Get post content from main query.
+			if ( \has_block( 'core/comments', Data\Post::get_content() ) ) { // Slow function is slow.
+				/**
+				 * Assume 0 if the unaltered query variable isn't found;
+				 * it might be purged, so we won't have pagination.
+				 * There is no other fast+reliable method to determine whether
+				 * comment pagination is engaged for the current query.
+				 * This is a bypass, after all.
+				 */
+				$is_cpaged = (int) ( $GLOBALS['wp_query']->query['cpage'] ?? 0 ) > 0;
+			}
+		}
+
+		return Query\Cache::memo( $is_cpaged );
 	}
 
 	/**

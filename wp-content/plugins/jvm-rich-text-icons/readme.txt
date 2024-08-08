@@ -3,7 +3,7 @@ Contributors: jorisvanmontfort
 Donate link: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
 Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF, SVG icons
 Requires at least: 5.4
-Tested up to: 6.4.1
+Tested up to: 6.5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,12 @@ add_filter('jvm_richtext_icons_show_settings', '__return_false');
 Please note that settings will still be loaded so please make sure you have set the settings to default font awesome if you are loading a custom icon set with the plugin hooks.
 
 == Changelog ==
+
+= 1.2.9 =
+Added an option for rendering technology for custom icons sets. You can now also choose rendering with a ::before or ::after pseudo element instead of the regular HTML / CSS. This allows for more CSS flexibility. For example adding backgrounds or hover effects.
+
+= 1.2.8 =
+Update to re-enable icons in ACF select2 field. Icons apeared as literal HTML after an update of the ACF plugin.
 
 = 1.2.7 =
 Security update. File name now sanitize in delete icon ajax call.

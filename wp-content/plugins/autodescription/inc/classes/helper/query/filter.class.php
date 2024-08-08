@@ -15,7 +15,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -54,7 +54,7 @@ final class Filter {
 	 */
 	public static function filter_post_link_category( $term, $terms = null, $post = null ) {
 		return Data\Plugin\Post::get_primary_term(
-			$post->ID ?? Query::get_the_real_ID(),
+			$post->ID ?? Query::get_the_real_id(),
 			$term->taxonomy,
 		) ?? $term;
 	}

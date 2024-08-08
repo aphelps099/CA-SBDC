@@ -17,7 +17,7 @@ use \The_SEO_Framework\Data;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -63,7 +63,7 @@ class Post_Type {
 		 * @param bool   $disabled
 		 * @param string $post_type
 		 */
-		return \apply_filters(
+		return (bool) \apply_filters(
 			'the_seo_framework_post_type_disabled',
 			Data\Plugin::get_option( 'disabled_post_types', $post_type ),
 			$post_type,
@@ -166,10 +166,12 @@ class Post_Type {
 	 * @return string[] Supported post types with post type archive support.
 	 */
 	public static function get_all_supported_pta() {
-		return memo() ?? memo( array_values( array_filter(
-			static::get_public_pta(),
-			[ static::class, 'is_pta_supported' ],
-		) ) );
+		return memo() ?? memo( array_values(
+			array_filter(
+				static::get_public_pta(),
+				[ static::class, 'is_pta_supported' ],
+			)
+		) );
 	}
 
 	/**
@@ -193,7 +195,7 @@ class Post_Type {
 				 * @since 4.2.8
 				 * @param string[] $post_types The public post types.
 				 */
-				\apply_filters(
+				(array) \apply_filters(
 					'the_seo_framework_public_post_type_archives',
 					array_values(
 						array_filter(
@@ -215,10 +217,12 @@ class Post_Type {
 	 * @return string[] All supported post types.
 	 */
 	public static function get_all_supported() {
-		return memo() ?? memo( array_values( array_filter(
-			static::get_all_public(),
-			[ static::class, 'is_supported' ],
-		) ) );
+		return memo() ?? memo( array_values(
+			array_filter(
+				static::get_all_public(),
+				[ static::class, 'is_supported' ],
+			)
+		) );
 	}
 
 	/**
@@ -243,7 +247,7 @@ class Post_Type {
 				 * @since 4.2.0
 				 * @param string[] $post_types The public post types.
 				 */
-				\apply_filters(
+				(array) \apply_filters(
 					'the_seo_framework_public_post_types',
 					array_values( array_filter(
 						array_unique( array_merge(
@@ -293,7 +297,7 @@ class Post_Type {
 	 * @return string[] All public hierarchical post types.
 	 */
 	public static function get_all_hierarchical() {
-		return memo() ?: memo(
+		return memo() ?? memo(
 			\get_post_types(
 				[
 					'hierarchical' => true,
@@ -315,7 +319,7 @@ class Post_Type {
 	 * @return array The public nonhierarchical post types.
 	 */
 	public static function get_all_nonhierarchical() {
-		return memo() ?: memo(
+		return memo() ?? memo(
 			\get_post_types(
 				[
 					'hierarchical' => false,

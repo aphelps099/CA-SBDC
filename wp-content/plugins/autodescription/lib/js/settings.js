@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -443,8 +443,8 @@ window.tsfSettings = function( $ ) {
 			el.addEventListener( 'click', addNoFocusClass );
 		} );
 
-		const homeTitleId        = _getSettingsId( 'homepage_title' ),
-			  siteTitleInput     = document.getElementById( _getSettingsId( 'site_title' ) );
+		const homeTitleId    = _getSettingsId( 'homepage_title' ),
+			  siteTitleInput = document.getElementById( _getSettingsId( 'site_title' ) );
 		/**
 		 * Adjusts homepage left/right title example part.
 		 *
@@ -982,7 +982,7 @@ window.tsfSettings = function( $ ) {
 	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	 const _initPtaTitleSettings = postType => {
+	const _initPtaTitleSettings = postType => {
 
 		const _titleId   = _getPtaInputId( postType, 'doctitle' ),
 			  titleInput = document.getElementById( _titleId );
@@ -1351,30 +1351,19 @@ window.tsfSettings = function( $ ) {
 		 * Changes the tabs visibility and selectability during option toggles.
 		 *
 		 * @function
-		 * @param {Event} event
+ 		 * @param {{id:string,tab:string}} toggleData
 		 */
 		const registerTagToggle = toggleData => {
 
 			if ( ! toggleData.id ) return;
 
-			const toggle   = document.getElementById( _getSettingsId( toggleData.id ) ),
-				  tabRadio = document.getElementById( `tsf-social-tab-${toggleData.tab}` );
-
-			const tabLabel = document.getElementById( 'social-tabs-wrapper' )
-				?.querySelector( `[for=tsf-social-tab-${toggleData.tab}]` );
-
+			const toggle = document.getElementById( _getSettingsId( toggleData.id ) );
 			/**
 			 * @function
 			 * @param {Event} event
 			 */
 			const hideDisableTab = event => {
-				tabLabel?.classList.toggle(
-					'hidden',
-					! event.target.checked
-				);
-				event.target.checked
-					? tabRadio?.removeAttribute( 'disabled' )
-					: tabRadio?.setAttribute( 'disabled', '' );
+				tsfTabs.toggleTab( 'tsfSettings', `tsf-social-tab-${toggleData.tab}`, event.target.checked );
 			}
 
 			if ( toggle ) {
@@ -1404,7 +1393,6 @@ window.tsfSettings = function( $ ) {
 		const toggleCheckRegistry = new Set();
 		/**
 		 * Changes the settings visibility and selectability during all option toggles.
-		 *
 		 * @function
 		 * @param {Event} event
 		 */
@@ -1428,6 +1416,7 @@ window.tsfSettings = function( $ ) {
 		/**
 		 * Emits hooks for when the Twitter Card is toggled.
 		 * @function
+		 * @param {Event} event
 		 */
 		const dispatchCardToggleEvent = event => {
 			document.body.dispatchEvent( new CustomEvent(
@@ -1948,6 +1937,65 @@ window.tsfSettings = function( $ ) {
 	}
 
 	/**
+	 * Initializes Sitemap input.
+	 *
+	 * @since 5.0.5
+	 * @access private
+	 *
+	 * @function
+	 */
+	const _initSitemapInputs = () => {
+
+		const optimizedSitemapsToggle = document.getElementById( _getSettingsId( 'sitemaps_output' ) ),
+			  cacheSitemapsToggle     = document.getElementById( _getSettingsId( 'cache_sitemap' ) );
+		/**
+		 * @function
+		 * @param {Event} event
+		 */
+		const updateSocialAdditions = event => {
+
+			const sitemapsEnabled = !! event.target.checked;
+
+			tsfTabs.toggleTab( 'tsfSettings', 'tsf-sitemaps-tab-style', sitemapsEnabled );
+
+			document.getElementById( 'tsf-sitemap-transient-cache-settings' )
+				?.classList.toggle( 'hidden', ! sitemapsEnabled );
+		}
+		if ( optimizedSitemapsToggle ) {
+			optimizedSitemapsToggle.addEventListener( 'change', updateSocialAdditions );
+			_dispatchAtInteractive( optimizedSitemapsToggle, 'change' );
+		}
+
+		const toggleCheckRegistry = new Map();
+		/**
+		 * Changes the settings visibility and selectability during all option toggles.
+		 * @function
+		 * @param {Event} event
+		 */
+		const checkAllEnabled = event => {
+			const prerenderingSettings = document.getElementById( 'tsf-sitemap-prerendering-settings' );
+
+			toggleCheckRegistry.set( event.target.name, !! event.target.checked );
+
+			for ( const val of toggleCheckRegistry.values() ) {
+				if ( ! val ) {
+					prerenderingSettings?.classList.add( 'hidden', ! toggleCheckRegistry.size );
+					return;
+				}
+			}
+
+			prerenderingSettings?.classList.remove( 'hidden' );
+		}
+		// optimizedSitemapsToggle is a master toggle here -- though, since there's only two... shrug.
+		[ optimizedSitemapsToggle, cacheSitemapsToggle ].forEach( toggle => {
+			if ( toggle ) {
+				toggle.addEventListener( 'change', checkAllEnabled );
+				_dispatchAtInteractive( toggle, 'change' );
+			}
+		} );
+	}
+
+	/**
 	 * Initializes settings scripts on TSF-load.
 	 *
 	 * @since 4.0.0
@@ -1974,6 +2022,8 @@ window.tsfSettings = function( $ ) {
 		_initRobotsSupport();
 
 		_initWebmastersInputs();
+
+		_initSitemapInputs();
 
 		_initColorPicker();
 	}

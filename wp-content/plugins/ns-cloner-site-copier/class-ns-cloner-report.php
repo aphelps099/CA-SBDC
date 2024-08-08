@@ -81,7 +81,8 @@ class NS_Cloner_Report {
 	 * @return array
 	 */
 	public function get_all_reports() {
-		return get_site_option( $this->report_key );
+		$all_reports = get_site_option( $this->report_key, array() );
+		return is_array( $all_reports ) ? $all_reports : array();
 	}
 
 	/**
@@ -156,6 +157,9 @@ class NS_Cloner_Report {
 	 * @return string
 	 */
 	public function prepare_time( $time ) {
+		if ( ! $time ) {
+			$time = microtime( true );
+		}
 		$date = DateTime::createFromFormat( 'U.u', $time );
 		return $date ? $date->format( 'Y-m-d H:i:s' ) : '';
 	}

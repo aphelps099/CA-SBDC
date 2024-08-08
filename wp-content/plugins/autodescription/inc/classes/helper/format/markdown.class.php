@@ -10,7 +10,7 @@ namespace The_SEO_Framework\Helper\Format;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -58,9 +58,7 @@ class Markdown {
 	public static function convert( $text, $convert = [], $args = [] ) {
 
 		// preprocess
-		$text = str_replace( [ "\r\n", "\r" ], "\n", $text );
-		$text = str_replace( "\t", ' ', $text );
-		$text = trim( $text );
+		$text = trim( str_replace( [ "\r\n", "\r", "\t" ], [ "\n", "\n", ' ' ], $text ) );
 
 		// You need at least 3 chars to make a markdown: *m*
 		if ( \strlen( $text ) < 3 )
@@ -270,7 +268,7 @@ class Markdown {
 		$count = preg_match_all( '/\[([^[\]]+)]\(([^\s]+)\s*\)/', $text, $matches, \PREG_PATTERN_ORDER );
 
 		// Keep this XHTML compatible!
-		$_string = $internal ? '<a href="%s">%s</a>' : '<a href="%s" target="_blank" rel="nofollow noreferrer noopener">%s</a>'; // Keep XHTML valid!
+		$_string = $internal ? '<a href="%s">%s</a>' : '<a href="%s" target="_blank" rel="nofollow noreferrer noopener">%s</a>';
 
 		for ( $i = 0; $i < $count; $i++ ) {
 			$text = str_replace(

@@ -12,6 +12,7 @@
 namespace ThemeisleSDK\Modules;
 
 use ThemeisleSDK\Common\Abstract_Module;
+use ThemeisleSDK\Loader;
 use ThemeisleSDK\Product;
 
 // Exit if accessed directly.
@@ -76,7 +77,7 @@ class Dashboard_Widget extends Abstract_Module {
 			return;
 		}
 		$this->product        = $product;
-		$this->dashboard_name = apply_filters( 'themeisle_sdk_dashboard_widget_name', 'WordPress Guides/Tutorials' );
+		$this->dashboard_name = apply_filters( 'themeisle_sdk_dashboard_widget_name', Loader::$labels['dashboard_widget']['title'] );
 		$this->feeds          = apply_filters(
 			'themeisle_sdk_dashboard_widget_feeds',
 			[
@@ -280,7 +281,7 @@ class Dashboard_Widget extends Abstract_Module {
 		?>
 		<div class="ti-dw-footer">
 					<span class="ti-dw-recommend-item ">
-							<span class="ti-dw-recommend"><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_popular_label', sprintf( 'Popular %s', ucwords( $type ) ) ) ); ?>
+							<span class="ti-dw-recommend"><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_popular_label', sprintf( Loader::$labels['dashboard_widget']['popular'], ucwords( $type ) ) ) ); ?>
 								: </span>
 						<?php
 						echo esc_attr(
@@ -299,9 +300,9 @@ class Dashboard_Widget extends Abstract_Module {
 						);
 						?>
 						(<a class="thickbox open-plugin-details-modal"
-							href="<?php echo esc_url( $url . '&TB_iframe=true&width=600&height=500' ); ?>"><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_install_label', 'Install' ) ); ?></a>)
+							href="<?php echo esc_url( $url . '&TB_iframe=true&width=600&height=500' ); ?>"><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_install_label', Loader::$labels['dashboard_widget']['install'] ) ); ?></a>)
 					</span>
-			<span class="ti-dw-powered-by"><span><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_widget_powered_by', sprintf( 'Powered by %s', $this->product->get_friendly_name() ) ) ); ?></span></span>
+			<span class="ti-dw-powered-by"><span><?php echo esc_attr( apply_filters( 'themeisle_sdk_dashboard_widget_powered_by', sprintf( Loader::$labels['dashboard_widget']['powered'], $this->product->get_friendly_name() ) ) ); ?></span></span>
 		</div>
 
 		<?php
@@ -313,8 +314,37 @@ class Dashboard_Widget extends Abstract_Module {
 	 */
 	private function setup_feeds() {
 		if ( false === ( $items_normalized = get_transient( 'themeisle_sdk_feed_items' ) ) ) { //phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure
+			// Do not force the feed for the items in the sdk feeds list.
+			// this prevents showing notices if another plugin will force all SimplePie feeds to load, instead it will
+			// use the regular SimplePie validation and abort early if the feed is not valid.
+			$sdk_feeds = $this->feeds;
+			add_action(
+				'wp_feed_options',
+				function ( $feed, $url ) use ( $sdk_feeds ) {
+					if ( defined( 'TI_SDK_PHPUNIT' ) && true === TI_SDK_PHPUNIT ) {
+						return;
+					}
+
+					if ( ! is_string( $url ) && in_array( $url, $sdk_feeds, true ) ) {
+						$feed->force_feed( false );
+
+						return;
+					}
+					if ( is_array( $url ) ) {
+						foreach ( $url as $feed_url ) {
+							if ( in_array( $feed_url, $sdk_feeds, true ) ) {
+								$feed->force_feed( false );
+
+								return;
+							}
+						}
+					}
+				},
+				PHP_INT_MAX,
+				2
+			);
 			// Load SimplePie Instance.
-			$feed = fetch_feed( $this->feeds );
+			$feed = fetch_feed( $sdk_feeds );
 			// TODO report error when is an error loading the feed.
 			if ( is_wp_error( $feed ) ) {
 				return;
@@ -322,6 +352,9 @@ class Dashboard_Widget extends Abstract_Module {
 
 			$items = $feed->get_items( 0, 5 );
 			$items = is_array( $items ) ? $items : [];
+
+			$items_normalized = [];
+
 			foreach ( $items as $item ) {
 				$items_normalized[] = array(
 					'title' => $item->get_title(),

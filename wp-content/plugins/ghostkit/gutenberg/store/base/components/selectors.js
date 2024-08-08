@@ -1,6 +1,3 @@
-/**
- * Internal dependencies
- */
 import ActiveIndicator from '../../../components/active-indicator';
 import ApplyFilters from '../../../components/apply-filters';
 import CodeEditor from '../../../components/code-editor';
@@ -36,39 +33,39 @@ import Typography from '../../../components/typography';
 import URLPicker from '../../../components/url-picker';
 
 export function get() {
-  return {
-    ActiveIndicator,
-    ApplyFilters,
-    CodeEditor,
-    ColorIndicator,
-    ColorPalette,
-    ColorPicker,
-    DateTimePicker,
-    DropdownPicker,
-    EditorStyles,
-    ElementStateToggle,
-    FocalPointPicker,
-    GoogleFonts,
-    IconPicker,
-    ImagePicker,
-    ImportantToggle,
-    InputDrag,
-    InputGroup,
-    MediaSizeSelector,
-    Modal,
-    Notice,
-    RangeControl,
-    RemoveButton,
-    ResponsiveTabPanel,
-    ResponsiveToggle,
-    Select,
-    ToggleGroup,
-    transitionEasingControls,
-    TransitionPresetsControl,
-    TransitionPreview,
-    TransitionSelector,
-    transitionSpringControls,
-    Typography,
-    URLPicker,
-  };
+	return {
+		ActiveIndicator,
+		ApplyFilters,
+		CodeEditor,
+		ColorIndicator,
+		ColorPalette,
+		ColorPicker,
+		DateTimePicker,
+		DropdownPicker,
+		EditorStyles,
+		ElementStateToggle,
+		FocalPointPicker,
+		GoogleFonts,
+		IconPicker,
+		ImagePicker,
+		ImportantToggle,
+		InputDrag,
+		InputGroup,
+		MediaSizeSelector,
+		Modal,
+		Notice,
+		RangeControl,
+		RemoveButton,
+		ResponsiveTabPanel,
+		ResponsiveToggle,
+		Select,
+		ToggleGroup,
+		transitionEasingControls,
+		TransitionPresetsControl,
+		TransitionPreview,
+		TransitionSelector,
+		transitionSpringControls,
+		Typography,
+		URLPicker,
+	};
 }

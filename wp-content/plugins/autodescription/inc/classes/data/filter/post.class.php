@@ -8,11 +8,11 @@ namespace The_SEO_Framework\Data\Filter;
 
 \defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
-use The_SEO_Framework\Meta;
+use \The_SEO_Framework\Meta;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -74,8 +74,7 @@ class Post {
 					break;
 
 				case 'redirect':
-					// Allow all protocols also allowed by WP.
-					$value = \sanitize_url( $value );
+					$value = Sanitize::redirect_url( $value );
 					break;
 
 				case '_tsf_title_no_blogname':

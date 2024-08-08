@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -179,9 +179,9 @@ window.tsfDescription = function() {
 		const allowReferenceChange  = getStateOf( event.target.id, 'allowReferenceChange' ),
 			  useDefaultDescription = allowReferenceChange ? getStateOf( event.target.id, 'useDefaultDescription' ) : true;
 
-		let text = ( allowReferenceChange && event.target.value.trim() )
-			|| ( useDefaultDescription && getStateOf( event.target.id, 'defaultDescription' ) )
-			|| '';
+		let text = tsf.coalesceStrlen( allowReferenceChange && event.target.value.trim() )
+			?? tsf.coalesceStrlen( useDefaultDescription && getStateOf( event.target.id, 'defaultDescription' ) )
+			?? '';
 
 		const referenceValue = tsf.escapeString(
 			tsf.decodeEntities(
@@ -454,7 +454,7 @@ window.tsfDescription = function() {
 	 *
 	 * @function
 	 */
-	 const _initAllDescriptionActions = () => {
+	const _initAllDescriptionActions = () => {
 
 		// Triggers input changes on resize after hitting thresholds.
 		window.addEventListener( 'tsf-resize', _doResize );

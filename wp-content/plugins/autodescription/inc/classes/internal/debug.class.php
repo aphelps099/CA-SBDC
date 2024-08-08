@@ -25,7 +25,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2015 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2015 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -97,8 +97,8 @@ final class Debug {
 					\esc_html__( '%1$s is %2$s since version %3$s of The SEO Framework! Use %4$s instead.', 'autodescription' ),
 					\esc_html( $function ),
 					'<strong>' . \esc_html__( 'deprecated', 'autodescription' ) . '</strong>',
-					\esc_html( $version ),
-					$replacement // phpcs:ignore, WordPress.Security.EscapeOutput -- See doc comment.
+					\esc_html( $version ) ?: 'unknown',
+					$replacement, // phpcs:ignore, WordPress.Security.EscapeOutput -- See doc comment.
 				);
 			} else {
 				$message = sprintf(
@@ -106,7 +106,7 @@ final class Debug {
 					\esc_html__( '%1$s is %2$s since version %3$s of The SEO Framework with no alternative available.', 'autodescription' ),
 					\esc_html( $function ),
 					'<strong>' . \esc_html__( 'deprecated', 'autodescription' ) . '</strong>',
-					\esc_html( $version )
+					\esc_html( $version ) ?: 'unknown',
 				);
 			}
 
@@ -152,8 +152,10 @@ final class Debug {
 		 */
 		if ( \WP_DEBUG && \apply_filters( 'doing_it_wrong_trigger_error', true ) ) {
 
-			/* translators: 1: plugin version */
-			$version = $version ? sprintf( \__( '(This message was added in version %s of The SEO Framework.)', 'autodescription' ), $version ) : '';
+			$ver_message = $version
+				/* translators: 1: plugin version */
+				? sprintf( \__( '(This message was added in version %s of The SEO Framework.)', 'autodescription' ), $version )
+				: '';
 
 			$message = sprintf(
 				/* translators: 1: Function name, 2: 'Incorrectly', 3: Error message 4: Plugin Version notification */
@@ -161,7 +163,7 @@ final class Debug {
 				\esc_html( $function ),
 				'<strong>' . \esc_html__( 'incorrectly', 'autodescription' ) . '</strong>',
 				$message, // phpcs:ignore, WordPress.Security.EscapeOutput -- See doc comment.
-				\esc_html( $version )
+				\esc_html( $ver_message ),
 			);
 
 			trigger_error(
@@ -212,7 +214,7 @@ final class Debug {
 				\esc_html__( '%1$s is %2$s in %3$s. %4$s', 'autodescription' ),
 				'<code>' . \esc_html( $p_or_m ) . '</code>',
 				'<strong>' . \esc_html__( 'inaccessible', 'autodescription' ) . '</strong>',
-				sprintf( '<code>%s</code>', \esc_html( $handle ) ),
+				sprintf( '<b>%s</b>', \esc_html( $handle ) ),
 				\esc_html( $message ),
 			);
 
@@ -325,20 +327,6 @@ final class Debug {
 	 * @access private
 	 */
 	public static function _output_debug_header() {
-		// phpcs:ignore, WordPress.Security.EscapeOutput -- callee escapes.
-		echo static::get_debug_header_output();
-	}
-
-	/**
-	 * Wraps header output in front-end code.
-	 * This won't consider hiding the output.
-	 *
-	 * @since 2.6.5
-	 * @since 4.0.5 Now obtains the real rendered HTML output, instead of estimated.
-	 *
-	 * @return string Wrapped SEO meta tags output.
-	 */
-	protected static function get_debug_header_output() {
 
 		if ( \is_admin() && ! Query::is_term_edit() && ! Query::is_post_edit() && ! Query::is_seo_settings_page( true ) )
 			return;
@@ -346,27 +334,8 @@ final class Debug {
 		if ( Query::is_seo_settings_page( true ) )
 			\add_filter( 'the_seo_framework_current_object_id', static fn() => Query::get_the_front_page_id() );
 
-		// Start timer.
-		$t = hrtime( true );
-
-		// I hate ob_* for this stuff.
-		ob_start();
-		Front\Meta\Head::print_wrap_and_tags();
-		$output = ob_get_clean();
-
-		$timer = '<div style="font-family:unset;display:inline-block;width:100%;padding:20px;border-bottom:1px solid #ccc;">Generated in: ' . number_format( ( hrtime( true ) - $t ) / 1e9, 5 ) . ' seconds</div>';
-
-		$title = \is_admin() ? 'Expected SEO Output' : 'Determined SEO Output';
-		$title = '<div style="display:inline-block;width:100%;padding:20px;margin:0 auto;border-bottom:1px solid #ccc;"><h2 style="font-family:unset;color:#ddd;font-size:22px;padding:0;margin:0">' . $title . '</h2></div>';
-
-		// Escape it, replace EOL with breaks, and style everything between quotes (which are ending with space).
-		$output = str_replace( [ "\r\n", "\r", "\n" ], "<br>\n", \esc_html( str_replace( str_repeat( ' ', 4 ), str_repeat( '&nbsp;', 4 ), $output ) ) );
-		$output = preg_replace( '/(&quot;.*?&quot;)(\s|&nbps;)/', '<span style=color:#8bc34a>$1</span> ', $output );
-
-		$output = '<div style="display:inline-block;width:100%;padding:20px;font-family:Consolas,Monaco,monospace;font-size:14px;">' . $output . '</div>';
-		$output = '<div style="font-family:unset;display:block;width:100%;background:#23282D;color:#ddd;border-bottom:1px solid #ccc">' . $title . $timer . $output . '</div>';
-
-		return $output;
+		// phpcs:ignore, WordPress.Security.EscapeOutput -- callee escapes.
+		Template::output_view( 'debug/header' );
 	}
 
 	/**
@@ -473,6 +442,8 @@ final class Debug {
 		$is_post_type_supported         = Post_Type::is_supported();
 		$is_post_type_archive_supported = Post_Type::is_pta_supported();
 		$has_page_on_front              = Query\Utils::has_page_on_front();
+		$has_assigned_page_on_front     = Query\Utils::has_assigned_page_on_front();
+		$has_blog_page                  = Query\Utils::has_blog_page();
 		$is_taxonomy_supported          = Taxonomy::is_supported();
 		$get_post_type                  = \get_post_type();
 		$get_post_type_real_id          = Query::get_post_type_real_id();
@@ -504,7 +475,8 @@ final class Debug {
 
 		$output = '';
 		foreach ( $current as $name => $value ) {
-			$type = '(' . \gettype( $value ) . ')';
+			$type = \esc_html( '(' . \gettype( $value ) . ')' );
+			$name = \esc_html( $name );
 
 			if ( \is_bool( $value ) ) {
 				$value = $value ? 'true' : 'false';
@@ -512,13 +484,12 @@ final class Debug {
 				$value = \esc_html( var_export( $value, true ) );
 			}
 
-			$value   = "<span style=color:#0a00f0>$type $value</span>";
-			$out     = \esc_html( $name ) . ' => ' . $value;
-			$output .= "<span style=background:#dadada>$out</span>\n";
+			$output .= "<span style=background:#dadada>$name => <span style=color:#0a00f0>$type $value</span></span>\n";
 		}
 
 		foreach ( $not_current as $name => $value ) {
-			$type = '(' . \gettype( $value ) . ')';
+			$type = \esc_html( '(' . \gettype( $value ) . ')' );
+			$name = \esc_html( $name );
 
 			if ( \is_bool( $value ) ) {
 				$value = $value ? 'true' : 'false';
@@ -526,35 +497,30 @@ final class Debug {
 				$value = \esc_html( var_export( $value, true ) );
 			}
 
-			$value = "<span style=color:#0a00f0>$type $value</span>";
-			$out   = \esc_html( $name ) . ' => ' . $value;
-
-			$output .= "$out\n";
+			$output .= "$name => <span style=color:#0a00f0>$type $value</span>\n";
 		}
 
 		if ( 'yup' === $cache_version ) {
 			$title = 'WordPress Query at Meta Generation';
 		} else {
-			$title = \is_admin() ? 'Expected Front-end WordPress Query' : 'Current WordPress Query';
+			$title = \is_admin() ? 'Current WordPress Admin Query' : 'Current WordPress Query';
 		}
 
 		$output = str_replace( [ "\r\n", "\r", "\n" ], "<br>\n", $output );
-		$output = sprintf(
-			'<div style="display:block;width:100%%;background:#fafafa;color:#333;border-bottom:1px solid #666">%s%s%s</div>',
-			sprintf(
-				'<div style="display:inline-block;width:100%%;padding:20px;margin:0 auto;border-bottom:1px solid #666;"><h2 style="color:#222;font-size:22px;padding:0;margin:0">%s</h2></div>',
-				$title,
-			),
-			sprintf(
-				'<div style="display:inline-block;width:100%%;padding:20px;border-bottom:1px solid #666;">Generated in: %s seconds</div>',
-				number_format( number_format( $timer, 5 ), 5 )
-			),
-			sprintf(
-				'<div style="display:inline-block;width:100%%;padding:20px;font-family:Consolas,Monaco,monospace;font-size:14px;">%s</div>',
-				$output,
-			),
-		);
+		$timer  = number_format( number_format( $timer, 5 ), 5 );
 
-		return $output;
+		return <<<HTML
+			<div style="display:block;width:100%;background:#fafafa;color:#333;border-bottom:1px solid #666">
+				<div style="display:inline-block;width:100%;padding:20px;margin:0 auto;border-bottom:1px solid #666">
+					<h2 style="color:#222;font-size:22px;padding:0;margin:0">$title</h2>
+				</div>
+				<div style="display:inline-block;width:100%;padding:20px;border-bottom:1px solid #666">
+					Generated in: $timer seconds
+				</div>
+				<div style="display:inline-block;width:100%;padding:20px;font-family:Consolas,Monaco,monospace;font-size:14px">
+					$output
+				</div>
+			</div>
+		HTML;
 	}
 }

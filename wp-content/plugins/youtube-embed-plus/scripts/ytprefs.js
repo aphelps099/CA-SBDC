@@ -179,7 +179,7 @@
                             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
                         }).join(''))
                     },
-                    doLiveFallback: function (playerIframe)
+                    findSwapBlock: function (playerIframe)
                     {
                         var $swapBlock = $(playerIframe).closest('.wp-block-embed');
                         if (!$swapBlock.length)
@@ -194,6 +194,12 @@
                         {
                             $swapBlock = $(playerIframe);
                         }
+                        return $swapBlock;
+                    },
+                    doLiveFallback: function (playerIframe)
+                    {
+                        var $swapBlock = _EPADashboard_.findSwapBlock(playerIframe);
+
                         if ($swapBlock.length)
                         {
                             var $liveFallbackBlock = $('#epyt-live-fallback');
@@ -368,6 +374,7 @@
                             $iframe.get(0).epytsetupdone = false;
                             window._EPADashboard_.setupevents($iframe.attr('id'));
                         }
+                        $iframe.css('opacity', '1');
                     },
                     cleanSrc: function (srcInput)
                     {

@@ -17,7 +17,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -131,7 +131,7 @@ class Plugin {
 		Query\Exclusion::clear_excluded_post_ids_cache();
 
 		// Set backward compatibility. This runs after the sanitization.
-		/* // phpcs:ignore -- Nothing to set backward compat for, still in place since API exists.
+		/* // phpcs:ignore -- Nothing to set backward compat for, still in place because API is enforced.
 		\add_filter(
 			'pre_update_option_' . \THE_SEO_FRAMEWORK_SITE_OPTIONS,
 			[ static::class, 'set_backward_compatibility' ],

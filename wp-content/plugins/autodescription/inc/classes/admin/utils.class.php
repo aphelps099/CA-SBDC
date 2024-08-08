@@ -11,7 +11,7 @@ use \The_SEO_Framework\Helper\Format\Markdown;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -50,9 +50,9 @@ class Utils {
 	 * @TODO WP 5.2/5.4+ will cause this method to never run on wp_die().
 	 *       We should further investigate the cause and remove WP's blockade. This is a corner-case, however.
 	 *
-	 * @param string $page_hook Menu slug. This slug must exist, or the redirect will loop back to the current page.
-	 * @param array  $query_args Optional. Associative array of query string arguments
-	 *               (key => value). Default is an empty array.
+	 * @param string $page_hook  Menu slug. This slug must exist, or the redirect will loop back to the current page.
+	 * @param array  $query_args Optional. Associative array of query string arguments (key => value).
+	 *                           Default is an empty array.
 	 * @return null Return early if first argument is false.
 	 */
 	public static function redirect( $page_hook, $query_args = [] ) {

@@ -12,7 +12,7 @@ namespace The_SEO_Framework;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -29,7 +29,7 @@ namespace The_SEO_Framework;
 
 $vars  = [
 	'itemURL' => '<xsl:variable name="itemURL" select="sitemap:loc"/>',
-	'lastmod' => '<xsl:variable name="lastmod" select="concat(substring(sitemap:lastmod,0,11),concat(\' \',substring(sitemap:lastmod,12,5)))"/>',
+	'lastmod' => '<xsl:variable name="lastmod" select="concat(substring(sitemap:lastmod,0,11),concat(\' \',substring(sitemap:lastmod,12,8)))"/>',
 ];
 $empty = array_fill_keys( [ 'th', 'td' ], '' );
 

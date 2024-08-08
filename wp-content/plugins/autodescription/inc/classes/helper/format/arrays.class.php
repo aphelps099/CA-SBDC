@@ -12,7 +12,7 @@ use function \The_SEO_Framework\memo;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -92,7 +92,7 @@ class Arrays {
 	public static function scrub( $array ) {
 
 		foreach ( $array as $key => &$item ) {
-			// Catch null and false, but keep 0 and '0'.
+			// Keep 0 and '0', but grab empty string, null, false, and [].
 			if ( empty( $item ) && 0 !== $item && '0' !== $item ) {
 				unset( $array[ $key ] );
 			} elseif ( \is_array( $item ) ) {

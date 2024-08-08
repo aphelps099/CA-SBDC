@@ -1,31 +1,29 @@
-/**
- * External dependencies
- */
 import classnames from 'classnames/dedupe';
 
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
-
-const { Tooltip, Button } = wp.components;
+import { Button, Tooltip } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Component Class
+ *
+ * @param props
  */
 export default function ImportantToggle(props) {
-  const { onClick, isActive } = props;
+	const { onClick, isActive } = props;
 
-  return (
-    <Tooltip text={__('!important', 'ghostkit')}>
-      <Button
-        className={classnames('ghostkit-control-important-toggle', isActive && 'is-active')}
-        onClick={() => {
-          onClick(!isActive);
-        }}
-      >
-        !
-      </Button>
-    </Tooltip>
-  );
+	return (
+		<Tooltip text={__('!important', 'ghostkit')}>
+			<Button
+				className={classnames(
+					'ghostkit-control-important-toggle',
+					isActive && 'is-active'
+				)}
+				onClick={() => {
+					onClick(!isActive);
+				}}
+			>
+				!
+			</Button>
+		</Tooltip>
+	);
 }

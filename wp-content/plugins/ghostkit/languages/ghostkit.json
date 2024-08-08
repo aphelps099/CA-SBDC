@@ -14,10 +14,34 @@
          "Ghost Kit Team": [
             ""
          ],
-         "https://ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline": [
+         "https://www.ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline": [
             ""
          ],
          "Go Pro": [
+            ""
+         ],
+         "Satisfied using Ghost Kit?": [
+            ""
+         ],
+         "Hey, we noticed you've been using %s for more than two weeks now - that's awesome!": [
+            ""
+         ],
+         "Could you please do us a BIG favor and give it a rating on WordPress.org to help us spread the word and boost our motivation?": [
+            ""
+         ],
+         "Yes, you deserve it": [
+            ""
+         ],
+         "No, maybe later": [
+            ""
+         ],
+         "I already did": [
+            ""
+         ],
+         "Ghost Kit and Ghost Kit Pro should not be active at the same time. We've automatically deactivated Ghost Kit.": [
+            ""
+         ],
+         "Ghost Kit and Ghost Kit Pro should not be active at the same time. We've automatically deactivated Ghost Kit Pro.": [
             ""
          ],
          "Default Fonts Site": [
@@ -347,6 +371,9 @@
          "Default (<div>)": [
             ""
          ],
+         "<h1>": [
+            ""
+         ],
          "<h2>": [
             ""
          ],
@@ -527,12 +554,6 @@
          "1.0.0": [
             ""
          ],
-         "18 September 2019": [
-            ""
-         ],
-         "Changed": [
-            ""
-         ],
          "Year": [
             "",
             "Years"
@@ -615,10 +636,10 @@
          "Display content after expiration:": [
             ""
          ],
-         "Number Size": [
+         "Number Position": [
             ""
          ],
-         "Number Position": [
+         "Number Size": [
             ""
          ],
          "Top": [
@@ -780,7 +801,10 @@
          "Submit": [
             ""
          ],
-         "Write your message here...": [
+         "These emails should match.": [
+            ""
+         ],
+         "Write your message here…": [
             ""
          ],
          "Google reCAPTCHA": [
@@ -798,7 +822,7 @@
          "Generate Keys": [
             ""
          ],
-         "Enter search terms, e.g. cat...": [
+         "Enter search terms, e.g. cat…": [
             ""
          ],
          "Search": [
@@ -843,6 +867,24 @@
          "Show all files": [
             ""
          ],
+         "Title": [
+            ""
+         ],
+         "Address": [
+            ""
+         ],
+         "Change Icon": [
+            ""
+         ],
+         "Reset Icon to Default": [
+            ""
+         ],
+         "Marker Width": [
+            ""
+         ],
+         "Info Window Text": [
+            ""
+         ],
          "Enter Style JSON": [
             ""
          ],
@@ -861,6 +903,9 @@
          "Style": [
             ""
          ],
+         "Styles": [
+            ""
+         ],
          "Minimal Height": [
             ""
          ],
@@ -873,7 +918,7 @@
          "Markers": [
             ""
          ],
-         "Enter address": [
+         "Marker": [
             ""
          ],
          "Remove Marker": [
@@ -1038,9 +1083,6 @@
          "Select one layout to get started.": [
             ""
          ],
-         "Select Template": [
-            ""
-         ],
          "Content Vertical Start": [
             ""
          ],
@@ -1089,6 +1131,12 @@
          "Width": [
             ""
          ],
+         "Horizontal Align": [
+            ""
+         ],
+         "Vertical Align": [
+            ""
+         ],
          "Vertical": [
             ""
          ],
@@ -1114,12 +1162,6 @@
             ""
          ],
          "Show Labels": [
-            ""
-         ],
-         "Horizontal Align": [
-            ""
-         ],
-         "Vertical Align": [
             ""
          ],
          "Before Image Settings": [
@@ -1236,7 +1278,7 @@
          "lottie": [
             ""
          ],
-         "Write your _Markdown_ **here**...": [
+         "Write your _Markdown_ **here**…": [
             ""
          ],
          "Markdown": [
@@ -1662,7 +1704,7 @@
          "Search Icon": [
             ""
          ],
-         "Type to Search...": [
+         "Type to Search…": [
             ""
          ],
          "Icon Output": [
@@ -1749,7 +1791,7 @@
          "Spring": [
             ""
          ],
-         "Add...": [
+         "Add…": [
             ""
          ],
          "Stiffness": [
@@ -2127,9 +2169,6 @@
          "Replay Animation": [
             ""
          ],
-         "Border Radius": [
-            ""
-         ],
          "TL": [
             ""
          ],
@@ -2142,6 +2181,9 @@
          "BL": [
             ""
          ],
+         "Border Radius": [
+            ""
+         ],
          "Shadow": [
             ""
          ],
@@ -2149,6 +2191,9 @@
             ""
          ],
          "Spread": [
+            ""
+         ],
+         "left": [
             ""
          ],
          "Distance": [
@@ -2224,6 +2269,9 @@
             ""
          ],
          "Custom Colors": [
+            ""
+         ],
+         "Remove color \"%1$s\" with name \"%2$s\"?": [
             ""
          ],
          "Add Custom Color": [
@@ -2322,7 +2370,7 @@
          "My Templates": [
             ""
          ],
-         "Coming Soon...": [
+         "Coming Soon…": [
             ""
          ],
          "No templates found.": [
@@ -2343,7 +2391,7 @@
          "Install Plugin": [
             ""
          ],
-         "You are using FSE theme. Typography settings have been moved to block settings": [
+         "Select Template": [
             ""
          ],
          "Hide Advanced": [
@@ -2389,6 +2437,9 @@
             ""
          ],
          "Adobe and Custom Fonts available for Pro users only. Read more about Ghost Kit Pro plugin here - ": [
+            ""
+         ],
+         "plugin name inside the review notice\u0004Ghost Kit": [
             ""
          ],
          "Post Type General Name\u0004Templates": [

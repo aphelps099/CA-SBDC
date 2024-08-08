@@ -8,7 +8,10 @@ namespace The_SEO_Framework\Meta;
 
 \defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
-use function \The_SEO_Framework\normalize_generation_args;
+use function \The_SEO_Framework\{
+	get_query_type_from_args,
+	normalize_generation_args,
+};
 
 use \The_SEO_Framework\{
 	Data,
@@ -18,7 +21,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -66,12 +69,7 @@ class Schema {
 			normalize_generation_args( $args );
 
 			// If is protected post, then only set WebSite to prevent spilling data.
-			if (
-				   empty( $args['tax'] )
-				&& empty( $args['pta'] )
-				&& empty( $args['uid'] )
-				&& Data\Post::is_protected( $args['id'] )
-			) {
+			if ( 'single' === get_query_type_from_args( $args ) && Data\Post::is_protected( $args['id'] ) ) {
 				// Don't spill WebPage data if protected.
 				$primaries = [ 'WebSite' ];
 			}

@@ -15,7 +15,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -48,11 +48,11 @@ abstract class Main {
 	public $url_count = 0;
 
 	/**
-	 * Prepares sitemap generation by raising the memory limit and fixing the timezone.
+	 * Prepares sitemap generation by raising the memory limit and fixing the time zone.
 	 *
 	 * @since 4.0.0
-	 * @since 4.0.4 Now sets timezone to UTC to fix WP 5.3 bug <https://core.trac.wordpress.org/ticket/48623>
-	 * @since 4.2.0 No longer sets timezone.
+	 * @since 4.0.4 Now sets time zone to UTC to fix WP 5.3 bug <https://core.trac.wordpress.org/ticket/48623>
+	 * @since 4.2.0 No longer sets time zone.
 	 */
 	final public function prepare_generation() {
 		\wp_raise_memory_limit( 'sitemap' );
@@ -62,7 +62,7 @@ abstract class Main {
 	 * Shuts down the sitemap generator.
 	 *
 	 * @since 4.0.0
-	 * @since 4.2.0 No longer resets timezone.
+	 * @since 4.2.0 No longer resets time zone.
 	 * @ignore
 	 */
 	final public function shutdown_generation() { }

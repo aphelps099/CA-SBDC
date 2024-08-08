@@ -27,7 +27,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2015 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2015 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -687,7 +687,7 @@ final class Deprecated {
 	 * @since 2.6.0
 	 * @since 4.0.0 This is now deemed a secure method.
 	 *              1. Added is_user_logged_in() check.
-	 *              2. Added is_singular() check, so get_the_ID() won't cross with blog pages.
+	 *              2. Added is_singular() check, so get_the_id() won't cross with blog pages.
 	 *              3. Added current_user_can() check.
 	 *              4. Added wp_verify_nonce() check.
 	 * @since 5.0.0 Deprecated.
@@ -4855,7 +4855,7 @@ final class Deprecated {
 	 *
 	 * @since 4.1.4
 	 * @since 4.2.0 1. Now invokes two actions before and after output.
-	 *              2. No longer rectifies timezones.
+	 *              2. No longer rectifies time zones.
 	 * @since 5.0.0 Deprecated.
 	 * @deprecated
 	 */
@@ -6165,7 +6165,7 @@ final class Deprecated {
 	 * @deprecated
 	 *
 	 * @param string $format The datetime format.
-	 * @param string $time The GMT time. Expects timezone to be omitted.
+	 * @param string $time The GMT time. Expects the time zone to be omitted.
 	 * @return string The converted time. Empty string if no $time is given.
 	 */
 	public function gmt2date( $format = 'Y-m-d', $time = '' ) {

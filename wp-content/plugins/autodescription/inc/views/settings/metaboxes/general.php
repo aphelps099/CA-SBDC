@@ -23,7 +23,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2016 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2016 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -296,15 +296,15 @@ switch ( $instance ) :
 
 		<hr>
 		<?php
-		HTML::header_title( \__( 'Link Relationship Settings', 'autodescription' ) );
+		HTML::header_title( \__( 'Paginated Link Relationship Settings', 'autodescription' ) );
 		HTML::description( \__( 'Some search engines look for relations between the content of your pages. If you have pagination on a post or page, or have archives indexed, these options will help search engines look for the right page to display in the search results.', 'autodescription' ) );
-		HTML::description( \__( "It's recommended to turn these options on for better SEO consistency and to prevent duplicated content issues.", 'autodescription' ) );
+		HTML::description( \__( 'Enable these options to mitigate duplicated content issues.', 'autodescription' ) );
 
 		$prev_next_posts_checkbox = Input::make_checkbox( [
 			'id'     => 'prev_next_posts',
 			'label'  => Markdown::convert(
 				/* translators: the backticks are Markdown! Preserve them as-is! */
-				\esc_html__( 'Add `rel` link tags to posts and pages?', 'autodescription' ),
+				\esc_html__( 'Add `rel` link tags to pages?', 'autodescription' ),
 				[ 'code' ],
 			),
 			'escape' => false,
@@ -338,7 +338,7 @@ switch ( $instance ) :
 		 * @see The_SEO_Framework\Helper\Format\Time::get_preferred_format()
 		 */
 		$timestamp_date     = gmdate( 'Y-m-d' );
-		$timestamp_datetime = gmdate( 'Y-m-d\TH:iP' );
+		$timestamp_datetime = gmdate( 'Y-m-d\TH:i:sP' ); // Could use 'c', but that specification is ambiguous
 
 		HTML::header_title( \__( 'Timestamp Settings', 'autodescription' ) );
 		HTML::description( \__( 'Timestamps help indicate when a page has been published and modified.', 'autodescription' ) );
@@ -367,7 +367,7 @@ switch ( $instance ) :
 						<?php
 						// phpcs:ignore, WordPress.Security.EscapeOutput -- code_wrap escapes.
 						echo HTML::code_wrap( $timestamp_datetime ), ' ', HTML::make_info(
-							\__( 'This outputs the complete date including hours, minutes, and timezone.', 'autodescription' )
+							\__( 'This outputs the complete date including hours, minutes, seconds, and time zone.', 'autodescription' )
 						);
 						?>
 					</label>
@@ -379,10 +379,13 @@ switch ( $instance ) :
 
 	case 'exclusions':
 		HTML::header_title( \__( 'Exclusion Settings', 'autodescription' ) );
-		HTML::description( \__( 'When checked, these options will remove meta optimizations, SEO suggestions, and sitemap inclusions for the selected post types and taxonomies. This will allow search engines to crawl the post type and taxonomies without advanced restrictions or directions.', 'autodescription' ) );
+		HTML::description( \__( 'Check these options to remove meta optimizations, SEO suggestions, and sitemap inclusions for selected post types and taxonomies.', 'autodescription' ) );
 		HTML::attention_description_noesc( Markdown::convert(
-			/* translators: backticks are code wraps. Markdown! */
-			\esc_html__( "These options should not need changing when post types and taxonomies are registered correctly. When they aren't, consider applying `noindex` to purge them from search engines, instead.", 'autodescription' ),
+			sprintf(
+				/* translators: backticks are code wraps. Markdown! */
+				\esc_html__( "Exclusions don't block search engines. When a post type is publicly queryable and shouldn't be indexed, consider applying `noindex` via Robots Meta Settings to purge it from search engines.", 'autodescription' ),
+				'#autodescription-robots-settings',
+			),
 			[ 'code' ],
 		) );
 		HTML::description( \__( 'Default post types and taxonomies can not be excluded.', 'autodescription' ) );

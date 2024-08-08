@@ -14,7 +14,7 @@ if ( ns_cloner_request()->get( 'delete_logs' ) && ns_cloner()->check_permissions
 	ns_cloner()->log->delete_logs();
 }
 
-ns_cloner()->render( 'mcf-header' ); ?>
+?>
 
 <div class="ns-cloner-wrapper">
 	<div class="ns-cloner-wrapper-content">
@@ -32,6 +32,7 @@ ns_cloner()->render( 'mcf-header' ); ?>
 		<form class="ns-cloner-form ns-cloner-logs-form" method="post">
 
 			<div class="ns-cloner-section">
+				<?php do_action( 'ns_cloner_template_logs_before_schedule' ); ?>
 				<div class="ns-cloner-section-header">
 					<h4><?php esc_html_e( 'Scheduled Operations', 'ns-cloner-site-copier' ); ?></h4>
 				</div>
@@ -87,6 +88,7 @@ ns_cloner()->render( 'mcf-header' ); ?>
 						<?php esc_html_e( 'They may also be created via the command line or by frontend cloning (from member registrations) with Cloner Pro.', 'ns-cloner-site-copier' ); ?>
 					</p>
 				</div>
+				<?php do_action( 'ns_cloner_template_logs_after_schedule' ); ?>
 			</div>
 
 			<div class="ns-cloner-section">

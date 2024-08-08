@@ -1,21 +1,17 @@
-/**
- * Internal dependencies
- */
-import reducer from './reducer';
-import * as selectors from './selectors';
+import { createReduxStore, register } from '@wordpress/data';
+
 import * as actions from './actions';
 import * as controls from './controls';
+import reducer from './reducer';
 import * as resolvers from './resolvers';
+import * as selectors from './selectors';
 
-/**
- * WordPress dependencies
- */
-const { registerStore } = wp.data;
-
-registerStore('ghostkit/blocks/twitter', {
-  reducer,
-  selectors,
-  actions,
-  controls,
-  resolvers,
+const store = createReduxStore('ghostkit/blocks/twitter', {
+	reducer,
+	selectors,
+	actions,
+	controls,
+	resolvers,
 });
+
+register(store);

@@ -17,7 +17,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -127,7 +127,7 @@ if ( ! $headless['user'] ) {
 	\add_action( 'edit_user_profile_update', [ Data\Admin\User::class, 'update_meta' ], 10, 1 );
 }
 
-if ( \in_array( false, $headless, true ) ) {
+if ( \in_array( false, $headless, true ) ) { // Still got head...
 	// Set up notices.
 	\add_action( 'admin_notices', [ Admin\Notice\Persistent::class, '_output_notices' ] );
 

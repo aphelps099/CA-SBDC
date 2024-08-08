@@ -46,7 +46,7 @@ class NS_Cloner_Process_Manager {
 	 * @return array
 	 */
 	public function get_errors() {
-		return $this->errors;
+		return is_array( $this->errors ) ? $this->errors : array();
 	}
 
 	/**
@@ -145,15 +145,17 @@ class NS_Cloner_Process_Manager {
 		if ( ! empty( $this->errors ) ) {
 			$this->add_error( __( 'Validation errors found.', 'ns-cloner-site-copier' ) );
 			return;
-		} else {
-			do_action( 'ns_cloner_validated' );
 		}
+
+		do_action( 'ns_cloner_validated' );
 
 		// Delete the exit flag from the last time.
 		delete_site_option( 'ns_cloner_exited' );
 
 		// Set the current user id, so that the original user id can always be accessed by background processes.
-		ns_cloner_request()->set( 'user_id', get_current_user_id() );
+		if ( ! ns_cloner_request()->get( 'user_id' ) ) {
+			ns_cloner_request()->set( 'user_id', get_current_user_id() );
+		}
 
 		// Save request so it will be available to background processes.
 		// Most modes will update and save it again later, but this makes sure the base request is always saved.
@@ -306,7 +308,7 @@ class NS_Cloner_Process_Manager {
 		$end_time   = ns_cloner()->report->get_end_time();
 		$total_time = ns_cloner()->report->get_elapsed_time();
 		$minutes    = floor( $total_time / 60 );
-		$seconds    = ceil( $total_time % 60 );
+		$seconds    = ceil( round( $total_time % 60 ) );
 		ns_cloner()->report->add_report( __( 'Start Time', 'ns-cloner-site-copier' ), $start_time );
 		ns_cloner()->report->add_report( __( 'End Time', 'ns-cloner-site-copier' ), $end_time );
 		ns_cloner()->report->add_report( __( 'Total Time', 'ns-cloner-site-copier' ), "{$minutes} min. {$seconds} sec." );
@@ -314,7 +316,10 @@ class NS_Cloner_Process_Manager {
 		ns_cloner()->log->log( 'TOTAL_TIME: ' . "{$minutes} min. {$seconds} sec." );
 
 		// Report details specific to the current mode (via report function provided when registering the mode).
-		call_user_func( ns_cloner()->get_mode()->report );
+		$cloner_mode = ns_cloner()->get_mode();
+		if ( false !== $cloner_mode ) {
+			call_user_func( $cloner_mode->report );
+		}
 
 		// Report number of items processed by each background process (tables, rows, users, files, etc).
 		foreach ( $this->get_current_processes() as $process_id => $progress ) {

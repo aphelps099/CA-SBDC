@@ -1,11 +1,7 @@
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
-
-const { registerBlockStyle } = wp.blocks;
+import { registerBlockStyle } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 registerBlockStyle('core/heading', {
-  name: 'numbered',
-  label: __('Numbered', 'ghostkit'),
+	name: 'numbered',
+	label: __('Numbered', 'ghostkit'),
 });

@@ -1,42 +1,75 @@
-/**
- * External dependencies
- */
 import classnames from 'classnames/dedupe';
 
-/**
- * WordPress dependencies
- */
-const { applyFilters } = wp.hooks;
-const { useSelect } = wp.data;
-const { InnerBlocks, useBlockProps, useInnerBlocksProps } = wp.blockEditor;
+import {
+	InnerBlocks,
+	useBlockProps,
+	useInnerBlocksProps,
+} from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Block Edit Class.
+ *
+ * @param props
  */
 export default function BlockEdit(props) {
-  const { clientId } = props;
-  let { className = '' } = props;
-  const { slug } = props.attributes;
+	const { clientId, attributes, setAttributes, context } = props;
+	const { slug, active, anchor } = attributes;
+	const { 'ghostkit/tabActive': tabActive } = context;
 
-  const hasChildBlocks = useSelect(
-    (select) => {
-      const blockEditor = select('core/block-editor');
+	let { className = '' } = props;
 
-      return blockEditor ? blockEditor.getBlockOrder(clientId).length > 0 : false;
-    },
-    [clientId]
-  );
+	// Update active state.
+	useEffect(() => {
+		if (tabActive === slug && !active) {
+			setAttributes({ active: true });
+		} else if (tabActive !== slug && active) {
+			setAttributes({ active: false });
+		}
+	}, [active, setAttributes, slug, tabActive]);
 
-  className = classnames(className, 'ghostkit-tab');
+	// Update anchor.
+	useEffect(() => {
+		if (anchor !== `${slug}-content`) {
+			setAttributes({ anchor: `${slug}-content` });
+		}
+	}, [slug, anchor, setAttributes]);
 
-  className = applyFilters('ghostkit.editor.className', className, props);
+	const hasChildBlocks = useSelect(
+		(select) => {
+			const blockEditor = select('core/block-editor');
 
-  const blockProps = useBlockProps({ className, 'data-tab': slug });
+			return blockEditor
+				? blockEditor.getBlockOrder(clientId).length > 0
+				: false;
+		},
+		[clientId]
+	);
 
-  const innerBlockProps = useInnerBlocksProps(blockProps, {
-    renderAppender: hasChildBlocks ? undefined : InnerBlocks.ButtonBlockAppender,
-    templateLock: false,
-  });
+	className = classnames(
+		className,
+		'ghostkit-tab',
+		tabActive === slug && 'ghostkit-tab-active'
+	);
 
-  return <div {...innerBlockProps} />;
+	className = applyFilters('ghostkit.editor.className', className, props);
+
+	const blockProps = useBlockProps({
+		className,
+		tabIndex: 0,
+		role: 'tabpanel',
+		'aria-labelledby': slug,
+		'data-tab': slug,
+	});
+
+	const innerBlockProps = useInnerBlocksProps(blockProps, {
+		renderAppender: hasChildBlocks
+			? undefined
+			: InnerBlocks.ButtonBlockAppender,
+		templateLock: false,
+	});
+
+	return <div {...innerBlockProps} />;
 }

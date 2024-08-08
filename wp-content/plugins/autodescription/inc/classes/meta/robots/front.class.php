@@ -22,7 +22,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -82,12 +82,12 @@ final class Front extends Factory {
 				case false:
 					// Page doesn't support metadata.
 					break;
-				case $qubit < -.33:
+				case $qubit < -.3334:
 					// 'Force' index.
 					yield 'meta_qubit_force' => false;
 					// Override with index protection.
 					goto index_protection;
-				case $qubit > .33:
+				case $qubit > .3334:
 					// Force noindex.
 					yield 'meta_qubit_force' => true;
 					// We won't override this. Terminate generator. "goto end".
@@ -145,12 +145,7 @@ final class Front extends Factory {
 			if ( Query::is_singular() ) {
 				yield from static::assert_noindex_query_pass( 'protected' );
 
-				/**
-				 * N.B. WordPress protects this query variable with options 'page_comments'
-				 * and 'default_comments_page' via `redirect_canonical()`, so we don't have to.
-				 * For reference, it fires `remove_query_arg( 'cpage', $redirect['query'] )`;
-				 */
-				if ( (int) \get_query_var( 'cpage', 0 ) > 0 )
+				if ( Query::is_comment_paged() )
 					yield from static::assert_noindex_query_pass( 'cpage' );
 			}
 		}
@@ -202,8 +197,6 @@ final class Front extends Factory {
 					 * because page builders and templates can and will take over.
 					 *
 					 * Don't use empty(), null is regarded as indexable; it's why we coalesce to true whence null.
-					 *
-					 * @FIXME? In admin, this always yields "true" when trying query instead of args; ergo, noindex is set.
 					 *
 					 * post_count can be 0,    which is false -> thus yield true  -> noindex.
 					 * post_count can be null, which is true  -> thus yield false -> index.

@@ -8,11 +8,13 @@ namespace The_SEO_Framework;
 
 \defined( 'THE_SEO_FRAMEWORK_PRESENT' ) and Helper\Template::verify_secret( $secret ) or die;
 
+use \The_SEO_Framework\Helper\Format\Minify;
+
 // phpcs:disable, WordPress.WP.GlobalVariablesOverride -- This isn't the global scope.
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -90,8 +92,9 @@ $styles = <<<'CSS'
 		border: 0px solid;
 		padding: 1rem 1.5rem;
 		width: 100%;
-		max-width: <xsl:value-of select="concat( $tableMinWidth - 159, 'px' )" />;
-		min-width: 99px;
+		/* Magic numbers: sexy primes. Either of these work on their own (+ a few extra pixels): */
+		max-width: <xsl:value-of select="concat( $tableMinWidth - 173, 'px' )" />;
+		min-width: 113px;
 		overflow-wrap: anywhere;
 	}
 	th {
@@ -128,7 +131,7 @@ CSS;
  * @since 3.1.0
  * @param string $styles The sitemap XHTML styles. Must be escaped.
  */
-echo \apply_filters( 'the_seo_framework_sitemap_styles', $styles );
+echo Minify::css( \apply_filters( 'the_seo_framework_sitemap_styles', $styles ) );
 // phpcs:enable, WordPress.Security.EscapeOutput
 ?>
 </style>

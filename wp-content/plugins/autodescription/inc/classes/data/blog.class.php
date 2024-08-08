@@ -20,7 +20,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -95,8 +95,8 @@ class Blog {
 	}
 
 	/**
-	 * Returns the home URL. Created for the WordPress method is slow for it
-	 * performs "set_url_scheme" calls slowly. We rely on this method for some
+	 * Returns the home URL. Created because the WordPress method is slow for it
+	 * performs bad "set_url_scheme" calls. We rely on this method for some
 	 * plugins filter `home_url`.
 	 * Memoized.
 	 *
@@ -185,7 +185,7 @@ class Blog {
 	 *              3. Optimized code and removed memoization.
 	 * @credits Jetpack for some code.
 	 *
-	 * @return array List of active plugins.
+	 * @return string[] List of active plugins.
 	 */
 	public static function get_active_plugins() {
 

@@ -21,7 +21,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -256,7 +256,7 @@ final class ListEdit extends Admin\Lists\Table {
 
 		if ( Query::is_static_front_page( $generator_args['id'] ) ) {
 			// When the homepage title is set, we can safely get the custom field.
-			$_has_home_title     = (bool) Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_title' ) );
+			$_has_home_title     = (bool) \strlen( Data\Plugin::get_option( 'homepage_title' ) );
 			$default_title       = $_has_home_title
 				? Meta\Title::get_custom_title( $generator_args )
 				: Meta\Title::get_bare_generated_title( $generator_args );
@@ -265,7 +265,7 @@ final class ListEdit extends Admin\Lists\Table {
 			$is_title_ref_locked = $_has_home_title;
 
 			// When the homepage description is set, we can safely get the custom field.
-			$_has_home_desc      = (bool) Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_description' ) );
+			$_has_home_desc      = (bool) \strlen( Data\Plugin::get_option( 'homepage_description' ) );
 			$default_description = $_has_home_desc
 				? Meta\Description::get_custom_description( $generator_args )
 				: Meta\Description::get_generated_description( $generator_args );

@@ -23,7 +23,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -44,6 +44,14 @@ use \The_SEO_Framework\{
 // Fetch the required instance within this file.
 switch ( $instance ) :
 	case 'main':
+		HTML::description(
+			\__( 'Post type archives (PTA) are unique archives displaying all pages for a post type. Since PTAs lack an administrative interface, their SEO settings are displayed here.', 'autodescription' )
+		);
+
+		?>
+		<hr>
+		<?php
+
 		$_settings_class = Admin\Settings\Plugin::class;
 		$post_types      = Post_Type::get_public_pta();
 

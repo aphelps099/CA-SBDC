@@ -1,145 +1,97 @@
-/**
- * Internal dependencies
- */
-import InputDrag from '../../../components/input-drag';
-import ResponsiveToggle from '../../../components/responsive-toggle';
-import ImportantToggle from '../../../components/important-toggle';
-import useStyles from '../../../hooks/use-styles';
+import {
+	__experimentalToolsPanelItem as ExperimentalToolsPanelItem,
+	__stableToolsPanelItem as StableToolsPanelItem,
+} from '@wordpress/components';
+import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
+import InputGroup from '../../../components/input-group';
 import useResponsive from '../../../hooks/use-responsive';
+import useStyles from '../../../hooks/use-styles';
 
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
+const ToolsPanelItem = StableToolsPanelItem || ExperimentalToolsPanelItem;
 
-const { addFilter } = wp.hooks;
+import { getBlockSupport, hasBlockSupport } from '@wordpress/blocks';
 
-const {
-  BaseControl,
-  ToolsPanelItem: __stableToolsPanelItem,
-  __experimentalToolsPanelItem,
-} = wp.components;
-
-const ToolsPanelItem = __stableToolsPanelItem || __experimentalToolsPanelItem;
-
-const { hasBlockSupport } = wp.blocks;
-
-const allPaddings = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'];
+const allOptions = [
+	{
+		name: 'padding-top',
+		label: __('Top', 'ghostkit'),
+	},
+	{
+		name: 'padding-right',
+		label: __('Right', 'ghostkit'),
+	},
+	{
+		name: 'padding-bottom',
+		label: __('Bottom', 'ghostkit'),
+	},
+	{
+		name: 'padding-left',
+		label: __('left', 'ghostkit'),
+	},
+];
 
 function SpacingsPaddingTools(props) {
-  const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
+	const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
 
-  const { device, allDevices } = useResponsive();
+	const { allDevices } = useResponsive();
 
-  let hasPadding = false;
+	let hasPadding = false;
 
-  ['', ...Object.keys(allDevices)].forEach((thisDevice) => {
-    allPaddings.forEach((thisPadding) => {
-      hasPadding = hasPadding || hasStyle(thisPadding, thisDevice);
-    });
-  });
+	['', ...Object.keys(allDevices)].forEach((thisDevice) => {
+		allOptions.forEach((thisPadding) => {
+			hasPadding = hasPadding || hasStyle(thisPadding.name, thisDevice);
+		});
+	});
 
-  return (
-    <ToolsPanelItem
-      label={__('Padding', 'ghostkit')}
-      hasValue={() => !!hasPadding}
-      onDeselect={() => {
-        resetStyles(allPaddings, true);
-      }}
-      isShownByDefault={false}
-    >
-      <BaseControl
-        label={
-          <>
-            {__('Padding', 'ghostkit')}
-            <ResponsiveToggle
-              checkActive={(checkMedia) => {
-                let isActive = false;
-
-                allPaddings.forEach((thisPadding) => {
-                  isActive = isActive || hasStyle(thisPadding, checkMedia);
-                });
-
-                return isActive;
-              }}
-            />
-          </>
-        }
-        className="ghostkit-tools-panel-spacings-row"
-      >
-        <div>
-          {allPaddings.map((paddingName) => {
-            let label = __('Top', 'ghostkit');
-
-            switch (paddingName) {
-              case 'padding-right':
-                label = __('Right', 'ghostkit');
-                break;
-              case 'padding-bottom':
-                label = __('Bottom', 'ghostkit');
-                break;
-              case 'padding-left':
-                label = __('Left', 'ghostkit');
-                break;
-              // no default
-            }
-
-            let value = getStyle(paddingName, device);
-
-            const withImportant = / !important$/.test(value);
-            if (withImportant) {
-              value = value.replace(/ !important$/, '');
-            }
-
-            return (
-              <div key={paddingName} className="ghostkit-tools-panel-spacings-item">
-                <InputDrag
-                  help={label}
-                  value={value}
-                  placeholder="-"
-                  onChange={(val) => {
-                    const newValue = val
-                      ? `${val}${withImportant ? ' !important' : ''}`
-                      : undefined;
-
-                    setStyles({ [paddingName]: newValue }, device);
-                  }}
-                  autoComplete="off"
-                />
-                <ImportantToggle
-                  onClick={(newWithImportant) => {
-                    if (value) {
-                      const newValue = `${value}${newWithImportant ? ' !important' : ''}`;
-
-                      setStyles({ [paddingName]: newValue }, device);
-                    }
-                  }}
-                  isActive={withImportant}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </BaseControl>
-    </ToolsPanelItem>
-  );
+	return (
+		<ToolsPanelItem
+			label={__('Padding', 'ghostkit')}
+			hasValue={() => !!hasPadding}
+			onDeselect={() => {
+				resetStyles(
+					allOptions.map((item) => {
+						return item.name;
+					}),
+					true
+				);
+			}}
+			isShownByDefault={false}
+		>
+			<InputGroup
+				label={__('Padding', 'ghostkit')}
+				inputs={allOptions}
+				hasValue={(name, media) => hasStyle(name, media)}
+				getValue={(name, media) => getStyle(name, media)}
+				onChange={(name, value, media) =>
+					setStyles({ [name]: value }, media)
+				}
+				withResponsive
+				withImportant
+				expandOnFocus={6}
+			/>
+		</ToolsPanelItem>
+	);
 }
 
 addFilter(
-  'ghostkit.extension.spacings.tools',
-  'ghostkit/extension/spacings/tools/padding',
-  (children, { props }) => {
-    const hasPaddingSupport = hasBlockSupport(props.name, ['ghostkit', 'spacings', 'padding']);
+	'ghostkit.extension.spacings.tools',
+	'ghostkit/extension/spacings/tools/padding',
+	(children, { props }) => {
+		const hasPaddingSupport =
+			hasBlockSupport(props.name, ['ghostkit', 'spacings', 'padding']) ||
+			getBlockSupport(props.name, ['ghostkit', 'spacings']) === true;
 
-    if (!hasPaddingSupport) {
-      return children;
-    }
+		if (!hasPaddingSupport) {
+			return children;
+		}
 
-    return (
-      <>
-        {children}
-        <SpacingsPaddingTools {...props} />
-      </>
-    );
-  }
+		return (
+			<>
+				{children}
+				<SpacingsPaddingTools {...props} />
+			</>
+		);
+	}
 );

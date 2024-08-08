@@ -239,7 +239,8 @@ class OMAPI_Api {
 			? add_query_arg( array_map( 'urlencode', $body ), $this->get_url() )
 			: $this->get_url();
 
-		$url = esc_url_raw( $url );
+		$url     = esc_url_raw( $url );
+		$plugins = new OMAPI_Plugins();
 
 		// Build the headers of the request.
 		$headers = array(
@@ -252,7 +253,7 @@ class OMAPI_Api {
 			'OMAPI-Sender'  => 'WordPress',
 			'OMAPI-Site'    => esc_attr( get_option( 'blogname' ) ),
 			'OMAPI-Version' => esc_attr( OMAPI::get_instance()->version ),
-			'OMAPI-Plugins' => ( new OMAPI_Plugins() )->get_active_plugins_header_value(),
+			'OMAPI-Plugins' => $plugins->get_active_plugins_header_value(),
 		);
 
 		if ( $this->apikey ) {
@@ -547,7 +548,7 @@ class OMAPI_Api {
 	 *
 	 * @return array
 	 */
-	public static function getUrlArgs() {
+	public static function get_url_args() {
 		return array(
 			'homeUrl'  => esc_url_raw( home_url() ),
 			'restUrl'  => esc_url_raw( get_rest_url() ),

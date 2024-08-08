@@ -14,7 +14,7 @@ use \The_SEO_Framework\Admin\Settings\Layout\Input;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2017 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2017 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -118,13 +118,8 @@ $hook_name = Admin\Menu::get_page_hook_name();
 	</form>
 </div>
 <script>
-	//<![CDATA[
-	jQuery( document ).ready( function( $ ) {
-		// close postboxes that should be closed
-		$( '.if-js-closed' ).removeClass( 'if-js-closed' ).addClass( 'closed' );
-		// postboxes setup
-		postboxes.add_postbox_toggles('<?= \esc_js( $hook_name ) ?>');
+	window.addEventListener( 'load', () => {
+		postboxes.add_postbox_toggles( '<?= \esc_js( $hook_name ) ?>' );
 	} );
-	//]]>
 </script>
 <?php

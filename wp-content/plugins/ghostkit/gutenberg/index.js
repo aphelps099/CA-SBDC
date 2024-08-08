@@ -2,50 +2,37 @@
  * Store
  */
 import './store';
-
 /**
  * Blocks
  */
 import './blocks';
-
 /**
  * Formats
  */
 import './formats';
-
 /**
  * Extensions
  */
 import './extend';
-
 /**
  * Style Variants
  */
 import './style-variants';
-
-/**
- * Plugins
- */
-import './plugins';
-
-/**
- * Icon
- */
-import GhostKitLogoIcon from './icons/ghostkit-logo.svg';
-
 /**
  * Disable Blocks
  */
 import './disable-blocks';
 
+import { updateCategory } from '@wordpress/blocks';
+
 /**
- * Internal dependencies
+ * Icon
  */
-const { updateCategory } = wp.blocks;
+import { ReactComponent as GhostKitLogoIcon } from './icons/ghostkit-logo.svg';
 
 /**
  * Add category icon.
  */
 updateCategory('ghostkit', {
-  icon: <GhostKitLogoIcon />,
+	icon: <GhostKitLogoIcon />,
 });

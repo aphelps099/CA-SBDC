@@ -190,7 +190,7 @@ class OMAPI_Partners {
 			// Try to get the ID from the partner url.
 			$url = self::has_partner_url();
 			if ( $url ) {
-				$parsed = parse_url( $url );
+				$parsed = wp_parse_url( $url );
 				if (
 					! empty( $parsed['host'] )
 					// Only get the ID if it's a shareasale url.

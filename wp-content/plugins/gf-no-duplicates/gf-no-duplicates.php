@@ -2,7 +2,7 @@
 /**
  * Plugin Name: GF No Duplicates
  * Description: Prevents duplicate Gravity Forms submissions caused by the same POST request sent more than once.
- * Version: 1.1
+ * Version: 1.2
  * Author: Samuel Aguilera
  * Author URI: https://www.samuelaguilera.com
  * License: GPL-3.0+
@@ -32,7 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses.
 defined( 'ABSPATH' ) || die();
 
 // Defines the current version of the GF No Duplicates.
-define( 'GF_NO_DUPLICATES_VERSION', '1.1' );
+define( 'GF_NO_DUPLICATES_VERSION', '1.2' );
 
 // Defines the minimum version of Gravity Forms required to run GF No Duplicates.
 define( 'GF_NO_DUPLICATES_MIN_GF_VERSION', '2.5' );

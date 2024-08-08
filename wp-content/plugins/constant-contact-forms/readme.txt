@@ -1,9 +1,9 @@
 === Constant Contact Forms ===
 Contributors:      constantcontact, webdevstudios, tw2113, znowebdev, ggwicz, ravedev, oceas, dcooney, newyorkerlaura
-Tags: contacts, constant contact, constant contact form, constant contact newsletter, constant contact official, contact forms, forms, marketing, newsletter, signup
+Tags: constant contact, constant contact official, marketing, newsletter, contacts
 Requires at least: 5.2.0
-Tested up to:      6.4
-Stable tag:        2.4.1
+Tested up to:      6.5.4
+Stable tag:        2.6.0
 License:           GPLv3
 License URI:       http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP:      7.4
@@ -48,6 +48,25 @@ Development of Constant Contact Forms plugin occurs on [GitHub](https://github.c
 5. Basic Form
 
 == Changelog ==
+
+= 2.6.0 =
+* Updated: Amended the list selection process for a given form. Should not break existing forms, and now you can make use of drag-n-drop to order the list selection when offering multiple lists.
+* Updated: reworked the underpinning of the Constant Contact block to be more in line with modern WordPress coding patterns, including block.json based. Should not break existing forms.
+* Updated: Show general List metabox regardless of connected status. Messaging will reflect connection state.
+* Added: New duration timing for a review request and displayed notification.
+
+= 2.5.0 =
+* Updated: Better handling of email notifications around spam submission attempts.
+
+= 2.4.4 =
+* Fixed: Consistently set address kind to "home".
+
+= 2.4.3 =
+* Fixed: Hardened up details around error log files and access.
+
+= 2.4.2 =
+* Fixed: Extra early return check before we process form submissions.
+* Updated: Accessibility around disabled submit buttons during form processing.
 
 = 2.4.1 =
 * Fixed: White font on light gray in admin page modal popups.
@@ -101,28 +120,6 @@ Development of Constant Contact Forms plugin occurs on [GitHub](https://github.c
 * Updated: Added support to check for DISABLE_WP_CRON constant usage and bypass cron scheduling if true.
 * Fixed: moved "Edit form" link to outside the `<form>` markup.
 * Fixed: Custom color choices were not applying to all parts of form text output.
-
-= 1.14.1 =
-* Fixed: Backport of security issue originally fixed in 2.0.0 release.
-
-= 1.14.0 =
-* Fixed: Issues around email submissions with "some+value@email.com" based addresses.
-* Fixed: Compatibility with Elementor Widget registration
-* Added: Notice regarding upcoming API changes in a later major plugin version.
-* Added: Compatibility with Cleantalk Spam Protect
-* Added: Extra compatibility with Akismet Spam protection
-* Updated: CMB2 internal library to 2.10.1
-
-= 1.13.0 =
-* Fixed: get_optin_list_options() defaults to an empty array instead of an empty string
-* Fixed: Prevent "CTCT has experienced issues" notifications for "503 Service Not Available" errors
-* Fixed: Fixes plugin sometimes causing errors due to trailing commas
-* Changed: Move styles inline for honeypot field to ensure field is hidden when option to disable CSS output is used
-* Updated: Mask API keys in error logs
-* Updated: Mask phone numbers in logs
-* Updated: Add noopener noreferrer to blank links
-* Updated: Refactor multiple translated strings
-* Updated: Added error messages on form submissions upon API faliures
 
 == Frequently Asked Questions ==
 

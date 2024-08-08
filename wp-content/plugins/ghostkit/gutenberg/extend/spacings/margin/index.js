@@ -1,145 +1,97 @@
-/**
- * Internal dependencies
- */
-import InputDrag from '../../../components/input-drag';
-import ResponsiveToggle from '../../../components/responsive-toggle';
-import ImportantToggle from '../../../components/important-toggle';
-import useStyles from '../../../hooks/use-styles';
+import {
+	__experimentalToolsPanelItem as ExperimentalToolsPanelItem,
+	__stableToolsPanelItem as StableToolsPanelItem,
+} from '@wordpress/components';
+import { addFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
+import InputGroup from '../../../components/input-group';
 import useResponsive from '../../../hooks/use-responsive';
+import useStyles from '../../../hooks/use-styles';
 
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
+const ToolsPanelItem = StableToolsPanelItem || ExperimentalToolsPanelItem;
 
-const { addFilter } = wp.hooks;
+import { getBlockSupport, hasBlockSupport } from '@wordpress/blocks';
 
-const {
-  BaseControl,
-  ToolsPanelItem: __stableToolsPanelItem,
-  __experimentalToolsPanelItem,
-} = wp.components;
-
-const ToolsPanelItem = __stableToolsPanelItem || __experimentalToolsPanelItem;
-
-const { hasBlockSupport } = wp.blocks;
-
-const allMargins = ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'];
+const allOptions = [
+	{
+		name: 'margin-top',
+		label: __('Top', 'ghostkit'),
+	},
+	{
+		name: 'margin-right',
+		label: __('Right', 'ghostkit'),
+	},
+	{
+		name: 'margin-bottom',
+		label: __('Bottom', 'ghostkit'),
+	},
+	{
+		name: 'margin-left',
+		label: __('left', 'ghostkit'),
+	},
+];
 
 function SpacingsMarginTools(props) {
-  const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
+	const { getStyle, hasStyle, setStyles, resetStyles } = useStyles(props);
 
-  const { device, allDevices } = useResponsive();
+	const { allDevices } = useResponsive();
 
-  let hasMargin = false;
+	let hasMargin = false;
 
-  ['', ...Object.keys(allDevices)].forEach((thisDevice) => {
-    allMargins.forEach((thisMargin) => {
-      hasMargin = hasMargin || hasStyle(thisMargin, thisDevice);
-    });
-  });
+	['', ...Object.keys(allDevices)].forEach((thisDevice) => {
+		allOptions.forEach((thisMargin) => {
+			hasMargin = hasMargin || hasStyle(thisMargin.name, thisDevice);
+		});
+	});
 
-  return (
-    <ToolsPanelItem
-      label={__('Margin', 'ghostkit')}
-      hasValue={() => !!hasMargin}
-      onDeselect={() => {
-        resetStyles(allMargins, true);
-      }}
-      isShownByDefault={false}
-    >
-      <BaseControl
-        label={
-          <>
-            {__('Margin', 'ghostkit')}
-            <ResponsiveToggle
-              checkActive={(checkMedia) => {
-                let isActive = false;
-
-                allMargins.forEach((thisMargin) => {
-                  isActive = isActive || hasStyle(thisMargin, checkMedia);
-                });
-
-                return isActive;
-              }}
-            />
-          </>
-        }
-        className="ghostkit-tools-panel-spacings-row"
-      >
-        <div>
-          {allMargins.map((marginName) => {
-            let label = __('Top', 'ghostkit');
-
-            switch (marginName) {
-              case 'margin-right':
-                label = __('Right', 'ghostkit');
-                break;
-              case 'margin-bottom':
-                label = __('Bottom', 'ghostkit');
-                break;
-              case 'margin-left':
-                label = __('Left', 'ghostkit');
-                break;
-              // no default
-            }
-
-            let value = getStyle(marginName, device);
-
-            const withImportant = / !important$/.test(value);
-            if (withImportant) {
-              value = value.replace(/ !important$/, '');
-            }
-
-            return (
-              <div key={marginName} className="ghostkit-tools-panel-spacings-item">
-                <InputDrag
-                  help={label}
-                  value={value}
-                  placeholder="-"
-                  onChange={(val) => {
-                    const newValue = val
-                      ? `${val}${withImportant ? ' !important' : ''}`
-                      : undefined;
-
-                    setStyles({ [marginName]: newValue }, device);
-                  }}
-                  autoComplete="off"
-                />
-                <ImportantToggle
-                  onClick={(newWithImportant) => {
-                    if (value) {
-                      const newValue = `${value}${newWithImportant ? ' !important' : ''}`;
-
-                      setStyles({ [marginName]: newValue }, device);
-                    }
-                  }}
-                  isActive={withImportant}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </BaseControl>
-    </ToolsPanelItem>
-  );
+	return (
+		<ToolsPanelItem
+			label={__('Margin', 'ghostkit')}
+			hasValue={() => !!hasMargin}
+			onDeselect={() => {
+				resetStyles(
+					allOptions.map((item) => {
+						return item.name;
+					}),
+					true
+				);
+			}}
+			isShownByDefault={false}
+		>
+			<InputGroup
+				label={__('Margin', 'ghostkit')}
+				inputs={allOptions}
+				hasValue={(name, media) => hasStyle(name, media)}
+				getValue={(name, media) => getStyle(name, media)}
+				onChange={(name, value, media) =>
+					setStyles({ [name]: value }, media)
+				}
+				withResponsive
+				withImportant
+				expandOnFocus={6}
+			/>
+		</ToolsPanelItem>
+	);
 }
 
 addFilter(
-  'ghostkit.extension.spacings.tools',
-  'ghostkit/extension/spacings/tools/margin',
-  (children, { props }) => {
-    const hasMarginSupport = hasBlockSupport(props.name, ['ghostkit', 'spacings', 'margin']);
+	'ghostkit.extension.spacings.tools',
+	'ghostkit/extension/spacings/tools/margin',
+	(children, { props }) => {
+		const hasMarginSupport =
+			hasBlockSupport(props.name, ['ghostkit', 'spacings', 'margin']) ||
+			getBlockSupport(props.name, ['ghostkit', 'spacings']) === true;
 
-    if (!hasMarginSupport) {
-      return children;
-    }
+		if (!hasMarginSupport) {
+			return children;
+		}
 
-    return (
-      <>
-        {children}
-        <SpacingsMarginTools {...props} />
-      </>
-    );
-  }
+		return (
+			<>
+				{children}
+				<SpacingsMarginTools {...props} />
+			</>
+		);
+	}
 );

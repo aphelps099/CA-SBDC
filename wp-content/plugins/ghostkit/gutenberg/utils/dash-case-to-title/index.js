@@ -10,12 +10,16 @@
  * @return {string} - new title-cased string.
  */
 export default function dashCaseToTitle(str) {
-  if (typeof str !== 'string') {
-    return str;
-  }
+	if (typeof str !== 'string') {
+		return str;
+	}
 
-  return str
-    .split(/[.,/ \-_]/)
-    .map((word) => (word && word.length ? word.replace(word[0], word[0].toUpperCase()) : word))
-    .join(' ');
+	return str
+		.split(/[.,/ \-_]/)
+		.map((word) =>
+			word && word.length
+				? word.replace(word[0], word[0].toUpperCase())
+				: word
+		)
+		.join(' ');
 }

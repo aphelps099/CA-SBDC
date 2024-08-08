@@ -191,10 +191,10 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 	 */
 	public function feedzy_default_error_notice( $errors, $feed, $feed_url ) {
 		global $post;
-		// Show the error message only if the user who has created this post (which contains the feed) is logged in.
+		// Show the error message only if the user who has created this post (which contains the feed) is logged in and the user has admin privileges.
 		// Or if this is in the dry run window.
 		// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
-		$show_error = is_admin() || ( is_user_logged_in() && $post && get_current_user_id() == $post->post_author );
+		$show_error = ( is_admin() || ( is_user_logged_in() && $post && get_current_user_id() == $post->post_author ) ) && current_user_can( 'manage_options' );
 		$error_msg  = '';
 
 		if ( is_array( $errors ) ) {
@@ -208,15 +208,15 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		$final_msg = '';
 
 		if ( $show_error ) {
-			$final_msg = '<div id="message" class="error"><p>' . sprintf( __( 'Sorry, some part of this feed is currently unavailable or does not exist anymore. The detailed error is %s', 'feedzy-rss-feeds' ), '<p style="font-weight: bold">' . $error_msg . '</p>' );
+			$final_msg = '<div id="message" class="error"><p>' . sprintf( __( 'Sorry, some part of this feed is currently unavailable or does not exist anymore. The detailed error is %s', 'feedzy-rss-feeds' ), '<p style="font-weight: bold">' . wp_strip_all_tags( $error_msg ) . '</p>' );
 			if ( ! is_admin() ) {
 				$final_msg .= sprintf( __( '%1$s(Only you are seeing this detailed error because you are the creator of this post. Other users will see the error message as below.)%2$s', 'feedzy-rss-feeds' ), '<small>', '</small>' );
 			}
 			$final_msg .= '</p></div>';
 		} else {
-			error_log( 'Feedzy RSS Feeds - related feed: ' . print_r( $feed_url, true ) . ' - Error message: ' . $error_msg );
+			error_log( 'Feedzy RSS Feeds - related feed: ' . print_r( $feed_url, true ) . ' - Error message: ' . wp_strip_all_tags( $error_msg ) );
 		}
-		return $final_msg;
+		return wp_kses_post( $final_msg );
 	}
 
 	/**
@@ -679,7 +679,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 	 *
 	 * @param   string $raw Url or list of urls.
 	 *
-	 * @return mixed|void Urls of the feeds.
+	 * @return string|array<string> Urls of the feeds.
 	 */
 	public function normalize_urls( $raw ) {
 		$feeds    = apply_filters( 'feedzy_process_feed_source', $raw );
@@ -905,6 +905,10 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 
 		$feed->init();
 
+		if ( ! $feed->get_type() ) {
+			return $feed;
+		}
+
 		$error = $feed->error();
 		// error could be an array, so let's join the different errors.
 		if ( is_array( $error ) ) {
@@ -920,7 +924,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				$feed = $this->init_feed( $feed_url, $cache, $sc, false );
 			} elseif ( is_string( $feed_url ) || ( is_array( $feed_url ) && 1 === count( $feed_url ) ) ) {
 				do_action( 'themeisle_log_event', FEEDZY_NAME, 'Trying to use raw data', 'debug', __FILE__, __LINE__ );
-				$data = wp_remote_retrieve_body( wp_remote_get( $feed_url, array( 'user-agent' => $default_agent ) ) );
+				$data = wp_remote_retrieve_body( wp_safe_remote_get( $feed_url, array( 'user-agent' => $default_agent ) ) );
 				$cloned_feed->set_raw_data( $data );
 				$cloned_feed->init();
 				$error_raw = $cloned_feed->error();
@@ -1408,12 +1412,12 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 	 * @since   3.0.0
 	 * @access  private
 	 *
-	 * @param   array  $sc The shorcode attributes array.
-	 * @param   array  $sizes The sizes array.
-	 * @param   object $item The feed item object.
-	 * @param   string $feed_url The feed url.
-	 * @param   int    $index The item number (may not be the same as the item_index).
-	 * @param   int    $item_index The real index of this items in the feed (maybe be different from $index if filters are used).
+	 * @param   array           $sc The shorcode attributes array.
+	 * @param   array           $sizes The sizes array.
+	 * @param   \SimplePie_Item $item The feed item object.
+	 * @param   string          $feed_url The feed url.
+	 * @param   int             $index The item number (may not be the same as the item_index).
+	 * @param   int             $item_index The real index of this items in the feed (maybe be different from $index if filters are used).
 	 *
 	 * @return array
 	 */
@@ -1434,7 +1438,13 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		}
 		if ( 'yes' === $sc['thumb'] || 'auto' === $sc['thumb'] ) {
 			$content_thumb = '';
-			if ( ( ! empty( $the_thumbnail ) && 'auto' === $sc['thumb'] ) || 'yes' === $sc['thumb'] ) {
+			if ( (
+					! empty( $the_thumbnail ) &&
+					'auto' === $sc['thumb'] &&
+					! strpos( $the_thumbnail, 'img/feedzy.svg' )
+				) ||
+				'yes' === $sc['thumb']
+			) {
 				if ( ! empty( $the_thumbnail ) ) {
 					$the_thumbnail  = $this->feedzy_image_encode( $the_thumbnail );
 					$content_thumb .= '<span class="fetched" style="background-image:  url(\'' . $the_thumbnail . '\');" title="' . esc_html( $item->get_title() ) . '"></span>';
@@ -1511,8 +1521,14 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 
 		// multiple sources?
 		$is_multiple = is_array( $feed_url );
-		$feed_source = $item->get_feed()->get_title();
 
+		$feed_source      = '';
+		$feed_source_tags = $item->get_item_tags( FEEDZY_FEED_CUSTOM_TAG_NAMESPACE, 'parent-source' );
+		if ( ! empty( $feed_source_tags ) && ! empty( $feed_source_tags[0]['data'] ) ) {
+			$feed_source = $feed_source_tags[0]['data'];
+		} else {
+			$feed_source = $item->get_feed()->get_title();
+		}
 		// author.
 		if ( $item->get_author() && $meta_args['author'] ) {
 			$author      = $item->get_author();

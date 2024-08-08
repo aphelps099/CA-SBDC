@@ -1,10 +1,27 @@
 <?php
+/**
+ * GF No Duplicates Add-On.
+ *
+ * @since     1.0
+ * @package GF No Duplicates
+ * @author    Samuel Aguilera
+ * @copyright Copyright (c) 2022 Samuel Aguilera
+ */
 
 defined( 'ABSPATH' ) || die();
 
 // Include the Gravity Forms Add-On Framework.
 GFForms::include_addon_framework();
 
+/**
+ * Class GF_No_Duplicates
+ *
+ * Primary class to manage the GF No Duplicates Add-On.
+ *
+ * @since 1.0
+ *
+ * @uses GFAddOn
+ */
 class GF_No_Duplicates extends GFAddOn {
 
 	/**
@@ -111,7 +128,6 @@ class GF_No_Duplicates extends GFAddOn {
 		}
 
 		return self::$_instance;
-
 	}
 
 	/**
@@ -125,6 +141,42 @@ class GF_No_Duplicates extends GFAddOn {
 		add_filter( 'gform_form_tag', array( $this, 'add_token_input' ), 99999, 2 ); // Try to run later than any other snippet using the same filter.
 		add_filter( 'gform_validation', array( $this, 'validate_token' ), 99999, 1 ); // Low priority required to avoid User Registration validation overriding our validation result.
 		add_filter( 'gform_pre_render', array( $this, 'replace_form_string_handler' ), 99999, 1 ); // Try to run later than any other snippet using the same filter.
+	}
+
+
+
+	/**
+	 * Return the plugin's icon for the plugin/form settings menu.
+	 *
+	 * @return string
+	 */
+	public function get_menu_icon() {
+		return file_get_contents( $this->get_base_path() . '/images/menu-icon.svg' ); // phpcs:ignore
+	}
+
+	/**
+	 * Configures the settings which should be rendered on the add-on settings tab.
+	 *
+	 * @return array
+	 */
+	public function plugin_settings_fields() {
+
+		return array(
+			array(
+				'title'       => esc_html__( 'GF No Duplicate Settings', 'gf-no-duplicates' ),
+				'description' => '<p style="text-align: left;">' . esc_html__( 'The following optional setting allows you to customize the message shown to visitors when a duplicate submission is stopped. Leave it empty to use the default message.', 'gf-no-duplicates' ) . '</p>',
+				'fields'      => array(
+					array(
+						'type'          => 'textarea',
+						'name'          => 'duplicate_submission_message',
+						'label'         => esc_html__( 'Duplicate Submission Message', 'gf-no-duplicates' ),
+						'default_value' => '',
+						'use_editor'    => true,
+						'class'         => 'large',
+					),
+				),
+			),
+		);
 	}
 
 	// # HELPER METHODS ------------------------------------------------------------------------------------------------
@@ -261,7 +313,7 @@ class GF_No_Duplicates extends GFAddOn {
 		if ( true === $token_validation_failed ) {
 			$validation_result['is_valid'] = false;
 			// Add the token to the $form object for later usage.
-			$form['failed_gnd_token']      = $gnd_token;
+			$form['failed_gnd_token'] = $gnd_token;
 			$this->log_debug( __METHOD__ . "(): Form validation set as failed and {$gnd_token} added to the form object as value for failed_gnd_token" );
 		}
 
@@ -282,9 +334,21 @@ class GF_No_Duplicates extends GFAddOn {
 		if ( is_array( $form ) && isset( $form['failed_gnd_token'] ) && ! empty( $form['failed_gnd_token'] ) ) {
 			$current_page_url = RGFormsModel::get_current_page_url();
 			// translators: Placeholders are HTML tags for a link. Just leave them on the same position.
-			$message = sprintf( wp_filter_nohtml_kses( __( 'A duplicate submission has been aborted! If you really want to submit the form again, please %1$sclick here%2$s.', 'gf-no-duplicates' ) ), "<a href='$current_page_url' rel='noopener noreferrer'>", '</a>' );
+			$default_message = sprintf( wp_filter_nohtml_kses( __( 'A duplicate submission has been aborted! If you really want to submit the form again, please %1$sclick here%2$s.', 'gf-no-duplicates' ) ), "<a href='$current_page_url' rel='noopener noreferrer'>", '</a>' );
+			// Get custom message from settings.
+			$custom_message = $this->get_plugin_setting( 'duplicate_submission_message' );
+
+			// Use custom message if there's any saved.
+			$message = empty( $custom_message ) ? $default_message : $custom_message;
+
+			// Filter to allow customization of the warning message displayed.
+			$message = apply_filters( 'gnd_duplicate_submission_message', $message, $form );
+
+			// Sanitizes content for allowed HTML tags (the ones allowed by WordPress for post content).
+			$message = wp_kses_post( $message );
+
 			$form_string = "<p class='gnd_duplicate_message'>$message</p>";
-			$this->log_debug( __METHOD__ . "(): Form replaced with error message to prevent user manual re-submission due to failed_gnd_token found with the following value: {$form['failed_gnd_token']}" );
+			$this->log_debug( __METHOD__ . "(): Form replaced with error message to prevent re-submission due to failed_gnd_token found with the following value: {$form['failed_gnd_token']}" );
 		}
 
 		return $form_string;
@@ -313,5 +377,4 @@ class GF_No_Duplicates extends GFAddOn {
 
 		return $form;
 	}
-
 }

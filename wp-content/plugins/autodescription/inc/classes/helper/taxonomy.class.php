@@ -17,7 +17,7 @@ use \The_SEO_Framework\Data;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -156,7 +156,7 @@ class Taxonomy {
 				 * @since 4.2.0
 				 * @param string[] $post_types The public post types.
 				 */
-				\apply_filters(
+				(array) \apply_filters(
 					'the_seo_framework_public_taxonomies',
 					array_filter(
 						array_unique( array_merge(
@@ -258,9 +258,11 @@ class Taxonomy {
 	 * @return string The Taxonomy Type name/label, if found.
 	 */
 	public static function get_label( $taxonomy = '', $singular = true ) {
-		return \get_taxonomy(
-			$taxonomy ?: Query::get_current_taxonomy()
-		)->labels->{
+
+		$taxonomy = $taxonomy ?: Query::get_current_taxonomy();
+		$tax      = $taxonomy ? \get_taxonomy( $taxonomy ) : null;
+
+		return $tax->labels->{
 			$singular ? 'singular_name' : 'name'
 		} ?? '';
 	}

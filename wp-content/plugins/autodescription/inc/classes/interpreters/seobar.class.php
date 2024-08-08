@@ -10,7 +10,7 @@ namespace The_SEO_Framework\Interpreters;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -25,7 +25,7 @@ namespace The_SEO_Framework\Interpreters;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-\tsf()->_deprecated_function( 'The_SEO_Framework\Interpreters\SEOBar', '5.0.0', 'The_SEO_Framework\Admin\SEOBar\Builder' );
+\tsf()->_deprecated_function( 'The_SEO_Framework\Interpreters\SEOBar', '5.0.0' );
 /**
  * Interprets the SEO Bar into an HTML item.
  *

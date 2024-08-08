@@ -20,7 +20,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -101,16 +101,17 @@ final class Head {
 		\do_action( 'the_seo_framework_before_meta_output' );
 
 		// Limit processing and redundant tags on 404 and search.
+		// TODO consider switching is_404 and aqp again when resolved: https://core.trac.wordpress.org/ticket/51117.
 		switch ( true ) {
 			case \is_search():
 				$generator_pools = [ 'Robots', 'URI', 'Open_Graph', 'Theme_Color', 'Webmasters', 'Schema' ];
 				break;
+			case Query\Utils::is_query_exploited():
+				// search cannot be exploited, hence they're tested earlier.
+				$generator_pools = [ 'Robots', 'Advanced_Query_Protection', 'Theme_Color', 'Webmasters' ];
+				break;
 			case \is_404():
 				$generator_pools = [ 'Robots', 'Theme_Color', 'Webmasters', 'Schema' ];
-				break;
-			case Query\Utils::is_query_exploited():
-				// search and 404 cannot be exploited, hence they're tested earlier.
-				$generator_pools = [ 'Robots', 'Advanced_Query_Protection', 'Theme_Color', 'Webmasters' ];
 				break;
 			default:
 				$generator_pools = [

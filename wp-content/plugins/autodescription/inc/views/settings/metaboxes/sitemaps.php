@@ -23,7 +23,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2016 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2016 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -58,11 +58,6 @@ switch ( $instance ) :
 				'name'     => \__( 'Metadata', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_sitemaps_metabox_metadata_tab' ],
 				'dashicon' => 'index-card',
-			],
-			'notify'   => [
-				'name'     => \_x( 'Ping', 'Ping or notify search engine', 'autodescription' ),
-				'callback' => [ Admin\Settings\Plugin::class, '_sitemaps_metabox_notify_tab' ],
-				'dashicon' => 'megaphone',
 			],
 			'style'    => [
 				'name'     => \__( 'Style', 'autodescription' ),
@@ -112,6 +107,12 @@ switch ( $instance ) :
 		<?php
 		HTML::header_title( \__( 'Sitemap Output', 'autodescription' ) );
 
+		HTML::description( \__( 'Search engines crawl links to discover all pages and archives without requiring a sitemap. The optimized sitemap only includes the latest pages and no archives, so search engines can find and process vital changes quickly.', 'autodescription' ) );
+
+		if ( ! $has_sitemap_plugin && ! $sitemap_detected ) {
+			HTML::description( \__( 'Disable the optimized sitemap to use complex sitemaps that include all links at the cost of indexing speed.', 'autodescription' ) );
+		}
+
 		HTML::wrap_fields(
 			Input::make_checkbox( [
 				'id'     => 'sitemaps_output',
@@ -127,6 +128,7 @@ switch ( $instance ) :
 		);
 
 		if ( ! $has_sitemap_plugin && ! $sitemap_detected ) {
+			// Note to self: Do not toggle this condition in JS. The user would get a 404 message if the options have yet to be saved.
 			if ( Data\Plugin::get_option( 'sitemaps_output' ) ) {
 				HTML::description_noesc( sprintf(
 					'<a href="%s" target=_blank rel=noopener>%s</a>',
@@ -178,20 +180,43 @@ switch ( $instance ) :
 		<?php
 		HTML::description( \__( 'Consider lowering this value when the sitemap shows a white screen or notifies you of memory exhaustion.', 'autodescription' ) );
 		?>
-		<hr>
-		<?php
-		HTML::header_title( \__( 'Transient Cache Settings', 'autodescription' ) );
-		HTML::description( \__( 'To improve performance, generated output can be stored in the database as transient cache.', 'autodescription' ) );
+		<div id=tsf-sitemap-transient-cache-settings>
+			<hr>
+			<?php
+			HTML::header_title( \__( 'Transient Cache Settings', 'autodescription' ) );
+			HTML::description( \__( 'To improve performance, generated output can be stored in the database as transient cache.', 'autodescription' ) );
 
-		HTML::wrap_fields(
-			Input::make_checkbox( [
-				'id'     => 'cache_sitemap',
-				'label'  => \esc_html__( 'Enable optimized sitemap generation cache?', 'autodescription' )
-					. ' ' . HTML::make_info( \__( 'Generating the sitemap can use a lot of server resources.', 'autodescription' ), '', false ),
-				'escape' => false,
-			] ),
-			true,
-		);
+			HTML::wrap_fields(
+				Input::make_checkbox( [
+					'id'     => 'cache_sitemap',
+					'label'  => \esc_html__( 'Enable sitemap generation cache?', 'autodescription' )
+						. ' ' . HTML::make_info( \__( 'Generating the sitemap can use a lot of server resources.', 'autodescription' ), '', false ),
+					'escape' => false,
+				] ),
+				true,
+			);
+
+			?>
+			<div id=tsf-sitemap-prerendering-settings>
+				<?php
+				HTML::wrap_fields(
+					Input::make_checkbox( [
+						'id'          => 'sitemap_cron_prerender',
+						'label'       => \esc_html__( 'Prerender sitemap via cron?', 'autodescription' )
+							. ' ' . HTML::make_info(
+								\__( 'This mitigates timeouts search engines may experience when waiting for the sitemap to render.', 'autodescription' ),
+								'',
+								false,
+							),
+						'description' => \esc_html__( 'Only enable prerendering when the sitemap takes longer than 60 seconds to generate.', 'autodescription' ),
+						'escape'      => false,
+					] ),
+					true,
+				);
+				?>
+			</div>
+		</div>
+		<?php
 		break;
 
 	case 'robots':
@@ -258,7 +283,10 @@ switch ( $instance ) :
 
 	case 'metadata':
 		HTML::header_title( \__( 'Timestamps Settings', 'autodescription' ) );
-		HTML::description( \__( 'The modified time suggests to search engines where to look for content changes first.', 'autodescription' ) );
+		HTML::description_noesc( Markdown::convert(
+			/* translators: the backticks are Markdown! Preserve them as-is! */
+			\esc_html__( 'The `<lastmod>` tag shows the last updated time of a page. It helps search engines to quickly find content changes via the sitemap.', 'autodescription' )
+		) );
 
 		HTML::wrap_fields(
 			Input::make_checkbox( [
@@ -274,65 +302,9 @@ switch ( $instance ) :
 		);
 		break;
 
-	case 'notify':
-		HTML::header_title( \__( 'Ping Settings', 'autodescription' ) );
-		HTML::description( \__( 'Notifying search engines of a sitemap change is helpful to get your content indexed as soon as possible.', 'autodescription' ) );
-		HTML::description( \__( 'By default this will happen at most once an hour.', 'autodescription' ) );
-
-		HTML::wrap_fields(
-			[
-				Input::make_checkbox( [
-					'id'     => 'ping_use_cron',
-					'label'  => \esc_html__( 'Use cron for pinging?', 'autodescription' )
-						. ' ' . HTML::make_info(
-							\__( 'This speeds up post and term saving processes, by offsetting pinging to a later time.', 'autodescription' ),
-							'',
-							false,
-						),
-					'escape' => false,
-				] ),
-				Input::make_checkbox( [
-					'id'          => 'ping_use_cron_prerender',
-					'label'       => \esc_html__( 'Prerender optimized sitemap before pinging via cron?', 'autodescription' )
-						. ' ' . HTML::make_info(
-							\__( 'This mitigates timeouts some search engines may experience when waiting for the sitemap to render. Transient caching for the sitemap must be enabled for this to work.', 'autodescription' ),
-							'',
-							false,
-						),
-					'description' => \esc_html__( 'Only enable prerendering when generating the sitemap takes over 60 seconds.', 'autodescription' ),
-					'escape'      => false,
-				] ),
-			],
-			true,
-		);
-
-		?>
-		<hr>
-		<?php
-		HTML::header_title( \__( 'Notify Search Engines', 'autodescription' ) );
-
-		$engines = [
-			'ping_google' => 'Google',
-			'ping_bing'   => 'Bing',
-		];
-
-		$ping_checkbox = '';
-
-		foreach ( $engines as $option => $engine ) {
-			/* translators: %s = Google */
-			$ping_label     = sprintf( \__( 'Notify %s about sitemap changes?', 'autodescription' ), $engine );
-			$ping_checkbox .= Input::make_checkbox( [
-				'id'    => $option,
-				'label' => $ping_label,
-			] );
-		}
-
-		HTML::wrap_fields( $ping_checkbox, true );
-		break;
-
 	case 'style':
-		HTML::header_title( \__( 'Optimized Sitemap Styling Settings', 'autodescription' ) );
-		HTML::description( \__( 'You can style the optimized sitemap to give it a more personal look for your visitors. Search engines do not use these styles.', 'autodescription' ) );
+		HTML::header_title( \__( 'Sitemap Styling Settings', 'autodescription' ) );
+		HTML::description( \__( 'You can style the sitemap to give it a more personal look for your visitors. Search engines do not use these styles.', 'autodescription' ) );
 		HTML::description( \__( 'Note: Changes may not appear to have an effect directly because the stylesheet is cached in the browser for 30 minutes.', 'autodescription' ) );
 		?>
 		<hr>

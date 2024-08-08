@@ -18,7 +18,7 @@ use \The_SEO_Framework\Helper\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2015 - 2023 Sybre Waaijer, CyberWire (https://cyberwire.nl/)
+ * Copyright (C) 2015 - 2024 Sybre Waaijer, CyberWire (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -208,7 +208,7 @@ function _upgrade( $previous_version ) {
 	// This means no data may be erased for at least 1 major version, or 1 year, whichever is later.
 	// We must manually delete settings that are no longer used; we merge them otherwise.
 	// When a user upgrades beyond this range, they aren't expected to roll back.
-	$versions = [ '1', '2701', '2802', '2900', '3001', '3103', '3300', '4051', '4103', '4110', '4120', '4200', '4270', '5001' ];
+	$versions = [ '1', '2701', '2802', '2900', '3001', '3103', '3300', '4051', '4103', '4110', '4200', '4270', '5001', '5050' ];
 
 	foreach ( $versions as $_version ) {
 		if ( $current_version < $_version ) {
@@ -728,7 +728,6 @@ function _do_upgrade_3103() {
 /**
  * Flushes rewrite rules for one last time.
  * Converts title separator's dash option to ndash.
- * Enables pinging via cron.
  * Flips the home_title_location option from left to right, and vice versa.
  *
  * Annotated as 3300, because 4.0 was supposed to be the 3.3 update before we
@@ -749,15 +748,6 @@ function _do_upgrade_3300() {
 		// Convert 'dash' title option to 'hyphen', silently. Nothing notably changes for the user.
 		if ( 'dash' === Data\Plugin::get_option( 'title_separator' ) )
 			Data\Plugin::update_option( 'title_separator', 'hyphen' );
-
-		// Add default cron pinging option.
-		Data\Plugin::update_option( 'ping_use_cron', 1 );
-
-		if ( Data\Plugin::get_option( 'ping_google' ) || Data\Plugin::get_option( 'ping_bing' ) ) {
-			_add_upgrade_notice(
-				\__( 'A cronjob is now used to ping search engines, and it alerts them to changes in your sitemap.', 'autodescription' )
-			);
-		}
 
 		// Flip the homepage title location to make it in line with all other titles.
 		$home_title_location = Data\Plugin::get_option( 'home_title_location' );
@@ -850,16 +840,6 @@ function _do_upgrade_4110() {
 }
 
 /**
- * Registers the `ping_use_cron_prerender` option, boolean.
- *
- * @since 4.1.2
- */
-function _do_upgrade_4120() {
-	if ( \get_option( 'the_seo_framework_initial_db_version' ) < '4120' )
-		Data\Plugin::update_option( 'ping_use_cron_prerender', 0 );
-}
-
-/**
  * Removes the global `the_seo_framework_tested_upgrade_version` option.
  *
  * @since 4.2.0
@@ -945,5 +925,21 @@ function _do_upgrade_5001() {
 			"DELETE FROM $wpdb->options WHERE option_name LIKE %s",
 			$wpdb->esc_like( "_transient_timeout_tsf_exclude_1_{$GLOBALS['blog_id']}_" ) . '%',
 		) );
+	}
+}
+
+/**
+ * Changes `ping_use_cron_prerender` to `sitemap_cron_prerender`.
+ * Subsequently, it removes indexes `ping_google` and `ping_bing`. Downgrading will keep these disabled, which is fine.
+ *
+ * @since 5.0.5
+ */
+function _do_upgrade_5050() {
+
+	if ( \get_option( 'the_seo_framework_initial_db_version' ) < '5050' ) {
+		Data\Plugin::update_option(
+			'sitemap_cron_prerender',
+			Data\Plugin::get_option( 'ping_use_cron_prerender' ) ?: 0,
+		);
 	}
 }

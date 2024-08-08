@@ -28,6 +28,11 @@ jQuery(
 			}
 		);
 
+		setTimeout(function() {
+			$( '.ns-cloner-main-form' ).trigger( 'ns_cloner_form_refresh' ); // refresh forms
+		}, 1000 );
+		
+
 		// Set up action when source site is changed.
 		$( '.ns-cloner-site-select' ).change(
 			function ( e ) {
@@ -782,6 +787,16 @@ jQuery(
 				'speed': 10000
 			}).data('slider');
 		}
+
+		$( document ).on(
+			'click',
+			'.ns-cloner-report-collapse-warnings',
+			function( e ) {
+				e.preventDefault();
+				$( this ).parent().remove();
+				$( '.ns-cloner-report-collapsible' ).stop().slideToggle( 500 );
+			},
+		);
 	}
 );
 

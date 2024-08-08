@@ -355,8 +355,9 @@ class OMAPI_Blocks {
 	 * @return string
 	 */
 	public function get_output( $atts ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$context  = ! empty( $_REQUEST['context'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['context'] ) ) : '';
 		$is_rest  = defined( 'REST_REQUEST' ) && REST_REQUEST;
-		$context  = ! empty( $_REQUEST['context'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['context'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$is_gutes = $is_rest && 'edit' === $context;
 
 		// Our Guten-block handles the embed output manually.
@@ -364,11 +365,15 @@ class OMAPI_Blocks {
 			return;
 		}
 
+		// Unslash and sanitize the shortcode attributes.
+		$atts = array_map( 'sanitize_text_field', wp_unslash( $atts ) );
+
 		// Gutenberg block shortcodes default to following the rules.
 		// See assets/js/campaign-selector.js, attributes.followrules.
 		if ( ! isset( $atts['followrules'] ) ) {
 			$atts['followrules'] = true;
 		}
+		$atts['followrules'] = wp_validate_boolean( $atts['followrules'] );
 
 		$output = $this->base->shortcode->shortcode( $atts );
 

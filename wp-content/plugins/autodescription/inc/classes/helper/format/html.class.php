@@ -17,7 +17,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -119,10 +119,10 @@ class HTML {
 	 *                         'clear'   : @param ?string[] HTML elements that should be emptied and replaced with a space.
 	 *                                                      If not set or null, skip check.
 	 *                                                      If empty array, skips stripping; otherwise, use input.
-	 *                         'strip'   : @param bool      If set, strip_tags() is performed before returning the output.
-	 *                                                      Recommended always true, since Regex doesn't understand XML.
-	 *                         'passes'  : @param int       The maximum number of passes 'space' may conduct. More is slower,
-	 *                                                      but more accurate. 'clear' is unaffected.
+	 *                         'strip'   : @param ?bool     If set, strip_tags() is performed before returning the output.
+	 *                                                      Recommended always true, since Regex doesn't understand XML. Default true.
+	 *                         'passes'  : @param ?int      If set, the maximum number of passes 'space' may conduct. More is slower,
+	 *                                                      but more accurate. 'clear' is unaffected. Default 1.
 	 *                      }
 	 *                      NOTE: WARNING The array values are forwarded to a regex without sanitization/quoting.
 	 *                      NOTE: Unlisted, script, and style tags will be stripped via PHP's `strip_tags()`. (togglable via `$args['strip']`)
@@ -176,8 +176,9 @@ class HTML {
 		if ( ! $parse ) {
 			// Void elements never have content. 'param', 'source', 'track',
 			$void = [ 'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'wbr' ];
-			// Phrase elements should be replaced without spacing. There are more phrasing (54) than block elements (39)...
-			// Blocks: address, area, article, aside, audio, blockquote, br, button, canvas, dd, details, dialog, div, dl, dt, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, li, ol, pre, table, td, template, textarea, th, tr, ul, video
+			// Phrase elements should be replaced without spacing around them. There are more phrasing (54) than block elements (39)...
+			// Blocks: address, area, article, aside, audio, blockquote, br, button, canvas, dd, details, dialog, div, dl, dt, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, li, ol, pre, table, td, template, textarea, th, tr, ul, video.
+			// Some block elements can be interpreted as phrasing elements, like audio, canvas, button, and video; hence, they're also listed in $phrase.
 			// 'br' is a phrase element, but also a struct whitespace -- let's omit it so we can substitute it with a space as block.
 			$phrase = [ 'a', 'area', 'abbr', 'audio', 'b', 'bdo', 'bdi', 'button', 'canvas', 'cite', 'code', 'data', 'datalist', 'del', 'dfn', 'em', 'embed', 'i', 'iframe', 'img', 'input', 'ins', 'link', 'kbd', 'label', 'map', 'mark', 'meta', 'math', 'meter', 'noscript', 'object', 'output', 'picture', 'progress', 'q', 'ruby', 's', 'samp', 'script', 'select', 'small', 'span', 'strong', 'sub', 'sup', 'svg', 'textarea', 'time', 'u', 'var', 'video', 'wbr' ];
 
@@ -270,7 +271,7 @@ class HTML {
 	}
 
 	/**
-	 * Extracts a usable excerpt from the content.
+	 * Extracts a usable excerpt from singular content.
 	 *
 	 * @since 2.8.0
 	 * @since 2.8.2 1. Added `$allow_shortcodes` parameter.
@@ -320,14 +321,23 @@ class HTML {
 				$passes = 2;
 		}
 
-		// Missing 'th', 'tr', 'tbody', 'thead', 'dd', 'dt', and 'li' -- these are obligatory subelements of what's already cleared.
-		$strip_args = [
-			'space'  =>
-				[ 'article', 'br', 'blockquote', 'details', 'div', 'hr', 'p', 'section' ],
-			'clear'  =>
-				[ 'address', 'area', 'aside', 'audio', 'blockquote', 'button', 'canvas', 'code', 'datalist', 'del', 'dialog', 'dl', 'fieldset', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'iframe', 'input', 'label', 'map', 'menu', 'meter', 'nav', 'noscript', 'ol', 'object', 'output', 'pre', 'progress', 's', 'script', 'select', 'style', 'svg', 'table', 'template', 'textarea', 'ul', 'video' ],
-			'passes' => $passes,
-		];
+		/**
+		 * Missing 'th', 'tr', 'tbody', 'thead', 'dd', 'dt', and 'li' -- these are obligatory subelements of what's already cleared.
+		 *
+		 * @since 5.0.5
+		 * @param array $strip_args The content stripping arguments, associative.
+		 *                          Refer to the second parameter of `\The_SEO_Framework\Helper\Format\HTML::strip_tags_cs()`.
+		 */
+		$strip_args = (array) \apply_filters(
+			'the_seo_framework_extract_content_strip_args',
+			[
+				'space'  =>
+					[ 'article', 'br', 'blockquote', 'details', 'div', 'hr', 'p', 'section' ],
+				'clear'  =>
+					[ 'address', 'area', 'aside', 'audio', 'blockquote', 'button', 'canvas', 'code', 'datalist', 'del', 'dialog', 'dl', 'fieldset', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'iframe', 'input', 'label', 'map', 'menu', 'meter', 'nav', 'noscript', 'ol', 'object', 'output', 'pre', 'progress', 's', 'script', 'select', 'style', 'svg', 'table', 'template', 'textarea', 'ul', 'video' ],
+				'passes' => $passes,
+			]
+		);
 
 		/**
 		 * Always strip shortcodes unless specifically allowed via the filter.
@@ -336,7 +346,7 @@ class HTML {
 		 * @since 2.6.6.1
 		 * @since 5.0.0 Added the third `$args` parameter.
 		 * @param bool $allow_shortcodes Whether to allow shortcodes.
-		 * @param array $args The arguments for the extraction.
+		 * @param array $args The extraction parameters.
 		 */
 		if ( ! $args['allow_shortcodes'] || ! \apply_filters( 'the_seo_framework_allow_excerpt_shortcode_tags', false, $args ) )
 			$html = \strip_shortcodes( $html );

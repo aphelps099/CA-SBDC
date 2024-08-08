@@ -1,57 +1,48 @@
-/**
- * External dependencies
- */
 import classnames from 'classnames/dedupe';
 
-/**
- * Internal dependencies
- */
-import FieldLabel from '../../field-label';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { PanelBody, TextControl } from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+
 import { getFieldAttributes } from '../../field-attributes';
-
-/**
- * WordPress dependencies
- */
-const { __ } = wp.i18n;
-
-const { applyFilters } = wp.hooks;
-
-const { Fragment } = wp.element;
-
-const { PanelBody, TextControl } = wp.components;
-
-const { InspectorControls, useBlockProps } = wp.blockEditor;
+import FieldLabel from '../../field-label';
 
 /**
  * Block Edit Class.
+ *
+ * @param props
  */
 export default function BlockEdit(props) {
-  const { attributes, setAttributes } = props;
+	const { attributes, setAttributes } = props;
 
-  const { default: defaultVal } = props;
+	const { default: defaultVal } = props;
 
-  let { className = '' } = props;
+	let { className = '' } = props;
 
-  className = classnames('ghostkit-form-field ghostkit-form-field-hidden', className);
-  className = applyFilters('ghostkit.editor.className', className, props);
+	className = classnames(
+		'ghostkit-form-field ghostkit-form-field-hidden',
+		className
+	);
+	className = applyFilters('ghostkit.editor.className', className, props);
 
-  const blockProps = useBlockProps({ className });
+	const blockProps = useBlockProps({ className });
 
-  return (
-    <Fragment>
-      <InspectorControls>
-        <PanelBody>
-          <TextControl
-            label={__('Value', 'ghostkit')}
-            value={defaultVal}
-            onChange={(val) => setAttributes({ default: val })}
-          />
-        </PanelBody>
-      </InspectorControls>
-      <div {...blockProps}>
-        <FieldLabel {...props} />
-        <TextControl type="text" {...getFieldAttributes(attributes)} />
-      </div>
-    </Fragment>
-  );
+	return (
+		<>
+			<InspectorControls>
+				<PanelBody>
+					<TextControl
+						label={__('Value', 'ghostkit')}
+						value={defaultVal}
+						onChange={(val) => setAttributes({ default: val })}
+					/>
+				</PanelBody>
+			</InspectorControls>
+			<div {...blockProps}>
+				<FieldLabel {...props} />
+				<TextControl type="text" {...getFieldAttributes(attributes)} />
+			</div>
+		</>
+	);
 }

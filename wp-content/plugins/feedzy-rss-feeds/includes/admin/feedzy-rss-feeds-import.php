@@ -95,14 +95,14 @@ class Feedzy_Rss_Feeds_Import {
 	 * @since       ?
 	 * @access      public
 	 */
-	public function upsell_content( $content ) {
+	public function upsell_content( $content, $area, $location ) {
 		if ( ! feedzy_is_pro() ) {
 			$content = '
 			<div class="only-pro-content">
 				<div class="only-pro-container">
 					<div class="only-pro-inner upgrade-alert">
 						' . __( 'This feature is available in the Pro version.  Unlock more features, by', 'feedzy-rss-feeds' ) . '
-						<a target="_blank" href="' . tsdk_utmify( FEEDZY_UPSELL_LINK, 'upsell-content', 'import' ) . '" title="' . __( 'Buy Now', 'feedzy-rss-feeds' ) . '">' . __( 'upgrading to Feedzy Pro', 'feedzy-rss-feeds' ) . '</a>
+						<a target="_blank" href="' . tsdk_utmify( FEEDZY_UPSELL_LINK, $area, $location ) . '" title="' . __( 'Buy Now', 'feedzy-rss-feeds' ) . '">' . __( 'upgrading to Feedzy Pro', 'feedzy-rss-feeds' ) . '</a>
 					</div>
 				</div>
 			</div>';
@@ -400,7 +400,10 @@ class Feedzy_Rss_Feeds_Import {
 		$default_thumbnail_id = 0;
 		if ( feedzy_is_pro() ) {
 			$default_thumbnail_id = get_post_meta( $post->ID, 'default_thumbnail_id', true );
-			if ( empty( $default_thumbnail_id ) ) {
+			if (
+				empty( $default_thumbnail_id ) &&
+				'0' !== $default_thumbnail_id // Can use the fallback image from Global Settings.
+			) {
 				$default_thumbnail_id = ! empty( $this->free_settings['general']['default-thumbnail-id'] ) ? (int) $this->free_settings['general']['default-thumbnail-id'] : 0;
 			}
 		}
@@ -525,6 +528,9 @@ class Feedzy_Rss_Feeds_Import {
 					add_post_meta( $post_id, $key, $value );
 				}
 				if ( ! $value ) {
+					if ( 'default_thumbnail_id' === $key && '0' === $value ) { // Mark the feed as having no default fallback image (including the global fallback).
+						continue;
+					}
 					delete_post_meta( $post_id, $key );
 				}
 			}
@@ -1020,6 +1026,11 @@ class Feedzy_Rss_Feeds_Import {
 	 * @access  private
 	 */
 	private function import_status() {
+
+		if ( ! feedzy_current_user_can() ) {
+			return wp_send_json_error( array( 'msg' => __( 'You do not have permission to do this.', 'feedzy-rss-feeds' ) ) );
+		}
+
 		global $wpdb;
 
 		check_ajax_referer( FEEDZY_BASEFILE, 'security' );
@@ -1182,13 +1193,20 @@ class Feedzy_Rss_Feeds_Import {
 			'post_status' => 'publish',
 			'numberposts' => 99,
 		);
+
 		$feedzy_imports = get_posts( $args );
 		foreach ( $feedzy_imports as $job ) {
-			$result = $this->run_job( $job, $max );
-			if ( empty( $result ) ) {
-				$this->run_job( $job, $max );
+			try {
+				$result = $this->run_job( $job, $max );
+				if ( empty( $result ) ) {
+					$this->run_job( $job, $max );
+				}
+				do_action( 'feedzy_run_cron_extra', $job );
+			} catch ( Exception $e ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( '[Feedzy Run Cron][Post title: ' . ( ! empty( $job->post_title ) ? $job->post_title : '' ) . '] Error: ' . $e->getMessage() );
+				}
 			}
-			do_action( 'feedzy_run_cron_extra', $job );
 		}
 	}
 
@@ -1224,15 +1242,8 @@ class Feedzy_Rss_Feeds_Import {
 		$import_auto_translation  = $this->feedzy_is_agency() && 'yes' === $import_auto_translation ? true : false;
 		$import_translation_lang  = get_post_meta( $job->ID, 'import_auto_translation_lang', true );
 		$max                      = $import_feed_limit;
-		// Used as a new line character in import content.
-		$import_content = rawurldecode( $import_content );
-		$import_content = str_replace( PHP_EOL, "\r\n", $import_content );
-		$import_content = trim( $import_content );
 
-		$action_control = $this->handle_content_actions( $import_content );
-		$import_content = $action_control->get_tags();
-
-		if ( metadata_exists( $import_post_type, $job->ID, 'import_post_status' ) ) {
+		if ( metadata_exists( 'post', $job->ID, 'import_post_status' ) ) {
 			$import_post_status = get_post_meta( $job->ID, 'import_post_status', true );
 		} else {
 			add_post_meta( $job->ID, 'import_post_status', 'publish' );
@@ -1408,7 +1419,7 @@ class Feedzy_Rss_Feeds_Import {
 			}
 
 			// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-			$item_date = date( get_option( 'date_format' ) . ' at ' . get_option( 'time_format' ), $item['item_date'] );
+			$item_date = wp_date( get_option( 'date_format' ) . ' at ' . get_option( 'time_format' ), $item['item_date'] );
 			$item_date = $item['item_date_formatted'];
 
 			// Get translated item title.
@@ -1416,6 +1427,10 @@ class Feedzy_Rss_Feeds_Import {
 			if ( $import_auto_translation && ( false !== strpos( $import_title, '[#translated_title]' ) || false !== strpos( $post_excerpt, '[#translated_title]' ) ) ) {
 				$translated_title = apply_filters( 'feedzy_invoke_auto_translate_services', $item['item_title'], '[#translated_title]', $import_translation_lang, $job, $language_code, $item );
 			}
+
+			$import_title = rawurldecode( $import_title );
+			$import_title = str_replace( PHP_EOL, "\r\n", $import_title );
+			$import_title = trim( $import_title );
 
 			$post_title = str_replace(
 				array(
@@ -1438,6 +1453,10 @@ class Feedzy_Rss_Feeds_Import {
 				),
 				$import_title
 			);
+
+			// Run all the actions stored for the embedded/serialized tags in the title field.
+			$title_action = $this->get_actions_runner( $post_title, 'item_title' );
+			$post_title   = $title_action->run_action_job( $title_action->get_serialized_actions(), $translated_title, $job, $language_code, $item );
 
 			if ( $this->feedzy_is_business() ) {
 				$post_title = apply_filters( 'feedzy_parse_custom_tags', $post_title, $item_obj );
@@ -1478,6 +1497,11 @@ class Feedzy_Rss_Feeds_Import {
 				$translated_content = ! empty( $item['item_content'] ) ? $item['item_content'] : $item['item_description'];
 				$translated_content = apply_filters( 'feedzy_invoke_auto_translate_services', $translated_content, '[#translated_content]', $import_translation_lang, $job, $language_code, $item );
 			}
+
+			// Used as a new line character in import content.
+			$import_content = rawurldecode( $import_content );
+			$import_content = str_replace( PHP_EOL, "\r\n", $import_content );
+			$import_content = trim( $import_content );
 
 			$post_content = str_replace(
 				array(
@@ -1532,10 +1556,11 @@ class Feedzy_Rss_Feeds_Import {
 				}
 				$post_content = apply_filters( 'feedzy_invoke_services', $post_content, 'full_content', $full_content, $job );
 			}
-
+			// Item content action.
+			$content_action = $this->get_actions_runner( $post_content, 'item_content' );
+			$post_content   = $content_action->get_serialized_actions();
 			// Item content action process.
-			$post_content = $action_control->run_action_job( $post_content, $import_translation_lang, $job, $language_code, $item );
-
+			$post_content = $content_action->run_action_job( $post_content, $import_translation_lang, $job, $language_code, $item );
 			// Parse custom tags.
 			if ( $this->feedzy_is_business() ) {
 				$post_content = apply_filters( 'feedzy_parse_custom_tags', $post_content, $item_obj );
@@ -1562,9 +1587,9 @@ class Feedzy_Rss_Feeds_Import {
 			}
 
 			// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-			$item_date = date( 'Y-m-d H:i:s', $item['item_date'] );
+			$item_date = wp_date( 'Y-m-d H:i:s', $item['item_date'] );
 			// phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
-			$now = date( 'Y-m-d H:i:s' );
+			$now = wp_date( 'Y-m-d H:i:s' );
 			if ( trim( $import_date ) === '' ) {
 				$post_date = $now;
 			}
@@ -1635,35 +1660,36 @@ class Feedzy_Rss_Feeds_Import {
 			}
 
 			if ( 'attachment' === $import_post_type ) {
-				$image_url   = '';
-				$img_success = true;
-				$new_post_id = 0;
+				$image_source_url = '';
+				$img_success      = true;
+				$new_post_id      = 0;
+				$feed_img_tag  = ! empty( $import_featured_img ) && is_string( $import_featured_img ) ? $import_featured_img : '';
 
 				// image tag
-				if ( strpos( $import_featured_img, '[#item_image]' ) !== false ) {
+				if ( strpos( $feed_img_tag, '[#item_image]' ) !== false ) {
 					// image exists in item
 					if ( ! empty( $item['item_img_path'] ) ) {
-						$image_url = str_replace( '[#item_image]', $item['item_img_path'], $import_featured_img );
+						$image_source_url = str_replace( '[#item_image]', $item['item_img_path'], $feed_img_tag );
 					} else {
 						$img_success = false;
 					}
-				} elseif ( strpos( $import_featured_img, '[#item_custom' ) !== false ) {
+				} elseif ( strpos( $feed_img_tag, '[#item_custom' ) !== false ) {
 					// custom image tag
 					if ( $this->feedzy_is_business() || $this->feedzy_is_personal() ) {
-						$value = apply_filters( 'feedzy_parse_custom_tags', $import_featured_img, $item_obj );
+						$value = apply_filters( 'feedzy_parse_custom_tags', $feed_img_tag, $item_obj );
 					}
 
 					if ( ! empty( $value ) && strpos( $value, '[#item_custom' ) === false ) {
-						$image_url = $value;
+						$image_source_url = $value;
 					} else {
 						$img_success = false;
 					}
 				} else {
-					$image_url = $import_featured_img;
+					$image_source_url = $feed_img_tag;
 				}
 
-				if ( ! empty( $image_url ) ) {
-					$img_success = $this->generate_featured_image( $image_url, 0, $item['item_title'], $import_errors, $import_info, $new_post );
+				if ( ! empty( $image_source_url ) ) {
+					$img_success = $this->try_save_featured_image( $image_source_url, 0, $item['item_title'], $import_errors, $import_info, $new_post );
 					$new_post_id = $img_success;
 				}
 
@@ -1745,33 +1771,32 @@ class Feedzy_Rss_Feeds_Import {
 			do_action( 'feedzy_import_extra', $job, $item_obj, $new_post_id, $import_errors, $import_info );
 
 			if ( ! empty( $import_featured_img ) && 'attachment' !== $import_post_type ) {
-				$image_url   = '';
+				$image_source_url   = '';
 				$img_success = true;
 
-				// image tag
-				if ( strpos( $import_featured_img, '[#item_image]' ) !== false ) {
-					// image exists in item
-					if ( ! empty( $item['item_img_path'] ) ) {
-						$image_url = str_replace( '[#item_image]', $item['item_img_path'], $import_featured_img );
+				$feed_img_tag = false === strpos( $import_featured_img, '[[{"value":' ) ? $import_featured_img : '[#item_image]'; // Use feed default image when we are using chained actions.
+
+				// Set the feed image as default value for the image source.
+				if ( strpos( $feed_img_tag, '[#item_image]' ) !== false ) {
+					if ( ! empty( $item['item_img_path'] ) ) { // image exists in item
+						$image_source_url = str_replace( '[#item_image]', $item['item_img_path'], $feed_img_tag );
 					} else {
 						$img_success = false;
 					}
-				} elseif ( strpos( $import_featured_img, '[#item_custom' ) !== false ) {
-					// custom image tag
-					if ( $this->feedzy_is_business() || $this->feedzy_is_personal() ) {
-						$value = apply_filters( 'feedzy_parse_custom_tags', $import_featured_img, $item_obj );
-					}
+				} elseif (
+					( $this->feedzy_is_business() || $this->feedzy_is_personal() ) && // PRO feature.
+					false !== strpos( $feed_img_tag, '[#item_custom' )
+				) {
+					$value = apply_filters( 'feedzy_parse_custom_tags', $feed_img_tag, $item_obj ); // custom image tag
 					if ( ! empty( $value ) && strpos( $value, '[#item_custom' ) === false ) {
-						$image_url = $value;
+						$image_source_url = $value;
 					} else {
 						$img_success = false;
 					}
-				} else {
-					$image_url = $import_featured_img;
 				}
 
 				// Fetch image from graby.
-				if ( empty( $image_url ) && ( wp_doing_cron() || defined( 'FEEDZY_PRO_FETCH_ITEM_IMG_URL' ) ) ) {
+				if ( empty( $image_source_url ) && ( wp_doing_cron() && defined( 'FEEDZY_PRO_FETCH_ITEM_IMG_URL' ) ) ) {
 					// if license does not exist, use the site url
 					// this should obviously never happen unless on dev instances.
 					$license = apply_filters( 'product_feedzy_license_key', sprintf( 'n/a - %s', get_site_url() ) );
@@ -1802,7 +1827,7 @@ class Feedzy_Rss_Feeds_Import {
 						if ( ! is_wp_error( $body ) ) {
 							$response_data = json_decode( $body, true );
 							if ( isset( $response_data['url'] ) ) {
-								$image_url = $response_data['url'];
+								$image_source_url = $response_data['url'];
 							}
 						} else {
 							// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
@@ -1814,15 +1839,25 @@ class Feedzy_Rss_Feeds_Import {
 					}
 				}
 
-				if ( ! empty( $image_url ) ) {
-					if ( 'yes' === $import_item_img_url ) {
-						// Set external image URL.
-						update_post_meta( $new_post_id, 'feedzy_item_external_url', $image_url );
-					} else {
-						// if import_featured_img is a tag.
-						$img_success = $this->generate_featured_image( $image_url, $new_post_id, $item['item_title'], $import_errors, $import_info );
+				if ( 'yes' === $import_item_img_url || ! $this->tryReuseExistingFeaturedImage( $img_success, $item['item_title'], $new_post_id ) ) {
+					// Run chained actions.
+					$import_featured_img = rawurldecode( $import_featured_img );
+					$import_featured_img = trim( $import_featured_img );
+					$img_action          = $this->get_actions_runner( $import_featured_img, 'item_image' );
+					// Item image action process.
+					$image_source_url = $img_action->run_action_job( $img_action->get_serialized_actions(), $import_translation_lang, $job, $language_code, $item, $image_source_url );
+
+					if ( ! empty( $image_source_url ) ) {
+						if ( 'yes' === $import_item_img_url ) {
+							// Set external image URL.
+							update_post_meta( $new_post_id, 'feedzy_item_external_url', $image_source_url );
+						} else {
+							// if import_featured_img is a tag.
+							$img_success = $this->try_save_featured_image( $image_source_url, $new_post_id, $item['item_title'], $import_errors, $import_info );
+						}
 					}
 				}
+
 				// Set default thumbnail image.
 				if ( ! $img_success && ! empty( $default_thumbnail ) ) {
 					$img_success = set_post_thumbnail( $new_post_id, $default_thumbnail );
@@ -1930,41 +1965,153 @@ class Feedzy_Rss_Feeds_Import {
 	}
 
 	/**
+	 * Reuses an existing featured image if possible.
+	 *
+	 * @param int|bool $result The result of the operation. It can be a boolean or an attachment ID.
+	 * @param string   $title_feed The title of the feed.
+	 * @param int      $post_id The post ID.
+	 *
+	 * @return bool
+	 */
+	public function tryReuseExistingFeaturedImage( &$result, $title_feed, $post_id = 0 ) {
+		if ( ! function_exists( 'post_exists' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+		// Find existing attachment by feed title.
+		$attachment_id = post_exists( $title_feed, '', '', 'attachment' );
+
+		if ( ! $attachment_id ) {
+			return false;
+		}
+
+		$result = set_post_thumbnail( $post_id, $attachment_id );
+		return true;
+	}
+
+	/**
+	 * Will retireve the file type of a file by its URL.
+	 *
+	 * @param string $url The URL of the file.
+	 *
+	 * @return string
+	 */
+	private function get_file_type_by_url( $url ) {
+		$response  = wp_remote_get( $url );
+
+		// wp_remote_retrieve_header can return an array if there are multiple headers with the same name
+		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
+		if ( is_array( $content_type ) ) {
+			$content_type = $content_type[0];
+		}
+
+		return $content_type;
+	}
+
+	/**
+	 * Will escape the provided URL and convert it to ASCII.
+	 *
+	 * @param string $url The URL to convert.
+	 *
+	 * @return string
+	 */
+	private function convert_url_to_ascii( $url ) {
+		$parts = wp_parse_url( $url );
+		if ( empty( $parts ) ) {
+			return esc_url( $url );
+		}
+
+		$scheme = '';
+		if ( isset( $parts['scheme'] ) ) {
+			$scheme = $parts['scheme'] . '://';
+		}
+
+		$host = '';
+		if ( isset( $parts['scheme'] ) ) {
+			$host = idn_to_ascii( $parts['host'], IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46 );
+		}
+
+		$url = $scheme . $host;
+		if ( isset( $parts['port'] ) ) {
+			$url .= ':' . $parts['port'];
+		}
+		if ( isset( $parts['path'] ) ) {
+			$ascii_path = '';
+			$path = $parts['path'];
+			$len = strlen( $path );
+			for ( $i = 0; $i < $len; $i++ ) {
+				if ( preg_match( '/^[A-Za-z0-9\/?=+%_.~-]$/', $path[ $i ] ) ) {
+					$ascii_path .= $path[ $i ];
+				} else {
+					$ascii_path .= rawurlencode( $path[ $i ] );
+				}
+			}
+			$url .= $ascii_path;
+		}
+		if ( isset( $parts['query'] ) ) {
+			$url .= '?' . $parts['query'];
+		}
+		if ( isset( $parts['fragment'] ) ) {
+			$url .= '#' . $parts['fragment'];
+		}
+		return esc_url( $url );
+	}
+
+	/**
 	 * Downloads and sets a post featured image if possible.
 	 *
-	 * @param string  $file The file URL.
+	 * @param string  $img_source_url The download source URL for the image.
 	 * @param integer $post_id The post ID.
-	 * @param string  $desc Description.
+	 * @param string  $post_title Post title. Used to check if an attachment with the same title exists.
 	 * @param array   $import_errors Array of import error messages.
 	 * @param array   $import_info Array of import information messages.
 	 *
-	 * @return bool
+	 * @return bool|int Return the attachment ID if the image was successfully attached to the post, false otherwise.
 	 * @since   1.2.0
 	 * @access  private
 	 */
-	private function generate_featured_image( $file, $post_id, $desc, &$import_errors, &$import_info, $post_data = array() ) {
+	private function try_save_featured_image( $img_source_url, $post_id, $post_title, &$import_errors, &$import_info, $post_data = array() ) {
 		if ( ! function_exists( 'post_exists' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/post.php';
 		}
 		// Find existing attachment by item title.
-		$id = post_exists( $desc, '', '', 'attachment' );
+		$id = post_exists( $post_title, '', '', 'attachment' );
 
 		if ( ! $id ) {
-			do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Trying to generate featured image for %s and postID %d', $file, $post_id ), 'debug', __FILE__, __LINE__ );
+
+			// We escape the URL to ensure that valid URLs are passed by the filter. We also convert the URL parts to ASCII.
+			// This is necessary because FILTER_VALIDATE_URL only validates against ASCII URLs.
+			$escaped_url = $this->convert_url_to_ascii( $img_source_url );
+			if ( filter_var( $escaped_url, FILTER_VALIDATE_URL ) === false ) {
+				$import_errors[] = 'Invalid Featured Image URL: ' . $img_source_url;
+				return false;
+			}
+
+			do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Trying to save the featured image for %s and postID %d', $img_source_url, $post_id ), 'debug', __FILE__, __LINE__ );
 
 			require_once ABSPATH . 'wp-admin' . '/includes/image.php';
 			require_once ABSPATH . 'wp-admin' . '/includes/file.php';
 			require_once ABSPATH . 'wp-admin' . '/includes/media.php';
 
-			$file_array = array();
-			$local_file = download_url( $file );
+			$file_array     = array();
+			$img_source_url = trim( $img_source_url, chr( 0xC2 ) . chr( 0xA0 ) );
+			$local_file = download_url( $img_source_url );
 			if ( is_wp_error( $local_file ) ) {
 				do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Unable to download file = %s and postID %d', print_r( $local_file, true ), $post_id ), 'error', __FILE__, __LINE__ );
 
 				return false;
 			}
 
-			$type = mime_content_type( $local_file );
+			$type = '';
+			// try first to get the file type using the built-in function if available.
+			if ( function_exists( 'mime_content_type' ) ) {
+				$type = mime_content_type( $local_file );
+			}
+
+			// if the file type is not found, try to get it from the URL.
+			if ( empty( $type ) ) {
+				$type = $this->get_file_type_by_url( $img_source_url );
+			}
+
 			// the file is downloaded with a .tmp extension
 			// if the URL mentions the extension of the file, the upload succeeds
 			// but if the URL is like https://source.unsplash.com/random, then the upload fails
@@ -1984,7 +2131,7 @@ class Feedzy_Rss_Feeds_Import {
 			$file_array['tmp_name'] = $local_file;
 			$file_array['name']     = basename( $local_file );
 
-			$id = media_handle_sideload( $file_array, $post_id, $desc, $post_data );
+			$id = media_handle_sideload( $file_array, $post_id, $post_title, $post_data );
 			if ( is_wp_error( $id ) ) {
 				do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Unable to attach file for postID %d = %s', $post_id, print_r( $id, true ) ), 'error', __FILE__, __LINE__ );
 				unlink( $file_array['tmp_name'] );
@@ -1992,7 +2139,7 @@ class Feedzy_Rss_Feeds_Import {
 				return false;
 			}
 		} else {
-			do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Found an existing attachment(ID: %d) image for %s and postID %d', $id, $file, $post_id ), 'debug', __FILE__, __LINE__ );
+			do_action( 'themeisle_log_event', FEEDZY_NAME, sprintf( 'Found an existing attachment(ID: %d) image for %s and postID %d', $id, $img_source_url, $post_id ), 'debug', __FILE__, __LINE__ );
 		}
 
 		if ( ! empty( $post_data ) ) {
@@ -2204,6 +2351,7 @@ class Feedzy_Rss_Feeds_Import {
 
 		if ( 'misc' === $tab ) {
 			$settings['canonical'] = isset( $_POST['canonical'] ) ? filter_input( INPUT_POST, 'canonical', FILTER_SANITIZE_NUMBER_INT ) : 0;
+			$settings['general']['rss-feeds'] = isset( $_POST['rss-feeds'] ) ? (int) filter_input( INPUT_POST, 'rss-feeds', FILTER_SANITIZE_NUMBER_INT ) : '';
 		}
 
 		return $settings;
@@ -2263,8 +2411,8 @@ class Feedzy_Rss_Feeds_Import {
 					$disabled[ str_replace( ':disabled', '', $tag ) ] = $label;
 					continue;
 				}
-				if ( 'import_post_content' === $type ) {
-					if ( in_array( $tag, array( 'item_content', 'item_description', 'item_full_content', 'item_categories' ), true ) ) {
+				if ( in_array( $type, array( 'import_post_content', 'import_post_featured_img', 'import_post_title' ), true ) ) {
+					if ( in_array( $tag, array( 'item_content', 'item_description', 'item_full_content', 'item_categories', 'item_image', 'item_title' ), true ) ) {
 						$default .= '<a class="dropdown-item" href="#" data-field-name="' . $type . '" data-field-tag="' . $tag . '" data-action_popup="' . $tag . '">' . $label . ' <small>[#' . $tag . ']</small></a>';
 						continue;
 					}
@@ -2613,16 +2761,15 @@ class Feedzy_Rss_Feeds_Import {
 	 * Fetch custom field by selected post type.
 	 */
 	public function fetch_custom_fields() {
+		check_ajax_referer( FEEDZY_BASEFILE, 'security' );
 		global $wpdb;
 
-		// @codingStandardsIgnoreStart
-		$post_type  = isset( $_POST['post_type'] ) ? filter_input( INPUT_POST, 'post_type', FILTER_UNSAFE_RAW ) : '';
-		$search_key = isset( $_POST['search_key'] ) ? filter_input( INPUT_POST, 'search_key', FILTER_UNSAFE_RAW ) : '';
-		// @codingStandardsIgnoreEnd
+		$post_type  = isset( $_POST['post_type'] ) ? sanitize_text_field( wp_unslash( $_POST['post_type'] ) ) : '';
+		$search_key = isset( $_POST['search_key'] ) ? sanitize_text_field( wp_unslash( $_POST['search_key'] ) ) : '';
 
 		$like = '';
 		if ( ! empty( $search_key ) ) {
-			$like = " AND $wpdb->postmeta.meta_key LIKE '%$search_key%'";
+			$like = $wpdb->prepare( " AND $wpdb->postmeta.meta_key LIKE %s", '%' . $search_key . '%' );
 		}
 
 		// phpcs:ignore
@@ -2871,14 +3018,16 @@ class Feedzy_Rss_Feeds_Import {
 	}
 
 	/**
-	 * Handle item content actions.
+	 * Get the content action runner used for processing the chained actions from the tags.
 	 *
 	 * @param string $actions Item content actions.
-	 * @return object `Feedzy_Rss_Feeds_Actions` class instance.
+	 * @param string $type Action type.
+	 * @return Feedzy_Rss_Feeds_Actions Instance of Feedzy_Rss_Feeds_Actions.
 	 */
-	public function handle_content_actions( $actions = '' ) {
-		$action_instance = Feedzy_Rss_Feeds_Actions::instance();
-		$action_instance->set_actions( $actions );
+	public function get_actions_runner( $actions = '', $type = '' ) {
+		$action_instance       = Feedzy_Rss_Feeds_Actions::instance();
+		$action_instance->type = $type;
+		$action_instance->set_raw_serialized_actions( $actions );
 		$action_instance->set_settings( $this->settings );
 		return $action_instance;
 	}

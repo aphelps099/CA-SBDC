@@ -15,7 +15,7 @@ use \The_SEO_Framework\Data;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2015 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2015 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -152,7 +152,7 @@ final class Load extends Pool {
 				$this->_inaccessible_p_or_m( "tsf()->$name", 'since 5.0.0; use constant SCRIPT_DEBUG' );
 				return \SCRIPT_DEBUG;
 			case 'seo_settings_page_slug':
-				$this->_inaccessible_p_or_m( "tsf()->$name", 'since 5.0.0; use constant THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG or The_SEO_Framework\Admin::get_top_menu_args()' );
+				$this->_inaccessible_p_or_m( "tsf()->$name", 'since 5.0.0; use constant THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG or tsf()->admin()->menu()->get_top_menu_args()' );
 				return \THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG;
 			case 'seo_settings_page_hook':
 				$this->_inaccessible_p_or_m( "tsf()->$name", 'since 5.0.0; use `tsf()->admin()->menu()->get_page_hook_name()` instead.' );

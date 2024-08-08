@@ -40,6 +40,7 @@ class JVM_acf_plugin_jvm_rich_text_icons {
 
         add_action( 'admin_init', array( $this, 'load_admin_assets') );
         add_action( 'wp_ajax_acf/fields/jvm-richtext-insert-icons/query', array( $this, 'select2_ajax_request' ) );
+        add_action( 'acf/input/admin_footer', array( $this, 'fix_select2_html') );
     }
     
 
@@ -76,6 +77,36 @@ class JVM_acf_plugin_jvm_rich_text_icons {
         ];
 
         acf_send_ajax_results( $response );
+    }
+
+    public function fix_select2_html () {
+        if (!is_admin()) {
+            return;
+        }       
+
+        echo '<script>
+          acf.add_filter(\'select2_args\', function(args) {
+            args.templateSelection = function(selection) {
+              var $selection = jQuery(\'<span class="acf-selection"></span>\');
+
+              $selection.html(acf.escHtml(selection.text));
+              $selection.data(\'element\', selection.element);
+
+              return $selection;
+            }
+
+            args.templateResult = function(selection) {
+              var $selection = jQuery(\'<span class="acf-selection"></span>\');
+
+              $selection.html(acf.escHtml(selection.text));
+              $selection.data(\'element\', selection.element);
+
+              return $selection;
+            }
+
+            return args;
+          });
+        </script>';
     }
     
 

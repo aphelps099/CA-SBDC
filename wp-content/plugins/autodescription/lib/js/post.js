@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -63,6 +63,31 @@ window.tsfPost = function( $ ) {
 	 * @type {string}
 	 */
 	const _socialGroup = 'autodescription_social_singular';
+
+	/**
+	 * Returns the visibility setting from the Classic editor, as WordPress's PHP would interpret it.
+	 * We could optimize this (it runs thrice in a row), but that's not for this function to fix.
+	 * If WordPress didn't have this bug, we needn't have done these lookups at all.
+	 *
+	 * @since 5.0.5
+	 * @access private
+	 *
+	 * @function
+	 * @return {String} 'public', 'password', or 'private'.
+	 */
+	const _getClassicVisibility = () => {
+
+		let visibility = [ ...document.getElementsByName( 'visibility' ) ].filter( e => e.checked )?.[0]?.value;
+
+		// If password type is selected, but no password is set (or a falsy one), then assume public. This is a bug in WP.
+		if ( 'password' === visibility ) {
+			const val = document.getElementById( 'post_password' )?.value;
+			if ( val?.length && '0' === val )
+				visibility = 'public';
+		}
+
+		return visibility;
+	}
 
 	/**
 	 * Registers on resize/orientationchange listeners and debounces to only run
@@ -292,26 +317,9 @@ window.tsfPost = function( $ ) {
 		}
 		$( document ).on( 'tsf-updated-gutenberg-visibility', ( event, visibility ) => setRobotsDefaultIndexingState( visibility ) );
 
-		/**
-		 * @since 4.1.2
-		 *
-		 * @function
-		 * @param {Event} event
-		 */
-		const setClassicRobotsDefaultIndexingState = event => {
-			let visibility = $( '#visibility' ).find( 'input:radio:checked' ).val();
-			if ( 'password' === visibility ) {
-				let pass = $( '#visibility' ).find( '#post_password' ).val();
-				// A falsy-password (like '0'), will return true in "SOME OF" WP's front-end PHP, false in WP's JS before submitting...
-				// It won't invoke WordPress's password protection. TODO FIXME: file WP Core bug report.
-				if ( ! pass || ! pass.length ) {
-					visibility = 'public';
-				}
-			}
-			setRobotsDefaultIndexingState( visibility );
-		}
+		// Classic Editor.
 		document.querySelector( '#visibility .save-post-visibility' )
-			?.addEventListener( 'click', setClassicRobotsDefaultIndexingState );
+			?.addEventListener( 'click', () => setRobotsDefaultIndexingState( _getClassicVisibility() ) );
 
 		if ( l10n.states.isPrivate ) {
 			setRobotsDefaultIndexingState( 'private' );
@@ -429,26 +437,9 @@ window.tsfPost = function( $ ) {
 		}
 		$( document ).on( 'tsf-updated-gutenberg-visibility', ( event, visibility ) => setTitleVisibilityPrefix( visibility ) );
 
-		/**
-		 * Sets private/protected visibility state for the classic editor.
-		 *
-		 * @function
-		 * @param {Event} event
-		 */
-		const setClassicTitleVisibilityPrefix = event => {
-			let visibility = $( '#visibility' ).find( 'input:radio:checked' ).val();
-			if ( 'password' === visibility ) {
-				let pass = $( '#visibility' ).find( '#post_password' ).val();
-				// A falsy-password (like '0'), will return true in "SOME OF" WP's front-end PHP, false in WP's JS before submitting...
-				// It won't invoke WordPress's password protection. TODO FIXME: file WP Core bug report.
-				if ( ! pass || ! pass.length ) {
-					visibility = 'public';
-				}
-			}
-			setTitleVisibilityPrefix( visibility );
-		}
+		// Classic Editor.
 		document.querySelector( '#visibility .save-post-visibility' )
-			?.addEventListener( 'click', setClassicTitleVisibilityPrefix );
+			?.addEventListener( 'click', () => setTitleVisibilityPrefix( _getClassicVisibility() ) );
 
 		if ( l10n.states.isPrivate ) {
 			setTitleVisibilityPrefix( 'private' );
@@ -465,16 +456,24 @@ window.tsfPost = function( $ ) {
 		const updateDefaultTitle = val => {
 			val = val?.trim() || '';
 
-			let defaultTitle = tsfTitle.stripTitleTags ? tsf.stripTags( val ) : val
-
-			tsfTitle.updateStateOf( _titleId, 'defaultTitle', defaultTitle || tsfTitle.untitledTitle );
+			tsfTitle.updateStateOf(
+				_titleId,
+				'defaultTitle',
+				( tsfTitle.stripTitleTags ? tsf.stripTags( val ) : val ) || tsfTitle.untitledTitle,
+			);
 		}
 		//= The homepage listens to a static preset value. Update all others.
 		if ( ! l10n.params.isFront ) {
-			const classicTitleInput = document.querySelector( '#titlewrap #title' );
-			classicTitleInput && classicTitleInput.addEventListener( 'input', event => updateDefaultTitle( event.target.value ) );
+			document.querySelector( '#titlewrap #title' )
+				?.addEventListener(
+					'input',
+					event => { updateDefaultTitle( event.target.value ) },
+				);
 
-			$( document ).on( 'tsf-updated-gutenberg-title', ( event, title ) => updateDefaultTitle( title ) );
+			$( document ).on(
+				'tsf-updated-gutenberg-title',
+				( event, title ) => { updateDefaultTitle( title ) },
+			);
 		}
 
 		tsfTitle.enqueueUnregisteredInputTrigger( _titleId );
@@ -532,26 +531,9 @@ window.tsfPost = function( $ ) {
 		}
 		$( document ).on( 'tsf-updated-gutenberg-visibility', ( event, visibility ) => setDescriptionVisibility( visibility ) );
 
-		/**
-		 * Sets private/protected visibility state for the classic editor.
-		 *
-		 * @function
-		 * @param {Event} event
-		 */
-		const setClassicDescriptionVisibilityPrefix = event => {
-			let visibility = $( '#visibility' ).find( 'input:radio:checked' ).val();
-			if ( 'password' === visibility ) {
-				let pass = $( '#visibility' ).find( '#post_password' ).val();
-				// A falsy-password (like '0'), will return true in "SOME OF" WP's front-end PHP, false in WP's JS before submitting...
-				// It won't invoke WordPress's password protection. TODO FIXME: file WP Core bug report?
-				if ( ! pass || ! pass.length ) {
-					visibility = 'public';
-				}
-			}
-			setDescriptionVisibility( visibility );
-		}
+		// Classic Editor.
 		document.querySelector( '#visibility .save-post-visibility' )
-			?.addEventListener( 'click', setClassicDescriptionVisibilityPrefix );
+			?.addEventListener( 'click', () => setDescriptionVisibility( _getClassicVisibility() ) );
 
 		if ( l10n.states.isPrivate ) {
 			setDescriptionVisibility( 'private' );
@@ -617,8 +599,8 @@ window.tsfPost = function( $ ) {
 			tsfDescription.enqueueUnregisteredInputTrigger( _descId );
 		}
 
-		// We can't bind to jQuery event listeners via native ES :(
-		$( '#tsf-flex-inpost-tab-general' ).on( 'tsf-flex-tab-toggled', enqueueGeneralInputListeners );
+		document.getElementById( 'tsf-flex-inpost-tab-general' )
+			?.addEventListener( 'tsf-flex-tab-toggled', enqueueGeneralInputListeners );
 		window.addEventListener( 'tsf-flex-resize', enqueueGeneralInputListeners );
 	}
 

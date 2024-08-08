@@ -67,6 +67,17 @@ class NS_Cloner_Ajax {
 	 */
 	public function process_init() {
 		$this->check_nonce();
+
+		/**
+		 * Allow calling action beofre processing.
+		 */
+		do_action( 'ns_cloner_ajax_before_process_init' );
+
+		if ( apply_filters( 'ns_cloner_skip_ajax_clone', false ) ) {
+			ns_cloner()->process_manager->exit_processes( apply_filters( 'ns_cloner_skip_clone_message', __( 'Skipping running clone immediately', 'ns-cloner-site-copier' ) ) );
+			wp_send_json_success();
+		}
+
 		ns_cloner()->process_manager->init();
 		$this->send_response();
 	}

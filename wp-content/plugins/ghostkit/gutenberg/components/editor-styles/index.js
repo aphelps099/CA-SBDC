@@ -1,56 +1,37 @@
-/**
- * External dependencies
- */
-const { compact, map } = window.lodash;
+import { compact, map } from 'lodash';
 
-/**
- * WordPress dependencies
- */
-const { createPortal, useContext, useMemo } = wp.element;
-
-const { transformStyles, BlockList } = wp.blockEditor;
-
-const { elementContext: __stableElementContext, __unstableElementContext } = BlockList;
-
-const elementContext = __stableElementContext || __unstableElementContext;
+import { transformStyles } from '@wordpress/block-editor';
+import { useMemo } from '@wordpress/element';
 
 const EDITOR_STYLES_SELECTOR = '.editor-styles-wrapper';
 
 export default function EditorStyles(props) {
-  const { styles } = props;
+	const { styles } = props;
 
-  const renderStyles = useMemo(() => {
-    const transformedStyles = transformStyles(
-      [
-        {
-          css: styles,
-        },
-      ],
-      EDITOR_STYLES_SELECTOR
-    );
+	const renderStyles = useMemo(() => {
+		const transformedStyles = transformStyles(
+			[
+				{
+					css: styles,
+				},
+			],
+			EDITOR_STYLES_SELECTOR
+		);
 
-    let resultStyles = '';
+		let resultStyles = '';
 
-    map(compact(transformedStyles), (updatedCSS) => {
-      resultStyles += updatedCSS;
-    });
+		map(compact(transformedStyles), (updatedCSS) => {
+			resultStyles += updatedCSS;
+		});
 
-    return resultStyles;
-  }, [styles]);
+		return resultStyles;
+	}, [styles]);
 
-  const element = useContext(elementContext);
-
-  return (
-    renderStyles &&
-    element &&
-    createPortal(
-      <style
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: renderStyles,
-        }}
-      />,
-      element
-    )
-  );
+	return (
+		<style
+			dangerouslySetInnerHTML={{
+				__html: renderStyles,
+			}}
+		/>
+	);
 }

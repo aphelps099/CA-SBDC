@@ -17,7 +17,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2021 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2021 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -35,7 +35,7 @@ use \The_SEO_Framework\{
 // Styles generic.
 printf(
 	'<xsl:variable name="tableMinWidth" select="\'%s\'"/>',
-	Data\Plugin::get_option( 'sitemaps_modified' ) ? '700' : '550',
+	Data\Plugin::get_option( 'sitemaps_modified' ) ? '727' : '557', // magic numbers: sexy primes
 );
 
 $colors = Sitemap\Utils::get_sitemap_colors();

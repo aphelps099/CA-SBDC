@@ -15,7 +15,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -149,8 +149,6 @@ class Setup {
 				'alter_archive_query_type' => 'in_query', // Archive query type.
 				'alter_search_query_type'  => 'in_query', // Search query type.
 
-				'cache_sitemap' => 1, // Sitemap transient cache.
-
 				// General. Layout.
 				'display_seo_bar_tables'  => 1, // SEO Bar post-list tables.
 				'display_seo_bar_metabox' => 0, // SEO Bar post SEO Settings.
@@ -164,7 +162,7 @@ class Setup {
 				'canonical_scheme' => 'automatic', // Canonical URL scheme.
 
 				// General. Timestamps.
-				'timestamps_format' => '1', // Timestamp format, numeric string.
+				'timestamps_format' => 1, // Timestamp format, numeric string.
 
 				// General. Exclusions.
 				'disabled_post_types' => [], // Post Type support.
@@ -326,17 +324,14 @@ class Setup {
 				'knowledge_tumblr'     => '', // Tumblr Account.
 
 				// Sitemaps.
-				'sitemaps_output'     => 1,    // Output of sitemap.
-				'sitemap_query_limit' => 1000, // Sitemap post limit.
+				'sitemaps_output'         => 1,    // Output of sitemap.
+				'sitemap_query_limit'     => 250, // Sitemap post limit.
+				'cache_sitemap'           => 1, // Sitemap transient cache.
+				'sitemap_cron_prerender'  => 0, // Sitemap cron-ping prerender.
 
 				'sitemaps_modified' => 1, // Add sitemap modified time.
 
 				'sitemaps_robots' => 1, // Add sitemap location to robots.txt.
-
-				'ping_use_cron'           => 1, // Ping using cron.
-				'ping_google'             => 1, // Ping Google.
-				'ping_bing'               => 1, // Ping Bing.
-				'ping_use_cron_prerender' => 0, // Sitemap cron-ping prerender.
 
 				'sitemap_styles'       => 1,        // Whether to style the sitemap.
 				'sitemap_logo'         => 1,        // Whether to add logo to sitemap.
@@ -361,7 +356,6 @@ class Setup {
 	 * @since 2.9.0 Removed all non-warned settings.
 	 * @since 3.1.0 Now applies the "the_seo_framework_warned_site_options" filter.
 	 * @since 4.1.0 Added robots' post type setting warnings.
-	 * @since 4.1.2 Added `ping_use_cron_prerender`.
 	 * @since 4.2.0 Now memoizes its return value.
 	 *
 	 * @return array $options.
@@ -388,11 +382,11 @@ class Setup {
 		return static::$warned_options = (array) \apply_filters(
 			'the_seo_framework_warned_site_options',
 			[
-				'title_rem_additions'     => 1, // Title remove additions.
-				'site_noindex'            => 1, // Site Page robots noindex.
-				'site_nofollow'           => 1, // Site Page robots nofollow.
-				'homepage_noindex'        => 1, // Homepage robots noindex.
-				'homepage_nofollow'       => 1, // Homepage robots noarchive.
+				'title_rem_additions' => 1, // Title remove additions.
+				'site_noindex'        => 1, // Site Page robots noindex.
+				'site_nofollow'       => 1, // Site Page robots nofollow.
+				'homepage_noindex'    => 1, // Homepage robots noindex.
+				'homepage_nofollow'   => 1, // Homepage robots noarchive.
 				Helper::get_robots_option_index( 'post_type', 'noindex' ) => [
 					'post' => 1,
 					'page' => 1,
@@ -401,7 +395,6 @@ class Setup {
 					'post' => 1,
 					'page' => 1,
 				],
-				'ping_use_cron_prerender' => 1, // Sitemap cron-ping prerender.
 			],
 		);
 	}

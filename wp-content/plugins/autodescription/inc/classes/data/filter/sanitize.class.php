@@ -16,7 +16,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -336,7 +336,6 @@ class Sanitize {
 	 * @since 5.0.0 1. Moved from `\The_SEO_Framework\Load`.
 	 *              2. Renamed from `s_redirect_url`.
 	 *              3. No longer provides stripping URL queries via a filter.
-	 * @deprecated
 	 *
 	 * @param string $url String with potentially unwanted redirect URL.
 	 * @return string The Sanitized Redirect URL
@@ -348,11 +347,14 @@ class Sanitize {
 		if ( empty( $url ) ) return '';
 
 		// This is also checked when performing a redirect.
-		if ( ! Helper\Redirect::allow_external_redirect() )
-			$url = Meta\URI\Utils::set_url_scheme( $url, 'relative' );
+		if ( ! Helper\Redirect::allow_external_redirect() ) {
+			$url = Meta\URI\Utils::set_url_scheme( Meta\URI\Utils::convert_path_to_url(
+				Meta\URI\Utils::set_url_scheme( $url, 'relative' )
+			) );
+		}
 
-		// Do not use `make_absolute_current_scheme_url()`, only make relative URLs absolute.
-		return \sanitize_url( Meta\URI\Utils::convert_path_to_url( $url ) );
+		// All WP defined protocols are allowed.
+		return \sanitize_url( $url );
 	}
 
 	/**
@@ -507,7 +509,6 @@ class Sanitize {
 	 *              2. Now returns empty when using only spaces and tabs.
 	 * @since 5.0.0 1. Moved from `\The_SEO_Framework\Load`.
 	 *              2. Renamed from `s_twitter_name`.
-	 * @deprecated
 	 *
 	 * @param string $handle An unsanitized profile handle.
 	 * @return string A sanitized profile handle with '@' prefixed to it.

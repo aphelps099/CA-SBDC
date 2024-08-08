@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2019 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2019 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -146,7 +146,7 @@ window.tsfSocial = function() {
 	 * @param {string} titleRef The group's title reference ID.
 	 * @param {string} descRef  The group's description reference ID.
 	 */
-	 const setInputInstance = ( group, titleRef, descRef ) => {
+	const setInputInstance = ( group, titleRef, descRef ) => {
 
 		const _getElement = type => document.querySelector(
 			`[data-tsf-social-group="${group}"][data-tsf-social-type="${type}"]`,

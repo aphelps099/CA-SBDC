@@ -18,7 +18,7 @@ use \The_SEO_Framework\{
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -129,7 +129,7 @@ class Main {
 		 * The robots.txt output.
 		 *
 		 * @since 4.0.5
-		 * @param string $output The (cached) robots.txt output.
+		 * @param string $output The robots.txt output.
 		 */
 		return (string) \apply_filters( 'the_seo_framework_robots_txt', $output );
 	}

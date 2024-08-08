@@ -1,7 +1,7 @@
 <?php
 
 /* --------------------------------------------------------- */
-/* !Duplicate the post - 2.31 */
+/* !Duplicate the post - 2.34 */
 /* --------------------------------------------------------- */
 
 function mtphr_duplicate_post( $original_id, $args=array(), $do_action=true ) {
@@ -10,14 +10,14 @@ function mtphr_duplicate_post( $original_id, $args=array(), $do_action=true ) {
 	global $wpdb;
 	
 	// Get the post as an array
-	$duplicate = get_post( $original_id, 'ARRAY_A' );
+	$duplicate = $orig = get_post( $original_id, 'ARRAY_A' );
 		
 	$global_settings = get_mtphr_post_duplicator_settings();
 	$settings = wp_parse_args( $args, $global_settings );
 	
 	// Modify some of the elements
 	$appended = isset( $settings['title'] ) ? sanitize_text_field( $settings['title'] ) : esc_html__( 'Copy', 'post-duplicator' );
-	$duplicate['post_title'] = wp_kses_post( $duplicate['post_title'] ) . ' ' . $appended;
+	$duplicate['post_title'] = $duplicate['post_title'] . ' ' . $appended;
 	$duplicate['post_name'] = sanitize_title( $duplicate['post_name'] . '-' . $settings['slug'] );
 	
 	// Set the status
@@ -66,7 +66,9 @@ function mtphr_duplicate_post( $original_id, $args=array(), $do_action=true ) {
 	unset( $duplicate['comment_count'] );
 
 	//$duplicate['post_content'] = wp_slash( str_replace( array( '\r\n', '\r', '\n' ), '<br />', wp_kses_post( $duplicate['post_content'] ) ) ); 
+	add_filter( 'wp_kses_allowed_html', 'mtphr_duplicate_post_additional_kses', 10, 2 );
 	$duplicate['post_content'] = wp_slash( wp_kses_post( $duplicate['post_content'] ) ); 
+	remove_filter( 'wp_kses_allowed_html', 'mtphr_duplicate_post_additional_kses', 10, 2 );
 
 	// Insert the post into the database
 	$duplicate_id = wp_insert_post( $duplicate );
@@ -87,10 +89,14 @@ function mtphr_duplicate_post( $original_id, $args=array(), $do_action=true ) {
 	foreach ( $custom_fields as $key => $value ) {
 		if( is_array($value) && count($value) > 0 ) {
 			foreach( $value as $i=>$v ) {
+        if ( ! apply_filters( "mtphr_post_duplicator_meta_{$key}_enabled", true ) ) {
+          continue;
+        }
+        $meta_value = apply_filters( "mtphr_post_duplicator_meta_value", $v, $key, $duplicate_id, $duplicate['post_type'] );
 				$data = array(
 					'post_id' 		=> intval( $duplicate_id ),
 					'meta_key' 		=> sanitize_text_field( $key ),
-					'meta_value' 	=> $v,
+					'meta_value' 	=> $meta_value,
 				);
 				$formats = array(
 					'%d',
@@ -107,7 +113,9 @@ function mtphr_duplicate_post( $original_id, $args=array(), $do_action=true ) {
 		do_action( 'mtphr_post_duplicator_created', $original_id, $duplicate_id, $settings );
 	}
 
-	return $duplicate_id;
+	return [
+		'duplicate_id' => $duplicate_id,
+	];
 }
 
 
@@ -124,11 +132,22 @@ function m4c_duplicate_post() {
 	$original_id  = intval( $_POST['original_id'] );
 	
 	// Duplicate the post
-	$duplicate_id = mtphr_duplicate_post( $original_id );
-	
-	$data = array(
-		'duplicate_id' => esc_attr( $duplicate_id ),
-	);
+	$data = mtphr_duplicate_post( $original_id );
+
 	wp_send_json( $data );
 }
 add_action( 'wp_ajax_m4c_duplicate_post', 'm4c_duplicate_post' );
+
+
+// Allow additional tags to wp_kses_post
+function mtphr_duplicate_post_additional_kses( $allowed_tags ) {
+	// Allow the center tag with its attributes
+	$allowed_tags['center'] = array(
+			'align' => true,
+			'class' => true,
+			'id' => true,
+			'style' => true,
+	);
+	
+	return $allowed_tags;
+}

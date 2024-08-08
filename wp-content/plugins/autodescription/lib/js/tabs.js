@@ -8,7 +8,7 @@
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2020 - 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2020 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -72,6 +72,79 @@ window.tsfTabs = function() {
 	}
 
 	/**
+	 * Hides a tab. Also switches to the first tab if it was selected.
+	 *
+	 * @since 5.0.5
+	 * @access public
+	 *
+	 * @function
+	 * @param {String} stackId The stack ID for which to get the stack.
+	 * @param {String} name    The name of the tab to hide.
+	 */
+	const hideTab = ( stackId, name ) => {
+
+		const stack = getStack( stackId );
+
+		const radio = document.getElementById( name );
+
+		radio?.setAttribute( 'disabled', '' );
+		document.querySelector( `.${stack.HTMLClasses.tabLabel}[for="${name}"]` )?.classList.add( 'hidden' );
+
+		if ( radio?.checked ) {
+			// 'toggleTo' won't do because the transition stack memory might not be initialized via a change-event... should we simulate the event?
+			toggleToInstant(
+				stackId,
+				// Separate queries because :not in closest() will select first only.
+				radio.closest( `.${stack.HTMLClasses.wrapper}` )?.querySelector( `.${stack.HTMLClasses.tabRadio}:not([disabled])` )
+			);
+		}
+	}
+
+	/**
+	 * Shows a tab.
+	 *
+	 * @since 5.0.5
+	 * @access public
+	 *
+	 * @function
+	 * @param {String} stackId The stack ID for which to get the stack.
+	 * @param {String} name    The name of the tab to show.
+	 */
+	const showTab = ( stackId, name ) => {
+
+		const stack = getStack( stackId );
+
+		document.getElementById( name )?.removeAttribute( 'disabled' );
+		document.querySelector( `.${stack.HTMLClasses.tabLabel}[for="${name}"]` )?.classList.remove( 'hidden' );
+	}
+
+	/**
+	 * Toggles a tab.
+	 *
+	 * @since 5.0.5
+	 * @access public
+	 *
+	 * @function
+	 * @param {String}   stackId The stack ID for which to get the stack.
+	 * @param {String}   name    The name of the tab to show.
+	 * @param {?Boolean} toggle  Whether to show (true), hide (false), or automatically determine (?null).
+	 */
+	const toggleTab = ( stackId, name, toggle ) => {
+
+		if ( void 0 == toggle ) {
+			if ( document.getElementById( name )?.disabled ) {
+				showTab( stackId, name );
+			} else {
+				hideTab( stackId, name );
+			}
+		} else if ( toggle ) {
+			showTab( stackId, name );
+		} else {
+			hideTab( stackId, name );
+		}
+	}
+
+	/**
 	 * Toggles a tab instantly, without animations.
 	 *
 	 * @since 4.1.3
@@ -84,8 +157,11 @@ window.tsfTabs = function() {
 	 */
 	const toggleToInstant = ( stackId, target ) => {
 
-		const stack      = getStack( stackId );
-		const newContent = document.getElementById( `${target.id}-content` );
+		const stack      = getStack( stackId ),
+			  newContent = document.getElementById( `${target.id}-content` ),
+			  radio      = document.getElementById( target.id );
+
+		radio.checked = true;
 
 		if ( newContent && ! newContent.classList.contains( stack.HTMLClasses.activeTabContent ) ) {
 			// Toggle all active content's HTML classes.
@@ -96,7 +172,7 @@ window.tsfTabs = function() {
 			newContent.classList.add( stack.HTMLClasses.activeTabContent );
 		}
 
-		document.getElementById( target.id ).dispatchEvent( stack.tabToggledEvent );
+		radio.dispatchEvent( stack.tabToggledEvent );
 	}
 
 	/**
@@ -136,7 +212,7 @@ window.tsfTabs = function() {
 		const fadeIn  = element => { for ( const prop in fadeCSS.fadeIn ) element.style[ prop ] = fadeCSS.fadeIn[ prop ] };
 		const fadeOut = element => { for ( const prop in fadeCSS.fadeOut ) element.style[ prop ] = fadeCSS.fadeOut[ prop ] };
 
-		const container   = _toggleCache.get( 'container' ).get( cacheId );
+		const container  = _toggleCache.get( 'container' ).get( cacheId );
 		const allContent = document.querySelectorAll( `.${target.name}-content` );
 
 		const lockHeight = () => {
@@ -170,7 +246,7 @@ window.tsfTabs = function() {
 			if ( ! newContent || newContent.classList.contains( stack.HTMLClasses.activeTabContent ) ) {
 				clearPromise();
 				document.getElementById( _toggleCache.get( 'target' ).get( cacheId ) )
-						.dispatchEvent( stack.tabToggledEvent );
+					.dispatchEvent( stack.tabToggledEvent );
 			} else {
 				// Lock height isothermically to prevent jumping.
 				lockHeight();
@@ -260,7 +336,7 @@ window.tsfTabs = function() {
 			toggleToInstant( stackId, event.target );
 		} else {
 			if ( ! _toggleCache.get( 'container' ).has( cacheId ) ) {
-				 // instead of 'inside', shouldn't we pick anything blockable?
+				// instead of 'inside', shouldn't we pick anything blockable?
 				_toggleCache.get( 'container' ).set( cacheId, currentToggle.closest( '.inside' ) );
 			}
 
@@ -351,6 +427,9 @@ window.tsfTabs = function() {
 			window.addEventListener( 'load', _correctTabFocus );
 		}
 	}, {
+		hideTab,
+		showTab,
+		toggleTab,
 		toggleToInstant,
 		toggleTo,
 		getStack,

@@ -104,7 +104,7 @@ class Feedzy_Rss_Feeds {
 	 */
 	public function init() {
 		self::$plugin_name = 'feedzy-rss-feeds';
-		self::$version     = '4.3.2';
+		self::$version     = '4.4.12';
 		self::$instance->load_dependencies();
 		self::$instance->set_locale();
 		self::$instance->define_admin_hooks();
@@ -190,6 +190,7 @@ class Feedzy_Rss_Feeds {
 		self::$instance->loader->add_action( 'admin_init', $plugin_ui, 'register_init' );
 
 		self::$instance->loader->add_action( 'wp_head', $plugin_ui, 'add_feedzy_global_style', 10, 1 );
+		self::$instance->loader->add_action( 'admin_init', self::$instance->admin, 'register_admin_capabilities' );
 		self::$instance->loader->add_action( 'init', self::$instance->admin, 'register_post_type' );
 		self::$instance->loader->add_action( 'save_post', self::$instance->admin, 'save_feedzy_post_type_meta', 1, 2 );
 		self::$instance->loader->add_action( 'feedzy_pre_http_setup', self::$instance->admin, 'pre_http_setup', 10, 1 );
@@ -241,7 +242,7 @@ class Feedzy_Rss_Feeds {
 
 			$plugin_import = new Feedzy_Rss_Feeds_Import( self::$instance->get_plugin_name(), self::$instance->get_version() );
 			self::$instance->loader->add_action( 'feedzy_upsell_class', $plugin_import, 'upsell_class', 10, 1 );
-			self::$instance->loader->add_action( 'feedzy_upsell_content', $plugin_import, 'upsell_content', 10, 1 );
+			self::$instance->loader->add_action( 'feedzy_upsell_content', $plugin_import, 'upsell_content', 10, 3 );
 			self::$instance->loader->add_action( 'admin_enqueue_scripts', $plugin_import, 'enqueue_styles' );
 			self::$instance->loader->add_action( 'init', $plugin_import, 'register_import_post_type', 9, 1 );
 			self::$instance->loader->add_action( 'add_meta_boxes', $plugin_import, 'add_feedzy_import_metaboxes', 1, 2 );
@@ -298,9 +299,6 @@ class Feedzy_Rss_Feeds {
 		if ( ! feedzy_is_pro() ) {
 			$offer = new Feedzy_Rss_Feeds_Limited_Offers();
 			$offer->load_banner();
-			if ( $offer->is_active() && $offer->can_show_dashboard_banner() ) {
-				$offer->load_dashboard_hooks();
-			}
 		}
 
 	}

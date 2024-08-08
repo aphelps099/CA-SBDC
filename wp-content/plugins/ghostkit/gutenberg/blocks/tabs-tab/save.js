@@ -1,31 +1,35 @@
-/**
- * Internal dependencies
- */
+import classnames from 'classnames/dedupe';
+
 import metadata from './block.json';
 
 const { name } = metadata;
 
-/**
- * WordPress dependencies
- */
-const { applyFilters } = wp.hooks;
-const { useBlockProps, useInnerBlocksProps } = wp.blockEditor;
+import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 
 /**
  * Block Save Class.
+ *
+ * @param props
  */
-export default function BlockEdit(props) {
-  const { slug } = props.attributes;
+export default function BlockSave(props) {
+	const { slug, active } = props.attributes;
 
-  let className = 'ghostkit-tab';
+	let className = classnames('ghostkit-tab', active && 'ghostkit-tab-active');
 
-  className = applyFilters('ghostkit.blocks.className', className, {
-    ...{ name },
-    ...props,
-  });
+	className = applyFilters('ghostkit.blocks.className', className, {
+		...{ name },
+		...props,
+	});
 
-  const blockProps = useBlockProps.save({ className, 'data-tab': slug });
-  const innerBlockProps = useInnerBlocksProps.save(blockProps);
+	const blockProps = useBlockProps.save({
+		className,
+		tabIndex: 0,
+		role: 'tabpanel',
+		'aria-labelledby': `${slug}-button`,
+		'data-tab': slug,
+	});
+	const innerBlockProps = useInnerBlocksProps.save(blockProps);
 
-  return <div {...innerBlockProps} />;
+	return <div {...innerBlockProps} />;
 }

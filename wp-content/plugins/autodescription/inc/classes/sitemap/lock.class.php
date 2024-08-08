@@ -12,7 +12,7 @@ use \The_SEO_Framework\Helper;
 
 /**
  * The SEO Framework plugin
- * Copyright (C) 2023 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
+ * Copyright (C) 2023 - 2024 Sybre Waaijer, CyberWire B.V. (https://cyberwire.nl/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3 as published
@@ -53,7 +53,7 @@ class Lock {
 
 		$lock_id = $ep_list[ $sitemap_id ]['lock_id'] ?? $sitemap_id;
 
-		return Cache::build_sitemap_cache_key( 'tsf_sitemap_lock' ) . "_{$lock_id}";
+		return Cache::build_sitemap_cache_key( Cache::get_transient_prefix() . 'lock' ) . "_{$lock_id}";
 	}
 
 	/**

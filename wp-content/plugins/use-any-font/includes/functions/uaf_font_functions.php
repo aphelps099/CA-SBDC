@@ -441,5 +441,9 @@ function uaf_group_fontdata_by_fontname($fontDatas){
 }
 
 function uaf_order_font_by_weight($a, $b) {
-      return strcmp($a["font_weight"], $b["font_weight"]);
+      if (array_key_exists("font_weight", $a) && array_key_exists("font_weight", $b)) {
+      	return strcmp($a["font_weight"], $b["font_weight"]);
+  	  } else {
+  	  	return 0;
+  	  }
 }

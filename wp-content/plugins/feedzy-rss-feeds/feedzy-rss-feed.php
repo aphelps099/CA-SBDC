@@ -15,7 +15,7 @@
  * Plugin Name:       Feedzy RSS Feeds Lite
  * Plugin URI:        https://themeisle.com/plugins/feedzy-rss-feeds/
  * Description:       A small and lightweight RSS aggregator plugin. Fast and very easy to use, it allows you to aggregate multiple RSS feeds into your WordPress site through fully customizable shortcodes & widgets.
- * Version:           4.3.2
+ * Version:           4.4.12
  * Author:            Themeisle
  * Author URI:        http://themeisle.com
  * License:           GPL-2.0+
@@ -129,6 +129,7 @@ function run_feedzy_rss_feeds() {
 	define( 'FEEDZY_REST_VERSION', '1' );
 	// to redirect all themeisle_log_event to error log.
 	define( 'FEEDZY_LOCAL_DEBUG', false );
+	define( 'FEEDZY_FEED_CUSTOM_TAG_NAMESPACE', 'http://feedzy.themeisle.com' );
 
 	// always make this true before testing
 	// also used in gutenberg.
@@ -147,7 +148,7 @@ function run_feedzy_rss_feeds() {
 			$compatibilities['FeedzyPRO'] = array(
 				'basefile'  => defined( 'FEEDZY_PRO_BASEFILE' ) ? FEEDZY_PRO_BASEFILE : '',
 				'required'  => '1.7',
-				'tested_up' => '2.3',
+				'tested_up' => '2.4',
 			);
 			return $compatibilities;
 		}
@@ -205,3 +206,20 @@ if ( FEEDZY_LOCAL_DEBUG ) {
 		}
 	}
 }
+
+add_filter( 'themeisle_sdk_enable_telemetry', '__return_true' );
+
+add_filter(
+	'feedzy_rss_feeds_float_widget_metadata', function () {
+		return array(
+			'nice_name'          => 'Feedzy',
+			'logo'               => FEEDZY_ABSURL . 'img/feedzy.svg',
+			'primary_color'      => '#4268CF',
+			'pages'              => array( 'feedzy_imports', 'edit-feedzy_imports', 'edit-feedzy_categories', 'feedzy_page_feedzy-settings', 'feedzy_page_feedzy-support' ),
+			'has_upgrade_menu'   => ! feedzy_is_pro(),
+			'upgrade_link'       => tsdk_utmify( FEEDZY_UPSELL_LINK, 'floatWidget' ),
+			'documentation_link' => tsdk_utmify( 'https://docs.themeisle.com/collection/1569-feedzy-rss-feeds', 'floatWidget' ),
+			'wizard_link'        => ! feedzy_is_pro() && ! empty( get_option( 'feedzy_fresh_install', false ) ) ? admin_url( 'admin.php?page=feedzy-setup-wizard&tab#step-1' ) : '',
+		);
+	}
+);
