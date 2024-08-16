@@ -27,7 +27,7 @@ registerBlockType('crown-blocks/team-member-index', {
 		groupByCenter: { type: 'boolean', default: false },
 		postsPerPage: { type: 'string', default: '10' },
 		filterCenters: { type: 'array', default: [] },
-		filterLangs: { type: 'array', default: [] }
+		language: { type: 'string', default: '' }
 	},
 
 
@@ -42,8 +42,10 @@ registerBlockType('crown-blocks/team-member-index', {
 			groupByCenter,
 			postsPerPage,
 			filterCenters,
-			filterLangs
+			language
 		} = attributes;
+
+		console.log('lang', language);
 
 		let postsPerPageOptions = [];
 		for(let i = 4; i <= 20; i += 2) {
@@ -58,7 +60,8 @@ registerBlockType('crown-blocks/team-member-index', {
 			centerSuggestions.push(token);
 		}
 
-		let langOptions = [
+		let availableLangs = [
+			{ value : '', label: 'All' },
 			{ value : 'ar', label: 'Arabic' },
 			{ value : 'zh-hk', label: 'Cantonese' },
 			{ value : 'da', label: 'Danish' },
@@ -128,13 +131,13 @@ registerBlockType('crown-blocks/team-member-index', {
 					/>
 
 					<SelectControl
-						multiple
+						// multiple
 						label={ __( 'Filter by language' ) }
-						value={ filterLangs }
-						onChange={ ( langs ) => {
-							setAttributes({ filterLangs: langs })
+						value={ language }
+						onChange={ ( lang ) => {
+							setAttributes({ language: lang })
 						} }
-						options={ langOptions }
+						options={ availableLangs }
 					/>
 
 				</PanelBody> }

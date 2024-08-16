@@ -21,7 +21,8 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'className' => array( 'type' => 'string', 'default' => '' ),
 				'groupByCenter' => array( 'type' => 'boolean', 'default' => false ),
 				'postsPerPage' => array( 'type' => 'string', 'default' => '10' ),
-				'filterCenters' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) )
+				'filterCenters' => array( 'type' => 'array', 'default' => array(), 'items' => array( 'type' => 'object' ) ),
+				'language' => array( 'type' => 'string', 'default' => '' ),
 			);
 		}
 
@@ -52,6 +53,11 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 				'tax_query' => array(),
 				'meta_query' => array()
 			);
+
+			if ( !empty($atts['language']) ) {
+				$query_args['meta_query'][] = array( 'key' => '__team_member_options', 'compare' => 'IN', 'value' => array( 'multilingual' ) );
+				$query_args['meta_query'][] = array( 'key' => '__team_member_languages', 'compare' => 'IN', 'value' => array( $atts['language'] ) );
+			}
 
 			if ( ! $group_by_center && ! empty( $atts['filterCenters'] ) ) {
 
@@ -200,7 +206,7 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 											<?php if ( ! empty( $filters->letter->options ) ) { ?><li><button type="button" data-tab="letter"><?php _e( 'Name', 'crown_blocks' ); ?></button></li><?php } ?>
 											<?php if ( ! empty( $filters->expertise->options ) ) { ?><li><button type="button" data-tab="expertise"><?php _e( 'Expertise', 'crown_blocks' ); ?></button></li><?php } ?>
 											<?php if ( ! empty( $filters->center->options ) ) { ?><li><button type="button" data-tab="center"><?php _e( 'Center', 'crown_blocks' ); ?></button></li><?php } ?>
-											<?php if ( ! empty( $filters->lang->options ) ) { ?><li><button type="button" data-tab="lang"><?php _e( 'Multilingual', 'crown_blocks' ); ?></button></li><?php } ?>
+											<?php if ( ! empty( $filters->lang->options && empty($atts['language']) ) ) { ?><li><button type="button" data-tab="lang"><?php _e( 'Multilingual', 'crown_blocks' ); ?></button></li><?php } ?>
 										</ul>
 									</nav>
 
@@ -254,19 +260,21 @@ if(!class_exists('Crown_Block_Team_Member_Index')) {
 											</div>
 										<?php } ?>
 		
-										<?php if ( ! empty( $filters->lang->options ) ) { ?>
-											<div class="filters-tab" data-tab="lang">
-												<ul class="options lang">
-													<?php foreach ( $filters->lang->options as $option ) { ?>
-														<li class="option">
-															<label>
-																<input type="checkbox" name="<?php echo $filters->lang->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
-																<span class="label"><?php echo $option->label; ?></span>
-															</label>
-														</li>
-													<?php } ?>
-												</ul>
-											</div>
+										<?php if ( empty($atts['language']) ) {
+											if ( ! empty( $filters->lang->options ) ) { ?>
+												<div class="filters-tab" data-tab="lang">
+													<ul class="options lang">
+														<?php foreach ( $filters->lang->options as $option ) { ?>
+															<li class="option">
+																<label>
+																	<input type="checkbox" name="<?php echo $filters->lang->key; ?>[]" value="<?php echo esc_attr( $option->value ); ?>" <?php echo $option->selected ? 'checked' : ''; ?>>
+																	<span class="label"><?php echo $option->label; ?></span>
+																</label>
+															</li>
+														<?php } ?>
+													</ul>
+												</div>
+											<?php } ?>
 										<?php } ?>
 
 									</div>
