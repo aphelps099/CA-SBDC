@@ -92,19 +92,28 @@
 							<div id="site-description"><?php echo apply_filters( 'the_content', $description ); ?></div>
 						<?php } ?>
 	
-						<div class="accreditations">
-							<div class="inner">
+						<?php
+							$accreditations = get_repeater_entries( 'blog', 'theme_config_footer_accreditations' );
 
-								<div class="logo aptac">
-									<a href="https://www.aptac-us.org/" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/aptac-footer-logo.png" alt="association of procurement technical assistance centers"></a>
+							if ( ! empty( $accreditations ) ) { ?>
+								<div class="accreditations">
+									<div class="inner">
+
+										<?php
+											foreach ( $accreditations as $accreditation ) {
+												$accreditation_image = wp_get_attachment_image( $accreditation['image'], 'medium' );
+												if ( empty( $accreditation_image ) ) continue;
+												?>
+												<div class="logo">
+													<a href="<?php echo $accreditation['link_url']; ?>" target="_blank"><?php echo $accreditation_image; ?></a>
+												</div>
+											<?php }
+										?>
+
+									</div>
 								</div>
-
-								<div class="logo ca-gobiz">
-									<a href="https://business.ca.gov" target="_blank"><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/gobiz-logo.png" alt="California Governor's Office of Business and Economic Development"></a>
-								</div>
-
-							</div>
-						</div>
+							<?php }
+						?>
 
 						<div class="logos">
 							<div class="inner">

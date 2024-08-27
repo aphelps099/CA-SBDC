@@ -150,7 +150,29 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 									new Field( array(
 										'label' => 'Footer Description',
 										'input' => new Textarea( array( 'name' => 'theme_config_footer_description', 'rows' => 4 ) )
-									) )
+									) ),
+									new FieldGroup(array(
+										'label' => 'Partner Logos',
+										'fields' => array(
+											new FieldRepeater( array(
+												'name' => 'theme_config_footer_accreditations',
+												'addNewLabel' => 'Add Accreditation',
+												'fields' => array(
+													new FieldGroup( array(
+														'class' => 'no-border two-column small-left',
+														'fields' => array(
+															new Field( array(
+																'input' => new MediaInput( array( 'name' => 'image', 'mimeType' => 'image', 'buttonLabel' => 'Select Image', 'class' => 'logo' ) )
+															) ),
+															new Field( array(
+																'input' => new TextInput( array( 'name' => 'link_url', 'placeholder' => 'https://', 'label' => 'Link URL' ) )
+															) )
+														)
+													) )
+												)
+											) )
+										)
+									))
 								)
 							) ),
 
