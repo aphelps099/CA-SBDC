@@ -152,7 +152,7 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										'input' => new Textarea( array( 'name' => 'theme_config_footer_description', 'rows' => 4 ) )
 									) ),
 									new FieldGroup(array(
-										'label' => 'Partner Logos',
+										'label' => 'Accreditation Logos (APEX Only)',
 										'fields' => array(
 											new FieldRepeater( array(
 												'name' => 'theme_config_footer_accreditations',
