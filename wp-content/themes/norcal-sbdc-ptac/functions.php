@@ -31,11 +31,11 @@ function ctc_setup_editor_stylesheet() {
 
 add_filter( 'crown_block_event_header_index_title', 'ctc_filter_crown_block_event_header_index_title', 10, 2 );
 function ctc_filter_crown_block_event_header_index_title( $title, $post_id ) {
-	return '<span>' . __( 'NorCal PTAC', 'crown_child_theme' ) . '</span><span>' . __( 'Events', 'crown_child_theme' ) . '</span>';
+	return '<span>' . __( 'Norcal APEX Accelerator', 'crown_child_theme' ) . '</span><span>' . __( 'Events', 'crown_child_theme' ) . '</span>';
 }
 
 
-add_filter( 'crown_block_featured_post_slider_link_subject', function( $subject ) { return 'Norcal PTAC Updates'; }, 10, 1 );
+add_filter( 'crown_block_featured_post_slider_link_subject', function( $subject ) { return 'Norcal APEX Accelerator Updates'; }, 10, 1 );
 
 
 add_filter( 'crown_webinars_can_unpublish_syndicated', '__return_true' );
