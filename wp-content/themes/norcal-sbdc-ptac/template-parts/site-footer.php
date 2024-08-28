@@ -119,7 +119,7 @@
 							<div class="inner">
 
 								<div class="logo norcal-ptac">
-									<img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logos/ptac-footer-logo.png" alt="Norcal PTAC Logo">
+									<?php echo wp_get_attachment_image( get_option('theme_config_footer_logo'), 'medium' ); ?>
 								</div>
 
 							</div>

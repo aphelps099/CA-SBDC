@@ -134,6 +134,10 @@ if ( ! class_exists( 'Crown_Site_Settings_Theme_Configuration' ) ) {
 										)
 									) ),
 									new Field( array(
+										'label' => 'Footer Logo',
+										'input' => new MediaInput( array( 'name' => 'theme_config_footer_logo', 'mimeType' => 'image', 'buttonLabel' => 'Select Image' ) )
+									) ),
+									new Field( array(
 										'label' => 'Google Reviews Link',
 										'input' => new TextInput( array( 'name' => 'theme_config_footer_google_reviews_link', 'placeholder' => 'https://' ) )
 									) ),
