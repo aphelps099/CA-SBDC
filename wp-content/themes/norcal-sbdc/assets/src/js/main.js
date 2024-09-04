@@ -1937,6 +1937,9 @@
 				$('.gform_ajax_spinner').remove();
 				$('#form-confirm-modal button.btn-primary').data('formid', formId);
 				$('#form-confirm-modal').modal('show');
+				var title = 'Confirm Form Submission';
+				if(formId == 39) title = 'Confirm Impact Entries';
+				$('#form-confirm-modal .modal-title').text(title);
 				var formData = $('#form-confirm-modal .form-data');
 				formData.html('');
 				$('.gfield:visible:not(.gfield--type-html, .gfield--type-hidden), .gfield.gfield--type-html.display-in-confirm-modal', form).each(function(i, el) {
@@ -1948,7 +1951,7 @@
 						}
 					} else if(field.is('.gfield--type-html.display-in-confirm-modal')) {
 						var html = $(field).html();
-						formData.append('<div style="margin-bottom: .5rem;">' + html + '</div>');
+						formData.append('<div style="margin-bottom: 1rem;">' + html + '</div>');
 					} else {
 						var label = $('.gfield_label', field).text();
 						if($('.gfield_label .gftt-label', field).length) label = $('.gfield_label .gftt-label', field).text();
@@ -1984,13 +1987,13 @@
 						if(value == '') {
 							value = '<span style="opacity: .5;">[BLANK]</span>';
 						}
-						formData.append('<p style="margin-bottom: .5rem;"><strong style="display: block; font-size: 0.875rem; opacity: .5; font-weight: 400;">' + label + ':</strong>' + value + '</p>');
+						formData.append('<p style="margin-bottom: 1rem;"><strong style="display: block; font-size: 0.75rem; opacity: .5; font-weight: 400; margin-bottom: .25rem">' + label + ':</strong>' + value + '</p>');
 					}
 				});
 				return false;
 			});
 
-			var modal = $('<div id="form-confirm-modal" class="modal" tabindex="-1"><div class="modal-dialog" style="max-width: 600px;"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Confirm Form Submission</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Please verify that the following data provided is accurate:</p><div class="form-data"></div></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-primary" data-dismiss="modal">Confirm & Continue</button></div></div></div></div>');
+			var modal = $('<div id="form-confirm-modal" class="modal" tabindex="-1"><div class="modal-dialog" style="max-width: 600px;"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Confirm Form Submission</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p>Please verify that the following data provided is accurate:</p><div class="form-data"></div></div><div class="modal-footer" style="border-top: none; padding-top: 0; flex-direction: row-reverse;"><button type="button" class="btn btn-link" data-dismiss="modal" style="border-bottom: none; padding-bottom: 0; margin-left: 12px; font-weight: 400; letter-spacing: 0; text-decoration: underline; color: rgba(84,71,95,.6);">Edit Information</button><button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button></div></div></div></div>');
 			$('body').append(modal);
 			$('button.btn-primary').on('click', function(e) {
 				var formId = $(this).data('formid');
