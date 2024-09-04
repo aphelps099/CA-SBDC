@@ -925,6 +925,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			$counselor_notification_links = array();
 			$counselor_id = '';
 			$counselor_email = '';
+			$center_director_email = '';
 			if ( $client && ! empty( $client->counselId ) ) {
 				$counselor_id = $client->counselId;
 				$counselor_response = Crown_Neoserra_Records_Api::get_counselor( $counselor_id );
@@ -933,12 +934,13 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					$counselor_email = ! empty( $counselor->email ) ? $counselor->email : $counselor_email;
 				}
 			}
-			if ( ! empty( $center_id ) && ( empty( $counselor_id ) || empty( $counselor_email ) ) ) {
+			if ( ! empty( $center_id ) && ( empty( $counselor_id ) || empty( $counselor_email ) || empty( $center_director_email ) ) ) {
 				$center_response = Crown_Neoserra_Records_Api::get_center( $center_id );
 				$center = is_object( $center_response ) && property_exists( $center_response, 'id' ) ? $center_response : null;
 				if ( $center ) {
 					$counselor_id = empty( $counselor_id ) ? $center->counselId : $counselor_id;
 					$counselor_email = empty( $counselor_email ) ? $center->diremail : $counselor_email;
+					$center_director_email = empty( $center_director_email ) ? $center->diremail : $center_director_email;
 				}
 			}
 
@@ -1080,6 +1082,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			gform_update_meta( $entry['id'], 'neoserra_record_links', $links );
 
 			gform_update_meta( $entry['id'], 'neoserra_counselor_email', $counselor_email );
+			gform_update_meta( $entry['id'], 'neoserra_center_director_email', $center_director_email );
 
 			// send counselor notifications
 			if ( boolval( $feed['meta']['notification_counselor_enabled'] ) && ! empty( $counselor_notification_links ) && ! empty( $counselor_email ) ) {
@@ -1155,6 +1158,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		public function add_custom_merge_tags( $merge_tags, $form_id, $fields, $element_id ) {
 			$merge_tags[] = array( 'label' => 'Neoserra API Errors', 'tag' => '{neoserra_api_errors}' );
 			$merge_tags[] = array( 'label' => 'Neoserra Counselor Email', 'tag' => '{neoserra_counselor_email}' );
+			$merge_tags[] = array( 'label' => 'Neoserra Center Director Email', 'tag' => '{neoserra_center_director_email}' );
 			$merge_tags[] = array( 'label' => 'Neoserra Record Links', 'tag' => '{neoserra_record_links}' );
 			return $merge_tags;
 		}
@@ -1175,6 +1179,16 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			$merge_tag = '{neoserra_counselor_email}';
 			if ( strpos( $text, $merge_tag ) !== false ) {
 				$email = gform_get_meta( $entry['id'], 'neoserra_counselor_email' );
+				if ( ! empty( $email ) ) {
+					$text = str_replace( $merge_tag, $email, $text );
+				} else {
+					$text = str_replace( $merge_tag, '', $text );
+				}
+			}
+
+			$merge_tag = '{neoserra_center_director_email}';
+			if ( strpos( $text, $merge_tag ) !== false ) {
+				$email = gform_get_meta( $entry['id'], 'neoserra_center_director_email' );
 				if ( ! empty( $email ) ) {
 					$text = str_replace( $merge_tag, $email, $text );
 				} else {
