@@ -282,6 +282,19 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				}
 				return $new_states;
 			}, 10, 1 );
+
+			add_filter( 'gform_field_validation', function( $result, $value, $form, $field ) {
+				if ( $result['is_valid'] && $field->get_input_type() == 'date' && $field->adminLabel == 'business_start_date' ) {
+					$date = GFCommon::parse_date( $value );
+					$date_timestamp = strtotime( $date['year'] . '-' . $date['month'] . '-' . $date['day'] );
+					if ( $date_timestamp > time() ) {
+						$result['is_valid'] = false;
+						$result['message']  = 'Business must already be started. Please provide a date in the past.';
+					}
+				}
+				return $result;
+			}, 10, 4 );
+				
 			
 
 
