@@ -981,6 +981,19 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					$diff = $now->diff( $date_estab );
 					$client_args['status'] = intval( $diff->format('%y') ) > 0 ? 'B' : 'S';
 				}
+				if ( ( array_key_exists( 'ftEmps', $client_args ) && ! empty( $client_args['ftEmps'] ) ) || ( array_key_exists( 'ptEmps', $client_args ) && ! empty( $client_args['ptEmps'] ) ) ) {
+					if ( array_key_exists( 'status', $client_args ) ) {
+						if ( ! in_array( $client_args['status'], array( 'S', 'B' ) ) ) {
+							$client_args['status'] = 'S';
+						}
+					} else if ( $client ) {
+						if ( ! in_array( $client->status, array( 'S', 'B' ) ) ) {
+							$client_args['status'] = 'S';
+						}
+					} else {
+						$client_args['status'] = 'S';
+					}
+				}
 				$client_response = null;
 				if ( $client ) {
 					$client_response = Crown_Neoserra_Records_Api::update_client( $client_id, $client_args );
