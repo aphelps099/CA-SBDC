@@ -284,12 +284,80 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			}, 10, 1 );
 
 			add_filter( 'gform_field_validation', function( $result, $value, $form, $field ) {
-				if ( $result['is_valid'] && $field->get_input_type() == 'date' && $field->adminLabel == 'business_start_date' ) {
+				if ( $result['is_valid'] && $field->get_input_type() == 'date' && $field->adminLabel == 'Business Start Date' ) {
 					$date = GFCommon::parse_date( $value );
 					$date_timestamp = strtotime( $date['year'] . '-' . $date['month'] . '-' . $date['day'] );
 					if ( $date_timestamp > time() ) {
 						$result['is_valid'] = false;
 						$result['message']  = 'Business must already be started. Please provide a date in the past.';
+					}
+				}
+				return $result;
+			}, 10, 4 );
+
+			add_filter( 'gform_column_input', function( $input_info, $field, $column_text, $value, $form_id ) {
+				if ( $field->adminLabel == 'Additional Capital Funding Investments' ) {
+					$column_index = 1;
+					if ( is_array( $field->choices ) ) {
+						foreach ( $field->choices as $choice ) {
+							if ( $choice['text'] == $column_text ) break;
+							$column_index++;
+						}
+					}
+					if ( $column_index == 1 ) {
+						$input_info = array(
+							'type' => 'select',
+							'choices' => array(
+								array( 'value' => '', 'text' => 'Select Option' ),
+								array( 'value' => '.', 'text' => 'CA Relief Grant' ),
+								array( 'value' => 'C', 'text' => 'Commercial (Bank) Loan' ),
+								array( 'value' => 'U', 'text' => 'Community Advantage' ),
+								array( 'value' => 'X', 'text' => 'Community Express Loan' ),
+								array( 'value' => ')', 'text' => 'Crowd Funding' ),
+								array( 'value' => '$', 'text' => 'Dream Fund Grant' ),
+								array( 'value' => '+', 'text' => 'Equipment Loan or Financing' ),
+								array( 'value' => '(', 'text' => 'Equity Investment: Seed Funding' ),
+								array( 'value' => '8', 'text' => 'Equity Investment: Series A' ),
+								array( 'value' => '9', 'text' => 'Equity Investment: Series B' ),
+								array( 'value' => '_', 'text' => 'Equity Investment: Series C' ),
+								array( 'value' => '3', 'text' => 'Grants' ),
+								array( 'value' => 'R', 'text' => 'Line of Credit' ),
+								array( 'value' => '1', 'text' => 'Local Loan' ),
+								array( 'value' => 'M', 'text' => 'Micro-Loan' ),
+								array( 'value' => 'E', 'text' => 'Other Equity Investment' ),
+								array( 'value' => 'W', 'text' => 'Owner Investment' ),
+								array( 'value' => '0', 'text' => 'Private Non-Institution' ),
+								array( 'value' => 'L', 'text' => 'SBA Loan' ),
+								array( 'value' => '7', 'text' => 'SBIR/STTR Grant' ),
+								array( 'value' => 'T', 'text' => 'Stock Investment' ),
+								array( 'value' => 'V', 'text' => 'Venture Capital' )
+							)
+						);
+					}
+				}
+				return $input_info;
+			}, 10, 5 );
+
+			add_filter( 'gform_field_validation', function( $result, $value, $form, $field ) {
+				if ( $result['is_valid'] && $field->get_input_type() == 'list' && $field->adminLabel == 'Additional Capital Funding Investments' ) {
+					$has_missing_type = false;
+					$has_missing_amount = false;
+					foreach ( $value as $row_values ) {
+						$row_values = array_values( $row_values );
+						$type = $row_values[0];
+						$amount = floatval( preg_replace( '/[^0-9\.\-]/', '', $row_values[1] ) );
+						if ( $amount > 0 && empty( $type ) ) {
+							$has_missing_type = true;
+						} else if ( ! empty( $type ) && $amount <= 0 ) {
+							$has_missing_amount = true;
+						}
+					}
+					if ( $has_missing_type ) {
+						$result['is_valid'] = false;
+						$result['message'] = 'Please provide a funding source for all investments.';
+					} else if ( $has_missing_amount ) {
+						$result['is_valid'] = false;
+						$result['message'] = 'Please provide an amount for all selected funding sources.';
 					}
 				}
 				return $result;
@@ -1083,12 +1151,32 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 				foreach ( array( 'date', 'appdate', 'dateCompleted', 'attribDate' ) as $prop ) {
 					if ( array_key_exists( $prop, $capital_funding_args ) ) $capital_funding_args[ $prop ] = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $capital_funding_args[ $prop ] );
 				}
-				$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
-				$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
-				$capital_funding_id = is_object( $capital_funding_response ) && property_exists( $capital_funding_response, 'id' ) ? $capital_funding_response->id : null;
-				if ( $capital_funding_id ) {
-					gform_update_meta( $entry['id'], 'neoserra_capital_funding_id', $capital_funding_id );
-					$counselor_notification_links['capital_funding'] = self::$neoserra_dashboard_uri . 'activity/view?formid=20&eid=' . $capital_funding_id . '&url=/clients/' . $client->id;
+				if ( array_key_exists( 'amountApproved', $capital_funding_args ) && $capital_funding_args['amountApproved'] > 0 ) {
+					$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
+					$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
+					$capital_funding_id = is_object( $capital_funding_response ) && property_exists( $capital_funding_response, 'id' ) ? $capital_funding_response->id : null;
+					if ( $capital_funding_id ) {
+						gform_update_meta( $entry['id'], 'neoserra_capital_funding_id', $capital_funding_id );
+						$counselor_notification_links['capital_funding'] = self::$neoserra_dashboard_uri . 'activity/view?formid=20&eid=' . $capital_funding_id . '&url=/clients/' . $client->id;
+					}
+				}
+				foreach ( $form['fields'] as $field ) {
+					if ( $field->type == 'list' && $field->adminLabel == 'Additional Capital Funding Investments' ) {
+						$additional_funding = json_decode( $this->get_field_value( $form, $entry, $field->id ) );
+						if ( is_array( $additional_funding ) ) {
+							foreach ( $additional_funding as $funding ) {
+								$funding = array_values( (array) $funding );
+								$type = trim( $funding[0] );
+								$amount = floatval( preg_replace( '/[^\d\.\-]/', '', trim( $funding[1] ) ) );
+								if ( ! empty( $type ) && $amount > 0 ) {
+									$capital_funding_args['type'] = $type;
+									$capital_funding_args['amountApproved'] = $amount;
+									$capital_funding_response = Crown_Neoserra_Records_Api::create_capital_funding( $capital_funding_args );
+									$error_messages = array_merge( $error_messages, self::get_error_messages( $capital_funding_response, 'create_capital_funding' ) );
+								}
+							}
+						}
+					}
 				}
 			}
 

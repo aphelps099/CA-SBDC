@@ -1979,6 +1979,31 @@
 								}
 							});
 							value = value.join(', ');
+						} else if(field.is('.gfield--type-list')) {
+							console.log('LIST');
+							value = [];
+							$('.gfield_list_group', field).each(function(j, el2) {
+								var column_count = $('.gfield_list_cell', el2).length;
+								var row_value = [];
+								var has_value = false;
+								$('.gfield_list_cell', el2).each(function(k, el3) {
+									if($('select', el3).length) {
+										row_value.push($('select option:selected', el3).text());
+										if($('select option:selected', el3).val() != '') has_value = true;
+									} else {
+										row_value.push($('input', el3).val());
+										if($('input', el3).val() != '') has_value = true;
+									}
+								});
+								if(has_value) {
+									if(column_count == 2) {
+										value.push(row_value.join(': '));
+									} else {
+										value.push(row_value.join(', '));
+									}
+								}
+							});
+							value = value.join('<br>');
 						} else if($('.ginput_container input', field).length) {
 							value = $('.ginput_container input', field).val();
 						} else if($('.ginput_container textarea', field).length) {
@@ -2001,6 +2026,15 @@
 				window['gf_submitting_confirmed_' + formId] = true;
 				$('#gform_' + formId).trigger('submit');
 			});
+
+			var formatInvestmentAmountInput = function() {
+				if(typeof gformFormatMoney == 'function') {
+					jQuery(this).val( gformFormatMoney( jQuery(this).val() ) );
+					$(this).val(gformFormatMoney($(this).val()));
+				}
+			};
+			$('.gfield.additional-capital-funding-investments .gfield_list_group td:nth-child(2) input').each(formatInvestmentAmountInput);
+			$(document).on('change', '.gfield.additional-capital-funding-investments .gfield_list_group td:nth-child(2) input', formatInvestmentAmountInput);
 
 		};
 
