@@ -1886,6 +1886,34 @@
 					}
 				});
 
+				$('.gfield--type-list').each(function(i, el) {
+					var field = $(el);
+					if(!$('.ginput_container .btn-add-item', field).length) {
+						var label = $('.gfield_label', field).text();
+						label = label == '' ? 'Add Item' : label;
+						var btn = $('<button type="button" class="btn btn-add-item">' + label + '</button>');
+						$('.ginput_container', field).append(btn);
+					}
+					var rows = $('.gfield_list_group', field);
+					if(rows.length <= 1) {
+						$('.gfield_list', field).addClass('d-none');
+					}
+				});
+
+			});
+
+			$(document).on('click', '.gfield--type-list .btn-add-item', function(e) {
+				var list = $(this).siblings('.gfield_list');
+				if(list.hasClass('d-none')) {
+					list.removeClass('d-none');
+				}
+				var rows = $('.gfield_list_group', list);
+				rows.last().find('.add_list_item').trigger('click');
+			});
+			gform.addAction('gform_list_post_item_delete', function(container) {
+				if($('.gfield_list_group', container).length <= 1) {
+					container.addClass('d-none');
+				}
 			});
 
 			$(document).on('celebrate', function(e) {
