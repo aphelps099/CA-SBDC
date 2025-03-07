@@ -1051,6 +1051,24 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			}
 
 
+			/**
+			 * 
+			 * Check "statusInit"
+			 *    If "s" or "b", do not update estab or impactDate or business start milestone
+			 * 
+			 * Check "impactDate"
+			 *    If set, do not update estab or impactDate or business start milestone
+			 * 
+			 * estab - Date entered by client
+			 * impactDate - Form submission date
+			 * 
+			 * Set up new counseling session record creation with "U" type for business start milestone
+			 * 
+			 * Look into timestamp issues for milestone records
+			 * 
+			 */
+
+
 			// create/update client record
 			if ( ! empty( $client_args ) ) {
 				$client_args = array_merge( array(

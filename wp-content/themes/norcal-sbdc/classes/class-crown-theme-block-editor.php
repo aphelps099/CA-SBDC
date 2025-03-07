@@ -57,6 +57,19 @@ if ( ! class_exists( 'Crown_Theme_Block_Editor' ) ) {
 					null
 				);
 
+				ob_start();
+				?>
+					<style>
+						.block-editor-url-input .components-input-control__input {
+							position: relative;
+							z-index: 1;
+						}
+					</style>
+				<?php
+				$css = trim( ob_get_clean() );
+				$css = trim( preg_replace( array( '/^<style>/', '/<\/style>$/' ), '', $css ) );
+				wp_add_inline_style( 'common', $css );
+
 			}
 
 		}
