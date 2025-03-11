@@ -49,6 +49,7 @@ final class AJAX {
 	/**
 	 * Clears persistent notice on user request (clicked Dismiss icon) via AJAX.
 	 *
+	 * @hook wp_ajax_tsf_dismiss_notice 10
 	 * @since 4.1.0
 	 * @since 4.2.0 Now cleans response header.
 	 * @since 5.0.0 Removed _wp_ajax_ from the plugin name.
@@ -85,17 +86,19 @@ final class AJAX {
 	/**
 	 * Handles counter option update on AJAX request for users that can edit posts.
 	 *
+	 * @hook wp_ajax_tsf_update_counter 10
 	 * @since 3.1.0 Introduced in 2.6.0, but the name changed.
 	 * @since 4.2.0 1. Now uses wp.ajax instead of $.ajax.
 	 *              2. No longer tests if settings-saving was successful.
 	 * @since 5.0.0 Removed _wp_ajax_ from the plugin name.
+	 * @since 5.1.0 No longer sends the updated value. We can assume it's updated without repercussions.
 	 * @access private
 	 */
 	public static function update_counter_type() {
 
 		Helper\Headers::clean_response_header();
 
-		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_referer() does this.
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer() does this.
 		Utils::check_ajax_capability_referer( 'edit_posts' );
 
 		/**
@@ -115,11 +118,7 @@ final class AJAX {
 		// Update the option and get results of action.
 		Data\Plugin\User::update_single_meta_item( Query::get_current_user_id(), 'counter_type', $value );
 
-		// Encode and echo results. Requires JSON decode within JS.
-		\wp_send_json_success( [
-			'type'  => 'success',
-			'value' => $value,
-		] );
+		\wp_send_json_success();
 		// phpcs:enable, WordPress.Security.NonceVerification
 	}
 
@@ -132,13 +131,14 @@ final class AJAX {
 	 *
 	 * Copied from WordPress Core wp_ajax_crop_image.
 	 * Adjusted: 1. It accepts capability 'upload_files', instead of 'customize'.
-	 *               - This was set to 'edit_post' in WP 4.7? trac ticket got lost, probably for (invalid) security reasons.
-	 *                 In any case, that's still incorrect, and I gave up on communicating this;
-	 *                 We're not editing the image, we're creating a new one!
+	 *              - This was set to 'edit_post' in WP 4.7? trac ticket got lost, probably for (invalid) security reasons.
+	 *                In any case, that's still incorrect, and I gave up on communicating this;
+	 *                We're not editing the image, we're creating a new one!
 	 *           2. It now only accepts TSF own AJAX nonces.
 	 *           3. It now only accepts context 'tsf-image'
 	 *           4. It no longer accepts a default context.
 	 *
+	 * @hook wp_ajax_tsf_crop_image 10
 	 * @since 3.1.0 Introduced in 2.9.0, but the name changed.
 	 * @since 4.2.0 Now cleans response header.
 	 * @since 4.2.5 1. Backported cropping support for WebP (WP 5.9).
@@ -150,11 +150,11 @@ final class AJAX {
 
 		Helper\Headers::clean_response_header();
 
-		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_referer does this.
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer does this.
 		Utils::check_ajax_capability_referer( 'upload_files' );
 
 		if ( ! isset( $_POST['id'], $_POST['context'], $_POST['cropDetails'] ) )
-			\wp_send_json_error();
+			\wp_send_json_error( [ 'message' => \esc_js( \__( 'Invalid request.', 'autodescription' ) ) ] );
 
 		$attachment_id = \absint( $_POST['id'] );
 
@@ -256,24 +256,23 @@ final class AJAX {
 	}
 
 	/**
-	 * Gets an SEO Bar for AJAX during edit-post.
+	 * Gets a various post data for Gutenberg / Block Editor on save.
 	 *
+	 * @hook wp_ajax_tsf_update_post_data 10
 	 * @since 4.0.0
 	 * @since 4.2.0 Now uses wp.ajax, instead of $.ajax
 	 * @since 5.0.0 Removed _wp_ajax_ from the plugin name.
+	 * @since 5.1.0 Now relays the 'edit_post' capability check to the reference handler.
 	 * @access private
 	 */
 	public static function get_post_data() {
 
 		Helper\Headers::clean_response_header();
 
-		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_referer() does this.
-		Utils::check_ajax_capability_referer( 'edit_posts' );
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer() does this.
+		$post_id = \absint( $_POST['post_id'] ?? 0 );
 
-		$post_id = \absint( $_POST['post_id'] );
-
-		if ( ! $post_id || ! \current_user_can( 'edit_post', $post_id ) )
-			\wp_send_json_error();
+		Utils::check_ajax_capability_referer( 'edit_post', $post_id );
 
 		$_get_defaults = [
 			'seobar'          => false,
@@ -350,6 +349,136 @@ final class AJAX {
 			'data'      => $data,
 			'processed' => $get,
 		] );
+		// phpcs:enable, WordPress.Security.NonceVerification
+	}
+
+	/**
+	 * Gets term parent slugs for a term. It appends the requested term itself.
+	 *
+	 * We use the capability 'edit_posts'; there's no data processing, and we can safely
+	 * assume that any user that can edit posts can also view all term parent slugs.
+	 * See WP Core `post_categories_meta_box()` -- exercising the same assumptions.
+	 * There's no capability check to view terms; a flaw in WP Core.
+	 *
+	 * @hook wp_ajax_tsf_get_term_parent_slugs 10
+	 * @since 5.1.0
+	 * @access private
+	 */
+	public static function get_term_parent_slugs() {
+
+		Helper\Headers::clean_response_header();
+
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer() does this.
+		Utils::check_ajax_capability_referer( 'edit_posts' );
+
+		if ( ! isset( $_POST['term_id'], $_POST['taxonomy'] ) )
+			\wp_send_json_error( 'invalid_request' );
+
+		$term_id = \absint( $_POST['term_id'] );
+
+		if ( ! $term_id )
+			\wp_send_json_error( 'invalid_object_id' );
+
+		$parent_term_slugs = [];
+
+		foreach ( Data\Term::get_term_parents( $term_id, $_POST['taxonomy'], true ) as $parent_term ) {
+			// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+			$parent_term_slugs[] = [
+				'id'   => $parent_term->term_id,
+				'slug' => $parent_term->slug,
+			];
+		}
+
+		\wp_send_json_success( $parent_term_slugs );
+		// phpcs:enable, WordPress.Security.NonceVerification
+	}
+
+	/**
+	 * Gets page parent slugs for a page. It appends the requested page itself.
+	 *
+	 * We use the base capability 'edit_posts'; there's no data processing.
+	 * See WP Core `page_attributes_meta_box()` -- there's no check in there at all.
+	 *
+	 * Still, we added an extra check for the post type object, because everything is a post type in WordPress.
+	 * Albeit customizer, cache, requests, blocks, templates, CSS, menus, fonts, templates... it's all a post type.
+	 * This moronic abuse of the Post Type API exist because Gutenberg needed to speedrun features for it flopped.
+	 *
+	 * @hook wp_ajax_tsf_get_post_parent_slugs 10
+	 * @since 5.1.0
+	 * @access private
+	 */
+	public static function get_post_parent_slugs() {
+
+		Helper\Headers::clean_response_header();
+
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer() does this.
+		Utils::check_ajax_capability_referer( 'edit_posts' );
+
+		if ( ! isset( $_POST['post_id'] ) )
+			\wp_send_json_error( 'invalid_request' );
+
+		$post_id = \absint( $_POST['post_id'] );
+
+		if ( ! $post_id )
+			\wp_send_json_error( 'invalid_object_id' );
+
+		$post_type_object = \get_post_type_object( \get_post( $post_id )->post_type ?? '' );
+
+		// This prevents snooping around special post types instated by individuals with an underdeveloped sense of logic.
+		if (
+			   empty( $post_type_object )
+			|| ! \current_user_can( $post_type_object->cap->edit_posts )
+		) {
+			\wp_send_json_error( 'missing_capabilities' );
+		}
+
+		$parent_post_slugs = [];
+
+		foreach ( Data\Post::get_post_parents( $post_id, true ) as $parent_post ) {
+			// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+			$parent_post_slugs[] = [
+				'id'   => $parent_post->ID,
+				'slug' => $parent_post->post_name,
+			];
+		}
+
+		\wp_send_json_success( $parent_post_slugs );
+		// phpcs:enable, WordPress.Security.NonceVerification
+	}
+
+	/**
+	 * Gets the author slug for a user ID.
+	 *
+	 * We use the capability 'edit_posts'; there's no data processing, and we can safely
+	 * assume that any user that can edit posts can also view all other post authors.
+	 * See WP Core `post_author_meta_box()` -- exercising the same assumptions.
+	 *
+	 * @hook wp_ajax_tsf_get_author_slug 10
+	 * @since 5.1.0
+	 * @access private
+	 */
+	public static function get_author_slug() {
+
+		Helper\Headers::clean_response_header();
+
+		// phpcs:disable, WordPress.Security.NonceVerification -- check_ajax_capability_referer() does this.
+		Utils::check_ajax_capability_referer( 'edit_posts' );
+
+		if ( ! isset( $_POST['author_id'] ) )
+			\wp_send_json_error( 'invalid_request' );
+
+		$author_id = \absint( $_POST['author_id'] );
+
+		if ( ! $author_id )
+			\wp_send_json_error( 'invalid_object_id' );
+
+		$author_slugs   = [];
+		$author_slugs[] = [
+			'id'   => $author_id,
+			'slug' => Data\User::get_userdata( $author_id, 'user_nicename' ),
+		];
+
+		\wp_send_json_success( $author_slugs );
 		// phpcs:enable, WordPress.Security.NonceVerification
 	}
 }

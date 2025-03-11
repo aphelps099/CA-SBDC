@@ -17,41 +17,54 @@ class ConstantContact_Health {
 	}
 
 	/**
-	 * Callback to add in our own cusotm site health information.
+	 * Callback to add in our own custom site health information.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param array $debug_info
+	 * @param array $debug_info Array of debug info sections to add to.
 	 * @return array
 	 * @throws Exception
 	 */
-	public function health_information( $debug_info ) {
-
-		$logs = constant_contact()->logging->get_log_locations();
+	public function health_information( array $debug_info ): array {
 
 		// Reused strings.
 		$can_write    = esc_html__( 'Writable', 'constant-contact-forms' );
 		$cannot_write = esc_html__( 'Not writable', 'constant-contact-forms' );
 		$yes          = esc_html__( 'Yes', 'constant-contact-forms' );
+		/* translators: placeholder will hold a number */
+		$yes_count    = esc_html__( 'Yes, %s', 'constant-contact-forms' );
 		$no           = esc_html__( 'No', 'constant-contact-forms' );
 
-		$logs_writeable = sprintf(
+		$logs            = constant_contact()->logging->get_log_locations();
+		$logs_writeable  = sprintf(
 			'Folder: %s, File: %s',
 			( is_writable( $logs['directory'] ) ) ? $can_write : $cannot_write,
 			( is_writable( $logs['file'] ) ) ? $can_write : $cannot_write
 		);
 		$token_timestamp = get_option( 'ctct_access_token_timestamp', '' );
-		$expires = constant_contact()->connect->e_get( '_ctct_expires_in' );
-		$expires_on = esc_html__( 'Access token needs refreshed', 'constant-contact-forms' );
+		$expires         = constant_contact()->connect->e_get( '_ctct_expires_in' );
+		$expires_on      = esc_html__( 'Access token needs refreshed', 'constant-contact-forms' );
 		if ( ! empty( $token_timestamp ) && ! empty( $expires ) ) {
 			$expires_on_ts = $token_timestamp + $expires;
-			$expires_on = date( 'Y-m-d, h:ia', $expires_on_ts );
+			$expires_on    = date( 'Y-m-d, h:ia', $expires_on_ts ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 		}
 
+		$missed_submissions = get_site_option( 'ctct_missed_api_requests' );
+
+		$recaptcha         = new ConstantContact_reCAPTCHA();
+		$recaptcha_version = $recaptcha->get_recaptcha_version();
+		$has_recaptcha     = ( ConstantContact_reCAPTCHA::has_recaptcha_keys() ) ? $yes : $no;
+		$recaptcha_status  = sprintf(
+		/* Translators: Placeholders will store the current values from each */
+			esc_html__( 'Has reCAPTCHA: %1$s, Version: %2$s', 'constant-contact-forms' ),
+			$has_recaptcha,
+			$recaptcha_version
+		);
+
 		$debug_info['constant-contact-forms'] = [
-			'label' => esc_html__( 'Constant Contact Forms', 'constant-contact-forms' ),
+			'label'       => esc_html__( 'Constant Contact Forms', 'constant-contact-forms' ),
 			'description' => esc_html__( 'Debugging and troubleshooting information for support purposes', 'constant-contact-forms' ),
-			'fields' => [
+			'fields'      => [
 				[
 					'label' => esc_html__( 'Plugin version', 'constant-contact-forms' ),
 					'value' => constant_contact()::VERSION,
@@ -99,8 +112,20 @@ class ConstantContact_Health {
 				[
 					'label' => esc_html__( 'Cron check', 'constant-contact-forms' ),
 					'value' => $this->cron_spawn(),
-				]
-			]
+				],
+				[
+					'label' => esc_html__( 'reCAPTCHA Status', 'constant-contact-forms' ),
+					'value' => $recaptcha_status,
+				],
+				[
+					'label' => esc_html__( 'Has missed submissions', 'constant-contact-forms' ),
+					'value' => ( empty( $missed_submissions ) ) ? $no : sprintf( $yes_count, count( $missed_submissions ) )
+				],
+				[
+					'label' => esc_html__( 'Constant Contact Status page', 'constant-contact-forms' ),
+					'value' => 'https://status.constantcontact.com/'
+				],
+			],
 		];
 
 		return $debug_info;
@@ -113,7 +138,7 @@ class ConstantContact_Health {
 	 *
 	 * @return string
 	 */
-	public function cron_spawn() {
+	public function cron_spawn(): string {
 
 		global $wp_version;
 

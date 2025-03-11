@@ -62,7 +62,7 @@ switch ( $instance ) :
 			60 - \strlen( $cat_prefix ),
 		) );
 
-		$cat_title_full = sprintf(
+		$cat_title_full = \sprintf(
 			/* translators: 1: Title prefix. 2: Title. */
 			\esc_html_x( '%1$s %2$s', 'archive title', 'default' ),
 			$cat_prefix,
@@ -131,7 +131,7 @@ switch ( $instance ) :
 		<hr>
 		<?php
 		if (
-				Admin\Utils::display_extension_suggestions()
+			   Admin\Utils::display_extension_suggestions()
 			&& ! \current_theme_supports( 'title-tag' )
 			&& ! \defined( 'TSFEM_E_TITLE_FIX' )
 		) {
@@ -145,7 +145,7 @@ switch ( $instance ) :
 			<?php
 			HTML::description_noesc(
 				Markdown::convert(
-					sprintf(
+					\sprintf(
 						/* translators: 1: Extension name, 2: Extension link. Markdown!  */
 						\esc_html__( "The current theme doesn't support a feature that allows predictable output of titles. Consider installing [%1\$s](%2\$s) when you notice the title output in the browser-tab isn't as you have configured.", 'autodescription' ),
 						'Title Fix',
@@ -208,7 +208,7 @@ switch ( $instance ) :
 			<?php
 			foreach ( $title_separator as $name => $html ) {
 				vprintf(
-					'<input type=radio name="%1$s" id="%2$s" value="%3$s" %4$s %5$s /><label for="%2$s">%6$s</label>',
+					'<input type=radio name="%1$s" id="%2$s" value="%3$s" %4$s %5$s><label for="%2$s">%6$s</label>',
 					[
 						\esc_attr( Input::get_field_name( 'title_separator' ) ),
 						\esc_attr( Input::get_field_id( "title_separator_{$name}" ) ),
@@ -231,7 +231,7 @@ switch ( $instance ) :
 		HTML::description( \__( 'Some titles may have HTML tags inserted by the author for styling.', 'autodescription' ) );
 
 		$info = HTML::make_info(
-			sprintf(
+			\sprintf(
 				/* translators: %s = HTML tag example */
 				\__( 'This strips HTML tags, like %s, from the title. Disable this option to display generated HTML tags as plain text in meta titles.', 'autodescription' ),
 				'<code>&amp;lt;strong&amp;gt;</code>' // Double escaped HTML (&amp;) for attribute display.
@@ -262,10 +262,10 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p class=tsf-title-wrap>
-			<input type=text name="<?php Input::field_name( 'site_title' ); ?>" class=large-text id="<?php Input::field_id( 'site_title' ); ?>" placeholder="<?= \esc_html( Sanitize::metadata_content( Data\Blog::get_filtered_blog_name() ) ) ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'site_title' ) ) ) ?>" autocomplete=off />
+			<input type=text name="<?php Input::field_name( 'site_title' ); ?>" class=large-text id="<?php Input::field_id( 'site_title' ); ?>" placeholder="<?= \esc_html( Sanitize::metadata_content( Data\Blog::get_filtered_blog_name() ) ) ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'site_title' ) ) ) ?>" autocomplete=off>
 		</p>
 		<?php
-		HTML::description( \__( 'This option does not affect titles displayed directly on your website.', 'autodescription' ) );
+		HTML::description( \__( 'This option does not affect header titles displayed directly on your website.', 'autodescription' ) );
 		?>
 		<hr>
 
@@ -273,7 +273,7 @@ switch ( $instance ) :
 			<legend><?php HTML::header_title( \__( 'Site Title Location', 'autodescription' ) ); ?></legend>
 			<p id=tsf-title-location class=tsf-fields>
 				<span class=tsf-toblock>
-					<input type=radio name="<?php Input::field_name( 'title_location' ); ?>" id="<?php Input::field_id( 'title_location_left' ); ?>" value=left <?php \checked( Data\Plugin::get_option( 'title_location' ), 'left' ); ?> />
+					<input type=radio name="<?php Input::field_name( 'title_location' ); ?>" id="<?php Input::field_id( 'title_location_left' ); ?>" value=left <?php \checked( Data\Plugin::get_option( 'title_location' ), 'left' ); ?>>
 					<label for="<?php Input::field_id( 'title_location_left' ); ?>">
 						<span><?php \esc_html_e( 'Left:', 'autodescription' ); ?></span>
 						<?php
@@ -283,7 +283,7 @@ switch ( $instance ) :
 					</label>
 				</span>
 				<span class=tsf-toblock>
-					<input type=radio name="<?php Input::field_name( 'title_location' ); ?>" id="<?php Input::field_id( 'title_location_right' ); ?>" value=right <?php \checked( Data\Plugin::get_option( 'title_location' ), 'right' ); ?> />
+					<input type=radio name="<?php Input::field_name( 'title_location' ); ?>" id="<?php Input::field_id( 'title_location_right' ); ?>" value=right <?php \checked( Data\Plugin::get_option( 'title_location' ), 'right' ); ?>>
 					<label for="<?php Input::field_id( 'title_location_right' ); ?>">
 						<span><?php \esc_html_e( 'Right:', 'autodescription' ); ?></span>
 						<?php

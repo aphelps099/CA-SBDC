@@ -62,7 +62,7 @@ final class Load extends Pool {
 	private static $instance;
 
 	/**
-	 * Instance getter.
+	 * Returns the current and only instance -- sets it up if it doesn't exist.
 	 *
 	 * @since 5.0.0
 	 * @access private
@@ -179,7 +179,7 @@ final class Load extends Pool {
 	 */
 	public function __call( $name, $arguments ) {
 
-		static $depr_class = null;
+		static $depr_class;
 
 		$depr_class ??= new Internal\Deprecated;
 

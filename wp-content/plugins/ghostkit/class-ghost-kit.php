@@ -2,7 +2,7 @@
 /**
  * Plugin Name:  Ghost Kit
  * Description:  Page Builder Blocks and Extensions for Gutenberg
- * Version:      3.3.2
+ * Version:      3.4.1
  * Author:       Ghost Kit Team
  * Author URI:   https://www.ghostkit.io/?utm_source=wordpress.org&utm_medium=readme&utm_campaign=byline
  * License:      GPLv2 or later
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'GHOSTKIT_VERSION' ) ) {
-	define( 'GHOSTKIT_VERSION', '3.3.2' );
+	define( 'GHOSTKIT_VERSION', '3.4.1' );
 }
 
 if ( ! class_exists( 'GhostKit' ) ) :
@@ -140,11 +140,12 @@ if ( ! class_exists( 'GhostKit' ) ) :
 		public function init_hooks() {
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
 
+			add_action( 'init', array( $this, 'init_hook' ) );
+
 			add_action( 'init', array( $this, 'add_custom_fields_support' ), 100 );
 
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_go_pro_link_plugins_page' ) );
 
-			$this->php_translation();
 			add_action( 'wp_enqueue_scripts', array( $this, 'js_translation' ), 11 );
 			add_action( 'enqueue_block_editor_assets', array( $this, 'js_translation_editor' ) );
 
@@ -160,13 +161,6 @@ if ( ! class_exists( 'GhostKit' ) ) :
 			// add support for additional mimes.
 			add_filter( 'upload_mimes', array( $this, 'upload_mimes' ), 100 );
 			add_filter( 'wp_check_filetype_and_ext', array( $this, 'wp_check_filetype_and_ext' ), 100, 3 );
-		}
-
-		/**
-		 * PHP translations.
-		 */
-		public function php_translation() {
-			load_plugin_textdomain( 'ghostkit', false, plugin_dir_path( __FILE__ ) . '/languages' );
 		}
 
 		/**
@@ -361,6 +355,13 @@ if ( ! class_exists( 'GhostKit' ) ) :
 			$this->plugin_version        = $data['Version'];
 			$this->plugin_slug           = plugin_basename( __FILE__ );
 			$this->plugin_name_sanitized = basename( __FILE__, '.php' );
+		}
+
+		/**
+		 * Init hook
+		 */
+		public function init_hook() {
+			load_plugin_textdomain( 'ghostkit', false, plugin_dir_path( __FILE__ ) . '/languages' );
 		}
 
 		/**

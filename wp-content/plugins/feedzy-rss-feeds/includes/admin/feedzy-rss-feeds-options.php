@@ -2,7 +2,7 @@
 /**
  * The Options main wrapper class.
  *
- * @link       http://themeisle.com
+ * @link       https://themeisle.com
  * @since      3.0.3
  *
  * @package    feedzy-rss-feeds
@@ -48,7 +48,10 @@ if ( ! class_exists( 'Feedy_Rss_Feeds_Options' ) ) {
 		 *  Init the default values of the options class.
 		 */
 		public function init() {
-			self::$instance->options = get_option( Feedzy_Rss_Feeds::get_plugin_name() );
+			self::$instance->options = get_option( Feedzy_Rss_Feeds::get_plugin_name(), array() );
+			if ( ! is_array( self::$instance->options ) ) {
+				self::$instance->options = array();
+			}
 		}
 
 		/**
@@ -78,7 +81,6 @@ if ( ! class_exists( 'Feedy_Rss_Feeds_Options' ) ) {
 			self::$instance->options[ $key ] = apply_filters( 'feedzy_pre_set_option_' . $key, $value );
 
 			return update_option( Feedzy_Rss_Feeds::get_plugin_name(), self::$instance->options );
-
 		}
 	}
 }// End if().

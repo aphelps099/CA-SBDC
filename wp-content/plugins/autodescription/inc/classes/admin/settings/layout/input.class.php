@@ -32,7 +32,8 @@ use \The_SEO_Framework\{
 
 /**
  * Interprets anything you send here into Form HTML. Or so it should.
- * Meant for the SEO Settings page, only.
+ * Meant for the SEO Settings, Post Edit, and Term Edit.
+ * The `*field_*()` functions are meant for the SEO Settings only.
  *
  * @since 4.2.0
  * @since 5.0.0 1. Moved from `\The_SEO_Framework\Interpreters`.
@@ -45,9 +46,6 @@ class Input {
 
 	/**
 	 * Helper function that constructs id attributes for use in form fields.
-	 *
-	 * One-liner I forwent:
-	 * return \THE_SEO_FRAMEWORK_SITE_OPTIONS . '['. implode( '][', $id ) . ']';
 	 *
 	 * @since 4.2.0
 	 *
@@ -68,7 +66,6 @@ class Input {
 	 * Echo constructed id attributes in form fields.
 	 *
 	 * @since 4.2.0
-	 * @uses static::get_field_id() Constructs id attributes for use in form fields.
 	 *
 	 * @param string|string[] $id The field id, or a map of indexes therefor.
 	 */
@@ -97,7 +94,6 @@ class Input {
 	 * Alias of field_id.
 	 *
 	 * @since 4.2.0
-	 * @uses static::get_field_name() Construct name attributes for use in form fields.
 	 * @ignore
 	 *
 	 * @param string|string[] $name The field name, or a map of indexes therefor.
@@ -116,15 +112,17 @@ class Input {
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array $args : {
-	 *    string|string[] $id          The option index or map of indexes therefor, used as field ID.
-	 *    string          $class       The checkbox class.
-	 *    string          $label       The checkbox label description, placed inline of the checkbox.
-	 *    null|mixed      $value       The option value. If not set, it'll try to retrieve the value based on $id.
-	 *    string          $description The checkbox additional description, placed underneat.
-	 *    array           $data        The checkbox field data. Sub-items are expected to be escaped if they're not an array.
-	 *    bool            $escape      Whether to enable escaping of the $label and $description.
-	 *    bool            $disabled    Whether to disable the checkbox field.
+	 * @param array $args {
+	 *     The checkbox creation arguments.
+	 *
+	 *     @type string|string[] $id          The option index or map of indexes therefor, used as field ID.
+	 *     @type string          $class       The checkbox class.
+	 *     @type string          $label       The checkbox label description, placed inline of the checkbox.
+	 *     @type null|mixed      $value       The option value. If not set, it'll try to retrieve the value based on $id.
+	 *     @type string          $description The checkbox additional description, placed underneat.
+	 *     @type array           $data        The checkbox field data. Sub-items are expected to be escaped if they're not an array.
+	 *     @type bool            $escape      Whether to enable escaping of the $label and $description.
+	 *     @type bool            $disabled    Whether to disable the checkbox field.
 	 * }
 	 * @return string HTML checkbox output.
 	 */
@@ -160,7 +158,7 @@ class Input {
 			array_push( $cb_classes, ...static::get_conditional_checked_classes( ...(array) $args['id'] ) );
 		}
 
-		return sprintf(
+		return \sprintf(
 			'<span class=tsf-toblock>%s</span>%s',
 			vsprintf(
 				'<label for="%s"%s>%s</label>',
@@ -182,7 +180,7 @@ class Input {
 				],
 			),
 			$args['description']
-				? sprintf( '<p class="description tsf-option-spacer">%s</p>', $args['description'] )
+				? \sprintf( '<p class="description tsf-option-spacer">%s</p>', $args['description'] )
 				: '',
 		);
 	}
@@ -217,9 +215,9 @@ class Input {
 			implode(
 				'',
 				[
-					'<span id="tsf-title-reference_%1$s" class="tsf-title-reference wp-exclude-emoji hidden" data-for="%1$s"></span>',
-					'<span id="tsf-title-noadditions-reference_%1$s" class="tsf-title-noadditions-reference wp-exclude-emoji hidden" data-for="%1$s"></span>',
-					'<span id="tsf-title-offset_%1$s" class="tsf-title-offset wp-exclude-emoji hide-if-no-tsf-js" data-for="%1$s"></span>',
+					'<span id="tsf-title-reference_%1$s" class="tsf-title-reference hidden wp-exclude-emoji" data-for="%1$s"></span>',
+					'<span id="tsf-title-noadditions-reference_%1$s" class="tsf-title-noadditions-reference hidden wp-exclude-emoji" data-for="%1$s"></span>',
+					'<span class=tsf-title-offset-wrap><span id="tsf-title-offset_%1$s" class="tsf-title-offset wp-exclude-emoji hide-if-no-tsf-js" data-for="%1$s"></span></span>',
 					'<span id="tsf-title-placeholder-additions_%1$s" class="tsf-title-placeholder-additions wp-exclude-emoji hide-if-no-tsf-js" data-for="%1$s"></span>',
 					'<span id="tsf-title-placeholder-prefix_%1$s" class="tsf-title-placeholder-prefix wp-exclude-emoji hide-if-no-tsf-js" data-for="%1$s"></span>',
 					'<span id="tsf-title-data_%1$s" class="hidden wp-exclude-emoji" data-for="%1$s" %2$s></span>',
@@ -272,6 +270,25 @@ class Input {
 					'<span id="tsf-description-data_%1$s" class="hidden wp-exclude-emoji" data-for="%1$s" %2$s ></span>',
 				],
 			),
+			[
+				\esc_attr( $id ),
+				// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
+				HTML::make_data_attributes( $data ),
+			],
+		);
+	}
+
+	/**
+	 * Outputs reference canonical HTML elements for JavaScript for a specific ID.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param string $id   The canonical URL input ID.
+	 * @param array  $data The input data.
+	 */
+	public static function output_js_canonical_data( $id, $data ) {
+		vprintf(
+			'<span id="tsf-canonical-data_%1$s" class="hidden wp-exclude-emoji" data-for="%1$s" %2$s ></span>',
 			[
 				\esc_attr( $id ),
 				// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.

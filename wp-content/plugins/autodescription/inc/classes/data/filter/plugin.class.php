@@ -78,8 +78,10 @@ class Plugin {
 
 		/**
 		 * @since 5.0.0
-		 * @param array $filters A map of filters and their callbacks : {
-		 *    string option_name => callable[] A list of callbacks,
+		 * @param array $filters {
+		 *     A map of option filters and their callbacks.
+		 *
+		 *     @type callable[] {$option} The callback to sanitize the option indexed by option name.
 		 * }
 		 */
 		$sanitizers = \apply_filters(
@@ -113,8 +115,11 @@ class Plugin {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param array $filters A map of filters and their callbacks : {
-	 *    string option_name => callable|callable[] callback,
+	 * @param array $filters {
+	 *     A map of option filters and their callbacks.
+	 *
+	 *     @type callable|callable[] {$option} The callback to sanitize the option, or an array of callbacks.
+	 *                                         Indexed by option name.
 	 * }
 	 */
 	public static function register_sanitizers( $filters ) {
@@ -178,6 +183,8 @@ class Plugin {
 			'homepage_noarchive'           => 'checkbox',
 			'homepage_nofollow'            => 'checkbox',
 			'homepage_noindex'             => 'checkbox',
+			'homepage_canonical'           => 'fully_qualified_url',
+			'homepage_redirect'            => 'fully_qualified_url',
 			'homepage_og_description'      => 'metadata_text',
 			'homepage_og_title'            => 'metadata_text',
 			'homepage_social_image_id'     => 'absolute_integer',
@@ -223,6 +230,8 @@ class Plugin {
 			'prev_next_frontpage'          => 'checkbox',
 			'prev_next_posts'              => 'checkbox',
 			'pta'                          => 'pta_meta',
+			'robotstxt_block_ai'           => 'checkbox',
+			'robotstxt_block_seo'          => 'checkbox',
 			'search_noarchive'             => 'checkbox',
 			'search_nofollow'              => 'checkbox',
 			'search_noindex'               => 'checkbox',
@@ -559,7 +568,7 @@ class Plugin {
 			min(
 				50000,
 				\absint( $value ) ?: $old_value,
-			)
+			),
 		);
 	}
 

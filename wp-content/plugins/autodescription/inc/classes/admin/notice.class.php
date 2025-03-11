@@ -48,11 +48,14 @@ class Notice {
 	 * @param string $message The notice message. Expected to be escaped if `$args['escape']` is `false`.
 	 *                        When the message contains HTML, it must start with a <p> tag,
 	 *                        or it will be added for you--regardless of proper semantics.
-	 * @param array  $args    : {
-	 *    'type'   => string Optional. The notification type. Default 'updated'.
-	 *    'icon'   => bool   Optional. Whether to enable icon. Default true.
-	 *    'escape' => bool   Optional. Whether to escape the $message. Default true.
-	 *    'inline' => bool   Optional. Whether to escape the whole output. Default false.
+	 * @param array  $args    {
+	 *     The notice creation arguments.
+	 *
+	 *     @type string $type   Optional. The notification type. Accepts 'updated', 'warning', 'info', and 'error'.
+	 *                          Default 'updated'.
+	 *     @type bool   $icon   Optional. Whether to enable icon. Default true.
+	 *     @type bool   $escape Optional. Whether to escape the $message. Default true.
+	 *     @type bool   $inline Optional. Whether to escape the whole output. Default false.
 	 * }
 	 */
 	public static function output_notice( $message, $args ) {
@@ -81,11 +84,14 @@ class Notice {
 	 * @param string $message The notice message. Expected to be escaped if `$args['escape']` is `false`.
 	 *                        When the message contains HTML, it must start with a <p> tag,
 	 *                        or it will be added for you--regardless of proper semantics.
-	 * @param array  $args    : {
-	 *    'type'   => string Optional. The notification type. Default 'updated'.
-	 *    'icon'   => bool   Optional. Whether to enable icon. Default true.
-	 *    'escape' => bool   Optional. Whether to escape the $message. Default true.
-	 *    'inline' => bool   Optional. Whether to escape the whole output. Default false.
+	 * @param array  $args    {
+	 *     The notice creation arguments.
+	 *
+	 *     @type string $type   Optional. The notification type. Accepts 'updated', 'warning', 'info', and 'error'.
+	 *                          Default 'updated'.
+	 *     @type bool   $icon   Optional. Whether to enable icon. Default true.
+	 *     @type bool   $escape Optional. Whether to escape the $message. Default true.
+	 *     @type bool   $inline Optional. Whether to escape the whole output. Default false.
 	 * }
 	 * @return string The dismissible error notice.
 	 */
@@ -116,13 +122,13 @@ class Notice {
 				\esc_attr( $args['type'] ),
 				$args['icon'] ? 'tsf-show-icon' : '',
 				$args['inline'] ? 'inline' : '',
-				sprintf(
+				\sprintf(
 					! $args['escape'] && 0 === stripos( $message, '<p' )
 						? '%s'
 						: '<p>%s</p>',
 					$args['escape'] ? \esc_html( $message ) : $message,
 				),
-				sprintf(
+				\sprintf(
 					'<a class="hide-if-no-tsf-js tsf-dismiss" href="javascript:;" title="%s"></a>',
 					\esc_attr__( 'Dismiss this notice', 'default' )
 				),

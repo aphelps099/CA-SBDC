@@ -44,7 +44,9 @@ if ( !class_exists('Puc_v4p9_Metadata', false) ):
 			}
 
 			foreach(get_object_vars($apiResponse) as $key => $value){
-				$target->$key = $value;
+				if (property_exists($target, $key)) {
+					$target->$key = $value;
+				}
 			}
 
 			return true;

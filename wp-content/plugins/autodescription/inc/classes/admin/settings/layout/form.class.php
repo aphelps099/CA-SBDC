@@ -51,16 +51,19 @@ class Form {
 	 * @since 4.1.4
 	 * @since 5.0.0 'default' is now synonymous to 'selected'. 'default' is no longer promoted.
 	 *
-	 * @param array $args : {
-	 *    string     $id       The select field ID.
-	 *    string     $class    The div wrapper class.
-	 *    string     $name     The option name.
-	 *    int|string $selected The selected option value.
-	 *    array      $options  The select option values : { value => name }
-	 *    string     $label    The option label.
-	 *    string     $required Whether the field must be required.
-	 *    array      $data     The select field data. Sub-items are expected to be escaped if they're not an array.
-	 *    array      $info     Extra info field data.
+	 * @param array $args {
+	 *     The select field creation arguments.
+	 *
+	 *     @type string     $id       The select field ID.
+	 *     @type string     $class    The div wrapper class.
+	 *     @type string     $name     The option name.
+	 *     @type int|string $selected The selected option value.
+	 *     @type array      $options  The select option values : { value => name }
+	 *     @type string     $label    The option label.
+	 *     @type bool       $labelstrong Whether the label should be strong.
+	 *     @type bool       $required Whether the field must be required.
+	 *     @type array      $data     The select field data. Sub-items are expected to be escaped if they're not an array.
+	 *     @type array      $info     Extra info field data.
 	 * }
 	 * @return string The option field.
 	 */
@@ -89,8 +92,8 @@ class Form {
 			 * @param mixed  $value    The option value.
 			 * @param mixed  $selected The current selected value.
 			 */
-			static function ( &$name, $value, $selected ) {
-				$name = sprintf(
+			function ( &$name, $value, $selected ) {
+				$name = \sprintf(
 					'<option value="%s"%s>%s</option>',
 					\esc_attr( $value ),
 					(string) $value === (string) $selected ? ' selected' : '',
@@ -101,16 +104,16 @@ class Form {
 		);
 
 		return vsprintf(
-			sprintf(
+			\sprintf(
 				'<div class="%s">%s</div>',
 				\esc_attr( $args['class'] ),
 				\is_rtl() ? '%2$s%1$s%3$s' : '%1$s%2$s%3$s',
 			),
 			[
-				$args['label'] ? sprintf(
+				$args['label'] ? \sprintf(
 					'<label for="%s">%s</label> ', // superfluous space!
 					Escape::option_name_attribute( $args['id'] ),
-					sprintf(
+					\sprintf(
 						$args['labelstrong'] ? '<strong>%s</strong>' : '%s',
 						\esc_html( $args['label'] )
 					)
@@ -148,10 +151,10 @@ class Form {
 			[
 				( $display ? '' : 'style=display:none;' ),
 				\esc_attr__( 'Click to change the counter type', 'autodescription' ),
-				sprintf(
+				\sprintf(
 					/* translators: %s = number */
 					\esc_html__( 'Characters: %s', 'autodescription' ),
-					sprintf(
+					\sprintf(
 						'<span id="%s">0</span>',
 						\esc_attr( "{$for}_chars" ),
 					),
@@ -174,12 +177,12 @@ class Form {
 			'<div class="tsf-pixel-counter-wrap hide-if-no-tsf-js" %s>%s%s</div>',
 			[
 				( $display ? '' : 'style="display:none;"' ),
-				sprintf(
+				\sprintf(
 					'<div id="%s" class=tsf-tooltip-wrap>%s</div>',
 					\esc_attr( "{$for}_pixels" ),
 					'<span class="tsf-pixel-counter-bar tsf-tooltip-item" aria-label data-desc tabindex=0><span class=tsf-pixel-counter-fluid></span></span>',
 				),
-				sprintf(
+				\sprintf(
 					'<div class=tsf-pixel-shadow-wrap><span class="tsf-pixel-counter-shadow %s"></span></div>',
 					\esc_attr( "tsf-{$type}-pixel-counter-shadow" )
 				),
@@ -195,27 +198,36 @@ class Form {
 	 *
 	 * @since 4.1.4
 	 * @since 4.2.8 Added 'button_class' as a supported index for `$args`.
+	 * @since 5.1.0 Now also outputs a warning icon placeholder.
 	 *
-	 * @param array $args Required. The image uploader arguments : {
-	 *   'id'         => string          Required. The HTML input id to pass URL into.
-	 *   'post_id'    => int             Optional. The Post ID to bind the uploaded file to. Default current post ID.
-	 *   'data'       => [
-	 *      'inputType' => string Optional. Whether the upload type is 'social' or 'logo' for i18n. Default 'social'.
-	 *      'width'     => int    Optional. The suggested image width. Default 1200.
-	 *      'height'    => int    Optional. The suggested image height. Default 630.
-	 *      'minWidth'  => int    Optional. The minimum image width. Default 200.
-	 *      'minHeight' => int    Optional. The minimum image height. Default 200.
-	 *      'flex'      => bool   Optional. Whether the image W:H ratio may be changed. Default true.
-	 *   ],
-	 *   'i18n'       => [
-	 *      'button_title' => string Optional. The image-select button on-hover title for accessibility. Default ''.
-	 *                                         Tip: Only fill if 'button_text' is ambiguous.
-	 *      'button_text'  => string Optional. The image-select button title. Defaults l10n 'Select Image',
-	 *   ],
-	 *   'button_class' => [
-	 *      'set'    => array Optional. The image set button classes.
-	 *      'remove' => array Optional. The imag eremoval button classes.
-	 *   ],
+	 * @param array $args {
+	 *     The image uploader arguments.
+	 *
+	 *     @type string $id                Required. The HTML input id to pass URL into.
+	 *     @type int    $post_id           Optional. The Post ID to bind the uploaded file to. Default current post ID.
+	 *     @type array  $data              {
+	 *         Optional. The data attributes for the image uploader.
+	 *
+	 *         @type string $inputType      Optional. Whether the upload type is 'social' or 'logo' for i18n. Default 'social'.
+	 *         @type int    $width          Optional. The suggested image width. Default 1200.
+	 *         @type int    $height         Optional. The suggested image height. Default 630.
+	 *         @type int    $minWidth       Optional. The minimum image width. Default 200.
+	 *         @type int    $minHeight      Optional. The minimum image height. Default 200.
+	 *         @type bool   $flex           Optional. Whether the image W:H ratio may be changed. Default true.
+	 *     },
+	 *     @type array  $i18n              {
+	 *         Optional. The internationalization strings.
+	 *
+	 *         @type string $button_title   Optional. The image-select button on-hover title for accessibility. Default ''.
+	 *                                   Tip: Only fill if 'button_text' is ambiguous.
+	 *         @type string $button_text    Optional. The image-select button title. Defaults l10n 'Select Image'.
+	 *     },
+	 *     @type array  $button_class      {
+	 *         Optional. The button classes.
+	 *
+	 *         @type array $set             Optional. The image set button classes.
+	 *         @type array $remove          Optional. The image removal button classes.
+	 *     },
 	 * }
 	 * @return string The image uploader button.
 	 */
@@ -255,13 +267,15 @@ class Form {
 			$args,
 		);
 
+		$s_id = \esc_attr( $args['id'] );
+
 		$content = vsprintf(
 			'<button type=button data-href="%s" class="tsf-set-image-button %s" title="%s" id="%s-select" %s>%s</button>',
 			[
 				\esc_url( \get_upload_iframe_src( 'image', $args['post_id'] ) ),
 				\esc_attr( implode( ' ', (array) $args['button_class']['set'] ) ),
 				\esc_attr( $args['i18n']['button_title'] ),
-				\esc_attr( $args['id'] ),
+				$s_id,
 				HTML::make_data_attributes(
 					[ 'inputId' => $args['id'] ]
 					+ $args['data']
@@ -271,10 +285,9 @@ class Form {
 			],
 		);
 
-		$content .= sprintf(
-			'<span class=tsf-tooltip-wrap><span id="%1$s-preview" class="tsf-image-preview tsf-tooltip-item dashicons dashicons-format-image" data-for="%1$s" tabindex=0></span></span>',
-			\esc_attr( $args['id'] )
-		);
+		$content .= <<<HTML
+			<span class=tsf-image-notifications data-for="{$s_id}"><span class=tsf-tooltip-wrap><span id="{$s_id}-preview" class="tsf-image-preview tsf-tooltip-item hidden" tabindex=0></span></span><span class=tsf-tooltip-wrap><span id="{$s_id}-image-warning" class="tsf-image-warning tsf-tooltip-item hidden" tabindex=0></span></span></span>
+		HTML;
 
 		return $content;
 	}

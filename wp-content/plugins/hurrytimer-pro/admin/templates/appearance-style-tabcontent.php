@@ -12,21 +12,19 @@ use Hurrytimer\Utils\Form;
     <div class="hurrytimer-style-control-group hurrytimer-accordion-item active">
 
         <div class="hurrytimer-style-control-title hurrytimer-accordion-heading">
-            <h3>General</h3>
+            <h3><?php esc_html_e('General', 'hurrytimer'); ?></h3>
         </div>
         <div class="hurrytimer-style-control-fields hurrytimer-accordion-content">
 
             <!-- CONTROL -->
             <div class="hurrytimer-style-control-field">
                 <div class="hurrytimer-style-control-label">
-                    <?php _e('Display', "hurrytimer") ?>
+                    <?php esc_html_e('Display', 'hurrytimer') ?>
                 </div>
                 <div class="hurrytimer-style-control-input">
                     <select name="campaign_display">
-                        <option value="block" <?php echo selected($campaign->campaignDisplay,
-                            'block') ?>><?php _e('Block', 'hurrytimer') ?></option>
-                        <option value="inline" <?php echo selected($campaign->campaignDisplay,
-                            'inline') ?>><?php _e('Inline', 'hurrytimer') ?></option>
+                        <option value="block" <?php selected(esc_attr($campaign->campaignDisplay), 'block'); ?>><?php esc_html_e('Block', 'hurrytimer') ?></option>
+                        <option value="inline" <?php selected(esc_attr($campaign->campaignDisplay), 'inline'); ?>><?php esc_html_e('Inline', 'hurrytimer') ?></option>
                     </select>
                 </div>
             </div>
@@ -34,16 +32,13 @@ use Hurrytimer\Utils\Form;
             <!-- CONTROL -->
             <div class="hurrytimer-style-control-field">
                 <div class="hurrytimer-style-control-label">
-                    <?php _e('Alignement', "hurrytimer") ?>
+                    <?php esc_html_e('Alignment', 'hurrytimer') ?>
                 </div>
                 <div class="hurrytimer-style-control-input">
                     <select name="campaign_align">
-                        <option value="left" <?php echo selected($campaign->campaignAlign,
-                            'left') ?>><?php _e('Left', 'hurrytimer') ?></option>
-                        <option value="right" <?php echo selected($campaign->campaignAlign,
-                            'right') ?>><?php _e('Right', 'hurrytimer') ?></option>
-                        <option value="center" <?php echo selected($campaign->campaignAlign,
-                            'center') ?>><?php _e('Center', 'hurrytimer') ?></option>
+                        <option value="left" <?php selected(esc_attr($campaign->campaignAlign), 'left'); ?>><?php esc_html_e('Left', 'hurrytimer') ?></option>
+                        <option value="right" <?php selected(esc_attr($campaign->campaignAlign), 'right'); ?>><?php esc_html_e('Right', 'hurrytimer') ?></option>
+                        <option value="center" <?php selected(esc_attr($campaign->campaignAlign), 'center'); ?>><?php esc_html_e('Center', 'hurrytimer') ?></option>
                     </select>
                 </div>
             </div>
@@ -55,7 +50,7 @@ use Hurrytimer\Utils\Form;
     <div class="hurrytimer-style-control-group hurrytimer-accordion-item">
 
         <div class="hurrytimer-style-control-title hurrytimer-accordion-heading">
-            <h3>Timer Digit</h3>
+            <h3><?php esc_html_e('Timer Digit', 'hurrytimer'); ?></h3>
         </div>
 
         <div class="hurrytimer-style-control-fields hurrytimer-accordion-content">
@@ -63,11 +58,11 @@ use Hurrytimer\Utils\Form;
             <!-- CONTROL -->
             <div class="hurrytimer-style-control-field">
                 <div class="hurrytimer-style-control-label">
-                    <?php _e('Color', "hurrytimer") ?>
+                    <?php esc_html_e('Color', 'hurrytimer') ?>
                 </div>
 
                 <div class="hurrytimer-style-control-input">
-                    <?php echo Form::colorInput('digit_color', $campaign->digitColor) ?>
+                    <?php echo Form::colorInput('digit_color', esc_attr($campaign->digitColor)) ?>
                 </div>
 
             </div>
@@ -75,7 +70,7 @@ use Hurrytimer\Utils\Form;
             <!-- CONTROL -->
             <div class="hurrytimer-style-control-field">
                 <div class="hurrytimer-style-control-label">
-                    <?php _e('Size', "hurrytimer") ?>
+                    <?php esc_html_e('Size', 'hurrytimer') ?>
                 </div>
                 <div class="hurrytimer-style-control-input">
                     <div class="hurrytimer-input-slider" data-input-name="digit_size"></div>
@@ -84,13 +79,13 @@ use Hurrytimer\Utils\Form;
                             name="digit_size"
                             max="100"
                             min="0"
-                            value="<?php echo $campaign->digitSize ?>"/>
+                            value="<?php echo esc_attr($campaign->digitSize) ?>"/>
                 </div>
             </div>
            
             <div class="hurrytimer-style-control-field ">
                     <div class="hurrytimer-style-control-label">
-                        <?php _e('Show separator', "hurrytimer") ?>
+                        <?php esc_html_e('Show separator', 'hurrytimer') ?>
                     </div>
                     <div class="hurrytimer-style-control-input">
                         <?php Utils\Form::toggle('block_separator_visibility',
@@ -122,7 +117,7 @@ use Hurrytimer\Utils\Form;
                         <input
                             type="text"
                             name="labels[months]"
-                            value="<?php echo $campaign->labels['months'] ?>">
+                            value="<?php echo esc_attr($campaign->labels['months']) ?>">
                     </div>
                 </div>
             <div class="hurrytimer-style-control-field">
@@ -141,7 +136,7 @@ use Hurrytimer\Utils\Form;
                         <input
                             type="text"
                             name="labels[days]"
-                            value="<?php echo $campaign->labels['days'] ?>">
+                            value="<?php echo esc_attr($campaign->labels['days']) ?>">
                     </div>
                 </div>
                 <div class="hurrytimer-style-control-field">
@@ -159,7 +154,7 @@ use Hurrytimer\Utils\Form;
                         <input
                             type="text"
                             name="labels[hours]"
-                            value="<?php echo $campaign->labels['hours'] ?>">
+                            value="<?php echo esc_attr($campaign->labels['hours']) ?>">
                     </div>
                 </div>
                 <div class="hurrytimer-style-control-field">
@@ -177,7 +172,7 @@ use Hurrytimer\Utils\Form;
                         <input
                             type="text"
                             name="labels[minutes]"
-                            value="<?php echo $campaign->labels['minutes'] ?>">
+                            value="<?php echo esc_attr($campaign->labels['minutes']) ?>">
                     </div>
                 </div>
                 <div class="hurrytimer-style-control-field">
@@ -195,7 +190,7 @@ use Hurrytimer\Utils\Form;
                         <input
                             type="text"
                             name="labels[seconds]"
-                            value="<?php echo $campaign->labels['seconds'] ?>">
+                            value="<?php echo esc_attr($campaign->labels['seconds']) ?>">
                     </div>
                 </div>
                   <!-- CONTROL -->
@@ -214,7 +209,7 @@ use Hurrytimer\Utils\Form;
                             min="0"
                             max="100"
                             name="label_size"
-                            value="<?php echo $campaign->labelSize ?>">
+                            value="<?php echo esc_attr($campaign->labelSize) ?>">
                 </div>
             </div>
 
@@ -236,15 +231,15 @@ use Hurrytimer\Utils\Form;
                 <div class="hurrytimer-style-control-input">
                     <select name="label_case">
                         <option value="<?php echo C::TRANSFORM_NONE ?>"
-                            <?php echo selected($campaign->labelCase, C::TRANSFORM_NONE) ?>>
+                            <?php echo selected(esc_attr($campaign->labelCase), C::TRANSFORM_NONE) ?>>
                             None
                         </option>
                         <option value="<?php echo C::TRANSFORM_UPPERCASE ?>"
-                            <?php echo selected($campaign->labelCase, C::TRANSFORM_UPPERCASE) ?>>
+                            <?php echo selected(esc_attr($campaign->labelCase), C::TRANSFORM_UPPERCASE) ?>>
                             Uppercase
                         </option>
                         <option value="<?php echo C::TRANSFORM_LOWERCASE ?>"
-                            <?php echo selected($campaign->labelCase, C::TRANSFORM_LOWERCASE) ?>>
+                            <?php echo selected(esc_attr($campaign->labelCase), C::TRANSFORM_LOWERCASE) ?>>
                             Lowercase
                         </option>
                     </select>
@@ -284,9 +279,9 @@ use Hurrytimer\Utils\Form;
                 </div>
                 <div class="hurrytimer-style-control-input">
                     <select name="block_display">
-                        <option value="block" <?php echo selected($campaign->blockDisplay,
+                        <option value="block" <?php echo selected(esc_attr($campaign->blockDisplay),
                             'block') ?>><?php _e('Block', 'hurrytimer') ?></option>
-                        <option value="inline" <?php echo selected($campaign->blockDisplay,
+                        <option value="inline" <?php echo selected(esc_attr($campaign->blockDisplay),
                             'inline') ?>><?php _e('Inline', 'hurrytimer') ?></option>
                     </select>
                 </div>
@@ -314,7 +309,7 @@ use Hurrytimer\Utils\Form;
                             max="200"
                             min="0"
                             name="block_size"
-                            value="<?php echo $campaign->blockSize ?>">
+                            value="<?php echo esc_attr($campaign->blockSize) ?>">
                 </div>
             </div>
 
@@ -331,7 +326,7 @@ use Hurrytimer\Utils\Form;
                             min="0"
                             max="100"
                             name="block_padding"
-                            value="<?php echo $campaign->blockPadding ?>">
+                            value="<?php echo esc_attr($campaign->blockPadding) ?>">
                 </div>
             </div>
 
@@ -348,7 +343,7 @@ use Hurrytimer\Utils\Form;
                             min="0"
                             max="100"
                             name="block_spacing"
-                            value="<?php echo $campaign->blockSpacing ?>">
+                            value="<?php echo esc_attr($campaign->blockSpacing) ?>">
                 </div>
             </div>
 
@@ -377,7 +372,7 @@ use Hurrytimer\Utils\Form;
                             max="50"
                             type="number"
                             name="block_border_width"
-                            value="<?php echo $campaign->blockBorderWidth ?>">
+                            value="<?php echo esc_attr($campaign->blockBorderWidth) ?>">
                 </div>
             </div>
 
@@ -393,7 +388,7 @@ use Hurrytimer\Utils\Form;
                             type="number"
                             min="0"
                             name="block_border_radius"
-                            value="<?php echo $campaign->blockBorderRadius ?>">
+                            value="<?php echo esc_attr($campaign->blockBorderRadius) ?>">
                 </div>
             </div>
         </div>
@@ -411,7 +406,7 @@ use Hurrytimer\Utils\Form;
                         <?php _e('Content', "hurrytimer") ?> 
                     </div>
                     <div class="hurrytimer-style-control-input" >
-                        <textarea name="headline" id="hurryt-headline"  rows="10" style="width:100%"><?php echo $campaign->headline ?></textarea>
+                        <textarea name="headline" id="hurryt-headline"  rows="10" style="width:100%"><?php echo esc_html($campaign->headline) ?></textarea>
                     </div>
                     <p class="description">Supports shortcodes.</p>
 
@@ -439,7 +434,7 @@ use Hurrytimer\Utils\Form;
                            name="headline_size"
                            min="0"
                            max="100"
-                           value="<?php echo $campaign->headlineSize ?>">
+                           value="<?php echo esc_attr($campaign->headlineSize) ?>">
                 </div>
             </div>
 
@@ -464,10 +459,10 @@ use Hurrytimer\Utils\Form;
                 <div class="hurrytimer-style-control-input">
 
                     <select name="headline_position" id="hurrytimer-headline-position">
-                        <option value="<?php echo C::HEADLINE_POSITION_ABOVE_TIMER ?>" <?php echo selected($campaign->headlinePosition,
+                        <option value="<?php echo C::HEADLINE_POSITION_ABOVE_TIMER ?>" <?php echo selected(esc_attr($campaign->headlinePosition),
                             C::HEADLINE_POSITION_ABOVE_TIMER) ?>><?php _e('Above timer',
-                                'hurrytimer') ?></option>
-                        <option value="<?php echo C::HEADLINE_POSITION_BELOW_TIMER ?>" <?php echo selected($campaign->headlinePosition,
+                                'hurrytimer') ?></option>esc_attr(
+                        <option value="<?php echo C::HEADLINE_POSITION_BELOW_TIMER ?>" <?php echo selected(esc_attr($campaign->headlinePosition),
                             C::HEADLINE_POSITION_BELOW_TIMER) ?>><?php _e('Below timer',
                                 'hurrytimer') ?></option>
                     </select>
@@ -488,7 +483,7 @@ use Hurrytimer\Utils\Form;
                             name="headline_spacing"
                             max="100"
                             min="0"
-                            value="<?php echo $campaign->headlineSpacing ?>"/>
+                            value="<?php echo esc_attr($campaign->headlineSpacing) ?>"/>
                 </div>
             </div>
         </div>
@@ -521,7 +516,7 @@ use Hurrytimer\Utils\Form;
                 <div class="hurrytimer-style-control-input">
                     <input type="text"
                            name="call_to_action[text]"
-                           value="<?php echo $campaign->callToAction['text'] ?>">
+                           value="<?php echo esc_attr($campaign->callToAction['text']) ?>">
                 </div>
             </div>
 
@@ -534,7 +529,7 @@ use Hurrytimer\Utils\Form;
                     <input type="text"
                            placeholder="http://"
                            name="call_to_action[url]"
-                           value="<?php echo $campaign->callToAction['url'] ?>">
+                           value="<?php echo esc_url($campaign->callToAction['url']) ?>">
                 </div>
             </div>
 
@@ -564,7 +559,7 @@ use Hurrytimer\Utils\Form;
                            name="call_to_action[text_size]"
                            min="0"
                            max="100"
-                           value="<?php echo $campaign->callToAction['text_size'] ?>">
+                           value="<?php echo esc_attr($campaign->callToAction['text_size']) ?>">
                 </div>
             </div>
 
@@ -602,7 +597,7 @@ use Hurrytimer\Utils\Form;
                            name="call_to_action[border_radius]"
                            min="0"
                            max="100"
-                           value="<?php echo $campaign->callToAction['border_radius'] ?>">
+                           value="<?php echo esc_attr($campaign->callToAction['border_radius']) ?>">
                 </div>
             </div>
 
@@ -618,7 +613,7 @@ use Hurrytimer\Utils\Form;
                            name="call_to_action[y_padding]"
                            min="0"
                            max="100"
-                           value="<?php echo $campaign->callToAction['y_padding'] ?>">
+                           value="<?php echo esc_attr($campaign->callToAction['y_padding']) ?>">
                 </div>
             </div>
 
@@ -634,7 +629,7 @@ use Hurrytimer\Utils\Form;
                            name="call_to_action[x_padding]"
                            min="0"
                            max="100"
-                           value="<?php echo $campaign->callToAction['x_padding'] ?>">
+                           value="<?php echo esc_attr($campaign->callToAction['x_padding']) ?>">
                 </div>
             </div>
 
@@ -652,7 +647,7 @@ use Hurrytimer\Utils\Form;
                             name="call_to_action[spacing]"
                             max="100"
                             min="0"
-                            value="<?php echo $campaign->callToAction['spacing'] ?>"/>
+                            value="<?php echo esc_attr($campaign->callToAction['spacing']) ?>"/>
                 </div>
             </div>
         </div>
@@ -706,7 +701,7 @@ use Hurrytimer\Utils\Form;
                            name="sticky_bar_dismiss_timeout"
                            style="width: 100px; margin-right:5px"
                            min="0"
-                           value="<?php echo $campaign->stickyBarDismissTimeout ?>"> <?php echo _e('days', 'hurrytimer') ?>
+                           value="<?php echo esc_attr($campaign->stickyBarDismissTimeout) ?>"> <?php echo _e('days', 'hurrytimer') ?>
                 </div>
             </div>
             <!-- CONTROL -->
@@ -716,10 +711,10 @@ use Hurrytimer\Utils\Form;
                 </div>
                 <div class="hurrytimer-style-control-input">
                     <select name="sticky_bar_position"
-                            value="<?php echo $campaign->stickyBarPosition ?>">
-                        <option value="top" <?php echo selected($campaign->stickyBarPosition,
+                            value="<?php echo esc_attr($campaign->stickyBarPosition) ?>">
+                        <option value="top" <?php echo selected(esc_attr($campaign->stickyBarPosition),
                             'top') ?>><?php _e('Top', 'hurrytimer') ?></option>
-                        <option value="bottom" <?php echo selected($campaign->stickyBarPosition,
+                        <option value="bottom" <?php echo selected(esc_attr($campaign->stickyBarPosition),
                             'bottom') ?>><?php _e('Bottom', 'hurrytimer') ?></option>
                     </select>
                 </div>
@@ -750,7 +745,7 @@ use Hurrytimer\Utils\Form;
                             name="sticky_bar_padding"
                             max="100"
                             min="0"
-                            value="<?php echo $campaign->stickyBarPadding ?>"/>
+                            value="<?php echo esc_attr($campaign->stickyBarPadding) ?>"/>
                 </div>
             </div>
             <!-- #CONTROL -->
@@ -782,14 +777,14 @@ use Hurrytimer\Utils\Form;
                                 id="hurrytStickybarAllPages"
                                 class="hurryt-sticky-bar-display-on"
                                 value="all_pages"
-                                name="sticky_bar_display_on" <?php echo $campaign->stickyBarDisplayOn  === "all_pages" ? 'checked'
+                                name="sticky_bar_display_on" <?php echo esc_attr($campaign->stickyBarDisplayOn)  === "all_pages" ? 'checked'
                             : '' ?>> All pages</label>
                             <label for="hurrytStickyExcludePages" class="hurryt-form-control-addon"><input
                                 type="radio"
                                 id="hurrytStickyExcludePages"
                                 class="hurryt-sticky-bar-display-on"
                                 value="exclude_pages"
-                                name="sticky_bar_display_on" <?php echo $campaign->stickyBarDisplayOn  === "exclude_pages" ? 'checked'
+                                name="sticky_bar_display_on" <?php echo esc_attr($campaign->stickyBarDisplayOn)  === "exclude_pages" ? 'checked'
                             : '' ?>>All pages except...</label>  
 
                                <label for="hurrytStickyBarSpecificPages" class="hurryt-form-control-addon"><input
@@ -797,7 +792,7 @@ use Hurrytimer\Utils\Form;
                                 id="hurrytStickyBarSpecificPages"
                                 class="hurryt-sticky-bar-display-on"
                                 value="specific_pages"
-                                name="sticky_bar_display_on" <?php echo $campaign->stickyBarDisplayOn  === "specific_pages" ? 'checked'
+                                name="sticky_bar_display_on" <?php echo esc_attr($campaign->stickyBarDisplayOn)  === "specific_pages" ? 'checked'
                             : '' ?>>Only some pages...</label>  
                               <?php if(function_exists('is_product')): ?>
                              <label for="hurrytStickybarWcProductsPages" class="hurryt-form-control-addon "><input
@@ -805,7 +800,7 @@ use Hurrytimer\Utils\Form;
                                 type="radio"
                                 class="hurryt-sticky-bar-display-on"
                                 value="wc_products_pages"
-                                name="sticky_bar_display_on" <?php echo $campaign->stickyBarDisplayOn  === "wc_products_pages" ? 'checked'
+                                name="sticky_bar_display_on" <?php echo esc_attr($campaign->stickyBarDisplayOn)  === "wc_products_pages" ? 'checked'
                             : '' ?>> Selected products</label>
                                 <?php endif; ?>
                             </div>
@@ -823,7 +818,7 @@ use Hurrytimer\Utils\Form;
                             <option value="<?php echo $page->ID ?>"
                                 <?php echo in_array($page->ID, $campaign->stickyBarPages)
                                     ? 'selected' : '' ?>>
-                                <?php echo $page->post_title
+                                <?php echo esc_html($page->post_title)
                                     ?: '(Untitled)' ?></option>
                         <?php endforeach; ?>
 
@@ -834,8 +829,8 @@ use Hurrytimer\Utils\Form;
                     <select name="sticky_include_urls[]" multiple="multiple" class="hurryt-tags-input"  
                             class="hurryt_w-full" placeholder="/page-slug">
                         <?php foreach ($campaign->stickyIncludeUrls as $url) : ?>
-                            <option value="<?php echo $url ?>" selected>
-                                <?php echo $url ?></option>
+                            <option value="<?php echo esc_url($url) ?>" selected>
+                                <?php echo esc_url($url) ?></option>
                         <?php endforeach; ?>
                     </select>
                     </label>
@@ -851,7 +846,7 @@ use Hurrytimer\Utils\Form;
                             <option value="<?php echo $page->ID ?>"
                                 <?php echo in_array($page->ID, $campaign->stickyExcludePages)
                                     ? 'selected' : '' ?>>
-                                <?php echo $page->post_title
+                                <?php echo esc_html($page->post_title)
                                     ?: '(Untitled)' ?></option>
                         <?php endforeach; ?>
 
@@ -863,8 +858,8 @@ use Hurrytimer\Utils\Form;
                     <select name="sticky_exclude_urls[]" multiple="multiple" class="hurryt-tags-input"  style="margin-top: 5px"
                             class="hurryt_w-full" placeholder="/page-slug">
                         <?php foreach ($campaign->stickyExcludeUrls as $url) : ?>
-                            <option value="<?php echo $url ?>" selected>
-                                <?php echo $url ?></option>
+                            <option value="<?php echo esc_url($url) ?>" selected>
+                                <?php echo esc_url($url) ?></option>
                         <?php endforeach; ?>
                     </select>
                     </label>

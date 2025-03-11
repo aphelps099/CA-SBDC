@@ -2,13 +2,13 @@
 Contributors: nlemsieh
 Tags: Sale countdown, Countdown, Countdown for WooCommerce, Countdown timer, Evergreen countdown timer, regular countdown timer, Woocommerce countdown timer, Woocommerce scarcity, Scarcity, scarcity builder, Urgency countdown timer, Woocommerce, Increase sales, Pre-launch page, Landing page, Coming soon page
 Requires at least: 4.0
-Tested up to: 6.3
+Tested up to: 6.6
 WC requires at least: 3.0
-WC tested up to: 8.1
+WC tested up to: 9.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
-Requires PHP: 5.6
-Stable tag: 2.11.2
+Requires PHP: 7.0
+Stable tag: 2.15.0
 
 Create unlimited scarcity evergreen and regular countdown timers for WordPress and WooCommerce to boost conversions and sales instantly.
 
@@ -78,6 +78,33 @@ For more info check out the following:
 9. Custom CSS.
 
 == Changelog ==
+
+= 2.15.0 =
+
+* Fixed a bug causing the sticky bar's "All pages except..." option not working properly.
+
+= 2.14.0 =
+
+* Corrected a permission check issue that was blocking some non-admin users from accessing specific admin pages.
+
+= 2.13.0 =
+
+* Deprecated compatibility with PHP 5.6
+* Improved compatibility with PHP 8.3+
+* Added the ability to duplicate campaigns
+* Enhanced campaign status display in the campaigns list for better visibility and management
+
+= 2.12.2 =
+
+* Declare compatibility with WordPress 6.6 and WooCommerce 9.1
+
+= 2.12.1 =
+
+* Fixed an issue that was preventing the page from loading properly.
+
+= 2.12.0 =
+
+* Fixed an issue where the countdown timer was not displayed when loaded via Ajax.
 
 = 2.11.2 =
 
@@ -522,7 +549,6 @@ In weekly campaigns the only possible action at this time is to hide countdown t
 
  == Upgrade Notice ==
 
+  = 2.14.0 =
 
-= 2.10.0 =
-
-This update is advised if you're using WooCommerce 7.5 or newer, and using the "Expire coupon" action.
+  This update is advised if you're using the version 2.13.0

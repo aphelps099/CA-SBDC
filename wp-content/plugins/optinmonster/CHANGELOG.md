@@ -1,6 +1,50 @@
 # Changelog
 All notable changes to the OptinMonster plugin will be documented in this file.
 
+### 2.16.16 - 2025-02-24
+* Added WooCommerce 9.6 compatibility.
+* Performance improvements while in various editor contexts, by preventing unnecessary API calls.
+* Updated URL used for OptinMonster API calls.
+* Updates to the OptinMonster Gutenberg block to improve compatibility with iframes in the Block Editor.
+
+### 2.16.15 - 2025-02-03
+* Added WordPress 6.7 compatibility.
+
+### 2.16.13 - 2024-12-04
+* Removed UI elements that were no longer needed.
+
+### 2.16.12 - 2024-12-02
+* Promotional updates to the dashboard.
+
+### 2.16.11 - 2024-11-27
+* Documentation updates.
+
+### 2.16.10 - 2024-11-27
+* Improve access to future events.
+
+### 2.16.9 - 2024-11-12
+* Internal improvements to for future sales events.
+* Fixed a bug that may occur when generating URLs for use in our menu items.
+
+### 2.16.8 - 2024-11-04
+* Avoid showing sidebar menu for role that does not have access when using User Role Editor plugin.
+* Various npm package updates used for generating our JavaScript code.
+
+### 2.16.7 - 2024-10-24
+* Improvements to campaign output settings management.
+* UI improvements.
+
+### 2.16.6 - 2024-10-15
+* Removed compatibility checks for WordFence as they are no longer needed.
+* Updates to onboarding flow.
+* Improved text when template search returns no results.
+* Various npm package updates used for generating our JavaScript code.
+
+### 2.16.5 - 2024-09-16
+* Support for improved campaign publishing from within the campaign builder.
+* Improved frontend output when no campaigns are assigned to the site.
+* Various npm package updates used for generating our JavaScript code.
+
 ### 2.16.4 - 2024-07-05
 * Fixed an issue where "Never load on..." output settings were hidden.
 

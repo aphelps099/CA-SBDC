@@ -218,19 +218,19 @@ class HTML {
 	public static function make_info( $description = '', $link = '', $echo = true ) {
 
 		if ( $link ) {
-			$output = sprintf(
+			$output = \sprintf(
 				'<a href="%1$s" class="tsf-tooltip-item tsf-help" target=_blank rel="nofollow noreferrer noopener" title="%2$s" data-desc="%2$s">[?]</a>',
 				\esc_url( $link, [ 'https', 'http' ] ),
 				\esc_attr( $description ),
 			);
 		} else {
-			$output = sprintf(
+			$output = \sprintf(
 				'<span class="tsf-tooltip-item tsf-help" title="%1$s" data-desc="%1$s" tabindex=0>[?]</span>',
 				\esc_attr( $description )
 			);
 		}
 
-		$output = sprintf( '<span class=tsf-tooltip-wrap>%s</span>', $output );
+		$output = \sprintf( '<span class=tsf-tooltip-wrap>%s</span>', $output );
 
 		if ( $echo ) {
 			// phpcs:ignore, WordPress.Security.EscapeOutput
@@ -246,8 +246,10 @@ class HTML {
 	 * @since 4.0.0
 	 * @since 4.1.0 No longer adds an extra space in front of the return value when no data is generated.
 	 *
-	 * @param iterable $data : {
-	 *    string $k => mixed $v
+	 * @param iterable $data {
+	 *     The data attributes.
+	 *
+	 *     @type mixed {$k} The data attribute value, keyed by string.
 	 * }
 	 * @return string The HTML data attributes, with added space to the start if something's created.
 	 */
@@ -256,7 +258,7 @@ class HTML {
 		$ret = [];
 
 		foreach ( $data as $k => $v ) {
-			$ret[] = sprintf(
+			$ret[] = \sprintf(
 				'data-%s="%s"',
 				strtolower( preg_replace(
 					'/([A-Z])/',

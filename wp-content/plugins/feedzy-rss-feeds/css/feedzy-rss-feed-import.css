@@ -4,7 +4,7 @@
  * Copyright: (c) 2016 Themeisle, themeisle.com
  * Version: 1.6.10
  * Plugin Name: FEEDZY RSS Feeds
- * Plugin URI: http://themeisle.com/plugins/feedzy-rss-feeds/
+ * Plugin URI: https://themeisle.com/plugins/feedzy-rss-feeds/
  * Author: Themeisle
  */
 
@@ -54,14 +54,16 @@
 	float: none;
 }
 .feedzy_page_feedzy-settings #wpcontent,
-.feedzy_page_feedzy-support #wpcontent{
+.feedzy_page_feedzy-support #wpcontent,
+.feedzy_page_feedzy-integration #wpcontent{
 	padding-left: 0;
 }
 .feedzy_page_feedzy-settings .feedzy-header,
-.feedzy_page_feedzy-support .feedzy-header{
+.feedzy_page_feedzy-support .feedzy-header,
+.feedzy_page_feedzy-integration .feedzy-header{
 	margin-bottom: 40px;
 }
-.feedzy-api-error,
+
 .feedzy-error-critical {
 	color: #ff0000;
 }

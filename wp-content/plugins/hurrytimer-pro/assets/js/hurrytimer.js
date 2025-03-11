@@ -801,70 +801,48 @@ var HurrytimerCampaign = /*#__PURE__*/function () {
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 (function ($) {
   // TODO: delete `state`.
   var state = {
     reseting: []
   };
   var $body = $('body');
-  /**
-   *  Observe DOM changes
-   * @param {*} selector 
-   * @param {*} callback 
-   */
 
-  function autoInit(selector, callback) {
-    var observer = new MutationObserver(function (mutationsList) {
-      var _iterator = _createForOfIteratorHelper(mutationsList),
-          _step;
+  function onElementInserted(containerSelector, elementSelector, callback) {
+    var onMutationsObserved = function onMutationsObserved(mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.addedNodes.length) {
+          var elements = $(mutation.addedNodes).find(elementSelector);
 
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var mutation = _step.value;
-
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(function (addedNode) {
-              if (addedNode.nodeType === 1 && addedNode.matches(selector)) {
-                callback(addedNode);
-              }
-            });
+          for (var i = 0, len = elements.length; i < len; i++) {
+            callback(elements[i]);
           }
         }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    }); // Start observing changes in the entire <body>
+      });
+    };
 
-    observer.observe(document.body, {
+    var target = $(containerSelector)[0];
+    var config = {
       childList: true,
       subtree: true
-    }); // Trigger the callback for elements matching the selector on page load
-
-    jQuery(document).ready(function () {
-      document.querySelectorAll(selector).forEach(function (element) {
-        callback(element);
-      });
-    });
+    };
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+    var observer = new MutationObserver(onMutationsObserved);
+    observer.observe(target, config);
   }
-  /*
-    This will listen for any new `.hurrytimer-campaign` added later to DOM.
-   */
 
+  document.addEventListener('DOMContentLoaded', function () {
+    var initialElements = document.querySelectorAll('.hurrytimer-campaign');
+    initialElements.forEach(initCallback);
+    onElementInserted('body', '.hurrytimer-campaign', initCallback);
+  });
 
-  autoInit('.hurrytimer-campaign', function (e) {
-    // Dot not run campaigns when they are inside a Elementor popup.
+  function initCallback(e) {
     if ($(e).parents('div[data-elementor-type=popup]').length === 0) {
       runCampaign($(e));
     }
-  });
+  }
+
   $(document).on('elementor/popup/show', function (event, id) {
     // Run only campaigns within a Elementor popup.
     $(".elementor-".concat(id, " .hurrytimer-campaign")).each(function () {

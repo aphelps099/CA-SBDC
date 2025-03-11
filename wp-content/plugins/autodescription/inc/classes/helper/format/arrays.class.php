@@ -113,7 +113,7 @@ class Arrays {
 	 *
 	 * This is the only correct function of kind that exists, made bespoke by Sybre for TSF.
 	 *
-	 * @link <https://3v4l.org/9pnW1#v8.1.8> Test it here.
+	 * @link <https://3v4l.org/9pnW1> Test it here.
 	 *
 	 * @since 4.1.4
 	 * @since 4.2.7 1. Now supports a single array entry without causing issues.
@@ -136,6 +136,55 @@ class Arrays {
 				$arrays[ $p ][ $key ] = isset( $arrays[ $p ][ $key ] ) && \is_array( $value )
 					? static::array_merge_recursive_distinct( $arrays[ $p ][ $key ], $value )
 					: $value;
+		}
+
+		return $arrays[0];
+	}
+
+	/**
+	 * Computes a difference between arrays, recursively. Much like `array_diff_assoc()`, but then for multidimensionals.
+	 *
+	 * Unlike `array_diff_assoc()`, this method considers out of order arrays as equal.
+	 * So, [ 1, 2 ] and [ 2, 1 ] are considered equal. This is helpful for associative array comparison, like with options.
+	 *
+	 * This is the only correct function of kind that exists, made bespoke by Sybre for TSF.
+	 *
+	 * @link <https://3v4l.org/CuItX> Test it here.
+	 * TODO consider array_reduce() for improved performance?
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array ...$arrays The arrays to differentiate. The leftmost array's values are dominant.
+	 * @return array The differentiated array values.
+	 */
+	public static function array_diff_assoc_recursive( ...$arrays ) {
+
+		$i = \count( $arrays );
+
+		while ( --$i ) {
+			$p = $i - 1;
+
+			if ( \is_array( $arrays[ $i ] ) && \is_array( $arrays[ $p ] ) ) {
+				foreach ( $arrays[ $i ] as $key => &$value ) {
+					if ( ! \array_key_exists( $key, $arrays[ $p ] ) ) {
+						// If the value doesn't exist in previous array, pass it along.
+						$arrays[ $p ][ $key ] = $value;
+						continue;
+					}
+
+					if (
+						   $value === $arrays[ $p ][ $key ]
+						|| ( \is_array( $value ) && ! static::array_diff_assoc_recursive( ...array_column( $arrays, $key ) ) )
+					) {
+						// If there's no diff with the previous array or no diff can be found recursively, remove it from all the next arrays.
+						foreach ( range( $p, $i ) as $_i )
+							if ( \is_array( $arrays[ $_i ] ) )
+								unset( $arrays[ $_i ][ $key ] );
+
+						continue;
+					}
+				}
+			}
 		}
 
 		return $arrays[0];

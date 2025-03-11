@@ -5,7 +5,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://themeisle.com
+ * @link       https://themeisle.com
  * @since      3.0.0
  *
  * @package    feedzy-rss-feeds
@@ -21,7 +21,7 @@ $html_parts = Feedzy_Rss_Feeds_Ui_Lang::get_form_elements();
 	<meta http-equiv="cache-control" content="no-cache"/>
 	<meta http-equiv="expires" content="0"/>
 	<meta http-equiv="pragma" content="no-cache"/>
-	<?php echo sprintf( '<link rel="stylesheet" href="%s" type="text/css" media="all"/>', esc_url( FEEDZY_ABSURL . 'css/form.css?h=' . gmdate( 'dmYHis' ) ) ); //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet ?>
+	<?php printf( '<link rel="stylesheet" href="%s" type="text/css" media="all"/>', esc_url( FEEDZY_ABSURL . 'css/form.css?h=' . gmdate( 'dmYHis' ) ) ); //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet ?>
 </head>
 <body>
 <div class="feedzy-popup-form container">
@@ -31,20 +31,7 @@ $html_parts = Feedzy_Rss_Feeds_Ui_Lang::get_form_elements();
 		foreach ( $html_parts as $item => $section ) {
 			$output .= '<div class="container feedzy_' . $item . '">';
 			$output .= '<h5>' . $section['title'] . '</h5>';
-			if ( ! feedzy_is_pro() && 'section_feed' === $item ) {
-				$upsell_url = add_query_arg(
-					array(
-						'utm_source'   => 'wpadmin',
-						'utm_medium'   => 'classiceditorshortcode',
-						'utm_campaign' => 'amazonproductadvertising',
-						'utm_content'  => 'feedzy-rss-feeds',
-					),
-					FEEDZY_UPSELL_LINK
-				);
-				$output .= '<div class="upgrade-alert">';
-				$output .= wp_sprintf( __( '<strong>NEW! </strong>Enable Amazon Product Advertising feeds to generate affiliate revenue by <a href="%s" target="_blank">upgrading to Feedzy Pro.</a>', 'feedzy-rss-feeds' ), esc_url_raw( $upsell_url ) );
-				$output .= '</div>';
-			}
+
 			if ( isset( $section['description'] ) ) {
 				$output .= '<p>' . $section['description'] . '</p>';
 			}

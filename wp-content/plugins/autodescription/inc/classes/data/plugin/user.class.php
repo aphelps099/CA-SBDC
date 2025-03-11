@@ -10,7 +10,10 @@ namespace The_SEO_Framework\Data\Plugin;
 
 use function \The_SEO_Framework\is_headless;
 
-use \The_SEO_Framework\Helper\Query;
+use \The_SEO_Framework\{
+	Helper\Query,
+	Traits\Property_Refresher,
+};
 
 /**
  * The SEO Framework plugin
@@ -33,10 +36,12 @@ use \The_SEO_Framework\Helper\Query;
  * Holds a collection of User data interface methods for TSF.
  *
  * @since 5.0.0
+ * @since 5.1.0 Added the Property_Refresher trait.
  * @access protected
- *         Use tsf()->data()->plugin->user() instead.
+ *         Use tsf()->data()->plugin()->user() instead.
  */
 class User {
+	use Property_Refresher;
 
 	/**
 	 * @since 5.0.0
@@ -120,6 +125,7 @@ class User {
 	 * @since 5.0.0 1. Removed the second `$depr` and third `$use_cache` parameter.
 	 *              2. Moved from `\The_SEO_Framework\Load`.
 	 *              3. Renamed from `get_user_meta`.
+	 * @since 5.1.0 Now returns the default meta if the user ID is empty.
 	 *
 	 * @param int $user_id The user ID.
 	 * @return array The user SEO meta data.
@@ -131,8 +137,14 @@ class User {
 		if ( isset( static::$meta_memo[ $user_id ] ) )
 			return static::$meta_memo[ $user_id ];
 
+		// Code smell: the empty test is for performance since the memo can be bypassed by input vars.
+		empty( static::$meta_memo ) and static::register_automated_refresh( 'meta_memo' );
+
+		// TODO test if user exists via get_userdata()?
+		// That is expensive; the user object is not created when fetching meta.
+		// But we might as well have a user already when we reach this point.
 		if ( empty( $user_id ) )
-			return static::$meta_memo[ $user_id ] = [];
+			return static::$meta_memo[ $user_id ] = static::get_default_meta( $user_id );
 
 		// Keep lucky first when exceeding nice numbers. This way, we won't overload memory in memoization.
 		if ( \count( static::$meta_memo ) > 69 )
@@ -169,7 +181,9 @@ class User {
 				}
 			}
 		} else {
-			$meta = \get_user_meta( $user_id, \THE_SEO_FRAMEWORK_USER_OPTIONS, true ) ?: [];
+			// FIXME: (array) is a patch. We messed up the datastore in 5.1.1, where strings got stored instead of arrays.
+			// We'll rectify it in a future database upgrade, so we can remove the patch.
+			$meta = (array) ( \get_user_meta( $user_id, \THE_SEO_FRAMEWORK_USER_OPTIONS, true ) ?: [] );
 		}
 
 		/**

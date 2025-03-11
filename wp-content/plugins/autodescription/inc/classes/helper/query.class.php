@@ -92,6 +92,8 @@ class Query {
 	 * Get the real page ID, also from CPT, archives, author, blog, etc.
 	 * Memoizes the return value.
 	 *
+	 * Uses `umemo()` instead of `Query\Cache::memo()`, for it is faster.
+	 *
 	 * @since 2.5.0
 	 * @since 3.1.0 No longer checks if we can cache the query when $use_cache is false.
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
@@ -453,7 +455,6 @@ class Query {
 	 *
 	 * @since 2.6.0
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
-	 * @uses static::is_archive()
 	 *
 	 * @param mixed $author Optional. User ID, nickname, nicename, or array of User IDs, nicknames, and nicenames
 	 * @return bool
@@ -516,7 +517,6 @@ class Query {
 	 *
 	 * @since 2.6.0
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
-	 * @uses static::is_archive()
 	 *
 	 * @param mixed $category Optional. Category ID, name, slug, or array of Category IDs, names, and slugs.
 	 * @return bool
@@ -609,7 +609,6 @@ class Query {
 	 * @since 4.0.0 Now tests for post type, which is more reliable.
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
 	 * @api not used internally, polar opposite of is_single().
-	 * @uses static::is_singular()
 	 *
 	 * @param int|string|array $page Optional. Page ID, title, slug, or array of such. Default empty.
 	 * @return bool
@@ -697,7 +696,6 @@ class Query {
 	 * @since 2.6.0
 	 * @since 4.0.0 Now tests for post type, which is more reliable.
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
-	 * @uses The_SEO_Framework_Query::is_single_admin()
 	 *
 	 * @param int|string|array $post Optional. Post ID, title, slug, or array of such. Default empty.
 	 * @return bool
@@ -741,7 +739,6 @@ class Query {
 	 * @since 4.0.0 No longer processes integers as input.
 	 * @since 4.2.4 No longer tests type of $post_types.
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
-	 * @uses static::is_singular_admin()
 	 *
 	 * @param string|string[] $post_types Optional. Post type or array of post types. Default empty string.
 	 * @return bool Post Type is singular
@@ -791,7 +788,7 @@ class Query {
 	 */
 	public static function is_static_front_page( $id = 0 ) {
 
-		// Memo this slow part separately; memo_query() would cache the whole method, which isn't necessary.
+		// Memo this slow part separately; Query\Cache::memo() isn't fast enough.
 		$front_id = umemo( __METHOD__ )
 			?? umemo(
 				__METHOD__,
@@ -808,7 +805,6 @@ class Query {
 	 *
 	 * @since 2.6.0
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
-	 * @uses static::is_archive()
 	 *
 	 * @param mixed $tag Optional. Tag ID, name, slug, or array of Tag IDs, names, and slugs.
 	 * @return bool
@@ -1163,7 +1159,11 @@ class Query {
 	 * WordPress 6.0 introduced a last minute function called `build_comment_query_vars_from_block()`.
 	 * This function exists to workaround a bug in comment blocks as sub-query by adjusting the main query.
 	 *
-	 * @since 5.0.5
+	 * WordPress 6.7 fixed it, but we keep it in place because other themes and plugins might still mess up the query.
+	 * This ensures we're always "right" about the canonical URL.
+	 *
+	 * @since 5.0.6
+	 * @link <https://core.trac.wordpress.org/ticket/60806>
 	 *
 	 * @return bool
 	 */
@@ -1180,34 +1180,36 @@ class Query {
 		 */
 		$is_cpaged = (int) \get_query_var( 'cpage', 0 ) > 0;
 
-		// WP 6.0 bugged this. Let's scrutinize if $cpage might be incorrectly set.
-		// If comments haven't yet been parsed, we can safely assume there's no bug active.
+		/**
+		 * Let's scrutinize if $cpage might be incorrectly set.
+		 *
+		 * WP 6.0 bugged this. Any of these blocks can invoke `set_query_var( 'cpage', 1+ )`.
+		 * 'core/comment-template',            // parent core/comments
+		 * 'core/comments-pagination-next',    // parent core/comments-pagination, parent core/comments
+		 * 'core/comments-pagination-numbers', // parent core/comments-pagination, parent core/comments
+		 * 'core/comments-pagination-previous' doesn't invoke this; yet to be determined why.
+		 *
+		 * These functions can too invoke `set_query_var`; but Core doesn't mess this up:
+		 * 'comments_template()'
+		 * 'wp_list_comments()'  // But only after comments_template()
+		 *
+		 * If comments haven't yet been parsed, we can safely assume there's no bug active.
+		 * Hence, we test for did_action(). We want the main query, not the tainted one.
+		 * So, even if this runs in the footer, we should still scrutinize it.
+		 */
 		if ( $is_cpaged && \did_action( 'parse_comment_query' ) ) {
 			// core/comments only works on singular; this bug doesn't invoke otherwise anyway.
 			if ( ! static::is_singular() )
 				return Query\Cache::memo( false );
 
 			/**
-			 * Any of these blocks can invoke `set_query_var( 'cpage', 1+ )`.
-			 * 'core/comment-template',            // parent core/comments
-			 * 'core/comments-pagination-next',    // parent core/comments-pagination, parent core/comments
-			 * 'core/comments-pagination-numbers', // parent core/comments-pagination, parent core/comments
-			 *
-			 * If we'd had to loop, it'd be best to call has_blocks( $content ) first.
-			 *
-			 * 'core/comments-pagination-previous' doesn't invoke this; yet to be determined why.
+			 * Assume 0 if the unaltered query variable isn't found;
+			 * it might be purged, so we won't have pagination.
+			 * There is no other fast+reliable method to determine whether
+			 * comment pagination is engaged for the current query.
+			 * This is a bypass, after all.
 			 */
-			// Get post content from main query.
-			if ( \has_block( 'core/comments', Data\Post::get_content() ) ) { // Slow function is slow.
-				/**
-				 * Assume 0 if the unaltered query variable isn't found;
-				 * it might be purged, so we won't have pagination.
-				 * There is no other fast+reliable method to determine whether
-				 * comment pagination is engaged for the current query.
-				 * This is a bypass, after all.
-				 */
-				$is_cpaged = (int) ( $GLOBALS['wp_query']->query['cpage'] ?? 0 ) > 0;
-			}
+			$is_cpaged = (int) ( $GLOBALS['wp_query']->query['cpage'] ?? 0 ) > 0;
 		}
 
 		return Query\Cache::memo( $is_cpaged );

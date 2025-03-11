@@ -13,6 +13,7 @@ use \The_SEO_Framework\{
 	Meta,
 };
 use \The_SEO_Framework\Helper\{
+	Compatibility,
 	Guidelines,
 	Format\Arrays,
 	Query,
@@ -60,8 +61,7 @@ class Loader {
 	public static function init() {
 
 		$scripts = [
-			static::get_tsf_scripts(),
-			static::get_tt_scripts(),
+			static::get_common_scripts(),
 		];
 
 		if ( Query::is_post_edit() ) {
@@ -73,6 +73,7 @@ class Loader {
 			$scripts[] = static::get_title_scripts();
 			$scripts[] = static::get_description_scripts();
 			$scripts[] = static::get_social_scripts();
+			$scripts[] = static::get_canonical_scripts();
 			$scripts[] = static::get_primaryterm_scripts();
 			$scripts[] = static::get_ays_scripts();
 
@@ -89,6 +90,7 @@ class Loader {
 			$scripts[] = static::get_title_scripts();
 			$scripts[] = static::get_description_scripts();
 			$scripts[] = static::get_social_scripts();
+			$scripts[] = static::get_canonical_scripts();
 			$scripts[] = static::get_ays_scripts();
 
 			if ( Data\Plugin::get_option( 'display_pixel_counter' ) || Data\Plugin::get_option( 'display_character_counter' ) )
@@ -97,6 +99,7 @@ class Loader {
 			$scripts[] = static::get_list_edit_scripts();
 			$scripts[] = static::get_title_scripts();
 			$scripts[] = static::get_description_scripts();
+			$scripts[] = static::get_canonical_scripts();
 
 			if ( Data\Plugin::get_option( 'display_pixel_counter' ) || Data\Plugin::get_option( 'display_character_counter' ) )
 				$scripts[] = static::get_counter_scripts();
@@ -110,6 +113,7 @@ class Loader {
 			$scripts[] = static::get_title_scripts();
 			$scripts[] = static::get_description_scripts();
 			$scripts[] = static::get_social_scripts();
+			$scripts[] = static::get_canonical_scripts();
 			$scripts[] = static::get_ays_scripts();
 
 			// Always load unconditionally, options may enable the counters dynamically.
@@ -164,20 +168,29 @@ class Loader {
 	}
 
 	/**
-	 * Returns the default TSF scripts.
+	 * Returns the common TSF scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 5.1.0
 	 *
 	 * @return array The script params.
 	 */
-	public static function get_tsf_scripts() {
+	public static function get_common_scripts() {
 		return [
+			// Load TSF-utils first. TODO split the TSF object so that they will no longer become reliant upon eachother.
+			[
+				'id'       => 'tsf-utils',
+				'type'     => 'js',
+				'deps'     => [],
+				'autoload' => true,
+				'name'     => 'utils',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
 			[
 				'id'       => 'tsf',
 				'type'     => 'css',
-				'deps'     => [],
+				'deps'     => [ 'dashicons' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'tsf',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -185,7 +198,7 @@ class Loader {
 			[
 				'id'       => 'tsf',
 				'type'     => 'js',
-				'deps'     => [ 'jquery', 'wp-util' ],
+				'deps'     => [ 'wp-util', 'tsf-utils' ],
 				'autoload' => true,
 				'name'     => 'tsf',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -209,24 +222,11 @@ class Loader {
 					],
 				],
 			],
-		];
-	}
-
-	/**
-	 * Returns TT (tooltip) scripts params.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return array The script params.
-	 */
-	public static function get_tt_scripts() {
-		return [
 			[
 				'id'       => 'tsf-tt',
 				'type'     => 'css',
 				'deps'     => [],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'tt',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -258,6 +258,24 @@ class Loader {
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
 			],
+			[
+				'id'       => 'tsf-ui',
+				'type'     => 'css',
+				'deps'     => [ 'tsf', 'dashicons' ],
+				'autoload' => true,
+				'name'     => 'ui',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
+			[
+				'id'       => 'tsf-ui',
+				'type'     => 'js',
+				'deps'     => [ 'tsf', 'tsf-utils', 'jquery' ],
+				'autoload' => true,
+				'name'     => 'ui',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
 		];
 	}
 
@@ -273,7 +291,7 @@ class Loader {
 			[
 				'id'       => 'tsf-ays',
 				'type'     => 'js',
-				'deps'     => [ 'tsf' ],
+				'deps'     => [ 'tsf', 'tsf-utils' ],
 				'autoload' => true,
 				'name'     => 'ays',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -306,7 +324,6 @@ class Loader {
 				'type'     => 'css',
 				'deps'     => [ 'tsf' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'le',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -314,7 +331,7 @@ class Loader {
 			[
 				'id'       => 'tsf-le',
 				'type'     => 'js',
-				'deps'     => [ 'tsf-title', 'tsf-description', 'tsf' ],
+				'deps'     => [ 'tsf-title', 'tsf-description', 'tsf-canonical', 'tsf-postslugs', 'tsf-termslugs', 'tsf-authorslugs', 'tsf', 'tsf-tt', 'tsf-utils' ],
 				'autoload' => true,
 				'name'     => 'le',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -339,9 +356,8 @@ class Loader {
 			[
 				'id'       => 'tsf-settings',
 				'type'     => 'css',
-				'deps'     => [ 'tsf', 'tsf-tt', 'wp-color-picker' ],
+				'deps'     => [ 'tsf', 'tsf-tt', 'wp-color-picker', 'dashicons' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'settings',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -349,7 +365,7 @@ class Loader {
 			[
 				'id'       => 'tsf-settings',
 				'type'     => 'js',
-				'deps'     => [ 'jquery', 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf', 'tsf-tabs', 'tsf-tt', 'wp-color-picker', 'wp-util' ],
+				'deps'     => [ 'jquery', 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf-canonical', 'tsf', 'tsf-tabs', 'tsf-tt', 'wp-color-picker', 'wp-util' ],
 				'autoload' => true,
 				'name'     => 'settings',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -383,6 +399,7 @@ class Loader {
 		$id = Query::get_the_real_id();
 
 		$is_static_front_page = Query::is_static_front_page( $id );
+		$is_block_editor      = Query::is_block_editor();
 
 		if ( $is_static_front_page ) {
 			$additions_forced_disabled = ! Data\Plugin::get_option( 'homepage_tagline' );
@@ -396,9 +413,8 @@ class Loader {
 			[
 				'id'       => 'tsf-post',
 				'type'     => 'css',
-				'deps'     => [ 'tsf-tt', 'tsf' ],
+				'deps'     => [ 'tsf-tt', 'tsf', 'tsf-ui' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'post',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -414,7 +430,7 @@ class Loader {
 			[
 				'id'       => 'tsf-post',
 				'type'     => 'js',
-				'deps'     => [ 'jquery', 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf-tabs', 'tsf-tt', 'tsf' ],
+				'deps'     => [ 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf-canonical', 'tsf-postslugs', 'tsf-termslugs', 'tsf-authorslugs', 'tsf-tabs', 'tsf-tt', 'tsf-utils', 'tsf-ui', 'tsf' ],
 				'autoload' => true,
 				'name'     => 'post',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -425,13 +441,20 @@ class Loader {
 						'states' => [
 							'isPrivate'       => Data\Post::is_private( $id ),
 							'isProtected'     => Data\Post::is_password_protected( $id ),
-							'isGutenbergPage' => Query::is_block_editor(),
-							'id'              => (int) $id,
+							'isGutenbergPage' => $is_block_editor, // TODO: Deprecate
+							'id'              => $id, // TODO: Deprecate
 						],
 						'params' => [
+							'id'                      => $id,
+							'isBlockEditor'           => $is_block_editor,
 							'isFront'                 => $is_static_front_page,
 							'additionsForcedDisabled' => $additions_forced_disabled,
 							'additionsForcedEnabled'  => $additions_forced_enabled,
+						],
+						'nonces' => [
+							'edit_post' => [
+								$id => Utils::create_ajax_capability_nonce( 'edit_post', $id ),
+							],
 						],
 					],
 				],
@@ -450,14 +473,13 @@ class Loader {
 	 */
 	public static function get_term_edit_scripts() {
 
+		$id       = Query::get_the_real_id();
 		$taxonomy = Query::get_current_taxonomy();
 
 		$additions_forced_disabled = (bool) Data\Plugin::get_option( 'title_rem_additions' );
 
-		if ( Meta\Title\Conditions::use_generated_archive_prefix(
-			\get_term( Query::get_the_real_id(), $taxonomy )
-		) ) {
-			$term_prefix = sprintf(
+		if ( Meta\Title\Conditions::use_generated_archive_prefix( \get_term( $id, $taxonomy ) ) ) {
+			$term_prefix = \sprintf(
 				/* translators: %s: Taxonomy singular name. */
 				\_x( '%s:', 'taxonomy term archive title prefix', 'default' ),
 				Taxonomy::get_label( $taxonomy ),
@@ -472,7 +494,6 @@ class Loader {
 				'type'     => 'css',
 				'deps'     => [ 'tsf-tt', 'tsf' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'term',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -480,7 +501,7 @@ class Loader {
 			[
 				'id'       => 'tsf-term',
 				'type'     => 'js',
-				'deps'     => [ 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf-tt', 'tsf' ],
+				'deps'     => [ 'tsf-ays', 'tsf-title', 'tsf-description', 'tsf-social', 'tsf-canonical', 'tsf-termslugs', 'tsf-tt', 'tsf' ],
 				'autoload' => true,
 				'name'     => 'term',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -490,7 +511,14 @@ class Loader {
 					'data' => [
 						'params' => [
 							'additionsForcedDisabled' => $additions_forced_disabled,
+							'id'                      => $id,
+							'taxonomy'                => $taxonomy,
 							'termPrefix'              => Utils::decode_entities( $term_prefix ),
+						],
+						'nonces' => [
+							'edit_term' => [
+								$id => Utils::create_ajax_capability_nonce( 'edit_term', $id ),
+							],
 						],
 					],
 				],
@@ -511,7 +539,7 @@ class Loader {
 			[
 				'id'       => 'tsf-gbc',
 				'type'     => 'js',
-				'deps'     => [ 'jquery', 'tsf', 'wp-editor', 'wp-data', 'react' ],
+				'deps'     => [ 'jquery', 'tsf', 'tsf-utils', 'wp-editor', 'wp-data', 'react' ],
 				'autoload' => true,
 				'name'     => 'gbc',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -532,7 +560,7 @@ class Loader {
 		return [
 			'id'       => 'tsf-tabs',
 			'type'     => 'js',
-			'deps'     => [], // nada.
+			'deps'     => [ 'tsf-utils', 'tsf-ui' ],
 			'autoload' => true,
 			'name'     => 'tabs',
 			'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -545,42 +573,78 @@ class Loader {
 	 *
 	 * @since 4.0.0
 	 * @since 4.1.2 Removed redundant button titles.
+	 * @since 5.1.0 Added tsf-media CSS. Added `tsfMediaL10n.warning`.
 	 *
 	 * @return array The script params.
 	 */
 	public static function get_media_scripts() {
 		return [
-			'id'       => 'tsf-media',
-			'type'     => 'js',
-			'deps'     => [ 'jquery', 'media', 'tsf-tt', 'tsf' ],
-			'autoload' => true,
-			'name'     => 'media',
-			'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
-			'ver'      => \THE_SEO_FRAMEWORK_VERSION,
-			'l10n'     => [
-				'name' => 'tsfMediaL10n',
-				'data' => [
-					'labels' => [
-						'social' => [
-							'imgSelect'      => \esc_attr__( 'Select Image', 'autodescription' ),
-							'imgSelectTitle' => '',
-							'imgChange'      => \esc_attr__( 'Change Image', 'autodescription' ),
-							'imgRemove'      => \esc_attr__( 'Remove Image', 'autodescription' ),
-							'imgRemoveTitle' => '',
-							'imgFrameTitle'  => \esc_attr_x( 'Select Social Image', 'Frame title', 'autodescription' ),
-							'imgFrameButton' => \esc_attr__( 'Use this image', 'autodescription' ),
+			[
+				'id'       => 'tsf-media',
+				'type'     => 'css',
+				'deps'     => [],
+				'autoload' => true,
+				'name'     => 'media',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
+			[
+				'id'       => 'tsf-media',
+				'type'     => 'js',
+				'deps'     => [ 'media', 'tsf', 'tsf-utils', 'tsf-tt' ],
+				'autoload' => true,
+				'name'     => 'media',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+				'l10n'     => [
+					'name' => 'tsfMediaL10n',
+					'data' => [
+						'labels'  => [
+							'social' => [
+								'imgSelect'      => \esc_attr__( 'Select Image', 'autodescription' ),
+								'imgSelectTitle' => '',
+								'imgChange'      => \esc_attr__( 'Change Image', 'autodescription' ),
+								'imgRemove'      => \esc_attr__( 'Remove Image', 'autodescription' ),
+								'imgRemoveTitle' => '',
+								'imgFrameTitle'  => \esc_attr_x( 'Select Social Image', 'Frame title', 'autodescription' ),
+								'imgFrameButton' => \esc_attr__( 'Use this image', 'autodescription' ),
+							],
+							'logo'   => [
+								'imgSelect'      => \esc_attr__( 'Select Logo', 'autodescription' ),
+								'imgSelectTitle' => '',
+								'imgChange'      => \esc_attr__( 'Change Logo', 'autodescription' ),
+								'imgRemove'      => \esc_attr__( 'Remove Logo', 'autodescription' ),
+								'imgRemoveTitle' => '',
+								'imgFrameTitle'  => \esc_attr_x( 'Select Logo', 'Frame title', 'autodescription' ),
+								'imgFrameButton' => \esc_attr__( 'Use this image', 'autodescription' ),
+							],
 						],
-						'logo'   => [
-							'imgSelect'      => \esc_attr__( 'Select Logo', 'autodescription' ),
-							'imgSelectTitle' => '',
-							'imgChange'      => \esc_attr__( 'Change Logo', 'autodescription' ),
-							'imgRemove'      => \esc_attr__( 'Remove Logo', 'autodescription' ),
-							'imgRemoveTitle' => '',
-							'imgFrameTitle'  => \esc_attr_x( 'Select Logo', 'Frame title', 'autodescription' ),
-							'imgFrameButton' => \esc_attr__( 'Use this image', 'autodescription' ),
+						'warning' => [
+							'warnedTypes'    => [
+								// This is only a short list of increasingly common types.
+								'webp' => 'image/webp',
+								'heic' => 'image/heic',
+							],
+							'forbiddenTypes' => [
+								// See The_SEO_Framework\Data\Filter\Sanitize::image_details().
+								'apng' => 'image/apng',
+								'bmp'  => 'image/bmp',
+								'ico'  => 'image/x-icon',
+								'cur'  => 'image/x-icon',
+								'svg'  => 'image/svg+xml',
+								'tif'  => 'image/tiff',
+								'tiff' => 'image/tiff',
+							],
+							'i18n'           => [
+								'notLoaded'    => \esc_attr__( 'The image file could not be loaded.', 'autodescription' ),
+								/* translators: %s is the file extension. */
+								'extWarned'    => \esc_attr__( 'The file extension "%s" is not supported on all platforms, preventing your image from being displayed.', 'autodescription' ),
+								/* translators: %s is the file extension. */
+								'extForbidden' => \esc_attr__( 'The file extension "%s" is not supported. Choose a different file.', 'autodescription' ),
+							],
 						],
+						'nonce'   => Utils::create_ajax_capability_nonce( 'upload_files' ),
 					],
-					'nonce'  => Utils::create_ajax_capability_nonce( 'upload_files' ),
 				],
 			],
 		];
@@ -657,7 +721,7 @@ class Loader {
 		return [
 			'id'       => 'tsf-social',
 			'type'     => 'js',
-			'deps'     => [ 'tsf' ],
+			'deps'     => [ 'tsf', 'tsf-utils' ],
 			'autoload' => true,
 			'name'     => 'social',
 			'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
@@ -666,10 +730,77 @@ class Loader {
 	}
 
 	/**
+	 * Returns Canonical scripts params.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @return array The script params.
+	 */
+	public static function get_canonical_scripts() {
+		global $wp_rewrite;
+
+		return [
+			[
+				'id'       => 'tsf-canonical',
+				'type'     => 'js',
+				'deps'     => [ 'tsf', 'tsf-utils' ],
+				'autoload' => true,
+				'name'     => 'canonical',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+				'l10n'     => [
+					'name' => 'tsfCanonicalL10n',
+					'data' => [
+						'params' => [
+							'usingPermalinks' => $wp_rewrite->using_permalinks(),
+							'rootUrl'         => \home_url( '/' ),
+							'rewrite'         => [
+								'code'         => $wp_rewrite->rewritecode,
+								'replace'      => $wp_rewrite->rewritereplace,
+								'queryReplace' => $wp_rewrite->queryreplace,
+							],
+							// TEMP: We still have to figure out how to get the right parameters. home_url() is probably key in this.
+							'allowCanonicalURLNotationTool' => ! Compatibility::get_active_conflicting_plugin_types()['multilingual'],
+						],
+					],
+				],
+			],
+			[
+				'id'       => 'tsf-postslugs',
+				'type'     => 'js',
+				'deps'     => [],
+				'autoload' => false, // Not all screens require this.
+				'name'     => 'postslugs',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
+			[
+				'id'       => 'tsf-termslugs',
+				'type'     => 'js',
+				'deps'     => [],
+				'autoload' => false, // Not all screens require this.
+				'name'     => 'termslugs',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
+			[
+				'id'       => 'tsf-authorslugs',
+				'type'     => 'js',
+				'deps'     => [],
+				'autoload' => false, // Not all screens require this.
+				'name'     => 'authorslugs',
+				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/js/',
+				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
+			],
+		];
+	}
+
+	/**
 	 * Returns Primary Term Selection scripts params.
 	 *
 	 * @since 4.0.0
 	 * @since 4.1.0 Now filters out unsupported taxonomies.
+	 * @since 5.1.0 Changed the dependencies for pt, because we now use a select field.
 	 *
 	 * @return array The script params.
 	 */
@@ -678,49 +809,37 @@ class Loader {
 		$post_id = Query::get_the_real_admin_id();
 
 		$post_type   = Query::get_admin_post_type();
-		$_taxonomies = $post_type ? Taxonomy::get_hierarchical( 'objects', $post_type ) : [];
+		$_taxonomies = $post_type ? Taxonomy::get_hierarchical( 'names', $post_type ) : [];
 		$taxonomies  = [];
 
-		$gutenberg = Query::is_block_editor();
+		foreach ( $_taxonomies as $tax ) {
+			if ( ! Taxonomy::is_supported( $tax ) ) continue;
 
-		foreach ( $_taxonomies as $_t ) {
-			if ( ! Taxonomy::is_supported( $_t->name ) ) continue;
+			$singular_name   = Taxonomy::get_label( $tax );
+			$primary_term_id = Data\Plugin\Post::get_primary_term_id( $post_id, $tax );
 
-			$singular_name   = Taxonomy::get_label( $_t->name );
-			$primary_term_id = Data\Plugin\Post::get_primary_term_id( $post_id, $_t->name );
-
-			$taxonomies[ $_t->name ] = [
-				'name'    => $_t->name,
+			$taxonomies[ $tax ] = [
+				'name'    => $tax,
 				'primary' => $primary_term_id, // if 0, it'll use hints from the interface.
+				'i18n'    => [
+					/* translators: %s = term name */
+					'selectPrimary' => \sprintf( \esc_html__( 'Select primary %s', 'autodescription' ), $singular_name ),
+				],
 			];
-			if ( $gutenberg ) {
-				$taxonomies[ $_t->name ]['i18n'] = [
-					/* translators: %s = term name */
-					'selectPrimary' => sprintf( \esc_html__( 'Select Primary %s', 'autodescription' ), $singular_name ),
-				];
-			} else {
-				$taxonomies[ $_t->name ]['i18n'] = [
-					/* translators: %s = term name */
-					'makePrimary' => sprintf( \esc_html__( 'Make primary %s', 'autodescription' ), strtolower( $singular_name ) ),
-					/* translators: %s = term name */
-					'primary'     => sprintf( \esc_html__( 'Primary %s', 'autodescription' ), strtolower( $singular_name ) ),
-					'name'        => strtolower( $singular_name ),
-				];
-			}
 		}
 
-		if ( $gutenberg ) {
+		if ( Query::is_block_editor() ) {
 			$vars = [
 				'id'   => 'tsf-pt-gb',
 				'name' => 'pt-gb',
 			];
-			$deps = [ 'tsf', 'wp-hooks', 'wp-element', 'wp-components', 'wp-url', 'wp-api-fetch', 'react', 'wp-util' ];
+			$deps = [ 'tsf', 'tsf-ays', 'wp-hooks', 'wp-element', 'wp-components', 'wp-data', 'wp-util' ];
 		} else {
 			$vars = [
 				'id'   => 'tsf-pt',
 				'name' => 'pt',
 			];
-			$deps = [ 'jquery', 'tsf', 'tsf-post', 'tsf-tt', 'wp-util' ];
+			$deps = [ 'tsf', 'tsf-ays', 'wp-util' ];
 		}
 
 		return [
@@ -729,7 +848,6 @@ class Loader {
 				'type'     => 'css',
 				'deps'     => [ 'tsf-tt' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'pt',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,
@@ -769,7 +887,6 @@ class Loader {
 				'type'     => 'css',
 				'deps'     => [ 'tsf-tt' ],
 				'autoload' => true,
-				'hasrtl'   => false,
 				'name'     => 'tsfc',
 				'base'     => \THE_SEO_FRAMEWORK_DIR_URL . 'lib/css/',
 				'ver'      => \THE_SEO_FRAMEWORK_VERSION,

@@ -78,10 +78,12 @@ class Strings {
 	 *              2. Moved from \The_SEO_Framework\Load.
 	 *
 	 * @param string $string Required. The string to count words in.
-	 * @param array  $args   The word counting arguments : {
-	 *     int filter_under       : Consider word duplication under this number not a duplicate, default 3.
-	 *     int filter_short_under : Consider short word duplication under this number not a duplicate, default 5.
-	 *     int short_word_length  : Consider words under this character length "short", default 3.
+	 * @param array  $args   {
+	 *     Optional. The word counting arguments.
+	 *
+	 *     @type int $filter_under       Consider word duplication under this number not a duplicate, default 3.
+	 *     @type int $filter_short_under Consider short word duplication under this number not a duplicate, default 5.
+	 *     @type int $short_word_length  Consider words under this character length "short", default 3.
 	 * }
 	 * @return array Containing arrays of words with their count.
 	 */
@@ -211,7 +213,7 @@ class Strings {
 		// Tries to match "\x20" when the sentence contains no spaces, subsequently failing because trim() already removed that.
 		// Uses $ to consider cut-off endings under $max_char_length
 		preg_match(
-			sprintf(
+			\sprintf(
 				'/^.{0,%d}(?:[^\P{Po}\'\":]|[\p{Pc}\p{Pd}\p{Pf}\p{Z}]|\x20|$)/su',
 				$max_char_length,
 			),

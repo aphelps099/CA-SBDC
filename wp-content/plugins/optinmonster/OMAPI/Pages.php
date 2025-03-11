@@ -170,12 +170,6 @@ class OMAPI_Pages {
 				'callback' => array( $this, 'render_app_loading_page' ),
 			);
 
-			$this->pages['optin-monster-onboarding-wizard'] = array(
-				'name'     => __( 'Onboarding Wizard', 'optin-monster-api' ),
-				'callback' => array( $this, 'render_app_loading_page' ),
-				'hidden'   => true,
-			);
-
 			$bfcmitem = $this->should_show_bfcf_menu_item();
 
 			// If user upgradeable, add an upgrade link to menu.
@@ -209,11 +203,12 @@ class OMAPI_Pages {
 	 *
 	 * @since 2.11.0
 	 *
-	 * @return bool
+	 * @return bool|array
 	 */
 	public function should_show_bfcf_menu_item() {
 		$now          = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
-		$promo_start  = gmdate( 'Y-m-d 10:00:00', strtotime( 'first Monday of November' ) );
+		$thanksgiving = strtotime( 'fourth Thursday of November' );
+		$promo_start  = gmdate( 'Y-m-d 10:00:00', $thanksgiving - ( 3 * DAY_IN_SECONDS ) );
 		$bf_end       = gmdate( 'Y-m-d 23:59:59', strtotime( 'first Tuesday of December' ) );
 		$is_bf_window = OMAPI_Utils::date_within( $now, $promo_start, $bf_end );
 		$year         = $now->format( 'Y' );
@@ -221,43 +216,35 @@ class OMAPI_Pages {
 		if ( $is_bf_window ) {
 
 			$url = OMAPI_Urls::marketing(
-				'black-friday/',
+				'pricing',
 				array(
 					'utm_medium'   => 'pluginMenu',
 					'utm_campaign' => "BF{$year}",
 				)
 			);
 
-			$thanksgiving = strtotime( 'fourth Thursday of November' );
-			$bf_start     = gmdate( 'Y-m-d 10:00:00', $thanksgiving - ( 3 * DAY_IN_SECONDS ) );
-			$is_pre_sale  = OMAPI_Utils::date_before( $now, $bf_start );
-
-			if ( ! $is_pre_sale && OMAPI_ApiKey::has_credentials() ) {
-				$url = $this->base->is_lite_user()
-					? OMAPI_Urls::marketing(
-						'pricing-wp/',
-						array(
-							'utm_medium'   => 'pluginMenu',
-							'utm_campaign' => "BF{$year}",
-						)
+			if ( OMAPI_ApiKey::has_credentials() ) {
+				$url = OMAPI_Urls::upgrade(
+					'pluginMenu',
+					'',
+					'',
+					array(
+						'utm_campaign' => "BF{$year}",
+						'feature'      => false,
 					)
-					: OMAPI_Urls::upgrade(
-						'pluginMenu',
-						'',
-						'',
-						array(
-							'utm_campaign' => "BF{$year}",
-							'feature'      => false,
-						)
-					);
+				);
 			}
 
-			$cyber_monday = gmdate( 'Y-m-d 10:00:00', $thanksgiving + ( 4 * DAY_IN_SECONDS ) );
-			$is_cm_window = ! OMAPI_Utils::date_before( $now, $cyber_monday );
+			$cyber_monday = $thanksgiving + ( 4 * DAY_IN_SECONDS );
+			$cm_start     = gmdate( 'Y-m-d 10:00:00', $cyber_monday );
+			$is_cm_window = ! OMAPI_Utils::date_before( $now, $cm_start );
 			return array(
 				'name'      => $is_cm_window
 					? esc_html__( 'Cyber Monday!', 'optin-monster-api' )
 					: esc_html__( 'Black Friday!', 'optin-monster-api' ),
+				'alternate-name' => $is_cm_window
+					? esc_html__( 'Cyber Monday Sale!', 'optin-monster-api' )
+					: esc_html__( 'Black Friday Sale!', 'optin-monster-api' ),
 				'redirect'  => esc_url_raw( $url ),
 				'callback'  => '__return_null',
 				'highlight' => true,
@@ -547,8 +534,20 @@ class OMAPI_Pages {
 				'showReview'      => $this->base->review->should_show_review(),
 				'timezone'        => wp_timezone_string(),
 			);
-			$js_args  = wp_parse_args( $args, $defaults );
-			$js_args  = apply_filters( 'optin_monster_campaigns_js_api_args', $js_args );
+
+			// Add the onboarding connection token if it exists.
+			$connection_token = $this->base->get_option( 'connectionToken' );
+			if ( ! empty( $connection_token ) ) {
+				$args['connectionToken'] = $connection_token;
+			}
+
+			$onboarding_plugins = $this->base->get_option( 'onboardingPlugins', '', array() );
+			if ( ! empty( $onboarding_plugins ) ) {
+				$args['onboardingPlugins'] = $onboarding_plugins;
+			}
+
+			$js_args = wp_parse_args( $args, $defaults );
+			$js_args = apply_filters( 'optin_monster_campaigns_js_api_args', $js_args );
 
 			$loader->localize( $js_args );
 

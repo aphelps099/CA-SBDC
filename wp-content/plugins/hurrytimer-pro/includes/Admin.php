@@ -3,6 +3,11 @@
 namespace Hurrytimer;
 
 use DateTime;
+use Hurrytimer\Utils\Helpers;
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
 
 class Admin {
     /**
@@ -88,8 +93,52 @@ class Admin {
         add_action('wp_ajax_hurryt_dismiss_headline_moved_notice', [$this, 'dismiss_headline_moved_notice']);
 
         add_action('admin_enqueue_scripts', [$this, 'enqueue_review_scripts']);
+
+        add_action('admin_init', [$this, 'handle_duplicate_campaign']);
     }
 
+    public function handle_duplicate_campaign() {
+        if (
+            isset($_GET['action']) && $_GET['action'] === 'duplicate_campaign' &&
+            isset($_GET['post']) && isset($_GET['_wpnonce']) &&
+            wp_verify_nonce($_GET['_wpnonce'], 'duplicate_campaign_' . $_GET['post'])
+        ) {
+            $post_id = intval($_GET['post']);
+            
+            // Check if the user has permission to edit this post
+            if (!current_user_can('edit_post', $post_id) || !current_user_can('publish_posts')) {
+                wp_die(__('You do not have permission to duplicate this campaign.', 'hurrytimer'));
+            }
+    
+            $post = get_post($post_id);
+            if ($post && $post->post_type === HURRYT_POST_TYPE) {
+                $new_post_id = wp_insert_post([
+                    'post_title'  => $post->post_title . ' (Copy)',
+                    'post_type'   => $post->post_type,
+                    'post_status' => 'draft',
+                ]);
+    
+                if ($new_post_id) {
+                    // Copy post meta
+                    $meta = get_post_meta($post_id);
+                    foreach ($meta as $key => $values) {
+                        foreach ($values as $value) {
+                            add_post_meta($new_post_id, $key, maybe_unserialize($value));
+                        }
+                    }
+                }
+                $source = isset($_GET['source']) ? sanitize_text_field($_GET['source']) : '';
+                if ($source === 'list') {
+                    // Redirect back to the list of campaigns
+                    wp_redirect(admin_url('edit.php?post_type=' . HURRYT_POST_TYPE));
+                } else {
+                    // Redirect to the newly created campaign
+                    wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
+                }
+            }
+        }
+    }
+        
     function enqueue_review_scripts(){
         wp_enqueue_script(
             'hurryt-review',
@@ -251,12 +300,6 @@ class Admin {
         $links[] = $manage_anchor;
         $links[] = $settings_anchor;
 
-        //removeIf(!pro)
-        $manage_license_link    = admin_url('admin.php?page=hurrytimer_license');
-        $manage_license_anchor = '<a href="' . $manage_license_link . '">' . __('License') . '</a>';
-        $links[] = $manage_license_anchor;
-        //endRemoveIf(!pro)
-
         return $links;
     }
 
@@ -334,11 +377,23 @@ class Admin {
 
     public function countdownListColumnsContent($column, $post_id) {
         $campaign = new Campaign($post_id);
+        $campaign->loadSettings();
         switch ($column) {
-            case 'status':
-                echo $campaign->is_published()
-                    ? __('Active', 'hurrytimer')
-                    : __('Inactive', 'hurrytimer');
+            case 'status': // Case for countdown status
+
+                if($campaign->is_published()){
+                    if ($campaign->is_expired()) {
+                        echo __('Expired', 'hurrytimer');
+                    }
+                    elseif (!$campaign->is_scheduled()) {
+                        echo __('Active', 'hurrytimer');
+                    }
+                }elseif($campaign->is_scheduled()){
+                    echo __('Scheduled', 'hurrytimer');
+
+                }else{
+                    echo __('Inactive', 'hurrytimer');
+                }
                 break;
             case 'mode':
                 if ($campaign->is_evergreen()) {
@@ -357,6 +412,7 @@ class Admin {
         <?php
 
                 break;
+         
         }
     }
 
@@ -439,8 +495,20 @@ class Admin {
         global $post;
         if ($post->post_type === HURRYT_POST_TYPE) {
             unset($actions['inline hide-if-no-js']);
+            // Add a "Duplicate" link
+            $duplicate_nonce = wp_create_nonce('duplicate_campaign_' . $post->ID);
+            $duplicate_link = admin_url('admin.php?action=duplicate_campaign&post=' . $post->ID . '&_wpnonce=' . $duplicate_nonce . '&source=list');
+            $actions['duplicate'] = '<a href="' . esc_url($duplicate_link) . '">' . __('Duplicate', 'hurrytimer') . '</a>';
+            
+            // Move 'duplicate' before 'trash'
+            if (isset($actions['trash'])) {
+                $trash = $actions['trash'];
+                unset($actions['trash']);
+                $actions['duplicate'] = '<a href="' . esc_url($duplicate_link) . '">' . __('Duplicate', 'hurrytimer') . '</a>';
+                $actions['trash'] = $trash;
+            }
         }
-
+    
         return $actions;
     }
 
@@ -546,6 +614,7 @@ class Admin {
             ],
             'COOKIEPATH'            => defined('COOKIEPATH') ? COOKIEPATH : '',
             'COOKIE_DOMAIN'         => defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '',
+            'searchProductsNonce' => wp_create_nonce('search-products'),
         ));
     }
 
@@ -615,9 +684,33 @@ class Admin {
             && $_GET['hurrytimer_action'] === "activate-compaign"
             && isset($_GET['_wpnonce'])
             && wp_verify_nonce($_GET['_wpnonce'], 'activate-compaign')
+            && isset($_GET['post'])
         ) {
             $postId = intval($_GET['post']);
-            wp_update_post(['ID' => $postId, 'post_status' => 'publish']);
+            
+            if (!current_user_can('publish_posts') || !current_user_can('edit_post', $postId)) {
+                wp_die(__('You do not have permission to publish this post.', 'hurrytimer'));
+            }
+
+            // Verify the post exists and is of the correct type
+            $post = get_post($postId);
+            if (!$post || $post->post_type !== HURRYT_POST_TYPE) {
+                wp_die(__('Invalid post.', 'hurrytimer'));
+            }
+
+            // Update the post status to 'publish'
+            $updated = wp_update_post([
+                'ID' => $postId, 
+                'post_status' => 'publish'
+            ]);
+
+            if (is_wp_error($updated)) {
+                wp_die($updated->get_error_message());
+            }
+
+            // Redirect back to the previous page with a success message
+            wp_safe_redirect(add_query_arg('activated', '1', wp_get_referer()));
+            exit;
         }
     }
 
@@ -685,6 +778,7 @@ class Admin {
 
     public function resetAllEvergreenCampaigns() {
 
+
         if (
             isset($_GET['hurryt-scope'])
             && isset($_GET['hurryt-action'])
@@ -692,8 +786,34 @@ class Admin {
             && isset($_GET['_wpnonce'])
             && wp_verify_nonce($_GET['_wpnonce'], 'reset-all-evergreen-compaigns')
         ) {
+
+
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to perform this action.', 'hurrytimer'));
+        }
+            // Validate and sanitize the scope
+            $scope = sanitize_text_field($_GET['hurryt-scope']);
+            if (!in_array($scope, ['admin', 'all'], true)) {
+                wp_die(__('Invalid scope specified.', 'hurrytimer'));
+            }
+
+            // Perform the reset action
             $evergreenCampaign = new EvergreenCampaign();
-            $evergreenCampaign->resetAll(sanitize_text_field($_GET['hurryt-scope']));
+            $resetResult = $evergreenCampaign->resetAll($scope);
+
+            if ($resetResult === false) {
+                wp_die(__('An error occurred while resetting the campaigns.', 'hurrytimer'));
+            }
+
+            wp_safe_redirect(add_query_arg(
+                [
+                    'page' => 'hurrytimer_settings',
+                    'reset' => 'success',
+                    'scope' => $scope
+                ],
+                admin_url('admin.php')
+            ));
+            exit;
         }
     }
 
@@ -703,9 +823,33 @@ class Admin {
             && $_GET['hurrytimer_action'] === "deactivate-compaign"
             && isset($_GET['_wpnonce'])
             && wp_verify_nonce($_GET['_wpnonce'], 'deactivate-compaign')
+            && isset($_GET['post'])
         ) {
             $postId = intval($_GET['post']);
-            wp_update_post(['ID' => $postId, 'post_status' => 'draft']);
+            
+            if (!current_user_can('publish_posts') || !current_user_can('edit_post', $postId)) {
+                wp_die(__('You do not have permission to change the status of this post.', 'hurrytimer'));
+            }
+
+            // Verify the post exists and is of the correct type
+            $post = get_post($postId);
+            if (!$post || $post->post_type !== HURRYT_POST_TYPE) {
+                wp_die(__('Invalid post.', 'hurrytimer'));
+            }
+
+            // Update the post status to 'draft'
+            $updated = wp_update_post([
+                'ID' => $postId, 
+                'post_status' => 'draft'
+            ]);
+
+            if (is_wp_error($updated)) {
+                wp_die($updated->get_error_message());
+            }
+
+            // Redirect back to the previous page with a success message
+            wp_safe_redirect(add_query_arg('deactivated', '1', wp_get_referer()));
+            exit;
         }
     }
 
@@ -721,6 +865,14 @@ class Admin {
      * @return void
      */
     public function ajaxWcSearchProducts() {
+
+         if (!current_user_can('edit_posts') || !current_user_can('publish_posts')) {
+            wp_die(__('You do not have permission to perform this action.', 'hurrytimer'));
+        }
+
+        check_ajax_referer('search-products', 'searchProductsNonce');
+
+
         $search    = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
         $selection = isset($_GET['productsSelection']) ? sanitize_text_field($_GET['productsSelection']) : -1;
         $exclude   = isset($_GET['exclude']) ? array_map('intval', (array)$_GET['exclude']) : [];
@@ -764,37 +916,46 @@ class Admin {
         exit(json_encode(["results" => $results, "pagination" => true]));
     }
 
+    public function sanitize( $input ) {
+        $sanitized_input = Helpers::sanitize_array($input);
+        return $sanitized_input;
+    }
     public function pluginSettings() {
-        register_setting('hurrytimer_settings', 'hurryt_settings');
-        add_settings_section(
-            'hurryt_settings_general',
-            __('General', 'hurrytimer'),
-            null,
-            'hurrytimer_settings'
-        );
-        add_settings_field(
-            'hurryt_disable_actions_edit_mode',
-            'Disable actions in the admin area',
-            function ($args) {
-                $options = get_option('hurryt_settings'); ?>
-            <label for="">
-                <input type="checkbox" name="hurryt_settings[disable_actions]" <?php checked(
-                                                                                    isset($options['disable_actions'])
-                                                                                        && $options['disable_actions'],
-                                                                                    1
-                                                                                ); ?> id="hurryt-disable-actions" value="1" />
-            </label>
-            <p class="description">
-                Don't run actions when editing or previewing a page in the admin area.
-            </p>
-<?php
-            },
-            'hurrytimer_settings',
-            'hurryt_settings_general'
-        );
+        
+            register_setting('hurrytimer_settings', 'hurryt_settings', [$this, 'sanitize']);
+            add_settings_section(
+                'hurryt_settings_general',
+                __('General', 'hurrytimer'),
+                null,
+                'hurrytimer_settings'
+            );
+            add_settings_field(
+                'hurryt_disable_actions_edit_mode',
+                'Disable actions in the admin area',
+                function ($args) {
+                    $options = get_option('hurryt_settings'); ?>
+                <label for="">
+                    <input type="checkbox" name="hurryt_settings[disable_actions]" <?php checked(
+                                                                                        isset($options['disable_actions'])
+                                                                                            && $options['disable_actions'],
+                                                                                        1
+                                                                                    ); ?> id="hurryt-disable-actions" value="1" />
+                </label>
+                <p class="description">
+                    Don't run actions when editing or previewing a page in the admin area.
+                </p>
+    <?php
+                },
+                'hurrytimer_settings',
+                'hurryt_settings_general'
+            );
     }
 
     function ajaxAddWcConditionGroup() {
+        if (!current_user_can('edit_posts') || !current_user_can('publish_posts')) {
+            wp_die(__('You do not have permission to perform this action.', 'hurrytimer'));
+        }
+
         check_ajax_referer('hurryt-admin', 'nonce');
 
         ob_start();
@@ -804,6 +965,10 @@ class Admin {
     }
 
     function ajaxAddWcCondition() {
+        if (!current_user_can('edit_posts') || !current_user_can('publish_posts')) {
+            wp_die(__('You do not have permission to perform this action.', 'hurrytimer'));
+        }
+
         check_ajax_referer('hurryt-admin', 'nonce');
 
         ob_start();
@@ -814,6 +979,10 @@ class Admin {
     }
 
     function ajaxLoadWcCondition() {
+        if (!current_user_can('edit_posts') || !current_user_can('publish_posts')) {
+            wp_die(__('You do not have permission to perform this action.', 'hurrytimer'));
+        }
+
         check_ajax_referer('hurryt-admin', 'nonce');
         ob_start();
         $groupId  = sanitize_key($_GET['group_id']);

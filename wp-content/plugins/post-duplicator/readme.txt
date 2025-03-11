@@ -1,9 +1,10 @@
 === Post Duplicator ===
 Contributors: metaphorcreations
 Tags: posts, post, duplicate, duplication
-Requires at least: 4.0
-Tested up to: 6.5.3
-Stable tag: 2.35
+Requires at least: 5.0
+Requires PHP: 7.4
+Tested up to: 6.7.2
+Stable tag: 2.45
 License: GPL2
 
 Creates functionality to duplicate any and all post types, including taxonomies & custom fields.
@@ -40,6 +41,42 @@ Check out the 'Installation' tab.
 2. View of the settings page
 
 == Changelog ==
+
+= 2.45 [2025-03-04] =
+* Moved settings page to settings menu
+* Added settings link to plugins screen
+
+= 2.44 [2025-02-25] =
+* Minor bug cleanup
+
+= 2.43 [2025-02-23] =
+* Default setting updates
+* Default permission updates
+
+= 2.42 [2025-02-16] =
+* Added custom permissions and settings
+
+= 2.41 [2025-02-16] =
+* Added custom permissions and settings
+
+= 2.40 [2025-02-11] =
+* Added code to store current version for future updates
+* Added code to resolve potential critical error for post types
+
+= 2.39 [2025-02-10] =
+* Bug fix
+
+= 2.38 [2025-02-10] =
+* Setting updates
+* Removed ajax functionality
+* Added WP API functionality
+* Additional security updates
+
+= 2.37 [2025-01-08] =
+* Security update. Disabled duplicate post ability of non-published posts by non-authors.
+
+= 2.36 [2024-09-02] =
+* Security update. Fixed bug that allowed non-author to duplicate post.
 
 = 2.35 [2024-05-14] =
 * Allowed for center tag to be duplicated
@@ -176,4 +213,4 @@ Must upgrade in order for the plugin to work. The file paths where initially wro
 
 == Upgrade Notice ==
 
-Allowed for center tag to be duplicated
+Settings location update

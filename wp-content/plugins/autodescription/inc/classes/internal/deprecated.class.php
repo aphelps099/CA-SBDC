@@ -1670,6 +1670,7 @@ final class Deprecated {
 	 *
 	 * @since 1.0.0
 	 * @since 5.0.0 Deprecated.
+	 * @since 5.1.0 Resolved an issue with a wrong callback; now returns the meta tag again.
 	 * @deprecated
 	 *
 	 * @return string The Open Graph locale meta tag.
@@ -1692,7 +1693,7 @@ final class Deprecated {
 		$locale = (string) \apply_filters_deprecated(
 			'the_seo_framework_oglocale_output',
 			[
-				$tsf->open_graph()->get_supported_locales(),
+				$tsf->open_graph()->get_locale(),
 				$tsf->query()->get_the_real_id(),
 			],
 			'5.0.0 of The SEO Framework',
@@ -3165,11 +3166,32 @@ final class Deprecated {
 	public function fetch_excerpt( $post = null ) {
 
 		$tsf = \tsf();
-		$tsf->_deprecated_function( 'tsf()->fetch_excerpt()', '5.0.0', 'tsf()->description()->excerpt()->get_post_excerpt()' );
+		$tsf->_deprecated_function( 'tsf()->fetch_excerpt()', '5.0.0', 'tsf()->description()->excerpt()->get_excerpt()' );
 
-		return $tsf->description()->excerpt()->get_post_excerpt(
+		return $tsf->description()->excerpt()->get_excerpt(
 			$post ? [ 'id' => \get_post( $post )->ID ?? '' ] : null,
 		);
+	}
+
+	/**
+	 * Matches WordPress locales.
+	 * If not matched, it will calculate a locale.
+	 *
+	 * @since 2.5.2
+	 * @since 5.0.0 Deleted accidentally.
+	 * @since 5.1.0 1. Reintroduced.
+	 *              2. Deprecated.
+	 *              3. Removed the first parameter. Now always uses the current locale.
+	 * @deprecated
+	 *
+	 * @return string Facebook acceptable OG locale.
+	 */
+	public function fetch_locale() {
+
+		$tsf = \tsf();
+		$tsf->_deprecated_function( 'tsf()->fetch_locale()', '5.1.0', 'tsf()->open_graph()->get_locale()' );
+
+		return $tsf->open_graph()->get_locale();
 	}
 
 	/**
@@ -5037,7 +5059,8 @@ final class Deprecated {
 
 		return \update_option(
 			$settings_field,
-			\wp_parse_args( $new_option, \get_option( $settings_field ) )
+			\wp_parse_args( $new_option, \get_option( $settings_field ) ),
+			true,
 		);
 	}
 
@@ -5827,7 +5850,7 @@ final class Deprecated {
 
 	/**
 	 * Whether the current blog is spam or deleted.
-	 * Multisite Only.
+	 * Multisite only.
 	 *
 	 * @since 2.6.0
 	 * @since 5.0.0 Deprecated.
@@ -6627,7 +6650,7 @@ final class Deprecated {
 	 */
 	public function update_db_version() {
 		\tsf()->_deprecated_function( 'tsf()->update_db_version()', '5.0.0' );
-		\update_option( 'the_seo_framework_upgraded_db_version', THE_SEO_FRAMEWORK_DB_VERSION );
+		\update_option( 'the_seo_framework_upgraded_db_version', THE_SEO_FRAMEWORK_DB_VERSION, true );
 	}
 
 	/**

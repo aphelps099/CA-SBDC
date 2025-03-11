@@ -97,4 +97,47 @@ class Term {
 				$taxonomy,
 			);
 	}
+
+	/**
+	 * Returns the term ancestors.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param int    $term_id      The term ID.
+	 * @param string $taxonomy     The taxonomy.
+	 * @param bool   $include_self Whether to include the initial term itself.
+	 * @return WP_Term[] The term ancestors, indexed by term ID.
+	 */
+	public static function get_term_parents( $term_id, $taxonomy, $include_self = false ) {
+
+		// phpcs:ignore, WordPress.CodeAnalysis.AssignmentInCondition -- I know.
+		if ( null !== $memo = memo( null, $term_id, $include_self ) ) return $memo;
+
+		// Term ID may be 0 when no terms are present.
+		if ( ! $term_id )
+			return memo( [], $term_id, $include_self );
+
+		// This method is inefficient, but it applies filters we must invoke for compatibility with other plugins.
+		$ancestors = \get_ancestors( $term_id, $taxonomy, 'taxonomy' );
+
+		if ( $include_self )
+			array_unshift( $ancestors, $term_id );
+
+		$parents = [];
+
+		foreach ( array_reverse( $ancestors ) as $_term_id ) {
+			$parents[ $_term_id ] = \get_term( $_term_id, $taxonomy );
+
+			if ( \is_wp_error( $parents[ $_term_id ] ) ) {
+				/**
+				 * Corner case: If the parent term disappeared, the link is broken.
+				 * Then, WordPress assumes its ancestor term as its parent via the while loop.
+				 * WordPress's get_ancestors() function already checks for this, but may fail ungracefully when caches are out of sync.
+				 */
+				unset( $parents[ $_term_id ] );
+			}
+		}
+
+		return memo( $parents, $term_id, $include_self );
+	}
 }

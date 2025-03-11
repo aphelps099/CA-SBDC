@@ -42,7 +42,7 @@ class Form
                 placeholder="Select color"
                 autocomplete="off"
                 class="hurrytimer-color-input"
-                value="<?php echo $value ?>" />
+                value="<?php echo esc_attr($value) ?>" />
        <span class="dashicons dashicons-no-alt hurrytimer-color-clear"></span>
         <?php
     }

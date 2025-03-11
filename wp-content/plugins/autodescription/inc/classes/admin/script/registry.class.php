@@ -230,32 +230,41 @@ class Registry {
 	 * A better name would've been "collect"...
 	 *
 	 * @since 3.1.0
-	 * @uses static::$scripts
 	 * @see $this->forward_known_scripts()
 	 * @see $this->autoload_known_scripts()
 	 *
 	 * @NOTE If the script is associative, it'll be registered as-is.
 	 *       If the script is sequential, it'll be iterated over, and then registered.
 	 *
-	 * @param array|array[] $script The script or sequential array of scripts : {
-	 *   'id'   => string The script ID,
-	 *   'type' => string 'css|js',
-	 *   'autoload' => boolean If true, the script will be loaded directly.
-	 *                         If false, it'll only be registered for dependencies.
-	 *   'name' => string The unique script name, which is also the file name,
-	 *   'deps' => array  Dependencies,
-	 *   'ver'  => string Script version,
-	 *   'l10n' => array If type is 'js' : {
-	 *      'name' => string The JavaScript variable,
-	 *      'data' => mixed  The l10n properties,
-	 *   }
-	 *   'tmpl' => array If type is 'js', either multidimensional or single : {
-	 *      'file' => string $file. The full file location,
-	 *      'args' => array $args. Optional,
-	 *    }
-	 *   'inline' => array If type is 'css' : {
-	 *      'selector' => array : { iterable => 'style' }
-	 *    }
+	 * @param array|array[] $script {
+	 *     The script arguments or sequential array of scripts and their arguments.
+	 *
+	 *     @type string        $id       The script unique ID.
+	 *     @type string        $type     The script type, either 'js' or 'css'.
+	 *     @type boolean       $hasrtl   Optional. If true, the script will consider .rtl and .rtl.min versions.
+	 *                                   Default false.
+	 *     @type boolean       $autoload If true, the script will be loaded directly.
+	 *                                   If false, it'll only be registered for dependencies.
+	 *     @type string        $name     The script file name.
+	 *     @type array         $deps     Any script dependencies by name.
+	 *     @type string        $ver      Script version.
+	 *     @type array         $l10n     {
+	 *         Optional. Use if type is 'js'.
+	 *
+	 *         @type string $name The JavaScript variable.
+	 *         @type mixed  $data The l10n properties.
+	 *     }
+	 *     @type array|array[] $tmpl     {
+	 *         Optional. Use if type is 'js'. One templates or an array of templates.
+	 *
+	 *         @type string $file The full file location.
+	 *         @type array  $args Optional. Any arguments added to the $view_args array.
+	 *     }
+	 *     @type array         $inline   {
+	 *         Optional. Use if type is 'css'.
+	 *
+	 *         @type array $selector : { iterable => 'style' }
+	 *     }
 	 * }
 	 */
 	public static function register( $script ) {
@@ -289,7 +298,6 @@ class Registry {
 	 * Registers and enqueues known scripts.
 	 *
 	 * @since 3.2.2
-	 * @uses static::forward_known_script();
 	 *
 	 * @param string $id   The script ID.
 	 * @param string $type The script type.
@@ -309,8 +317,6 @@ class Registry {
 	 *
 	 * @since 3.2.2
 	 * @since 5.0.0 Is now static.
-	 * @uses static::$scripts
-	 * @uses static::egister_script()
 	 */
 	private static function forward_known_scripts() {
 		// Register them first to accommodate for dependencies.
@@ -325,8 +331,6 @@ class Registry {
 	 *
 	 * @since 3.2.2
 	 * @since 5.0.0 Is now static.
-	 * @uses static::$scripts
-	 * @uses static::load_script()
 	 */
 	private static function autoload_known_scripts() {
 		foreach ( static::$scripts as $s ) {
@@ -449,7 +453,7 @@ class Registry {
 		$out = '';
 
 		foreach ( $styles as $selector => $declaration ) {
-			$out .= sprintf(
+			$out .= \sprintf(
 				'%s{%s}',
 				$selector,
 				implode( ';', static::convert_color_css_declaration( $declaration ) )
@@ -542,10 +546,12 @@ class Registry {
 	 * @since 3.1.0
 	 * @since 5.0.0 Is now static.
 	 *
-	 * @param string $id        The related script handle/ID.
-	 * @param array  $templates Associative-&-singul-, or sequential-&-multi-dimensional : {
-	 *   'file' => string $file. The full file location,
-	 *   'args' => array $args. Optional,
+	 * @param string      $id        The related script handle/ID.
+	 * @param array|[?][] $templates {
+	 *     Associative-&-singul-, or sequential-&-multi-dimensional array of templates.
+	 *
+	 *     @type string $file The full file location.
+	 *     @type array  $args Optional. Any arguments added to the $view_args array.
 	 * }
 	 */
 	private static function register_template( $id, $templates ) {

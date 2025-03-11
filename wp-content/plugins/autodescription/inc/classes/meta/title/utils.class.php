@@ -8,7 +8,10 @@ namespace The_SEO_Framework\Meta\Title;
 
 \defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
-use function \The_SEO_Framework\normalize_generation_args;
+use function \The_SEO_Framework\{
+	get_query_type_from_args,
+	normalize_generation_args,
+};
 
 use \The_SEO_Framework\Data;
 
@@ -106,12 +109,18 @@ class Utils {
 			if ( isset( $args ) ) {
 				normalize_generation_args( $args );
 
-				if ( 'category' === $args['tax'] ) {
-					$filters = [ 'single_cat_title' ];
-				} elseif ( 'post_tag' === $args['tax'] ) {
-					$filters = [ 'single_tag_title' ];
-				} else {
-					$filters = [ 'single_post_title' ];
+				switch ( get_query_type_from_args( $args ) ) {
+					case 'single':
+						$filters = [ 'single_post_title' ];
+						break;
+					case 'term':
+						switch ( $args['tax'] ) {
+							case 'category':
+								$filters = [ 'single_cat_title' ];
+								break;
+							case 'post_tag':
+								$filters = [ 'single_tag_title' ];
+						}
 				}
 			} else {
 				$filters = [ 'single_post_title', 'single_cat_title', 'single_tag_title' ];
@@ -126,7 +135,7 @@ class Utils {
 			if ( ! Data\Plugin::get_option( 'title_strip_tags' ) )
 				$functions[] = 'strip_tags';
 
-			foreach ( $filters as $filter ) {
+			foreach ( ( $filters ?? [] ) as $filter ) {
 				foreach ( $functions as $function ) {
 					// Only grab 10 of these. Yes, one might transform still on the 11th.
 					$it = 10;
@@ -149,7 +158,6 @@ class Utils {
 	 * @since 3.1.0
 	 * @since 5.0.0 Moved from `\The_SEO_Framework\Load`.
 	 * @internal Only to be used within Meta\Title::get_bare_unfiltered_generated_title()
-	 * @uses $this->remove_default_title_filters()
 	 */
 	public static function reset_default_title_filters() {
 		static::remove_default_title_filters( true );

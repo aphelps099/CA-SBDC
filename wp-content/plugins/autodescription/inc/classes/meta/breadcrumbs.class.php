@@ -10,6 +10,7 @@ namespace The_SEO_Framework\Meta;
 
 use function \The_SEO_Framework\{
 	memo,
+	get_query_type_from_args,
 	normalize_generation_args,
 };
 
@@ -58,11 +59,13 @@ class Breadcrumbs {
 	 *       -> Requested features (globally): Remove/show archive prefixes, hide PTA/terms, select home name, select SEO vs custom title (popular).
 	 *       -> Add generation args to every crumb; this way we can perform custom lookups for titles after the crumb is generated.
 	 *
-	 * @param array|null $args   The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
-	 *                           Leave null to autodetermine query.
-	 * @return array[] The breadcrumb list, sequential : int position {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @param array|null $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+	 *                         Leave null to autodetermine query.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	public static function get_breadcrumb_list( $args = null ) {
@@ -76,9 +79,11 @@ class Breadcrumbs {
 
 		/**
 		 * @since 5.0.0
-		 * @param array[] The breadcrumb list, sequential : int position => {
-		 *    string url:  The breadcrumb URL.
-		 *    string name: The breadcrumb page title.
+		 * @param array[] {
+		 *     The breadcrumb list items in order of appearance.
+		 *
+		 *     @type string $url  The breadcrumb URL.
+		 *     @type string $name The breadcrumb page title.
 		 * }
 		 * @param array|null $args The query arguments. Contains 'id', 'tax', 'pta', and 'uid'.
 		 *                         Is null when the query is auto-determined.
@@ -95,9 +100,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_breadcrumb_list_from_query() {
@@ -122,6 +129,7 @@ class Breadcrumbs {
 			$list = static::get_404_breadcrumb_list();
 		}
 
+		// The ?? operator is redundant here, but the query might be mangled.
 		return $list ?? [];
 	}
 
@@ -131,26 +139,37 @@ class Breadcrumbs {
 	 * @since 5.0.0
 	 *
 	 * @param array $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_breadcrumb_list_from_args( $args ) {
 
-		if ( $args['tax'] ) {
-			$list = static::get_term_breadcrumb_list( $args['id'], $args['tax'] );
-		} elseif ( $args['pta'] ) {
-			$list = static::get_pta_breadcrumb_list( $args['pta'] );
-		} elseif ( $args['uid'] ) {
-			$list = static::get_author_breadcrumb_list( $args['uid'] );
-		} elseif ( Query::is_real_front_page_by_id( $args['id'] ) ) {
-			$list = static::get_front_page_breadcrumb_list();
-		} elseif ( $args['id'] ) {
-			$list = static::get_singular_breadcrumb_list( $args['id'] );
+		switch ( get_query_type_from_args( $args ) ) {
+			case 'single':
+				if ( Query::is_static_front_page( $args['id'] ) ) {
+					$list = static::get_front_page_breadcrumb_list();
+				} else {
+					$list = static::get_singular_breadcrumb_list( $args['id'] );
+				}
+				break;
+			case 'term':
+				$list = static::get_term_breadcrumb_list( $args['id'], $args['tax'] );
+				break;
+			case 'homeblog':
+				$list = static::get_front_page_breadcrumb_list();
+				break;
+			case 'pta':
+				$list = static::get_pta_breadcrumb_list( $args['pta'] );
+				break;
+			case 'user':
+				$list = static::get_author_breadcrumb_list( $args['uid'] );
 		}
 
-		return $list ?? [];
+		return $list;
 	}
 
 	/**
@@ -158,9 +177,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_front_page_breadcrumb_list() {
@@ -173,9 +194,11 @@ class Breadcrumbs {
 	 * @since 5.0.0
 	 *
 	 * @param ?int\WP_Post $id The post ID or post object. Leave null to autodetermine.
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_singular_breadcrumb_list( $id = null ) {
@@ -265,9 +288,11 @@ class Breadcrumbs {
 	 *
 	 * @param int|null $term_id  The term ID.
 	 * @param string   $taxonomy The taxonomy. Leave empty to autodetermine.
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_term_breadcrumb_list( $term_id = null, $taxonomy = '' ) {
@@ -328,9 +353,11 @@ class Breadcrumbs {
 	 *
 	 * @param ?string $post_type The post type archive's post type.
 	 *                           Leave null to autodetermine query and allow pagination.
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_pta_breadcrumb_list( $post_type = null ) {
@@ -361,9 +388,11 @@ class Breadcrumbs {
 	 * @since 5.0.0
 	 *
 	 * @param ?int $id The author ID. Leave null to autodetermine.
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_author_breadcrumb_list( $id = null ) {
@@ -396,9 +425,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_date_breadcrumb_list() {
@@ -420,9 +451,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_search_breadcrumb_list() {
@@ -440,9 +473,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array[] The breadcrumb list : {
-	 *    string url:  The breadcrumb URL. In this case, it's empty.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_404_breadcrumb_list() {
@@ -460,9 +495,11 @@ class Breadcrumbs {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @return array The frontpage breadcrumb : {
-	 *    string url:  The breadcrumb URL.
-	 *    string name: The breadcrumb page title.
+	 * @return array[] {
+	 *     The breadcrumb list items in order of appearance.
+	 *
+	 *     @type string $url  The breadcrumb URL.
+	 *     @type string $name The breadcrumb page title.
 	 * }
 	 */
 	private static function get_front_breadcrumb() {

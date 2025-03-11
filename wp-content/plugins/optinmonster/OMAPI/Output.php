@@ -179,6 +179,13 @@ class OMAPI_Output {
 	 * @since 1.0.0
 	 */
 	public function maybe_load_optinmonster() {
+		 /**
+		  * Check if there are any campaigns for the site
+		  */
+		$optins = $this->base->get_optins();
+		if ( empty( $optins ) ) {
+			return;
+		}
 
 		// Checking if AMP is enabled.
 		if ( OMAPI_Utils::is_amp_enabled() ) {
@@ -377,6 +384,14 @@ class OMAPI_Output {
 	 * @since 1.0.0
 	 */
 	public function load_optinmonster() {
+		 /**
+		  * Check if there are any campaigns for the site
+		  */
+		$optins = $this->base->get_optins();
+		if ( empty( $optins ) ) {
+			return;
+		}
+
 		$post_id = self::current_id();
 
 		$prevented = is_singular() && $post_id && get_post_meta( $post_id, 'om_disable_all_campaigns', true );
@@ -385,7 +400,7 @@ class OMAPI_Output {
 			add_action( 'wp_footer', array( $this, 'prevent_all_campaigns' ), 11 );
 		}
 
-		$optins    = $prevented ? array() : $this->base->get_optins();
+		$optins    = $prevented ? array() : $optins;
 		$campaigns = array();
 
 		if ( empty( $optins ) ) {
@@ -714,6 +729,14 @@ class OMAPI_Output {
 	 */
 	public function display_rules_data() {
 		global $wp_query;
+
+		 /**
+		  * Check if there are any campaigns for the site
+		  */
+		$optins = $this->base->get_optins();
+		if ( empty( $optins ) ) {
+			return;
+		}
 
 		// If already localized, do nothing.
 		if ( $this->data_output ) {

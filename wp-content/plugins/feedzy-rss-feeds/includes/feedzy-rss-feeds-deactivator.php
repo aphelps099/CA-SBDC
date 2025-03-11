@@ -2,7 +2,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       http://themeisle.com
+ * @link       https://themeisle.com
  * @since      3.0.0
  *
  * @package    feedzy-rss-feeds
@@ -32,5 +32,4 @@ class Feedzy_Rss_Feeds_Deactivator {
 	public static function deactivate() {
 		delete_option( 'feedzy-activated' );
 	}
-
 }

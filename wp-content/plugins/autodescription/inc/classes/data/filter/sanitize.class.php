@@ -172,7 +172,7 @@ class Sanitize {
 		return html_entity_decode(
 			static::metadata_content( $text ),
 			\ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML5,
-			'UTF-8'
+			'UTF-8',
 		);
 	}
 
@@ -194,7 +194,7 @@ class Sanitize {
 		return preg_replace_callback(
 			'/(\p{Zs}){2,}/u',
 			// Unicode support sans mb_*: Calculate the bytes of the match and then remove that length.
-			static fn( $matches ) => substr( $matches[1], 0, \strlen( $matches[1] ) ),
+			fn( $matches ) => substr( $matches[1], 0, \strlen( $matches[1] ) ),
 			$text,
 		);
 	}
@@ -223,7 +223,7 @@ class Sanitize {
 		return str_replace(
 			[ '&#45;', "\xe2\x80\x90" ], // Should we consider &#000...00045;?
 			'&#x2d;',
-			preg_replace( '/((-{2,3})(*SKIP)-|-)(?(2)(*FAIL))/', '&#x2d;', $text )
+			preg_replace( '/((-{2,3})(*SKIP)-|-)(?(2)(*FAIL))/', '&#x2d;', $text ),
 		);
 	}
 
@@ -281,7 +281,7 @@ class Sanitize {
 	public static function newline_to_space( $text ) {
 		// Use x20 because it's a human-visible real space.
 		return trim(
-			strtr( $text, "\x0A\x0B\x0C\x0D", "\x20\x20\x20\x20" )
+			strtr( $text, "\x0A\x0B\x0C\x0D", "\x20\x20\x20\x20" ),
 		);
 	}
 
@@ -314,12 +314,14 @@ class Sanitize {
 	 * @since 5.0.0 1. Moved from `\The_SEO_Framework\Load`.
 	 *              2. Renamed from `s_qubit`.
 	 *              3. Now considers .3334 the turnover point, instead of 0.33000...0001.
+	 * @since 5.1.0 Now considers .3333 (off by .00003) the turnover point for the negative side,
+	 *              instead of -0.3333999...999 (off by .00006).
 	 *
 	 * @param float|int $value The qubit to test; ideally be -1, 0, or 1.
 	 * @return int -1, 0, or 1.
 	 */
 	public static function qubit( $value ) {
-		return $value >= .3334 <=> -.3334 >= $value;
+		return $value >= .3334 <=> -.3333 >= $value;
 	}
 
 	/**
@@ -349,7 +351,7 @@ class Sanitize {
 		// This is also checked when performing a redirect.
 		if ( ! Helper\Redirect::allow_external_redirect() ) {
 			$url = Meta\URI\Utils::set_url_scheme( Meta\URI\Utils::convert_path_to_url(
-				Meta\URI\Utils::set_url_scheme( $url, 'relative' )
+				Meta\URI\Utils::set_url_scheme( $url, 'relative' ),
 			) );
 		}
 
@@ -370,15 +372,27 @@ class Sanitize {
 	 *              2. Renamed from `s_image_details`.
 	 *              3. Now sanitizes the caption.
 	 *
-	 * @param array|array[] $details The image details, either associative (see $defaults) or sequential.
-	 * @return array|array[] The image details array. Matches type of $details : {
-	 *    string url:      The image URL,
-	 *    int    id:       The image ID,
-	 *    int    width:    The image width in pixels,
-	 *    int    height:   The image height in pixels,
-	 *    string alt:      The image alt tag,
-	 *    string caption:  The image caption,
-	 *    int    filesize: The image filesize in bytes,
+	 * @param array|array[] $details {
+	 *     An array of image details, or an array of an array thereof.
+	 *
+	 *     @type string $url      Required. The image URL.
+	 *     @type int    $id       Optional. The image ID. Used to fetch the largest image possible.
+	 *     @type int    $width    Optional. The image width in pixels.
+	 *     @type int    $height   Optional. The image height in pixels.
+	 *     @type string $alt      Optional. The image alt tag.
+	 *     @type string $caption  Optional. The image caption.
+	 *     @type int    $filesize Optional. The image filesize in bytes.
+	 * }
+	 * @return array|array[] $details {
+	 *     An array of image details, or an array of an array thereof if the input was multidimensional.
+	 *
+	 *     @type string $url      The image URL.
+	 *     @type int    $id       The image ID.
+	 *     @type int    $width    The image width in pixels.
+	 *     @type int    $height   The image height in pixels.
+	 *     @type string $alt      The image alt tag.
+	 *     @type string $caption  The image caption.
+	 *     @type int    $filesize The image filesize in bytes.
 	 * }
 	 */
 	public static function image_details( $details ) {
@@ -426,7 +440,7 @@ class Sanitize {
 		if ( \in_array(
 			strtolower( strtok( pathinfo( $url, \PATHINFO_EXTENSION ), '?' ) ),
 			[ 'apng', 'bmp', 'ico', 'cur', 'svg', 'tif', 'tiff' ],
-			true
+			true,
 		) ) return $defaults;
 
 		$width  = \absint( $width );
@@ -440,7 +454,7 @@ class Sanitize {
 			$new_image = Meta\Image\Utils::get_largest_image_src( $id, 4096, 5 * \MB_IN_BYTES );
 			$url       = $new_image ? \sanitize_url(
 				Meta\URI\Utils::make_absolute_current_scheme_url( $new_image[0] ),
-				[ 'https', 'http' ]
+				[ 'https', 'http' ],
 			) : '';
 
 			if ( empty( $url ) ) return $defaults;

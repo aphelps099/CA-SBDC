@@ -181,8 +181,8 @@ switch ( $instance ) :
 				</label>
 			</p>
 			<p>
-				<input class=large-text type=url name="<?php Input::field_name( 'social_image_fb_url' ); ?>" id=tsf_fb_socialimage-url value="<?= \esc_url( Data\Plugin::get_option( 'social_image_fb_url' ) ) ?>" />
-				<input type=hidden name="<?php Input::field_name( 'social_image_fb_id' ); ?>" id=tsf_fb_socialimage-id value="<?= \absint( Data\Plugin::get_option( 'social_image_fb_id' ) ) ?>" disabled class=tsf-enable-media-if-js />
+				<input class=large-text type=url name="<?php Input::field_name( 'social_image_fb_url' ); ?>" id=tsf_fb_socialimage-url value="<?= \esc_url( Data\Plugin::get_option( 'social_image_fb_url' ) ) ?>">
+				<input type=hidden name="<?php Input::field_name( 'social_image_fb_id' ); ?>" id=tsf_fb_socialimage-id value="<?= \absint( Data\Plugin::get_option( 'social_image_fb_id' ) ) ?>" disabled class=tsf-enable-media-if-js>
 			</p>
 			<p class=hide-if-no-tsf-js>
 				<?php
@@ -202,7 +202,7 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input type=text name="<?php Input::field_name( 'theme_color' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'theme_color' ); ?>" value="<?= \esc_attr( $theme_color ) ?>" data-tsf-default-color="" />
+			<input type=text name="<?php Input::field_name( 'theme_color' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'theme_color' ); ?>" value="<?= \esc_attr( $theme_color ) ?>" data-tsf-default-color="">
 		</p>
 		<hr>
 		<?php
@@ -244,7 +244,7 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input type=url name="<?php Input::field_name( 'facebook_publisher' ); ?>" class=large-text id="<?php Input::field_id( 'facebook_publisher' ); ?>" placeholder="<?= \esc_attr( $fb_publisher_placeholder ) ?>" value="<?= \esc_attr( $fb_publisher ) ?>" />
+			<input type=url name="<?php Input::field_name( 'facebook_publisher' ); ?>" class=large-text id="<?php Input::field_id( 'facebook_publisher' ); ?>" placeholder="<?= \esc_attr( $fb_publisher_placeholder ) ?>" value="<?= \esc_attr( $fb_publisher ) ?>">
 		</p>
 
 		<p>
@@ -261,7 +261,7 @@ switch ( $instance ) :
 		</p>
 		<?php HTML::description( \__( 'Authors can override this option on their profile page.', 'autodescription' ) ); ?>
 		<p>
-			<input type=url name="<?php Input::field_name( 'facebook_author' ); ?>" class=large-text id="<?php Input::field_id( 'facebook_author' ); ?>" placeholder="<?= \esc_attr( $fb_author_placeholder ) ?>" value="<?= \esc_attr( $fb_author ) ?>" />
+			<input type=url name="<?php Input::field_name( 'facebook_author' ); ?>" class=large-text id="<?php Input::field_id( 'facebook_author' ); ?>" placeholder="<?= \esc_attr( $fb_author_placeholder ) ?>" value="<?= \esc_attr( $fb_author ) ?>">
 		</p>
 		<?php
 		break;
@@ -276,7 +276,7 @@ switch ( $instance ) :
 		$supported_twitter_cards = Meta\Twitter::get_supported_cards();
 
 		HTML::header_title( \__( 'Twitter Integration Settings', 'autodescription' ) );
-		HTML::description( \__( 'Twitter post sharing works mostly through Twitter Cards, and may fall back to use Open Graph. However, you can also link your Business and Personal Twitter pages, among various other options.', 'autodescription' ) );
+		HTML::description( \__( 'Sharing posts on X (formerly Twitter) works mostly via Twitter Cards and may fall back to use Open Graph. However, you can also link your Business and Personal X pages, among various other options.', 'autodescription' ) );
 
 		?>
 		<hr>
@@ -285,7 +285,7 @@ switch ( $instance ) :
 			<legend><?php HTML::header_title( \__( 'Twitter Card Type', 'autodescription' ) ); ?></legend>
 			<?php
 			HTML::description(
-				\__( 'When you share a link on Twitter, an image can appear on the side or as a large cover.', 'autodescription' )
+				\__( 'When you share a link on X (formerly Twitter), an image can appear on the side or as a large cover.', 'autodescription' )
 			);
 			HTML::description(
 				\__( 'The Twitter Card type also affects images in Discord embeds; either displayed small at the side or large below.', 'autodescription' )
@@ -297,16 +297,36 @@ switch ( $instance ) :
 			foreach ( $supported_twitter_cards as $type ) {
 				?>
 				<span class=tsf-toblock>
-					<input type=radio name="<?php Input::field_name( 'twitter_card' ); ?>" id="<?php Input::field_id( "twitter_card_{$type}" ); ?>" value="<?= \esc_attr( $type ) ?>" <?php \checked( Data\Plugin::get_option( 'twitter_card' ), $type ); ?> />
+					<input type=radio name="<?php Input::field_name( 'twitter_card' ); ?>" id="<?php Input::field_id( "twitter_card_{$type}" ); ?>" value="<?= \esc_attr( $type ) ?>" <?php \checked( Data\Plugin::get_option( 'twitter_card' ), $type ); ?>>
 					<label for="<?php Input::field_id( "twitter_card_{$type}" ); ?>">
 						<span>
 							<?php
 							echo HTML::code_wrap( $type ); // phpcs:ignore, WordPress.Security.EscapeOutput
-							echo ' ';
-							HTML::make_info(
-								\__( 'Learn more about this card.', 'autodescription' ),
-								'https://dev.twitter.com/cards/types/' . str_replace( '_', '-', $type ),
-							);
+
+							switch ( $type ) {
+								case 'summary':
+									$twep = 'summary';
+									break;
+								case 'summary_large_image':
+									$twep = 'summary-card-with-large-image';
+									break;
+								case 'player':
+									// No break: write $twep.
+									$twep = 'player-card';
+									break;
+								case 'app':
+									// No break: write $twep.
+									$twep = 'app-card';
+							}
+
+							if ( ! empty( $twep ) ) {
+								echo ' ';
+								HTML::make_info(
+									\__( 'Learn more about this card.', 'autodescription' ),
+									"https://developer.x.com/en/docs/twitter-for-websites/cards/overview/$twep",
+								);
+								unset( $twep );
+							}
 							?>
 						</span>
 					</label>
@@ -321,7 +341,7 @@ switch ( $instance ) :
 		<?php
 		HTML::header_title( \__( 'Card and Content Attribution', 'autodescription' ) );
 		/* source: https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#attribution */
-		HTML::description( \__( 'Twitter claims users will be able to follow and view the profiles of attributed accounts directly from the card when these fields are filled in.', 'autodescription' ) );
+		HTML::description( \__( 'X (formerly Twitter) claims users will be able to follow and view the profiles of attributed accounts directly from the card when these fields are filled in.', 'autodescription' ) );
 		HTML::description( \__( 'However, for now, these fields seem to have no discernible effect.', 'autodescription' ) );
 		?>
 
@@ -332,13 +352,13 @@ switch ( $instance ) :
 				echo ' ';
 				HTML::make_info(
 					\__( 'Find your @username.', 'autodescription' ),
-					'https://twitter.com/home',
+					'https://x.com/home',
 				);
 				?>
 			</label>
 		</p>
 		<p>
-			<input type=text name="<?php Input::field_name( 'twitter_site' ); ?>" class="large-text ltr" id="<?php Input::field_id( 'twitter_site' ); ?>" placeholder="<?= \esc_attr( $tw_site_placeholder ) ?>" value="<?= \esc_attr( $tw_site ) ?>" />
+			<input type=text name="<?php Input::field_name( 'twitter_site' ); ?>" class="large-text ltr" id="<?php Input::field_id( 'twitter_site' ); ?>" placeholder="<?= \esc_attr( $tw_site_placeholder ) ?>" value="<?= \esc_attr( $tw_site ) ?>">
 		</p>
 
 		<p>
@@ -348,14 +368,14 @@ switch ( $instance ) :
 				echo ' ';
 				HTML::make_info(
 					\__( 'Find your @username.', 'autodescription' ),
-					'https://twitter.com/home',
+					'https://x.com/home',
 				);
 				?>
 			</label>
 		</p>
 		<?php HTML::description( \__( 'Authors can override this option on their profile page.', 'autodescription' ) ); ?>
 		<p>
-			<input type=text name="<?php Input::field_name( 'twitter_creator' ); ?>" class="large-text ltr" id="<?php Input::field_id( 'twitter_creator' ); ?>" placeholder="<?= \esc_attr( $tw_creator_placeholder ) ?>" value="<?= \esc_attr( $tw_creator ) ?>" />
+			<input type=text name="<?php Input::field_name( 'twitter_creator' ); ?>" class="large-text ltr" id="<?php Input::field_id( 'twitter_creator' ); ?>" placeholder="<?= \esc_attr( $tw_creator_placeholder ) ?>" value="<?= \esc_attr( $tw_creator ) ?>">
 		</p>
 		<?php
 		break;

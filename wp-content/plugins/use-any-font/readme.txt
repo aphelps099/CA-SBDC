@@ -2,8 +2,8 @@
 Contributors: dnesscarkey
 Tags: custom fonts, font manager, font uploader, typography, google fonts
 Requires at least: 4.0
-Tested up to: 6.5.3
-Stable tag: 6.3.07
+Tested up to: 6.7.1
+Stable tag: 6.3.12
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -170,6 +170,22 @@ Please do write us after integration and we will add it in our supported list.
 
 == Changelog ==
 
+= 6.3.12 =
+* Improved error handling for file write permission issues during font upload. 
+
+= 6.3.11 =
+* Fixed Admin Notice hide issue. 
+
+= 6.3.10 =
+* Fixed editor issue with Genesis and some non block themes. 
+
+= 6.3.09 =
+* Added noonce for Js Font Upload.
+
+= 6.3.08 =
+* Fixed custom element multiline issue.
+* Added font support for non blocked themes. Uploaded Font can be selected in Block Editor from Typography section.
+
 = 6.3.07 =
 * Better error handling.
 
@@ -192,7 +208,7 @@ Please do write us after integration and we will add it in our supported list.
 * Added support for Bricks Builder and Themeisle
 
 = 6.2.98 =
-* Fixed font assign issue in Poly Lang
+* Fixed custom font assign issue in Poly Lang
 
 = 6.2.97 =
 * Fixed custom element assign issue.
@@ -222,7 +238,7 @@ Please do write us after integration and we will add it in our supported list.
 * Tested with PHP 8.1
 
 = 6.2.8 =
-* Sanitization.
+* Sanitization for custom font upload.
 
 = 6.2.6 =
 * Removed use of PHP uploader.
@@ -249,7 +265,7 @@ Please do write us after integration and we will add it in our supported list.
 * Added wpnonce for forms
 
 = 6.1.7 =
-* Fixed rtl issue for Font Search
+* Fixed rtl issue for Font Typography Search
 
 = 6.1.6 =
 * Fixed undefined variable notice.

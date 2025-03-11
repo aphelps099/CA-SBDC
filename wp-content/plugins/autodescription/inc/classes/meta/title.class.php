@@ -10,6 +10,7 @@ namespace The_SEO_Framework\Meta;
 
 use function \The_SEO_Framework\{
 	coalesce_strlen,
+	get_query_type_from_args,
 	memo,
 	normalize_generation_args,
 };
@@ -301,19 +302,23 @@ class Title {
 
 		normalize_generation_args( $args );
 
-		if ( $args['tax'] ) {
-			$title = Data\Plugin\Term::get_meta_item( 'doctitle', $args['id'] );
-		} elseif ( $args['pta'] ) {
-			$title = Data\Plugin\PTA::get_meta_item( 'doctitle', $args['pta'] );
-		} elseif ( empty( $args['uid'] ) && Query::is_real_front_page_by_id( $args['id'] ) ) {
-			if ( $args['id'] ) {
-				$title = coalesce_strlen( Data\Plugin::get_option( 'homepage_title' ) )
-					  ?? Data\Plugin\Post::get_meta_item( '_genesis_title', $args['id'] );
-			} else {
+		switch ( get_query_type_from_args( $args ) ) {
+			case 'single':
+				if ( Query::is_static_front_page( $args['id'] ) ) {
+					$title = coalesce_strlen( Data\Plugin::get_option( 'homepage_title' ) )
+						  ?? Data\Plugin\Post::get_meta_item( '_genesis_title', $args['id'] );
+				} else {
+					$title = Data\Plugin\Post::get_meta_item( '_genesis_title', $args['id'] );
+				}
+				break;
+			case 'term':
+				$title = Data\Plugin\Term::get_meta_item( 'doctitle', $args['id'] );
+				break;
+			case 'homeblog':
 				$title = Data\Plugin::get_option( 'homepage_title' );
-			}
-		} elseif ( $args['id'] ) {
-			$title = Data\Plugin\Post::get_meta_item( '_genesis_title', $args['id'] );
+				break;
+			case 'pta':
+				$title = Data\Plugin\PTA::get_meta_item( 'doctitle', $args['pta'] );
 		}
 
 		if ( isset( $title ) && \strlen( $title ) )
@@ -358,16 +363,25 @@ class Title {
 
 		normalize_generation_args( $args );
 
-		if ( $args['tax'] ) {
-			$title = static::get_archive_title( \get_term( $args['id'], $args['tax'] ) );
-		} elseif ( $args['pta'] ) {
-			$title = static::get_archive_title( \get_post_type_object( $args['pta'] ) );
-		} elseif ( $args['uid'] ) {
-			$title = static::get_archive_title( \get_userdata( $args['uid'] ) );
-		} elseif ( Query::is_real_front_page_by_id( $args['id'] ) ) {
-			$title = static::get_front_page_title();
-		} elseif ( $args['id'] ) {
-			$title = static::get_post_title( $args['id'] );
+		switch ( get_query_type_from_args( $args ) ) {
+			case 'single':
+				if ( Query::is_static_front_page( $args['id'] ) ) {
+					$title = static::get_front_page_title();
+				} else {
+					$title = static::get_post_title( $args['id'] );
+				}
+				break;
+			case 'term':
+				$title = static::get_archive_title( \get_term( $args['id'], $args['tax'] ) );
+				break;
+			case 'homeblog':
+				$title = static::get_front_page_title();
+				break;
+			case 'pta':
+				$title = static::get_archive_title( \get_post_type_object( $args['pta'] ) );
+				break;
+			case 'user':
+				$title = static::get_archive_title( \get_userdata( $args['uid'] ) );
 		}
 
 		return $title ?? '';
@@ -415,7 +429,7 @@ class Title {
 
 		if ( Title\Conditions::use_generated_archive_prefix( $object ) ) {
 			if ( $prefix ) {
-				$title = sprintf(
+				$title = \sprintf(
 					/* translators: 1: Title prefix. 2: Title. */
 					\_x( '%1$s %2$s', 'archive title', 'default' ),
 					$prefix,
@@ -534,7 +548,7 @@ class Title {
 
 			if ( $term ) {
 				$title  = static::get_term_title( $term );
-				$prefix = sprintf(
+				$prefix = \sprintf(
 					/* translators: %s: Taxonomy singular name. */
 					\_x( '%s:', 'taxonomy term archive title prefix', 'default' ),
 					Sanitize::metadata_content( Taxonomy::get_label( $term->taxonomy ?? '' ) ),
@@ -569,7 +583,7 @@ class Title {
 					$prefix = \_x( 'Tag:', 'tag archive title prefix', 'default' );
 					break;
 				default:
-					$prefix = sprintf(
+					$prefix = \sprintf(
 						/* translators: %s: Taxonomy singular name. */
 						\_x( '%s:', 'taxonomy term archive title prefix', 'default' ),
 						Taxonomy::get_label( $object->taxonomy ),
@@ -751,7 +765,7 @@ class Title {
 	public static function get_search_query_title() {
 		return Sanitize::metadata_content(
 			/* translators: %s: search phrase */
-			sprintf( \__( 'Search Results for &#8220;%s&#8221;', 'default' ), \get_search_query( true ) )
+			\sprintf( \__( 'Search Results for &#8220;%s&#8221;', 'default' ), \get_search_query( true ) )
 		);
 	}
 
@@ -791,29 +805,41 @@ class Title {
 		if ( isset( $args ) ) {
 			normalize_generation_args( $args );
 
-			if (
-				   empty( $args['tax'] )
-				&& empty( $args['pta'] )
-				&& empty( $args['uid'] )
-				&& Query::is_real_front_page_by_id( $args['id'] )
-			) {
-				$addition    = static::get_addition_for_front_page();
-				$seplocation = static::get_addition_location_for_front_page();
+			switch ( get_query_type_from_args( $args ) ) {
+				case 'single':
+					if ( Query::is_static_front_page( $args['id'] ) ) {
+						$addition    = static::get_addition_for_front_page();
+						$seplocation = static::get_addition_location_for_front_page();
+					} else {
+						$addition    = static::get_addition();
+						$seplocation = static::get_addition_location();
+					}
+					break;
+				case 'homeblog':
+					$addition    = static::get_addition_for_front_page();
+					$seplocation = static::get_addition_location_for_front_page();
+					break;
+				default:
+					$addition    = static::get_addition();
+					$seplocation = static::get_addition_location();
 			}
 		} else {
 			if ( Query::is_real_front_page() ) {
 				$addition    = static::get_addition_for_front_page();
 				$seplocation = static::get_addition_location_for_front_page();
+			} else {
+				$addition    = static::get_addition();
+				$seplocation = static::get_addition_location();
 			}
 		}
 
 		$title    = trim( $title );
-		$addition = trim( $addition ?? static::get_addition() );
+		$addition = trim( $addition );
 
 		if ( \strlen( $addition ) && \strlen( $title ) ) {
 			$sep = static::get_separator();
 
-			if ( 'left' === ( $seplocation ?? static::get_addition_location() ) )
+			if ( 'left' === $seplocation )
 				return "$addition $sep $title";
 
 			return "$title $sep $addition";
@@ -838,13 +864,9 @@ class Title {
 			$sep = static::get_separator();
 
 			/* translators: %s: Page number. */
-			$paging = sprintf( \__( 'Page %s', 'default' ), $page );
+			$paging = \sprintf( \__( 'Page %s', 'default' ), $page );
 
-			if ( \is_rtl() ) {
-				return "$paging $sep $title";
-			} else {
-				return "$title $sep $paging";
-			}
+			return \is_rtl() ? "$paging $sep $title" : "$title $sep $paging";
 		}
 
 		return $title;
@@ -864,19 +886,17 @@ class Title {
 
 		if ( isset( $args ) ) {
 			normalize_generation_args( $args );
-			$id  = $args['id'];
-			$add = empty( $args['tax'] ) && empty( $args['pta'] ) && empty( $args['uid'] );
-		} else {
-			$id  = Query::get_the_real_id();
-			$add = Query::is_singular();
+
+			if ( 'single' !== get_query_type_from_args( $args ) )
+				return $title;
+		} elseif ( ! Query::is_singular() ) {
+			return $title;
 		}
 
-		if ( ! $add ) return $title;
-
-		$post = $id ? \get_post( $id ) : null;
+		$post = \get_post( $args['id'] ?? Query::get_the_real_id() );
 
 		if ( ! empty( $post->post_password ) ) {
-			return sprintf(
+			return \sprintf(
 				/**
 				 * Filters the text prepended to the post title of private posts.
 				 *
@@ -897,7 +917,7 @@ class Title {
 				$title,
 			);
 		} elseif ( 'private' === ( $post->post_status ?? null ) ) {
-			return sprintf(
+			return \sprintf(
 				/**
 				 * Filters the text prepended to the post title of private posts.
 				 *

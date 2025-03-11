@@ -557,7 +557,7 @@ class Campaign
             case 'specific_pages':
                 $pageIds = $this->getStickyBarPages();
 
-                if (!empty($pageId) && !empty($pageIds) && in_array($pageId, $pageIds, true)) {
+                if (!empty($pageId) && !empty($pageIds) && in_array($pageId, $pageIds)) {
                     return apply_filters('hurryt_show_sticky_bar', true, $this->get_id());
                 }
 
@@ -573,8 +573,7 @@ class Campaign
 
             case 'exclude_pages':
                 $pageIds = $this->getStickyExcludePages();
-
-                if (!empty($pageId) && !empty($pageIds) && in_array($pageId, $pageIds, true)) {
+                if (!empty($pageId) && !empty($pageIds) && in_array($pageId, $pageIds)) {
                     return apply_filters('hurryt_show_sticky_bar', false, $this->get_id());
                 }
 
@@ -702,7 +701,6 @@ class Campaign
      */
     public function storeSettings($data)
     {
-
         if (!hurrytimer_allow_unfiltered_html()) {
             $data = wp_kses_post_deep($data);
         }

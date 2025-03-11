@@ -61,7 +61,7 @@ class Setup {
 	 */
 	public static function reset_options() {
 
-		$success = \update_option( \THE_SEO_FRAMEWORK_SITE_OPTIONS, static::get_default_options() );
+		$success = \update_option( \THE_SEO_FRAMEWORK_SITE_OPTIONS, static::get_default_options(), true );
 
 		if ( $success )
 			Data\Plugin::refresh_static_properties();
@@ -221,12 +221,19 @@ class Setup {
 				'max_image_preview'        => 'large', // Max image-preview size. 'none', 'standard', 'large'.
 				'max_video_preview'        => -1,      // Max video-preview size. -1 = unlimited, 0 = disabled, R>0 = seconds.
 
-				// Robots home.
+				// Robots.txt blocks.
+				'robotstxt_block_ai'  => 0, // Blocks large learning models from training on the site content.
+				'robotstxt_block_seo' => 0, // Block SEO crawlers like Ahrefs, Moz, and SEMRush.
+
+				// Homepage visibility.
 				'homepage_noindex'   => 0, // Homepage robots noindex.
 				'homepage_nofollow'  => 0, // Homepage robots noarchive.
 				'homepage_noarchive' => 0, // Homepage robots nofollow.
 
-				// Home meta.
+				'homepage_canonical' => '', // Homepage canonical URL.
+				'homepage_redirect'  => '', // Homepage redirect URL.
+
+				// Homepage meta.
 				'homepage_title'         => '', // Homepage Title string.
 				'homepage_tagline'       => 1,  // Homepage add blog Tagline.
 				'homepage_description'   => '', // Homepage Description string.
@@ -342,8 +349,8 @@ class Setup {
 
 				// Feed.
 				'excerpt_the_feed' => 1, // Generate feed Excerpts.
-				'source_the_feed'  => 1, // Add backlink at the end of the feed.
-				'index_the_feed'   => 0, // Add backlink at the end of the feed.
+				'source_the_feed'  => 1, // Add backlink to the end of the feed.
+				'index_the_feed'   => 0, // Add backlink to the end of the feed.
 			],
 		);
 		// phpcs:enable, WordPress.Arrays.MultipleStatementAlignment

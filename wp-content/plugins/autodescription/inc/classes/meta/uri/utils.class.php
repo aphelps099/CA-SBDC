@@ -11,6 +11,8 @@ namespace The_SEO_Framework\Meta\URI;
 use function \The_SEO_Framework\{
 	memo,
 	umemo,
+	get_query_type_from_args,
+	normalize_generation_args,
 };
 
 use \The_SEO_Framework\{
@@ -107,6 +109,7 @@ class Utils {
 	 * Slashes the root (home) URL.
 	 *
 	 * @since 5.0.0
+	 * @todo shouldn't this have been "contextual_trailingslashit"?
 	 *
 	 * @param string $url The root URL.
 	 * @return string The root URL plausibly with added slashes.
@@ -418,12 +421,13 @@ class Utils {
 			$page ??= max( Query::paged(), Query::page() );
 
 			if ( $page > 1 ) {
-				$user_slash = ( $GLOBALS['wp_rewrite']->use_trailing_slashes ? '/' : '' );
-				$use_base ??=
-					   Query::is_real_front_page()
-					|| Query::is_archive()
-					|| Query::is_singular_archive()
-					|| Query::is_search();
+				$user_slash = $GLOBALS['wp_rewrite']->use_trailing_slashes ? '/' : '';
+
+				$use_base
+					??= Query::is_real_front_page()
+					 || Query::is_archive()
+					 || Query::is_singular_archive()
+					 || Query::is_search();
 
 				if ( $use_base ) {
 					$find = "/{$GLOBALS['wp_rewrite']->pagination_base}/{$page}{$user_slash}";
@@ -479,5 +483,101 @@ class Utils {
 			return "$url&$query{$fragment}";
 
 		return "$url?$query{$fragment}";
+	}
+
+
+	/**
+	 * Returns the permalink structure for the given query.
+	 * Does not support pagination or endpoint masks.
+	 *
+	 * This method is meant for canonical URL prediction in JavaScript.
+	 *
+	 * Ref, WP Core:
+	 * - `get_permalink()`, leads to: `get_page_link()`, `get_attachment_link()`, `get_post_permalink()`
+	 * - `get_term_link()`
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param array $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+	 * @return string The URL permastructure for the given query.
+	 */
+	public static function get_url_permastruct( $args ) {
+		global $wp_rewrite;
+
+		normalize_generation_args( $args );
+
+		switch ( get_query_type_from_args( $args ) ) {
+			case 'single':
+				if ( Query::is_static_front_page( $args['id'] ) ) {
+					$permastruct = $wp_rewrite->front;
+				} else {
+					$post_type = Query::get_post_type_real_id( $args['id'] );
+
+					switch ( $post_type ) {
+						case 'page':
+							// Both translate to the post's name; this translation eases later processing.
+							$permastruct = str_replace( '%pagename%', '%postname%', $wp_rewrite->get_page_permastruct() );
+							break;
+						case 'attachment':
+							if ( Query\Utils::using_pretty_permalinks() ) {
+								$attachment  = \get_post( $args['id'] );
+								$parent_post = $attachment->post_parent;
+
+								if ( $parent_post ) {
+									$parentslug = static::get_relative_part_from_url( \get_permalink( $parent_post ) );
+
+									// This was probably a workaround for paginated parent links. See `get_attachment_link()`.
+									// We should also account for this on the Canonical URL Notation Tracker, but this is an extreme oddity.
+									// I doubt anyone is managing attachment slugs, especially switching from numericals to non-numericals.
+									if (
+										   is_numeric( $attachment->post_name )
+										|| str_contains( \get_option( 'permalink_structure' ), '%category%' )
+									) {
+										$namestruct = 'attachment/%postname%';
+									} else {
+										$namestruct = '%postname%';
+									}
+
+									// Odd case is odd. See `get_attachment_link()`.
+									// Introduced at https://core.trac.wordpress.org/ticket/1776 -- no explanation provided.
+									if ( str_contains( $parentslug, '?' ) ) {
+										$permastruct = $namestruct;
+									} else {
+										$permastruct = \trailingslashit( $parentslug ) . $namestruct;
+									}
+								} else {
+									$permastruct = '%postname%';
+								}
+								break;
+							} // else: ?attachment_id=%post_id%, but this is handled via default.
+							break;
+						case 'post':
+							$permastruct = $wp_rewrite->permalink_structure;
+							break;
+						// actually: `\in_array( $post_type, \get_post_types( [ '_builtin' => false ] ), true )`, but we covered all others above.
+						default:
+							$permastruct = \is_post_type_hierarchical( $post_type )
+								? $wp_rewrite->get_page_permastruct()
+								: $wp_rewrite->get_extra_permastruct( $post_type );
+
+							// Both translate to the post's name; this translation eases later processing.
+							$permastruct = str_replace( "%{$post_type}%", '%postname%', $permastruct );
+					}
+				}
+				break;
+			case 'homeblog':
+				$permastruct = $wp_rewrite->front;
+				break;
+			case 'term':
+				$permastruct = $wp_rewrite->get_extra_permastruct( $args['tax'] );
+				break;
+			case 'pta':
+				$permastruct = $wp_rewrite->get_extra_permastruct( $args['pta'] );
+				break;
+			case 'user':
+				$permastruct = $wp_rewrite->get_author_permastruct();
+		}
+
+		return '/' . ltrim( \user_trailingslashit( $permastruct ?? '' ), '/' );
 	}
 }

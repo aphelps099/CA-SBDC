@@ -3,9 +3,9 @@ Contributors: cozmoslabs, razvan.mo, madalin.ungureanu, sareiodata, cristophor
 Donate link: https://www.translatepress.com/
 Tags: translate, translation, multilingual, automatic translation, bilingual, front-end translation, google translate, language
 Requires at least: 3.1.0
-Tested up to: 6.6.1
+Tested up to: 6.7.2
 Requires PHP: 5.6.20
-Stable tag: 2.8.2
+Stable tag: 2.9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -141,6 +141,85 @@ For more information please check out our [documentation](https://translatepress
 
 
 == Changelog ==
+= 2.9.6 =
+* Added support for translating html tags "picture" and "audio"
+* Improved query efficency for removing duplicate entries when running Database Optimization
+* Fixed compatibility issue with Blocksy in Customizer
+
+= 2.9.5 =
+* Added support for video tag in order to show different videos according to selected language
+* Added compatibility for Elementor element caching on additional languages
+* Added compatibility with Profile Builder redirects after registration and edit profile forms
+* Reduced requests to TP AI when quota is unavailable
+* Fixed redirecting to wrong language after checkout in some cases
+
+= 2.9.4 =
+* Fixed potential security issue by preventing direct access to files
+* Extended keyword search in String Translation UI to return results from translations too, alongside matching default language text, for Gettext, Email and Regular strings
+* Added new feature to delete translations in String Translation UI, individually or in bulk, for Gettext, Email and Regular strings
+* Fixed incorrect translated urls in the page when reordering languages and using subdirectory for default language, while also excluding certain paths from translation
+* Fixed edge case PHP error in ajax request for front-end translations
+* Fixed edge case PHP error between Gutenberg language restrictions and WP Interactivity API
+* Fixed edge case PHP error argument must be of type string
+
+= 2.9.3 =
+* Fixed form action losing GET parameters on translated pages
+
+= 2.9.2 =
+* Fixed not setting srcset attributes properly for translated images
+
+= 2.9.1 =
+* Added Gutenberg Language Restriction option to allow for easily including/excluding blocks in specific languages
+* Fixed PHP notice in WP 6.7: function _load_textdomain_just_in_time was called incorrectly
+* Fixed translating internal links from inside translation blocks
+* Fixed edge case with some excluded paths redirecting translated urls to incorrect original urls
+
+= 2.9.0 =
+* Improved database management by no longer inserting non-translated external URLs and images
+* Fixed detecting the same email address multiple times due to antispambot outputting it in different encodings
+* Fixed Translation Editor pencil icon positioning
+* Fixed Translation Editor when viewing in RTL language
+* Fixed php error occurring in some cases when translating WooCommerce emails
+* Fixed deprecated notice in PHP 8 regarding rtrim function
+
+= 2.8.9 =
+* Fixed WooCommerce emails being sent in default language instead of user's language when placing order as non-logged in guest on a Blocks checkout form
+* Fixed trp-gettext wrappings appearing on WooCommerce Blocks checkout form
+* Added admin notifications about Black Friday sale
+
+= 2.8.8 =
+* Fixed compatibility with CTX Feed plugin
+* Improved security by doing a capability check on activating/deactivating license
+* Added new parameter to hook trp_translate_this_href
+
+= 2.8.7 =
+* Fixed url slug handling. It's recommended to back-up your database before updating
+* Fixed admin notices text
+
+= 2.8.6 =
+* Fixed version difference between TranslatePress plugins causing infinite loop and php errors when having specific settings
+* Fixed some cases of grayed out translation input box in String Translation Regular tab
+* Fixed showing Run the update notice in various cases
+* Fixed Translation Editor translation boxes showing incorrect values after saving translations in some cases
+* Fixed JS error in Advanced tab
+
+= 2.8.5 =
+* Fixed url slug handling
+* Fixed pencil icon not showing in correct place for some themes
+* Added filter trp_mtapi_chunk_size to change the number of string sent in one batch to TP AI
+* Added correct flag for Kurdish(Sorani) language
+* Fixed edge case issue with trp_settings db option saved incorrectly leading to php errors
+* Fixed PHP 8 deprecated notice when calling rtrim
+
+= 2.8.4 =
+* Major refactoring of url slugs handling. It's recommended to back-up your database before updating
+* Numerous fixes including support for WooCommerce custom permalinks, custom post permalinks, permalinks without base category
+
+= 2.8.3 =
+* Fixed errors in Multisite leading to targeting incorrect subsite tables for some strings
+* Fixed TranslatePress Editor pencil icon's incorrect placement in some cases
+* Fixed deprecated notice when translating WooCommerce emails
+
 = 2.8.2 =
 * Added support for Chinese Traditional automatic translations when using TP AI
 * Fixed menu language switcher not showing native language names when option was selected

@@ -295,6 +295,16 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 			)
 		);
 
+		register_rest_route(
+			$this->namespace,
+			'account/connect',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'permission_callback' => array( $this, 'has_connection_token' ),
+				'callback'            => array( $this, 'connect_account' ),
+			)
+		);
+
 		do_action( 'optin_monster_api_rest_register_routes', $this );
 	}
 
@@ -1172,29 +1182,32 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 			}
 
 			$allowed_settings = array(
-				'auto_updates'       => array(
+				'auto_updates'           => array(
 					'validate' => 'is_string',
 				),
-				'usage_tracking'     => array(
+				'usage_tracking'         => array(
 					'validate' => 'is_bool',
 				),
-				'hide_announcements' => array(
+				'hide_announcements'     => array(
 					'validate' => 'is_bool',
 				),
-				'accountId'          => array(
+				'accountId'              => array(
 					'validate' => 'is_string',
 				),
-				'currentLevel'       => array(
+				'currentLevel'           => array(
 					'validate' => 'is_string',
 				),
-				'plan'               => array(
+				'plan'                   => array(
 					'validate' => 'is_string',
 				),
-				'customApiUrl'       => array(
+				'customApiUrl'           => array(
 					'validate' => 'is_string',
 				),
-				'apiCname'           => array(
+				'apiCname'               => array(
 					'validate' => 'is_string',
+				),
+				'resetOnboardingPlugins' => array(
+					'validate' => 'is_bool',
 				),
 			);
 
@@ -1230,6 +1243,10 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 									? $value
 									: 'https://' . $value . '/app/js/api.min.js'
 								: '';
+							break;
+						case 'resetOnboardingPlugins':
+							unset( $options['onboardingPlugins'] );
+							unset( $options['resetOnboardingPlugins'] );
 							break;
 					}
 				}
@@ -1420,6 +1437,55 @@ class OMAPI_RestApi extends OMAPI_BaseRestApi {
 
 		return new WP_REST_Response(
 			array( 'message' => esc_html__( 'Sync succeeded!', 'optin-monster-api' ) ),
+			200
+		);
+	}
+
+	/**
+	 * Triggering connection of plugin to OptinMonster app.
+	 *
+	 * Route: POST omapp/v1/account/connect
+	 *
+	 * @since 2.16.6
+	 *
+	 * @param WP_REST_Request $request The REST Request.
+	 *
+	 * @return WP_REST_Response The API Response
+	 */
+	public function connect_account( $request ) {
+		// Get the connection token from the request body.
+		$connection_token = sanitize_text_field( $request->get_param( 'connectionToken' ) );
+
+		// Get the array of potential plugins to install.
+		$plugins = array_filter( wp_parse_slug_list( $request->get_param( 'plugins' ) ) );
+
+		// Store the array of plugins the user requested to be installed. These
+		// will be installed the next time the user loads the plugin dashboard.
+		if ( ! empty( $plugins ) ) {
+			$options                      = $this->base->get_option();
+			$options['onboardingPlugins'] = $plugins;
+			update_option( 'optin_monster_api', $options );
+		}
+
+		// Set up the credentials array.
+		$creds = array( 'onboardingApiKey' => $connection_token );
+
+		// Fetch the /me data.
+		$data = OMAPI_Api::fetch_me_onboarding( $creds );
+		if ( is_wp_error( $data ) ) {
+			return new WP_REST_Response(
+				array( 'message' => esc_html__( 'Account connection failed!', 'optin-monster-api' ) ),
+				400
+			);
+		}
+
+		// Remove the connection token from the options. We no longer need it.
+		$options = $this->base->get_option();
+		unset( $options['connectionToken'] );
+		update_option( 'optin_monster_api', $options );
+
+		return new WP_REST_Response(
+			array( 'message' => esc_html__( 'Account connection succeeded!', 'optin-monster-api' ) ),
 			200
 		);
 	}

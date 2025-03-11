@@ -1,5 +1,9 @@
 <?php
 
+
+if ( !defined('ABSPATH' ) )
+    exit();
+
 /**
  * Class TRP_Gettext_Manager
  *
@@ -36,6 +40,10 @@ class TRP_Process_Gettext {
      * @return string
      */
     public function process_gettext_strings( $translation, $text, $domain, $context = 'trp_context', $number_of_items = null, $original_plural = null ) {
+        global $trp_wpdb_prefix, $wpdb;
+        if ( $trp_wpdb_prefix != $wpdb->get_blog_prefix() ){
+            return $translation;
+        }
 
         // if we have nested gettexts strip previous ones, and consider only the outermost
         $text        = TRP_Gettext_Manager::strip_gettext_tags( $text );

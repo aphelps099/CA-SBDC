@@ -104,7 +104,12 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 				'label_block' => true,
 				'label'       => __( 'RSS Feed source', 'feedzy-rss-feeds' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'description' => wp_sprintf( __( 'You can add multiple sources at once, by separating them with commas. <a href="%s" class="feedzy-source" target="_blank">Click here</a> to check if the feed is valid. Invalid feeds may not import anything.', 'feedzy-rss-feeds' ), esc_url( 'https://validator.w3.org/feed/' ) ), // phpcs:ignore
+				'description' => wp_sprintf(
+					// translators: %1$s: opening anchor tag, %2$s: closing anchor tag.
+					__( 'You can add multiple sources at once, by separating them with commas. %1$s Click here %2$s to check if the feed is valid. Invalid feeds may not import anything.', 'feedzy-rss-feeds' ),
+					'<a href="' . esc_url( 'https://validator.w3.org/feed/' ) . '" class="feedzy-source" target="_blank">',
+					'</a>'
+				),
 			)
 		);
 		$this->add_control(
@@ -181,7 +186,7 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 		$this->start_controls_section(
 			'fz-filter-items',
 			array(
-				'label'   => wp_sprintf( __( 'Filter items%s', 'feedzy-rss-feeds' ), $this->upsell_title_label() ),
+				'label'   => __( 'Filter items', 'feedzy-rss-feeds' ) . $this->upsell_title_label(),
 				'classes' => $this->upsell_class(),
 			)
 		);
@@ -238,7 +243,7 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 			'fz-filter-from-dt',
 			array(
 				'label_block' => true,
-				'label'       => __( 'Filter items by time range, from: ', 'feedzy-rss-feeds' ),
+				'label'       => __( 'Filter items by time range, from:', 'feedzy-rss-feeds' ) . ' ',
 				'type'        => 'date_time_local',
 				'classes'     => $this->upsell_class(),
 				'separator'   => 'before',
@@ -248,7 +253,7 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 			'fz-filter-to-dt',
 			array(
 				'label_block' => true,
-				'label'       => __( 'To ', 'feedzy-rss-feeds' ),
+				'label'       => __( 'To', 'feedzy-rss-feeds' ) . ' ',
 				'type'        => 'date_time_local',
 				'classes'     => $this->upsell_class(),
 			)
@@ -397,7 +402,7 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 		$this->start_controls_section(
 			'fz-layout',
 			array(
-				'label'   => wp_sprintf( __( 'Feed Layout%s', 'feedzy-rss-feeds' ), $this->upsell_title_label() ),
+				'label'   => __( 'Feed Layout', 'feedzy-rss-feeds' ) . $this->upsell_title_label(),
 				'classes' => $this->upsell_class(),
 			)
 		);
@@ -463,27 +468,28 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 				'label'       => __( 'Display additional meta fields (author, date, time or categories)', 'feedzy-rss-feeds' ),
 				'label_block' => true,
 				'type'        => Controls_Manager::TEXT,
-				'description' => wp_sprintf(
-					__(
-						'You can add multiple tags at once, by separating them with commas. 
-				<a href="%s" target="_blank">View documentation here</a>.', 'feedzy-rss-feeds'
-					), esc_url( 'https://docs.themeisle.com/article/1089-how-to-display-author-date-or-time-from-the-feed' )
-				),
+				'description' => __( 'You can add multiple tags at once, by separating them with commas.', 'feedzy-rss-feeds' )
+					. ' '
+					. '<a target="_blank" href="' . esc_url( 'https://docs.themeisle.com/article/1089-how-to-display-author-date-or-time-from-the-feed' ) . '">'
+					. __( 'View documentation here.', 'feedzy-rss-feeds' )
+					. '</a>',
 			)
 		);
 		$this->add_control(
 			'fz-cus-multiple-meta',
 			array(
 				'label'       => __( 'When using multiple sources, should we display additional meta fields?', 'feedzy-rss-feeds' ),
-				'placeholder' => __( '(eg: source)', 'feedzy-rss-feeds' ),
+				// translators: %s is the list of examples.
+				'placeholder' => '(' . sprintf( __( 'eg: %s', 'feedzy-rss-feeds' ), 'source' ) . ')',
 				'label_block' => true,
 				'type'        => Controls_Manager::TEXT,
-				'description' => wp_sprintf(
-					__(
-						'You can find more info about available meta field values here.(opens in a new tab). 
-				<a href="%s" target="_blank">View documentation here</a>.', 'feedzy-rss-feeds'
-					), esc_url( 'https://docs.themeisle.com/article/1089-how-to-display-author-date-or-time-from-the-feed' )
-				),
+				// translators: this followed by sentence: View documentation here.
+				'description' => __( 'You can find more info about available meta field values here.', 'feedzy-rss-feeds' )
+					. ' '
+					. '<a target="_blank" href="' . esc_url( 'https://docs.themeisle.com/article/1089-how-to-display-author-date-or-time-from-the-feed' ) . '">'
+					// translators: this sentence is wrapped with a link tag.
+					. __( 'View documentation here.', 'feedzy-rss-feeds' )
+					. '</a>',
 			)
 		);
 		$this->add_control(
@@ -496,7 +502,14 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 				'label_off'    => esc_html__( 'No', 'feedzy-rss-feeds' ),
 				'return_value' => 'yes',
 				'separator'    => 'before',
-				'description'  => wp_sprintf( __( 'Learn more about this feature in <a href="%s" target="_blank">Feedzy docs</a>.', 'feedzy-rss-feeds' ), esc_url( 'https://docs.themeisle.com/article/923-how-price-is-displayed-from-the-feed' ) ),
+				'description'  => wp_sprintf(
+					// translators: %1$s: opening anchor tag, %2$s: closing anchor tag.
+					__(
+						'Learn more about this feature in %1$s Feedzy docs %2$s .', 'feedzy-rss-feeds'
+					),
+					'<a target="_blank" href="' . esc_url( 'https://docs.themeisle.com/article/923-how-price-is-displayed-from-the-feed' ) . '">',
+					'</a>'
+				),
 				'classes'      => $this->upsell_class(),
 			)
 		);
@@ -544,7 +557,7 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 		$this->start_controls_section(
 			'fz-referral-url',
 			array(
-				'label'   => wp_sprintf( __( 'Referral URL%s', 'feedzy-rss-feeds' ), $this->upsell_title_label() ),
+				'label'   => __( 'Referral URL', 'feedzy-rss-feeds' ) . $this->upsell_title_label(),
 				'classes' => $this->upsell_class(),
 			)
 		);
@@ -554,7 +567,16 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 				'label'       => __( 'Add your referral parameters', 'feedzy-rss-feeds' ),
 				'label_block' => true,
 				'type'        => Controls_Manager::TEXT,
-				'description' => ! feedzy_is_pro() ? wp_sprintf( __( 'Unlock this feature and more advanced options with <a href="%s" target="_blank">Feedzy Pro</a>.', 'feedzy-rss-feeds' ), ( tsdk_utmify( FEEDZY_UPSELL_LINK, 'refferal', 'widget-area' ) ) ) : '',
+				'description' => (
+					! feedzy_is_pro() ?
+						wp_sprintf(
+							// translators: %1$s: opening anchor tag, %2$s: closing anchor tag.
+							__( 'Unlock this feature and more advanced options with %1$s Feedzy Pro %1$s.', 'feedzy-rss-feeds' ),
+							'<a target="_blank" href="' . esc_url( tsdk_translate_link( tsdk_utmify( FEEDZY_UPSELL_LINK, 'refferal', 'widget-area' ) ) ) . '">',
+							'</a>'
+						)
+						: ''
+					),
 				'classes' => $this->upsell_class(),
 			)
 		);
@@ -698,7 +720,6 @@ class Feedzy_Register_Widget extends Elementor\Widget_Base {
 			return 'auto';
 		}
 		return $value;
-
 	}
 
 	/**

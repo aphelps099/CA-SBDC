@@ -90,7 +90,6 @@ class GF_Field_Rating extends GF_Field {
 			}
 
 			$choice_id = 0;
-			$count     = 1;
 
 			$logic_event = version_compare( GFForms::$version, '2.4-beta-1', '<' ) ? $this->get_conditional_logic_event( 'click' ) : '';
 
@@ -105,14 +104,16 @@ class GF_Field_Rating extends GF_Field {
 				$choice_label = $choice['text'];
 				$field_value  = ! empty( $choice['value'] ) || $this->enableChoiceValue ? $choice['value'] : $choice['text'];
 
-				if ( rgblank( $value ) && RG_CURRENT_VIEW != 'entry' ) {
+				if ( rgblank( $value ) && GFForms::get_page() !== 'entry_detail' ) {
 					$checked = rgar( $choice, 'isSelected' ) ? "checked='checked'" : '';
-				} else {
+				} elseif ( $is_form_editor ) {
+					$checked = '';
+				} else  {
 					$checked = RGFormsModel::choice_value_match( $this, $choice, $value ) ? "checked='checked'" : '';
 				}
 
 				$content .= sprintf(
-					"<input name='input_%d' type='radio' value='%s' %s id='choice_%s' %s %s %s /><label for='choice_%s' title='%s'>%s</label>",
+					"<input name='input_%d' type='radio' value='%s' %s id='choice_%s' %s %s %s /><label for='choice_%s' title='%s'><span>%s</span></label>",
 					$this->id,
 					esc_attr( $field_value ),
 					$checked,
@@ -125,11 +126,6 @@ class GF_Field_Rating extends GF_Field {
 					$choice_label
 				);
 
-				if ( $is_form_editor && $count >= 5 ) {
-					break;
-				}
-
-				$count ++;
 			}
 		}
 
@@ -208,6 +204,21 @@ class GF_Field_Rating extends GF_Field {
 		}
 
 		return RGFormsModel::get_choice_text( $this, rgar( $entry, $input_id ) );
+	}
+
+	/**
+	 * Make sure there is no default value if the value is empty.
+	 *
+	 * If users create a choice without a label, it will become the default value, so we need to make sure the default value is empty.
+	 *
+	 * @since 4.1
+	 *
+	 * @param $value
+	 *
+	 * @return string
+	 */
+	public function get_value_default_if_empty( $value ) {
+		return '';
 	}
 }
 

@@ -7,6 +7,8 @@ namespace The_SEO_Framework\Bootstrap;
 
 \defined( 'THE_SEO_FRAMEWORK_PRESENT' ) or die;
 
+// phpcs:disable, TSF.Performance.Opcodes.ShouldHaveNamespaceEscape -- Too many scoped funcs. Test me once in a while.
+
 use \The_SEO_Framework\{
 	Admin,
 	Data,
@@ -45,8 +47,6 @@ use \The_SEO_Framework\Helper\{
  * @TODO convert to class, see \TSF_Extension_Manager\Upgrader
  *       It's a generator/iterator, so we must wait to PHP>5.5 support.
  */
-
-// phpcs:disable, TSF.Performance.Opcodes.ShouldHaveNamespaceEscape
 
 \add_action( 'init', 'The_SEO_Framework\Bootstrap\_do_upgrade', 20 );
 \add_action( 'the_seo_framework_upgraded', 'The_SEO_Framework\Bootstrap\_prepare_upgrade_notice', 99, 2 );
@@ -139,7 +139,7 @@ function _do_upgrade() {
 
 	if ( ! \get_option( 'the_seo_framework_initial_db_version' ) ) {
 		// Sets to previous if previous is known. This is a late addition. New sites default to \THE_SEO_FRAMEWORK_DB_VERSION.
-		\update_option( 'the_seo_framework_initial_db_version', $previous_version ?: \THE_SEO_FRAMEWORK_DB_VERSION, 'no' );
+		\update_option( 'the_seo_framework_initial_db_version', $previous_version ?: \THE_SEO_FRAMEWORK_DB_VERSION, false );
 	}
 
 	// Don't run the upgrade cycle if the user downgraded. Downgrade, instead.
@@ -204,11 +204,19 @@ function _upgrade( $previous_version ) {
 
 	$current_version = $previous_version;
 
+	// phpcs:disable, WordPress.Arrays.ArrayDeclarationSpacing.ArrayItemNoNewLine -- readability.
 	// NOTE: From update 3103 henceforth, the upgrade procedures should be backward compatible.
 	// This means no data may be erased for at least 1 major version, or 1 year, whichever is later.
 	// We must manually delete settings that are no longer used; we merge them otherwise.
 	// When a user upgrades beyond this range, they aren't expected to roll back.
-	$versions = [ '1', '2701', '2802', '2900', '3001', '3103', '3300', '4051', '4103', '4110', '4200', '4270', '5001', '5050' ];
+	$versions = [
+		'1',
+		'2701', '2802', '2900',
+		'3001', '3103', '3300',
+		'4051', '4103', '4110', '4200', '4270',
+		'5001', '5050', '5100',
+	];
+	// phpcs:enable, WordPress.Arrays.ArrayDeclarationSpacing.ArrayItemNoNewLine
 
 	foreach ( $versions as $_version ) {
 		if ( $current_version < $_version ) {
@@ -247,23 +255,24 @@ function _set_upgrade_lock( $release_timeout ) {
 
 	$lock_option = _get_lock_option();
 
-	$lock_result = $wpdb->query(
+	// TODO WP 6.6+ change 'no' to 'off'.
+	$lock = $wpdb->query(
 		$wpdb->prepare(
 			"INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES (%s, %s, 'no') /* LOCK */",
 			$lock_option,
-			time()
-		)
+			time(),
+		),
 	);
 
-	if ( ! $lock_result ) {
-		$lock_result = \get_option( $lock_option );
+	if ( ! $lock ) {
+		$lock = \get_option( $lock_option );
 
 		// If a lock couldn't be created, and there isn't a lock, bail.
-		if ( ! $lock_result )
+		if ( ! $lock )
 			return false;
 
 		// Check to see if the lock is still valid. If it is, bail.
-		if ( $lock_result > ( time() - $release_timeout ) )
+		if ( $lock > ( time() - $release_timeout ) )
 			return false;
 
 		// There must exist an expired lock, clear it...
@@ -274,7 +283,7 @@ function _set_upgrade_lock( $release_timeout ) {
 	}
 
 	// Update the lock, as by this point we've definitely got a lock, just need to fire the actions.
-	\update_option( $lock_option, time() );
+	\update_option( $lock_option, time(), true );
 
 	return true;
 }
@@ -301,7 +310,7 @@ function _release_upgrade_lock() {
  */
 function _set_version( $version = \THE_SEO_FRAMEWORK_DB_VERSION ) {
 
-	\update_option( 'the_seo_framework_upgraded_db_version', (string) $version );
+	\update_option( 'the_seo_framework_upgraded_db_version', (string) $version, true );
 
 	return (string) $version;
 }
@@ -358,7 +367,7 @@ function _prepare_downgrade_notice( $previous_version, $current_version ) {
 	if ( $previous_version && $previous_version != $current_version ) { // User successfully downgraded.
 		Admin\Notice\Persistent::register_notice(
 			Markdown::convert(
-				sprintf(
+				\sprintf(
 					/* translators: %1$s = New, lower version number, surrounded in markdown-backticks. %2$s = Old, higher version number, surrounded in markdown-backticks. */
 					\esc_html__( 'Your website has been downgraded successfully to use The SEO Framework at database version `%1$s` from `%2$s`.', 'autodescription' ),
 					\esc_html( $current_version ),
@@ -409,7 +418,7 @@ function _prepare_upgrade_notice( $previous_version, $current_version ) {
 	if ( $previous_version && $previous_version != $current_version ) { // User successfully upgraded.
 		Admin\Notice\Persistent::register_notice(
 			Markdown::convert(
-				sprintf(
+				\sprintf(
 					/* translators: %s = Version number, surrounded in markdown-backticks. */
 					\esc_html__( 'Thank you for updating The SEO Framework! Your website has been upgraded successfully to use The SEO Framework at database version `%s`.', 'autodescription' ),
 					\esc_html( $current_version ),
@@ -437,11 +446,11 @@ function _prepare_upgrade_notice( $previous_version, $current_version ) {
 		// Only show notices when not in network mode, or on main site otherwise.
 		if ( ! $network_mode || \is_main_site() ) {
 			Admin\Notice\Persistent::register_notice(
-				sprintf(
+				\sprintf(
 					'<p>%s</p><p>%s</p>',
 					\esc_html__( 'The SEO Framework automatically optimizes your website for search engines and social media.', 'autodescription' ),
 					Markdown::convert(
-						sprintf(
+						\sprintf(
 							/* translators: %s = Link, markdown. */
 							\esc_html__( 'To take full advantage of all SEO features, please follow our [5-minute setup guide](%s).', 'autodescription' ),
 							'https://theseoframework.com/docs/seo-plugin-setup/' // Use https://tsf.fyi/docs/setup ? Needless redirection...
@@ -511,14 +520,14 @@ function _prepare_upgrade_notice( $previous_version, $current_version ) {
 		}
 
 		$found_titles and Admin\Notice\Persistent::register_notice(
-			sprintf(
+			\sprintf(
 				'<p>%s</p>',
 				Markdown::convert(
-					sprintf(
+					\sprintf(
 						/* translators: 1: SEO plugin name(s), 2: link to guide, in Markdown! */
 						\esc_html__( 'The SEO Framework detected metadata from %1$s. Whenever you are set, read our [migration guide](%2$s).', 'autodescription' ),
 						\esc_html(
-							count( $found_titles ) > 1 ? wp_sprintf_l( '%l', $found_titles ) : current( $found_titles )
+							\count( $found_titles ) > 1 ? \wp_sprintf_l( '%l', $found_titles ) : current( $found_titles )
 						),
 						'https://theseoframework.com/docs/seo-data-migration/',
 					),
@@ -598,7 +607,7 @@ function _add_upgrade_notice( $notice = '' ) {
  */
 function _do_upgrade_1() {
 	// Here, `Plugin\Setup::get_default_options()` will get called 3 times in a row. Alas.
-	\add_option( \THE_SEO_FRAMEWORK_SITE_OPTIONS, Data\Plugin\Setup::get_default_options() );
+	\add_option( \THE_SEO_FRAMEWORK_SITE_OPTIONS, Data\Plugin\Setup::get_default_options(), '', true );
 }
 
 /**
@@ -618,7 +627,7 @@ function _do_upgrade_2701() {
 			\add_term_meta( $term_id, \THE_SEO_FRAMEWORK_TERM_OPTIONS, $meta, true );
 
 		// Rudimentary test for remaining ~300 users of earlier versions passed, set initial version to 2600.
-		\update_option( 'the_seo_framework_initial_db_version', '2600', 'no' );
+		\update_option( 'the_seo_framework_initial_db_version', '2600', false );
 	}
 }
 
@@ -873,7 +882,7 @@ function _do_upgrade_4270() {
 function _do_upgrade_5001() {
 
 	// Not a public "setting" -- only add the option to prevent additional db-queries when it's yet to be populated.
-	\add_option( \THE_SEO_FRAMEWORK_SITE_CACHE, Data\Plugin\Setup::get_default_site_caches() );
+	\add_option( \THE_SEO_FRAMEWORK_SITE_CACHE, Data\Plugin\Setup::get_default_site_caches(), '', true );
 
 	if ( \get_option( 'the_seo_framework_initial_db_version' ) < '5001' ) {
 		Data\Plugin::update_option(
@@ -881,13 +890,13 @@ function _do_upgrade_5001() {
 			Data\Plugin::get_option( 'auto_descripton_html_method' ) ?: 'fast', // Typo intended.
 		);
 
-		$site_cache = get_option( 'autodescription-updates-cache' ) ?: [];
+		$site_cache = \get_option( 'autodescription-updates-cache' ) ?: [];
 		if ( $site_cache ) {
 			// Try to use the options API as much as possible, instead of using $wpdb->update().
-			update_option( \THE_SEO_FRAMEWORK_SITE_CACHE, $site_cache );
+			\update_option( \THE_SEO_FRAMEWORK_SITE_CACHE, $site_cache, true );
 			// The option holds only generated data that can be regenerated easily.
 			// On downgrade, this will be repopulated.
-			delete_option( 'autodescription-updates-cache' );
+			\delete_option( 'autodescription-updates-cache' );
 		}
 
 		Data\Plugin::update_option( 'seo_bar_low_contrast', 0 );
@@ -941,5 +950,20 @@ function _do_upgrade_5050() {
 			'sitemap_cron_prerender',
 			Data\Plugin::get_option( 'ping_use_cron_prerender' ) ?: 0,
 		);
+	}
+}
+
+/**
+ * Registers new options 'robotstxt_block_ai', 'robotstxt_block_seo', 'homepage_canonical', and 'homepage_redirect'.
+ *
+ * @since 5.1.0
+ */
+function _do_upgrade_5100() {
+
+	if ( \get_option( 'the_seo_framework_initial_db_version' ) < '5100' ) {
+		Data\Plugin::update_option( 'robotstxt_block_ai', 0 );
+		Data\Plugin::update_option( 'robotstxt_block_seo', 0 );
+		Data\Plugin::update_option( 'homepage_canonical', '' );
+		Data\Plugin::update_option( 'homepage_redirect', '' );
 	}
 }

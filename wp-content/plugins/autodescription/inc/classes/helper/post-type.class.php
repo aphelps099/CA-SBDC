@@ -200,7 +200,7 @@ class Post_Type {
 					array_values(
 						array_filter(
 							static::get_all_public(),
-							static fn( $post_type ) => \get_post_type_object( $post_type )->has_archive ?? false,
+							fn( $post_type ) => \get_post_type_object( $post_type )->has_archive ?? false,
 						)
 					)
 				)
@@ -275,7 +275,7 @@ class Post_Type {
 	public static function get_all_forced_supported() {
 		/**
 		* @since 3.1.0
-		* @param string[] $forced Forced supported post types
+		* @param string[] $forced Forced supported post types.
 		*/
 		return (array) \apply_filters(
 			'the_seo_framework_forced_supported_post_types',

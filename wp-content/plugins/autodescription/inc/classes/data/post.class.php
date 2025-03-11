@@ -87,10 +87,12 @@ class Post {
 	 * Detects the following builders:
 	 * - Divi Builder by Elegant Themes
 	 * - Visual Composer by WPBakery
+	 * - Bricks Builder by Bricks (or Codeer Limited)
 	 *
 	 * @since 4.1.0
 	 * @since 5.0.0 1. First parameter may now be empty to automatically fetch the post ID.
 	 *              2. Moved from `\The_SEO_Framework\Load`.
+	 * @since 5.1.0 Now detects Bricks.
 	 *
 	 * @param int $post_id The post ID to check.
 	 * @return bool
@@ -117,8 +119,10 @@ class Post {
 
 		// Divi Builder by Elegant Themes
 		// || Visual Composer by WPBakery
+		// || Bricks Builder by Bricks
 		return ( 'on' === ( $meta['_et_pb_use_builder'][0] ?? '' ) && \defined( 'ET_BUILDER_VERSION' ) )
-			|| ( 'true' === ( $meta['_wpb_vc_js_status'][0] ?? '' ) && \defined( 'WPB_VC_VERSION' ) );
+			|| ( 'true' === ( $meta['_wpb_vc_js_status'][0] ?? '' ) && \defined( 'WPB_VC_VERSION' ) )
+			|| ( 'bricks' === ( $meta['_bricks_editor_mode'][0] ?? '' ) && \defined( 'BRICKS_VERSION' ) );
 	}
 
 	/**
@@ -197,7 +201,7 @@ class Post {
 	}
 
 	/**
-	 * Fetch latest public post/page ID.
+	 * Fetch latest public, future, or pending post/page ID.
 	 * Memoizes the return value.
 	 *
 	 * @since 2.4.3
@@ -208,7 +212,7 @@ class Post {
 	 *       direct access to all values of the post (if requested). This is because
 	 *       we're using `'fields' => 'ids'` instead of `'fields' => 'all'`.
 	 *
-	 * @return int Latest Post ID.
+	 * @return int The latest Post ID.
 	 */
 	public static function get_latest_post_id() {
 
@@ -290,5 +294,32 @@ class Post {
 		return Time::convert_to_preferred_format(
 			\get_post( $id ?? Query::get_the_real_id() )->post_modified_gmt ?? '',
 		);
+	}
+
+	/**
+	 * Returns the post ancestors.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param ?int $id           The post ID. Leave null to autodetermine.
+	 * @param bool $include_self Whether to include the initial post itself.
+	 * @return \WP_Post[] A list of post ancestors, indexed by post ID.
+	 */
+	public static function get_post_parents( $id = null, $include_self = false ) {
+
+		$post = \get_post( $id ?? Query::get_the_real_id() );
+		$pto  = \get_post_type_object( $post->post_type ?? '' );
+
+		$ancestors = $pto->hierarchical ? $post->ancestors : [];
+
+		$parents = [];
+
+		foreach ( array_reverse( $ancestors ) as $post_id )
+			$parents[ $post_id ] = \get_post( $post_id );
+
+		if ( $include_self )
+			$parents[ $id ] = $post;
+
+		return $parents;
 	}
 }

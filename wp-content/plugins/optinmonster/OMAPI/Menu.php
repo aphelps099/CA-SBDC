@@ -133,6 +133,10 @@ class OMAPI_Menu {
 	 * @since 1.0.0
 	 */
 	public function menu() {
+		if ( ! current_user_can( $this->base->access_capability( self::SLUG ) ) ) {
+			return;
+		}
+
 		$this->pages = new OMAPI_Pages();
 		$this->pages->setup();
 
@@ -250,6 +254,10 @@ class OMAPI_Menu {
 	 * @return void
 	 */
 	public function after_menu_registration() {
+		if ( ! current_user_can( $this->base->access_capability( self::SLUG ) ) ) {
+			return;
+		}
+
 		global $submenu;
 
 		// Make sure the about page is still the last page.
@@ -335,6 +343,19 @@ class OMAPI_Menu {
 					$label,
 					$label
 				);
+
+				// Maybe show the the BF item in the plugins description.
+				$pages = new OMAPI_Pages();
+				$bfcm_item = $pages->should_show_bfcf_menu_item();
+
+				if ( $bfcm_item ) {
+					$bflink = sprintf(
+						'<a class="om-plugin-bf-link" href="%s" style="font-weight: 700; color: #ff0000;">%s</a>',
+						esc_url( $bfcm_item['redirect'] ),
+						esc_html( $bfcm_item['alternate-name'] )
+					);
+					$links[] = $bflink;
+				}
 
 				array_splice( $links, 1, 0, array( $upgrade_link ) );
 			}

@@ -48,16 +48,42 @@ class Excerpt {
 	/**
 	 * Returns a description excerpt.
 	 *
+	 * @since 5.1.0
+	 *
+	 * @param array|null $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+	 *                         Leave null to autodetermine query.
+	 * @return string The post, term, pta, or user excerpt.
+	 */
+	public static function get_excerpt( $args = null ) {
+		/**
+		 * @since 5.1.0
+		 * @param string     $excerpt The generated excerpt.
+		 * @param array|null $args    The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+		 *                            Leave null to autodetermine query.
+		 * @return string The post, term, pta, or user excerpt.
+		 */
+		return \apply_filters(
+			'the_seo_framework_get_excerpt',
+			isset( $args )
+				? static::get_excerpt_from_args( $args )
+				: static::get_excerpt_from_query(),
+			$args,
+		);
+	}
+
+	/**
+	 * Returns a description excerpt.
+	 *
 	 * @since 5.0.0
+	 * @alias
+	 * @todo deprecate 5.2: use get_excerpt() instead.
 	 *
 	 * @param array|null $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
 	 *                         Leave null to autodetermine query.
 	 * @return string
 	 */
 	public static function get_post_excerpt( $args = null ) {
-		return isset( $args )
-			? static::get_excerpt_from_args( $args )
-			: static::get_excerpt_from_query();
+		return static::get_excerpt( $args );
 	}
 
 	/**
@@ -120,7 +146,7 @@ class Excerpt {
 	 * @return string
 	 */
 	private static function get_blog_page_excerpt() {
-		return sprintf(
+		return \sprintf(
 			/* translators: %s = Blog page title. Front-end output. */
 			\__( 'Latest posts: %s', 'autodescription' ),
 			Data\Blog::get_public_blog_name(),
@@ -149,15 +175,17 @@ class Excerpt {
 
 		/**
 		 * @since 3.1.0
+		 * @since 5.1.0 Deprecated.
+		 * @deprecated
 		 * @see `\tsf()->format()->html()->extract_content()` to strip HTML tags neatly.
 		 * @param string                 $excerpt The short circuit excerpt.
 		 * @param \WP_Term|\WP_Post_Type $object  The Term object or post type object.
-		 * @todo deprecate and move to main fetcher.
 		 */
-		$excerpt = (string) \apply_filters(
+		$excerpt = (string) \apply_filters_deprecated(
 			'the_seo_framework_generated_archive_excerpt',
-			'',
-			$object,
+			[ '', $object ],
+			'5.1.0 of The SEO Framework',
+			'the_seo_framework_get_excerpt',
 		);
 
 		if ( $excerpt ) return $excerpt;
@@ -165,7 +193,7 @@ class Excerpt {
 		if ( $in_the_loop ) {
 			if ( Query::is_category() || Query::is_tag() || Query::is_tax() ) {
 				// WordPress DOES NOT allow HTML in term descriptions, not even if you're a super-administrator.
-				// See https://wpvulndb.com/vulnerabilities/9445. We won't parse HTMl tags unless WordPress adds native support.
+				// See https://wpscan.com/vulnerability/8bc4cf95-79f7-4d92-b320-a841ab7e6a6f/. We won't parse HTML tags unless WordPress adds native support.
 				$excerpt = $object->description ?? '';
 			} elseif ( Query::is_author() ) {
 				$excerpt = Format\HTML::extract_content( \get_the_author_meta(
@@ -176,27 +204,34 @@ class Excerpt {
 				/**
 				 * @since 4.0.6
 				 * @since 4.2.0 Now provides the post type object description, if assigned.
+				 * @since 5.1.0 Deprecated.
+				 * @deprecated
 				 * @param string $excerpt The archive description excerpt.
 				 * @param \WP_Term|\WP_Post_Type $object The post type object.
-				 * @todo deprecate and move to main fetcher.
 				 */
-				$excerpt = (string) \apply_filters(
+				$excerpt = (string) \apply_filters_deprecated(
 					'the_seo_framework_pta_description_excerpt',
-					$object->description ?? '',
-					$object,
+					[
+						$object->description ?? '',
+						$object,
+					],
+					'5.1.0 of The SEO Framework',
+					'the_seo_framework_get_excerpt',
 				);
 			} else {
 				/**
 				 * @since 4.0.6
 				 * @since 4.1.0 Added the $object object parameter.
+				 * @since 5.1.0 Deprecated.
+				 * @deprecated
 				 * @param string $excerpt The fallback archive description excerpt.
 				 * @param \WP_Term $object    The Term object.
-				 * @todo deprecate and move to main fetcher.
 				 */
-				$excerpt = (string) \apply_filters(
+				$excerpt = (string) \apply_filters_deprecated(
 					'the_seo_framework_fallback_archive_description_excerpt',
-					'',
-					$object,
+					[ '', $object ],
+					'5.1.0 of The SEO Framework',
+					'the_seo_framework_get_excerpt',
 				);
 			}
 		} else {

@@ -19,6 +19,7 @@ use \The_SEO_Framework\{
 	Data\Filter\Sanitize,
 	Helper\Post_Type,
 	Helper\Query,
+	Helper\Taxonomy,
 };
 use \The_SEO_Framework\Admin\Settings\Layout\{
 	Form,
@@ -168,7 +169,7 @@ switch ( $instance ) :
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
 				<div class=tsf-title-wrap>
-					<input class=large-text type=text name="autodescription[_genesis_title]" id=autodescription_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_genesis_title'] ) ) ?>" autocomplete=off data-form-type=other />
+					<input class=large-text type=text name="autodescription[_genesis_title]" id=autodescription_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_genesis_title'] ) ) ?>" autocomplete=off data-form-type=other>
 					<?php
 					Input::output_js_title_data(
 						'autodescription_title',
@@ -193,15 +194,15 @@ switch ( $instance ) :
 						if ( $is_static_front_page ) {
 							// Disable the input, and hide the previously stored value.
 							?>
-							<input type=checkbox id=autodescription_title_no_blogname value=1 <?php \checked( $title_no_blogname_value ); ?> disabled />
-							<input type=hidden name="autodescription[_tsf_title_no_blogname]" value="<?= (int) $title_no_blogname_value ?>" />
+							<input type=checkbox id=autodescription_title_no_blogname value=1 <?php \checked( $title_no_blogname_value ); ?> disabled>
+							<input type=hidden name="autodescription[_tsf_title_no_blogname]" value="<?= (int) $title_no_blogname_value ?>">
 							<?php
 							\esc_html_e( 'Remove the site title?', 'autodescription' );
 							echo ' ';
 							HTML::make_info( \__( 'For the homepage, this option must be managed on the SEO Settings page.', 'autodescription' ) );
 						} else {
 							?>
-							<input type=checkbox name="autodescription[_tsf_title_no_blogname]" id=autodescription_title_no_blogname value=1 <?php \checked( $title_no_blogname_value ); ?> />
+							<input type=checkbox name="autodescription[_tsf_title_no_blogname]" id=autodescription_title_no_blogname value=1 <?php \checked( $title_no_blogname_value ); ?>>
 							<?php
 							\esc_html_e( 'Remove the site title?', 'autodescription' );
 							echo ' ';
@@ -332,7 +333,7 @@ switch ( $instance ) :
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
 				<div id=tsf-og-title-wrap>
-					<input class=large-text type=text name="autodescription[_open_graph_title]" id=autodescription_og_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_open_graph_title'] ) ) ?>" autocomplete=off data-form-type=other data-tsf-social-group=autodescription_social_singular data-tsf-social-type=ogTitle />
+					<input class=large-text type=text name="autodescription[_open_graph_title]" id=autodescription_og_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_open_graph_title'] ) ) ?>" autocomplete=off data-form-type=other data-tsf-social-group=autodescription_social_singular data-tsf-social-type=ogTitle>
 				</div>
 			</div>
 		</div>
@@ -368,7 +369,7 @@ switch ( $instance ) :
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
 				<div id=tsf-twitter-title-wrap>
-					<input class=large-text type=text name="autodescription[_twitter_title]" id=autodescription_twitter_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_twitter_title'] ) ) ?>" autocomplete=off data-form-type=other data-tsf-social-group=autodescription_social_singular data-tsf-social-type=twTitle />
+					<input class=large-text type=text name="autodescription[_twitter_title]" id=autodescription_twitter_title value="<?= \esc_html( Sanitize::metadata_content( $meta['_twitter_title'] ) ) ?>" autocomplete=off data-form-type=other data-tsf-social-group=autodescription_social_singular data-tsf-social-type=twTitle>
 				</div>
 			</div>
 		</div>
@@ -423,7 +424,7 @@ switch ( $instance ) :
 					'name'     => 'autodescription[_tsf_twitter_card_type]',
 					'label'    => '',
 					'options'  => array_merge(
-						[ '' => sprintf( $_default_i18n, $_twitter_card ) ],
+						[ '' => \sprintf( $_default_i18n, $_twitter_card ) ],
 						array_combine( $tw_suported_cards, $tw_suported_cards ),
 					),
 					'selected' => $meta['_tsf_twitter_card_type'],
@@ -435,9 +436,9 @@ switch ( $instance ) :
 		<?php
 
 		// Fetch image placeholder.
-		if ( $is_static_front_page && Data\Plugin::get_option( 'homepage_social_image_url' ) ) {
+		if ( $is_static_front_page ) {
 			$image_placeholder = Data\Plugin::get_option( 'homepage_social_image_url' )
-								?: Meta\Image::get_first_generated_image_url( $generator_args, 'social' );
+							  ?: Meta\Image::get_first_generated_image_url( $generator_args, 'social' );
 		} else {
 			$image_placeholder = Meta\Image::get_first_generated_image_url( $generator_args, 'social' );
 		}
@@ -460,8 +461,8 @@ switch ( $instance ) :
 				</div>
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
-				<input class=large-text type=url name="autodescription[_social_image_url]" id=autodescription_socialimage-url placeholder="<?= \esc_url( $image_placeholder ) ?>" value="<?= \esc_url( $meta['_social_image_url'] ) ?>" autocomplete=off />
-				<input type=hidden name="autodescription[_social_image_id]" id=autodescription_socialimage-id value="<?= \absint( $meta['_social_image_id'] ) ?>" disabled class=tsf-enable-media-if-js />
+				<input class=large-text type=url name="autodescription[_social_image_url]" id=autodescription_socialimage-url placeholder="<?= \esc_url( $image_placeholder ) ?>" value="<?= \esc_url( $meta['_social_image_url'] ) ?>" autocomplete=off>
+				<input type=hidden name="autodescription[_social_image_id]" id=autodescription_socialimage-id value="<?= \absint( $meta['_social_image_id'] ) ?>" disabled class=tsf-enable-media-if-js>
 				<div class="hide-if-no-tsf-js tsf-social-image-buttons">
 					<?php
 					// phpcs:disable, WordPress.Security.EscapeOutput -- get_image_uploader_form escapes. (phpcs breaks here, so we use disable)
@@ -475,7 +476,18 @@ switch ( $instance ) :
 		break;
 
 	case 'visibility':
-		$canonical_placeholder = Meta\URI::get_generated_url( $generator_args );
+		if ( $is_static_front_page ) {
+			$_has_home_canonical = (bool) \strlen( Data\Plugin::get_option( 'homepage_canonical' ) );
+
+			// When the homepage title is set, we can safely get the custom field.
+			$default_canonical    = $_has_home_canonical
+				? Meta\URI::get_custom_canonical_url( $generator_args )
+				: Meta\URI::get_generated_url( $generator_args );
+			$canonical_ref_locked = $_has_home_canonical;
+		} else {
+			$default_canonical    = Meta\URI::get_generated_url( $generator_args );
+			$canonical_ref_locked = false;
+		}
 
 		// Get robots defaults.
 		$r_defaults = Meta\Robots::get_generated_meta(
@@ -528,7 +540,86 @@ switch ( $instance ) :
 				</div>
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
-				<input class=large-text type=url name="autodescription[_genesis_canonical_uri]" id=autodescription_canonical placeholder="<?= \esc_url( $canonical_placeholder ) ?>" value="<?= \esc_url( $meta['_genesis_canonical_uri'] ) ?>" autocomplete=off />
+				<input class=large-text type=url name="autodescription[_genesis_canonical_uri]" id=autodescription_canonical placeholder="<?= \esc_url( $default_canonical ) ?>" value="<?= \esc_url( $meta['_genesis_canonical_uri'] ) ?>" autocomplete=off>
+				<?php
+				$post_type   = Query::get_admin_post_type();
+				$permastruct = Meta\URI\Utils::get_url_permastruct( $generator_args );
+
+				$parent_post_slugs         = [];
+				$is_post_type_hierarchical = \is_post_type_hierarchical( $post_type );
+
+				// We rewrote %pagename% to %postname% at `Meta\URI\Utils::get_url_permastruct()`.
+				if ( $is_post_type_hierarchical && str_contains( $permastruct, '%postname%' ) ) {
+					// self is filled by current post name.
+					foreach ( Data\Post::get_post_parents( $post_id ) as $parent_post ) {
+						// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+						$parent_post_slugs[] = [
+							'id'   => $parent_post->ID,
+							'slug' => $parent_post->post_name,
+						];
+					}
+				}
+
+				// Only hierarchical taxonomies can be used in the URL.
+				// TODO filter post_tag here.
+				$taxonomies               = $post_type ? Taxonomy::get_hierarchical( 'names', $post_type ) : [];
+				$parent_term_slugs_by_tax = [];
+
+				foreach ( $taxonomies as $taxonomy ) {
+					if ( str_contains( $permastruct, "%$taxonomy%" ) ) {
+						// Broken in Core. Skip.
+						if ( 'post_tag' === $taxonomy ) continue;
+
+						// There's no need to test for hierarchy, because we want the full structure anyway (third parameter).
+						foreach (
+							Data\Term::get_term_parents(
+								Data\Plugin\Post::get_primary_term_id( $post_id, $taxonomy ),
+								$taxonomy,
+								true,
+							)
+							as $parent_term
+						) {
+							// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+							$parent_term_slugs_by_tax[ $taxonomy ][] = [
+								'id'   => $parent_term->term_id,
+								'slug' => $parent_term->slug,
+							];
+						}
+					}
+				}
+
+				if ( str_contains( $permastruct, '%author%' ) ) {
+					$author_id = Query::get_post_author_id( $post_id );
+
+					if ( $author_id ) {
+						$author_slugs = [
+							[
+								'id'   => $author_id,
+								'slug' => Data\User::get_userdata( $author_id, 'user_nicename' ),
+							],
+						];
+					}
+				}
+
+				Input::output_js_canonical_data(
+					'autodescription_canonical',
+					[
+						'state' => [
+							'refCanonicalLocked'  => $canonical_ref_locked,
+							'defaultCanonical'    => \esc_url( $default_canonical ),
+							'preferredScheme'     => Meta\URI\Utils::get_preferred_url_scheme(),
+							'urlStructure'        => $permastruct,
+							'parentPostSlugs'     => $parent_post_slugs ?? [],
+							'parentTermSlugs'     => $parent_term_slugs_by_tax,
+							'supportedTaxonomies' => $taxonomies,
+							'authorSlugs'         => $author_slugs ?? [],
+							'isHierarchical'      => $is_post_type_hierarchical,
+							// phpcs:ignore, WordPress.DateTime.RestrictedFunctions -- date() is used for URL generation. See `get_permalink()`.
+							'publishDate'         => date( 'c', strtotime( \get_post( $post_id )->post_date ?? 'now' ) ),
+						],
+					],
+				);
+				?>
 			</div>
 		</div>
 
@@ -581,10 +672,10 @@ switch ( $instance ) :
 							echo Form::make_single_select_form( [
 								'id'       => $_s['id'],
 								'class'    => 'tsf-select-block',
-								'name'     => sprintf( 'autodescription[%s]', $_s['option'] ),
+								'name'     => \sprintf( 'autodescription[%s]', $_s['option'] ),
 								'label'    => '',
 								'options'  => [
-									0  => sprintf( $_default_i18n, $_s['_default'] ),
+									0  => \sprintf( $_default_i18n, $_s['_default'] ),
 									-1 => $_s['force_on'],
 									1  => $_s['force_off'],
 								],
@@ -621,7 +712,7 @@ switch ( $instance ) :
 			<div class="tsf-flex-setting-input tsf-flex">
 				<?php if ( $can_do_search_query ) : ?>
 				<div class=tsf-checkbox-wrapper>
-					<label for=autodescription_exclude_local_search><input type=checkbox name="autodescription[exclude_local_search]" id=autodescription_exclude_local_search value=1 <?php \checked( $meta['exclude_local_search'] ); ?> />
+					<label for=autodescription_exclude_local_search><input type=checkbox name="autodescription[exclude_local_search]" id=autodescription_exclude_local_search value=1 <?php \checked( $meta['exclude_local_search'] ); ?>>
 						<?php
 						\esc_html_e( 'Exclude this page from all search queries on this site.', 'autodescription' );
 						?>
@@ -630,7 +721,7 @@ switch ( $instance ) :
 				<?php endif; ?>
 				<?php if ( $can_do_archive_query ) : ?>
 				<div class=tsf-checkbox-wrapper>
-					<label for=autodescription_exclude_from_archive><input type=checkbox name="autodescription[exclude_from_archive]" id=autodescription_exclude_from_archive value=1 <?php \checked( $meta['exclude_from_archive'] ); ?> />
+					<label for=autodescription_exclude_from_archive><input type=checkbox name="autodescription[exclude_from_archive]" id=autodescription_exclude_from_archive value=1 <?php \checked( $meta['exclude_from_archive'] ); ?>>
 						<?php
 						\esc_html_e( 'Exclude this page from all archive queries on this site.', 'autodescription' );
 						?>
@@ -652,7 +743,7 @@ switch ( $instance ) :
 							<?php
 							HTML::make_info(
 								\__( 'This will force visitors to go to another URL.', 'autodescription' ),
-								'https://developers.google.com/search/docs/advanced/crawling/301-redirects',
+								'https://developers.google.com/search/docs/crawling-indexing/301-redirects',
 							);
 							?>
 						</div>
@@ -660,7 +751,7 @@ switch ( $instance ) :
 				</div>
 			</div>
 			<div class="tsf-flex-setting-input tsf-flex">
-				<input class=large-text type=url name="autodescription[redirect]" id=autodescription_redirect value="<?= \esc_url( $meta['redirect'] ) ?>" autocomplete=off />
+				<input class=large-text type=url name="autodescription[redirect]" id=autodescription_redirect value="<?= \esc_url( $meta['redirect'] ) ?>" autocomplete=off>
 			</div>
 		</div>
 		<?php

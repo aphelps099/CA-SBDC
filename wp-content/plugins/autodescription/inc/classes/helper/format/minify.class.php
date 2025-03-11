@@ -38,8 +38,8 @@ namespace The_SEO_Framework\Helper\Format;
 class Minify {
 
 	/**
-	 * Minifies JavaScript that doesn't contain comments.
-	 * JS with comments will be corrupted using this method.
+	 * Minifies JavaScript that doesn't contain comments or text.
+	 * JS with comments or text will be corrupted using this method.
 	 *
 	 * @since 5.0.5
 	 *
@@ -90,14 +90,14 @@ class Minify {
 
 	/**
 	 * Minifies CSS that doesn't contain comment-style text in content attributes.
-	 * Is compatible with XSLT syntax.
+	 * This method is compatible with XSLT syntax.
 	 *
 	 * @since 5.0.5
 	 *
-	 * @param string $script The script to minify.
+	 * @param string $sheet The sheet to minify.
 	 * @return string The minified CSS.
 	 */
-	public static function css( $script ) {
+	public static function css( $sheet ) {
 
 		static $pairs;
 
@@ -136,7 +136,7 @@ class Minify {
 			preg_replace(
 				'/(\/\*[\w\W]*?\*\/)/',
 				'',
-				$script,
+				$sheet,
 			),
 		) );
 	}

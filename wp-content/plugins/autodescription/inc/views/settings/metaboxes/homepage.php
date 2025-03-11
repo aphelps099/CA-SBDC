@@ -53,7 +53,7 @@ switch ( $instance ) :
 			$_multilingual_warning = \esc_html__( 'A multilingual plugin has been detected and text entered below may not be translated.', 'autodescription' );
 			if ( $home_id ) {
 				$_multilingual_warning .= '<br>' . Markdown::convert(
-					sprintf(
+					\sprintf(
 						/* translators: %s = Homepage URL markdown */
 						\esc_html__( 'Edit the fields on the [homepage](%s) instead.', 'autodescription' ),
 						\esc_url( \admin_url( "post.php?post={$home_id}&action=edit#tsf-inpost-box" ) ),
@@ -69,24 +69,24 @@ switch ( $instance ) :
 		<hr>
 		<?php
 		$tabs = [
-			'general'   => [
+			'general'    => [
 				'name'     => \__( 'General', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_homepage_metabox_general_tab' ],
 				'dashicon' => 'admin-generic',
 			],
-			'additions' => [
+			'additions'  => [
 				'name'     => \__( 'Additions', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_homepage_metabox_additions_tab' ],
 				'dashicon' => 'plus-alt2',
 			],
-			'social'    => [
+			'social'     => [
 				'name'     => \__( 'Social', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_homepage_metabox_social_tab' ],
 				'dashicon' => 'share',
 			],
-			'robots'    => [
-				'name'     => \__( 'Robots', 'autodescription' ),
-				'callback' => [ Admin\Settings\Plugin::class, '_homepage_metabox_robots_tab' ],
+			'visibility' => [
+				'name'     => \__( 'Visibility', 'autodescription' ),
+				'callback' => [ Admin\Settings\Plugin::class, '_homepage_metabox_visibility_tab' ],
 				'dashicon' => 'visibility',
 			],
 		];
@@ -121,9 +121,9 @@ switch ( $instance ) :
 		Form::output_pixel_counter_wrap( Input::get_field_id( 'homepage_title' ), 'title', (bool) Data\Plugin::get_option( 'display_pixel_counter' ) );
 		?>
 		<p class=tsf-title-wrap>
-			<input type=text name="<?php Input::field_name( 'homepage_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_title' ) ) ) ?>" autocomplete=off />
+			<input type=text name="<?php Input::field_name( 'homepage_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_title' ) ) ) ?>" autocomplete=off>
 			<?php
-			$_post_meta_title = $home_id ? Sanitize::metadata_content( Data\Plugin\Post::get_meta_item( '_genesis_title', $home_id ) ) : '';
+			$post_meta_title = $home_id ? Sanitize::metadata_content( Data\Plugin\Post::get_meta_item( '_genesis_title', $home_id ) ) : '';
 
 			Input::output_js_title_data(
 				Input::get_field_id( 'homepage_title' ),
@@ -131,9 +131,9 @@ switch ( $instance ) :
 					'state' => [
 						'refTitleLocked'      => false, // This field is the mother of all references.
 						'defaultTitle'        => \esc_html(
-							coalesce_strlen( $_post_meta_title ) ?? Meta\Title::get_bare_generated_title( $generator_args )
+							coalesce_strlen( $post_meta_title ) ?? Meta\Title::get_bare_generated_title( $generator_args )
 						),
-						'_defaultTitleLocked' => (bool) \strlen( $_post_meta_title ), // Underscored index because it's non-standard API.
+						'_defaultTitleLocked' => (bool) \strlen( $post_meta_title ), // Underscored index because it's non-standard API.
 						'addAdditions'        => Meta\Title\Conditions::use_branding( $generator_args ),
 						'useSocialTagline'    => Meta\Title\Conditions::use_branding( $generator_args, true ),
 						'additionValue'       => \esc_html( Meta\Title::get_addition_for_front_page() ),
@@ -144,7 +144,7 @@ switch ( $instance ) :
 			?>
 		</p>
 		<?php
-		HTML::description( \__( 'Note: The input value of this field may be used to describe the name of the site elsewhere.', 'autodescription' ) );
+		HTML::description( \__( 'Note: It is best to only write the site or brand name here. Use additions to decorate the title instead.', 'autodescription' ) );
 
 		if ( $home_id && \strlen( Data\Plugin\Post::get_meta_item( '_genesis_title', $home_id ) ) )
 			HTML::description( \__( 'Note: The title placeholder is fetched from the Page SEO Settings on the homepage.', 'autodescription' ) );
@@ -221,7 +221,7 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input type=text name="<?php Input::field_name( 'homepage_title_tagline' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_title_tagline' ); ?>" placeholder="<?= \esc_html( Sanitize::metadata_content( Data\Blog::get_filtered_blog_description() ) ) ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_title_tagline' ) ) ) ?>" autocomplete=off />
+			<input type=text name="<?php Input::field_name( 'homepage_title_tagline' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_title_tagline' ); ?>" placeholder="<?= \esc_html( Sanitize::metadata_content( Data\Blog::get_filtered_blog_description() ) ) ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_title_tagline' ) ) ) ?>" autocomplete=off>
 		</p>
 
 		<div class=tsf-title-tagline-toggle>
@@ -243,7 +243,7 @@ switch ( $instance ) :
 
 			<p id=tsf-home-title-location class=tsf-fields>
 				<span class=tsf-toblock>
-					<input type=radio name="<?php Input::field_name( 'home_title_location' ); ?>" id="<?php Input::field_id( 'home_title_location_left' ); ?>" value=left <?php \checked( Data\Plugin::get_option( 'home_title_location' ), 'left' ); ?> />
+					<input type=radio name="<?php Input::field_name( 'home_title_location' ); ?>" id="<?php Input::field_id( 'home_title_location_left' ); ?>" value=left <?php \checked( Data\Plugin::get_option( 'home_title_location' ), 'left' ); ?>>
 					<label for="<?php Input::field_id( 'home_title_location_left' ); ?>">
 						<span><?php \esc_html_e( 'Left:', 'autodescription' ); ?></span>
 						<?php
@@ -253,7 +253,7 @@ switch ( $instance ) :
 					</label>
 				</span>
 				<span class=tsf-toblock>
-					<input type=radio name="<?php Input::field_name( 'home_title_location' ); ?>" id="<?php Input::field_id( 'home_title_location_right' ); ?>" value=right <?php \checked( Data\Plugin::get_option( 'home_title_location' ), 'right' ); ?> />
+					<input type=radio name="<?php Input::field_name( 'home_title_location' ); ?>" id="<?php Input::field_id( 'home_title_location_right' ); ?>" value=right <?php \checked( Data\Plugin::get_option( 'home_title_location' ), 'right' ); ?>>
 					<label for="<?php Input::field_id( 'home_title_location_right' ); ?>">
 						<span><?php \esc_html_e( 'Right:', 'autodescription' ); ?></span>
 						<?php
@@ -356,7 +356,7 @@ switch ( $instance ) :
 		Form::output_character_counter_wrap( Input::get_field_id( 'homepage_og_title' ), (bool) Data\Plugin::get_option( 'display_character_counter' ) );
 		?>
 		<p>
-			<input type=text name="<?php Input::field_name( 'homepage_og_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_og_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_og_title' ) ) ) ?>" autocomplete=off data-tsf-social-group=homepage_social_settings data-tsf-social-type=ogTitle />
+			<input type=text name="<?php Input::field_name( 'homepage_og_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_og_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_og_title' ) ) ) ?>" autocomplete=off data-tsf-social-group=homepage_social_settings data-tsf-social-type=ogTitle>
 		</p>
 		<?php
 		if ( \strlen( $custom_og_title ) ) {
@@ -397,7 +397,7 @@ switch ( $instance ) :
 		Form::output_character_counter_wrap( Input::get_field_id( 'homepage_twitter_title' ), (bool) Data\Plugin::get_option( 'display_character_counter' ) );
 		?>
 		<p>
-			<input type=text name="<?php Input::field_name( 'homepage_twitter_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_twitter_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_twitter_title' ) ) ) ?>" autocomplete=off data-tsf-social-group=homepage_social_settings data-tsf-social-type=twTitle />
+			<input type=text name="<?php Input::field_name( 'homepage_twitter_title' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_twitter_title' ); ?>" value="<?= \esc_html( Sanitize::metadata_content( Data\Plugin::get_option( 'homepage_twitter_title' ) ) ) ?>" autocomplete=off data-tsf-social-group=homepage_social_settings data-tsf-social-type=twTitle>
 		</p>
 		<?php
 		if ( \strlen( $custom_og_title ) || \strlen( $custom_tw_title ) ) {
@@ -447,7 +447,7 @@ switch ( $instance ) :
 				'name'     => Input::get_field_name( 'homepage_twitter_card_type' ),
 				'label'    => '',
 				'options'  => array_merge(
-					[ '' => sprintf( $_default_i18n, $tw_card_default ) ],
+					[ '' => \sprintf( $_default_i18n, $tw_card_default ) ],
 					array_combine( $tw_suported_cards, $tw_suported_cards ),
 				),
 				'selected' => Data\Plugin::get_option( 'homepage_twitter_card_type' ),
@@ -484,8 +484,8 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input class=large-text type=url name="<?php Input::field_name( 'homepage_social_image_url' ); ?>" id=tsf_homepage_socialimage-url placeholder="<?= \esc_url( $image_placeholder ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'homepage_social_image_url' ) ) ?>" />
-			<input type=hidden name="<?php Input::field_name( 'homepage_social_image_id' ); ?>" id=tsf_homepage_socialimage-id value="<?= \absint( Data\Plugin::get_option( 'homepage_social_image_id' ) ) ?>" disabled class=tsf-enable-media-if-js />
+			<input class=large-text type=url name="<?php Input::field_name( 'homepage_social_image_url' ); ?>" id=tsf_homepage_socialimage-url placeholder="<?= \esc_url( $image_placeholder ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'homepage_social_image_url' ) ) ?>">
+			<input type=hidden name="<?php Input::field_name( 'homepage_social_image_id' ); ?>" id=tsf_homepage_socialimage-id value="<?= \absint( Data\Plugin::get_option( 'homepage_social_image_id' ) ) ?>" disabled class=tsf-enable-media-if-js>
 		</p>
 		<p class=hide-if-no-tsf-js>
 			<?php
@@ -502,26 +502,76 @@ switch ( $instance ) :
 		}
 		break;
 
-	case 'robots':
+	case 'visibility':
 		if ( $home_id ) {
+			$canonical_post = Data\Plugin\Post::get_meta_item( '_genesis_canonical_uri', $home_id );
+			$redirect_post  = Data\Plugin\Post::get_meta_item( 'redirect', $home_id );
+
 			$noindex_post   = Data\Plugin\Post::get_meta_item( '_genesis_noindex', $home_id );
 			$nofollow_post  = Data\Plugin\Post::get_meta_item( '_genesis_nofollow', $home_id );
 			$noarchive_post = Data\Plugin\Post::get_meta_item( '_genesis_noarchive', $home_id );
+
+			$is_protected = Data\Post::is_protected( $home_id );
+			$home_is_page = true;
 		} else {
-			$noindex_post   = '';
-			$nofollow_post  = '';
-			$noarchive_post = '';
+			$canonical_post = '';
+			$redirect_post  = '';
+
+			$noindex_post   = 0;
+			$nofollow_post  = 0;
+			$noarchive_post = 0;
+
+			$is_protected = false;
+			$home_is_page = false;
 		}
+
+		$default_canonical = $canonical_post ?: Meta\URI::get_generated_url( $generator_args );
+
+		?>
+		<p>
+			<label for="<?php Input::field_id( 'homepage_canonical' ); ?>" class=tsf-toblock>
+				<strong><?php \esc_html_e( 'Canonical URL', 'autodescription' ); ?></strong>
+				<?php
+					echo ' ';
+					HTML::make_info(
+						\__( 'This urges search engines to go to the outputted URL.', 'autodescription' ),
+						'https://developers.google.com/search/docs/advanced/crawling/consolidate-duplicate-urls',
+					);
+				?>
+				<?php
+				Input::output_js_canonical_data(
+					Input::get_field_id( 'homepage_canonical' ),
+					[
+						'state' => [
+							'refCanonicalLocked' => false, // This is the motherfield.
+							'defaultCanonical'   => \esc_url( $default_canonical ),
+							'preferredScheme'    => Meta\URI\Utils::get_preferred_url_scheme(),
+							'urlStructure'       => Meta\URI\Utils::get_url_permastruct( $generator_args ),
+							'noindexQubit'       => Sanitize::qubit( $noindex_post ),
+							'isProtected'        => $is_protected,
+							'isPage'             => $home_is_page,
+						],
+					],
+				);
+				?>
+			</label>
+		</p>
+		<p>
+			<input type=url name="<?php Input::field_name( 'homepage_canonical' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_canonical' ); ?>" placeholder="<?= \esc_url( $default_canonical ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'homepage_canonical' ) ) ?>" autocomplete=off>
+		</p>
+
+		<hr>
+		<?php
 
 		$checked_home = '';
 		/**
-		 * Shows user that the setting is checked on the homepage.
+		 * Shows user that the setting is set on the homepage.
 		 * Adds starting - with space to maintain readability.
 		 */
 		if ( $noindex_post || $nofollow_post || $noarchive_post ) {
-			$checked_home = sprintf(
+			$checked_home = \sprintf(
 				'- %s',
-				sprintf(
+				\sprintf(
 					'<a href="%s" title="%s" target=_blank class=attention>%s</a>',
 					\esc_url( \admin_url( "post.php?post=$home_id&action=edit#tsf-inpost-box" ) ),
 					\esc_attr_x( 'Edit homepage page settings', 'Bear with me: the homepage can be edited globally, or via its page. Thus "homepage page".', 'autodescription' ),
@@ -532,7 +582,7 @@ switch ( $instance ) :
 
 		HTML::header_title( \__( 'Robots Meta Settings', 'autodescription' ) );
 
-		$i_label = sprintf(
+		$i_label = \sprintf(
 			/* translators: 1: Option label, 2: [?] option info note, 3: Optional warning */
 			\esc_html_x( '%1$s %2$s %3$s', 'robots setting', 'autodescription' ),
 			Markdown::convert(
@@ -548,7 +598,7 @@ switch ( $instance ) :
 			$noindex_post ? $checked_home : '',
 		);
 
-		$f_label = sprintf(
+		$f_label = \sprintf(
 			/* translators: 1: Option label, 2: [?] option info note, 3: Optional warning */
 			\esc_html_x( '%1$s %2$s %3$s', 'robots setting', 'autodescription' ),
 			Markdown::convert(
@@ -564,7 +614,7 @@ switch ( $instance ) :
 			$nofollow_post ? $checked_home : '',
 		);
 
-		$a_label = sprintf(
+		$a_label = \sprintf(
 			/* translators: 1: Option label, 2: [?] option info note, 3: Optional warning */
 			\esc_html_x( '%1$s %2$s %3$s', 'robots setting', 'autodescription' ),
 			Markdown::convert(
@@ -580,7 +630,7 @@ switch ( $instance ) :
 			$noarchive_post ? $checked_home : '',
 		);
 
-		HTML::attention_description( \__( 'Warning: No public site should ever apply "noindex" or "nofollow" to the homepage.', 'autodescription' ) );
+		HTML::attention_description( \__( 'Warning: No public website should ever apply "noindex" or "nofollow" to the homepage.', 'autodescription' ) );
 
 		HTML::wrap_fields(
 			[
@@ -606,7 +656,7 @@ switch ( $instance ) :
 		if ( $home_id ) {
 			HTML::description_noesc(
 				Markdown::convert(
-					sprintf(
+					\sprintf(
 						/* translators: %s = Homepage URL markdown */
 						\esc_html__( 'Note: These options may be overwritten by the [page settings](%s).', 'autodescription' ),
 						\esc_url( \admin_url( "post.php?post=$home_id&action=edit#tsf-inpost-box" ) ),
@@ -635,4 +685,23 @@ switch ( $instance ) :
 			] ),
 			true,
 		);
+		?>
+		<hr>
+
+		<p>
+			<label for="<?php Input::field_id( 'homepage_redirect' ); ?>" class=tsf-toblock>
+				<strong><?php \esc_html_e( '301 Redirect URL', 'autodescription' ); ?></strong>
+				<?php
+					echo ' ';
+					HTML::make_info(
+						\__( 'This will force visitors to go to another URL.', 'autodescription' ),
+						'https://developers.google.com/search/docs/crawling-indexing/301-redirects',
+					);
+				?>
+			</label>
+		</p>
+		<p>
+			<input type=url name="<?php Input::field_name( 'homepage_redirect' ); ?>" class=large-text id="<?php Input::field_id( 'homepage_redirect' ); ?>" placeholder="<?= \esc_url( $redirect_post ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'homepage_redirect' ) ) ?>" autocomplete=off>
+		</p>
+		<?php
 endswitch;

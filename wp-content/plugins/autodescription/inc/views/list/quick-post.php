@@ -84,7 +84,7 @@ $robots_settings = [
 				and Form::output_pixel_counter_wrap( 'autodescription-quick[doctitle]', 'title' );
 			?>
 			<div class="tsf-pad-input tsf-title-wrap">
-				<input type=text id=autodescription-quick[doctitle] name=autodescription-quick[doctitle] value />
+				<input type=text id=autodescription-quick[doctitle] name=autodescription-quick[doctitle]>
 				<?php
 				Input::output_js_title_data( 'autodescription-quick[doctitle]', [] );
 				?>
@@ -114,7 +114,10 @@ $robots_settings = [
 			<label>
 				<span class=title><?php \esc_html_e( 'Canonical URL', 'autodescription' ); ?></span>
 				<span class=tsf-inline-input>
-					<input type=url id=autodescription-quick[canonical] name=autodescription-quick[canonical] value />
+					<input type=url id=autodescription-quick[canonical] name=autodescription-quick[canonical]>
+					<?php
+					Input::output_js_canonical_data( 'autodescription-quick[canonical]', [] );
+					?>
 				</span>
 			</label>
 			<div class="inline-edit-group wp-clearfix">
@@ -136,6 +139,9 @@ $robots_settings = [
 								1  => $_setting['force_off'],
 							],
 							'selected' => 0,
+							'data'     => [
+								'defaultI18n' => $_default_i18n,
+							],
 						] );
 						// phpcs:enable, WordPress.Security.EscapeOutput
 					echo '</label>';
@@ -146,7 +152,7 @@ $robots_settings = [
 				<label>
 					<span class=title><?php \esc_html_e( '301 Redirect URL', 'autodescription' ); ?></span>
 					<span class=tsf-inline-input>
-						<input type=url id=autodescription-quick[redirect] name=autodescription-quick[redirect] value />
+						<input type=url id=autodescription-quick[redirect] name=autodescription-quick[redirect]>
 					</span>
 				</label>
 			</div>

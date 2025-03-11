@@ -203,11 +203,8 @@ if ( ! class_exists('WP_Package_Updater_HURRYT')) {
 
             check_ajax_referer($this->package_id, 'nonce');
 
-            // Get package slug.
-            $package_slug = filter_input(INPUT_POST, 'package_slug');
-            
             if( $query_type === 'activate' ){
-                $license_key = trim(filter_input(INPUT_POST, 'license_key', FILTER_SANITIZE_STRING));
+                $license_key = trim(sanitize_text_field(wp_unslash($_POST['license_key'])));
             }else{
                 $license_key = $this->get_current_license_key();
 
@@ -228,7 +225,7 @@ if ( ! class_exists('WP_Package_Updater_HURRYT')) {
                 'action'          => $query_type,
                 'license_key'     => $license_key,
                 'allowed_domains' => $this->get_current_domain(),
-                'package_slug'    => rawurlencode($package_slug),
+                'package_slug'    => rawurlencode($this->package_slug),
             );
 
 

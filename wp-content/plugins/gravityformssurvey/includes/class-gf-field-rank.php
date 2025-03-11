@@ -31,12 +31,12 @@ class GF_Field_Rank extends GF_Field {
 	}
 
 	/**
-	 * Conditional logic not currently supported.
+	 * Conditional logic is supported.
 	 *
 	 * @return bool
 	 */
 	public function is_conditional_logic_supported() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -102,7 +102,7 @@ class GF_Field_Rank extends GF_Field {
 				$field_value = ! empty( $choice['value'] ) || $this->enableChoiceValue ? $choice['value'] : $choice['text'];
 
 				$content .= sprintf(
-					"<li data-index='%s' class='gsurvey-rank-choice choice_%s' id='%s'>%s</li>",
+					"<li data-index='%s' class='gform-field-label gform-field-label--type-inline gsurvey-rank-choice choice_%s' id='%s'>%s</li>",
 					$choice_id,
 					$id,
 					esc_attr( $field_value ),

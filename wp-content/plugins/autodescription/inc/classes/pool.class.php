@@ -58,7 +58,7 @@ class Pool extends Legacy_API {
 	// phpcs:disable, Squiz.Commenting.VariableComment.Missing -- see trait Static_Deprecator.
 
 	/**
-	 * Returns a pool of Layout classes as instantiated object with deprecation capabilities.
+	 * Returns a pool of Admin classes as instantiated object with deprecation capabilities.
 	 * This allows for easy API access, and it allows us to silence fatal errors.
 	 *
 	 * @since 5.0.0
@@ -67,8 +67,12 @@ class Pool extends Legacy_API {
 	 * @return \Closure An anononymous class with subpools.
 	 */
 	public static function admin() {
-		return static::$pool['layout'] ??= new class {
+		return static::$pool['admin'] ??= new class {
 			use Static_Deprecator;
+
+			private $colloquial_handle     = 'tsf()->admin()';
+			private $deprecated_methods    = [];
+			private $deprecated_properties = [];
 
 			/**
 			 * @since 5.0.0
@@ -77,6 +81,10 @@ class Pool extends Legacy_API {
 			public static function layout() {
 				return static::$subpool['layout'] ??= new class {
 					use Static_Deprecator;
+
+					private $colloquial_handle     = 'tsf()->admin()->layout()';
+					private $deprecated_methods    = [];
+					private $deprecated_properties = [];
 
 					/**
 					 * @since 5.0.0
@@ -250,20 +258,6 @@ class Pool extends Legacy_API {
 							use Static_Deprecator;
 
 							private $colloquial_handle     = 'tsf()->data()->plugin()->helper()';
-							private $deprecated_methods    = [];
-							private $deprecated_properties = [];
-						};
-					}
-
-					/**
-					 * @since 5.0.0
-					 * @return \The_SEO_Framework\Data\Plugin\Home
-					 */
-					public static function home() {
-						return static::$subpool['home'] ??= new class extends Data\Plugin\Home {
-							use Static_Deprecator;
-
-							private $colloquial_handle     = 'tsf()->data()->plugin()->home()';
 							private $deprecated_methods    = [];
 							private $deprecated_properties = [];
 						};
@@ -833,17 +827,18 @@ class Pool extends Legacy_API {
 
 			/**
 			 * @since 5.0.0
+			 * @since 5.1.0 Now actually lists the existing class names.
 			 * @readonly
 			 * @var array[string,string] A list of accessible entity class names.
 			 */
 			public $entities = [
-				'Author'         => Meta\Schema\Author::class,
-				'BreadcrumbList' => Meta\Schema\BreadcrumbList::class,
-				'Organization'   => Meta\Schema\Organization::class,
-				'Person'         => Meta\Schema\Person::class,
-				'Reference'      => Meta\Schema\Reference::class,
-				'WebPage'        => Meta\Schema\WebPage::class,
-				'WebSite'        => Meta\Schema\WebSite::class,
+				'Author'         => Meta\Schema\Entities\Author::class,
+				'BreadcrumbList' => Meta\Schema\Entities\BreadcrumbList::class,
+				'Organization'   => Meta\Schema\Entities\Organization::class,
+				'Person'         => Meta\Schema\Entities\Person::class,
+				'Reference'      => Meta\Schema\Entities\Reference::class,
+				'WebPage'        => Meta\Schema\Entities\WebPage::class,
+				'WebSite'        => Meta\Schema\Entities\WebSite::class,
 			];
 		};
 	}

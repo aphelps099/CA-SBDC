@@ -66,7 +66,7 @@ add_thickbox();
                             <input type="hidden" name="convert_response" id="convert_response" value="" />
                             <input type="hidden" name="submit-uaf-font-js" id="submit-uaf-font" value="Upload" />
                             <input type="submit" name="submit-uaf-font-js" id="submit-uaf-font" class="button-primary" value="Upload" />
-
+                            <?php wp_nonce_field( 'uaf_font_upload_js', 'uaf_nonce' ); ?>
                             <br/>
                             <span>By clicking on Upload, you confirm that you have rights to use this font.</span>
                     </span>

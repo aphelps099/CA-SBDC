@@ -14,6 +14,7 @@ use \The_SEO_Framework\{
 	Data,
 	Helper\Post_Type,
 	Helper\Query,
+	Traits\Property_Refresher,
 };
 
 /**
@@ -37,10 +38,12 @@ use \The_SEO_Framework\{
  * Holds a collection of Post data interface methods for TSF.
  *
  * @since 5.0.0
+ * @since 5.1.0 Added the Property_Refresher trait.
  * @access protected
- *         Use tsf()->data()->plugin->post() instead.
+ *         Use tsf()->data()->plugin()->post() instead.
  */
 class Post {
+	use Property_Refresher;
 
 	/**
 	 * @since 5.0.0
@@ -95,6 +98,7 @@ class Post {
 	 * @since 5.0.0 1. Removed the third `$use_cache` parameter.
 	 *              2. Moved from `\The_SEO_Framework\Load`.
 	 *              3. Renamed from `get_post_meta`.
+	 * @since 5.1.0 Now returns the default meta if the post type isn't supported.
 	 *
 	 * @param int $post_id The post ID.
 	 * @return array The post meta.
@@ -106,9 +110,12 @@ class Post {
 		if ( isset( static::$meta_memo[ $post_id ] ) )
 			return static::$meta_memo[ $post_id ];
 
+		// Code smell: the empty test is for performance since the memo can be bypassed by input vars.
+		empty( static::$meta_memo ) and static::register_automated_refresh( 'meta_memo' );
+
 		// We test post type support for "post_query"-queries might get past this point.
-		if ( empty( $post_id ) || ! Post_Type::is_supported( \get_post( $post_id )->post_type ) )
-			return static::$meta_memo[ $post_id ] = [];
+		if ( empty( $post_id ) || ! Post_Type::is_supported( \get_post( $post_id )->post_type ?? '' ) )
+			return static::$meta_memo[ $post_id ] = static::get_default_meta( $post_id );
 
 		// Keep lucky first when exceeding nice numbers. This way, we won't overload memory in memoization.
 		if ( \count( static::$meta_memo ) > 69 )
@@ -129,6 +136,7 @@ class Post {
 			);
 
 			// WP converts all entries to arrays, because we got ALL entries. Disarray!
+			// We cannot use array_column() because we need to preserve the keys.
 			foreach ( $meta as &$value )
 				$value = $value[0];
 		}
@@ -295,6 +303,7 @@ class Post {
 	 *              3. Now considers headlessness.
 	 *              4. Moved from `\The_SEO_Framework\Load`.
 	 * @since 5.0.2 Now selects the last child of a primary term if its parent has the lowest ID.
+	 * @since 5.1.0 Now returns a valid primary term if the selected one is gone.
 	 *
 	 * @param int    $post_id  The post ID.
 	 * @param string $taxonomy The taxonomy name.
@@ -304,6 +313,9 @@ class Post {
 
 		if ( isset( static::$pt_memo[ $post_id ][ $taxonomy ] ) )
 			return static::$pt_memo[ $post_id ][ $taxonomy ] ?: null;
+
+		// Code smell: the empty test is for performance since the memo can be bypassed by input vars.
+		empty( static::$pt_memo ) and static::register_automated_refresh( 'pt_memo' );
 
 		// Keep lucky first when exceeding nice numbers. This way, we won't overload memory in memoization.
 		if ( \count( static::$pt_memo ) > 69 )
@@ -334,7 +346,11 @@ class Post {
 						break;
 					}
 				}
-			} else {
+			}
+
+			if ( ! $primary_term ) {
+				// No primary term has been assigned, or the primary term was deleted or altered. We need to find a new one.
+
 				$term_ids = array_column( $terms, 'term_id' );
 				asort( $term_ids );
 				$primary_term = $terms[ array_key_first( $term_ids ) ] ?? null;

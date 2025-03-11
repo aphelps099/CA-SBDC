@@ -325,6 +325,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       dataType: 'json',
       data: function data(params) {
         return {
+          searchProductsNonce: hurrytimer_ajax_object.searchProductsNonce,
           action: 'wcSearchProducts',
           search: params.term,
           exclude: $(this).val(),

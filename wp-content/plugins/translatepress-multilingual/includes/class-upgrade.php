@@ -1,5 +1,9 @@
 <?php
 
+
+if ( !defined('ABSPATH' ) )
+    exit();
+
 /**
  * Class TRP_Upgrade
  *
@@ -11,6 +15,10 @@ class TRP_Upgrade {
 	protected $db;
 	/* @var TRP_Query */
 	protected $trp_query;
+
+    /** Major slug translation refactoring released in these versions */
+    const MINIMUM_PERSONAL_VERSION = '1.3.3';
+    const MINIMUM_DEVELOPER_VERSION = '1.4.6';
 
 	/**
 	 * TRP_Upgrade constructor.
@@ -48,9 +56,9 @@ class TRP_Upgrade {
 
             // Updates that require admins to trigger manual update of db because of long duration. Set an option in DB if this is the case.
             $updates = $this->get_updates_details();
-            foreach ($updates as $update) {
-                if (version_compare($update['version'], $stored_database_version, '>')) {
-                    update_option($update['option_name'], 'no');
+            foreach ( $updates as $update ) {
+                if ( version_compare( $update['version'], $stored_database_version, '>' ) ) {
+                    update_option( $update['option_name'], 'no' );
                 }
             }
 
@@ -91,11 +99,15 @@ class TRP_Upgrade {
             if( version_compare( $stored_database_version, '2.2.2', '<=' ) ){
                 $this->migrate_auto_translate_slug_to_automatic_translation();
             }
-            if( version_compare( $stored_database_version, '2.7.2', '<=' ) ){
+            if ( version_compare( $stored_database_version, '2.7.2', '<=' ) ) {
                 $this->migrate_machine_translation_counter();
             }
-            if( version_compare( $stored_database_version, '2.7.4', '<=' ) ){
+            if ( version_compare( $stored_database_version, '2.7.4', '<=' ) ) {
                 $this->add_tp_block_index();
+            }
+            if ( version_compare( $stored_database_version, '2.8.4', '<=' ) ) {
+                $this->dont_update_db_if_seopack_inactive();
+                $this->set_the_options_set_in_db_optimization_tool_to_no();
             }
 
             /**
@@ -143,16 +155,45 @@ class TRP_Upgrade {
 		$gettext_table_creation->check_gettext_original_meta_table();
 	}
 
-	public function get_updates_details(){
-		return apply_filters( 'trp_updates_details',
-			array(
+    /**
+     * @param string $key of updates details array
+     * @return string
+     * @see get_updates_details()
+     */
+    public function get_updates_processing_message( $key ){
+        $messages = [
+            'remove_cdata_original_and_dictionary_rows'     => __('Removing cdata dictionary strings for language %s...', 'translatepress-multilingual' ),
+            'remove_untranslated_links_dictionary_rows'     => __('Removing untranslated dictionary links for language %s...', 'translatepress-multilingual' ),
+            'remove_duplicate_gettext_rows'                 => __('Removing duplicated gettext strings for language %s...', 'translatepress-multilingual' ),
+            'remove_duplicate_dictionary_rows'              => __('Removing duplicated dictionary strings for language %s...', 'translatepress-multilingual' ),
+            'remove_duplicate_untranslated_dictionary_rows' => __('Removing untranslated dictionary strings where translation is available for language %s...', 'translatepress-multilingual' ),
+            'original_id_insert_166'                        => __('Inserting original strings for language %s...', 'translatepress-multilingual' ),
+            'original_id_cleanup_166'                       => __('Cleaning original strings table for language %s...', 'translatepress-multilingual' ),
+            'original_id_update_166'                        => __('Updating original string ids for language %s...', 'translatepress-multilingual' ),
+            'regenerate_original_meta'                      => __('Regenerating original meta table for language %s...', 'translatepress-multilingual' ),
+            'clean_original_meta'                           => __('Cleaning original meta table for language %s...', 'translatepress-multilingual' ),
+            'replace_original_id_null'                      => __('Replacing original id NULL with value for language %s...', 'translatepress-multilingual' ),
+            'gettext_original_id_insert'                    => __('Inserting gettext original strings for language %s...', 'translatepress-multilingual' ),
+            'gettext_original_id_cleanup'                   => __('Cleaning gettext original strings table for language %s...', 'translatepress-multilingual' ),
+            'gettext_original_id_update'                    => __('Updating gettext original string ids for language %s...', 'translatepress-multilingual' ),
+            'migrate_old_slugs_to_the_new_translate_table_structure_post_type_and_tax_284' => __( 'Migrating taxonomy and post type base slugs to new table structure...', 'translatepress-multilingual' ),
+            'migrate_old_slugs_to_the_new_translate_table_structure_post_meta_284'         => __( 'Migrating post slugs to new table structure for language %s...', 'translatepress-multilingual' ),
+            'migrate_old_slugs_to_the_new_translate_table_structure_term_meta_284'         => __( 'Migrating term slugs to new table structure for language %s...', 'translatepress-multilingual' ),
+            'show_error_db_message'                         => __( 'Finishing up...', 'translatepress-multilingual' )
+        ];
+
+        return in_array( $key, array_keys( $messages ) ) ? $messages[$key] : null;
+    }
+
+    public function get_updates_details(){
+        return apply_filters( 'trp_updates_details',
+            array(
                 'remove_cdata_original_and_dictionary_rows' => array(
                     'version'           => '0',
                     'option_name'       => 'trp_remove_cdata_original_and_dictionary_rows',
                     'callback'          => array( $this->trp_query,'remove_cdata_in_original_and_dictionary_tables'),
                     'batch_size'        => 1000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Removing cdata dictionary strings for language %s...', 'translatepress-multilingual' )
                 ),
                 'remove_untranslated_links_dictionary_rows' => array(
                     'version'           => '0',
@@ -160,7 +201,6 @@ class TRP_Upgrade {
                     'callback'          => array( $this->trp_query,'remove_untranslated_links_in_dictionary_table'),
                     'batch_size'        => 10000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Removing untranslated dictionary links for language %s...', 'translatepress-multilingual' )
                 ),
 				'full_trim_originals_140' => array(
 					'version'           => '1.4.0',
@@ -178,17 +218,8 @@ class TRP_Upgrade {
                     'version'           => '0',
                     'option_name'       => 'trp_remove_duplicate_gettext_rows',
                     'callback'          => array( $this->trp_query,'remove_duplicate_rows_in_gettext_table'),
-                    'batch_size'        => 10000,
+                    'batch_size'        => 5000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Removing duplicated gettext strings for language %s...', 'translatepress-multilingual' )
-                ),
-                'remove_duplicate_untranslated_gettext_rows' => array(
-                    'version'           => '0',
-                    'option_name'       => 'trp_remove_duplicate_untranslated_gettext_rows',
-                    'callback'          => array( $this->trp_query,'remove_untranslated_strings_if_gettext_translation_available'),
-                    'batch_size'        => 10000,
-                    'message_initial'   => '',
-                    'message_processing'=> __('Removing untranslated gettext strings where translation is available for language %s...', 'translatepress-multilingual' )
                 ),
                 'remove_duplicate_dictionary_rows' => array(
                     'version'           => '0',
@@ -196,22 +227,12 @@ class TRP_Upgrade {
                     'callback'          => array( $this->trp_query,'remove_duplicate_rows_in_dictionary_table'),
                     'batch_size'        => 1000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Removing duplicated dictionary strings for language %s...', 'translatepress-multilingual' )
-                ),
-                'remove_duplicate_untranslated_dictionary_rows' => array(
-                    'version'           => '0',
-                    'option_name'       => 'trp_remove_duplicate_untranslated_dictionary_rows',
-                    'callback'          => array( $this->trp_query,'remove_untranslated_strings_if_translation_available'),
-                    'batch_size'        => 10000,
-                    'message_initial'   => '',
-                    'message_processing'=> __('Removing untranslated dictionary strings where translation is available for language %s...', 'translatepress-multilingual' )
                 ),
                 'original_id_insert_166' => array(
                     'version'           => '1.6.6',
                     'option_name'       => 'trp_updated_database_original_id_insert_166',
                     'callback'          => array( $this,'trp_updated_database_original_id_insert_166'),
                     'batch_size'        => 1000,
-                    'message_processing'=> __('Inserting original strings for language %s...', 'translatepress-multilingual' )
                 ),
                 'original_id_cleanup_166' => array(
                     'version'           => '1.6.6',
@@ -220,7 +241,6 @@ class TRP_Upgrade {
                     'progress_message'  => 'clean',
                     'batch_size'        => 1000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Cleaning original strings table for language %s...', 'translatepress-multilingual' )
                 ),
                 'original_id_update_166' => array(
                     'version'           => '1.6.6',
@@ -228,7 +248,6 @@ class TRP_Upgrade {
                     'callback'          => array( $this,'trp_updated_database_original_id_update_166'),
                     'batch_size'        => 5000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Updating original string ids for language %s...', 'translatepress-multilingual' )
                 ),
                 'regenerate_original_meta' => array(
                     'version'           => '0', // independent of tp version, available only on demand
@@ -236,7 +255,6 @@ class TRP_Upgrade {
                     'callback'          => array( $this,'trp_regenerate_original_meta_table'),
                     'batch_size'        => 200,
                     'message_initial'   => '',
-                    'message_processing'=> __('Regenerating original meta table for language %s...', 'translatepress-multilingual' )
                 ),
                 'clean_original_meta' => array(
                     'version'           => '0', // independent of tp version, available only on demand
@@ -244,7 +262,6 @@ class TRP_Upgrade {
                     'callback'          => array( $this,'trp_clean_original_meta_table'),
                     'batch_size'        => 20000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Cleaning original meta table for language %s...', 'translatepress-multilingual' )
                 ),
                 'replace_original_id_null' => array(
                     'version'           => '0', // independent of tp version, available only on demand
@@ -252,14 +269,12 @@ class TRP_Upgrade {
                     'callback'          => array( $this,'trp_replace_original_id_null'),
                     'batch_size'        => 50,
                     'message_initial'   => '',
-                    'message_processing'=> __('Replacing original id NULL with value for language %s...', 'translatepress-multilingual' )
                 ),
                 'gettext_original_id_insert' => array(
                     'version'           => '2.3.8',
                     'option_name'       => 'trp_updated_database_gettext_original_id_insert',
                     'callback'          => array( $this,'trp_updated_database_gettext_original_id_insert'),
                     'batch_size'        => 1000,
-                    'message_processing'=> __('Inserting gettext original strings for language %s...', 'translatepress-multilingual' )
                 ),
                 'gettext_original_id_cleanup' => array(
                     'version'           => '2.3.8',
@@ -268,7 +283,6 @@ class TRP_Upgrade {
                     'progress_message'  => 'clean',
                     'batch_size'        => 1000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Cleaning gettext original strings table for language %s...', 'translatepress-multilingual' )
                 ),
                 'gettext_original_id_update' => array(
                     'version'           => '2.3.8',
@@ -276,22 +290,43 @@ class TRP_Upgrade {
                     'callback'          => array( $this,'trp_updated_database_gettext_original_id_update'),
                     'batch_size'        => 5000,
                     'message_initial'   => '',
-                    'message_processing'=> __('Updating gettext original string ids for language %s...', 'translatepress-multilingual' )
                 ),
+                'migrate_old_slugs_to_the_new_translate_table_structure_post_type_and_tax_284' => array(
+                    'version'            => '0',
+                    'option_name'        => 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_type_and_tax_284',
+                    'callback'           => array( $this, 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_type_and_tax_284' ),
+                    'batch_size'         => 1000000,
+                    'message_initial'    => '',
+                    'execute_only_once'  => true
+                ),
+                'migrate_old_slugs_to_the_new_translate_table_structure_post_meta_284'         => array(
+                    'version'            => '0',
+                    'option_name'        => 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_meta_284',
+                    'callback'           => array( $this, 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_meta_284' ),
+                    'batch_size'         => 500,
+                    'message_initial'    => '',
+                ),
+                'migrate_old_slugs_to_the_new_translate_table_structure_term_meta_284'         => array(
+                    'version'            => '0',
+                    'option_name'        => 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_term_meta_284',
+                    'callback'           => array( $this, 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_term_meta_284' ),
+                    'batch_size'         => 500,
+                    'message_initial'    => '',
+                ),
+
+                /** Add new entries above this line
+                 * Write 3.0.0 if 2.9.9 is the current version, and 3.0.0 will be the updated version where this code will be launched.
+                 */
                 'show_error_db_message' => array(
-                    'version'           => '0', // independent of tp version, available only on demand
-                    'option_name'       => 'trp_show_error_db_message',
-                    'callback'          => array( $this,'trp_successfully_run_database_optimization'),
-                    'batch_size'        => 10,
-                    'message_initial'   => '',
-                    'message_processing'=> __('Finishing up...', 'translatepress-multilingual' ),
-                    'execute_only_once' => true
+                    'version'            => '0', // independent of tp version, available only on demand
+                    'option_name'        => 'trp_show_error_db_message',
+                    'callback'           => array( $this, 'trp_successfully_run_database_optimization' ),
+                    'batch_size'         => 10,
+                    'message_initial'    => '',
+                    'execute_only_once'  => true
                 )
 			)
 		);
-        /**
-         * Write 3.0.0 if 2.9.9 is the current version, and 3.0.0 will be the updated version where this code will be launched.
-         */
 	}
 
 	/**
@@ -344,7 +379,7 @@ class TRP_Upgrade {
             return;
         }
         $updates_needed = $this->get_updates_details();
-        $option_db_error_message = get_option($updates_needed['show_error_db_message']['option_name']);
+        $option_db_error_message = get_option($updates_needed['show_error_db_message']['option_name'], 'is not set' );
         if ( $option_db_error_message === 'no' ) {
             add_action( 'admin_notices', array( $this, 'trp_admin_notice_error_database' ) );
         }
@@ -403,17 +438,18 @@ class TRP_Upgrade {
 			}else{
 				$_REQUEST['trp_updb_lang'] = $this->settings['translation-languages'][0];
 				$_REQUEST['trp_updb_batch'] = 0;
+                $updb_action = sanitize_text_field( $_REQUEST['trp_updb_action'] );
 
-                $update_message_initial = isset( $updates_needed[$_REQUEST['trp_updb_action']]['message_initial'] ) ?
-                                            $updates_needed[sanitize_text_field( $_REQUEST['trp_updb_action'] )]['message_initial']
+                $update_message_initial = isset( $updates_needed[ $updb_action ]['message_initial'] ) ?
+                                            $updates_needed[ $updb_action ]['message_initial']
                                             : __('Updating database to version %s+', 'translatepress-multilingual' );
 
-                $update_message_processing = isset( $updates_needed[$_REQUEST['trp_updb_action']]['message_processing'] ) ?
-                                                $updates_needed[ sanitize_text_field( $_REQUEST['trp_updb_action'] )]['message_processing']
-                                                : __('Processing table for language %s...', 'translatepress-multilingual' );
+                $update_message_processing = $this->get_updates_processing_message( $updb_action ) ?
+                                             $this->get_updates_processing_message( $updb_action ) :
+                                             __('Processing table for language %s...', 'translatepress-multilingual' );
 
-                if ($updates_needed[ sanitize_text_field( $_REQUEST['trp_updb_action'] ) ]['version'] != 0) {
-                    $request['progress_message'] .= '<p>' . sprintf( $update_message_initial, $updates_needed[ sanitize_text_field( $_REQUEST['trp_updb_action'] ) ]['version'] ) . '</p>';
+                if ($updates_needed[ $updb_action ]['version'] != 0) {
+                    $request['progress_message'] .= '<p>' . sprintf( $update_message_initial, $updates_needed[ $updb_action ]['version'] ) . '</p>';
                 }
                 $request['progress_message'] .= '<br>' . sprintf( $update_message_processing, sanitize_text_field( $_REQUEST['trp_updb_lang'] ) );//phpcs:ignore
 			}
@@ -433,6 +469,8 @@ class TRP_Upgrade {
 			$get_batch = 0;
 		}
 
+        $extra_params = isset( $_REQUEST['trp_updb_extra_params'] ) ? unserialize(base64_decode(sanitize_text_field($_REQUEST['trp_updb_extra_params'] ))) : array();
+
 		$request['trp_updb_batch'] = 0;
 		$update_details = $updates_needed[ sanitize_text_field( $_REQUEST['trp_updb_action'] )];
 		$batch_size = apply_filters( 'trp_updb_batch_size', $update_details['batch_size'], sanitize_text_field( $_REQUEST['trp_updb_action'] ), $update_details );
@@ -448,45 +486,55 @@ class TRP_Upgrade {
 		$duration = 0;
 		while( $duration < 2 ){
 			$inferior_limit = $batch_size * $get_batch;
-			$finished_with_language = call_user_func( $update_details['callback'], $language_code, $inferior_limit, $batch_size );
-
-			if ( $finished_with_language ) {
+            $callback_return = call_user_func( $update_details['callback'], $language_code, $inferior_limit, $batch_size, $extra_params );
+			if ( (isset($callback_return['finalize_with_language']) && $callback_return['finalize_with_language']) || ($callback_return === true)  ) {
 				break;
 			}else {
 				$get_batch = $get_batch + 1;
+                $extra_params = isset($callback_return['extra_params']) ? $callback_return['extra_params'] : array();
 			}
 			$stop_time = microtime( true );
 			$duration = $stop_time - $start_time;
 		}
-		if ( ! $finished_with_language ) {
+        // the callback functions return different true or an array with finalized_with_language bool and extra_params based on what they need.
+        // In case call_user_func fails with string, object, etc, it will continue with the callback and batching.
+        // For example, if the function called uses to much memory, it will just continue.
+        $finalized_with_language = (isset($callback_return['finalize_with_language']) && $callback_return['finalize_with_language']) || ($callback_return === true);
+
+        if ( !$finalized_with_language ) {
 			$request['trp_updb_batch'] = $get_batch;
+            $request['trp_updb_extra_params'] = isset($callback_return['extra_params']) ? $callback_return['extra_params'] : array();
 		}
 
-
-		if ( $finished_with_language ) {
-			// finished with the current language
+		if ( $finalized_with_language ) {
+            // finished with the current language
             $index = array_search( $language_code, $this->settings['translation-languages'] );
 
-                if ( isset ( $this->settings['translation-languages'][ $index + 1 ] ) && (!isset($update_details['execute_only_once']) || $update_details['execute_only_once'] == false)) {
-                        // next language code in array
-                        $request['trp_updb_lang']    = $this->settings['translation-languages'][ $index + 1 ];
-                        $request['progress_message'] .= __( ' done.', 'translatepress-multilingual' ) . '</br>';
-                        $update_message_processing   = isset( $updates_needed[ $_REQUEST['trp_updb_action'] ]['message_processing'] ) ?
-                            $updates_needed[ sanitize_text_field( $_REQUEST['trp_updb_action'] ) ]['message_processing']
-                            : __( 'Processing table for language %s...', 'translatepress-multilingual' );
-                        $request['progress_message'] .= '</br>' . sprintf( $update_message_processing, $request['trp_updb_lang'] );
+            if ( isset ( $this->settings['translation-languages'][ $index + 1 ] ) && (!isset($update_details['execute_only_once']) || $update_details['execute_only_once'] == false)) {
+                // next language code in array
+                $request['trp_updb_lang']    = $this->settings['translation-languages'][ $index + 1 ];
+                $request['progress_message'] .= __( ' done.', 'translatepress-multilingual' ) . '</br>';
+                $update_message_processing   = $this->get_updates_processing_message( sanitize_text_field( $_REQUEST['trp_updb_action'] ) ) ?
+                    $this->get_updates_processing_message( sanitize_text_field( $_REQUEST['trp_updb_action'] ) )
+                    : __( 'Processing table for language %s...', 'translatepress-multilingual' );
+                $request['progress_message'] .= '</br>' . sprintf( $update_message_processing, $request['trp_updb_lang'] );
 
                     } else {
                         // finish action due to completing all the translation languages
                         $request['progress_message'] .= __( ' done.', 'translatepress-multilingual' ) . '</br>';
                         $request['trp_updb_lang']    = '';
-                        // this will stop showing the admin notice
-                        update_option( $update_details['option_name'], 'yes' );
+                        $option_result = get_option( $update_details['option_name'], 'no' );
+
+                        // the next IF is helpful in case we set the option to something else (such as seopack_inactive) during update
+                        if ( $option_result === 'no' ) {
+                            // setting option to yes will stop showing the admin notice
+                            update_option( $update_details['option_name'], 'yes' );
+                        }
                         $request['trp_updb_action'] = '';
                     }
 		}else{
 			$request['trp_updb_lang'] = $language_code;
-            $request['progress_message'] = '.';
+            $request['progress_message'] .= '.';
 		}
 
         if ( $this->db->last_error != '' ){
@@ -497,6 +545,7 @@ class TRP_Upgrade {
 			'trp_updb_action'           => $request['trp_updb_action'],
 			'trp_updb_lang'             => $request['trp_updb_lang'],
 			'trp_updb_batch'            => $request['trp_updb_batch'],
+			'trp_updb_extra_params'     => isset($request['trp_updb_extra_params']) ? base64_encode(serialize($request['trp_updb_extra_params'])) : base64_encode(serialize(array())),
 			'trp_updb_nonce'            => wp_create_nonce('tpupdatedatabase'),
 			'trp_update_completed'      => 'no',
 			'progress_message'          => $request['progress_message']
@@ -646,7 +695,6 @@ class TRP_Upgrade {
 
         if(isset( $_GET['trp_rm_duplicates_gettext'] )){
             update_option('trp_remove_duplicate_gettext_rows', 'no');
-            update_option('trp_remove_duplicate_untranslated_gettext_rows', 'no');
             $redirect = true;
         }
 
@@ -1051,6 +1099,368 @@ class TRP_Upgrade {
         return true;
     }
 
+
+    /*
+     * @IMPORTANT
+     * Here is the beginning of the slug data migration functions
+     */
+
+    /*
+     * Functions that returns the name of the table needed for meta type slug inner join table
+     * wp_posts or wp_terms
+     */
+    public function trp_get_table_name_for_original_join_in_meta_based_slugs( $meta_type ){
+        if ( $meta_type == "postmeta" ) {
+            return 'posts';
+        }
+        if ( $meta_type == "termmeta" ) {
+            return 'terms';
+        }
+    }
+    /*
+     * Function that takes the name of the meta key to determine if the translation was manual or automatic
+     */
+    public function trp_get_meta_based_slug_status( $meta_values ) {
+        if ( preg_match( '/automatically/', $meta_values['meta_key'] ) != false ) {
+            return '1';
+        } elseif ( preg_match( '/translated/', $meta_values['meta_key'] ) != false ) {
+            return '2';
+        }
+        return '0';
+    }
+
+    /*
+     * Function that gets the original slug by the selected [term/post]_id and forms the array structure needed for migration
+     */
+    public function trp_get_original_slugs_for_meta_based_slugs( $meta_type, $meta_slugs_and_ids, $language_code ) {
+
+        $extracted_slugs_array      = array();
+        if ( $meta_type == 'postmeta' ) {
+
+            foreach ( $meta_slugs_and_ids as $meta_values ) {
+
+                if ( !empty( $meta_values['post_name'] ) ) {
+                    $extracted_slugs_array[ $meta_values['post_name'] ]["original"] = $meta_values['post_name'];
+                    $extracted_slugs_array[ $meta_values['post_name'] ]["type"]     = 'post';
+
+                    if ( isset( $meta_values['meta_value'] ) ) {
+                        $extracted_slugs_array[ $meta_values['post_name'] ]["language"]   = $language_code;
+                        $extracted_slugs_array[ $meta_values['post_name'] ]["status"]     = $this->trp_get_meta_based_slug_status( $meta_values );
+                        $extracted_slugs_array[ $meta_values['post_name'] ]["translated"] = $meta_values['meta_value'];
+                    }
+                }
+            }
+
+            return $extracted_slugs_array;
+
+        } elseif ( $meta_type == 'termmeta' ) {
+
+            foreach ( $meta_slugs_and_ids as $meta_values ) {
+
+                if ( !empty( $meta_values['slug'] ) ) {
+                    $extracted_slugs_array[ $meta_values['slug'] ]["original"] = $meta_values['slug'];
+                    $extracted_slugs_array[ $meta_values['slug'] ]["type"]     = 'term';
+
+                    if ( isset( $meta_values['meta_value'] ) ) {
+                        $extracted_slugs_array[ $meta_values['slug'] ]["language"]   = $language_code;
+                        $extracted_slugs_array[ $meta_values['slug'] ]["status"]     = $this->trp_get_meta_based_slug_status( $meta_values );
+                        $extracted_slugs_array[ $meta_values['slug'] ]["translated"] = $meta_values['meta_value'];
+                    }
+                }
+            }
+
+            return $extracted_slugs_array;
+        }
+
+        return $extracted_slugs_array;
+    }
+
+    public function get_last_id_for_meta_based_slugs( $meta_type, $language_code ){
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . $meta_type;
+
+        $select_query        = "SELECT COUNT(*) FROM `" . $table_name . "` ";
+        $select_query       .= "WHERE ( meta_key LIKE %s OR meta_key LIKE %s )";
+        $prepared_query      = $wpdb->prepare( $select_query, '%' . $wpdb->esc_like( 'trp_automatically_translated_slug_' . $language_code ) . '%', '%' . $wpdb->esc_like( 'trp_translated_slug_'. $language_code ) . '%' );
+        $extracted_number    = $wpdb->get_var( $prepared_query );
+
+        $last_id = intval( $extracted_number );
+
+        return $last_id;
+
+    }
+    /*
+     *  ~~~~~~~~ META BASED SLUG EXTRACTION ~~~~~~~~
+     *
+     * Function that gather all the information needed for the meta based slugs ro form a complete array with all the necessary
+     * items for migration
+     *
+     * LOGISTIC: - the meta based slugs are saved in the *meta tables from wordpress with the meta key providing the information
+     *             if the slug was manually or automatically translated, as well as, the language in which the slug was translated
+     *           - the [post/term]_id tells as which post/page the original slug van be found
+     *           - in the term case the slug can be found in the slug field dictated by the term_id
+     *           - in the post case the slug can be found in the post_name field dictated by the post_id
+     */
+    public function trp_get_meta_based_slugs_from_db_284( $meta_type, $language_code, $inferior_limit, $batch_size ) {
+        global $wpdb;
+
+        $table_name_for_originals_for_the_selected_meta_type = $this->trp_get_table_name_for_original_join_in_meta_based_slugs( $meta_type );
+        $extracted_slugs_array = array();
+
+        if ( $meta_type == 'postmeta' ) {
+
+            $select_query          = "SELECT meta_key, meta_value, trp_original_name.post_name FROM `" . $wpdb->postmeta . "` as trp_translation ";
+            $select_query          .= "INNER JOIN `" . $wpdb->posts . "` as trp_original_name ";
+            $select_query          .= "ON trp_translation.post_id = trp_original_name.ID ";
+            $select_query          .= "WHERE ( meta_key LIKE %s OR meta_key LIKE %s ) LIMIT %d OFFSET %d";
+            $prepared_query        = $wpdb->prepare( $select_query, '%' . $wpdb->esc_like( 'trp_automatically_translated_slug_' . $language_code ) . '%', '%' . $wpdb->esc_like( 'trp_translated_slug_' . $language_code ) . '%', $batch_size, $inferior_limit );
+            $meta_slugs_and_ids    = $wpdb->get_results( $prepared_query, 'ARRAY_A' );
+
+            $extracted_slugs_array = $this->trp_get_original_slugs_for_meta_based_slugs( 'postmeta', $meta_slugs_and_ids, $language_code );
+
+        }elseif ( $meta_type == 'termmeta' ) {
+
+            $select_query          = "SELECT meta_key, meta_value, trp_original_name.slug FROM `" . $wpdb->termmeta . "` as trp_translation ";
+            $select_query          .= "INNER JOIN `" . $wpdb->terms . "` as trp_original_name ";
+            $select_query          .= "ON trp_translation.term_id = trp_original_name.term_id ";
+            $select_query          .= "WHERE ( meta_key LIKE %s OR meta_key LIKE %s ) LIMIT %d OFFSET %d";
+            $prepared_query        = $wpdb->prepare( $select_query, '%' . $wpdb->esc_like( 'trp_automatically_translated_slug_' . $language_code ) . '%', '%' . $wpdb->esc_like( 'trp_translated_slug_' . $language_code ) . '%', $batch_size, $inferior_limit );
+            $meta_slugs_and_ids    = $wpdb->get_results( $prepared_query, 'ARRAY_A' );
+
+            $extracted_slugs_array = $this->trp_get_original_slugs_for_meta_based_slugs( 'termmeta', $meta_slugs_and_ids, $language_code );
+
+        }
+
+        return $extracted_slugs_array;
+    }
+    /*
+     * ~~~~~~~~ OPTION BASED SLUGS EXTRACTION ~~~~~~~~
+     *
+     * In this function we extract the option based slugs and we arrange them in the needed structure for data migration
+     *
+     * LOGUSTIC: - the oprion based slugs are stored in the wp_options table under the option name of * trp_taxonomy_slug_translation
+     *                                                                                                * trp_post_type_base_slug_translation
+     *           - we extract the information from the field with is now stored in a nested array and refector it to the structure
+     *           for slug data migration
+     */
+    public function trp_get_option_based_slugs_from_db_284( $option_name ) {
+        $data = get_option( $option_name, array() );
+        $extracted_slugs_array = array();
+
+        $woocommerce_permalink_options = get_option( 'woocommerce_permalinks', false );
+
+        foreach ( $data as $key => $values_array ) {
+            $extracted_slugs_array[ $key ]["original"] = trim( $values_array["original"], '/' );
+
+            if ( $values_array['type'] == 'post-type-base-slug' || $values_array['type'] == 'post-type-base' ) {
+                $extracted_slugs_array[ $key ]["type"] = 'post-type-base';
+                if ( apply_filters( 'trp_migrate_post_type_or_tax_original_only_if_active', true, $extracted_slugs_array[ $key ]["original"], $values_array['type'] ) && (
+                    !post_type_exists( $extracted_slugs_array[ $key ]["original"] ) &&
+                    ( $woocommerce_permalink_options === false ||
+                        $extracted_slugs_array[ $key ]["original"] !== trim( $woocommerce_permalink_options['product_base'], '/' ) ) ) ) {
+                    continue;
+                }
+            }else{
+                if ( apply_filters( 'trp_migrate_post_type_or_tax_original_only_if_active', true, $extracted_slugs_array[ $key ]["original"], $values_array['type'] ) && (
+                    !taxonomy_exists( $extracted_slugs_array[ $key ]["original"] ) &&
+                    ( $woocommerce_permalink_options === false || (
+                        $extracted_slugs_array[ $key ]["original"] !== $woocommerce_permalink_options['category_base'] &&
+                        $extracted_slugs_array[ $key ]["original"] !== $woocommerce_permalink_options['tag_base'] ) ) ) ) {
+                    continue;
+                }
+                $extracted_slugs_array[ $key ]["type"] = 'taxonomy';
+            }
+            foreach ( $values_array["translationsArray"] as $lang => $translation_element ) {
+                if ( $translation_element["status"] == 0 ){
+                    continue;
+                }
+                $extracted_slugs_array[ $key ][ $lang ]["language"] = $lang;
+                $extracted_slugs_array[ $key ][ $lang ]["status"]      = $translation_element["status"];
+                $extracted_slugs_array[ $key ][ $lang ]["translated"] = $translation_element["translated"];
+            }
+        }
+        return $extracted_slugs_array;
+    }
+
+    /*
+     *  All the extracted slugs from the old db are ordered when extrated
+     *
+     * The structure of slug type option based extracted array is:
+     *
+     *   (example using term slugs)
+     *   taxonomy_slugs:
+     *              taxonomy_slug_name:
+     *                            original
+     *                            type
+     *                            language:
+     *                                      status
+     *                                      language
+     *                                      translated
+     *
+     *  The structure of meta based slugs extracted array is:
+     *  meta_slug_name:
+     *                            original
+     *                            type
+     *                            language:
+     *                                      status
+     *                                      language
+     *                                      translated
+     *
+     */
+
+    /*
+     * Migrating the option based slugs from the old structure to the new one
+     *
+     */
+    public function trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_type_and_tax_284() {
+        if ( class_exists( 'TRP_Slug_Query' ) ) {
+
+            $trp                 = TRP_Translate_Press::get_trp_instance();
+            $slug_query     = new TRP_Slug_Query();
+            $trp_settings        = $trp->get_component( 'settings' );
+            $settings            = $trp_settings->get_settings();
+            $languages_to_verify = $settings['translation-languages'];
+
+            $extracted_slugs_array                         = array();
+            $extracted_slugs_array['taxonomy_slugs']       = $this->trp_get_option_based_slugs_from_db_284( 'trp_taxonomy_slug_translation' );
+            $extracted_slugs_array['post_type_base_slugs'] = $this->trp_get_option_based_slugs_from_db_284( 'trp_post_type_base_slug_translation' );
+
+            foreach ( $languages_to_verify as $language_code ) {
+
+                if ( !( $language_code == $settings['default-language'] ) ) {
+                    foreach ( $extracted_slugs_array as $key_slug_original => $slug_originals ) {
+
+                        $array_for_translated_slugs               = array();
+                        $language_is_found_in_this_array_of_slugs = false;
+
+                        foreach ( $slug_originals as $keep_slug_to_determine_all_slugs_translation => $slug_original ) {
+
+                            if ( isset( $slug_original[ $language_code ] ) ) {
+
+                                $language_is_found_in_this_array_of_slugs = true;
+
+                                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['original']   = $slug_original['original'];
+                                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['translated'] = $slug_original[ $language_code ]['translated'];
+                                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['status']     = $slug_original[ $language_code ]['status'];
+                                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['type']       = $slug_original['type'];
+
+                            }
+                        }
+
+                        if ( $language_is_found_in_this_array_of_slugs ) {
+                            $slug_query->insert_slugs( $array_for_translated_slugs, $language_code );
+                        }
+                    }
+                }
+            }
+            return true;
+        }else{
+            update_option( 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_type_and_tax_284', 'seopack_inactive' );
+            return true;
+        }
+    }
+
+    /*
+     * Migrating the meta based post slugs from the old structure to the new one
+     *
+     * Using batches
+     */
+    public function trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_meta_284( $language_code, $inferior_limit, $batch_size ) {
+        if ( class_exists( 'TRP_Slug_Query' ) ) {
+
+            $trp             = TRP_Translate_Press::get_trp_instance();
+            $slug_query = new TRP_Slug_Query();
+            $trp_settings    = $trp->get_component( 'settings' );
+            $settings        = $trp_settings->get_settings();
+
+            $last_id = $this->get_last_id_for_meta_based_slugs( 'postmeta', $language_code );
+
+            $extracted_slugs_array_post = array();
+            $extracted_slugs_array_post = $this->trp_get_meta_based_slugs_from_db_284( 'postmeta', $language_code, $inferior_limit, $batch_size );
+
+            $array_for_translated_slugs               = array();
+            $language_is_found_in_this_array_of_slugs = false;
+
+            foreach ( $extracted_slugs_array_post as $keep_slug_to_determine_all_slugs_translation => $slug_original ) {
+
+                $language_is_found_in_this_array_of_slugs = true;
+
+                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['original'] = $keep_slug_to_determine_all_slugs_translation;
+                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['type']     = $slug_original['type'];
+
+                if ( isset( $slug_original['translated'] ) ) {
+                    $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['translated'] = $slug_original['translated'];
+                    $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['status']     = $slug_original['status'];
+                }
+            }
+
+            if ( $language_is_found_in_this_array_of_slugs ) {
+                $slug_query->insert_slugs( $array_for_translated_slugs, $language_code );
+            }
+
+            if ( $inferior_limit + $batch_size <= $last_id ) {
+                return false;
+            } else {
+                return true;
+            }
+        }else{
+            update_option( 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_meta_284', 'seopack_inactive' );
+            return true;
+        }
+    }
+
+    /*
+     * Migrating the meta based term slugs from the old structure to the new one
+     *
+     * Using batches
+     */
+    public function trp_migrate_old_slug_to_new_parent_and_translate_slug_table_term_meta_284( $language_code, $inferior_limit, $batch_size ) {
+
+        if ( class_exists( 'TRP_Slug_Query' ) ) {
+
+            $trp             = TRP_Translate_Press::get_trp_instance();
+            $slug_query = new TRP_Slug_Query();
+            $trp_settings    = $trp->get_component( 'settings' );
+            $settings        = $trp_settings->get_settings();
+
+            $last_id = $this->get_last_id_for_meta_based_slugs( 'termmeta', $language_code );
+
+            $extracted_slugs_array_term = array();
+            $extracted_slugs_array_term = $this->trp_get_meta_based_slugs_from_db_284( 'termmeta', $language_code, $inferior_limit, $batch_size );
+
+            $array_for_translated_slugs               = array();
+            $language_is_found_in_this_array_of_slugs = false;
+
+            foreach ( $extracted_slugs_array_term as $keep_slug_to_determine_all_slugs_translation => $slug_original ) {
+
+                $language_is_found_in_this_array_of_slugs = true;
+
+                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['original'] = $keep_slug_to_determine_all_slugs_translation;
+                $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['type']     = $slug_original['type'];
+
+                if ( isset( $slug_original['translated'] ) ) {
+                    $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['translated'] = $slug_original['translated'];
+                    $array_for_translated_slugs[ $keep_slug_to_determine_all_slugs_translation ]['status']     = $slug_original['status'];
+                }
+            }
+
+            if ( $language_is_found_in_this_array_of_slugs ) {
+                $slug_query->insert_slugs( $array_for_translated_slugs, $language_code );
+            }
+
+            if ( $inferior_limit + $batch_size <= $last_id ) {
+                return false;
+            } else {
+                return true;
+            }
+        }else{
+            update_option( 'trp_migrate_old_slug_to_new_parent_and_translate_slug_table_term_meta_284', 'seopack_inactive' );
+            return true;
+        }
+    }
+
     /**
      * Migrate machine_translation_counter to a standalone row in the wp_options.
      * It's necessary for running atomic queries on it
@@ -1091,6 +1501,79 @@ class TRP_Upgrade {
                     $wpdb->query($query);
 
                 }
+            }
+        }
+
+    }
+
+    /**
+     * @return void
+     *
+     *  Verifies if the options set to 'no' in DB optimization tool are 'no' and, if so, setting them to 'yes'
+     */
+    public function set_the_options_set_in_db_optimization_tool_to_no(){
+        $array_of_options_to_check_and_set_for_db_optimization = array( "trp_regenerate_original_meta_table",
+                                                                        "trp_clean_original_meta_table",
+                                                                        "trp_updated_database_original_id_insert_166",
+                                                                        "trp_updated_database_original_id_cleanup_166",
+                                                                        "trp_updated_database_original_id_update_166",
+                                                                        "trp_remove_duplicate_dictionary_rows",
+                                                                        "trp_remove_duplicate_gettext_rows",
+                                                                        "trp_remove_duplicate_untranslated_dictionary_rows",
+                                                                        "trp_remove_cdata_original_and_dictionary_rows",
+                                                                        "trp_remove_untranslated_links_dictionary_rows",
+                                                                        "trp_replace_original_id_null" );
+
+        foreach ( $array_of_options_to_check_and_set_for_db_optimization as $option ){
+
+            if ( ( get_option( $option, 'not_set' ) == 'no' ) ){
+                update_option( $option, 'yes' );
+            }
+        }
+
+    }
+
+    /**
+     *  Used to check if the minimum pro plugin version (required after refactoring slug translation) is installed.
+     *
+     * @return bool
+     */
+
+    public function is_pro_minimum_version_met(){
+        if ( !defined('TRP_IN_SP_PLUGIN_VERSION' ) ) return true;
+
+        return version_compare( TRP_IN_SP_PLUGIN_VERSION, self::MINIMUM_DEVELOPER_VERSION, '>=' );
+    }
+
+    public function show_admin_notice_minimum_pro_version_required(){
+        //show this only on our translatepress admin pages
+        if( isset( $_GET['page'] ) && ( sanitize_text_field( $_GET['page'] ) === 'translate-press' || strpos( sanitize_text_field( $_GET['page'] ), 'trp_' ) !== false ) ){
+
+        if ( !class_exists( 'TRP_Handle_Included_Addons' ) || TRANSLATE_PRESS === 'TranslatePress - Dev' ) return; // Free or development version installed
+
+        // Legacy seo pack doesn't have the minimum version met. It is useful to keep the legacy seo pack version like this because it helps with knowing when to show Run the update
+        if ( $this->is_pro_minimum_version_met() || ( isset( $this->settings['trp_advanced_settings']['load_legacy_seo_pack'] ) && $this->settings['trp_advanced_settings']['load_legacy_seo_pack'] === 'yes' ) )
+            return;
+
+        $minimum_version = TRANSLATE_PRESS === 'TranslatePress - Personal' ? self::MINIMUM_PERSONAL_VERSION : self::MINIMUM_DEVELOPER_VERSION;
+
+        echo '<div class="notice notice-error">
+                      <p>' . wp_kses( sprintf( __('Please <strong> update %1$s </strong> to version %2$s or newer.<br>Your currently installed version of %1$s is deprecated. The plugin will continue to work as expected. However, newer versions have improved functionality and compatibility with various permalink structures. ', 'translatepress-multilingual'), TRANSLATE_PRESS, $minimum_version ), [ 'strong' => [], 'br' => [] ] ) . '</p>' .
+             '</div>';
+        }
+    }
+
+    public function dont_update_db_if_seopack_inactive(){
+        $array_of_option_names = ['trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_type_and_tax_284','trp_migrate_old_slug_to_new_parent_and_translate_slug_table_post_meta_284','trp_migrate_old_slug_to_new_parent_and_translate_slug_table_term_meta_284'];
+        foreach ($array_of_option_names as $option ) {
+            $option_result = get_option( $option, 'not_set' );
+            if ( $option_result === 'yes' ) {
+                continue;
+            }
+
+            if ( $option_result === 'no' && !class_exists( 'TRP_Slug_Query' ) ) {
+                update_option( $option, 'seopack_inactive' );
+                delete_option('trp_show_error_db_message');
             }
         }
     }

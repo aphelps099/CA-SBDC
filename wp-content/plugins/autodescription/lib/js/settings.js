@@ -41,9 +41,9 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.0.0
 	 * @access public
-	 * @type {(Object<string, *>)|boolean|null} l10n Localized strings
+	 * @type {(Object<string,*>)|boolean|null} l10n Localized strings
 	 */
-	const l10n = 'undefined' !== typeof tsfSettingsL10n && tsfSettingsL10n;
+	const l10n = tsfSettingsL10n;
 
 	/**
 	 * Returns settings ID.
@@ -51,11 +51,12 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.1.1
 	 * @access private
 	 *
-	 * @function
 	 * @param {string} name
 	 * @return {string} The full settings ID/name.
 	 */
-	const _getSettingsId = name => `autodescription-site-settings[${name}]`;
+	function _getSettingsId( name ) {
+		return `autodescription-site-settings[${name}]`;
+	}
 
 	/**
 	 * Clone of tsf.dispatchAtInteractive.
@@ -72,15 +73,36 @@ window.tsfSettings = function( $ ) {
 	const _dispatchAtInteractive = tsf.dispatchAtInteractive;
 
 	/**
+	 * Initializes the settings page.
+	 *
+	 * @since 5.1.0
+	 * @access private
+	 */
+	function _initSubmit() {
+
+		const form = document.getElementById( 'tsf-settings' );
+
+		// How?
+		if ( ! form ) return;
+
+		const submitButtons = form.querySelectorAll( '[name=submit]' );
+		// Prevent double-submit.
+		form.addEventListener(
+			'submit',
+			() => {
+				submitButtons.forEach( el => el.disabled = true );
+				setTimeout( () => submitButtons.forEach( el => el.disabled = false ), 3000 );
+			},
+		);
+	}
+
+	/**
 	 * Initializes input helpers for the General Settings.
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 *
-	 * @function
-	 * @return {(undefined|null)}
 	 */
-	const _initGeneralSettings = () => {
+	function _initGeneralSettings() {
 
 		/**
 		 * Triggers displaying/hiding of character counters on the settings page.
@@ -118,9 +140,35 @@ window.tsfSettings = function( $ ) {
 		document.getElementById( _getSettingsId( 'display_pixel_counter' ) )
 			?.addEventListener( 'click', togglePixelCounterDisplay );
 
-		const excludedPostTypes     = new Set(), // Excluded post type.
+		/**
+		 * Emits a canonical URL scheme change to rewrite canonical URLs on the page.
+		 *
+		 * @since 5.1.0
+		 * @access private
+		 *
+		 * @function
+		 * @param {Event} event
+		 */
+		const dispatchCanonicalSchemeUpdate = event => {
+
+			const selected = event.target.value,
+				  values   = JSON.parse( event.target.dataset?.values || 0 ) || []; // not cached OK.
+
+			document.body.dispatchEvent( new CustomEvent(
+				'tsf-canonical-scheme-changed',
+				{
+					detail: {
+						scheme: values[ selected ] ?? selected,
+					},
+				},
+			) );
+		}
+		document.getElementById( _getSettingsId( 'canonical_scheme' ) )
+			?.addEventListener( 'change', dispatchCanonicalSchemeUpdate );
+
+		const excludedPostTypes     = new Set(), // Excluded post types.
 			  excludedTaxonomies    = new Set(), // Excluded taxonomies.
-			  excludedPtTaxonomies  = new Set(), // Excluded taxonomies via post type.
+			  excludedPtTaxonomies  = new Set(), // Excluded taxonomies via post types.
 			  excludedTaxonomiesAll = new Set(); // Combined E_Taxonomies + E_PtTaxonomies
 		const validateTaxonomyState = () => {
 			// We want to show that the taxonomy is excluded, but make that auto-reversible, and somehow still enactable?
@@ -240,11 +288,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 *
-	 * @function
-	 * @return {(undefined|null)}
 	 */
-	const _initColorPicker = () => {
+	function _initColorPicker() {
 
 		document.querySelectorAll( '.tsf-color-picker' ).forEach( element => {
 			// We might as well switch to jQuery instantly since wpColorPicker added its prototype to it.
@@ -255,7 +300,7 @@ window.tsfSettings = function( $ ) {
 			$input.wpColorPicker( {
 				defaultColor: defaultColor,
 				width: 238,
-				change: ( event, ui ) => {
+				change: () => {
 					currentColor = $input.wpColorPicker( 'color' );
 
 					if ( '' === currentColor )
@@ -285,10 +330,8 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.0.0
 	 * @since 4.0.5 Fixed the additionsToggle getter.
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initTitleSettings = () => {
+	function _initTitleSettings() {
 
 		const additionsToggle            = document.getElementById( _getSettingsId( 'title_rem_additions' ) ),
 			  socialAdditionsToggle      = document.getElementById( _getSettingsId( 'social_title_rem_additions' ) ),
@@ -434,7 +477,6 @@ window.tsfSettings = function( $ ) {
 		 *
 		 * @function
 		 * @param {Event} event
-		 * @return {(undefined|null)}
 		 */
 		const addNoFocusClass = event => {
 			event.target.classList.add( 'tsf-no-focus-ring' );
@@ -473,15 +515,55 @@ window.tsfSettings = function( $ ) {
 	}
 
 	/**
+	 * Initializes home's general tab meta input listeners.
+	 *
+	 * @since 4.0.0
+	 * @access private
+	 */
+	function _initHomeGeneralListeners() {
+
+		/**
+		 * Enqueues meta title and description input triggers.
+		 * These triggers force an update for the counters without affecting tsfAys.
+		 *
+		 * @function
+		 */
+		const enqueueGeneralInputListeners = () => {
+			tsfTitle.enqueueUnregisteredInputTrigger( _getSettingsId( 'homepage_title' ) );
+			tsfDescription.enqueueUnregisteredInputTrigger( _getSettingsId( 'homepage_description' ) );
+		}
+
+		/**
+		 * Enqueues doctitles input trigger synchronously on postbox collapse or open.
+		 *
+		 * @function
+		 * @param {!jQuery.Event} event
+		 * @param {Element}       elem
+		 */
+		const triggerPostboxSynchronousUnregisteredInput = ( event, elem ) => {
+			if ( 'autodescription-homepage-settings' === elem.id ) {
+				let inside = elem.querySelector( '.inside' );
+				if ( inside.offsetHeight > 0 && inside.offsetWidth > 0 ) {
+					enqueueGeneralInputListeners();
+				}
+			}
+		}
+		// jQuery: WP action.
+		$( document ).on( 'postbox-toggled', triggerPostboxSynchronousUnregisteredInput );
+
+		// This also triggers change for the homepage description, which isn't necessary. But, this trims down codebase.
+		document.getElementById( 'tsf-homepage-tab-general' )
+			?.addEventListener( 'tsf-tab-toggled', enqueueGeneralInputListeners );
+	}
+
+	/**
 	 * Initializes Homepage's meta title input.
 	 *
 	 * @since 4.0.0
 	 * @since 4.2.8 Now parses custom state _defaultTitleLocked.
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initHomeTitleSettings = () => {
+	function _initHomeTitleSettings() {
 
 		const _titleId = _getSettingsId( 'homepage_title' );
 
@@ -675,10 +757,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initHomeDescriptionSettings = () => {
+	function _initHomeDescriptionSettings() {
 
 		const descId = _getSettingsId( 'homepage_description' );
 
@@ -701,10 +781,9 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.2.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initHomeSocialSettings = () => {
+	function _initHomeSocialSettings() {
+
 		const _socialGroup = 'homepage_social_settings';
 
 		tsfSocial.setInputInstance(
@@ -763,46 +842,112 @@ window.tsfSettings = function( $ ) {
 	}
 
 	/**
-	 * Initializes home's general tab meta input listeners.
+	 * Initializes Homepage's visibility input.
 	 *
-	 * @since 4.0.0
+	 * @since 5.1.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initHomeGeneralListeners = () => {
+	function _initHomeVisibilitySettings() {
 
-		/**
-		 * Enqueues meta title and description input triggers
-		 *
-		 * @function
-		 */
-		const enqueueGeneralInputListeners = () => {
-			tsfTitle.enqueueUnregisteredInputTrigger( _getSettingsId( 'homepage_title' ) );
-			tsfDescription.enqueueUnregisteredInputTrigger( _getSettingsId( 'homepage_description' ) );
+		const _canonicalId = _getSettingsId( 'homepage_canonical' ),
+			  _noindexId   = _getSettingsId( 'homepage_noindex' );
+
+		const canonicalInput = document.getElementById( _canonicalId ),
+			  noindexInput   = document.getElementById( _noindexId );
+
+		if ( ! canonicalInput ) return;
+
+		// Prefixed with B because I don't trust using 'protected' (might become reserved).
+		const BNOINDEX = 0b10;
+
+		let canonicalPhState = 0b00;
+
+		tsfCanonical.setInputElement( canonicalInput );
+
+		const state  = JSON.parse( document.getElementById( `tsf-canonical-data_${_canonicalId}` )?.dataset.state || 0 );
+
+		if ( state ) {
+			tsfCanonical.updateStateOf( _canonicalId, 'allowReferenceChange', ! state.refCanonicalLocked );
+			tsfCanonical.updateStateOf( _canonicalId, 'defaultCanonical', state.defaultCanonical.trim() );
+			tsfCanonical.updateStateOf( _canonicalId, 'preferredScheme', state.preferredScheme.trim() );
+			tsfCanonical.updateStateOf( _canonicalId, 'urlStructure', state.urlStructure );
 		}
 
+		tsfCanonical.enqueueTriggerUnregisteredInput( _canonicalId );
+
+		document.body.addEventListener( 'tsf-canonical-scheme-changed', event => {
+			tsfCanonical.updateStateOf( _canonicalId, 'preferredScheme', event.detail.scheme );
+		} );
+
 		/**
-		 * Enqueues doctitles input trigger synchronously on postbox collapse or open.
+		 * @since 5.1.0
 		 *
 		 * @function
-		 * @param {!jQuery.Event} event
-		 * @param {Element}       elem
 		 */
-		const triggerPostboxSynchronousUnregisteredInput = ( event, elem ) => {
-			if ( 'autodescription-homepage-settings' === elem.id ) {
-				let inside = elem.querySelector( '.inside' );
-				if ( inside.offsetHeight > 0 && inside.offsetWidth > 0 ) {
-					enqueueGeneralInputListeners();
-				}
+		const updateCanonicalPlaceholder = () => {
+			tsfCanonical.updateStateOf(
+				_canonicalId,
+				'showUrlPlaceholder',
+				canonicalPhState & BNOINDEX
+					? false
+					: true,
+			);
+		}
+		updateCanonicalPlaceholder();
+
+		let pageNoindex = false,
+			siteNoindex = false;
+
+		const updateNoindexState = () => {
+
+			let type = 'index';
+
+			switch ( state.noindexQubit ) {
+				case 0: // default, unset since unknown.
+					if ( noindexInput?.checked || siteNoindex || pageNoindex || state.isProtected ) {
+						type = 'noindex';
+					} else {
+						type = 'index';
+					}
+					break;
+				case -1: // force index
+					type = 'index';
+					break;
+				case 1: // force noindex
+					type = 'noindex';
 			}
-		}
-		// jQuery: WP action.
-		$( document ).on( 'postbox-toggled', triggerPostboxSynchronousUnregisteredInput );
 
-		// This also triggers change for the homepage description, which isn't necessary. But, this trims down codebase.
-		document.getElementById( 'tsf-homepage-tab-general' )
-			?.addEventListener( 'tsf-tab-toggled', enqueueGeneralInputListeners );
+			if ( 'noindex' === type ) {
+				canonicalPhState |= BNOINDEX;
+			} else {
+				canonicalPhState &= ~BNOINDEX;
+			}
+
+			updateCanonicalPlaceholder();
+		}
+		noindexInput?.addEventListener( 'change', updateNoindexState );
+
+		if ( state.isPage ) {
+			const checkPTNoindex = event => {
+				const { robotsType, set } = event.detail;
+
+				if ( 'noindex' !== robotsType ) return;
+
+				pageNoindex = set.has( 'page' );
+				updateNoindexState();
+			}
+			document.body.addEventListener( 'tsf-post-type-robots-changed', checkPTNoindex );
+		}
+
+		const checkSiteNoindex = event => {
+			const { checked, robotsType } = event.detail;
+
+			if ( 'noindex' !== robotsType ) return;
+
+			siteNoindex = !! checked;
+			updateNoindexState();
+		}
+		document.body.addEventListener( 'tsf-site-robots-changed', checkSiteNoindex );
 	}
 
 	/**
@@ -815,7 +960,9 @@ window.tsfSettings = function( $ ) {
 	 * @param {String} id
 	 * @return {String} The option name/id.
 	 */
-	const _getPtaInputId = ( postType, id ) => `${_getSettingsId('pta')}[${postType}][${id}]`;
+	function _getPtaInputId( postType, id ) {
+		return `${_getSettingsId('pta')}[${postType}][${id}]`;
+	}
 
 	let _cachedPtaData = void 0;
 	/**
@@ -827,19 +974,19 @@ window.tsfSettings = function( $ ) {
 	 * @param {string|undefined} postType
 	 * @return {{label:string,url:string,hasPosts:boolean}}
 	 */
-	const _getPtaData = () => _cachedPtaData ||= JSON.parse(
-		document.getElementById( 'tsf-post-type-archive-data' )?.dataset.postTypes || 0
-	) || {};
+	function _getPtaData() {
+		return _cachedPtaData ||= JSON.parse(
+			document.getElementById( 'tsf-post-type-archive-data' )?.dataset.postTypes || 0
+		) || {};
+	}
 
 	/**
 	 * Initializes all Post Type Archive setting fields.
 	 *
 	 * @since 4.2.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initPtaSettings = () => {
+	function _initPtaSettings() {
 
 		const postTypeData = _getPtaData(),
 			  itemLength   = Object.keys( postTypeData ).length;
@@ -871,10 +1018,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.2.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initPtaSelector = () => {
+	function _initPtaSelector() {
 
 		const postTypeData = _getPtaData();
 
@@ -946,10 +1091,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.2.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initPtaListeners = () => {
+	function _initPtaListeners() {
 
 		const augmentSwitcher = event => {
 			const { postType, set } = event.detail,
@@ -979,10 +1122,9 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	const _initPtaTitleSettings = postType => {
+	function _initPtaTitleSettings( postType ) {
 
 		const _titleId   = _getPtaInputId( postType, 'doctitle' ),
 			  titleInput = document.getElementById( _titleId );
@@ -1069,10 +1211,9 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	const _initPtaDescriptionSettings = postType => {
+	function _initPtaDescriptionSettings( postType ) {
 
 		const _descId   = _getPtaInputId( postType, 'description' ),
 			  descInput = document.getElementById( _descId );
@@ -1097,10 +1238,9 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	const _initPtaSocialSettings = postType => {
+	function _initPtaSocialSettings( postType ) {
 
 		const _socialGroup = `pta_social_settings_${postType}`;
 
@@ -1151,16 +1291,60 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	const _initPtaVisibilitySettings = postType => {
+	function _initPtaVisibilitySettings( postType ) {
+
+		const canonicalId    = _getPtaInputId( postType, 'canonical' ),
+		      noindexId      = _getPtaInputId( postType, 'noindex' );
+
+		const canonicalInput = document.getElementById( canonicalId ),
+			  indexSelect   = document.getElementById( noindexId );
+
+		// Prefixed with B because I don't trust using 'protected' (might become reserved).
+		const BNOINDEX = 0b10;
+
+		let canonicalPhState = 0b00;
+		/**
+		 * @since 5.1.0
+		 *
+		 * @function
+		 */
+		const updateCanonicalPlaceholder = () => {
+			tsfCanonical.updateStateOf(
+				canonicalId,
+				'showUrlPlaceholder',
+				canonicalPhState & BNOINDEX
+					? false
+					: true,
+			);
+		}
+
+		if ( canonicalInput ) {
+
+			tsfCanonical.setInputElement( canonicalInput );
+
+			const state  = JSON.parse( document.getElementById( `tsf-canonical-data_${canonicalId}` )?.dataset.state || 0 );
+
+			if ( state ) {
+				tsfCanonical.updateStateOf( canonicalId, 'allowReferenceChange', ! state.refCanonicalLocked );
+				tsfCanonical.updateStateOf( canonicalId, 'defaultCanonical', state.defaultCanonical.trim() );
+				tsfCanonical.updateStateOf( canonicalId, 'preferredScheme', state.preferredScheme.trim() );
+				tsfCanonical.updateStateOf( canonicalId, 'urlStructure', state.urlStructure );
+			}
+
+			tsfCanonical.enqueueTriggerUnregisteredInput( canonicalId );
+
+			document.body.addEventListener( 'tsf-canonical-scheme-changed', event => {
+				tsfCanonical.updateStateOf( canonicalId, 'preferredScheme', event.detail.scheme );
+			} );
+		}
 
 		const robotsData = {
 			site: new Map(),
 			pt:   new Map(),
 		}
-		const isOff = robotsType => {
+		const isNo_Default = robotsType => {
 			let off = false;
 
 			if ( 'noindex' === robotsType )
@@ -1168,20 +1352,22 @@ window.tsfSettings = function( $ ) {
 
 			return off || robotsData.site.get( robotsType ) || robotsData.pt.get( robotsType );
 		}
-		const setDefaultRobotsValue = robotsType => {
+		const updateRobots = robotsType => {
 			const robotsSelect = document.getElementById( _getPtaInputId( postType, robotsType ) );
 
-			const _defaultIndexOption = robotsSelect?.querySelector( '[value="0"]' ),
-				  _data               = robotsSelect?.dataset || {};
+			if ( ! robotsSelect ) return;
+
+			const _defaultIndexOption = [ ...robotsSelect.options ].find( o => '0' === o.value ),
+				  _data               = robotsSelect.dataset || {};
 
 			const newHTML = _data.defaultI18n?.replace(
 				'%s',
 				tsf.decodeEntities(
-					isOff( robotsType ) ? _data.defaultOff : _data.defaultOn,
+					isNo_Default( robotsType ) ? _data.defaultOff : _data.defaultOn,
 				)
 			);
 
-			if ( newHTML !== _defaultIndexOption.innerHTML ) {
+			if ( newHTML !== _defaultIndexOption?.innerHTML ) {
 				_defaultIndexOption.innerHTML = newHTML;
 				robotsSelect.dispatchEvent( new Event( 'change' ) );
 			}
@@ -1191,35 +1377,32 @@ window.tsfSettings = function( $ ) {
 			// Nothing to see here.
 			if ( postType !== pt ) return;
 			robotsData.pt.set( robotsType, set.has( postType ) );
-			setDefaultRobotsValue( robotsType );
+			updateRobots( robotsType );
 		}
 		const _registerSiteDefaultRobotsValue = event => {
 			const { checked, robotsType } = event.detail;
 			robotsData.site.set( robotsType, !! checked );
-			setDefaultRobotsValue( robotsType );
+			updateRobots( robotsType );
 		}
 		document.body.addEventListener( 'tsf-post-type-robots-changed', _registerPTDefaultRobotsValue );
 		document.body.addEventListener( 'tsf-site-robots-changed', _registerSiteDefaultRobotsValue );
 
 		[ 'noindex', 'nofollow', 'noarchive' ].forEach( type => {
-			setDefaultRobotsValue( type )
+			updateRobots( type )
 		} );
 
-		const canonicalInput = document.getElementById( _getPtaInputId( postType, 'canonical' ) );
-		const indexInput     = document.getElementById( _getPtaInputId( postType, 'noindex' ) );
 		/**
-		 * @since 4.1.2
+		 * @since 5.1.0
 		 *
 		 * @function
 		 * @param {Number} value
 		 */
 		const setRobotsIndexingState = value => {
-			let type       = '',
-				placeholder = '';
+			let type = '';
 
-			switch ( value ) {
+			switch ( +value ) {
 				case 0: // default, unset since unknown.
-					type = isOff( 'noindex' ) ? 'noindex' : 'index';
+					type = isNo_Default( 'noindex' ) ? 'noindex' : 'index';
 					break;
 				case -1: // index
 					type = 'index';
@@ -1228,19 +1411,16 @@ window.tsfSettings = function( $ ) {
 					type = 'noindex';
 					break;
 			}
-
 			if ( 'noindex' === type ) {
-				placeholder = '';
+				canonicalPhState |= BNOINDEX;
 			} else {
-				placeholder = _getPtaData()[ postType ].url;
+				canonicalPhState &= ~BNOINDEX;
 			}
 
-			canonicalInput.placeholder = placeholder;
+			updateCanonicalPlaceholder();
 		}
-		if ( canonicalInput && indexInput ) {
-			indexInput.addEventListener( 'change', event => setRobotsIndexingState( +event.target.value ) );
-			setRobotsIndexingState( +indexInput.value );
-		}
+		indexSelect.addEventListener( 'change', event => setRobotsIndexingState( event.target.value ) );
+		setRobotsIndexingState( indexSelect.value );
 	}
 
 	/**
@@ -1249,10 +1429,9 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {String} postType The post type name.
 	 */
-	const _initPtaMainListeners = postType => {
+	function _initPtaMainListeners( postType ) {
 
 		/**
 		 * Enqueues meta title and description input triggers
@@ -1306,10 +1485,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.1.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initSocialSettings = () => {
+	function _initSocialSettings() {
 
 		const socialTitleRemoveAdditions = document.getElementById( _getSettingsId( 'social_title_rem_additions' ) );
 		/**
@@ -1440,10 +1617,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 5.0.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initSchemaSettings = () => {
+	function _initSchemaSettings() {
 
 		const sdToggle = document.getElementById( _getSettingsId( 'ld_json_enabled' ) );
 		/**
@@ -1525,10 +1700,8 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.0.2
 	 * @since 4.1.1 Now adds taxonomy warnings.
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initRobotsInputs = () => {
+	function _initRobotsInputs() {
 
 		const copyrightToggle = document.getElementById( _getSettingsId( 'set_copyright_directives' ) );
 
@@ -1752,10 +1925,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.2.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initRobotsSupport = () => {
+	function _initRobotsSupport() {
 
 		/**
 		 * @param {string} postType
@@ -1901,10 +2072,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 4.0.0
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initWebmastersInputs = () => {
+	function _initWebmastersInputs() {
 
 		const webmasterNodes = [
 			"google_verification",
@@ -1941,10 +2110,8 @@ window.tsfSettings = function( $ ) {
 	 *
 	 * @since 5.0.5
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initSitemapInputs = () => {
+	function _initSitemapInputs() {
 
 		const optimizedSitemapsToggle = document.getElementById( _getSettingsId( 'sitemaps_output' ) ),
 			  cacheSitemapsToggle     = document.getElementById( _getSettingsId( 'cache_sitemap' ) );
@@ -1999,45 +2166,46 @@ window.tsfSettings = function( $ ) {
 	 * Initializes settings scripts on TSF-load.
 	 *
 	 * @since 4.0.0
+	 * @since 5.1.0 Added error handling.
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _loadSettings = () => {
-		_initGeneralSettings();
-		_initTitleSettings();
+	function _loadSettings() {
+		// One is not reliant on the other; this way, if one crashes, the rest still works.
+		[
+			_initSubmit,
 
-		_initHomeTitleSettings();
-		_initHomeDescriptionSettings();
-		_initHomeSocialSettings();
-		_initHomeGeneralListeners();
+			_initGeneralSettings,
 
-		_initPtaSettings();
+			_initTitleSettings,
 
-		_initSocialSettings();
+			_initHomeGeneralListeners,
+			_initHomeTitleSettings,
+			_initHomeDescriptionSettings,
+			_initHomeSocialSettings,
+			_initHomeVisibilitySettings,
 
-		_initSchemaSettings();
+			_initPtaSettings,
 
-		_initRobotsInputs();
-		_initRobotsSupport();
+			_initSocialSettings,
 
-		_initWebmastersInputs();
+			_initSchemaSettings,
 
-		_initSitemapInputs();
+			_initRobotsInputs,
+			_initRobotsSupport,
 
-		_initColorPicker();
+			_initWebmastersInputs,
+
+			_initSitemapInputs,
+
+			_initColorPicker,
+		].forEach( fn => {
+			try {
+				fn();
+			} catch ( error ) {
+				console.error( `Error in ${fn.name}:`, error );
+			}
+		} );
 	}
-
-	/**
-	 * Initializes settings scripts on TSF-ready.
-	 *
-	 * @since 4.0.0
-	 * @since 4.1.0 Now registers the refNa title input.
-	 * @access private
-	 *
-	 * @function
-	 */
-	const _readySettings = () => { }
 
 	/**
 	 * Sets a class to the active element which helps excluding focus rings.
@@ -2045,11 +2213,8 @@ window.tsfSettings = function( $ ) {
 	 * @since 4.0.0
 	 * @since 4.1.3 Now offloaded to tsfTabs.
 	 * @access private
-	 *
-	 * @function
-	 * @return {(undefined|null)}
 	 */
-	const _initTabs = () => {
+	function _initTabs() {
 		tsfTabs.initStack(
 			'tsfSettings',
 			{
@@ -2085,13 +2250,12 @@ window.tsfSettings = function( $ ) {
 			).forEach( el => { headerEnd.insertAdjacentElement( 'afterend', el ) } );
 
 			document.body.addEventListener( 'tsf-onload', _loadSettings );
-			document.body.addEventListener( 'tsf-ready', _readySettings );
 
 			// Initializes tabs early; we rely a fallback event that tsf-onload/tsf-ready uses there.
 			_initTabs();
-		}
+		},
 	}, {
-		l10n
+		l10n,
 	} );
 }( jQuery );
 window.tsfSettings.load();

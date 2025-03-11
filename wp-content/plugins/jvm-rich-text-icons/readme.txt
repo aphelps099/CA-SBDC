@@ -1,24 +1,26 @@
 === JVM Gutenberg Rich Text Icons ===
 Contributors: jorisvanmontfort
 Donate link: https://www.paypal.com/donate/?hosted_button_id=VXZJG9GC34JJU
-Tags: gutenberg, editor, icons, icon set, font awesome, fontello, ACF, SVG icons
+Tags: gutenberg, SVG, icon, font awesome, ACF
 Requires at least: 5.4
-Tested up to: 6.5.3
+Tested up to: 6.6.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Playground: true
 
 Add Font Awesome icons, or icons from a custom icon set to rich text fields anywhere in the Gutenberg block editor!
 
 == Description ==
-This plugin is a nice toolset for anyone wanting to integrate icons into the Gutenberg editor or options created with Advanced Custom Fields. 
+A plugin / toolset for anyone wanting to integrate (SVG) icons into the Gutenberg editor or options created with Advanced Custom Fields. 
 
-Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the Gutenberg block editor, or add a dedicated icon block from within the Gutenberg editor.
+Add inline icons to rich text fields like: paragraphs, headings, lists or buttons anywhere in the WordPress block editor, or add a dedicated icon block from within the Gutenberg editor.
 
 This plugin ships with the free Font Awesome icon set as default icon set. You can choose between version 4.x, 5.x and version 6.x.
-This plugin also provides an easy to use interface for creating a custom icon set based on SVG icons. Custom icons can be upload from the plugin settings using an easy to use drag & drop uploader.
+The dedicated icon block contains several styling options to customize the icon in the icon block.
+The plugin also provides an easy to use interface for creating a custom icon set based on SVG icons. Custom icons can be uploaded from the plugin settings using an easy to use drag & drop uploader.
 
-The plugin also creates a new field type for Advanced Custom Fields (ACF) : JVM Icon. Now you can create custom fields that work with a the font awsome icon set or even beter: A custom created icon set.
+For users of Advanced Custom Fields (ACF) the plugin also creates a new field type: JVM Icon. This allows you to create custom fields that work with a the font awsome icon or any custom created icon set.
 
 If font awesome or the built in custom icon set configurator do not meet your needs you can also create your own custom icon set and load it using hooks provided by the plugin.
 
@@ -86,6 +88,15 @@ add_filter('jvm_richtext_icons_show_settings', '__return_false');
 Please note that settings will still be loaded so please make sure you have set the settings to default font awesome if you are loading a custom icon set with the plugin hooks.
 
 == Changelog ==
+
+= 1.3.2 =
+Added a font-size (pixels) option for single icon block.
+
+= 1.3.1 =
+Added color options for single icon block.
+
+= 1.3.0 =
+Added alignment and spacing options for single icon block.
 
 = 1.2.9 =
 Added an option for rendering technology for custom icons sets. You can now also choose rendering with a ::before or ::after pseudo element instead of the regular HTML / CSS. This allows for more CSS flexibility. For example adding backgrounds or hover effects.

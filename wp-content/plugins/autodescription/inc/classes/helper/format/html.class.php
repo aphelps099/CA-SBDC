@@ -224,7 +224,7 @@ class HTML {
 							 * Basically, the content and closing tag reader is split from clear_query/flow_query's regex.
 							 * Akin to https://regex101.com/r/BqUCCG/1.
 							 */
-							sprintf(
+							\sprintf(
 								'/<(?!\/)(?:%s)\b(?:[^=>\/]*=(?:(?:([\'"])[^$]*?\g{-1})|[\s\/]*))*+[^>]*>/i',
 								implode( '|', $elements )
 							),
@@ -243,7 +243,7 @@ class HTML {
 
 						// Akin to https://regex101.com/r/LR8iem/6. (This might be outdated, copy work!)
 						// Ref https://www.w3.org/TR/2011/WD-html5-20110525/syntax.html (specifically end-tags)
-						$regex = sprintf(
+						$regex = \sprintf(
 							'/<(?!\/)(%s)\b([^=>\/]*=(?:(?:([\'"])[^$]*?\g{-1})|[\s\/]*))*+(?:(?2)++|[^>]*>)((?:[^<]*+(?:<(?!\/?\1\b.*?>)[^<]+)*|(?R))*?)<\/\1\s*>/i', // good enough
 							implode( '|', $elements )
 						);
@@ -292,10 +292,13 @@ class HTML {
 	 *              6. Renamed from `s_excerpt`.
 	 *
 	 * @param string $html The HTML to extract content from.
-	 * @param array  $args The extraction parameters : {
-	 *    bool      allow_shortcodes => Whether to allow shortcodes. Default true.
-	 *    bool      sanitize         => Whether to sanitize spacing and make the return value single-line. Default true.
-	 *    false|int clamp            => Set to int to clamp the sentence intelligently to that number of characters.
+	 * @param array  $args {
+	 *     Optional. The extraction parameters.
+	 *
+	 *     @type bool      $allow_shortcodes Whether to allow shortcodes. Default true.
+	 *     @type bool      $sanitize         Whether to sanitize spacing and make the return value single-line.
+	 *                                       Default true.
+	 *     @type false|int $clamp            Set to int to clamp the sentence intelligently to that number of characters.
 	 * }
 	 * @return string The extracted html content.
 	 */

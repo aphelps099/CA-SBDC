@@ -269,6 +269,7 @@ class OMAPI_Blocks {
 				'monsterlink'           => esc_url_raw( OPTINMONSTER_SHAREABLE_LINK ) . '/c/',
 				'wpVersion'             => $GLOBALS['wp_version'],
 				'customFieldsSupported' => post_type_supports( get_post_type( $post ), 'custom-fields' ),
+				'pluginUrl'             => esc_url_raw( plugin_dir_url( dirname( __FILE__ ) ) ),
 			);
 		}
 

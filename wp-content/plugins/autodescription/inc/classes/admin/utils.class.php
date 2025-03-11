@@ -62,10 +62,12 @@ class Utils {
 		// menu_page_url() always uses esc_url() for display, breaking ampersands. Undo that via html_entity_decode()
 		$url = html_entity_decode( \menu_page_url( $page_hook, false ) );
 
-		if ( ! $url ) exit( 'Redirect error: Page not found' );
+		$url or exit( 'Redirect error: Page not found' );
 
-		$target = \add_query_arg( array_filter( $query_args, 'strlen' ), $url );
-		$target = \sanitize_url( $target, [ 'https', 'http' ] );
+		$target = \sanitize_url(
+			\add_query_arg( array_filter( $query_args, 'strlen' ), $url ),
+			[ 'https', 'http' ],
+		);
 
 		// Predict white screen:
 		$headers_sent = headers_sent();
@@ -85,7 +87,7 @@ class Utils {
 			printf(
 				'<p><strong>%s</strong></p>',
 				Markdown::convert(
-					sprintf(
+					\sprintf(
 						/* translators: %s = Redirect URL markdown */
 						\esc_html__( 'There has been an error redirecting. Refresh the page or follow [this link](%s).', 'autodescription' ),
 						\esc_url( $target ),

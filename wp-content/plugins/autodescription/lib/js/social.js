@@ -34,15 +34,15 @@
  *
  * @constructor
  */
-window.tsfSocial = function() {
+window.tsfSocial = function () {
 
 	/**
 	 * @since 4.2.0
 	 * @access private
 	 * @type {(Map<string,{
-	 *   group:  string,
-	 *   inputs: {ogTitle:Element,twTitle:Element,ogDesc:Element,twDesc:Element}
-	 *   refs:   {titleInput:Element,descInput:Element,title:Element,titleNa:Element,desc:Element}
+	 *     group:  string,
+	 *     inputs: {ogTitle:Element,twTitle:Element,ogDesc:Element,twDesc:Element}
+	 *     refs:   {titleInput:Element,descInput:Element,title:Element,titleNa:Element,desc:Element}
 	 * }>)} The input element instances.
 	 */
 	const inputInstances = new Map();
@@ -60,11 +60,10 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {string} group
 	 * @param {string} part
 	 */
-	const _tickState = ( group, part ) => {
+	function _tickState( group, part ) {
 		switch ( part ) {
 			case 'addAdditions':
 				const titleRef = getInputInstance( group ).refs.title?.dataset?.for;
@@ -81,12 +80,13 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {string}             group The group ID.
 	 * @param {(string|undefined)} part  The part to return. Leave empty to return the whole state.
-	 * @return {(Object<string, *>)|*|null}
+	 * @return {(Object<string,*>)|*|null}
 	 */
-	const getStateOf = ( group, part ) => part ? states[ group ]?.[ part ] : states[ group ];
+	function getStateOf( group, part ) {
+		return part ? states[ group ]?.[ part ] : states[ group ];
+	}
 
 	/**
 	 * Updates state of ID.
@@ -97,12 +97,11 @@ window.tsfSocial = function() {
 	 * @access public
 	 * @TODO Allow part to be string[], so we can get 'substates'?
 	 *
-	 * @function
 	 * @param {string} group The group ID.
 	 * @param {string} part  The state index to change.
 	 * @param {*}      value The value to set the state to.
 	 */
-	const updateStateOf = ( group, part, value ) => {
+	function updateStateOf( group, part, value ) {
 
 		if ( states[ group ][ part ] === value ) return;
 
@@ -119,12 +118,11 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {string}          part   The state index to change.
 	 * @param {*}               value  The value to set the state to.
 	 * @param {string|string[]} except The input group IDs to exclude from updates.
 	 */
-	const updateStateAll = ( part, value, except ) => {
+	function updateStateAll( part, value, except ) {
 
 		except = Array.isArray( except ) ? except : [ except ];
 
@@ -141,12 +139,11 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} group    The group ID.
 	 * @param {string} titleRef The group's title reference ID.
 	 * @param {string} descRef  The group's description reference ID.
 	 */
-	const setInputInstance = ( group, titleRef, descRef ) => {
+	function setInputInstance( group, titleRef, descRef ) {
 
 		const _getElement = type => document.querySelector(
 			`[data-tsf-social-group="${group}"][data-tsf-social-type="${type}"]`,
@@ -203,10 +200,11 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} group The group ID.
 	 */
-	const getInputInstance = group => inputInstances.get( group );
+	function getInputInstance( group ) {
+		return inputInstances.get( group );
+	}
 
 	/**
 	 * Loads Title actions for group.
@@ -214,10 +212,9 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {string} group The group ID.
 	 */
-	const _loadTitleActions = group => {
+	function _loadTitleActions( group ) {
 
 		const { inputs, refs } = getInputInstance( group );
 
@@ -297,30 +294,23 @@ window.tsfSocial = function() {
 			inputs.ogTitle && updateCounter( inputs.ogTitle, getActiveValue( 'og' ), 'opengraph' );
 			inputs.twTitle && updateCounter( inputs.twTitle, getActiveValue( 'twitter' ), 'twitter' );
 		}
-		let updateRefTitleBuffer = void 0;
-		const updateRefTitle = () => {
-			clearTimeout( updateRefTitleBuffer );
-			updateRefTitleBuffer = setTimeout(
-				() => {
-					setPlaceholders();
-					updateSocialCounters();
-				},
-				1000/60, // 60fps.
-			);
-		};
+		const updateRefTitle = tsfUtils.debounce(
+			() => {
+				setPlaceholders();
+				updateSocialCounters();
+			},
+			1000/60, // 60fps.
+		);
 		refs.title?.addEventListener( 'change', updateRefTitle );
 		refs.titleNa?.addEventListener( 'change', updateRefTitle );
-		let updateTitleBuffer = void 0;
-		const updateTitle = () => {
-			clearTimeout( updateTitleBuffer );
-			updateTitleBuffer = setTimeout(
-				() => {
-					setPlaceholders();
-					updateSocialCounters();
-				},
-				1000/60, // 60fps.
-			);
-		}
+
+		const updateTitle = tsfUtils.debounce(
+			() => {
+				setPlaceholders();
+				updateSocialCounters();
+			},
+			1000/60, // 60fps.
+		);
 		inputs.ogTitle?.addEventListener( 'input', updateTitle );
 		inputs.twTitle?.addEventListener( 'input', updateTitle );
 	}
@@ -331,10 +321,9 @@ window.tsfSocial = function() {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {string} group The group ID.
 	 */
-	const _loadDescriptionActions = group => {
+	function _loadDescriptionActions( group ) {
 
 		const { inputs, refs } = getInputInstance( group );
 
@@ -385,6 +374,7 @@ window.tsfSocial = function() {
 
 			let val = '';
 
+			// 'undefined' means end of generator
 			while ( 'undefined' !== typeof val && ! val.length ) {
 				val = generator.next().value;
 				if ( val?.length )
@@ -409,7 +399,7 @@ window.tsfSocial = function() {
 					: tsf.decodeEntities( getActiveValue( 'og', 'twitter' ) );
 		}
 		const updateCounter = ( target, text, type ) => {
-			let counter = document.getElementById( `${target.id}_chars` );
+			const counter = document.getElementById( `${target.id}_chars` );
 			counter && tsfC?.updateCharacterCounter( {
 				e:     counter,
 				text:  text,
@@ -421,30 +411,22 @@ window.tsfSocial = function() {
 			inputs.ogDesc && updateCounter( inputs.ogDesc, getActiveValue( 'og', 'og' ), 'opengraph' );
 			inputs.twDesc && updateCounter( inputs.twDesc, getActiveValue( 'twitter', 'twitter' ), 'twitter' );
 		}
-		let updateRefDescBuffer = void 0;
-		const updateRefDesc = () => {
-			clearTimeout( updateRefDescBuffer );
-			updateRefDescBuffer = setTimeout(
-				() => {
-					setPlaceholders();
-					updateSocialCounters();
-				},
-				1000/60, // 60fps.
-			);
-		};
+		const updateRefDesc = tsfUtils.debounce(
+			() => {
+				setPlaceholders();
+				updateSocialCounters();
+			},
+			1000/60, // 60fps.
+		);
 		refs.desc?.addEventListener( 'change', updateRefDesc );
 
-		let updateDescBuffer = void 0;
-		const updateDesc = () => {
-			clearTimeout( updateDescBuffer );
-			updateDescBuffer = setTimeout(
-				() => {
-					setPlaceholders();
-					updateSocialCounters();
-				},
-				1000/60, // 60fps.
-			);
-		}
+		const updateDesc = tsfUtils.debounce(
+			() => {
+				setPlaceholders();
+				updateSocialCounters();
+			},
+			1000/60, // 60fps.
+		);
 		inputs.ogDesc?.addEventListener( 'input', updateDesc );
 		inputs.twDesc?.addEventListener( 'input', updateDesc );
 	}

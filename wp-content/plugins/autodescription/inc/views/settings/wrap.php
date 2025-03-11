@@ -29,21 +29,22 @@ use \The_SEO_Framework\Admin\Settings\Layout\Input;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-if ( \function_exists( 'tsf_extension_manager' )
+if (
+	   \function_exists( 'tsf_extension_manager' )
 	&& \in_array(
 		\tsf_extension_manager()->seo_extensions_page_slug ?? null,
 		array_column( $GLOBALS['submenu'][ \THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG ] ?? [], 2 ),
 		true,
 	)
 ) {
-	$_extensions_button = sprintf(
+	$_extensions_button = \sprintf(
 		'<a href="%s" class=button>%s</a>',
 		// menu_page_url() escapes
 		\menu_page_url( \tsf_extension_manager()->seo_extensions_page_slug, false ),
 		\esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' ),
 	);
 } else {
-	$_extensions_button = Admin\Utils::display_extension_suggestions() ? sprintf(
+	$_extensions_button = Admin\Utils::display_extension_suggestions() ? \sprintf(
 		'<a href="%s" class=button rel="noreferrer noopener" target=_blank>%s</a>',
 		'https://theseoframework.com/?p=3599',
 		\esc_html_x( 'Extensions', 'Plugin extensions', 'autodescription' )
@@ -74,7 +75,7 @@ $hook_name = Admin\Menu::get_page_hook_name();
 
 ?>
 <div class="wrap tsf-metaboxes">
-	<form method=post action=options.php autocomplete=off data-form-type=other>
+	<form id=tsf-settings method=post action=options.php autocomplete=off data-form-type=other>
 		<?php \wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 		<?php \wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 		<?php \settings_fields( \THE_SEO_FRAMEWORK_SITE_OPTIONS ); ?>
@@ -91,11 +92,9 @@ $hook_name = Admin\Menu::get_page_hook_name();
 
 		<hr class=wp-header-end>
 
-		<div class=tsf-notice-wrap>
-			<?php
-			\do_action( 'the_seo_framework_setting_notices' );
-			?>
-		</div>
+		<?php
+		\do_action( 'the_seo_framework_setting_notices' );
+		?>
 
 		<?php
 		\do_action( "{$hook_name}_settings_page_boxes", $hook_name );
@@ -118,7 +117,7 @@ $hook_name = Admin\Menu::get_page_hook_name();
 	</form>
 </div>
 <script>
-	window.addEventListener( 'load', () => {
+	addEventListener( 'load', () => {
 		postboxes.add_postbox_toggles( '<?= \esc_js( $hook_name ) ?>' );
 	} );
 </script>

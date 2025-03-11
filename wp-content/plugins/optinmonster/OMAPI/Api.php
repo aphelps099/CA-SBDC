@@ -34,7 +34,7 @@ class OMAPI_Api {
 	 *
 	 * @var string
 	 */
-	public $base = OPTINMONSTER_APP_URL;
+	public $base = OPTINMONSTER_API_URL;
 
 	/**
 	 * Current API route.
@@ -259,6 +259,12 @@ class OMAPI_Api {
 		if ( $this->apikey ) {
 			$headers['X-OptinMonster-ApiKey'] = $this->apikey;
 		}
+
+		// If the onboarding key is set, let's use that as the API key.
+		if ( ! empty( $args['onboardingApiKey'] ) ) {
+			$headers['X-OptinMonster-ApiKey'] = $args['onboardingApiKey'];
+		}
+
 		// Setup data to be sent to the API.
 		$data = array(
 			'headers'   => $headers,
@@ -419,7 +425,7 @@ class OMAPI_Api {
 	 *
 	 * @since 1.9.10
 	 *
-	 * @return  A single instance of this class.
+	 * @return OMAPI_Api A single instance of this class.
 	 */
 	public static function instance() {
 		return self::$instance;
@@ -459,6 +465,33 @@ class OMAPI_Api {
 	}
 
 	/**
+	 * Fetch from the OM /me route to complete the plugin connection after onboarding.
+	 *
+	 * This differs from `OMAPI_Api::fetch_me_cached` in that there is no results
+	 * caching. Fresh results are pulled every time this method is called.
+	 *
+	 * @since 2.16.6
+	 *
+	 * @param array $creds Existing credentials array.
+	 *
+	 * @return array Requested /me data.
+	 */
+	public static function fetch_me_onboarding( $creds = array() ) {
+		$api = self::build( 'v2', 'me?includeOnboarding=true', 'GET', $creds );
+
+		$result = $api->request( array( 'onboardingApiKey' => $creds['onboardingApiKey'] ) );
+
+		if ( ! is_wp_error( $result ) ) {
+			// Force the option to be updated when we gather new data from the API.
+			self::return_option_from_fetch( $result, array(), $creds, true );
+
+			OMAPI_ApiKey::init_connection( $api->apikey );
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Fetch from the OM /me route, and store data to our options.
 	 *
 	 * @since  2.0.0
@@ -469,7 +502,13 @@ class OMAPI_Api {
 	 * @return array           Updated options array.
 	 */
 	public static function fetch_me( $option = array(), $creds = array() ) {
-		$result = self::fetch_me_cached( true, $creds );
+		if ( ! empty( $creds['onboardingApiKey'] ) ) {
+			$option = array();
+			$result = self::fetch_me_onboarding( $creds );
+		} else {
+			$result = self::fetch_me_cached( true, $creds );
+		}
+
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}

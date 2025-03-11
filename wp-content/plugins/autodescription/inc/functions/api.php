@@ -112,6 +112,7 @@ namespace {
 			'tsf_breadcrumb',
 		);
 
+		// Extract a valid class; it'll be of an escaped kind.
 		preg_match( '/-?[a-z_]+[a-z\d_-]*/i', $atts['class'], $matches );
 
 		$class = $matches[0] ?? 'tsf-breadcrumb';
@@ -286,6 +287,8 @@ namespace The_SEO_Framework {
 	/**
 	 * Determines the type of request from the arguments.
 	 *
+	 * Hint: Use `tsf()->query()->is_static_front_page()` to determine if 'single' is the frontpage.
+	 *
 	 * @since 5.0.0
 	 *
 	 * @param array $args The query arguments. Expects indexes 'id', 'tax', 'pta', and 'uid'.
@@ -300,12 +303,12 @@ namespace The_SEO_Framework {
 			if ( $args['pta'] )
 				return 'pta';
 
-			return 'homeblog'; // home as page is 'single'!
+			return 'homeblog'; // "homeblog" isn't single, has no id, and is the frontpage.
 		} elseif ( $args['tax'] ) {
 			return 'term';
 		}
 
-		return 'single';
+		return 'single'; // page, post, product, frontpage, etc.
 	}
 
 	/**
@@ -364,8 +367,8 @@ namespace The_SEO_Framework {
 	 *     return $arg * 2;
 	 * }
 	 * function my_function( $arg ) {
-	 *    return memo( null, $arg );
-	 *        ?? memo( expensive_call( $arg ), $arg );
+	 *     return memo( null, $arg );
+	 *         ?? memo( expensive_call( $arg ), $arg );
 	 * }
 	 * my_function( 1 ); // prints "expensive 1!", returns 2.
 	 * my_function( 1 ); // returns 2.
@@ -386,11 +389,8 @@ namespace The_SEO_Framework {
 	 * @param mixed $value_to_set The value to set.
 	 * @param mixed ...$args      Extra arguments, that are used to differentiaty callbacks.
 	 *                            Arguments may not contain \Closure()s.
-	 * @return mixed : {
-	 *    mixed The cached value if set and $value_to_set is null.
-	 *       null When no value has been set.
-	 *       If $value_to_set is set, the new value.
-	 * }
+	 * @return mixed The cached value if $value_to_set is null.
+	 *               Otherwise, the $value_to_set.
 	 */
 	function memo( $value_to_set = null, ...$args ) {
 
@@ -426,8 +426,8 @@ namespace The_SEO_Framework {
 	 *     return $arg * 2;
 	 * }
 	 * function my_function( $arg ) {
-	 *    return umemo( __METHOD__, null, $arg );
-	 *        ?? umemo( __METHOD__, expensive_call( $arg ), $arg );
+	 *     return umemo( __METHOD__, null, $arg );
+	 *         ?? umemo( __METHOD__, expensive_call( $arg ), $arg );
 	 * }
 	 * my_function( 1 ); // prints "expensive 1!", returns 2.
 	 * my_function( 1 ); // returns 2.
@@ -444,11 +444,8 @@ namespace The_SEO_Framework {
 	 * @param mixed  $value_to_set The value to set.
 	 * @param mixed  ...$args      Extra arguments, that are used to differentiate callbacks.
 	 *                             Arguments may not contain \Closure()s.
-	 * @return mixed : {
-	 *    mixed The cached value if set and $value_to_set is null.
-	 *       null When no value has been set.
-	 *       If $value_to_set is set, the new value.
-	 * }
+	 * @return mixed The cached value if $value_to_set is null.
+	 *               Otherwise, the $value_to_set.
 	 */
 	function umemo( $key, $value_to_set = null, ...$args ) {
 
@@ -493,12 +490,10 @@ namespace The_SEO_Framework {
 	 * @api
 	 * TODO Can we use callables as $fn? If so, adjust docs and apply internally.
 	 *
-	 * @param \Closure $fn The Closure or function to memoize.
-	 * @return mixed : {
-	 *    mixed The cached value if set and $value_to_set is null.
-	 *       null When no value has been set.
-	 *       If $value_to_set is set, the new value.
-	 * }
+	 * @param callable $fn The Closure or function to memoize.
+	 *                     The Closure can only be cached properly if it's staticlaly stored.
+	 * @return mixed The cached value if $value_to_set is null.
+	 *               Otherwise, the $value_to_set.
 	 */
 	function fmemo( $fn ) {
 

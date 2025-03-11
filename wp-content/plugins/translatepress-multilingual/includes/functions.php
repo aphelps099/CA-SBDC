@@ -1,5 +1,8 @@
 <?php
 
+if ( !defined('ABSPATH' ) )
+    exit();
+
 /**
  * Outputs language switcher.
  *
@@ -105,6 +108,33 @@ function trp_x( $text, $context, $domain, $language ) {
 }
 
 /**
+ * updated function that gets the translation for a string with context directly from a .po file
+ * @TODO the initial trp_x function was returning the translation in english  for the slugs I tried to search even if they were translation for them
+ * the trp_x function also searches the .mo file witch doesn't seem to be the right file, but the .po file instead
+ */
+function trp_x_updated( $original_text, $context, $domain, $language ){
+    // Define the base path to the plugin's languages directory
+    $basePath = WP_CONTENT_DIR . '/languages/plugins/';
+
+    // Form the path to the .po file
+    $poFilePath = $basePath . $domain . '-' . $language . '.po';
+
+    if (!file_exists($poFilePath)) {
+        return $original_text;
+    }
+
+    $poContent = file_get_contents($poFilePath);
+
+    $pattern = '/msgctxt\s+"'.preg_quote($context, '/').'"\s+msgid\s+"'.preg_quote($original_text, '/').'"\s+msgstr\s+"(.*?)"/s';
+
+    if (preg_match($pattern, $poContent, $matches)) {
+        return stripslashes($matches[1]);
+    }
+
+    return $original_text;
+    }
+
+/**
  * Function that tries to find the path for a translation file defined by textdomain and language
  * @param $domain the textdomain of the string that you want the translation for
  * @param $language the language in which you want the translation
@@ -170,6 +200,8 @@ function trp_add_affiliate_id_to_link( $link ){
  * Do not confuse with trim.
  */
 function trp_sanitize_string( $filtered, $execute_wp_kses = true ){
+    if (!is_string($filtered)) return '';
+
 	$filtered = preg_replace( '/<script\b[^>]*>(.*?)<\/script>/is', '', $filtered );
 
 	// don't remove \r \n \t. They are part of the translation, they give structure and context to the text.
@@ -528,7 +560,7 @@ function trp_bulk_debug($debug = false, $logger = array()){
  * @return bool
  */
 function trp_is_paid_version() {
-	$licence = get_option( 'trp_licence_key' );
+	$licence = get_option( 'trp_license_key' );
 
 	if ( ! empty( $licence ) ) {
 		return true;
@@ -874,6 +906,8 @@ function trp_woo_hpos_get_post_meta( $order_id, $meta_key, $single = false ){
     if ( class_exists( 'Automattic\WooCommerce\Utilities\OrderUtil' ) && Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
         $order = wc_get_order( $order_id );
 
+        if ( !$order ) return false;
+
         return $order->get_meta( $meta_key, $single );
     }
 
@@ -895,4 +929,22 @@ function is_late_dom_html_plugin_active(){
     }
 
     return apply_filters( 'trp_delay_dom_changes_script', false );
+}
+
+/**
+ * Helper function to remove a prefix from a string.
+ * If we do str_replace that will remove it from the entire string, wherever it finds it.
+ *
+ * @return string
+ */
+function trp_remove_prefix($prefix = '', $string = '') {
+    // Check if the path starts with the prefix
+    if (!empty($prefix)){
+        if (strpos($string, $prefix) === 0) {
+            // Remove the prefix from the path
+            return substr_replace($string, '', 0, strlen($prefix));
+        }
+    }
+    // If the prefix is not at the start, return the path unchanged
+    return $string;
 }

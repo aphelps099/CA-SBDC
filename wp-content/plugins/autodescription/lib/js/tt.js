@@ -32,7 +32,7 @@
  *
  * @constructor
  */
-window.tsfTT = function() {
+window.tsfTT = function () {
 
 	const _ttBase = 'tsf-tooltip';
 	const ttNames = {
@@ -88,7 +88,7 @@ window.tsfTT = function() {
 		},
 	}
 
-	const _events = target => {
+	function _events( target ) {
 		const commonEvents = {
 			mousemove:  _activeToolTipHandles.pointerMove,
 			mouseleave: _activeToolTipHandles.pointerLeave,
@@ -242,7 +242,7 @@ window.tsfTT = function() {
 		};
 	} )();
 
-	const _clickLocker = element => {
+	function _clickLocker( element ) {
 		return {
 			lock: () => {
 				element.dataset.preventedClick = 1;
@@ -286,12 +286,11 @@ window.tsfTT = function() {
 	 * @since
 	 * @access private
 	 *
-	 * @function
 	 * @param {event?} event
 	 * @param {Element} element
 	 * @param {string} desc
 	 */
-	const _initToolTips = () => {
+	function _initToolTips() {
 
 		// TODO move this test to the main tsf object? This whole file doesn't rely on `window.tsf` though.
 		let passiveSupported = false,
@@ -441,14 +440,13 @@ window.tsfTT = function() {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {event?}  event   Optional. The current mouse/touch event to center
 	 *                                    tooltip position for to make it seem more natural.
 	 * @param {Element} element The element to add the tooltip to.
 	 * @param {string}  desc    The tooltip, may contain renderable HTML.
 	 * @return {Boolean} True on success, false otherwise.
 	 */
-	const _renderTooltip = ( event, element, desc ) => {
+	function _renderTooltip( event, element, desc ) {
 
 		element.dataset.hasTooltip = 1;
 
@@ -637,14 +635,13 @@ window.tsfTT = function() {
 	 *              3. Now removes all other tooltips. Only one may prevail!
 	 * @access public
 	 *
-	 * @function
 	 * @param {event?}  event   Optional. The current mouse/touch event to center
 	 *                                    tooltip position for to make it seem more natural.
 	 * @param {Element} element The element to add the tooltip to.
 	 * @param {string}  desc    The tooltip, may contain renderable HTML.
 	 * @return {Promise<Boolean>} True on success, false otherwise.
 	 */
-	const doTooltip = ( event, element, desc ) => {
+	function doTooltip( event, element, desc ) {
 
 		// Backward compatibility for jQuery vs ES.
 		if ( element?.[0] )
@@ -667,10 +664,11 @@ window.tsfTT = function() {
 	 * @since 3.1.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {!jQuery|Element|string} element The jQuery element, DOM Element or query selector.
 	 */
-	const addBoundary = element => { element instanceof Element && element.classList.add( ttNames.boundary ) };
+	function addBoundary( element ) {
+		element instanceof Element && element.classList.add( ttNames.boundary );
+	};
 
 	/**
 	 * Removes the description balloon and arrow from element.
@@ -679,10 +677,9 @@ window.tsfTT = function() {
 	 * @since 4.1.0 Now also clears the data of the tooltip.
 	 * @access public
 	 *
-	 * @function
 	 * @param {!jQuery|Element|string} element
 	 */
-	const removeTooltip = element => {
+	function removeTooltip( element ) {
 
 		// Backward compatibility for jQuery vs ES.
 		if ( element?.[0] )
@@ -704,11 +701,10 @@ window.tsfTT = function() {
 	 * @since 4.2.0 Now returns a `HTMLElement` instead of a `jQuery.Element`.
 	 * @access public
 	 *
-	 * @function
 	 * @param {!jQuery|Element|string} element
 	 * @return {(Element|undefined)}
 	 */
-	const getTooltip = element => {
+	function getTooltip( element ) {
 
 		// Backward compatibility for jQuery vs ES.
 		if ( element?.[0] )
@@ -727,14 +723,12 @@ window.tsfTT = function() {
 	 * @since 3.1.0
 	 * @since 4.2.0 Added debouncing.
 	 * @access public
-	 *
-	 * @function
 	 */
-	const triggerReset = () => {
+	function triggerReset() {
 		clearTimeout( _debounceTriggerReset );
 		_debounceTriggerReset = setTimeout(
 			() => window.dispatchEvent( new CustomEvent( 'tsf-tooltip-reset' ) ),
-			100 // Magic number. Low enough not to cause annoyances, high enough not to cause lag.
+			100, // Magic number. Low enough not to cause annoyances, high enough not to cause lag.
 		);
 	}
 
@@ -744,10 +738,9 @@ window.tsfTT = function() {
 	 * @since 3.1.0
 	 * @access public
 	 *
-	 * @function
 	 * @param {Element|NodeList} element
 	 */
-	const triggerUpdate = element => {
+	function triggerUpdate( element ) {
 
 		if ( ! element || ! ( element instanceof Element ) )
 			element = document.querySelectorAll( ttSelectors.item );
@@ -775,7 +768,7 @@ window.tsfTT = function() {
 		 */
 		load: () => {
 			document.body.addEventListener( 'tsf-ready', _initToolTips );
-		}
+		},
 	}, {
 		/**
 		 * Copies internal public functions to tsfTT for public access.

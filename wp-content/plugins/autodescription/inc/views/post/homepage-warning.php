@@ -34,14 +34,14 @@ namespace The_SEO_Framework;
 			<div class="tsf-flex-setting-input-item tsf-flex">
 				<span>
 					<?php
-					\esc_html_e( 'The SEO Settings can overwrite the fields below.', 'autodescription' );
+					\esc_html_e( 'The fields below may be overwritten by the Homepage Settings found on the SEO Settings page.', 'autodescription' );
 					if ( \current_user_can( \THE_SEO_FRAMEWORK_SETTINGS_CAP ) ) {
 						echo ' &mdash; ';
 						printf(
 							'<a href="%s" target=_blank>%s</a>',
 							// phpcs:ignore, WordPress.Security.EscapeOutput -- menu_page_url() escapes
 							\menu_page_url( \THE_SEO_FRAMEWORK_SITE_OPTIONS_SLUG, false ) . '#autodescription-homepage-settings',
-							\esc_html__( 'Edit Homepage Settings instead.', 'autodescription' ),
+							\esc_html__( 'Edit those settings instead.', 'autodescription' ),
 						);
 					}
 					?>

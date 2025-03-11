@@ -161,7 +161,7 @@ class OMAPI_Support {
 			}
 		}
 
-		$api_ping = wp_remote_request( OPTINMONSTER_APP_URL . '/v1/ping' );
+		$api_ping = wp_remote_request( OPTINMONSTER_API_URL . '/v2/ping' );
 
 		$array = array(
 			'Plugin Version'      => esc_html( $this->base->version ),

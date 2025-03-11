@@ -3,9 +3,9 @@ Contributors: neversettle
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=53JXD4ENC8MM2&rm=2
 Tags: automate, duplicate, copy, copier, clone
 Requires at least: 5.0
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.4.6
+Stable tag: 4.4.7.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,26 @@ You're in luck! NS Cloner V4 has new background cloning capability, so you shoul
 2. Cloning in progress.
 
 == Changelog ==
+
+= 4.4.7.5 - 2024.11.25 =
+* Fix: Text domain loading
+
+= 4.4.7.4 - 2024.11.13 =
+* Fix: Correct theme set on the cloned site from the source site
+* Fix: PHP notices
+
+= 4.4.7.3 - 2024.10.17 =
+* Cron subsite fixes
+* Other improvements.
+
+= 4.4.7.2 - 2024.08.28 =
+* Cron code execution fix
+
+= 4.4.7.1 - 2024.08.27 =
+* Code improvements
+
+= 4.4.7 - 2024.08.20 =
+* Fix PHP notices and other code improvements
 
 = 4.4.6 - 2024.08.08 =
 * Better handling of scheduled actions.

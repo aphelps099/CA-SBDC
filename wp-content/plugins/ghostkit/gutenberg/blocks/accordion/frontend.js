@@ -15,7 +15,24 @@ const { events } = GHOSTKIT;
 
 let pageHash = location.hash;
 
-const ANIMATION_SPEED = 300;
+const ANIMATION_SPEED = 400;
+
+function getCurrentContentStyles($el) {
+	return {
+		display: $el.style.display,
+		overflow: $el.style.overflow,
+		height: $el.style.height,
+		paddingTop: $el.style.paddingTop,
+		paddingBottom: $el.style.paddingBottom,
+	};
+}
+function resetContentStyles($el) {
+	$el.style.display = '';
+	$el.style.overflow = '';
+	$el.style.height = '';
+	$el.style.paddingTop = '';
+	$el.style.paddingBottom = '';
+}
 
 function show($item, animationSpeed, cb) {
 	const $button = $item.querySelector(
@@ -29,6 +46,10 @@ function show($item, animationSpeed, cb) {
 		$button.setAttribute('aria-expanded', 'true');
 	}
 
+	const currentStyles = getCurrentContentStyles($content);
+
+	resetContentStyles($content);
+
 	const contentStyles = window.getComputedStyle($content);
 
 	const endHeight = contentStyles.height;
@@ -37,27 +58,32 @@ function show($item, animationSpeed, cb) {
 
 	$content.style.display = 'block';
 	$content.style.overflow = 'hidden';
+	$content.style.height = currentStyles.height || 0;
+	$content.style.paddingTop = currentStyles.paddingTop || 0;
+	$content.style.paddingBottom = currentStyles.paddingBottom || 0;
 
 	const animation = animate(
 		$content,
 		{
-			height: ['0px', endHeight],
-			paddingTop: ['0px', endPaddingTop],
-			paddingBottom: ['0px', endPaddingBottom],
+			height: endHeight,
+			paddingTop: endPaddingTop,
+			paddingBottom: endPaddingBottom,
 		},
 		{
 			duration: animationSpeed / 1000,
-			easing: 'ease-out',
+			ease: [0.6, 0, 0.3, 1],
 		}
 	);
 
-	animation.finished.then(() => {
-		// Reset styles.
-		$content.style.display = '';
-		$content.style.overflow = '';
-		$content.style.height = '';
-		$content.style.paddingTop = '';
-		$content.style.paddingBottom = '';
+	animation.then(() => {
+		// Check if animation stopped manually.
+		const isStopped =
+			$item.gktAccordion.animation?.animations?.[0]?.isStopped || false;
+
+		if (!isStopped) {
+			resetContentStyles($content);
+		}
+
 		$item.gktAccordion.animation = null;
 
 		cb();
@@ -72,35 +98,31 @@ function hide($item, animationSpeed, cb) {
 	);
 	const $content = $item.querySelector('.ghostkit-accordion-item-content');
 
-	const contentStyles = window.getComputedStyle($content);
-
-	const startPaddingTop = contentStyles.paddingTop;
-	const startPaddingBottom = contentStyles.paddingBottom;
-	const startHeight = contentStyles.height;
-
 	$content.style.display = 'block';
 	$content.style.overflow = 'hidden';
 
 	const animation = animate(
 		$content,
 		{
-			height: [startHeight, '0px'],
-			paddingTop: [startPaddingTop, '0px'],
-			paddingBottom: [startPaddingBottom, '0px'],
+			height: 0,
+			paddingTop: 0,
+			paddingBottom: 0,
 		},
 		{
 			duration: animationSpeed / 1000,
-			easing: 'ease-out',
+			ease: [0.6, 0, 0.3, 1],
 		}
 	);
 
-	animation.finished.then(() => {
-		// Reset styles.
-		$content.style.display = '';
-		$content.style.overflow = '';
-		$content.style.height = '';
-		$content.style.paddingTop = '';
-		$content.style.paddingBottom = '';
+	animation.then(() => {
+		// Check if animation stopped manually.
+		const isStopped =
+			$item.gktAccordion.animation?.animations?.[0]?.isStopped || false;
+
+		if (!isStopped) {
+			resetContentStyles($content);
+		}
+
 		$item.gktAccordion.animation = null;
 
 		cb();

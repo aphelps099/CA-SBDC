@@ -34,7 +34,7 @@
  *
  * @constructor
  */
-window.tsfTabs = function() {
+window.tsfTabs = function () {
 
 	/**
 	 * @since 4.1.3
@@ -56,11 +56,8 @@ window.tsfTabs = function() {
 	 *
 	 * @since 4.1.3
 	 * @access private
-	 *
-	 * @function
-	 * @return {(undefined|null)}
 	 */
-	const _correctTabFocus = () => {
+	function _correctTabFocus() {
 		let changeEvent = new Event( 'change' );
 
 		tabStack.forEach( args => {
@@ -77,11 +74,10 @@ window.tsfTabs = function() {
 	 * @since 5.0.5
 	 * @access public
 	 *
-	 * @function
 	 * @param {String} stackId The stack ID for which to get the stack.
 	 * @param {String} name    The name of the tab to hide.
 	 */
-	const hideTab = ( stackId, name ) => {
+	function hideTab( stackId, name ) {
 
 		const stack = getStack( stackId );
 
@@ -106,11 +102,10 @@ window.tsfTabs = function() {
 	 * @since 5.0.5
 	 * @access public
 	 *
-	 * @function
 	 * @param {String} stackId The stack ID for which to get the stack.
 	 * @param {String} name    The name of the tab to show.
 	 */
-	const showTab = ( stackId, name ) => {
+	function showTab( stackId, name ) {
 
 		const stack = getStack( stackId );
 
@@ -124,12 +119,11 @@ window.tsfTabs = function() {
 	 * @since 5.0.5
 	 * @access public
 	 *
-	 * @function
 	 * @param {String}   stackId The stack ID for which to get the stack.
 	 * @param {String}   name    The name of the tab to show.
 	 * @param {?Boolean} toggle  Whether to show (true), hide (false), or automatically determine (?null).
 	 */
-	const toggleTab = ( stackId, name, toggle ) => {
+	function toggleTab( stackId, name, toggle ) {
 
 		if ( void 0 == toggle ) {
 			if ( document.getElementById( name )?.disabled ) {
@@ -150,12 +144,10 @@ window.tsfTabs = function() {
 	 * @since 4.1.3
 	 * @access public
 	 *
-	 * @function
 	 * @param {string}           stackId The stack family ID.
 	 * @param {HTMLInputElement} target  The radio input element of the tab.
-	 * @return {(undefined|null)}
 	 */
-	const toggleToInstant = ( stackId, target ) => {
+	function toggleToInstant( stackId, target ) {
 
 		const stack      = getStack( stackId ),
 			  newContent = document.getElementById( `${target.id}-content` ),
@@ -181,36 +173,16 @@ window.tsfTabs = function() {
 	 * @since 4.1.3
 	 * @access public
 	 *
-	 * @function
 	 * @param {string}           stackId The stack family ID.
 	 * @param {HTMLInputElement} target  The radio input element of the tab.
-	 * @return {(undefined|null)}
 	 */
-	const toggleTo = ( stackId, target ) => {
+	function toggleTo( stackId, target ) {
 
 		const cacheId = target.name;
 		const stack   = getStack( stackId );
 
-		// TODO make this a public API, and apply to media.js. and tsf.resetAjaxLoader et al.?
-		// Also add show/hide? -> new tsfUI file? tsfUI.fadeIn( element )
 		const fadeOutTimeout = 125;
 		const fadeInTimeout  = 175;
-		const fadeCSS        = {
-			fadeIn: {
-				opacity:                 1,
-				animation:               'tsf-fade-in',
-				animationDuration:       `${fadeInTimeout}ms`,
-				animationTimingFunction: 'cubic-bezier(.54,.12,.90,.60)',
-			},
-			fadeOut: {
-				opacity:                 0,
-				animation:               'tsf-fade-out',
-				animationDuration:       `${fadeOutTimeout}ms`,
-				animationTimingFunction: 'cubic-bezier(.54,.12,.90,.60)',
-			}
-		}
-		const fadeIn  = element => { for ( const prop in fadeCSS.fadeIn ) element.style[ prop ] = fadeCSS.fadeIn[ prop ] };
-		const fadeOut = element => { for ( const prop in fadeCSS.fadeOut ) element.style[ prop ] = fadeCSS.fadeOut[ prop ] };
 
 		const container  = _toggleCache.get( 'container' ).get( cacheId );
 		const allContent = document.querySelectorAll( `.${target.name}-content` );
@@ -232,9 +204,10 @@ window.tsfTabs = function() {
 
 			newContent.classList.add( stack.HTMLClasses.activeTabContent );
 			unLockHeight();
-			fadeIn( newContent );
-			// Resolve at 2/3th of fade-in time, content should already be well visible.
-			await new Promise( _resolve => setTimeout( _resolve, fadeInTimeout * 2/3 ) );
+			tsfUI.fadeIn( newContent, fadeInTimeout );
+
+			// Resolve early at 2/3th of fade-in time, content should already be well visible.
+			await tsfUtils.delay( fadeInTimeout * 2/3 );
 
 			return testTab(); // do not pass newContent!
 		}
@@ -260,11 +233,10 @@ window.tsfTabs = function() {
 		}
 
 		const doPromise = () => new Promise( async resolve => {
-			allContent.forEach( fadeOut );
+			allContent.forEach( el => { tsfUI.fadeOut( el, fadeOutTimeout ) } );
 			// Await fadeout before continuing (with fadeIn at setCorrectTab).
-			// await setTimeout( resolve, fadeOutTimeout );
-			await new Promise( _resolve => setTimeout( _resolve, fadeOutTimeout ) );
-			// resolve();
+			await tsfUtils.delay( fadeOutTimeout );
+
 			return setCorrectTab() && resolve();
 		} );
 		const clearPromise = () => _toggleCache.get( 'promises' ).delete( cacheId );
@@ -284,12 +256,10 @@ window.tsfTabs = function() {
 	 * @since 4.1.3
 	 * @access private
 	 *
-	 * @function
-	 * @param {*} stackId
-	 * @param {Event} event
-	 * @return {(undefined|null)}
+	 * @param {String} stackId
+	 * @param {Event}  event
 	 */
-	const _toggle = ( stackId, event ) => {
+	function _toggle( stackId, event ) {
 
 		const stack = getStack( stackId );
 
@@ -357,11 +327,12 @@ window.tsfTabs = function() {
 	 * @access public
 	 * @see tsfTabs.initStack() which registers the stack via param args.
 	 *
-	 * @function
 	 * @param {String} stackId The stack ID for which to get the stack.
-	 * @return {(Object<string, *>)} Immutable Map contents.
+	 * @return {(Object<string,*>)} Immutable Map contents.
 	 */
-	const getStack = stackId => tabStack.get( stackId );
+	function getStack( stackId ) {
+		return tabStack.get( stackId );
+	}
 
 	/**
 	 * Initializes a tab-switcher stack.
@@ -376,18 +347,16 @@ window.tsfTabs = function() {
 	 * @access public
 	 * @see tsfTabs.initStack registers the stack.
 	 *
-	 * @function
-	 * @param {String}              stackId The stack ID for which to get the stack.
-	 * @param {Object}              args    The stack arguments.
-	 * @param {CustomEvent}         args.tabToggledEvent The Event firing after a tab toggled successfully.
-	 * @param {(Object<string, *>)} args.HTMLClasses     The HTML classes pertinent to the stack. Expects:
-	 *                                                   wrapper, tabRadio, tabLabel, activeTab, activeTabContent
-	 * @param {Boolean}             args.fixHistory      Whether to switch tabs based when browser history is used.
-	 *                                                   e.g. user hits back-button, non-default-tabRadio is still
-	 *                                                   checked, but not switched to correctly. Edge case.
-	 * @return {(undefined|null)}
+	 * @param {String}             stackId The stack ID for which to get the stack.
+	 * @param {Object}             args    The stack arguments.
+	 * @param {CustomEvent}        args.tabToggledEvent The Event firing after a tab toggled successfully.
+	 * @param {(Object<string,*>)} args.HTMLClasses     The HTML classes pertinent to the stack. Expects:
+	 *                                                  wrapper, tabRadio, tabLabel, activeTab, activeTabContent
+	 * @param {Boolean}            args.fixHistory      Whether to switch tabs based when browser history is used.
+	 *                                                  e.g. user hits back-button, non-default-tabRadio is still
+	 *                                                  checked, but not switched to correctly. Edge case.
 	 */
-	const initStack = ( stackId, args ) => {
+	function initStack( stackId, args ) {
 
 		tabStack.set( stackId, args );
 
@@ -425,7 +394,7 @@ window.tsfTabs = function() {
 
 			// Delay the focus fix, so not to delay the interactive state... even though it causes a page jump. This merely addresses an edge-case.
 			window.addEventListener( 'load', _correctTabFocus );
-		}
+		},
 	}, {
 		hideTab,
 		showTab,

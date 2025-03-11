@@ -190,4 +190,22 @@ class Helpers
             'reset-all-evergreen-compaigns'
         );
     }
+
+    public static function sanitize_array($data) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                // Check the type of each element and sanitize accordingly
+                if (is_array($value)) {
+                    // If the element is an array, recursively call sanitize_array
+                    $data[$key] = static::sanitize_array($value);
+                } elseif (is_string($value)) {
+                    $data[$key] = sanitize_text_field($value);
+                } elseif (is_int($value)) {
+                    $data[$key] = intval($value); 
+                } 
+            }
+        }
+    
+        return $data;
+    }
 }

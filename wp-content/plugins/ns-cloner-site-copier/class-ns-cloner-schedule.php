@@ -36,7 +36,7 @@ class NS_Cloner_Schedule {
 	 */
 	public function __construct() {
 		// Schedule cron.
-		add_action( 'init', array( $this, 'maybe_schedule_cron' ) );
+		add_action( 'wp_loaded', array( $this, 'maybe_schedule_cron' ) );
 		// Register handler for cloner cron events.
 		add_action( $this->cron_id, array( $this, 'handle' ) );
 		// Add new (default 2 min) interval to existing wp cron intervals.
@@ -67,7 +67,9 @@ class NS_Cloner_Schedule {
 	 * @return void
 	 */
 	public function maybe_schedule_cron() {
-		if ( ! wp_next_scheduled( $this->cron_id ) ) {
+		if ( ! is_main_site() && wp_next_scheduled( $this->cron_id ) ) {
+			wp_clear_scheduled_hook( $this->cron_id );
+		} elseif ( ! wp_next_scheduled( $this->cron_id ) ) {
 			wp_schedule_event( time(), $this->cron_id . '_interval', $this->cron_id );
 		}
 	}

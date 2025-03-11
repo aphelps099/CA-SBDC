@@ -59,43 +59,18 @@ events.on(document, 'init.blocks.gkt', () => {
 
 				// Easing with Cubic Bezier.
 				if (config?.transition?.type === 'easing') {
+					options.type = 'tween';
 					options.duration = config.transition.duration;
 					options.delay = config.transition.delay;
-					options.easing = config.transition.easing;
+					options.ease = config.transition.easing;
 
 					// Easing with Spring.
 				} else if (config?.transition?.type === 'spring') {
+					options.type = spring;
 					options.delay = config.transition.delay;
-					options.easing = spring({
-						stiffness: config.transition.stiffness,
-						damping: config.transition.damping,
-						mass: config.transition.mass,
-					});
-
-					// Fix for Scale and Rotate.
-					// https://github.com/motiondivision/motionone/issues/221
-					if (config.scale !== 1) {
-						options.scale = {
-							easing: spring({
-								stiffness: config.transition.stiffness,
-								damping: config.transition.damping,
-								mass: config.transition.mass,
-								restSpeed: 0.01,
-								restDistance: 0.001,
-							}),
-						};
-					}
-					if (config.rotate !== 0) {
-						options.rotate = {
-							easing: spring({
-								stiffness: config.transition.stiffness,
-								damping: config.transition.damping,
-								mass: config.transition.mass,
-								restSpeed: 1,
-								restDistance: 0.1,
-							}),
-						};
-					}
+					options.stiffness = config.transition.stiffness;
+					options.damping = config.transition.damping;
+					options.mass = config.transition.mass;
 				}
 
 				const keyframes = {};
@@ -129,7 +104,9 @@ events.on(document, 'init.blocks.gkt', () => {
 				// Stop inView listener.
 				eventData.stopInView();
 
-				animate($element, keyframes, options).finished.then(() => {
+				const animation = animate($element, keyframes, options);
+
+				animation.then(() => {
 					events.trigger(
 						$element,
 						'showed.effects.reveal.gkt',
@@ -210,7 +187,7 @@ events.on(document, 'init.blocks.gkt', () => {
 			const config = {
 				from,
 				to,
-				duration: 0.8,
+				duration: 1,
 				easing: [0.6, 0, 0.3, 1],
 				cb(progress) {
 					const position = (to - from) * progress + from;
@@ -249,22 +226,20 @@ events.on(document, 'init.blocks.gkt', () => {
 									},
 									{
 										duration: config.duration,
-										easing: config.easing,
+										ease: config.easing,
 									}
 								);
 							}
 						});
 					}
 
-					animate(
-						(progress) => {
+					animate(0, 1, {
+						duration: config.duration,
+						ease: config.easing,
+						onUpdate: (progress) => {
 							config.cb(progress);
 						},
-						{
-							duration: config.duration,
-							easing: config.easing,
-						}
-					).finished.then(() => {
+					}).then(() => {
 						events.trigger($counter, 'counted.counter.gkt', {
 							config,
 						});

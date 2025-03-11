@@ -1,5 +1,9 @@
 <?php
 
+
+if ( !defined('ABSPATH' ) )
+    exit();
+
 add_filter( 'trp_register_advanced_settings', 'trp_register_do_not_translate_certain_paths', 120 );
 function trp_register_do_not_translate_certain_paths( $settings_array ){
 
@@ -149,13 +153,12 @@ function trp_exclude_include_paths_to_run_on(){
         $current_slug = str_replace( trim( $site_url_components['path'] ), '', $current_slug );
     }
 
-    $replace = '/';
-
+    $replace = '\/';
     if( isset( $settings['add-subdirectory-to-default-language'] ) && $settings['add-subdirectory-to-default-language'] == 'yes' ) {
-	    $replace .= $settings['url-slugs'][ $current_lang ];
-	    $current_slug = str_replace( $replace, '', $current_slug );
-    }
 
+        $replace .= $settings['url-slugs'][ $current_lang ];
+        $current_slug = preg_replace( "/$replace/i", '', ltrim( $current_slug, '/' ), 1);
+    }
 
     // $array_slugs contains each part of $curent_slug split on "/"
     $array_slugs = array();
@@ -259,22 +262,30 @@ function trp_exclude_include_redirect_to_default_language(){
     // Attempt to redirect on default language only if the current URL contains the language
     if( !isset( $TRP_LANGUAGE ) || $settings['default-language'] == $TRP_LANGUAGE ){
 
-        if( $url_converter->get_lang_from_url_string( $current_original_url ) === null )
+        $language = $url_converter->get_lang_from_url_string( $current_original_url );
+
+        if( $language === null )
             return;
 
     }
 
     $absolute_home = $url_converter->get_abs_home();
 
+    $path_no_domain = trp_remove_prefix($absolute_home, $current_original_url );
     // Take into account the subdirectory for default language option
-    if ( isset( $settings['add-subdirectory-to-default-language'] ) && $settings['add-subdirectory-to-default-language'] == 'yes' )
-        $absolute_home = trailingslashit( $absolute_home ) . $settings['url-slugs'][$settings['default-language']];
+    if ( isset( $settings['add-subdirectory-to-default-language'] ) && $settings['add-subdirectory-to-default-language'] == 'yes' ) {
+        $absolute_home_with_lang = trailingslashit( $absolute_home ) . $settings['url-slugs'][ $settings['default-language'] ];
+    }else{
+        $absolute_home_with_lang = $absolute_home;
+    }
 
-    $current_slug = str_replace( $absolute_home, '', untrailingslashit( $current_original_url ) );
+    $current_slug = str_replace( $absolute_home_with_lang, '', untrailingslashit( $current_original_url ) );
     $paths        = trp_dntcp_get_paths();
 
     // Remove language from this URL if present
-    $current_original_url = str_replace( '/' . $settings['url-slugs'][$settings['default-language']], '', $current_original_url );
+    $searchText = '\/' . $settings['url-slugs'][$settings['default-language']];
+    $path_no_domain = preg_replace( "/$searchText/i", '' , $path_no_domain, 1 );
+    $current_original_url = $absolute_home . $path_no_domain;
 
     // $array_slugs contains each part of $curent_slug split on "/"
     $array_slugs = array();
@@ -326,7 +337,7 @@ function trp_exclude_include_filter_custom_links( $new_url, $url, $TRP_LANGUAGE,
     $url_converter = $trp->get_component('url_converter');
 
     if( !isset( $TRP_LANGUAGE ) || $settings['default-language'] == $TRP_LANGUAGE )
-        return;
+        return $new_url;
 
     $current_original_url = $url_converter->get_url_for_language( $settings['default-language'], $new_url, '' );
 
@@ -418,7 +429,11 @@ function trp_exclude_include_filter_sitemap_links( $new_output, $output, $settin
 function trp_dntcp_get_paths() {
     $settings          = get_option( 'trp_settings', false );
     $advanced_settings = get_option( 'trp_advanced_settings', false );
-    $paths             = explode( "\n", str_replace( "\r", "", $advanced_settings['translateable_content']['paths'] ) );
+
+    if ( empty( $advanced_settings['translateable_content']['paths'] ) )
+        return [];
+
+    $paths = explode( "\n", str_replace( "\r", "", $advanced_settings['translateable_content']['paths'] ) );
 
     add_filter('trp_home_url', 'trp_dntcp_get_abs_home_url', 10,2 );
     $home_url_no_subdir = home_url();
@@ -442,4 +457,35 @@ function trp_dntcp_get_paths() {
 
 function trp_dntcp_get_abs_home_url($new_url, $abs_home){
     return $abs_home;
+}
+
+add_filter( "trp_allow_machine_translation_for_url", 'trp_dntcp_exclude_links_from_automatic_translation', 10, 2);
+function trp_dntcp_exclude_links_from_automatic_translation( $excluded, $url_verification ){
+
+    $advanced_settings = get_option( 'trp_advanced_settings', false );
+
+    $trp           = TRP_Translate_Press::get_trp_instance();
+    $url_converter = $trp->get_component('url_converter');
+
+    $absolute_home = $url_converter->get_abs_home();
+
+    // Take into account the subdirectory for default language option
+    if ( isset( $settings['add-subdirectory-to-default-language'] ) && $settings['add-subdirectory-to-default-language'] == 'yes' )
+        $absolute_home = trailingslashit( $absolute_home ) . $settings['url-slugs'][$settings['default-language']];
+
+    $current_slug = str_replace( $absolute_home, '', $url_verification );
+
+    $paths = trp_dntcp_get_paths();
+
+    $array_slugs = array();
+    trp_test_current_slug($current_slug, $array_slugs );
+
+    if( isset( $advanced_settings['translateable_content']['option']) && $advanced_settings['translateable_content']['option'] == 'exclude' ) {
+
+        if ( trp_return_exclude_include_url( $paths, $current_slug, $array_slugs ) ) {
+            return false;
+        }
+    }
+
+    return $excluded;
 }

@@ -54,7 +54,7 @@ final class Feed {
 	 * Changes feed's content based on options.
 	 *
 	 * This method converts the input $content to an excerpt and is able to add
-	 * a nofollow backlink at the end of the feed.
+	 * a nofollow backlink to the end of the feed.
 	 *
 	 * @hook the_content_feed 10
 	 * @hook the_excerpt_rss 10
@@ -93,7 +93,7 @@ final class Feed {
 		}
 
 		if ( Data\Plugin::get_option( 'source_the_feed' ) ) {
-			$content .= sprintf(
+			$content .= \sprintf(
 				"\n" . '<p><a href="%s" rel="nofollow">%s</a></p>', // Keep XHTML valid!
 				\esc_url( \get_permalink() ),
 				\esc_html(

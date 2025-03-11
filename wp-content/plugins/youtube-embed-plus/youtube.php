@@ -1,17 +1,17 @@
 <?php
 /*
-  Plugin Name: YouTube WordPress Plugin by Embed Plus
+  Plugin Name: Embed Plus for YouTube Gallery, Livestream and Lazy Loading with Facades
   Plugin URI: https://www.embedplus.com/dashboard/pro-easy-video-analytics.aspx?ref=plugin
-  Description: YouTube Embed Plugin. Embed a YouTube channel gallery, playlist gallery, YouTube live stream. Lite embeds with defer JavaScript and facade options
-  Version: 14.2.1.2
-  Author: Embed Plus YouTube Plugin Team
+  Description: The best YouTube embed plugin. Embed a YouTube channel gallery, playlist gallery, YouTube live stream. Lite embeds with defer JavaScript and facade options
+  Version: 14.2.1.3
+  Author: Embed Plus for YouTube Plugin Team
   Author URI: https://www.embedplus.com
   Requires at least: 4.5
  */
 
 /*
-  Embed Plus Plugin for YouTube
-  Copyright (C) 2023 EmbedPlus.com
+  Embed Plus for YouTube Gallery, Livestream and Lazy Loading with Facades
+  Copyright (C) 2024 EmbedPlus.com
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class YouTubePrefs
 
     public static $folder_name = 'youtube-embed-plus';
     public static $curltimeout = 30;
-    public static $version = '14.2.1.2';
+    public static $version = '14.2.1.3';
     public static $opt_version = 'version';
     public static $optembedwidth = null;
     public static $optembedheight = null;
@@ -296,7 +296,7 @@ class YouTubePrefs
         if (current_user_can('manage_options') && self::$alloptions[self::$opt_pro] && strlen(trim(self::$alloptions[self::$opt_pro])) > 10)
         {
             $class = 'notice notice-error is-dismissible';
-            $message = 'Important message to YouTube Pro users: From version 11.7 onward, you must <a href="https://www.embedplus.com/youtube-pro/download/?prokey=' . esc_attr(self::$alloptions[self::$opt_pro]) . '" target="_blank">download the separate plugin here</a> to regain your Pro features. All your settings will automatically migrate after installing the separate Pro download. Thank you for your support and patience during this transition.';
+            $message = 'Important message to Pro users: From version 11.7 onward, you must <a href="https://www.embedplus.com/youtube-pro/download/?prokey=' . esc_attr(self::$alloptions[self::$opt_pro]) . '" target="_blank">download the separate plugin here</a> to regain your Pro features. All your settings will automatically migrate after installing the separate Pro download. Thank you for your support and patience during this transition.';
 
             printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), wp_kses_post($message));
         }
@@ -1768,7 +1768,7 @@ class YouTubePrefs
                             echo '<a class="epxout">&times;</a>';
                         }
                         ?>
-                        Seems like you have two different YouTube plugins by the EmbedPlus Team installed: <b>YouTube</b> and <b>Advanced YouTube Embed.</b> We strongly suggest keeping only the one you prefer, so that they don't conflict with each other while trying to create your embeds.
+                        Seems like you have two different YouTube plugins by the EmbedPlus Team installed; this one and <b>Advanced YouTube Embed.</b> We strongly suggest keeping only the one you prefer, so that they don't conflict with each other while trying to create your embeds.
                     </p>
                 </div>
 
@@ -3130,13 +3130,13 @@ class YouTubePrefs
 
     public static function ytprefs_plugin_menu()
     {
-        self::$admin_page_hooks[] = add_menu_page('YouTube Settings', 'YouTube Free', 'manage_options', 'youtube-my-preferences', array(self::class, 'ytprefs_show_options'), 'dashicons-video-alt3', '10.000392854349');
+        self::$admin_page_hooks[] = add_menu_page('EmbedPlus for YouTube Settings', 'EmbedPlus for YouTube', 'manage_options', 'youtube-my-preferences', array(self::class, 'ytprefs_show_options'), 'dashicons-video-alt3', '10.000392854349');
         self::$admin_page_hooks[] = add_submenu_page('youtube-my-preferences', '', '', 'manage_options', 'youtube-my-preferences', array(self::class, 'ytprefs_show_options'));
 
         include_once(EPYTVI_INCLUDES_PATH . 'vi_admin_menu.php');
         self::$admin_page_hooks[] = add_submenu_page('youtube-my-preferences_nomenu', 'YouTube Posts', 'YouTube Posts', 'manage_options', 'youtube-ep-glance', array(self::class, 'glance_page'));
-        self::$admin_page_hooks[] = self::$wizard_hook = add_submenu_page('youtube-my-preferences_nomenu', 'YouTube Wizard', 'YouTube Wizard', 'edit_posts', 'youtube-ep-wizard', array(self::class, 'wizard'));
-        self::$admin_page_hooks[] = self::$onboarding_hook = add_submenu_page('youtube-my-preferences_nomenu', 'YouTube Setup', 'YouTube Setup', 'manage_options', 'youtube-ep-onboarding', array(self::class, 'ytprefs_show_onboarding'));
+        self::$admin_page_hooks[] = self::$wizard_hook = add_submenu_page('youtube-my-preferences_nomenu', 'EmbedPlus for YouTube Wizard', 'Wizard', 'edit_posts', 'youtube-ep-wizard', array(self::class, 'wizard'));
+        self::$admin_page_hooks[] = self::$onboarding_hook = add_submenu_page('youtube-my-preferences_nomenu', 'EmbedPlus for YouTube Setup', 'Setup', 'manage_options', 'youtube-ep-onboarding', array(self::class, 'ytprefs_show_onboarding'));
     }
 
     public static function custom_admin_pointers_check()
@@ -3259,14 +3259,14 @@ class YouTubePrefs
         $new_pointer_content = '<h3>' . __('New Update') . '</h3>'; // ooopointer
 
         $new_pointer_content .= '<p>'; // ooopointer
-        $new_pointer_content .= "This update fixes issues with the <a target=_blank href=\"" . self::$epbase . '/how-to-embed-a-youtube-livestream-in-wordpress.aspx">channel-based automatic live stream detection feature</a> for the <a target=_blank href="' . self::$epbase . '/dashboard/pro-easy-video-analytics.aspx?ref=frompointer">Pro version</a>, and provides better compatibility with PHP 8.3+ for both Free and Pro versions.';
+        $new_pointer_content .= 'This version updates the name of the plugin to fully adhere to WordPress.org&apos;s plugin name guidelines. More feature-based updates coming soon to both the free and <a target=_blank href="' . self::$epbase . '/dashboard/pro-easy-video-analytics.aspx?ref=frompointer">Pro</a> versions of the plugin!';
         if (self::vi_logged_in())
         {
             $new_pointer_content .= "<br><br><strong>Note:</strong> You are currently logged into the vi intelligence feature. vi support is being deprecated in the next version, so we recommend taking the vi ads down from your site. Please contact ext@embedplus.com for questions.";
         }
         if (!empty(self::$alloptions[self::$opt_pro]) && strlen(trim(self::$alloptions[self::$opt_pro])) > 0)
         {
-            $new_pointer_content .= ' <strong>Important message to YouTube Pro users</strong>: From version 11.7 onward, you must <a href="https://www.embedplus.com/youtube-pro/download/?prokey=' . esc_attr(self::$alloptions[self::$opt_pro]) . '" target="_blank">download the separate plugin here</a> to regain your Pro features. All your settings will automatically migrate after installing the separate Pro download. Thank you for your support and patience during this transition.';
+            $new_pointer_content .= ' <strong>Important message to Pro users</strong>: From version 11.7 onward, you must <a href="https://www.embedplus.com/youtube-pro/download/?prokey=' . esc_attr(self::$alloptions[self::$opt_pro]) . '" target="_blank">download the separate plugin here</a> to regain your Pro features. All your settings will automatically migrate after installing the separate Pro download. Thank you for your support and patience during this transition.';
         }
 
         $new_pointer_content .= '</p>';
@@ -3585,7 +3585,7 @@ class YouTubePrefs
 
         </style>
         <div class="wrap wrap-ytprefs">
-            <h1><span class="dashicons-before dashicons-video-alt3"></span> <?php echo __('YouTube Settings') ?></h1>
+            <h1><span class="dashicons-before dashicons-video-alt3"></span> <?php echo __('EmbedPlus for YouTube Settings') ?></h1>
             <?php
             self::settings_nav();
             ?>
@@ -4012,7 +4012,7 @@ class YouTubePrefs
                         <p>
                             <input name="<?php echo self::$opt_restrict_wizard; ?>" id="<?php echo self::$opt_restrict_wizard; ?>" <?php checked($all[self::$opt_restrict_wizard], 1); ?> type="checkbox" class="checkbox">
                             <label for="<?php echo self::$opt_restrict_wizard; ?>">
-                                <b class="chktitle">Restrict Wizard Button:</b> Select which roles can use the YouTube wizard button. For example, you may wish to hide the button from contributors submitting content on the front end.
+                                <b class="chktitle">Restrict Wizard Button:</b> Select which roles can use the EmbedPlus for YouTube wizard button. For example, you may wish to hide the button from contributors submitting content on the front end.
                             </label>
                             <br>
                             <span id="box_restrict_wizard" class="chx">
@@ -4132,7 +4132,7 @@ class YouTubePrefs
                         <h3>Classic Editor</h3>
                         <img class="wiztab-screenshots" src="<?php echo plugins_url('images/ss-wiz-classic.png', __FILE__) ?>">
                         <p>
-                            Simply click the YouTube wizard button found above 
+                            Simply click the EmbedPlus for YouTube wizard button found above 
                             your post editor to start the wizard (see image to the right to locate this button).  There, you'll have several options for different types of embeds.
                             Each embed code will have an "Insert Into Editor" button that you can click to directly embed the desired video link to your post without having to copy and paste.
                         </p>
@@ -4140,7 +4140,7 @@ class YouTubePrefs
                         <h3>Widgets</h3>
                         <img class="wiztab-screenshots" src="<?php echo plugins_url('images/ss-wiz-widget.png', __FILE__) ?>">
                         <p>
-                            To insert a video in a widget area, use the Text widget that comes with WordPress. Simply click the YouTube wizard button found above 
+                            To insert a video in a widget area, use the Text widget that comes with WordPress. Simply click the EmbedPlus for YouTube wizard button found above 
                             the widget textbox to start the wizard (see image to the right to locate this button).  There, you'll have several options for different types of embeds.
                             Each embed code will have an "Insert Into Editor" button that you can click to directly embed the desired video link to your post without having to copy and paste.
                         </p>
@@ -4148,7 +4148,7 @@ class YouTubePrefs
                         <h3>Gutenberg Block Editor</h3>
                         <img class="wiztab-screenshots" src="<?php echo plugins_url('images/ss-wiz-gbblock.png', __FILE__) ?>">
                         <p>
-                            Click on the (+) sign for the block editor list. The YouTube Wizard block is located under the "Embeds" category (make sure you choose "YouTube <strong>Wizard</strong>" not "YouTube").
+                            Click on the (+) sign for the block editor list. The EmbedPlus for YouTube Wizard block is located under the "Embeds" category (make sure you choose "YouTube <strong>Wizard</strong>" not "YouTube").
                             Then your page will show a placeholder where you can launch the wizard. In the wizard, you'll have several options for different types of embeds.
                             Each embed code will have an "Insert Into Editor" button that you can click to directly embed the desired video link to your post without having to copy and paste.
                             You'll also be able to preview and interact with your embed without having to view the page on the front end.
@@ -5114,7 +5114,7 @@ class YouTubePrefs
             })(jQuery);
         </script>
 
-        <a href="<?php echo esc_attr(admin_url('admin.php?page=youtube-ep-onboarding') . '&random=' . rand(1, 1000) . '&TB_iframe=true&width=950&height=800'); ?>" class="thickbox ytprefs-onboarding-launch" id="ytprefs-onboarding-launch" title="YouTube Setup Guide"></a>
+        <a href="<?php echo esc_attr(admin_url('admin.php?page=youtube-ep-onboarding') . '&random=' . rand(1, 1000) . '&TB_iframe=true&width=950&height=800'); ?>" class="thickbox ytprefs-onboarding-launch" id="ytprefs-onboarding-launch" title="EmbedPlus for YouTube Setup Guide"></a>
 
         <?php
         if (function_exists('add_thickbox'))
@@ -5624,7 +5624,7 @@ class YouTubePrefs
         ?>
         <div class="wrap wrap-ytprefs-onboarding">
             <div class="ytprefs-ob-title">
-                YouTube Setup Guide
+                EmbedPlus for YouTube Setup Guide
             </div>
             <div class="relative">
                 <div class="ytprefs-ob-step ytprefs-ob-step1 active-step">

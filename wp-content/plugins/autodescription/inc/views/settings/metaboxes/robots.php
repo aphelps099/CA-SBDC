@@ -71,26 +71,26 @@ switch ( $instance ) :
 		$robots = [
 			'noindex'   => [
 				'value' => 'noindex',
-				'desc'  => \__( 'These options most likely prevent indexing of the selected archives and pages. If you enable this, the selected archives or pages will urge to be removed from search engine results pages.', 'autodescription' ),
+				'desc'  => \__( 'These options can prevent indexing of the selected archives and pages. If you enable this, search engines will be urged to remove the selected archives or pages from their result pages.', 'autodescription' ),
 			],
 			'nofollow'  => [
 				'value' => 'nofollow',
-				'desc'  => \__( 'These options most likely prevent links from being followed on the selected archives and pages. If you enable this, the selected archives or pages in-page links will gain no SEO value, including your internal links.', 'autodescription' ),
+				'desc'  => \__( 'These options can prevent links from being followed on the selected archives and pages. If you enable this, the selected archives or pages in-page links will gain no SEO value, including your internal links.', 'autodescription' ),
 			],
 			'noarchive' => [
 				'value' => 'noarchive',
-				'desc'  => \__( 'These options most likely prevent caching of the selected archives and pages. If you enable this, bots are urged not create a cached copy of the selected archives or pages.', 'autodescription' ),
+				'desc'  => \__( 'These options can prevent caching of the selected archives and pages. If you enable this, bots are urged not create a cached copy of the selected archives or pages.', 'autodescription' ),
 			],
 		];
 
 		$tabs = [
-			'general' => [
+			'general'   => [
 				'name'     => \__( 'General', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_robots_metabox_general_tab' ],
 				'dashicon' => 'admin-generic',
 				'args'     => '',
 			],
-			'index'   => [
+			'index'     => [
 				'name'     => \__( 'Indexing', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_robots_metabox_no_tab' ],
 				'dashicon' => 'filter',
@@ -101,7 +101,7 @@ switch ( $instance ) :
 					'robots'       => $robots['noindex'],
 				],
 			],
-			'follow'  => [
+			'follow'    => [
 				'name'     => \__( 'Following', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_robots_metabox_no_tab' ],
 				'dashicon' => 'editor-unlink',
@@ -112,7 +112,7 @@ switch ( $instance ) :
 					'robots'       => $robots['nofollow'],
 				],
 			],
-			'archive' => [
+			'archive'   => [
 				'name'     => \__( 'Archiving', 'autodescription' ),
 				'callback' => [ Admin\Settings\Plugin::class, '_robots_metabox_no_tab' ],
 				'dashicon' => 'download',
@@ -122,6 +122,11 @@ switch ( $instance ) :
 					'taxonomies'   => $taxonomies,
 					'robots'       => $robots['noarchive'],
 				],
+			],
+			'robotstxt' => [
+				'name'     => 'Robots.txt',
+				'callback' => [ Admin\Settings\Plugin::class, '_robots_metabox_robotstxt_tab' ],
+				'dashicon' => 'editor-alignleft',
 			],
 		];
 
@@ -164,6 +169,7 @@ switch ( $instance ) :
 			] ),
 			true,
 		);
+		HTML::description( \__( 'This option does not affect the homepage; it uses a different one.', 'autodescription' ) );
 		?>
 		<hr>
 		<?php
@@ -186,7 +192,7 @@ switch ( $instance ) :
 		];
 		foreach ( range( 1, 600, 1 ) as $_n ) {
 			/* translators: %d = number */
-			$_text_snippet_types['number'][ $_n ] = sprintf( \_n( '%d character', '%d characters', $_n, 'autodescription' ), $_n );
+			$_text_snippet_types['number'][ $_n ] = \sprintf( \_n( '%d character', '%d characters', $_n, 'autodescription' ), $_n );
 		}
 		$text_snippet_options = '';
 		$_current             = Data\Plugin::get_option( 'max_snippet_length' );
@@ -197,7 +203,7 @@ switch ( $instance ) :
 
 			$_options = '';
 			foreach ( $_values as $_value => $_name ) {
-				$_options .= sprintf(
+				$_options .= \sprintf(
 					'<option value="%s" %s>%s</option>',
 					\esc_attr( $_value ),
 					\selected( $_current, \esc_attr( $_value ), false ),
@@ -205,7 +211,7 @@ switch ( $instance ) :
 				);
 			}
 
-			$text_snippet_options .= sprintf( '<optgroup label="%s">%s</optgroup>', \esc_attr( $_label ), $_options );
+			$text_snippet_options .= \sprintf( '<optgroup label="%s">%s</optgroup>', \esc_attr( $_label ), $_options );
 		}
 		HTML::wrap_fields(
 			vsprintf(
@@ -236,7 +242,7 @@ switch ( $instance ) :
 			'large'    => \__( 'Large or full size', 'autodescription' ),
 		];
 		foreach ( $_image_preview_types as $_value => $_name ) {
-			$image_preview_options .= sprintf(
+			$image_preview_options .= \sprintf(
 				'<option value="%s" %s>%s</option>',
 				\esc_attr( $_value ),
 				\selected( $_current, \esc_attr( $_value ), false ),
@@ -270,7 +276,7 @@ switch ( $instance ) :
 		];
 		foreach ( range( 1, 600, 1 ) as $_n ) {
 			/* translators: %d = number */
-			$_video_snippet_types['number'][ $_n ] = sprintf( \_n( '%d second', '%d seconds', $_n, 'autodescription' ), $_n );
+			$_video_snippet_types['number'][ $_n ] = \sprintf( \_n( '%d second', '%d seconds', $_n, 'autodescription' ), $_n );
 		}
 		$video_preview_options = '';
 		$_current              = Data\Plugin::get_option( 'max_video_preview' );
@@ -281,7 +287,7 @@ switch ( $instance ) :
 
 			$_options = '';
 			foreach ( $_values as $_value => $_name ) {
-				$_options .= sprintf(
+				$_options .= \sprintf(
 					'<option value="%s" %s>%s</option>',
 					\esc_attr( $_value ),
 					\selected( $_current, \esc_attr( $_value ), false ),
@@ -289,7 +295,7 @@ switch ( $instance ) :
 				);
 			}
 
-			$video_preview_options .= sprintf( '<optgroup label="%s">%s</optgroup>', \esc_attr( $_label ), $_options );
+			$video_preview_options .= \sprintf( '<optgroup label="%s">%s</optgroup>', \esc_attr( $_label ), $_options );
 		}
 		HTML::wrap_fields(
 			vsprintf(
@@ -324,7 +330,7 @@ switch ( $instance ) :
 
 		$ro_name_wrapped = HTML::code_wrap( $ro_value );
 
-		HTML::header_title( \__( 'Robots Settings', 'autodescription' ) );
+		HTML::header_title( \__( 'Robots Meta Settings', 'autodescription' ) );
 		HTML::description( $ro_i18n );
 		?>
 		<hr>
@@ -348,10 +354,10 @@ switch ( $instance ) :
 			$checkboxes[] = Input::make_checkbox( [
 				'id'     => [ $pt_option_id, $post_type ],
 				'class'  => 'tsf-robots-post-types',
-				'label'  => sprintf(
+				'label'  => \sprintf(
 					// RTL supported: Because the post types are Roman, browsers enforce the order.
 					'%s &ndash; <code>%s</code>',
-					sprintf(
+					\sprintf(
 						$apply_x_to_y_i18n_plural,
 						$ro_name_wrapped,
 						\esc_html( Post_Type::get_label( $post_type, false ) ),
@@ -381,10 +387,10 @@ switch ( $instance ) :
 			$checkboxes[] = Input::make_checkbox( [
 				'id'     => [ $tax_option_id, $taxonomy ],
 				'class'  => 'tsf-robots-taxonomies',
-				'label'  => sprintf(
+				'label'  => \sprintf(
 					// RTL supported: Because the post types are Roman, browsers enforce the order.
 					'%s &ndash; <code>%s</code>',
-					sprintf(
+					\sprintf(
 						$apply_x_to_y_i18n_plural,
 						$ro_name_wrapped,
 						\esc_html( Taxonomy::get_label( $taxonomy, false ) ),
@@ -411,7 +417,7 @@ switch ( $instance ) :
 		$checkboxes = '';
 		foreach ( $args['global_types'] as $type => $data ) {
 
-			$label = sprintf(
+			$label = \sprintf(
 				'singular' === $data['i18ntype'] ? $apply_x_to_y_i18n_singular : $apply_x_to_y_i18n_plural,
 				$ro_name_wrapped,
 				\esc_html( $data['i18n'] )
@@ -425,7 +431,7 @@ switch ( $instance ) :
 				$checkboxes .= '<hr class=tsf-option-spacer>';
 
 				if ( \in_array( $ro_value, [ 'noindex', 'nofollow' ], true ) )
-					$checkboxes .= sprintf(
+					$checkboxes .= \sprintf(
 						'<p><span class="description attention">%s</span></p>',
 						\esc_html__( 'Warning: No public site should ever enable this option.', 'autodescription' )
 					);
@@ -443,4 +449,88 @@ switch ( $instance ) :
 		}
 
 		HTML::wrap_fields( $checkboxes, true );
+		break;
+	case 'robotstxt':
+		$robots_url = RobotsTXT\Utils::get_robots_txt_url();
+
+		HTML::header_title( \__( 'Robots.txt Settings', 'autodescription' ) );
+
+		HTML::description( \__( 'When good web crawlers want to visit your site, they will first look for robots.txt to learn what they may access.', 'autodescription' ) );
+
+		if ( $robots_url ) {
+			HTML::description_noesc( \sprintf(
+				'<a href="%s" target=_blank rel=noopener>%s</a>',
+				\esc_url( $robots_url, [ 'https', 'http' ] ),
+				\esc_html__( 'View the robots.txt output.', 'autodescription' ),
+			) );
+		}
+
+		echo '<hr>';
+
+		if ( RobotsTXT\Utils::has_root_robots_txt() ) {
+			HTML::attention_description(
+				\__( 'Note: A robots.txt file has been detected in the root folder of your website, so these settings have no effect.', 'autodescription' )
+			);
+			echo '<hr>';
+		} elseif ( ! $robots_url ) {
+			if ( Data\Blog::is_subdirectory_installation() ) {
+				HTML::attention_description(
+					\__( 'Note: This site is installed in a subdirectory, so robots.txt files cannot be generated or used.', 'autodescription' )
+				);
+				echo '<hr>';
+			} elseif ( ! Query\Utils::using_pretty_permalinks() ) {
+				HTML::attention_description(
+					\__( 'Note: This site is using the plain permalink structure, so no robots.txt file can be generated.', 'autodescription' )
+				);
+				HTML::description_noesc(
+					Markdown::convert(
+						\sprintf(
+							/* translators: 1 = Link to settings, Markdown. 2 = example input, also markdown! Preserve the Markdown as-is! */
+							\esc_html__( 'Change your [Permalink Settings](%1$s). Recommended structure: `%2$s`.', 'autodescription' ),
+							\esc_url( \admin_url( 'options-permalink.php' ), [ 'https', 'http' ] ),
+							'/%category%/%postname%/',
+						),
+						[ 'code', 'a' ],
+						[ 'a_internal' => false ], // open in new window.
+					)
+				);
+				echo '<hr>';
+			}
+		}
+
+		if ( RobotsTXT\Utils::get_blocked_user_agents( 'ai' ) ) {
+			$info = HTML::make_info(
+				\__( 'Discover which AI crawlers are being blocked.', 'autodescription' ),
+				'https://kb.theseoframework.com/?p=263#blocking-ai-crawlers',
+				false,
+			);
+
+			HTML::wrap_fields(
+				Input::make_checkbox( [
+					'id'          => 'robotstxt_block_ai',
+					'label'       => \esc_html__( 'Block AI crawlers?', 'autodescription' ) . " $info",
+					'description' => \esc_html__( 'This blocks many crawlers that use your content to train language models.', 'autodescription' ),
+					'escape'      => false,
+				] ),
+				true,
+			);
+		}
+
+		if ( RobotsTXT\Utils::get_blocked_user_agents( 'seo' ) ) {
+			$info = HTML::make_info(
+				\__( 'Discover which SEO crawlers are being blocked.', 'autodescription' ),
+				'https://kb.theseoframework.com/?p=263#blocking-seo-crawlers',
+				false,
+			);
+
+			HTML::wrap_fields(
+				Input::make_checkbox( [
+					'id'          => 'robotstxt_block_seo',
+					'label'       => \esc_html__( 'Block SEO marketing crawlers?', 'autodescription' ) . " $info",
+					'description' => \esc_html__( 'This blocks many crawlers that analyze your site for ranking insights that might benefit competitors.', 'autodescription' ),
+					'escape'      => false,
+				] ),
+				true,
+			);
+		}
 endswitch;

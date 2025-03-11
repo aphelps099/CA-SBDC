@@ -48,7 +48,7 @@ switch ( $instance ) : // Quite useless, but prepared for expansion.
 					'https://search.google.com/search-console/ownership?resource_id=' . rawurlencode( $site_url ),
 					false,
 				),
-				'placeholder' => '123A456B78901C2D3456E7890F1A234D',
+				'placeholder' => 'ab1cDe2Fg3HI4Jklm5nOpqRSt67UVW78XYzAbcdEfgH',
 			],
 			'bing'      => [
 				'setting'     => 'bing_verification',
@@ -108,7 +108,7 @@ switch ( $instance ) : // Quite useless, but prepared for expansion.
 				$setting['info'], // phpcs:ignore, WordPress.Security.EscapeOutput.OutputNotEscaped -- should be escaped in list.
 			);
 			printf(
-				'<p><input type=text name=%s class="large-text ltr" id=%s placeholder="%s" value="%s" /></p>',
+				'<p><input type=text name=%s class="large-text ltr" id=%s placeholder="%s" value="%s"></p>',
 				\esc_attr( Input::get_field_name( $setting['setting'] ) ),
 				\esc_attr( Input::get_field_id( $setting['setting'] ) ),
 				\esc_attr( $setting['placeholder'] ),

@@ -110,7 +110,7 @@ final class Author extends Reference {
 		$entity = [
 			'@type' => static::$type,
 			'@id'   => static::get_id( [ 'uid' => $author_id ] ),
-			'name'  => $user_data->display_name ?? '',
+			'name'  => $user_data->display_name ?? '', // Yes, this could lead to an empty Author entity in a corner case.
 			// Let's not; may invoke bad bots. Let's do this via sameas.
 			// 'url'   => Meta\URI::get_bare_author_url( $author_id ),
 		];
@@ -124,7 +124,7 @@ final class Author extends Reference {
 			$entity['description'] = Strings::clamp_sentence(
 				\wp_strip_all_tags( $user_data->description ),
 				1,
-				250,
+				250, // Magic number: https://developer.yoast.com/features/schema/pieces/person/#optional-properties.
 			);
 
 		return $entity;

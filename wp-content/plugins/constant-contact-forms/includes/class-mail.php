@@ -299,12 +299,17 @@ class ConstantContact_Mail {
 
 		$content_before = $content_notice_note . $content_before . $content_notice_reasons;
 
-		$content_title  = '<p><strong>' . esc_html__( 'Form title: ', 'constant-contact-forms' ) . '</strong>' . get_the_title( $submission_details['form_id'] ) . '<br/>';
+		$content_title = '<p><strong>' . esc_html__( 'Form title: ', 'constant-contact-forms' ) . '</strong>' . get_the_title( $submission_details['form_id'] ) . '<br/>';
 
-		$list_ids = get_post_meta( (int) $submission_details['form_id'], '_ctct_list', true );
-		if ( ! is_array( $list_ids ) ) {
-			$list_ids = [ $list_ids ];
+		if ( ! empty( $_POST ) && is_array( $_POST ) ) { //phpcs:ignore
+			foreach( $_POST as $key => $value ) { //phpcs:ignore
+				if ( false !== strpos( $key, 'lists' ) ) {
+					$list_ids = array_map( 'sanitize_text_field', array_values( $value ) );
+					break;
+				}
+			}
 		}
+
 		foreach ( $list_ids as $list_id ) {
 			$list_info = constant_contact()->api->cc()->get_list( $list_id );
 			if ( ! empty( $list_info ) && isset( $list_info['name'] ) ) {
@@ -316,12 +321,15 @@ class ConstantContact_Mail {
 
 		$content = $content_title . $content;
 
-		$content_after = sprintf(
-			/* Translators: placeholders provide Constant Contact link information. */
-			esc_html__( "Email marketing is a great way to stay connected and engage with visitors after they've left your site. Visit %1\$shttps://www.constantcontact.com/index?pn=miwordpress%2\$s to sign up for a Free Trial.", 'constant-contact-forms' ),
-			'<a href="https://www.constantcontact.com/index?pn=miwordpress">',
-			'</a>'
-		);
+		$content_after = '';
+		if ( ! constant_contact()->api->is_connected() ) {
+			$content_after = sprintf(
+				/* Translators: placeholders provide Constant Contact link information. */
+				esc_html__( "Email marketing is a great way to stay connected and engage with visitors after they've left your site. Visit %1\$shttps://www.constantcontact.com/index?pn=miwordpress%2\$s to sign up for a Free Trial.", 'constant-contact-forms' ),
+				'<a href="https://www.constantcontact.com/?pn=miwordpress">',
+				'</a>'
+			);
+		}
 
 		/**
 		 * Filters the final constructed email content to be sent to an admin.

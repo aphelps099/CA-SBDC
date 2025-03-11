@@ -20,6 +20,8 @@ class GFSurvey extends GFAddOn {
 	protected $_title = 'Gravity Forms Survey Add-On';
 	protected $_short_title = 'Survey';
 	protected $_enable_rg_autoupgrade = true;
+	protected $_enable_theme_layer = true;
+	protected $_asset_min;
 
 	/**
 	 * Whether this add-on has access to the Gravity Forms settings renderer.
@@ -52,6 +54,10 @@ class GFSurvey extends GFAddOn {
 	public static function get_instance() {
 		if ( self::$_instance == null ) {
 			self::$_instance = new GFSurvey();
+
+			if ( ! isset( self::$_instance->_asset_min ) ) {
+				self::$_instance->_asset_min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+			}
 		}
 
 		return self::$_instance;
@@ -111,6 +117,7 @@ class GFSurvey extends GFAddOn {
 		// conditional logic filters
 		add_filter( 'gform_entry_meta_conditional_logic_confirmations', array( $this, 'conditional_logic_filters' ), 10, 3 );
 		add_filter( 'gform_entry_meta_conditional_logic_notifications', array( $this, 'conditional_logic_filters' ), 10, 3 );
+		add_filter( 'gform_is_value_match', array( $this, 'is_value_match_rank' ), 10, 6 );
 
 		parent::init();
 
@@ -161,32 +168,27 @@ class GFSurvey extends GFAddOn {
 	 * @return array
 	 */
 	public function scripts() {
-
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
-
-		$gsurvey_js_deps = array( 'jquery', 'jquery-ui-sortable' );
-		if ( wp_is_mobile() ) {
-			$gsurvey_js_deps[] = 'jquery-touch-punch';
-		}
+		$base_url = $this->get_base_url();
+		$version  = $this->_version;
 
 		$scripts = array(
 			array(
 				'handle'   => 'gsurvey_form_editor_js',
-				'src'      => $this->get_base_url() . "/js/gsurvey_form_editor{$min}.js",
-				'version'  => $this->_version,
+				'src'      => $base_url . "/js/gsurvey_form_editor{$this->_asset_min}.js",
+				'version'  => $version,
 				'deps'     => array( 'jquery' ),
 				'callback' => array( $this, 'localize_scripts' ),
 				'enqueue'  => array(
-					array( 'admin_page' => array( 'form_editor' ) ),
+					array( 'admin_page' => array( 'form_editor', 'form_settings'  ) ),
 				),
 			),
 			array(
 				'handle'  => 'gsurvey_js',
-				'src'     => $this->get_base_url() . "/js/gsurvey{$min}.js",
-				'version' => $this->_version,
-				'deps'    => $gsurvey_js_deps,
+				'src'     => $base_url . "/js/gsurvey{$this->_asset_min}.js",
+				'version' => $version,
+				'deps'    => array( 'jquery', 'jquery-ui-sortable', 'jquery-touch-punch' ),
 				'enqueue' => array(
-					array( 'admin_page' => array( 'form_editor', 'results', 'entry_view', 'entry_detail', 'entry_edit' ) ),
+					array( 'admin_page'  => array( 'form_editor', 'block_editor' ) ),
 					array( 'field_types' => array( 'survey' ) ),
 				),
 			),
@@ -197,8 +199,8 @@ class GFSurvey extends GFAddOn {
 		if ( ! empty( $merge_tags ) ) {
 			$scripts[] = array(
 				'handle'  => 'gform_survey_merge_tags',
-				'src'     => $this->get_base_url() . "/js/gsurvey_merge_tags{$min}.js",
-				'version' => $this->_version,
+				'src'     => $base_url . "/js/gsurvey_merge_tags{$this->_asset_min}.js",
+				'version' => $version,
 				'deps'    => array( 'jquery' ),
 				'enqueue' => array(
 					array( 'admin_page' => array( 'form_settings' ) ),
@@ -218,33 +220,103 @@ class GFSurvey extends GFAddOn {
 	 * @return array
 	 */
 	public function styles() {
-
-		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || isset( $_GET['gform_debug'] ) ? '' : '.min';
+		$base_url = $this->get_base_url();
+		$version  = $this->_version;
 
 		$styles = array(
 			array(
-				'handle'  => 'gsurvey_form_editor_css',
-				'src'     => $this->get_base_url() . "/css/gsurvey_form_editor{$min}.css",
-				'version' => $this->_version,
+				'handle'  => 'gsurvey_admin',
+				'src'     => $base_url . "/assets/css/dist/admin{$this->_asset_min}.css",
+				'version' => $version,
 				'enqueue' => array(
 					array( 'admin_page' => array( 'form_editor' ) ),
-				),
-			),
-			array(
-				'handle'  => 'gsurvey_css',
-				'src'     => $this->get_base_url() . "/css/gsurvey{$min}.css",
-				'version' => $this->_version,
-				'media'   => 'screen',
-				'enqueue' => array(
-					array( 'admin_page' => array( 'form_editor', 'results', 'entry_view', 'entry_detail', 'entry_edit' ) ),
 					array(
-						'field_types' => array( 'survey' )
+						'admin_page' => array( 'results', 'entry_view', 'entry_detail', 'entry_edit' ),
+						'field_types' => array( 'survey' ),
 					),
 				),
 			),
 		);
 
+		if ( ! $this->supports_theme_enqueuing() ) {
+			$styles[] = array(
+				'handle'  => 'gsurvey_css',
+				'src'     => $this->get_base_url() . "/assets/css/dist/theme{$this->_asset_min}.css",
+				'version' => $this->_version,
+				'enqueue' => array(
+					array( 'admin_page'  => array( 'form_editor', 'block_editor' ) ),
+					array( 'field_types' => array( 'survey' ) ),
+				),
+			);
+			$styles[] = array(
+				'handle'  => 'gsurvey-theme-foundation',
+				'src'     => $this->get_base_url() . "/assets/css/dist/theme-foundation{$this->_asset_min}.css",
+				'version' => $this->_version,
+				'enqueue' => array(
+					array( 'admin_page'  => array( 'form_editor', 'block_editor' ) ),
+					array( 'field_types' => array( 'survey' ) ),
+				),
+			);
+			$styles[] = array(
+				'handle'  => 'gsurvey-theme-framework',
+				'src'     => $this->get_base_url() . "/assets/css/dist/theme-framework{$this->_asset_min}.css",
+				'version' => $this->_version,
+				'enqueue' => array(
+					array( 'admin_page'  => array( 'form_editor', 'block_editor' ) ),
+					array( 'field_types' => array( 'survey' ) ),
+				),
+			);
+		}
+
 		return array_merge( parent::styles(), $styles );
+	}
+
+	/**
+	 * An array of styles to enqueue.
+	 *
+	 * @since 1.6
+	 *
+	 * @param $form
+	 * @param $ajax
+	 * @param $settings
+	 * @param $block_settings
+	 *
+	 * @return array|\string[][]
+	 */
+	public function theme_layer_styles( $form, $ajax, $settings, $embed_settings = array() ) {
+		return $this->supports_theme_enqueuing() ? $this->get_theme_layer_styles( $form, 'survey' ) : array();
+	}
+
+	/**
+	 * Get the themes that should be enqueued for the add-on. Uses the base class method and adds theme.css on the results page for forms with a survey field.
+	 *
+	 * @since 4.1.0
+	 *
+	 * @param array        $form        The current form object to enqueue styles for.
+	 * @param string|array $field_types The field type associated with the add-on. Themes will only be enqueued on the frontend if the form has a field with the specified field type.
+	 *
+	 * @return array Returns and array of theme slugs to enqueue.
+	 */
+	public function get_themes_to_enqueue ( $form, $field_types = '' ) {
+		$themes = parent::get_themes_to_enqueue( $form, $field_types );
+
+		// Adding gravity theme on the results page if the form has a survey field.
+		if ( GFForms::get_page() === 'results' ) {
+			$form = GFAPI::get_form( rgget( 'id' ) );
+			if ( GFCommon::get_fields_by_type( $form, $field_types ) ) {
+				$themes[] = 'gravity-theme';
+			}
+		}
+		return $themes;
+	}
+
+	/**
+	 * Whether the Base Add-on class supports theme enqueuing logic (only available in Gravity Forms 2.9+)
+	 *
+	 * @since 4.1.0
+	 */
+	public function supports_theme_enqueuing() {
+		return is_callable( array( $this, 'get_theme_layer_styles' ) );
 	}
 
 	/**
@@ -256,9 +328,10 @@ class GFSurvey extends GFAddOn {
 		$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
 		// Output admin-ajax.php URL with same protocol as current page
 		$params = array(
-			'ajaxurl'   => admin_url( 'admin-ajax.php', $protocol ),
-			'imagesUrl' => $this->get_base_url() . '/images',
-			'strings'   => array(
+			'ajaxurl'        => admin_url( 'admin-ajax.php', $protocol ),
+			'imagesUrl'      => $this->get_base_url() . '/images',
+			'refreshPreview' => ! $this->is_gravityforms_supported( '2.9.0-beta-1' ),
+			'strings'        => array(
 				'untitledSurveyField' => wp_strip_all_tags( __( 'Untitled Survey Field', 'gravityformssurvey' ) ),
 			),
 		);
@@ -294,6 +367,23 @@ class GFSurvey extends GFAddOn {
 			'fifthChoice'  => wp_strip_all_tags( __( 'Fifth Choice', 'gravityformssurvey' ) ),
 		);
 		wp_localize_script( 'gsurvey_form_editor_js', 'gsurveyRankStrings', $rank_strings );
+
+		//localize strings for the rank field conditional logic settings
+		$rank_condition_strings = array(
+			'position'  => wp_strip_all_tags( __( 'Position', 'gravityformssurvey' ) ),
+			'is' => wp_strip_all_tags( __( 'is in position', 'gravityformssurvey' ) ),
+			'isNot'  => wp_strip_all_tags( __( 'is not in position', 'gravityformssurvey' ) ),
+			'greaterThan' => wp_strip_all_tags( __( 'is in a position greater than', 'gravityformssurvey' ) ),
+			'lessThan'  => wp_strip_all_tags( __( 'is in a position less than', 'gravityformssurvey' ) ),
+		);
+		wp_localize_script( 'gsurvey_form_editor_js', 'gsurveyRankConditionStrings', $rank_condition_strings );
+
+		// localize strings for the likert field conditional logic settings
+		$likert_condition_strings = array(
+			'is' => wp_strip_all_tags( __( 'is', 'gravityformssurvey' ) ),
+			'isNot'  => wp_strip_all_tags( __( 'is not', 'gravityformssurvey' ) ),
+		);
+		wp_localize_script( 'gsurvey_form_editor_js', 'gsurveyLikertConditionStrings', $likert_condition_strings );
 
 		//localize strings for the ratings field
 		$rating_strings = array(
@@ -340,6 +430,32 @@ class GFSurvey extends GFAddOn {
 
 	}
 
+	/**
+	 * Outputs custom css properties to the page so that the survey fields can have custom properties based on block settings selections.
+	 *
+	 * @since 3.8
+	 *
+	 * @param int   $form_id        Current form id.
+	 * @param array $settings       Current settings.
+	 * @param array $block_settings Current block settings.
+	 *
+	 * @return array Returns an array containing the custom css properties to be output to the page.
+	 */
+	public function theme_layer_form_css_properties( $form_id, $settings, $block_settings ) {
+
+		$label_color = rgar( $block_settings, 'labelColor' );
+		if ( ! $label_color ) {
+			return array();
+		}
+
+		$color_util          = new \Gravity_Forms\Gravity_Forms\Util\Colors\Color_Modifier();
+		$rgb                 = $color_util->convert_hex_to_rgb( $label_color );
+		$encoded_color       = urlencode( $label_color );
+		return array(
+			'gform-survey-theme-field-likert-row-odd-background-color' => "rgb({$rgb['r']},{$rgb['g']},{$rgb['b']},0.08)",
+			'gform-survey-theme-icon-control-rank' => "url(\"data:image/svg+xml,%3Csvg width='8' height='14' viewBox='0 0 8 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M4 0C4.26522 5.96046e-08 4.51957 0.105357 4.70711 0.292893L7.70711 3.29289C8.09763 3.68342 8.09763 4.31658 7.70711 4.70711C7.31658 5.09763 6.68342 5.09763 6.29289 4.70711L4 2.41421L1.70711 4.70711C1.31658 5.09763 0.683417 5.09763 0.292893 4.70711C-0.0976311 4.31658 -0.097631 3.68342 0.292893 3.29289L3.29289 0.292893C3.48043 0.105357 3.73478 0 4 0ZM0.292893 9.29289C0.683417 8.90237 1.31658 8.90237 1.70711 9.29289L4 11.5858L6.29289 9.29289C6.68342 8.90237 7.31658 8.90237 7.70711 9.29289C8.09763 9.68342 8.09763 10.3166 7.70711 10.7071L4.70711 13.7071C4.31658 14.0976 3.68342 14.0976 3.29289 13.7071L0.292893 10.7071C-0.0976311 10.3166 -0.0976311 9.68342 0.292893 9.29289Z' fill='{$encoded_color}'/%3E%3C/svg%3E\")",
+		);
+	}
 
 	// # RESULTS & SCORING ----------------------------------------------------------------------------------------------
 
@@ -741,6 +857,56 @@ class GFSurvey extends GFAddOn {
 		}
 
 		return $filters;
+	}
+
+	/**
+	 * Evaluate conditional logic on the rank field.
+	 *
+	 * @since 3.9
+	 *
+	 * @param $is_match
+	 * @param $field_value
+	 * @param $target_value
+	 * @param $operation
+	 * @param $source_field
+	 * @param $rule
+	 *
+	 * @return bool
+	 */
+	public function is_value_match_rank( $is_match, $field_value, $target_value, $operation, $source_field, $rule ) {
+
+		if ( $source_field->type == 'survey' && $source_field->inputType == 'rank' ) {
+			if ( '' === $target_value ) {
+				// If a target value doesn't get saved, it's because the target value is 1.
+				$target_value = 1;
+			}
+
+			$field_id_parts = explode('.', $rule['fieldId']);
+			if ( 1 === count( $field_id_parts ) ) {
+				return $is_match;
+			}
+
+			$field_index       = $field_id_parts[1];
+			$choice_value      = $source_field->choices[$field_index]['value'];
+			$choice_value_index = array_search( $choice_value, $source_field->choices[$field_index] );
+			$field_value_array = explode(',', $field_value);
+			$target_index	   = $target_value - 1;
+
+			switch ( $rule['operator'] ) {
+				case 'is':
+					return $choice_value === $field_value_array[ $target_index ];
+				case 'isnot':
+					return $choice_value !== $field_value_array[ $target_index ];
+				case '>':
+					return $choice_value_index > $target_index;
+				case '<':
+					return $choice_value_index < $target_index;
+				default:
+					return false;
+			}
+		}
+
+		return $is_match;
 	}
 
 	/**

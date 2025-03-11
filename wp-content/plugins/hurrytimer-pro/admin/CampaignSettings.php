@@ -31,24 +31,26 @@ class CampaignSettings
 
     private function intializeHooks()
     {
-
-        // Save compaign settings.
-        add_action( 'save_post_hurrytimer_countdown', [ $this, 'save_settings' ], 10, 3 );
+        // Save campaign settings.
+        add_action('save_post_hurrytimer_countdown', [$this, 'save_settings'], 10, 3);
 
         // Custom publish metabox.
-        add_action( 'post_submitbox_misc_actions', [ $this, 'post_publish_metabox' ] );
+        add_action('post_submitbox_misc_actions', [$this, 'post_publish_metabox']);
+
+        // Handle campaign duplication.
+        add_action('admin_init', [$this, 'handle_duplicate_campaign']);
 
         // Edit placeholder for headline.
-        add_filter( 'enter_title_here', [ $this, 'change_countdown_title' ], 10 );
+        add_filter('enter_title_here', [$this, 'change_countdown_title'], 10);
 
         // Edit messages.
-        add_filter( 'post_updated_messages', [ $this, 'custom_updated_messages' ], 10 );
+        add_filter('post_updated_messages', [$this, 'custom_updated_messages'], 10);
 
         // Campaign settings metabox.
-        add_filter( 'add_meta_boxes', [ $this, 'add_settings_metabox_template' ], 10 );
+        add_filter('add_meta_boxes', [$this, 'add_settings_metabox_template'], 10);
 
-        add_action( "updated_post_meta", [ $this, 'maybe_reset_running_countdown' ], 10, 4 );
-        add_action( 'edit_form_before_permalink', [ $this, 'show_headline_moved_notice' ] );
+        add_action("updated_post_meta", [$this, 'maybe_reset_running_countdown'], 10, 4);
+        add_action('edit_form_before_permalink', [$this, 'show_headline_moved_notice']);
     }
 
     function show_headline_moved_notice( $post )
@@ -183,6 +185,15 @@ class CampaignSettings
         $deactivateUrl = Utils\Helpers::deactivateUrl( $post_id );
         $activateUrl = Utils\Helpers::activateUrl( $post_id );
 
+        $duplicateUrl = add_query_arg(
+            [
+                'action' => 'duplicate_campaign',
+                'post' => $post_id,
+                '_wpnonce' => wp_create_nonce('duplicate_campaign_' . $post_id)
+            ],
+            admin_url('admin.php')
+        );
+
         include HURRYT_DIR . '/admin/templates/post-publish-metabox.php';
 
     }
@@ -195,18 +206,17 @@ class CampaignSettings
      * @return void
      */
 
-    public function save_settings( $post_id )
+    public function save_settings($post_id)
     {
         if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
-        || (!isset($_POST['post_ID']) || $post_id != $_POST['post_ID'])
-        || (!current_user_can('edit_post', $post_id))
-
+            || (!isset($_POST['post_ID']) || $post_id != $_POST['post_ID'])
+            || (!current_user_can('publish_posts') || !current_user_can('edit_post', $post_id))
         ) {
             return;
         }
 
-        $countdown = new Campaign( $post_id );
-        $countdown->storeSettings( $_POST );
+        $countdown = new Campaign($post_id);
+        $countdown->storeSettings(wp_unslash($_POST));
     }
 
     public function add_settings_metabox_template( $post_type )
@@ -282,7 +292,7 @@ class CampaignSettings
                     'post' => $post_id,
                     'action' => 'edit',
                 ),
-                admin_url( 'post.php' )
+                admin_url('post.php')
             ),
             $action
         );
@@ -348,6 +358,34 @@ class CampaignSettings
         }
 
         return $result;
+    }
+
+    public function handle_duplicate_campaign()
+    {
+        if (isset($_POST['duplicate_campaign']) && $_POST['duplicate_campaign'] == '1') {
+            $post_id = get_the_ID();
+            $post = get_post($post_id);
+            if ($post && $post->post_type === HURRYT_POST_TYPE) {
+                $new_post_id = wp_insert_post([
+                    'post_title'  => $post->post_title . ' (Copy)',
+                    'post_type'   => $post->post_type,
+                    'post_status' => 'draft',
+                ]);
+
+                if ($new_post_id) {
+                    // Copy post meta
+                    $meta = get_post_meta($post_id);
+                    foreach ($meta as $key => $values) {
+                        foreach ($values as $value) {
+                            add_post_meta($new_post_id, $key, maybe_unserialize($value));
+                        }
+                    }
+                }
+            }
+            // Redirect to the new post edit page
+            wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id));
+            exit;
+        }
     }
 
 }

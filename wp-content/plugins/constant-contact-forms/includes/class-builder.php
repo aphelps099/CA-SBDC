@@ -291,13 +291,15 @@ class ConstantContact_Builder {
 	 * @param int $post_id Post ID.
 	 */
 	public function output_not_connected_modal( $post_id = 0 ) {
-		$auth_link = add_query_arg( [
-			'post_type' => 'ctct_forms',
-			'page'      => 'ctct_options_connect',
-		], admin_url( 'edit.php' ) );
+		$auth_link = add_query_arg(
+			[
+				'post_type' => 'ctct_forms',
+				'page'      => 'ctct_options_connect',
+			],
+			admin_url( 'edit.php' )
+		);
 		?>
-			<div class="ctct-modal ctct-modal-open">
-
+			<div id="ctct-not-connected-modal" class="ctct-modal ctct-modal-open">
 				<div class="ctct-modal-dialog" role="document">
 					<div class="ctct-modal-content">
 						<div class="ctct-modal-header">
@@ -322,7 +324,7 @@ class ConstantContact_Builder {
 								<?php // Empty alt tag OK; decorative image. ?>
 								<img
 									class="ctct-modal-flare"
-									src="<?php echo esc_url_raw( $this->plugin->url . 'assets/images/question-mail.png' ); ?>"
+									src="<?php echo esc_url_raw( $this->plugin->url . 'assets/images/createAccount.svg' ); ?>"
 									alt=""
 								/>
 								<h3><?php esc_attr_e( 'Try email marketing.', 'constant-contact-forms' ); ?></h3>
@@ -331,19 +333,13 @@ class ConstantContact_Builder {
 								</p>
 								<a href="<?php echo esc_url_raw( constant_contact()->api->get_signup_link() ); ?>" target="_blank" rel="noopener noreferrer" class="button button-orange" title="<?php esc_attr_e( 'Try Us Free', 'constant-contact-forms' ); ?>"><?php esc_html_e( 'Try Us Free', 'constant-contact-forms' ); ?></a><br/>
 
-								<?php // Empty alt tag OK; decorative image. ?>
-								<img
-									class="flare"
-									src="<?php echo esc_url_raw( $this->plugin->url . 'assets/images/cc-modal-logo.png' ); ?>"
-									alt=""
-								/>
 							</div>
 							<div class="ctct-modal-right">
 
 								<?php // Empty alt tag OK; decorative image. ?>
 								<img
 									class="ctct-modal-flare"
-									src="<?php echo esc_url_raw( $this->plugin->url . 'assets/images/cc-login.png' ); ?>"
+									src="<?php echo esc_url_raw( $this->plugin->url . 'assets/images/login.svg' ); ?>"
 									alt=""
 								/>
 								<h3><?php esc_attr_e( 'Connect my account.', 'constant-contact-forms' ); ?></h3>

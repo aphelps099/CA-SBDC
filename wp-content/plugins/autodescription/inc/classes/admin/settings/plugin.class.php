@@ -126,6 +126,16 @@ final class Plugin {
 				'main',
 			);
 
+		// Social Meta Box
+		if ( $social )
+			\add_meta_box(
+				'autodescription-social-settings',
+				\esc_html__( 'Social Meta Settings', 'autodescription' ),
+				[ static::class, '_social_metabox' ],
+				$settings_page_hook,
+				'main',
+			);
+
 		// Homepage Meta Box
 		if ( $home )
 			\add_meta_box(
@@ -145,16 +155,6 @@ final class Plugin {
 				'main',
 			);
 
-		// Social Meta Box
-		if ( $social )
-			\add_meta_box(
-				'autodescription-social-settings',
-				\esc_html__( 'Social Meta Settings', 'autodescription' ),
-				[ static::class, '_social_metabox' ],
-				$settings_page_hook,
-				'main',
-			);
-
 		// Schema Meta Box
 		if ( $schema )
 			\add_meta_box(
@@ -169,7 +169,7 @@ final class Plugin {
 		if ( $robots )
 			\add_meta_box(
 				'autodescription-robots-settings',
-				\esc_html__( 'Robots Meta Settings', 'autodescription' ),
+				\esc_html__( 'Robots Settings', 'autodescription' ),
 				[ static::class, '_robots_metabox' ],
 				$settings_page_hook,
 				'main',
@@ -256,14 +256,14 @@ final class Plugin {
 	 *              2. Renamed from `_nav_tab_wrapper`.
 	 *
 	 * @param string $id   The nav-tab ID.
-	 * @param array  $tabs The tab content {
-	 *    string tab ID => array : {
-	 *       string   name     : Tab name.
-	 *       callable callback : Output function.
-	 *       string   dashicon : The dashicon to use.
-	 *       mixed    args     : Optional callback function args. These arguments
-	 *                           will be extracted to variables in scope of the view.
-	 *    }
+	 * @param array  $tabs {
+	 *     The tab creation arguments keyed by tab name.
+	 *
+	 *     @type string   $name     Tab name.
+	 *     @type callable $callback Output function.
+	 *     @type string   $dashicon The dashicon to use.
+	 *     @type mixed    $args     Optional callback function args. These arguments
+	 *                              will be extracted to variables in scope of the view.
 	 * }
 	 */
 	public static function nav_tab_wrapper( $id, $tabs = [] ) {
@@ -454,6 +454,15 @@ final class Plugin {
 	}
 
 	/**
+	 * Robots Meta Box Robots.txt Tab output.
+	 *
+	 * @since 5.1.0
+	 */
+	public static function _robots_metabox_robotstxt_tab() {
+		Template::output_view( 'settings/metaboxes/robots', 'robotstxt' );
+	}
+
+	/**
 	 * Outputs the Homepage meta box on the Site SEO Settings page.
 	 *
 	 * @since 4.0.0
@@ -491,13 +500,13 @@ final class Plugin {
 	}
 
 	/**
-	 * Homepage meta box Robots Tab Output
+	 * Homepage meta box Visibility Output
 	 *
-	 * @since 4.0.0
+	 * @since 5.1.0
 	 * @see static::homepage_metabox() Callback for Homepage Settings box.
 	 */
-	public static function _homepage_metabox_robots_tab() {
-		Template::output_view( 'settings/metaboxes/homepage', 'robots' );
+	public static function _homepage_metabox_visibility_tab() {
+		Template::output_view( 'settings/metaboxes/homepage', 'visibility' );
 	}
 
 	/**

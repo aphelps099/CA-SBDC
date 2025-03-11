@@ -192,7 +192,8 @@ final class ListEdit extends Admin\Lists\Table {
 			\The_SEO_Framework\ROBOTS_IGNORE_SETTINGS,
 		);
 
-		$meta = Data\Plugin\Post::get_meta( $post_id );
+		$meta        = Data\Plugin\Post::get_meta( $post_id );
+		$is_homepage = Query::is_static_front_page( $generator_args['id'] );
 
 		// NB: The indexes correspond to `autodescription-list[index]` field input names.
 		$data = [
@@ -204,13 +205,11 @@ final class ListEdit extends Admin\Lists\Table {
 			],
 			'canonical'   => [
 				'value' => $meta['_genesis_canonical_uri'],
-				// TODO figure out how to make it work seamlessly with noindex.
-				// 'placeholder' => Meta\URI::get_generated_url( $generator_args ),
 			],
 			'noindex'     => [
 				'value'    => $meta['_genesis_noindex'],
 				'isSelect' => true,
-				'default'  => empty( $r_defaults['noindex'] ) ? 'index' : 'noindex',
+				'default'  => empty( $r_defaults['noindex'] ) ? 'index' : 'noindex', // aka defaultUnprotected
 			],
 			'nofollow'    => [
 				'value'    => $meta['_genesis_nofollow'],
@@ -223,7 +222,8 @@ final class ListEdit extends Admin\Lists\Table {
 				'default'  => empty( $r_defaults['noarchive'] ) ? 'archive' : 'noarchive',
 			],
 			'redirect'    => [
-				'value' => $meta['redirect'],
+				'value'       => $meta['redirect'],
+				'placeholder' => $is_homepage ? \esc_url( Data\Plugin::get_option( 'homepage_redirect' ) ) : '',
 			],
 		];
 
@@ -231,16 +231,18 @@ final class ListEdit extends Admin\Lists\Table {
 		 * Tip: Prefix the indexes with your (plugin) name to prevent collisions.
 		 * The index corresponds to field with the ID `autodescription-quick[%s]`, where %s is the index.
 		 *
+		 * Do not modify the structure or remove existing indexes!
+		 *
 		 * @since 4.0.5
 		 * @since 4.1.0 Now has `doctitle` and `description` indexes in its first parameter.
 		 * @since 4.2.3 Now supports the `placeholder` index for $data.
-		 * @param array $data            The current data : {
-		 *    string Index => @param array : {
-		 *       @param mixed  $value       The current value.
-		 *       @param bool   $isSelect    Optional. Whether the field is a select field.
-		 *       @param string $default     Optional. Only works when $isSelect is true. The default value to be set in select index 0.
-		 *       @param string $placeholder Optional. Only works when $isSelect is false. Sets a placeholder for the input field.
-		 *    }
+		 * @param array $data           {
+		 *     The current data keyed by input field name.
+		 *
+		 *     @type mixed  $value       The current value.
+		 *     @type bool   $isSelect    Optional. Whether the field is a select field.
+		 *     @type string $default     Optional. Only works when $isSelect is true. The default value to be set in select index 0.
+		 *     @type string $placeholder Optional. Only works when $isSelect is false. Sets a placeholder for the input field.
 		 * }
 		 * @param array $generator_args The query data. Contains 'id' or 'taxonomy'.
 		 */
@@ -249,12 +251,12 @@ final class ListEdit extends Admin\Lists\Table {
 		printf(
 			// '<span class=hidden id=%s data-le="%s"></span>',
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeData[%s]', (int) $post_id ),
+			\sprintf( 'tsfLeData[%s]', (int) $post_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
 			HTML::make_data_attributes( [ 'le' => $data ] )
 		);
 
-		if ( Query::is_static_front_page( $generator_args['id'] ) ) {
+		if ( $is_homepage ) {
 			// When the homepage title is set, we can safely get the custom field.
 			$_has_home_title     = (bool) \strlen( Data\Plugin::get_option( 'homepage_title' ) );
 			$default_title       = $_has_home_title
@@ -270,51 +272,161 @@ final class ListEdit extends Admin\Lists\Table {
 				? Meta\Description::get_custom_description( $generator_args )
 				: Meta\Description::get_generated_description( $generator_args );
 			$is_desc_ref_locked  = $_has_home_desc;
+
+			$_has_home_canonical     = (bool) Data\Plugin::get_option( 'homepage_canonical' );
+			$default_canonical       = $_has_home_canonical
+				? Meta\URI::get_custom_canonical_url( $generator_args )
+				: Meta\URI::get_generated_url( $generator_args );
+			$is_canonical_ref_locked = $_has_home_canonical;
+
+			$permastruct               = Meta\URI\Utils::get_url_permastruct( $generator_args );
+			$is_post_type_hierarchical = false; // Homepage cannot have a parent page.
 		} else {
+			static $memo = [];
+
+			$memo['addition']    ??= Meta\Title::get_addition();
+			$memo['seplocation'] ??= Meta\Title::get_addition_location();
+
 			$default_title       = Meta\Title::get_bare_generated_title( $generator_args );
-			$addition            = Meta\Title::get_addition();
-			$seplocation         = Meta\Title::get_addition_location();
+			$addition            = $memo['addition'];
+			$seplocation         = $memo['seplocation'];
 			$is_title_ref_locked = false;
 
 			$default_description = Meta\Description::get_generated_description( $generator_args );
 			$is_desc_ref_locked  = false;
-		}
 
-		$post_data  = [
-			'isFront' => Query::is_static_front_page( $generator_args['id'] ),
-		];
-		$title_data = [
-			'refTitleLocked'    => $is_title_ref_locked,
-			'defaultTitle'      => \esc_html( $default_title ),
-			'addAdditions'      => Meta\Title\Conditions::use_branding( $generator_args ),
-			'additionValue'     => \esc_html( $addition ),
-			'additionPlacement' => 'left' === $seplocation ? 'before' : 'after',
-		];
-		$desc_data  = [
-			'refDescriptionLocked' => $is_desc_ref_locked,
-			'defaultDescription'   => $default_description,
-		];
+			$is_canonical_ref_locked = false;
+			$default_canonical       = Meta\URI::get_generated_url( $generator_args );
+
+			$memo['post_type']                 ??= Query::get_admin_post_type();
+			$memo['permastruct']               ??= Meta\URI\Utils::get_url_permastruct( $generator_args );
+			$memo['is_post_type_hierarchical'] ??= \is_post_type_hierarchical( $memo['post_type'] );
+
+			$post_type   = $memo['post_type'];
+			$permastruct = $memo['permastruct'];
+
+			$parent_post_slugs         = [];
+			$is_post_type_hierarchical = $memo['is_post_type_hierarchical'];
+
+			// Homepage doesn't care about its parent page.
+			if ( $is_post_type_hierarchical && str_contains( $permastruct, '%postname%' ) ) {
+				// self is filled by current post name.
+				foreach ( Data\Post::get_post_parents( $post_id ) as $parent_post ) {
+					// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+					$parent_post_slugs[] = [
+						'id'   => $parent_post->ID,
+						'slug' => $parent_post->post_name,
+					];
+				}
+			}
+
+			// Only hierarchical taxonomies can be used in the URL.
+			// TODO filter post_tag here.
+			$memo['taxonomies'] ??= $post_type ? Taxonomy::get_hierarchical( 'names', $post_type ) : [];
+
+			$taxonomies               = $memo['taxonomies'];
+			$parent_term_slugs_by_tax = [];
+
+			// Yes, on its surface, this is a very expensive procedure.
+			// However, WordPress needs to walk all the terms already to create the post links.
+			// Hence, it ought to net to zero impact.
+			foreach ( $taxonomies as $taxonomy ) {
+				if ( str_contains( $permastruct, "%$taxonomy%" ) ) {
+					// Broken in Core. Skip writing cache. We may reach this line 200 times, but nobody should be using %post_tag% anyway.
+					if ( 'post_tag' === $taxonomy ) continue;
+
+					$parent_term_slugs_by_tax[ $taxonomy ] = [];
+					// There's no need to test for hierarchy, because we want the full structure anyway (third parameter).
+					foreach (
+						Data\Term::get_term_parents(
+							Data\Plugin\Post::get_primary_term_id( $post_id, $taxonomy ),
+							$taxonomy,
+							true,
+						)
+						as $parent_term
+					) {
+						// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+						$parent_term_slugs_by_tax[ $taxonomy ][] = [
+							'id'   => $parent_term->term_id,
+							'slug' => $parent_term->slug,
+						];
+					}
+				}
+			}
+
+			// Homepage cannot have an author.
+			if ( str_contains( $permastruct, '%author%' ) ) {
+				$author_id = Query::get_post_author_id( $post_id );
+
+				if ( $author_id ) {
+					$author_slugs = [
+						[
+							'id'   => $author_id,
+							'slug' => Data\User::get_userdata( $author_id, 'user_nicename' ),
+						],
+					];
+				}
+			}
+		}
 
 		printf(
 			// '<span class=hidden id=%s data-le-post-data="%s"></span>',
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLePostData[%s]', (int) $post_id ),
+			\sprintf( 'tsfLePostData[%s]', (int) $post_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
-			HTML::make_data_attributes( [ 'lePostData' => $post_data ] )
+			HTML::make_data_attributes( [
+				'lePostData' => [
+					'isFront' => Query::is_static_front_page( $generator_args['id'] ),
+				],
+			] ),
 		);
 		printf(
 			// '<span class=hidden id=%s data-le-title="%s"></span>',
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeTitleData[%s]', (int) $post_id ),
+			\sprintf( 'tsfLeTitleData[%s]', (int) $post_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
-			HTML::make_data_attributes( [ 'leTitle' => $title_data ] )
+			HTML::make_data_attributes( [
+				'leTitle' => [
+					'refTitleLocked'    => $is_title_ref_locked,
+					'defaultTitle'      => \esc_html( $default_title ),
+					'addAdditions'      => Meta\Title\Conditions::use_branding( $generator_args ),
+					'additionValue'     => \esc_html( $addition ),
+					'additionPlacement' => 'left' === $seplocation ? 'before' : 'after',
+				],
+			] ),
 		);
 		printf(
 			// '<span class=hidden id=%s data-le-description="%s"></span>',
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeDescriptionData[%s]', (int) $post_id ),
+			\sprintf( 'tsfLeDescriptionData[%s]', (int) $post_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
-			HTML::make_data_attributes( [ 'leDescription' => $desc_data ] )
+			HTML::make_data_attributes( [
+				'leDescription' => [
+					'refDescriptionLocked' => $is_desc_ref_locked,
+					'defaultDescription'   => $default_description,
+				],
+			] ),
+		);
+		printf(
+			// '<span class=hidden id=%s data-le-canonical="%s"></span>',
+			'<span class=hidden id=%s %s></span>',
+			\sprintf( 'tsfLeCanonicalData[%s]', (int) $post_id ),
+			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
+			HTML::make_data_attributes( [
+				'leCanonical' => [
+					'refCanonicalLocked'  => $is_canonical_ref_locked,
+					'defaultCanonical'    => \esc_url( $default_canonical ),
+					'preferredScheme'     => Meta\URI\Utils::get_preferred_url_scheme(),
+					'urlStructure'        => $permastruct,
+					'parentPostSlugs'     => $parent_post_slugs ?? [],
+					'parentTermSlugs'     => $parent_term_slugs_by_tax ?? [],
+					'supportedTaxonomies' => $taxonomies ?? [],
+					'authorSlugs'         => $author_slugs ?? [],
+					'isHierarchical'      => $is_post_type_hierarchical,
+					// phpcs:ignore, WordPress.DateTime.RestrictedFunctions -- date() is used for URL generation. See `get_permalink()`.
+					'publishDate'         => date( 'c', strtotime( \get_post( $post_id )->post_date ?? 'now' ) ),
+				],
+			] ),
 		);
 
 		if ( $this->doing_ajax )
@@ -343,9 +455,11 @@ final class ListEdit extends Admin\Lists\Table {
 		if ( $this->column_name !== $column_name )          return $string;
 		if ( ! \current_user_can( 'edit_term', $term_id ) ) return $string;
 
+		$taxonomy = $this->taxonomy;
+
 		$generator_args = [
 			'id'  => $term_id,
-			'tax' => $this->taxonomy,
+			'tax' => $taxonomy,
 		];
 
 		$r_defaults = Meta\Robots::get_generated_meta(
@@ -366,8 +480,6 @@ final class ListEdit extends Admin\Lists\Table {
 			],
 			'canonical'   => [
 				'value' => $meta['canonical'],
-				// TODO figure out how to make it work seamlessly with noindex.
-				// 'placeholder' => Meta\URI::get_generated_url( $generator_args ),
 			],
 			'noindex'     => [
 				'value'    => $meta['noindex'],
@@ -396,59 +508,103 @@ final class ListEdit extends Admin\Lists\Table {
 		 * @since 4.0.5
 		 * @since 4.1.0 Now has `doctitle` and `description` indexes in its first parameter.
 		 * @since 4.2.3 Now supports the `placeholder` index for $data.
-		 * @param array $data            The current data : {
-		 *    string Index => @param array : {
-		 *       @param mixed  $value       The current value.
-		 *       @param bool   $isSelect    Optional. Whether the field is a select field.
-		 *       @param string $default     Optional. Only works when $isSelect is true. The default value to be set in select index 0.
-		 *       @param string $placeholder Optional. Only works when $isSelect is false. Sets a placeholder for the input field.
-		 *    }
+		 * @param array $data           {
+		 *     The current data keyed by input field name.
+		 *
+		 *     @type mixed  $value       The current value.
+		 *     @type bool   $isSelect    Optional. Whether the field is a select field.
+		 *     @type string $default     Optional. Only works when $isSelect is true. The default value to be set in select index 0.
+		 *     @type string $placeholder Optional. Only works when $isSelect is false. Sets a placeholder for the input field.
 		 * }
 		 * @param array $generator_args The query data. Contains 'id' and 'tax'.
 		 */
 		$data = \apply_filters( 'the_seo_framework_list_table_data', $data, $generator_args );
 
+		static $memo = [];
+
+		$memo['addition']    ??= Meta\Title::get_addition();
+		$memo['seplocation'] ??= Meta\Title::get_addition_location();
+
+		$addition    = $memo['addition'];
+		$seplocation = $memo['seplocation'];
+
+		$memo['tax_object']               ??= \get_taxonomy( $taxonomy );
+		$memo['permastruct']              ??= Meta\URI\Utils::get_url_permastruct( $generator_args );
+		$memo['is_taxonomy_hierarchical'] ??= $memo['tax_object']->hierarchical && $memo['tax_object']->rewrite['hierarchical'];
+
+		$permastruct = $memo['permastruct'];
+
+		$parent_term_slugs        = [];
+		$is_taxonomy_hierarchical = $memo['is_taxonomy_hierarchical'];
+
+		if ( $is_taxonomy_hierarchical && str_contains( $permastruct, "%$taxonomy%" ) ) {
+			// self is filled by current term name.
+			foreach ( Data\Term::get_term_parents( $term_id, $taxonomy ) as $parent_term ) {
+				// We write it like this instead of [ id => slug ] to prevent reordering numericals via JSON.parse.
+				$parent_term_slugs[] = [
+					'id'   => $parent_term->term_id,
+					'slug' => $parent_term->slug,
+				];
+			}
+		}
+
 		$container = '';
 
-		$container .= sprintf(
+		$container .= \sprintf(
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeData[%s]', (int) $term_id ),
+			\sprintf( 'tsfLeData[%s]', (int) $term_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
 			HTML::make_data_attributes( [ 'le' => $data ] )
 		);
 
 		$term_prefix = Meta\Title\Conditions::use_generated_archive_prefix( \get_term( $generator_args['id'], $generator_args['tax'] ) )
-			? sprintf(
+			? \sprintf(
 				/* translators: %s: Taxonomy singular name. */
 				\_x( '%s:', 'taxonomy term archive title prefix', 'default' ),
 				Taxonomy::get_label( $generator_args['tax'] ),
 			)
 			: '';
 
-		$title_data = [
-			'refTitleLocked'    => false,
-			'defaultTitle'      => \esc_html( Meta\Title::get_bare_generated_title( $generator_args ) ),
-			'addAdditions'      => Meta\Title\Conditions::use_branding( $generator_args ),
-			'additionValue'     => \esc_html( Meta\Title::get_addition() ),
-			'additionPlacement' => 'left' === Meta\Title::get_addition_location() ? 'before' : 'after',
-			'termPrefix'        => $term_prefix,
-		];
-		$desc_data  = [
-			'refDescriptionLocked' => false,
-			'defaultDescription'   => Meta\Description::get_generated_description( $generator_args ),
-		];
-
-		$container .= sprintf(
+		$container .= \sprintf(
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeTitleData[%s]', (int) $term_id ),
+			\sprintf( 'tsfLeTitleData[%s]', (int) $term_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
-			HTML::make_data_attributes( [ 'leTitle' => $title_data ] )
+			HTML::make_data_attributes( [
+				'leTitle' => [
+					'refTitleLocked'    => false,
+					'defaultTitle'      => \esc_html( Meta\Title::get_bare_generated_title( $generator_args ) ),
+					'addAdditions'      => Meta\Title\Conditions::use_branding( $generator_args ),
+					'additionValue'     => \esc_html( $addition ),
+					'additionPlacement' => 'left' === $seplocation ? 'before' : 'after',
+					'termPrefix'        => \esc_html( $term_prefix ),
+				],
+			] ),
 		);
-		$container .= sprintf(
+		$container .= \sprintf(
 			'<span class=hidden id=%s %s></span>',
-			sprintf( 'tsfLeDescriptionData[%s]', (int) $term_id ),
+			\sprintf( 'tsfLeDescriptionData[%s]', (int) $term_id ),
 			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
-			HTML::make_data_attributes( [ 'leDescription' => $desc_data ] )
+			HTML::make_data_attributes( [
+				'leDescription' => [
+					'refDescriptionLocked' => false,
+					'defaultDescription'   => Meta\Description::get_generated_description( $generator_args ),
+				],
+			] ),
+		);
+		$container .= \sprintf(
+			'<span class=hidden id=%s %s></span>',
+			\sprintf( 'tsfLeCanonicalData[%s]', (int) $term_id ),
+			// phpcs:ignore, WordPress.Security.EscapeOutput -- make_data_attributes escapes.
+			HTML::make_data_attributes( [
+				'leCanonical' => [
+					'refCanonicalLocked' => false,
+					'defaultCanonical'   => \esc_url( Meta\URI::get_generated_url( $generator_args ) ),
+					'preferredScheme'    => Meta\URI\Utils::get_preferred_url_scheme(),
+					'urlStructure'       => $permastruct,
+					'parentTermSlugs'    => $parent_term_slugs,
+					'isHierarchical'     => $is_taxonomy_hierarchical,
+				],
+			] ),
 		);
 
 		if ( $this->doing_ajax )

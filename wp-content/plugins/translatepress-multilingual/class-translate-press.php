@@ -1,5 +1,8 @@
 <?php
 
+if ( !defined('ABSPATH' ) )
+    exit();
+
 /**
  * Class TRP_Translate_Press
  *
@@ -66,7 +69,7 @@ class TRP_Translate_Press{
         define( 'TRP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
         define( 'TRP_PLUGIN_BASE', plugin_basename( __DIR__ . '/index.php' ) );
         define( 'TRP_PLUGIN_SLUG', 'translatepress-multilingual' );
-        define( 'TRP_PLUGIN_VERSION', '2.8.2' );
+        define( 'TRP_PLUGIN_VERSION', '2.9.6' );
 
 	    wp_cache_add_non_persistent_groups(array('trp'));
 
@@ -108,6 +111,8 @@ class TRP_Translate_Press{
         require_once TRP_PLUGIN_DIR . 'includes/queries/class-gettext-normalization.php';
         require_once TRP_PLUGIN_DIR . 'includes/queries/class-gettext-table-creation.php';
         require_once TRP_PLUGIN_DIR . 'includes/queries/class-gettext-insert-update.php';
+        require_once TRP_PLUGIN_DIR . 'includes/queries/class-regular-delete.php';
+        require_once TRP_PLUGIN_DIR . 'includes/queries/class-gettext-delete.php';
         require_once TRP_PLUGIN_DIR . 'includes/class-url-converter.php';
         require_once TRP_PLUGIN_DIR . 'includes/class-uri.php';
 	    require_once TRP_PLUGIN_DIR . 'includes/class-upgrade.php';
@@ -278,12 +283,13 @@ class TRP_Translate_Press{
 	    $this->loader->add_filter( 'trp_get_existing_translations', $this->translation_manager, 'display_possible_db_errors', 20, 3 );
         $this->loader->add_action( 'wp_ajax_trp_save_editor_user_meta', $this->translation_manager, 'save_editor_user_meta', 10 );
         $this->loader->add_action( 'trp_editor_notices', $this->translation_manager, 'display_notice_to_upgrade_gettext_in_editor', 10, 1 );
+        $this->loader->add_action( 'trp_editor_notices', $this->translation_manager, 'display_notice_to_upgrade_slugs_in_editor', 10, 1 );
 
 
         $this->loader->add_action( 'wp_ajax_trp_process_js_strings_in_translation_editor', $this->translation_render, 'process_js_strings_in_translation_editor' );
         $this->loader->add_filter( 'trp_skip_selectors_from_dynamic_translation', $this->translation_render, 'skip_base_attributes_from_dynamic_translation', 10, 1 );
 
-
+        $this->loader->add_action( 'admin_notices', $this->upgrade, 'show_admin_notice_minimum_pro_version_required' );
 	    $this->loader->add_action( 'admin_menu', $this->upgrade, 'register_menu_page' );
         $this->loader->add_action( 'admin_init', $this->upgrade, 'show_admin_error_message' );
 	    $this->loader->add_action( 'admin_init', $this->upgrade, 'show_admin_notice' );
@@ -353,6 +359,7 @@ class TRP_Translate_Press{
         /* handle CDATA str replacement from the content as it is messing up the renderer */
         $this->loader->add_filter( "trp_before_translate_content", $this->translation_render, 'handle_cdata', 1000 );
         $this->loader->add_action( "trp_set_translation_for_attribute", $this->translation_render, 'translate_image_srcset_attributes', 10, 3 );
+        $this->loader->add_filter( "trp_translateable_strings", $this->translation_render, 'antispambot_infinite_detection_fix', 10, 6 );
         $this->loader->add_filter( "trp_allow_machine_translation_for_string", $this->translation_render, 'allow_machine_translation_for_string', 10, 4 );
         $this->loader->add_filter( "trp_allow_machine_translation_for_string", $this->translation_render, 'skip_automatic_translation_for_no_auto_translation_selector', 10, 5 );
         $this->loader->add_action( "init", $this->translation_render, 'add_callbacks_for_translating_rest_api', 10, 4 );
@@ -439,11 +446,13 @@ class TRP_Translate_Press{
          * when woo registers post_types and taxonomies in the rewrite parameter of the function they change the slugs of the items (they are localized with _x )
          * we can't flush the permalinks on every page load so we filter the rewrite_rules option
          */
+
         $this->loader->add_filter( "option_rewrite_rules", $this->url_converter, 'woocommerce_filter_permalinks_on_other_languages' );
         $this->loader->add_filter( "option_woocommerce_permalinks", $this->url_converter, 'woocommerce_filter_permalink_option' );
         $this->loader->add_filter( "pre_update_option_woocommerce_permalinks", $this->url_converter, 'prevent_permalink_update_on_other_languages', 10, 2 );
-        $this->loader->add_filter( "pre_update_option_rewrite_rules", $this->url_converter, 'prevent_permalink_update_on_other_languages', 10, 2 );
         $this->loader->add_filter( "pre_update_option_rewrite_rules", $this->url_converter, 'delete_woocommerce_transient_permalink' );
+
+        $this->loader->add_filter( "pre_update_option_rewrite_rules", $this->url_converter, 'prevent_permalink_update_on_other_languages', 10, 2 );
 
         /* add to the body class the current language */
         $this->loader->add_filter( "body_class", $this->translation_manager, 'add_language_to_body_class' );

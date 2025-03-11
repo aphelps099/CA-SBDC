@@ -58,13 +58,15 @@ final class Builder {
 
 	/**
 	 * @since 4.0.0
-	 * @var array $item The current SEO Bar item list. {
-	 *    string $symbol : The displayed symbol that identifies your bar.
-	 *    string $title  : The title of the assessment.
-	 *    string $status : Accepts 'good', 'okay', 'bad', 'unknown'.
-	 *    string $reason : The final assessment: The reason for the $status.
-	 *    string $assess : The assessments on why the reason is set. Keep it short and concise!
-	 *                     Does not accept HTML for performant ARIA support.
+	 * @var array $item {
+	 *     The current SEO Bar item list.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
 	 * }
 	 */
 	private static $items = [];
@@ -81,12 +83,14 @@ final class Builder {
 	 * @since 4.0.0
 	 * @since 4.1.4 Now manages the builder, too.
 	 *
-	 * @param array $query : {
-	 *   int    $id        : Required. The current post or term ID.
-	 *   string $tax       : Optional. If not set, this will interpret it as a post.
-	 *   string $pta       : Not implemented. Do not populate.
-	 *   string $post_type : Optional. If not set, this will be automatically filled.
-	 *                                 This parameter is ignored for taxonomies.
+	 * @param array $query {
+	 *     The query arguments for the SEO Bar.
+	 *
+	 *     @type int    $id        Required. The current post or term ID.
+	 *     @type string $tax       Optional. If not set, this will interpret it as a post.
+	 *     @type string $pta       Not implemented. Do not populate.
+	 *     @type string $post_type Optional. If not set, this will be automatically filled.
+	 *                             This parameter is ignored for taxonomies.
 	 * }
 	 * @return string The SEO Bar.
 	 */
@@ -158,13 +162,14 @@ final class Builder {
 	 * @since 4.1.1 Is now static.
 	 * @collector
 	 *
-	 * @return array SEO Bar items. Passed by reference. {
-	 *    string $symbol : The displayed symbol that identifies your bar.
-	 *    string $title  : The title of the assessment.
-	 *    string $status : Accepts 'good', 'okay', 'bad', 'unknown'.
-	 *    string $reason : The final assessment: The reason for the $status.
-	 *    string $assess : The assessments on why the reason is set. Keep it short and concise!
-	 *                     Does not accept HTML for performant ARIA support.
+	 * @return array {
+	 *     An array of SEO Bar items.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type string $status Either 'good', 'okay', 'bad', or 'unknown'.
+	 *     @type string $reason The final assessment: The reason for the $status.
+	 *     @type string $assess The assessments on why the reason is set.
 	 * }
 	 */
 	public static function &collect_seo_bar_items() {
@@ -176,14 +181,16 @@ final class Builder {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $key The item key.
-	 * @param array  $item : {
-	 *    string $symbol : Required. The displayed symbol that identifies your bar.
-	 *    string $title  : Required. The title of the assessment.
-	 *    string $status : Required. Accepts 'good', 'okay', 'bad', 'unknown'.
-	 *    string $reason : Required. The final assessment: The reason for the $status.
-	 *    string $assess : Required. The assessments on why the reason is set. Keep it short and concise!
-	 *                               Does not accept HTML for performant ARIA support.
+	 * @param string $key  The item key.
+	 * @param array  $item {
+	 *     The SEO Bar item.
+	 *
+	 *     @type string $symbol Required. The displayed symbol that identifies your bar.
+	 *     @type string $title  Required. The title of the assessment.
+	 *     @type string $status Required. Accepts 'good', 'okay', 'bad', 'unknown'.
+	 *     @type string $reason Required. The final assessment: The reason for the $status.
+	 *     @type string $assess Required. The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
 	 * }
 	 */
 	public static function register_seo_bar_item( $key, $item ) {
@@ -236,7 +243,7 @@ final class Builder {
 			$blocks[] = $block;
 
 		// Always return the wrap, may it be filled in via JS in the future.
-		return sprintf(
+		return \sprintf(
 			'<div class="tsf-seo-bar tsf-tooltip-super-wrap"><span class=tsf-seo-bar-inner-wrap>%s</span></div>',
 			implode( $blocks )
 		);
@@ -312,11 +319,11 @@ final class Builder {
 				$symbol = $item['symbol'];
 			}
 
-			$html = sprintf(
+			$html = \sprintf(
 				'<strong>%s:</strong> %s<br>%s',
 				$item['title'],
 				$item['reason'],
-				sprintf(
+				\sprintf(
 					'<ol>%s</ol>',
 					implode(
 						'',
@@ -333,22 +340,22 @@ final class Builder {
 			} else {
 				$i = 0;
 				foreach ( $item['assess'] as $text ) {
-					$assessments[] = sprintf( $gettext['enum'], ++$i, $text );
+					$assessments[] = \sprintf( $gettext['enum'], ++$i, $text );
 				}
 			}
 
-			$aria = sprintf(
+			$aria = \sprintf(
 				$gettext['aria'],
 				$item['title'],
 				$item['reason'],
-				sprintf(
+				\sprintf(
 					$gettext['list'],
 					$count < 2 ? $gettext['assessment'] : $gettext['assessments'],
 					implode( ' ', $assessments ),
 				),
 			);
 
-			yield sprintf(
+			yield \sprintf(
 				'<span class="tsf-seo-bar-section-wrap tsf-tooltip-wrap"><span class="tsf-seo-bar-item tsf-tooltip-item tsf-seo-bar-%1$s" title="%2$s" aria-label="%2$s" data-desc="%3$s" tabindex=0>%4$s</span></span>',
 				$status,
 				\esc_attr( $aria ),

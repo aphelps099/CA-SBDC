@@ -302,6 +302,9 @@ class NS_Cloner_Process_Manager {
 			wp_cache_flush();
 		}
 
+		$source_id = ns_cloner_request()->get( 'source_id' );
+		ns_cloner_set_theme( $source_id, $target_id );
+
 		// Log and report timing details.
 		ns_cloner()->report->set_end_time();
 		$start_time = ns_cloner()->report->get_start_time();

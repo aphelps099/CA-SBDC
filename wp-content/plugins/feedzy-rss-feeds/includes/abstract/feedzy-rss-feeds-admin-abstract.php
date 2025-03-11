@@ -2,7 +2,7 @@
 /**
  * The Abstract class with reusable functionality of the plugin.
  *
- * @link       http://themeisle.com
+ * @link       https://themeisle.com
  * @since      3.0.0
  *
  * @package    feedzy-rss-feeds
@@ -208,9 +208,13 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		$final_msg = '';
 
 		if ( $show_error ) {
-			$final_msg = '<div id="message" class="error"><p>' . sprintf( __( 'Sorry, some part of this feed is currently unavailable or does not exist anymore. The detailed error is %s', 'feedzy-rss-feeds' ), '<p style="font-weight: bold">' . wp_strip_all_tags( $error_msg ) . '</p>' );
+			$final_msg = '<div id="message" class="error"><p>' . sprintf(
+				// translators: %s: Detailed error message.
+				__( 'Sorry, some part of this feed is currently unavailable or does not exist anymore. The detailed error is %s', 'feedzy-rss-feeds' ),
+				'<p style="font-weight: bold">' . wp_strip_all_tags( $error_msg ) . '</p>'
+			);
 			if ( ! is_admin() ) {
-				$final_msg .= sprintf( __( '%1$s(Only you are seeing this detailed error because you are the creator of this post. Other users will see the error message as below.)%2$s', 'feedzy-rss-feeds' ), '<small>', '</small>' );
+				$final_msg .= '<small>(' . __( 'Only you are seeing this detailed error because you are the creator of this post. Other users will see the error message as below.', 'feedzy-rss-feeds' ) . ')</small>';
 			}
 			$final_msg .= '</p></div>';
 		} else {
@@ -298,86 +302,6 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 	}
 
 	/**
-	 * Check title for keywords
-	 *
-	 * @since   3.0.0
-	 * @access  public
-	 *
-	 * @param   boolean $continue A boolean to stop the script.
-	 * @param   array   $sc The shortcode attributes.
-	 * @param   object  $item The feed item.
-	 * @param   string  $feed_url The feed URL.
-	 *
-	 * @return  boolean
-	 */
-	public function feedzy_feed_item_keywords_title( $continue, $sc, $item, $feed_url ) {
-		if ( feedzy_is_new() && ! feedzy_is_pro() ) {
-			return true;
-		}
-
-		$inc_on = ! empty( $sc['keywords_inc_on'] ) ? $sc['keywords_inc_on'] : 'title';
-		$exc_on = ! empty( $sc['keywords_exc_on'] ) ? $sc['keywords_exc_on'] : 'title';
-
-		if ( isset( $sc['keywords_inc'] ) && ! empty( $sc['keywords_inc'] ) ) {
-			$keywords = $sc['keywords_inc'];
-			if ( ! empty( $keywords ) ) {
-				$continue = false;
-				if ( ! empty( $inc_on ) ) {
-					$continue = $this->feedzy_feed_item_keywords_by( $item, $inc_on, $keywords, $sc );
-				} else {
-					if ( preg_match( "/^$keywords.*$/i", $item->get_title() ) || preg_match( "/^$keywords.*$/i", $item->get_description() ) ) {
-						$continue = true;
-					}
-				}
-			}
-		} elseif ( isset( $sc['keywords_title'] ) && ! empty( $sc['keywords_title'] ) ) {
-			$keywords = $sc['keywords_title'];
-			if ( ! empty( $keywords ) ) {
-				$continue = false;
-				if ( ! empty( $inc_on ) ) {
-					$continue = $this->feedzy_feed_item_keywords_by( $item, $inc_on, $keywords, $sc );
-				} else {
-					if ( preg_match( "/^$keywords.*$/i", $item->get_title() ) ) {
-						$continue = true;
-					}
-				}
-			}
-		}
-
-		if ( isset( $sc['keywords_exc'] ) && ! empty( $sc['keywords_exc'] ) ) {
-			$keywords = $sc['keywords_exc'];
-			if ( ! empty( $keywords ) ) {
-				if ( ! empty( $exc_on ) ) {
-					$exc_item = $this->feedzy_feed_item_keywords_by( $item, $exc_on, $keywords, $sc );
-					if ( $exc_item ) {
-						$continue = false;
-					}
-				} else {
-					if ( ! preg_match( "/^$keywords.*$/i", $item->get_title() ) || ! preg_match( "/^$keywords.*$/i", $item->get_description() ) ) {
-						$continue = false;
-					}
-				}
-			}
-		} elseif ( isset( $sc['keywords_ban'] ) && ! empty( $sc['keywords_ban'] ) ) {
-			$keywords = $sc['keywords_ban'];
-			if ( ! empty( $keywords ) ) {
-				if ( ! empty( $exc_on ) ) {
-					$keywords_ban = $this->feedzy_feed_item_keywords_by( $item, $exc_on, $keywords, $sc );
-					if ( $keywords_ban ) {
-						$continue = false;
-					}
-				} else {
-					if ( preg_match( "/^$keywords.*$/i", $item->get_title() ) ) {
-						$continue = false;
-					}
-				}
-			}
-		}
-
-		return $continue;
-	}
-
-	/**
 	 * Include cover picture (medium) to rss feed enclosure
 	 * and media:content
 	 *
@@ -427,7 +351,6 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				return $src;
 			}
 		}
-
 	}
 
 	/**
@@ -481,7 +404,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				}
 				$attributes .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
-			$lazyload_cache_key = md5( sprintf( 'feedzy-lazy-%s', ( is_array( $feed_url ) ? implode( ',', $feed_url ) : $feed_url ) ) );
+			$lazyload_cache_key = md5( sprintf( 'feedzy-lazy-%s-%d-%d', ( is_array( $feed_url ) ? implode( ',', $feed_url ) : $feed_url ), ( ! empty( $sc['max'] ) ? $sc['max'] : 1 ), ( ! empty( $sc['offset'] ) ? $sc['offset'] : 0 ) ) );
 			$content            = get_transient( $lazyload_cache_key );
 
 			// the first time the shortcode is being called it will not have any content.
@@ -518,6 +441,27 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				}
 			}
 		}
+
+		// If the user is explicitly using filters attribute, then use it and ignore old filters.
+		if ( isset( $sc['filters'] ) && ! empty( $sc['filters'] ) && feedzy_is_pro() ) {
+			$sc['filters'] = apply_filters( 'feedzy_filter_conditions_attribute', $sc['filters'] );
+		} else {
+			$sc['filters'] = apply_filters( 'feedzy_filter_conditions_migration', $sc );
+		}
+
+		$sc = array_diff_key(
+			$sc,
+			array(
+				'keywords_title'  => '',
+				'keywords_inc'    => '',
+				'keywords_inc_on' => '',
+				'keywords_exc'    => '',
+				'keywords_exc_on' => '',
+				'keywords_ban'    => '',
+				'from_datetime'   => '',
+				'to_datetime'     => '',
+			)
+		);
 
 		$feed = $this->fetch_feed( $feed_url, $cache, $sc );
 		if ( is_string( $feed ) ) {
@@ -565,6 +509,27 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		$atts     = $data['args'];
 		$sc       = $this->get_short_code_attributes( $atts );
 		$feed_url = $this->normalize_urls( $sc['feeds'] );
+
+		if ( isset( $sc['filters'] ) && ! empty( $sc['filters'] ) && feedzy_is_pro() ) {
+			$sc['filters'] = apply_filters( 'feedzy_filter_conditions_attribute', $sc['filters'] );
+		} else {
+			$sc['filters'] = apply_filters( 'feedzy_filter_conditions_migration', $sc );
+		}
+
+		$sc = array_diff_key(
+			$sc,
+			array(
+				'keywords_title'  => '',
+				'keywords_inc'    => '',
+				'keywords_inc_on' => '',
+				'keywords_exc'    => '',
+				'keywords_exc_on' => '',
+				'keywords_ban'    => '',
+				'from_datetime'   => '',
+				'to_datetime'     => '',
+			)
+		);
+
 		$feed     = $this->fetch_feed( $feed_url, $sc['refresh'], $sc );
 		if ( is_string( $feed ) ) {
 			return $feed;
@@ -573,7 +538,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		$content = $this->render_content( $sc, $feed, $feed_url, '' );
 
 		// save the content as a transient so that whenever the feed is refreshed next, this stale content is displayed first.
-		$lazyload_cache_key = md5( sprintf( 'feedzy-lazy-%s', ( is_array( $feed_url ) ? implode( ',', $feed_url ) : $feed_url ) ) );
+		$lazyload_cache_key = md5( sprintf( 'feedzy-lazy-%s-%d-%d', ( is_array( $feed_url ) ? implode( ',', $feed_url ) : $feed_url ), ( ! empty( $sc['max'] ) ? $sc['max'] : 1 ), ( ! empty( $sc['offset'] ) ? $sc['offset'] : 0 ) ) );
 		set_transient( $lazyload_cache_key, $content, apply_filters( 'feedzy_lazyload_cache_time', DAY_IN_SECONDS, $feed_url ) );
 
 		wp_send_json_success( array( 'content' => $content ) );
@@ -658,6 +623,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				'to_datetime'     => '',
 				// Disable default style.
 				'disable_default_style' => 'no',
+				'filters'         => '',
 			),
 			$atts,
 			'feedzy_default'
@@ -887,22 +853,6 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 			$feed->set_useragent( apply_filters( 'http_headers_useragent', $set_server_agent ) );
 		}
 
-		global $feedzy_current_error_reporting;
-		$feedzy_current_error_reporting = error_reporting();
-
-		// to avoid the Warning! Non-numeric value encountered. This can be removed once SimplePie in core is fixed.
-		if ( version_compare( phpversion(), '7.1', '>=' ) ) {
-			error_reporting( E_ALL & ~E_WARNING & ~E_DEPRECATED );
-			// reset the error_reporting back to its original value.
-			add_action(
-				'shutdown',
-				function() {
-					global $feedzy_current_error_reporting;
-					error_reporting( $feedzy_current_error_reporting );
-				}
-			);
-		}
-
 		$feed->init();
 
 		if ( ! $feed->get_type() ) {
@@ -987,10 +937,14 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				}
 				if ( $this->check_valid_source( $url, $cache, $source_type ) ) {
 					$valid_feed_url[] = $url;
-				} else {
-					if ( $echo ) {
-						echo wp_kses_post( sprintf( __( 'Feed URL: %s not valid and removed from fetch.', 'feedzy-rss-feeds' ), '<b>' . esc_url( $url ) . '</b>' ) );
-					}
+				} elseif ( $echo ) {
+						echo wp_kses_post(
+							sprintf(
+							// translators: %s: Feed URL.
+								__( 'Feed URL: %s not valid and removed from fetch.', 'feedzy-rss-feeds' ),
+								'<b>' . esc_url( $url ) . '</b>'
+							)
+						);
 				}
 			}
 		} else {
@@ -1003,10 +957,14 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 			}
 			if ( $this->check_valid_source( $feed_url, $cache, $source_type ) ) {
 				$valid_feed_url[] = $feed_url;
-			} else {
-				if ( $echo ) {
-					echo wp_kses_post( sprintf( __( 'Feed URL: %s not valid and removed from fetch.', 'feedzy-rss-feeds' ), '<b>' . esc_url( $feed_url ) . '</b>' ) );
-				}
+			} elseif ( $echo ) {
+					echo wp_kses_post(
+						sprintf(
+							// translators: %s: Feed URL.
+							__( 'Feed URL: %s not valid and removed from fetch.', 'feedzy-rss-feeds' ),
+							'<b>' . esc_url( $feed_url ) . '</b>'
+						)
+					);
 			}
 		}
 
@@ -1046,7 +1004,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				)
 			);
 			if ( ! empty( $amazon_products->get_errors() ) ) {
-				$amazon_api_errors['source_type'] = __( '[Amazon Product Advertising API] ', 'feedzy-rss-feeds' );
+				$amazon_api_errors['source_type'] = '[' . __( 'Amazon Product Advertising API', 'feedzy-rss-feeds' ) . ']';
 				$amazon_api_errors['source']      = array( $url );
 				$amazon_api_errors['errors']      = $amazon_products->get_errors();
 				update_post_meta( $post_id, '__transient_feedzy_invalid_source_errors', $amazon_api_errors );
@@ -1100,30 +1058,6 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		if ( empty( $sc['size'] ) || ! ctype_digit( (string) $sc['size'] ) ) {
 			$sc['size'] = '150';
 		}
-		if ( ! empty( $sc['keywords_title'] ) ) {
-			if ( is_array( $sc['keywords_title'] ) ) {
-				$sc['keywords_title'] = implode( ',', $sc['keywords_title'] );
-			}
-			$sc['keywords_title'] = feedzy_filter_custom_pattern( $sc['keywords_title'] );
-		}
-		if ( ! empty( $sc['keywords_inc'] ) ) {
-			if ( is_array( $sc['keywords_inc'] ) ) {
-				$sc['keywords_inc'] = implode( ',', $sc['keywords_inc'] );
-			}
-			$sc['keywords_inc'] = feedzy_filter_custom_pattern( $sc['keywords_inc'] );
-		}
-		if ( ! empty( $sc['keywords_ban'] ) ) {
-			if ( is_array( $sc['keywords_ban'] ) ) {
-				$sc['keywords_ban'] = implode( ',', $sc['keywords_ban'] );
-			}
-			$sc['keywords_ban'] = feedzy_filter_custom_pattern( $sc['keywords_ban'] );
-		}
-		if ( ! empty( $sc['keywords_exc'] ) ) {
-			if ( is_array( $sc['keywords_exc'] ) ) {
-				$sc['keywords_exc'] = implode( ',', $sc['keywords_exc'] );
-			}
-			$sc['keywords_exc'] = feedzy_filter_custom_pattern( $sc['keywords_exc'] );
-		}
 		if ( empty( $sc['summarylength'] ) || ! is_numeric( $sc['summarylength'] ) ) {
 			$sc['summarylength'] = '';
 		}
@@ -1174,7 +1108,7 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 				$feed_title['rss_classes'][]         = $main_class;
 				$feed_title['disable_default_style'] = true;
 			}
-			$this->shortcode_count++;
+			++$this->shortcode_count;
 		}
 		$class[]  = $main_class;
 		$content .= '<div class="' . esc_attr( implode( ' ', $class ) ) . '">';
@@ -1245,7 +1179,11 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 			if ( ! empty( $item['full_content_error'] ) ) {
 				$statuses[] = array(
 					'success' => false,
-					'msg'     => sprintf( __( 'Full content: %s', 'feedzy-rss-feeds' ), $item['full_content_error'] ),
+					'msg'     => sprintf(
+						// translators: %s: Error message for full content extraction.
+						__( 'Full content: %s', 'feedzy-rss-feeds' ),
+						$item['full_content_error']
+					),
 				);
 			} elseif ( isset( $item['item_full_content'] ) ) {
 				if ( ! empty( $item['item_full_content'] ) ) {
@@ -1351,12 +1289,10 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 							$feed_url[] = preg_replace( '/^https:/i', 'http:', $f );
 						}
 					}
-				} else {
-					if ( FEEDZY_ALLOW_HTTPS ) {
+				} elseif ( FEEDZY_ALLOW_HTTPS ) {
 						$feed_url[] = $feed;
 					} else {
 						$feed_url[] = preg_replace( '/^https:/i', 'http:', $feed );
-					}
 				}
 			}
 			if ( count( $feed_url ) === 1 ) {
@@ -1399,9 +1335,9 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 					$item_attr = preg_replace( '/ style=\\"[^\\"]*\\"/', '', $item_attr );
 				}
 				$feed_items[ $count ]['itemAttr'] = $item_attr;
-				$count++;
+				++$count;
 			}
-			$index++;
+			++$index;
 		}
 		return $feed_items;
 	}
@@ -1574,18 +1510,21 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 
 		$date_time = apply_filters( 'feedzy_feed_timestamp', $date_time, $feed_url, $item );
 		if ( $meta_args['date'] && ! empty( $meta_args['date_format'] ) ) {
-			$content_meta_values['date'] = apply_filters( 'feedzy_meta_date', __( 'on', 'feedzy-rss-feeds' ) . ' ' . date_i18n( $meta_args['date_format'], $date_time ) . ' ', $date_time, $feed_url, $item );
+			// translators: %s: the date of the imported content.
+			$content_meta_values['date'] = apply_filters( 'feedzy_meta_date', sprintf( __( 'on %s', 'feedzy-rss-feeds' ), date_i18n( $meta_args['date_format'], $date_time ) ) . ' ', $date_time, $feed_url, $item );
 		}
 
 		if ( $meta_args['time'] && ! empty( $meta_args['time_format'] ) ) {
-			$content_meta_values['time'] = apply_filters( 'feedzy_meta_time', __( 'at', 'feedzy-rss-feeds' ) . ' ' . date_i18n( $meta_args['time_format'], $date_time ) . ' ', $date_time, $feed_url, $item );
+			// translators: %s: the time of the imported content.
+			$content_meta_values['time'] = apply_filters( 'feedzy_meta_time', sprintf( __( 'at %s', 'feedzy-rss-feeds' ), date_i18n( $meta_args['time_format'], $date_time ) ) . ' ', $date_time, $feed_url, $item );
 		}
 
 		// categories.
 		if ( $meta_args['categories'] && has_filter( 'feedzy_retrieve_categories' ) ) {
 			$categories = apply_filters( 'feedzy_retrieve_categories', null, $item );
 			if ( ! empty( $categories ) ) {
-				$content_meta_values['categories'] = apply_filters( 'feedzy_meta_categories', __( 'in', 'feedzy-rss-feeds' ) . ' ' . $categories . ' ', $categories, $feed_url, $item );
+				// translators: %s: the category of the imported content.
+				$content_meta_values['categories'] = apply_filters( 'feedzy_meta_categories', sprintf( __( 'in %s', 'feedzy-rss-feeds' ), $categories ) . ' ', $categories, $feed_url, $item );
 			}
 		}
 
@@ -1740,6 +1679,11 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		}
 
 		$the_thumbnail = html_entity_decode( $the_thumbnail, ENT_QUOTES, 'UTF-8' );
+
+		if ( isset( $sc['_dryrun_'] ) && 'yes' === $sc['_dryrun_'] ) {
+			return $the_thumbnail;
+		}
+
 		if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST ) {
 			$feed_url      = $this->normalize_urls( $sc['feeds'] );
 			$the_thumbnail = ! empty( $the_thumbnail ) ? $the_thumbnail : apply_filters( 'feedzy_default_image', $sc['default'], $feed_url );
@@ -1938,60 +1882,6 @@ abstract class Feedzy_Rss_Feeds_Admin_Abstract {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Keyword filter in multiple fields.
-	 *
-	 * @param object $item The feed item.
-	 * @param string $filter_by Filter by.
-	 * @param string $keywords Keywords.
-	 *
-	 * @return bool
-	 */
-	public function feedzy_feed_item_keywords_by( $item, $filter_by = '', $keywords = '', $sc = array() ) {
-		$is_valid = false;
-
-		if ( empty( $filter_by ) ) {
-			return $is_valid;
-		}
-
-		if ( 'title' === $filter_by ) {
-			$item_title = wp_strip_all_tags( $item->get_title(), true );
-			if ( ! empty( $item_title ) && preg_match( "/^$keywords.*$/i", $item_title ) ) {
-				$is_valid = true;
-			}
-		} elseif ( 'description' === $filter_by ) {
-			$description = wp_strip_all_tags( $item->get_content(), true );
-			if ( ! empty( $description ) && preg_match( "/^$keywords.*$/i", $description ) ) {
-				$is_valid = true;
-			}
-		} elseif ( 'author' === $filter_by ) {
-			$author = $item->get_author();
-			$author_name = '';
-			if ( $author ) {
-				$author_name = $author->get_name();
-			}
-			if ( ! empty( $author_name ) && preg_match( "/^$keywords.*$/i", $author_name ) ) {
-				$is_valid = true;
-			}
-		} elseif ( 'fullcontent' === $filter_by ) {
-			$content = $item->get_item_tags( SIMPLEPIE_NAMESPACE_ATOM_10, 'full-content' );
-			$content = ! empty( $content[0]['data'] ) ? $content[0]['data'] : '';
-			$content = wp_strip_all_tags( $content, true );
-			if ( ! empty( $content ) && preg_match( "/^$keywords.*$/i", $content ) ) {
-				$is_valid = true;
-			}
-		}
-
-		// Date filter.
-		if ( $is_valid && ( ! empty( $sc['from_datetime'] ) && ! empty( $sc['to_datetime'] ) ) ) {
-			$from_datetime = strtotime( $sc['from_datetime'] );
-			$to_datetime = strtotime( $sc['to_datetime'] );
-			$item_date = strtotime( $item->get_date() );
-			$is_valid = ( ( $from_datetime <= $item_date ) && ( $item_date <= $to_datetime ) );
-		}
-		return $is_valid;
 	}
 
 	/**

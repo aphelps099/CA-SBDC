@@ -75,7 +75,7 @@ if (!empty($campaign->actions) && hurryt_is_woocommerce_activated()) {
                         <?php ?>
 
                         <div class="hurryt-compat-info description hidden">
-                            Available in one-time and recurring modes only.
+                           "Change stock status" is available in one-time and recurring modes only.
                         </div>
                     </div>
                 </div>

@@ -158,13 +158,15 @@ final class Term extends Main {
 	 *              2. Now tests for term title prefix per state.
 	 *              3. Added syntax test.
 	 *
-	 * @return array $item : {
-	 *    string  $symbol : The displayed symbol that identifies your bar.
-	 *    string  $title  : The title of the assessment.
-	 *    int     $status : Power of two. See SEOBar's class constants.
-	 *    string  $reason : The final assessment: The reason for the $status. The latest state-changing reason is used.
-	 *    string  $assess : The assessments on why the reason is set. Keep it short and concise!
-	 *                     Does not accept HTML for performant ARIA support.
+	 * @return array $item {
+	 *     The SEO Bar title item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
 	 * }
 	 */
 	protected function test_title() {
@@ -184,7 +186,7 @@ final class Term extends Main {
 				],
 				'assess'   => [
 					'empty'      => \__( 'No title could be fetched.', 'autodescription' ),
-					'untitled'   => sprintf(
+					'untitled'   => \sprintf(
 						/* translators: %s = "Untitled" */
 						\__( 'No title could be fetched, "%s" is used instead.', 'autodescription' ),
 						Meta\Title::get_untitled_title(),
@@ -342,7 +344,7 @@ final class Term extends Main {
 			$length_i18n = $guidelines_i18n['long']['good'];
 		}
 
-		$item['assess']['length'] = sprintf(
+		$item['assess']['length'] = \sprintf(
 			$cache['params']['disclaim'],
 			$length_i18n,
 			$cache['params']['estimated'],
@@ -356,9 +358,17 @@ final class Term extends Main {
 	 *
 	 * @since 4.0.0
 	 * @since 4.0.5 Added syntax test.
-	 * @see test_title() for return value.
 	 *
-	 * @return array $item
+	 * @return array $item {
+	 *     The SEO Bar description item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
+	 * }
 	 */
 	protected function test_description() {
 
@@ -473,7 +483,7 @@ final class Term extends Main {
 				// Keep abbreviations... WordPress, make multibyte support mandatory already.
 				// $_word = ctype_upper( reset( $_repeated_word ) ) ? reset( $_repeated_word ) : mb_strtolower( reset( $_repeated_word ) );
 
-				$dupes[] = sprintf(
+				$dupes[] = \sprintf(
 					/* translators: 1: Word found, 2: Occurrences */
 					\esc_attr__( '&#8220;%1$s&#8221; is used %2$d times.', 'autodescription' ),
 					\esc_attr( key( $_repeated_word ) ),
@@ -526,7 +536,7 @@ final class Term extends Main {
 			$length_i18n = $guidelines_i18n['long']['good'];
 		}
 
-		$item['assess']['length'] = sprintf(
+		$item['assess']['length'] = \sprintf(
 			$cache['params']['disclaim'],
 			$length_i18n,
 			$cache['params']['estimated'],
@@ -540,9 +550,17 @@ final class Term extends Main {
 	 *
 	 * @since 4.0.0
 	 * @since 4.1.0 Now asserts all taxonomy robots settings.
-	 * @see test_title() for return value.
 	 *
-	 * @return array $item
+	 * @return array $item {
+	 *     The SEO Bar robots indexing item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
+	 * }
 	 */
 	protected function test_indexing() {
 
@@ -688,9 +706,17 @@ final class Term extends Main {
 	 *
 	 * @since 4.0.0
 	 * @since 4.1.0 Now asserts all taxonomy robots settings.
-	 * @see test_title() for return value.
 	 *
-	 * @return array $item
+	 * @return array $item {
+	 *     The SEO Bar robots following item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
+	 * }
 	 */
 	protected function test_following() {
 
@@ -805,9 +831,17 @@ final class Term extends Main {
 	 *
 	 * @since 4.0.0
 	 * @since 4.1.0 Now asserts all taxonomy robots settings.
-	 * @see test_title() for return value.
 	 *
-	 * @return array $item
+	 * @return array $item {
+	 *     The SEO Bar robots archiving item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
+	 * }
 	 */
 	protected function test_archiving() {
 
@@ -921,9 +955,17 @@ final class Term extends Main {
 	 * Runs redirect tests.
 	 *
 	 * @since 4.0.0
-	 * @see test_title() for return value.
 	 *
-	 * @return array $item
+	 * @return array $item {
+	 *     The SEO Bar redirect item.
+	 *
+	 *     @type string $symbol The displayed symbol that identifies your bar.
+	 *     @type string $title  The title of the assessment.
+	 *     @type int    $status Power of two. See SEOBar's class constants.
+	 *     @type string $reason The final assessment: The reason for the $status. The latest state-changing reason is used.
+	 *     @type string $assess The assessments on why the reason is set. Keep it short and concise!
+	 *                          Does not accept HTML for performant ARIA support.
+	 * }
 	 */
 	protected function test_redirect() {
 		if ( empty( $this->query_cache['meta']['redirect'] ) ) {

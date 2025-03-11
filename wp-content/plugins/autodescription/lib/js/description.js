@@ -34,7 +34,7 @@
  *
  * @constructor
  */
-window.tsfDescription = function() {
+window.tsfDescription = function () {
 
 	/**
 	 * @since 4.1.0
@@ -60,7 +60,7 @@ window.tsfDescription = function() {
 	 * @param {Element} element
 	 * @return {Element}
 	 */
-	const setInputElement = element => {
+	function setInputElement( element ) {
 		descriptionInputInstances.set( element.id, element );
 		states[ element.id ] = {
 			allowReferenceChange: true,
@@ -80,7 +80,9 @@ window.tsfDescription = function() {
 	 * @param {string} id The element ID.
 	 * @return {Element}
 	 */
-	const getInputElement = id => descriptionInputInstances.get( id );
+	function getInputElement( id ) {
+		return descriptionInputInstances.get( id );
+	}
 
 	/**
 	 * Returns state of ID.
@@ -90,9 +92,11 @@ window.tsfDescription = function() {
 	 *
 	 * @param {string}             id The input element ID.
 	 * @param {(string|undefined)} part The part to return. Leave empty to return the whole state.
-	 * @return {(Object<string, *>)|*|null}
+	 * @return {(Object<string,*>)|*|null}
 	 */
-	const getStateOf = ( id, part ) => part ? states[ id ]?.[ part ] : states[ id ];
+	function getStateOf( id, part ) {
+		return part ? states[ id ]?.[ part ] : states[ id ];
+	}
 
 	/**
 	 * Updates state of ID.
@@ -108,7 +112,7 @@ window.tsfDescription = function() {
 	 * @param {string} part  The state index to change.
 	 * @param {*}      value The value to set the state to.
 	 */
-	const updateStateOf = ( id, part, value ) => {
+	function updateStateOf( id, part, value ) {
 
 		if ( states[ id ][ part ] === value ) return;
 
@@ -137,7 +141,7 @@ window.tsfDescription = function() {
 	 * @param {*}               value  The value to set the state to.
 	 * @param {string|string[]} except The input element IDs to exclude from updates.
 	 */
-	const updateStateAll = ( part, value, except ) => {
+	function updateStateAll( part, value, except ) {
 
 		except = Array.isArray( except ) ? except : [ except ];
 
@@ -156,7 +160,9 @@ window.tsfDescription = function() {
 	 * @param {string} id The input element ID.
 	 * @return {HTMLElement[]}
 	 */
-	const _getDescriptionReferences = id => [ document.getElementById( `tsf-description-reference_${id}` ) ];
+	function _getDescriptionReferences( id ) {
+		return [ document.getElementById( `tsf-description-reference_${id}` ) ];
+	}
 
 	/**
 	 * Updates the description reference.
@@ -168,10 +174,9 @@ window.tsfDescription = function() {
 	 * @since 4.1.2 Now listens to `useDefaultDescription` when reference isn't locked.
 	 * @access private
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _setReferenceDescription = event => {
+	function _setReferenceDescription( event ) {
 		const references = _getDescriptionReferences( event.target.id );
 
 		if ( ! references[0] ) return;
@@ -200,8 +205,8 @@ window.tsfDescription = function() {
 			// if ( reference.innerHTML = referenceValue ) return;
 
 			reference.innerHTML = referenceValue;
-			// Fires change event. Deferred to another thread.
-			setTimeout( () => { reference.dispatchEvent( changeEvent ) }, 0 );
+			// Fires change event. dispatchEvent is synchronous, so we defer it to another thread.
+			setTimeout( () => { reference.dispatchEvent( changeEvent ) } );
 		} );
 	}
 
@@ -212,10 +217,9 @@ window.tsfDescription = function() {
 	 * @since 4.1.0 Now consistently sets a reliable placeholder.
 	 * @access private
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _updatePlaceholder = event => {
+	function _updatePlaceholder( event ) {
 		event.target.placeholder = _getDescriptionReferences( event.target.id )[0].textContent;
 	}
 
@@ -226,10 +230,9 @@ window.tsfDescription = function() {
 	 *              2. Threshold "far too long" has been increased to 330 from 175.
 	 * @since 3.1.0 Now uses the new guidelines via a filterable function in PHP.
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _updateCounter = event => {
+	function _updateCounter( event ) {
 		const counter   = document.getElementById( `${event.target.id}_chars` ),
 			  reference = _getDescriptionReferences( event.target.id )[0];
 
@@ -249,10 +252,9 @@ window.tsfDescription = function() {
 	 * @since 4.0.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _updatePixels = event => {
+	function _updatePixels( event ) {
 		const pixels    = document.getElementById( `${event.target.id}_pixels` ),
 			  reference = _getDescriptionReferences( event.target.id )[0];
 
@@ -273,10 +275,9 @@ window.tsfDescription = function() {
 	 * @since 4.1.0 Now allows for a first parameter to be set.
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} id The input id. When not set, all inputs will be triggered.
 	 */
-	const triggerInput = id => {
+	function triggerInput( id ) {
 		if ( id ) {
 			getInputElement( id )?.dispatchEvent( new Event( 'input' ) );
 		} else {
@@ -292,10 +293,9 @@ window.tsfDescription = function() {
 	 * @since 4.1.0 Now allows for a first parameter to be set.
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} id The input id. When not set, all inputs will be triggered.
 	 */
-	const triggerCounter = id => {
+	function triggerCounter( id ) {
 		if ( id ) {
 			getInputElement( id )?.dispatchEvent( new CustomEvent( 'tsf-update-description-counter' ) );
 		} else {
@@ -310,12 +310,10 @@ window.tsfDescription = function() {
 	 * @since 4.0.0
 	 * @access private
 	 * @see triggerInput
-	 * @uses _onUpdateCounterTrigger
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _onUpdateDescriptionsTrigger = event => {
+	function _onUpdateDescriptionsTrigger( event ) {
 
 		_setReferenceDescription( event );
 		_updatePlaceholder( event );
@@ -330,10 +328,9 @@ window.tsfDescription = function() {
 	 * @access private
 	 * @see triggerCounter
 	 *
-	 * @function
 	 * @param {Event} event
 	 */
-	const _onUpdateCounterTrigger = event => {
+	function _onUpdateCounterTrigger( event ) {
 		_updateCounter( event );
 		_updatePixels( event );
 	}
@@ -347,10 +344,9 @@ window.tsfDescription = function() {
 	 * @since 4.1.1 Now passes the right parameter to the input event.
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} id The input ID.
 	 */
-	const enqueueTriggerInput = id => {
+	function enqueueTriggerInput( id ) {
 		( id in _enqueueTriggerInputBuffer ) && clearTimeout( _enqueueTriggerInputBuffer[ id ] );
 		_enqueueTriggerInputBuffer[ id ] = setTimeout( () => triggerInput( id ), 1000/60 ); // 60fps
 	}
@@ -362,11 +358,10 @@ window.tsfDescription = function() {
 	 * @since 4.1.0 Now allows for a first parameter to be set.
 	 * @access public
 	 *
-	 * @function
 	 * @param {Event}
 	 * @param {string} id The input id. When not set, all inputs will be triggered.
 	 */
-	const triggerUnregisteredInput = id => {
+	function triggerUnregisteredInput( id ) {
 		if ( 'tsfAys' in window ) {
 			let wereSettingsChanged = tsfAys.areSettingsChanged();
 
@@ -388,15 +383,13 @@ window.tsfDescription = function() {
 	 * @since 4.1.0 Now allows for a first parameter to be set.
 	 * @access public
 	 *
-	 * @function
 	 * @param {string} id The input id. When not set, all inputs will be triggered.
 	 */
-	const enqueueUnregisteredInputTrigger = id => {
+	function enqueueUnregisteredInputTrigger( id ) {
 		( id in _unregisteredTriggerBuffer ) && clearTimeout( _unregisteredTriggerBuffer[ id ] );
 		_unregisteredTriggerBuffer[ id ] = setTimeout( () => triggerUnregisteredInput( id ), 1000/60 ); // 60 fps
 	}
 
-	let prevWidth = window.innerWidth;
 	/**
 	 * Triggers input event for descriptions in set intervals on window resize.
 	 *
@@ -408,23 +401,16 @@ window.tsfDescription = function() {
 	 * from Desktop to Mobile view at 782 pixels.
 	 *
 	 * @since 4.0.0
+	 * @since 5.1.0 Now always triggers unregistered input to support subpixel
+	 *              layout shifting calculations when zooming in or out.
+	 *              The title overflow boundaries may also be dynamically hit on
+	 *              different screen sizes, and this must be accounted for.
+	 * @todo rename this to "onResize"?
 	 * @access private
 	 * @see ...\wp-admin\js\common.js
-	 *
-	 * @function
 	 */
-	const _doResize = () => {
-		const width = window.innerWidth;
-		if ( prevWidth < width ) {
-			if ( prevWidth <= 782 && width >= 782 ) {
-				triggerUnregisteredInput();
-			}
-		} else {
-			if ( prevWidth >= 782 && width <= 782 ) {
-				triggerUnregisteredInput();
-			}
-		}
-		prevWidth = width;
+	function _doResize() {
+		triggerUnregisteredInput();
 	}
 
 	/**
@@ -433,10 +419,9 @@ window.tsfDescription = function() {
 	 * @since 4.0.0
 	 * @access private
 	 *
-	 * @function
 	 * @param {Element} descriptionInput
 	 */
-	const _loadDescriptionActions = descriptionInput => {
+	function _loadDescriptionActions( descriptionInput ) {
 		if ( ! descriptionInput instanceof Element ) return;
 
 		descriptionInput.addEventListener( 'input', _onUpdateDescriptionsTrigger );
@@ -451,10 +436,8 @@ window.tsfDescription = function() {
 	 * @since 4.1.0
 	 * @since 4.1.1 No longer passes the event to the enqueueUnregisteredInputTrigger() callback.
 	 * @access private
-	 *
-	 * @function
 	 */
-	const _initAllDescriptionActions = () => {
+	function _initAllDescriptionActions() {
 
 		// Triggers input changes on resize after hitting thresholds.
 		window.addEventListener( 'tsf-resize', _doResize );
@@ -470,12 +453,10 @@ window.tsfDescription = function() {
 		 *
 		 * @since 4.0.0
 		 * @access protected
-		 *
-		 * @function
 		 */
 		load: () => {
 			document.body.addEventListener( 'tsf-onload', _initAllDescriptionActions );
-		}
+		},
 	}, {
 		setInputElement,
 		getInputElement,
@@ -486,7 +467,7 @@ window.tsfDescription = function() {
 		triggerInput,
 		enqueueTriggerInput,
 		triggerUnregisteredInput,
-		enqueueUnregisteredInputTrigger, // this should've been enqueueTriggerUnregisteredInput...
+		enqueueUnregisteredInputTrigger, // FIXME: this should've been enqueueTriggerUnregisteredInput... deprecate in TSF 5.2
 	} );
 }();
 window.tsfDescription.load();

@@ -205,8 +205,8 @@ function uaf_save_options(){
 
 function uaf_admin_notices(){
 	// ASKING FOR REVIEW
-	if (isset($_GET['uaf_reviews_notice_hide']) == 1){
-    	update_option('uaf_reviews_notice_hide','yes');
+	if (isset($_GET['uaf_reviews_notice_hide']) && $_GET['uaf_reviews_notice_hide'] == '1') {
+		update_option('uaf_reviews_notice_hide','yes');		
 	}
 
 	if (get_option('uaf_reviews_notice_hide') != 'yes'){
@@ -222,13 +222,23 @@ function uaf_admin_notices(){
                     <ul style="padding-left:50px;list-style-type: square;">
                         <li><a href="https://wordpress.org/support/plugin/use-any-font/reviews/?filter=5" target="_blank">Ok, you deserve it</a></li>
                         <li><a href="https://dineshkarki.com.np/contact" target="_blank">I still have problem !!</a></li>
-                        <li><a href="?page=use-any-font&uaf_reviews_notice_hide=1">I already did</a></li>
-                        <li><a href="?page=use-any-font&uaf_reviews_notice_hide=1">Hide this message</a></li>
+                        <li><a href="'.esc_url(add_query_arg('uaf_reviews_notice_hide', '1')).'">I already did</a></li>
+                        <li><a href="'.esc_url(add_query_arg('uaf_reviews_notice_hide', '1')).'">Hide this message</a></li>
                     </ul>
              </div>';
         }
     }
-    // EOF ASKING FOR REVIEW    
+    // EOF ASKING FOR REVIEW
+
+    // CSS WRITE ERROR NOTICE
+    $error_message = get_transient('uaf_css_write_error');
+    if ($error_message) {
+        echo '<div class="notice notice-error is-dismissible">
+                <p><strong>Use Any Font Error:</strong> ' . esc_html($error_message) . '</p>
+              </div>';
+        delete_transient('uaf_css_write_error'); // Remove the error after displaying
+    }
+    
 }
 
 function uaf_trigger_actions(){
@@ -265,12 +275,16 @@ function uaf_trigger_actions(){
 		}
 
 		if (isset($_POST['submit-uaf-font-js'])){   
-		    $font_weight = $font_style  = '';
-		    if (isset($_POST['enable_font_variation'])){
-		    	$font_weight 	= sanitize_key($_POST['font_weight']);
-		    	$font_style 	= sanitize_key($_POST['font_style']);
-		    }
-		    $actionReturn = uaf_save_font_files($_POST['font_name'], $font_weight, $font_style, $_POST['convert_response']);
+		    if ( isset($_POST['uaf_nonce']) && wp_verify_nonce($_POST['uaf_nonce'], 'uaf_font_upload_js')) {
+			    $font_weight = $font_style  = '';
+			    if (isset($_POST['enable_font_variation'])){
+			    	$font_weight 	= sanitize_key($_POST['font_weight']);
+			    	$font_style 	= sanitize_key($_POST['font_style']);
+			    }
+			    $actionReturn = uaf_save_font_files($_POST['font_name'], $font_weight, $font_style, $_POST['convert_response']);
+			} else {
+				$actionReturn = $actionReturnNonceError;
+			}
 		}
 
 		/* NOT in use till API accepts font file in Binary

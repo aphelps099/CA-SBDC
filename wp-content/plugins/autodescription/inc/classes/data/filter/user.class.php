@@ -37,7 +37,7 @@ class User {
 	 * @hook "sanitize_usermeta_ . THE_SEO_FRAMEWORK_USER_OPTIONS" 10
 	 * @since 5.0.0
 	 *
-	 * @param mixed $meta_value An unsanitized value.
+	 * @param mixed[] $meta_value An unsanitized value.
 	 * @return array[] The sanitized user meta.
 	 */
 	public static function filter_meta_update( $meta_value ) {
@@ -63,11 +63,11 @@ class User {
 					break;
 
 				default:
-					unset( $value[ $key ] );
+					unset( $meta_value[ $key ] );
 			}
 		}
 
 		// Store an empty array on failure. Data\Plugin\User::get_meta() repopulates it on demand.
-		return $value ?: [];
+		return $meta_value ?: [];
 	}
 }

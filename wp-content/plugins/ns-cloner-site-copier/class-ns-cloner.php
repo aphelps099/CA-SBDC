@@ -19,7 +19,7 @@ final class NS_Cloner {
 	 *
 	 * @var string
 	 */
-	public $version = '4.4.6';
+	public $version = '4.4.7.5';
 
 	/**
 	 * Menu Slug
@@ -174,8 +174,10 @@ final class NS_Cloner {
 		// Install custom tables after cloner init.
 		add_action( 'ns_cloner_init', array( $this, 'install_tables' ) );
 
+		add_action( 'after_setup_theme', array( $this, 'load_text_domain' ) );
+
 		// Only load rest of plugin if it could be needed (not on frontend).
-		$should_load = is_admin() || ( wp_doing_ajax() && is_user_logged_in() ) || ( defined( 'WP_CLI' ) && WP_CLI ) || ns_is_signup_allowed();
+		$should_load = is_admin() || ( wp_doing_ajax() && is_user_logged_in() ) || ( defined( 'WP_CLI' ) && WP_CLI ) || ns_is_signup_allowed() || wp_doing_cron();
 		if ( apply_filters( 'ns_cloner_should_load', $should_load ) ) {
 			// Bootstrap full cloner and addons once translation/localization is ready.
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
@@ -188,7 +190,6 @@ final class NS_Cloner {
 	 * The difference between this and the constructor is that anything that needs to use localization has to go here.
 	 */
 	public function init() {
-		$this->load_text_domain();
 
 		// Setup class instances.
 		$this->process_manager = new NS_Cloner_Process_Manager();

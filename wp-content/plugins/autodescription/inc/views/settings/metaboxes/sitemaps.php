@@ -85,7 +85,7 @@ switch ( $instance ) :
 
 		HTML::description_noesc(
 			Markdown::convert(
-				sprintf(
+				\sprintf(
 					/* translators: %s = Learn more URL. Markdown! */
 					\esc_html__( 'The sitemap does not contribute to ranking; [it can only help with indexing](%s). Search engines process smaller, less complicated sitemaps quicker, which shortens the time required for indexing pages.', 'autodescription' ),
 					'https://kb.theseoframework.com/?p=119',
@@ -97,10 +97,10 @@ switch ( $instance ) :
 
 		if ( $has_sitemap_plugin ) {
 			echo '<hr>';
-			HTML::attention_description( \__( 'Note: Another active sitemap plugin has been detected. This means that the sitemap functionality has been superseded and these settings have no effect.', 'autodescription' ) );
+			HTML::attention_description( \__( 'Note: Another active sitemap plugin has been detected, so the sitemap functionality has been replaced and these settings have no effect.', 'autodescription' ) );
 		} elseif ( $sitemap_detected ) {
 			echo '<hr>';
-			HTML::attention_description( \__( 'Note: A sitemap has been detected in the root folder of your website. This means that these settings have no effect.', 'autodescription' ) );
+			HTML::attention_description( \__( 'Note: A sitemap has been detected in the root folder of your website, so these settings have no effect.', 'autodescription' ) );
 		}
 		?>
 		<hr>
@@ -130,7 +130,7 @@ switch ( $instance ) :
 		if ( ! $has_sitemap_plugin && ! $sitemap_detected ) {
 			// Note to self: Do not toggle this condition in JS. The user would get a 404 message if the options have yet to be saved.
 			if ( Data\Plugin::get_option( 'sitemaps_output' ) ) {
-				HTML::description_noesc( sprintf(
+				HTML::description_noesc( \sprintf(
 					'<a href="%s" target=_blank rel=noopener>%s</a>',
 					\esc_url( Sitemap\Registry::get_expected_sitemap_endpoint_url(), [ 'https', 'http' ] ),
 					\esc_html__( 'View the base sitemap.', 'autodescription' ),
@@ -140,7 +140,7 @@ switch ( $instance ) :
 			} elseif ( Sitemap\Utils::use_core_sitemaps() ) {
 				$_index_url = \get_sitemap_url( 'index' );
 				if ( $_index_url )
-					HTML::description_noesc( sprintf(
+					HTML::description_noesc( \sprintf(
 						'<a href="%s" target=_blank rel=noopener>%s</a>',
 						\esc_url( $_index_url, [ 'https', 'http' ] ),
 						\esc_html__( 'View the sitemap index.', 'autodescription' ),
@@ -151,7 +151,7 @@ switch ( $instance ) :
 				HTML::attention_noesc(
 					// Markdown escapes.
 					Markdown::convert(
-						sprintf(
+						\sprintf(
 							/* translators: %s = Documentation URL in markdown */
 							\esc_html__( 'A multilingual plugin has been detected, so your site may have multiple sitemaps. [Learn more](%s).', 'autodescription' ),
 							'https://kb.theseoframework.com/?p=104#same-site-sitemaps',
@@ -175,7 +175,7 @@ switch ( $instance ) :
 
 		?>
 		<p>
-			<input type=number min=1 max=50000 name="<?php Input::field_name( 'sitemap_query_limit' ); ?>" id="<?php Input::field_id( 'sitemap_query_limit' ); ?>" placeholder="<?= \absint( Data\Plugin\Setup::get_default_option( 'sitemap_query_limit' ) ) ?>" value="<?= \absint( Data\Plugin::get_option( 'sitemap_query_limit' ) ) ?>" />
+			<input type=number min=1 max=50000 name="<?php Input::field_name( 'sitemap_query_limit' ); ?>" id="<?php Input::field_id( 'sitemap_query_limit' ); ?>" placeholder="<?= \absint( Data\Plugin\Setup::get_default_option( 'sitemap_query_limit' ) ) ?>" value="<?= \absint( Data\Plugin::get_option( 'sitemap_query_limit' ) ) ?>">
 		</p>
 		<?php
 		HTML::description( \__( 'Consider lowering this value when the sitemap shows a white screen or notifies you of memory exhaustion.', 'autodescription' ) );
@@ -220,20 +220,24 @@ switch ( $instance ) :
 		break;
 
 	case 'robots':
-		$show_settings = true;
-		$robots_url    = RobotsTXT\Utils::get_robots_txt_url();
+		$robots_url = RobotsTXT\Utils::get_robots_txt_url();
 
 		HTML::header_title( \__( 'Robots.txt Settings', 'autodescription' ) );
 
+		HTML::description( \__( 'The robots.txt output is the first thing search engines look for before crawling your site. If you add the sitemap location in that output, then search engines may automatically access and index the sitemap.', 'autodescription' ) );
+		HTML::description( \__( 'If you do not add the sitemap location to the robots.txt output, you should notify search engines manually through webmaster-interfaces provided by the search engines.', 'autodescription' ) );
+
+		echo '<hr>';
+
 		if ( RobotsTXT\Utils::has_root_robots_txt() ) {
 			HTML::attention_description(
-				\__( 'Note: A robots.txt file has been detected in the root folder of your website. This means these settings have no effect.', 'autodescription' )
+				\__( 'Note: A robots.txt file has been detected in the root folder of your website, so these settings have no effect.', 'autodescription' )
 			);
 			echo '<hr>';
 		} elseif ( ! $robots_url ) {
 			if ( Data\Blog::is_subdirectory_installation() ) {
 				HTML::attention_description(
-					\__( "Note: robots.txt files can't be generated or used on subdirectory installations.", 'autodescription' )
+					\__( 'Note: This site is installed in a subdirectory, so robots.txt files cannot be generated or used.', 'autodescription' )
 				);
 				echo '<hr>';
 			} elseif ( ! Query\Utils::using_pretty_permalinks() ) {
@@ -242,7 +246,7 @@ switch ( $instance ) :
 				);
 				HTML::description_noesc(
 					Markdown::convert(
-						sprintf(
+						\sprintf(
 							/* translators: 1 = Link to settings, Markdown. 2 = example input, also markdown! Preserve the Markdown as-is! */
 							\esc_html__( 'Change your [Permalink Settings](%1$s). Recommended structure: `%2$s`.', 'autodescription' ),
 							\esc_url( \admin_url( 'options-permalink.php' ), [ 'https', 'http' ] ),
@@ -256,24 +260,17 @@ switch ( $instance ) :
 			}
 		}
 
-		HTML::description( \__( 'The robots.txt output is the first thing search engines look for before crawling your site. If you add the sitemap location in that output, then search engines may automatically access and index the sitemap.', 'autodescription' ) );
-		HTML::description( \__( 'If you do not add the sitemap location to the robots.txt output, you should notify search engines manually through webmaster-interfaces provided by the search engines.', 'autodescription' ) );
-
-		echo '<hr>';
-
-		if ( $show_settings ) {
-			HTML::header_title( \__( 'Sitemap Hinting', 'autodescription' ) );
-			HTML::wrap_fields(
-				Input::make_checkbox( [
-					'id'    => 'sitemaps_robots',
-					'label' => \__( 'Add sitemap location to robots.txt?', 'autodescription' ),
-				] ),
-				true,
-			);
-		}
+		HTML::header_title( \__( 'Sitemap Hinting', 'autodescription' ) );
+		HTML::wrap_fields(
+			Input::make_checkbox( [
+				'id'    => 'sitemaps_robots',
+				'label' => \__( 'Add sitemap location to robots.txt?', 'autodescription' ),
+			] ),
+			true,
+		);
 
 		if ( $robots_url ) {
-			HTML::description_noesc( sprintf(
+			HTML::description_noesc( \sprintf(
 				'<a href="%s" target=_blank rel=noopener>%s</a>',
 				\esc_url( $robots_url, [ 'https', 'http' ] ),
 				\esc_html__( 'View the robots.txt output.', 'autodescription' ),
@@ -334,7 +331,7 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input type=text name="<?php Input::field_name( 'sitemap_color_main' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'sitemap_color_main' ); ?>" placeholder="<?= \esc_attr( $default_colors['main'] ) ?>" value="<?= \esc_attr( $current_colors['main'] ) ?>" data-tsf-default-color="<?= \esc_attr( $default_colors['main'] ) ?>" />
+			<input type=text name="<?php Input::field_name( 'sitemap_color_main' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'sitemap_color_main' ); ?>" placeholder="<?= \esc_attr( $default_colors['main'] ) ?>" value="<?= \esc_attr( $current_colors['main'] ) ?>" data-tsf-default-color="<?= \esc_attr( $default_colors['main'] ) ?>">
 		</p>
 
 		<p>
@@ -343,7 +340,7 @@ switch ( $instance ) :
 			</label>
 		</p>
 		<p>
-			<input type=text name="<?php Input::field_name( 'sitemap_color_accent' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'sitemap_color_accent' ); ?>" placeholder="<?= \esc_attr( $default_colors['accent'] ) ?>" value="<?= \esc_attr( $current_colors['accent'] ) ?>" data-tsf-default-color="<?= \esc_attr( $default_colors['accent'] ) ?>" />
+			<input type=text name="<?php Input::field_name( 'sitemap_color_accent' ); ?>" class=tsf-color-picker id="<?php Input::field_id( 'sitemap_color_accent' ); ?>" placeholder="<?= \esc_attr( $default_colors['accent'] ) ?>" value="<?= \esc_attr( $current_colors['accent'] ) ?>" data-tsf-default-color="<?= \esc_attr( $default_colors['accent'] ) ?>">
 		</p>
 
 		<hr>
@@ -371,8 +368,8 @@ switch ( $instance ) :
 		</p>
 		<p class="hide-if-tsf-js attention"><?php \esc_html_e( 'Setting a logo requires JavaScript.', 'autodescription' ); ?></p>
 		<p>
-			<input class=large-text type=url readonly data-readonly=1 name="<?php Input::field_name( 'sitemap_logo_url' ); ?>" id=sitemap_logo-url placeholder="<?= \esc_url( $logo_placeholder ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'sitemap_logo_url' ) ) ?>" />
-			<input type=hidden name="<?php Input::field_name( 'sitemap_logo_id' ); ?>" id=sitemap_logo-id value="<?= \absint( Data\Plugin::get_option( 'sitemap_logo_id' ) ) ?>" />
+			<input class=large-text type=url readonly data-readonly=1 name="<?php Input::field_name( 'sitemap_logo_url' ); ?>" id=sitemap_logo-url placeholder="<?= \esc_url( $logo_placeholder ) ?>" value="<?= \esc_url( Data\Plugin::get_option( 'sitemap_logo_url' ) ) ?>">
+			<input type=hidden name="<?php Input::field_name( 'sitemap_logo_id' ); ?>" id=sitemap_logo-id value="<?= \absint( Data\Plugin::get_option( 'sitemap_logo_id' ) ) ?>">
 		</p>
 		<p class=hide-if-no-tsf-js>
 			<?php

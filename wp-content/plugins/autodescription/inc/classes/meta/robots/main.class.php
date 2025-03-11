@@ -40,10 +40,8 @@ final class Main {
 
 	/**
 	 * @since 4.2.0
-	 * @var array|null Null to autodetermine query, otherwise the query arguments. : {
-	 *    int    $id       The Post, Page or Term ID to generate robots for.
-	 *    string $taxonomy The taxonomy.
-	 * }
+	 * @var array|null $args The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+	 *                       Leave null to autodetermine query.
 	 */
 	private $args;
 
@@ -103,10 +101,8 @@ final class Main {
 	 * @since 4.2.0
 	 * @access private
 	 *
-	 * @param null|array $args    The robots meta arguments, leave null to autodetermine query : {
-	 *    int    $id       The Post, Page or Term ID to generate the URL for.
-	 *    string $taxonomy The taxonomy.
-	 * }
+	 * @param array|null $args    The query arguments. Accepts 'id', 'tax', 'pta', and 'uid'.
+	 *                            Leave null to autodetermine query.
 	 * @param int        $options Modifies return values/assertions. See const ROBOTS_* at /bootstrap/define.php
 	 * @return Main $this
 	 */
