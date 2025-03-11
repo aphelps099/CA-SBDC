@@ -158,6 +158,12 @@ if ( ! class_exists( 'Crown_Neoserra_Records_Api' ) ) {
 		}
 
 
+		public static function create_counseling( $args = array() ) {
+			$response = self::query( 'counseling/new', $args, 'post' );
+			return $response;
+		}
+
+
 		public static function create_milestone( $args = array() ) {
 			$response = self::query( 'milestones/new', $args, 'post' );
 			return $response;

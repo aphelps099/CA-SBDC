@@ -1051,23 +1051,6 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			}
 
 
-			/**
-			 * 
-			 * Check "statusInit"
-			 *    If "s" or "b", do not update estab or impactDate or business start milestone
-			 * 
-			 * Check "impactDate"
-			 *    If set, do not update estab or impactDate or business start milestone
-			 * 
-			 * estab - Date entered by client
-			 * impactDate - Form submission date
-			 * 
-			 * Set up new counseling session record creation with "U" type for business start milestone
-			 * 
-			 * Look into timestamp issues for milestone records
-			 * 
-			 */
-
 			$already_in_business = false;
 			if ( $client ) {
 				if ( in_array( $client->statusInit, array( 'S', 'B' ) ) ) {
@@ -1146,24 +1129,45 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 
 			// create milestone record
 			if ( $client && ! empty( $milestone_args ) ) {
-				$milestone_args = array_merge( array(
-					'clientId' => $client_id,
-					'centerId' => $center_id,
-					'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
-					'counselors' => $counselor_id
-				), $milestone_args );
-				foreach ( array( 'amount', 'initialAmount' ) as $prop ) {
-					if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = floatval( preg_replace( '/[^\d\.\-]/', '', $milestone_args[ $prop ] ) );
-				}
-				foreach ( array( 'date', 'initialDate', 'attribDate' ) as $prop ) {
-					if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $milestone_args[ $prop ] );
-				}
-				$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
-				$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
-				$milestone_id = is_object( $milestone_response ) && property_exists( $milestone_response, 'id' ) ? $milestone_response->id : null;
-				if ( $milestone_id ) {
-					gform_update_meta( $entry['id'], 'neoserra_milestone_id', $milestone_id );
-					$counselor_notification_links['milestone'] = self::$neoserra_dashboard_uri . 'activity/view?formid=7&eid=' . $milestone_id . '&url=/clients/' . $client->id;
+				if ( $already_in_business && isset( $milestone_args['type'] ) && $milestone_args['type'] == '+BSI' ) {
+					// do not create a new business start milestone
+				} else {
+					$milestone_args = array_merge( array(
+						'clientId' => $client_id,
+						'centerId' => $center_id,
+						'fundarea' => ! empty( $client->defaultfundarea ) && ! in_array( $client->defaultfundarea, array( '?' ) ) ? $client->defaultfundarea : 'S',
+						'counselors' => $counselor_id
+					), $milestone_args );
+					foreach ( array( 'amount', 'initialAmount' ) as $prop ) {
+						if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = floatval( preg_replace( '/[^\d\.\-]/', '', $milestone_args[ $prop ] ) );
+					}
+					foreach ( array( 'date', 'initialDate', 'attribDate' ) as $prop ) {
+						if ( array_key_exists( $prop, $milestone_args ) ) $milestone_args[ $prop ] = preg_replace( '/^(\d{4}-\d{2}-\d{2}).*/', '$1', $milestone_args[ $prop ] );
+					}
+					$milestone_response = Crown_Neoserra_Records_Api::create_milestone( $milestone_args );
+					$error_messages = array_merge( $error_messages, self::get_error_messages( $milestone_response, 'create_milestone' ) );
+					$milestone_id = is_object( $milestone_response ) && property_exists( $milestone_response, 'id' ) ? $milestone_response->id : null;
+					if ( $milestone_id ) {
+						gform_update_meta( $entry['id'], 'neoserra_milestone_id', $milestone_id );
+						$counselor_notification_links['milestone'] = self::$neoserra_dashboard_uri . 'activity/view?formid=7&eid=' . $milestone_id . '&url=/clients/' . $client->id;
+					}
+					if ( isset( $milestone_args['type'] ) && $milestone_args['type'] == '+BSI' ) {
+						$conseling_args = array(
+							'clients' => $client_id,
+							'counselors' => $counselor_id,
+							'date' => current_time( 'Y-m-d' ),
+							'type' => 'U',
+							'contactType' => 'OT',
+							'sbaArea' => '7',
+							'text' => 'Client record update',
+						);
+						$counseling_response = Crown_Neoserra_Records_Api::create_counseling( $conseling_args );
+						$error_messages = array_merge( $error_messages, self::get_error_messages( $counseling_response, 'create_counseling' ) );
+						$counseling_id = is_object( $counseling_response ) && property_exists( $counseling_response, 'id' ) ? $counseling_response->id : null;
+						if ( $counseling_id ) {
+							gform_update_meta( $entry['id'], 'neoserra_counseling_id', $counseling_id );
+						}
+					}
 				}
 			}
 
