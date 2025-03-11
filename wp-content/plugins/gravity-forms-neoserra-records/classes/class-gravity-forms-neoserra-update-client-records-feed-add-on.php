@@ -1068,6 +1068,15 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 			 * 
 			 */
 
+			$already_in_business = false;
+			if ( $client ) {
+				if ( in_array( $client->statusInit, array( 'S', 'B' ) ) ) {
+					$already_in_business = true;
+				} else if ( ! empty( $client->impactDate ) ) {
+					$already_in_business = true;
+				}
+			}
+
 
 			// create/update client record
 			if ( ! empty( $client_args ) ) {
@@ -1092,6 +1101,10 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 					} else {
 						$client_args['status'] = 'S';
 					}
+				}
+				if ( $already_in_business ) {
+					if ( array_key_exists( 'estab', $client_args ) ) unset( $client_args['estab'] );
+					if ( array_key_exists( 'impactDate', $client_args ) ) unset( $client_args['impactDate'] );
 				}
 				$client_response = null;
 				if ( $client ) {
