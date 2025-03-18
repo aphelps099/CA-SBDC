@@ -1159,7 +1159,9 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 							'type' => 'U',
 							'contactType' => 'OT',
 							'sbaArea' => '7',
+							'isReportable' => true,
 							'text' => 'Client record update',
+							'memo' => 'This update session was created to document the change in "Reportable Business Start Impact Date" on the client record. This system-defined session is necessary for export to Nexus and it cannot be edited or deleted. If you need to change the Reportable Business Start Impact Date, then please edit the client record.'
 						);
 						$counseling_response = Crown_Neoserra_Records_Api::create_counseling( $conseling_args );
 						$error_messages = array_merge( $error_messages, self::get_error_messages( $counseling_response, 'create_counseling' ) );
