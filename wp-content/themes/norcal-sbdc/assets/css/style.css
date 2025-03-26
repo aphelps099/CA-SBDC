@@ -29338,6 +29338,7 @@ nav.pagination .nav-links span.page-numbers {
   grid-template-columns: repeat(12, 1fr);
   grid-gap: 1px;
   width: 100%;
+  grid-column: span 12;
 }
 .wp-block-gallery.is-style-mosaic-8 .blocks-gallery-item {
   margin: 0;
@@ -29483,6 +29484,127 @@ nav.pagination .nav-links span.page-numbers {
      object-fit: cover;
 }
 .wp-block-gallery.is-style-mosaic-8 .blocks-gallery-item figcaption {
+  display: none;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images {
+  padding: 1px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 1px;
+  width: 100%;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image {
+  margin: 0;
+  width: auto !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  display: none;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(1) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(2) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(3) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(4) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(5) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(6) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(7) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(8) {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(1) {
+  grid-column: span 4;
+  grid-row: span 3;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(2) {
+  grid-column: span 3;
+  grid-row: span 4;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(3) {
+  grid-column: span 5;
+  grid-row: span 4;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(4) {
+  grid-column: span 4;
+  grid-row: span 8;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(5) {
+  grid-column: span 4;
+  grid-row: span 4;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(6) {
+  grid-column: span 4;
+  grid-row: span 4;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(7) {
+  grid-column: span 3;
+  grid-row: span 3;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(7):before {
+  padding-top: 33.3333333333%;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(8) {
+  grid-column: span 5;
+  grid-row: span 3;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:nth-child(8):before {
+  padding-top: 33.3333333333%;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image:before {
+  content: "";
+  display: block;
+  height: 0;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 0px;
+          flex: 0 0 0;
+  padding-top: 66.6666666667%;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+.wp-block-gallery.is-style-mosaic-8.has-nested-images .wp-block-image figcaption {
   display: none;
 }
 
