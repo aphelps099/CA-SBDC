@@ -13,6 +13,7 @@ if ( ! class_exists( 'Gravity_Forms_Neoserra_Update_Client_Records_Feed_Add_On' 
 		protected $_full_path = __FILE__;
 		protected $_title = 'Gravity Forms Neoserra Update Client Records Add-On';
 		protected $_short_title = 'Neoserra Update Client Records';
+		protected $_supports_feed_ordering = true;
 
 		protected static $neoserra_dashboard_uri = 'https://norcal.neoserra.com/';
 		protected static $session_neoserra_clients = array();
