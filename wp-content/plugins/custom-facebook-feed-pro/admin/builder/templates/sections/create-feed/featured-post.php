@@ -14,12 +14,12 @@
 		</div>
 		<div class="cff-fb-sglelm-right">
 			<div class="cff-fb-sglelm-img-ctn cff-fb-sglelm-img-pf" v-if="!featuredPostFeedInfo.isError && !featuredPostFeedInfo.success">
-				<img src="<?php echo CFF_BUILDER_URL .'assets/img/process-featured-post.png' ?>">
+				<img src="<?php echo CFF_BUILDER_URL . 'assets/img/process-featured-post.png' ?>" alt="<?php __('Featured Post Icon', 'custom-facebook-feed') ?>">
 				<strong>{{addFeaturedPostScreen.preview}}</strong>
 				<span>{{addFeaturedPostScreen.previewDescription}}</span>
 			</div>
 			<div class="cff-fb-sglelm-img-ctn cff-fb-sglelm-img-errorctn" v-if="featuredPostFeedInfo.isError">
-				<img src="<?php echo CFF_BUILDER_URL .'assets/img/process-error-fetch.png' ?>">
+				<img src="<?php echo CFF_BUILDER_URL . 'assets/img/process-error-fetch.png' ?>" alt="<?php __('Featured Post Error', 'custom-facebook-feed') ?>">
 				<span class="cff-fb-fs">{{addFeaturedPostScreen.couldNotFetch}}</span>
 			</div>
 			<div class="cff-fb-sglelm-preview cff-fb-fs"  v-if="!featuredPostFeedInfo.isError && featuredPostFeedInfo.success" :style="'background-image:url(' + (hasOwnNestedProperty(featuredPostFeedInfo, 'info.thumbnail') ? featuredPostFeedInfo.info.thumbnail : '') + ');'">

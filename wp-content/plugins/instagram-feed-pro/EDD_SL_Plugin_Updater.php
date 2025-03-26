@@ -7,6 +7,9 @@
  */
 
 namespace InstagramFeed;
+
+use InstagramFeed\Helpers\Util;
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -404,7 +407,7 @@ class EDD_SL_Plugin_Updater {
 	 * Calls the API and, if successfull, returns the object delivered by the API.
 	 *
 	 * @uses get_bloginfo()
-	 * @uses wp_remote_post()
+	 * @uses wp_safe_remote_post()
 	 * @uses is_wp_error()
 	 *
 	 * @param string  $_action The requested action.
@@ -534,7 +537,7 @@ class EDD_SL_Plugin_Updater {
 		 */
 		$api_params = apply_filters( 'edd_sl_plugin_updater_api_params', $api_params, $this->api_data, $this->plugin_file );
 
-		$request = wp_remote_post(
+		$request = wp_safe_remote_post(
 			$this->api_url,
 			array(
 				'timeout'   => 15,
@@ -551,18 +554,18 @@ class EDD_SL_Plugin_Updater {
 
 		$request = json_decode( wp_remote_retrieve_body( $request ) );
 
-		if ( $request && isset( $request->sections ) ) {
-			$request->sections = maybe_unserialize( $request->sections );
+		if ($request && isset($request->sections)) {
+			$request->sections = Util::safe_unserialize($request->sections);
 		} else {
 			$request = false;
 		}
 
-		if ( $request && isset( $request->banners ) ) {
-			$request->banners = maybe_unserialize( $request->banners );
+		if ($request && isset($request->banners)) {
+			$request->banners = Util::safe_unserialize($request->banners);
 		}
 
-		if ( $request && isset( $request->icons ) ) {
-			$request->icons = maybe_unserialize( $request->icons );
+		if ($request && isset($request->icons)) {
+			$request->icons = Util::safe_unserialize($request->icons);
 		}
 
 		if ( ! empty( $request->sections ) ) {

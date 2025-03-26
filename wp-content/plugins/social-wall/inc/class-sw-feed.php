@@ -2,6 +2,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+use TwitterFeed\Pro\CTF_Resizer;
+use SB\SocialWall\GDPR_Integrations;
 
 class SW_Feed {
 	/**
@@ -50,6 +52,8 @@ class SW_Feed {
 	private $should_paginate;
 
 
+    protected $atts;
+
 	/**
 	 * @var bool
 	 */
@@ -65,6 +69,8 @@ class SW_Feed {
 	private $pages_created;
 
 	private $background_processes_flag;
+
+	private $image_ids_post_set;
 
 	/**
 	 * SW_Feed constructor.
@@ -295,7 +301,7 @@ class SW_Feed {
 			$this->next_pages = isset( $transient_data['pagination'] ) ? $transient_data['pagination'] : array();
 			$this->pages_created = isset( $transient_data['pages_created'] ) ? $transient_data['pages_created'] : 0;
 			$this->plugins_with_atts = isset( $transient_data['plugins_with_atts'] ) ? $transient_data['plugins_with_atts'] : array();
-			$this->atts = isset( $transient_data['atts'] ) ? $transient_data['atts'] : array();          
+			$this->atts = isset( $transient_data['atts'] ) ? $transient_data['atts'] : array();
             $this->last_retrieve = isset( $transient_data['last_retrieve'] ) ? $transient_data['last_retrieve'] : null;
             $this->last_requested = isset( $transient_data['last_requested'] ) ? $transient_data['last_requested'] : null;
 
@@ -554,10 +560,11 @@ class SW_Feed {
 	protected function remove_duplicate_posts() {
 		$posts = $this->post_data;
 		$ids_in_feed = array(
-            'instagram' => array(),
-            'facebook' => array(),
-            'twitter' => array(),
-            'youtube' => array(),
+			'instagram' => array(),
+			'facebook' => array(),
+			'twitter' => array(),
+			'youtube' => array(),
+			'tiktok' => array(),
 		);
 		$non_duplicate_posts = array();
 		$removed = array();
@@ -632,6 +639,7 @@ class SW_Feed {
 
 		$colsmobile = (int)( $settings['colsmobile'] ) > 0 ? (int)$settings['colsmobile'] : 'auto';
 		$options_att_arr['colsmobile'] = $colsmobile;
+		$options_att_arr['colstablet'] = $settings['layout'] == 'masonry' ? $settings['masonrycolstablet'] : $settings['carouselcolstablet'];
 
 		$layout = $settings['layout'];
 		if ( ! in_array( $layout, array( 'masonry', 'carousel' ) ) ) {
@@ -649,7 +657,7 @@ class SW_Feed {
             $loop = ! empty( $settings['carouselloop'] ) && ($settings['carouselloop'] !== 'rewind') ? false : true;
             $rows = ! empty( $settings['carouselrows'] ) ? min( (int)$settings['carouselrows'], 2 ) : 1;
             $options_att_arr['carousel'] = array( $arrows, $pag, $autoplay, $time, $loop, $rows );
-			$options_att_arr['itemspacing'] = (int)$settings['itemspacing'].$settings['itemspacingunit'];
+			$options_att_arr['itemspacing'] = (int) floor($settings['itemspacing'] / 2) .$settings['itemspacingunit'];
 		} else {
 			$options_att_arr['list'] = true;
 			$options_att_arr['cols'] = 1;
@@ -679,7 +687,16 @@ class SW_Feed {
 		if ( $settings['addModerationModeLink'] ) {
 			$options_att_arr['moderationLink'] = true;
 		}
+		if ( isset( $settings['num'] ) ) {
+			$other_atts .= ' data-num='. $settings['num'] .'';
+		}
+		if ( isset( $settings['nummobile'] ) ) {
+			$other_atts .= ' data-nummobile='. $settings['nummobile'] .'';
+		}
 		$other_atts .= ' data-options="'.esc_attr( wp_json_encode( $options_att_arr ) ).'"';
+		$other_atts .= ' data-postid="' . get_the_ID() . '"';
+		$feed_id = isset( $settings['feed'] ) ? $settings['feed'] : 'legacy';
+		$other_atts .= ' data-builder-feed-id="' . $feed_id . '"';
 
 		return $other_atts;
 	}
@@ -696,6 +713,9 @@ class SW_Feed {
 		$feed_atts = $this->add_other_atts( $feed_atts, $settings );
 
 		$flags = array();
+		if (GDPR_Integrations::doing_gdpr(sbsw_get_database_settings())) {
+			$flags[] = 'gdpr';
+		}
 		if ( $this->background_processes_flag ) {
 			$flags[] = 'background';
 		}
@@ -734,15 +754,17 @@ class SW_Feed {
 		if ( $settings['showfilter'] ) {
 			$plugins_in_feed = array();
 
-			foreach ( $this->plugins_with_atts as $plugin => $atts ) {
-				if ( strpos( $plugin, 'instagram' ) !== false ) {
+			foreach ($this->plugins_with_atts as $plugin => $atts) {
+				if (strpos($plugin, 'instagram') !== false) {
 					$plugins_in_feed[] = 'instagram';
-                } elseif ( strpos( $plugin, 'facebook' ) !== false ) {
+				} elseif (strpos($plugin, 'facebook') !== false) {
 					$plugins_in_feed[] = 'facebook';
-				} elseif ( strpos( $plugin, 'twitter' ) !== false ) {
+				} elseif (strpos($plugin, 'twitter') !== false) {
 					$plugins_in_feed[] = 'twitter';
-				} elseif ( strpos( $plugin, 'youtube' ) !== false ) {
+				} elseif (strpos($plugin, 'youtube') !== false) {
 					$plugins_in_feed[] = 'youtube';
+				} elseif (strpos($plugin, 'tiktok') !== false) {
+					$plugins_in_feed[] = 'tiktok';
 				}
 			}
         }
@@ -798,7 +820,8 @@ class SW_Feed {
 		$misc_data = $this->misc_data;
 
 		foreach ( $posts as $post ) {
-		    $plugin = SW_Parse::get_plugin( $post );
+			$post   = SW_Parse::filter_post($post);
+			$plugin = SW_Parse::get_plugin($post);
 			$image_ids[ $plugin ][] = SW_Parse::get_post_id( $post, $plugin );
 			include sbsw_get_feed_template_part( 'item', $settings );
 			$post_index++;

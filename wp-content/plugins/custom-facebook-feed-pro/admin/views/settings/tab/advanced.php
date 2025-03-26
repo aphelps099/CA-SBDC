@@ -112,6 +112,25 @@
     </div>
     <div class="sb-tab-box sb-admin-error-box sb-reset-box-style clearfix">
         <div class="tab-label">
+            <h3>{{advancedTab.jsImages.title}}</h3>
+        </div>
+
+        <div class="cff-tab-form-field">
+            <div class="sb-form-field">
+                <label for="enable-js-image-loading" class="cff-checkbox">
+                    <input type="checkbox" name="enable-js-image-loading" id="enable-js-image-loading" v-model="model.advanced.enable_js_image_loading">
+                    <span class="toggle-track">
+                        <div class="toggle-indicator"></div>
+                    </span>
+                </label>
+                <span class="help-text">
+                    {{advancedTab.jsImages.helpText}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="sb-tab-box sb-admin-error-box sb-reset-box-style clearfix">
+        <div class="tab-label">
             <h3>{{advancedTab.adminErrorBox.title}}</h3>
         </div>
 

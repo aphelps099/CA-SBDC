@@ -1,13 +1,13 @@
 <div class="sbi-fb-full-wrapper sbi-fb-fs">
-	<?php
-	/**
-	 * SBI Admin Notices
-	 *
-	 * @since 4.0
-	 */
-	do_action('sbi_admin_notices');
-	?>
     <div class="sbi-oembeds-container">
+        <?php
+            /**
+             * SBI Admin Notices
+             *
+             * @since 4.0
+             */
+            do_action('sbi_admin_notices');
+        ?>
         <div class="sbi-section-header">
             <h3>{{genericText.title}}</h3>
             <p>{{genericText.description}}</p>
@@ -21,13 +21,13 @@
                 <span class="sbi-oembed-btn">
 
                     <button v-if="instagram.doingOembeds" @click="disableInstaoEmbed()" class="sbi-btn disable-oembed" :class="{loading: instaoEmbedLoader}">
-                        <span v-if="instaoEmbedLoader" v-html="loaderSVG"></span>
+                        <span v-if="instaoEmbedLoader" v-html="svgIcons.loaderSVG"></span>
                         {{genericText.disable}}
                     </button>
-                    <a v-else :href="connectionURL" class="sbi-btn-blue sbi-btn" :class="{loading: instaoEmbedLoader}" @click="instaoEmbedLoader = true">
-                        <span v-if="instaoEmbedLoader" v-html="loaderSVG"></span>
+                    <button v-else @click="enableInstaoEmbed()" class="sbi-btn sbi-btn-blue" :class="{loading: instaoEmbedLoader}">
+                        <span v-if="instaoEmbedLoader" v-html="svgIcons.loaderSVG"></span>
                         {{genericText.enable}}
-                    </a>
+                    </button>
                 </span>
             </div>
             <div class="sbi-oembed-plugin-box sbi-oembed-facebook">
@@ -37,11 +37,11 @@
                 <span class="sbi-oembed-btn">
 
                     <button v-if="facebook.doingOembeds" @click="disableFboEmbed()" class="sbi-btn disable-oembed" :class="{loading: fboEmbedLoader}">
-                        <span v-if="fboEmbedLoader" v-html="loaderSVG"></span>
+                        <span v-if="fboEmbedLoader" v-html="svgIcons.loaderSVG"></span>
                         {{genericText.disable}}
                     </button>
                     <button v-else @click="FacebookShouldInstallOrEnable()" class="sbi-btn sbi-btn-blue" :class="{loading: fboEmbedLoader}">
-                        <span v-if="fboEmbedLoader" v-html="loaderSVG"></span>
+                        <span v-if="fboEmbedLoader" v-html="svgIcons.loaderSVG"></span>
                         {{genericText.enable}}
                     </button>
                 </span>

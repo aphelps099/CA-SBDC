@@ -33,8 +33,8 @@ class MenuService extends ServiceProvider {
 		$cap = current_user_can( 'manage_options' ) ? 'manage_options' : 'manage_youtube_feed_options';
 
 		add_menu_page(
-			__('YouTube Feed', 'feed-for-youtube'),
-			__('YouTube Feed', 'feed-for-youtube') . $this->alert_html(),
+			__('YouTube Feed', 'feeds-for-youtube'),
+			__('YouTube Feed', 'feeds-for-youtube') . $this->alert_html(),
 			$cap,
 			SBY_MENU_SLUG,
 			null,
@@ -44,15 +44,15 @@ class MenuService extends ServiceProvider {
 
 		add_submenu_page(
 			SBY_MENU_SLUG,
-			__( 'All Feeds', 'youtube-feed' ),
-			__( 'All Feeds', 'youtube-feed' ),
+			__( 'All Feeds', 'feeds-for-youtube' ),
+			__( 'All Feeds', 'feeds-for-youtube' ),
 			$cap,
 			SBY_MENU_SLUG,
 			array( $this->builder, 'feed_builder' ),
 			0
 		);
 
-		if ( !sby_is_pro() || empty( Util::get_license_key() ) ) {
+		if ( (sby_is_pro() && empty( Util::get_license_key() )) || Util::is_license_expired() || !sby_is_pro() ) {
 			add_submenu_page(
 				SBY_MENU_SLUG,
 				__( 'Upgrade to Pro', 'feeds-for-youtube' ),
@@ -95,6 +95,28 @@ class MenuService extends ServiceProvider {
                 7
             );
 		}
+
+		if ( sby_should_add_free_plugin_submenu( 'tiktok' ) ) {
+			add_submenu_page(
+                SBY_MENU_SLUG,
+                __( 'Tiktok Feed', 'feeds-for-youtube' ),
+                '<span class="sby_get_sbtt">' . __( 'Tiktok Feed', 'feeds-for-youtube' ) . '</span>',
+                'manage_options',
+                'admin.php?page=sby-feed-builder&tab=more',
+                8
+            );
+		}
+
+		if ( sby_should_add_free_plugin_submenu( 'reviews' ) ) {
+			add_submenu_page(
+                SBY_MENU_SLUG,
+                __( 'Reviews Feed', 'feeds-for-youtube' ),
+                '<span class="sby_get_sbr">' . __( 'Reviews Feed', 'feeds-for-youtube' ) . '</span>',
+                'manage_options',
+                'admin.php?page=sby-feed-builder&tab=more',
+                9
+            );
+		}
 	}
 
 	private function alert_html() {
@@ -107,7 +129,7 @@ class MenuService extends ServiceProvider {
 			$notice_bubble = ' <span class="sby-notice-alert"><span>' . count( $notifications ) . '</span></span>';
 		}
 
-		if ( empty( Util::get_license_key() ) || Util::is_license_expired() ) {
+		if ( sby_is_pro() && empty( Util::get_license_key() ) || Util::is_license_expired() ) {
 			$notice_bubble = ' <span class="sby-notice-alert"><span>1</span></span>';
 		}
 

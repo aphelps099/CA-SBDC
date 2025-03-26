@@ -11,6 +11,7 @@ namespace Smashballoon\Customizer\Controls;
 if (!\defined('ABSPATH')) {
     exit;
 }
+/** @internal */
 class SB_Separator_Control extends \Smashballoon\Customizer\Controls\SB_Controls_Base
 {
     /**

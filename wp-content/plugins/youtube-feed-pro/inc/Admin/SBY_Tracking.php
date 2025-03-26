@@ -8,7 +8,12 @@
 
 namespace SmashBalloon\YouTubeFeed\Admin;
 
-use Smashballoon\Customizer\DB;/**
+use Smashballoon\Customizer\DB;
+use Smashballoon\Framework\Utilities\UsageTracking;
+use SmashBalloon\YouTubeFeed\Builder\SBY_Db;
+use SmashBalloon\YouTubeFeed\Builder\SBY_Feed_Saver;
+
+/**
  * Usage tracking
  *
  * @access public
@@ -22,6 +27,7 @@ class SBY_Tracking {
 	public function __construct( DB $DB) {
 		add_action( 'init', array( $this, 'schedule_send' ) );
 		add_filter( 'cron_schedules', array( $this, 'add_schedules' ) );
+		add_filter( 'sb_usage_tracking_data', [ $this, 'filter_usage_tracking_data' ], 10, 2 );
 		add_action( 'sby_usage_tracking_cron', array( $this, 'send_checkin' ) );
 
 		$this->DB = $DB;
@@ -190,32 +196,8 @@ class SBY_Tracking {
 			}
 
 		}
-		$feeds         = $this->DB->feeds_query();
+
 		$feed_settings = array();
-
-		if ( ! empty( $feeds ) ) {
-			//recursive json decode
-			$feed_settings = array_map(
-				static function( $item ) {
-					return json_decode( $item, true );
-				},
-				json_decode( $feeds[0]['settings'], true )
-			);
-			//map array values to key => value pairs in the $feed_settings array
-			array_walk(
-				$feed_settings,
-				static function( $value, $key ) use( &$feed_settings) {
-					if ( is_array( $value ) ) {
-						unset( $feed_settings[ $key ] );
-						foreach ( $value as $value_key => $value_item ) {
-							$feed_settings[ $key . '_' . $value_key ] = $value_item;
-						}
-					}
-				},
-				array()
-			);
-		}
-
 		$settings_to_send = array_merge( $settings_to_send, $feed_settings );
 
 		global $wpdb;
@@ -241,8 +223,6 @@ class SBY_Tracking {
 		$settings_to_send['custom_footer_template'] = '' !== locate_template( 'sby/footer.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_feed_template'] = '' !== locate_template( 'sby/feed.php', false, false ) ? 1 : 0;
 
-		$data['settings']      = $settings_to_send;
-
 		// Retrieve current plugin information
 		if( ! function_exists( 'get_plugins' ) ) {
 			include ABSPATH . '/wp-admin/includes/plugin.php';
@@ -262,10 +242,10 @@ class SBY_Tracking {
 
 		$data['active_plugins']   = $plugins_to_send;
 		$data['locale']           = get_locale();
-		if ( isset( $data['settings']['api_key'] ) || is_null( $data['settings']['api_key'] ) ) {
+		if ( isset( $data['settings']['api_key'] ) ) {
 			unset( $data['settings']['api_key'] );
 		}
-		if ( isset( $data['settings']['access_token'] ) || is_null( $data['settings']['access_token'] ) ) {
+		if ( isset( $data['settings']['access_token'] ) ) {
 			unset( $data['settings']['access_token'] );
 		}
 
@@ -284,26 +264,7 @@ class SBY_Tracking {
 			return false;
 		}
 
-		// Send a maximum of once per week
-		$usage_tracking = get_option( 'sby_usage_tracking', array( 'last_send' => 0, 'enabled' => sby_is_pro_version() ) );
-		if ( is_numeric( $usage_tracking['last_send'] ) && $usage_tracking['last_send'] > strtotime( '-1 week' ) && ! $ignore_last_checkin ) {
-			return false;
-		}
-
-		$request = wp_remote_post( 'https://usage.smashballoon.com/v1/checkin/', array(
-			'method'      => 'POST',
-			'timeout'     => 5,
-			'redirection' => 5,
-			'httpversion' => '1.1',
-			'blocking'    => false,
-			'body'        => $this->get_data(),
-			'user-agent'  => 'MI/' . SBYVER . '; ' . get_bloginfo( 'url' )
-		) );
-
-		// If we have completed successfully, recheck in 1 week
-		$usage_tracking['last_send'] = time();
-		update_option( 'sby_usage_tracking', $usage_tracking, false );
-		return true;
+		return UsageTracking::send_usage_update($this->get_data(), 'sby');
 	}
 
 	private function tracking_allowed() {
@@ -340,8 +301,71 @@ class SBY_Tracking {
 		// Adds once weekly to the existing schedules.
 		$schedules['weekly'] = array(
 			'interval' => 604800,
-			'display'  => __( 'Once Weekly', 'youtube-feed' )
+			'display'  => __( 'Once Weekly', 'feeds-for-youtube' )
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Filter the usage tracking data
+	 *
+	 * @param array $data
+	 * @param string $plugin_slug
+	 *
+	 * @handles sb_usage_tracking_data
+	 *
+	 * @return array|mixed
+	 */
+	public function filter_usage_tracking_data( $data, $plugin_slug ) {
+		if ( 'sby' !== $plugin_slug ) {
+			return $data;
+		}
+
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
+		if ( ! isset( $data['settings'] ) ) {
+			$data['settings'] = [];
+		}
+
+		$tracked_boolean_settings = explode( ',',
+			'widthresp,class,height,heightunit,disablemobile,itemspacing,itemspacingunit,
+			background,headercolor,subscribecolor,subscribetextcolor,buttoncolor,buttontextcolor,
+			showheader,showdescription,showbutton,headersize,headeroutside,showsubscribe,buttontext,
+			subscribetext,backup_cache_enabled,resizeprocess,disable_resize,storage_process,
+			favor_local,disable_js_image_loading,ajax_post_load,ajaxtheme,enqueue_css_in_shortcode,
+			customtemplates,gallerycols,gallerycolsmobile,gridcols,gridcolsmobile,eagerload,custom_css,
+			custom_js,disablecdn,allowcookies,usecustomsearch,headerchannel,customsearch,showpast,showlikes,
+			carouselarrows,carouselpag,carouselautoplay,include,hoverinclude,descriptionlength,userelative,
+			dateformat,customdate,showsubscribers,descriptiontextsize,subscriberstext,viewstext,agotext,
+			beforedatetext,beforestreamtimetext,minutetext,minutestext,hourstext,thousandstext,millionstext,
+			watchnowtext,cta,linktext,linkurl,linkopentype,linkcolor,linktextcolor'
+		);
+		$tracked_string_settings = explode( ',',
+			'type,num,nummobile,layout,playvideo,sortby,cache_time,cache_time_unit,playerratio,gdpr,carouselcols,carouselcolsmobile,infoposition'
+		);
+
+		$feeds = SBY_Db::feeds_query();
+		$settings_defaults = SBY_Feed_Saver::settings_defaults();
+
+		// Track settings of the first feed
+		if ( ! empty( $feeds ) ) {
+			$feed = $feeds[0];
+			$feed_settings = ( new SBY_Feed_Saver( $feed['id'] ) )->get_feed_settings();
+
+			if(!is_array($feed_settings)) {
+				return $data;
+			}
+
+			$booleans = UsageTracking::tracked_settings_to_booleans($tracked_boolean_settings, $settings_defaults, $feed_settings);
+			$strings = UsageTracking::tracked_settings_to_strings($tracked_string_settings, $feed_settings);
+
+			if ( is_array( $booleans ) && is_array( $strings ) ) {
+				$data['settings'] = array_merge( $data['settings'], $booleans, $strings );
+			}
+		}
+
+		return $data;
 	}
 }

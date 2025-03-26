@@ -473,7 +473,7 @@ class SBY_Notifications {
 	 */
 	public function replace_merge_fields( $content, $notification ) {
 		$merge_fields = array(
-			'{plugin}' => 'YouTube Feed',
+			'{plugin}' => 'YouTube Feeds',
 			'{amount}' => isset( $notification['amount'] ) ? $notification['amount'] : '',
 			'{platform}' => 'YouTube',
 			'{lowerplatform}' => 'youtube',
@@ -484,7 +484,7 @@ class SBY_Notifications {
 
 		if ( sby_is_pro_version() ) {
 			$merge_fields['{campaign}'] = 'youtube-pro';
-			$merge_fields['{plugin}'] = 'YouTube Feed Pro';
+			$merge_fields['{plugin}'] = 'YouTube Feeds Pro';
 		}
 
 		foreach ( $merge_fields as $find => $replace ) {
@@ -495,7 +495,7 @@ class SBY_Notifications {
 	}
 
 	/**
-	 * Output notifications on YouTube Feed admin area.
+	 * Output notifications on YouTube Feeds admin area.
 	 *
 	 * @since 2.6/5.9
 	 */
@@ -760,7 +760,7 @@ class SBY_Notifications {
 		if ( $type == 'review' ) {
 			$content = __( 'It really helps to support the plugin and help others to discover it too!', 'feeds-for-youtube' );
 		} else if ( $type == 'discount' ) {
-			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free YouTube Feed.', 'feeds-for-youtube' );
+			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free YouTube Feeds.', 'feeds-for-youtube' );
 		} else {
 			if ( ! empty( $notification['content'] ) ) {
 				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );

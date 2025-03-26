@@ -14,6 +14,7 @@ use SmashBalloon\YouTubeFeed\Pro\SBY_YT_Details_Query;
 use SmashBalloon\YouTubeFeed\Feed_Locator;
 use SmashBalloon\YouTubeFeed\SBY_Parse;
 use SmashBalloon\YouTubeFeed\SBY_WP_Post;
+use SmashBalloon\YouTubeFeed\Helpers\Util;
 
 class AdminAjaxService extends ServiceProvider {
 
@@ -28,6 +29,7 @@ class AdminAjaxService extends ServiceProvider {
 		add_action( 'wp_ajax_nopriv_sby_do_locator', [$this, 'sby_do_locator'] );
 		add_action( 'wp_ajax_sby_add_api_key', [$this, 'sby_api_key'] );
 		add_action( 'wp_ajax_sby_other_plugins_modal', [$this, 'sby_other_plugins_modal'] );
+		add_action( 'wp_ajax_sby_single_videos_upsell_modal', [$this, 'sby_single_videos_upsell_modal'] );
 		add_action( 'wp_ajax_sby_install_other_plugins', [$this, 'sby_install_addon'] );
 		add_action( 'wp_ajax_sby_activate_other_plugins', [$this, 'sby_activate_addon'] );
 		add_action( 'wp_ajax_sby_manual_access_token', [$this, 'manual_access_token'] );
@@ -519,7 +521,8 @@ class AdminAjaxService extends ServiceProvider {
 		}
 
 		if ( isset( $_POST['sby_access_token'] ) ) {
-			sby_attempt_connection();
+			$return = sby_attempt_connection();
+			wp_send_json_success($return);
 		}
 	}
 
@@ -573,7 +576,7 @@ class AdminAjaxService extends ServiceProvider {
 			$output .= sprintf(
 				"<button class='sby-install-plugin-btn sbc-btn-orange' id='sby_install_op_plugin' data-plugin-atts='%s'>%s</button></div></div></div>",
 				wp_json_encode( $plugin_install_data ),
-				__('Install', 'custom-twitter-feeds')
+				__('Install', 'feeds-for-youtube')
 			);
 		}
 		if ( $plugin['installed'] && ! $plugin['activated'] ) {
@@ -582,16 +585,112 @@ class AdminAjaxService extends ServiceProvider {
 			$output .= sprintf(
 				"<button class='sby-install-plugin-btn sb-ot-installed sbc-btn-orange' id='sby_install_op_plugin' data-plugin-atts='%s'>%s</button></div></div></div>",
 				wp_json_encode( $plugin_install_data ),
-				__('Activate', 'custom-twitter-feeds')
+				__('Activate', 'feeds-for-youtube')
 			);
 		}
 		if ( $plugin['installed'] && $plugin['activated'] ) {
 			$output .= sprintf(
 				"<button class='sby-install-plugin-btn sby-btn-orange' id='sby_install_op_plugin' disabled='disabled'>%s</button></div></div></div>",
-				__('Plugin installed & activated', 'custom-twitter-feeds')
+				__('Plugin installed & activated', 'feeds-for-youtube')
 			);
 		}
 
+		wp_send_json_success($output, true);
+		wp_die();
+	}
+
+	/**
+	 * Upsell Modal Content for Single Video to Post
+	 * @since 2.3
+	 */
+	public function sby_single_videos_upsell_modal()
+	{
+		// Run a security check.
+		check_ajax_referer('sby-admin', 'nonce');
+
+		// Check for permissions.
+		if (!sby_current_user_can('manage_youtube_feed_options')) {
+			wp_send_json_error();
+		}
+		$license_key = Util::get_license_key();
+		$upgrade_url = sprintf('https://smashballoon.com/pricing/youtube-feed/?license_key=%s&upgrade=true&utm_campaign=youtube-pro&utm_source=feed-type&utm_medium=youtube-feed&utm_content=upgrade', $license_key);
+		$heading = __('Convert YouTube videos to Wordpress Posts with Pro', 'feeds-for-youtube');
+		$youtube_utm_campaign = 'youtube-pro';
+
+		if (!\sby_is_pro()) {
+			$upgrade_url = 'https://smashballoon.com/pricing/youtube-feed/?utm_campaign=youtube-free&utm_source=single-videos-to-cpt&utm_medium=youtube-feed&utm_content=upgrade';
+			$youtube_utm_campaign = 'youtube-free';
+		} else {
+			$heading = __('Upgrade to Plus to Convert YouTube videos to WordPress Posts', 'feeds-for-youtube');
+		}
+		
+		// Build the content for modals
+		$output = '<div data-getext-view="playlist" class="sbc-extensions-popup sbc-popup-inside">
+			<div class="sbc-popup-cls">
+			<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z" fill="#141B38"></path>
+			</svg>
+			</div>
+			<div>
+			<div class="sbc-extpp-top sbc-fs">
+				<div class="sbc-extpp-info">
+				<div class="sbc-extpp-head sbc-fs">
+					<h2>'. $heading .'</h2>
+				</div>
+				<div class="sbc-extpp-desc sbc-fs sb-caption">Use YouTube to create a curated list of related videos and display it on your site.</div>
+				<!---->
+				</div>
+				<div class="sbc-extpp-img"><svg width="396" height="264" viewBox="0 0 396 264" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2319_54121)"><g filter="url(#filter0_ddd_2319_54121)"><g clip-path="url(#clip1_2319_54121)"><rect x="186.652" y="68.1201" width="192" height="211" rx="2" transform="rotate(3 186.652 68.1201)" fill="url(#paint0_linear_2319_54121)"/><mask id="path-3-outside-1_2319_54121" maskUnits="userSpaceOnUse" x="185.449" y="68.1201" width="192.941" height="33.017" fill="black"><rect fill="white" x="185.449" y="68.1201" width="192.941" height="33.017"/><path d="M186.652 68.1201L378.389 78.1686L377.238 100.138L185.501 90.09L186.652 68.1201Z"/></mask><path d="M377.274 99.4394L185.538 89.3909L185.464 90.789L377.201 100.838L377.274 99.4394Z" fill="#E6E6EB" mask="url(#path-3-outside-1_2319_54121)"/><rect x="197.27" y="75.6863" width="29" height="8" rx="2" transform="rotate(3 197.27 75.6863)" fill="#9295A6"/><rect x="307.043" y="82.9412" width="16" height="5" rx="1" transform="rotate(3 307.043 82.9412)" fill="#E6E6EB"/><rect x="329.012" y="84.0925" width="16" height="5" rx="1" transform="rotate(3 329.012 84.0925)" fill="#E6E6EB"/><rect x="350.984" y="85.2439" width="16" height="5" rx="1" transform="rotate(3 350.984 85.2439)" fill="#E6E6EB"/><g clip-path="url(#clip2_2319_54121)"><rect x="214.57" y="108.637" width="132.462" height="64" rx="2" transform="rotate(3 214.57 108.637)" fill="#696D80"/><circle cx="333.264" cy="122.534" r="63.0365" transform="rotate(3 333.264 122.534)" fill="#434960"/></g><circle cx="220.318" cy="190.049" r="10" transform="rotate(3 220.318 190.049)" fill="#CED0D9"/><rect x="236.609" y="184.895" width="60" height="5" rx="1" transform="rotate(3 236.609 184.895)" fill="#CED0D9"/><g opacity="0.4"><rect x="209.23" y="210.497" width="132" height="5" rx="1" transform="rotate(3 209.23 210.497)" fill="#CED0D9"/></g><g opacity="0.4"><rect x="208.082" y="232.467" width="132" height="5" rx="1" transform="rotate(3 208.082 232.467)" fill="#CED0D9"/></g><rect x="236.137" y="193.882" width="38" height="5" rx="1" transform="rotate(3 236.137 193.882)" fill="#CED0D9"/><g opacity="0.4"><rect x="208.656" y="221.482" width="123" height="5" rx="1" transform="rotate(3 208.656 221.482)" fill="#CED0D9"/></g><g opacity="0.4"><rect x="207.504" y="243.452" width="123" height="5" rx="1" transform="rotate(3 207.504 243.452)" fill="#CED0D9"/></g></g></g><path d="M111.301 189.253C110.889 188.535 109.972 188.287 109.253 188.699C108.535 189.111 108.287 190.028 108.699 190.747L111.301 189.253ZM163.26 208.707C163.71 208.011 163.51 207.083 162.813 206.633L151.471 199.312C150.775 198.863 149.847 199.063 149.397 199.759C148.948 200.455 149.148 201.383 149.844 201.832L159.926 208.34L153.418 218.422C152.969 219.118 153.169 220.047 153.865 220.496C154.561 220.945 155.49 220.745 155.939 220.049L163.26 208.707ZM108.699 190.747C112.286 196.997 120.225 202.811 129.853 206.475C139.526 210.157 151.149 211.766 162.316 209.36L161.684 206.427C151.185 208.689 140.156 207.187 130.92 203.671C121.638 200.139 114.411 194.673 111.301 189.253L108.699 190.747Z" fill="#9295A6"/><g filter="url(#filter1_ddd_2319_54121)"><g clip-path="url(#clip3_2319_54121)"><rect x="29.2305" y="67.3208" width="157.543" height="113.748" rx="2.12584" transform="rotate(-3 29.2305 67.3208)" fill="white"/><g clip-path="url(#clip4_2319_54121)"><rect width="158.54" height="77.486" transform="translate(28.5312 67.3577) rotate(-3)" fill="#696D80"/><circle cx="171.558" cy="69.0506" r="75.4469" transform="rotate(-3 171.558 69.0506)" fill="#434960"/><path d="M33.0625 144.123L75.5317 141.842" stroke="#EB2121" stroke-width="1.17874"/><line x1="190.984" y1="135.995" x2="75.5576" y2="142.136" stroke="#E6E6EB" stroke-width="1.17874"/></g><circle cx="77.4194" cy="141.061" r="3.55095" transform="rotate(-3 77.4194 141.061)" fill="#EB2121"/><rect x="44.4023" y="157.21" width="67.7775" height="9" rx="1.01955" transform="rotate(-3 44.4023 157.21)" fill="#CED0D9"/><g filter="url(#filter2_di_2319_54121)"><rect x="133.016" y="146.573" width="47.1496" height="18.8598" rx="2.94685" transform="rotate(-3 133.016 146.573)" fill="#EB2121"/><rect opacity="0.4" x="142.152" y="151.996" width="29.4685" height="6.48306" rx="1.17874" transform="rotate(-3 142.152 151.996)" fill="white"/></g></g></g></g><defs><filter id="filter0_ddd_2319_54121" x="164.064" y="61.9036" width="225.871" height="243.849" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="5.32846"/><feGaussianBlur stdDeviation="5.7725"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2319_54121"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="0.888078"/><feGaussianBlur stdDeviation="0.888078"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.11 0"/><feBlend mode="normal" in2="effect1_dropShadow_2319_54121" result="effect2_dropShadow_2319_54121"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.66423"/><feGaussianBlur stdDeviation="2.66423"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0"/><feBlend mode="normal" in2="effect2_dropShadow_2319_54121" result="effect3_dropShadow_2319_54121"/><feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_2319_54121" result="shape"/></filter><filter id="filter1_ddd_2319_54121" x="15.4125" y="51.6353" width="190.917" height="149.473" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="6.37751"/><feGaussianBlur stdDeviation="6.90897"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2319_54121"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="1.06292"/><feGaussianBlur stdDeviation="1.06292"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.11 0"/><feBlend mode="normal" in2="effect1_dropShadow_2319_54121" result="effect2_dropShadow_2319_54121"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="3.18876"/><feGaussianBlur stdDeviation="3.18876"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0"/><feBlend mode="normal" in2="effect2_dropShadow_2319_54121" result="effect3_dropShadow_2319_54121"/><feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_2319_54121" result="shape"/></filter><filter id="filter2_di_2319_54121" x="131.837" y="142.926" width="50.4278" height="24.2484" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="0.589369"/><feGaussianBlur stdDeviation="0.589369"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.13 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2319_54121"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2319_54121" result="shape"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="-1.17874"/><feGaussianBlur stdDeviation="0.589369"/><feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/><feBlend mode="normal" in2="shape" result="effect2_innerShadow_2319_54121"/></filter><linearGradient id="paint0_linear_2319_54121" x1="282.652" y1="68.1201" x2="282.652" y2="279.12" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="1" stop-color="#F3F4F5"/></linearGradient><clipPath id="clip0_2319_54121"><rect width="396" height="264" fill="white"/></clipPath><clipPath id="clip1_2319_54121"><rect x="186.652" y="68.1201" width="192" height="211" rx="2" transform="rotate(3 186.652 68.1201)" fill="white"/></clipPath><clipPath id="clip2_2319_54121"><rect x="214.57" y="108.637" width="132.462" height="64" rx="2" transform="rotate(3 214.57 108.637)" fill="white"/></clipPath><clipPath id="clip3_2319_54121"><rect x="29.2305" y="67.3208" width="157.543" height="113.748" rx="2.12584" transform="rotate(-3 29.2305 67.3208)" fill="white"/></clipPath><clipPath id="clip4_2319_54121"><rect width="158.54" height="77.486" fill="white" transform="translate(28.5312 67.3577) rotate(-3)"/></clipPath></defs></svg></div>
+			</div>
+			<div class="sbc-extpp-bottom sbc-fs">
+				<div class="ctf-extension-bullets">
+				<h4>And get much more!</h4>
+				<div class="ctf-extension-bullet-list">
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">Covert videos to WP Posts</span>
+					</div>
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">Show subscribers</span>
+					</div>
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">Show video details</span>
+					</div>
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">Fast and Effective Support</span>
+					</div>
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">Always up to date</span>
+					</div>
+					<div class="ctf-extension-single-bullet">
+					<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<rect width="4" height="4" fill="#0096CC"></rect>
+					</svg>
+					<span class="sb-small-p">30 day money back guarantee</span>
+					</div>
+				</div>
+				</div>
+				<div class="sbc-extpp-btns sbc-fs"><a href="'. $upgrade_url .'" target="_blank" class="sbc-extpp-get-btn sbc-btn-orange">
+				Upgrade
+				</a> <a href="https://smashballoon.com/youtube-feed/?utm_campaign='.$youtube_utm_campaign.'&amp;utm_source=feed-type&amp;utm_medium=youtube-feed&amp;utm_content=learn-more" target="_blank" class="sbc-extpp-get-btn sbc-btn-grey">'. __('Learn More', 'feeds-for-youtube') .'</a>
+				</div>
+			</div>
+			</div>
+		</div>';
 		wp_send_json_success($output, true);
 		wp_die();
 	}
@@ -612,7 +711,7 @@ class AdminAjaxService extends ServiceProvider {
 			wp_send_json_error();
 		}
 
-		$error = esc_html__( 'Could not install addon. Please download from wpforms.com and install manually.', 'custom-twitter-feeds' );
+		$error = esc_html__( 'Could not install addon. Please download from wpforms.com and install manually.', 'feeds-for-youtube' );
 
 		if ( empty( $_POST['plugin'] ) ) {
 			wp_send_json_error( $error );
@@ -678,7 +777,7 @@ class AdminAjaxService extends ServiceProvider {
 			if ( ! is_wp_error( $activated ) ) {
 				wp_send_json_success(
 					array(
-						'msg'          => 'plugin' === $type ? esc_html__( 'Plugin installed & activated.', 'custom-twitter-feeds' ) : esc_html__( 'Addon installed & activated.', 'custom-twitter-feeds' ),
+						'msg'          => 'plugin' === $type ? esc_html__( 'Plugin installed & activated.', 'feeds-for-youtube' ) : esc_html__( 'Addon installed & activated.', 'feeds-for-youtube' ),
 						'is_activated' => true,
 						'basename'     => $plugin_basename,
 					)
@@ -686,7 +785,7 @@ class AdminAjaxService extends ServiceProvider {
 			} else {
 				wp_send_json_success(
 					array(
-						'msg'          => 'plugin' === $type ? esc_html__( 'Plugin installed.', 'custom-twitter-feeds' ) : esc_html__( 'Addon installed.', 'custom-twitter-feeds' ),
+						'msg'          => 'plugin' === $type ? esc_html__( 'Plugin installed.', 'feeds-for-youtube' ) : esc_html__( 'Addon installed.', 'feeds-for-youtube' ),
 						'is_activated' => false,
 						'basename'     => $plugin_basename,
 					)
@@ -722,14 +821,14 @@ class AdminAjaxService extends ServiceProvider {
 			$activate = activate_plugins( $_POST['plugin'] );
 			if ( ! is_wp_error( $activate ) ) {
 				if ( 'plugin' === $type ) {
-					wp_send_json_success( esc_html__( 'Plugin activated.', 'custom-twitter-feeds' ) );
+					wp_send_json_success( esc_html__( 'Plugin activated.', 'feeds-for-youtube' ) );
 				} else {
-					wp_send_json_success( esc_html__( 'Addon activated.', 'custom-twitter-feeds' ) );
+					wp_send_json_success( esc_html__( 'Addon activated.', 'feeds-for-youtube' ) );
 				}
 			}
 		}
 
-		wp_send_json_error( esc_html__( 'Could not activate addon. Please activate from the Plugins page.', 'custom-twitter-feeds' ) );
+		wp_send_json_error( esc_html__( 'Could not activate addon. Please activate from the Plugins page.', 'feeds-for-youtube' ) );
 	}
 
 	private function sby_do_background_tasks( $feed_details ) {

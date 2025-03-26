@@ -19,7 +19,7 @@ class SBY_View {
 	 *
 	 * @since 2.0
 	 */
-	const BASE_PATH = SBY_PLUGIN_DIR . 'templates/';
+	const BASE_PATH = SBY_PLUGIN_DIR . 'admin/templates/';
 
 	public function __construct() {
 	}

@@ -9,10 +9,14 @@ var settings_data = {
     feeds: sbi_settings.feeds,
     links: sbi_settings.links,
     tooltipName: null,
-    sourcesList : sbi_settings.sources,
-    dialogBoxPopupScreen   : sbi_settings.dialogBoxPopupScreen,
-    selectSourceScreen      : sbi_settings.selectSourceScreen,
-
+    sourcesList: sbi_settings.sources,
+    dialogBoxPopupScreen: sbi_settings.dialogBoxPopupScreen,
+    selectSourceScreen: sbi_settings.selectSourceScreen,
+    clickSocialScreen: sbi_settings.clickSocialScreen,
+    clickSocialBtnStatus: 'normal',
+    enableClickSocialSetup: sbi_settings.clickSocialScreen.enableSetupStep,
+    clickSocialActive: sbi_settings.clickSocialActive,
+    disableClickSocialBtn: false,
     socialWallActivated: sbi_settings.socialWallActivated,
     socialWallLinks: sbi_settings.socialWallLinks,
     stickyWidget: false,
@@ -38,7 +42,7 @@ var settings_data = {
     currentView: null,
     selected: null,
     current: 0,
-    sections: ["General", "Feeds", "Advanced"],
+    sections: ["General", "Feeds", "Advanced", "Snippets"],
     indicator_width: 0,
     indicator_pos: 0,
     forwards: true,
@@ -47,18 +51,24 @@ var settings_data = {
     gdprInfoTooltip: null,
     loaderSVG: sbi_settings.loaderSVG,
     checkmarkSVG: sbi_settings.checkmarkSVG,
+    checkmarCircleSVG: sbi_settings.checkmarCircleSVG,
     uploadSVG: sbi_settings.uploadSVG,
     exportSVG: sbi_settings.exportSVG,
     reloadSVG: sbi_settings.reloadSVG,
+    timesSVG: sbi_settings.timesSVG,
     tooltipHelpSvg: sbi_settings.tooltipHelpSvg,
-    tooltip : {
-        text : '',
-        hover : false
+    resetSVG: sbi_settings.resetSVG,
+    sbiLicenseNoticeActive: (sbi_settings.sbiLicenseNoticeActive === '1'),
+    sbiLicenseInactiveState: (sbi_settings.sbiLicenseInactiveState === '1'),
+    licenseBtnClicked: false,
+    tooltip: {
+        text: '',
+        hover: false
     },
 
     cogSVG: sbi_settings.cogSVG,
     deleteSVG: sbi_settings.deleteSVG,
-    svgIcons : sbi_settings.svgIcons,
+    svgIcons: sbi_svgs,
 
     testConnectionStatus: null,
     recheckLicenseStatus: null,
@@ -71,44 +81,62 @@ var settings_data = {
     pressedBtnName: null,
     loading: false,
     hasError: sbi_settings.hasError,
-    dialogBox : {
-        active : false,
-        type : null,
-        heading : null,
-        description : null,
-        customButtons : undefined
+    dialogBox: {
+        active: false,
+        type: null,
+        heading: null,
+        description: null,
+        customButtons: undefined
     },
-    sourceToDelete : {},
-    viewsActive : {
-        sourcePopup : false,
-        sourcePopupScreen : 'redirect_1',
-        sourcePopupType : 'creation',
-        instanceSourceActive : null,
+    sourceToDelete: {},
+    viewsActive: {
+        sourcePopup: false,
+        sourcePopupScreen: 'redirect_1',
+        sourcePopupType: 'creation',
+        whyRenewLicense: false,
+        licenseLearnMore: false,
+        instanceSourceActive: null,
+        clickSocialIntegrationModal: false,
     },
     //Add New Source
-    newSourceData        : sbi_settings.newSourceData ? sbi_settings.newSourceData : null,
-    sourceConnectionURLs : sbi_settings.sourceConnectionURLs,
-    manualSourcePopupInit : sbi_settings.manualSourcePopupInit,
-    returnedApiSourcesList : [],
-    addNewSource : {
-        typeSelected        : 'page',
-        manualSourceID      : null,
-        manualSourceToken   : null
+    newSourceData: sbi_settings.newSourceData ? sbi_settings.newSourceData : null,
+    sourceConnectionURLs: sbi_settings.sourceConnectionURLs,
+    manualSourcePopupInit: sbi_settings.manualSourcePopupInit,
+    returnedApiSourcesList: [],
+    addNewSource: {
+        typeSelected: 'page',
+        manualSourceID: null,
+        manualSourceToken: null
     },
-    selectedFeed : 'none',
-    expandedFeedID : null,
-    notificationElement : {
-        type : 'success', // success, error, warning, message
-        text : '',
-        shown : null
+    selectedFeed: 'none',
+    expandedFeedID: null,
+    notificationElement: {
+        type: 'success', // success, error, warning, message
+        text: '',
+        shown: null
     },
-    selectedSourcesToConnect : [],
+    selectedSourcesToConnect: [],
 
     //Loading Bar
-    fullScreenLoader : false,
-    appLoaded : false,
-    previewLoaded : false,
-    loadingBar : true
+    fullScreenLoader: false,
+    appLoaded: false,
+    previewLoaded: false,
+    loadingBar: true,
+
+    //Upgrade PRO to PRO
+    upgradeNewVersion: false,
+    upgradeNewVersionUrl: false,
+    upgradeRemoteVersion: '',
+    isLicenseUpgraded: sbi_settings.isLicenseUpgraded,
+    licenseUpgradedInfo: sbi_settings.licenseUpgradedInfo,
+    licenseUpgradedInfoTierName: null,
+
+    // WPCode Snippets
+    wpCodeSnippets: sbi_settings.wpCode?.snippets,
+    wpCodeInstalled: sbi_settings.wpCode?.pluginInstalled,
+    wpCodeActive: sbi_settings.wpCode?.pluginActive,
+    wpCodeProInstalled: sbi_settings.wpCode?.isProInstalled,
+    wpCodePageUrl: sbi_settings.wpCode?.pageUrl,
 };
 
 // The tab component
@@ -120,7 +148,7 @@ Vue.component("tab", {
     created: () => {
         let urlParams = new URLSearchParams(window.location.search);
         let view = urlParams.get('view');
-        if ( view === null ) {
+        if (view === null) {
             view = 'general';
         }
         settings_data.currentView = view;
@@ -128,11 +156,11 @@ Vue.component("tab", {
         settings_data.selected = "app-1";
     },
     methods: {
-        emitWidth: function(el) {
+        emitWidth: function (el) {
             settings_data.indicator_width = jQuery(el).outerWidth();
             settings_data.indicator_pos = jQuery(el).position().left;
         },
-        changeComponent: function(index) {
+        changeComponent: function (index) {
             var prev = settings_data.current;
             if (prev < index) {
                 settings_data.forwards = false;
@@ -142,11 +170,11 @@ Vue.component("tab", {
             settings_data.selected = "app-" + (index + 1);
             settings_data.current = index;
         },
-        activeTab: function(section) {
+        activeTab: function (section) {
             this.setView(section.toLowerCase().trim());
             settings_data.currentTab = section;
         },
-        setView: function(section) {
+        setView: function (section) {
             history.replaceState({}, null, settings_data.adminUrl + 'admin.php?page=sbi-settings&view=' + section);
         }
     }
@@ -159,16 +187,16 @@ var sbiSettings = new Vue({
         emulateHTTP: true
     },
     data: settings_data,
-    created: function() {
-        this.$nextTick(function() {
+    created: function () {
+        this.$nextTick(function () {
             let tabEl = document.querySelector('.tab');
             settings_data.indicator_width = tabEl.offsetWidth;
         });
-        setTimeout(function(){
+        setTimeout(function () {
             settings_data.appLoaded = true;
-        },350);
+        }, 350);
     },
-    mounted: function(){
+    mounted: function () {
         var self = this;
         // set the current view page on page load
         let activeEl = document.querySelector('a.tab#' + settings_data.currentView);
@@ -181,13 +209,17 @@ var sbiSettings = new Vue({
         settings_data.current = viewIndex;
         settings_data.currentTab = currentView;
 
-        setTimeout(function(){
+        setTimeout(function () {
             settings_data.appLoaded = true;
-        },350);
+        }, 350);
+
+        if (this.licenseUpgradedInfo) {
+            this.getUpgradedProTier()
+        }
 
     },
     computed: {
-        getStyle: function() {
+        getStyle: function () {
             return {
                 position: "absolute",
                 bottom: "0px",
@@ -196,73 +228,88 @@ var sbiSettings = new Vue({
                 height: "2px"
             };
         },
-        chooseDirection: function() {
-           return "slide-fade";
+        chooseDirection: function () {
+            return "slide-fade";
         }
     },
-    methods:  {
-        activateLicense: function() {
-            this.hasError = false;
-            this.loading = true;
-            this.pressedBtnName = 'sbi';
+    methods: {
+        activateLicense: function () {
+            var self = this;
+
+            self.hasError = false;
+            self.loading = true;
+            self.pressedBtnName = 'sbi';
+            self.licenseBtnClicked = true;
 
             let data = new FormData();
-            data.append( 'action', 'sbi_activate_license' );
-            data.append( 'license_key', this.licenseKey );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
+            data.append('action', 'sbi_activate_license');
+            data.append('license_key', self.licenseKey);
+            data.append('nonce', self.nonce);
+            fetch(self.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == false ) {
-                    this.licenseStatus = 'inactive';
-                    this.hasError = true;
-                    this.loading = false;
-                    return;
-                }
-                if ( data.success == true ) {
-                    let licenseData = data.data.licenseData;
-                    this.licenseStatus = data.data.licenseStatus;
-                    this.loading = false;
-                    this.pressedBtnName = null;
+                .then(response => response.json())
+                .then(data => {
+                    self.licenseBtnClicked = false;
 
-                    if (
-                        data.data.licenseStatus == 'inactive' ||
-                        data.data.licenseStatus == 'invalid' ||
-                        data.data.licenseStatus == 'expired'
-                    ) {
-                        this.hasError = true;
-                        if( licenseData.error ) {
-                            this.licenseErrorMsg = licenseData.errorMsg
+                    if (data.success == false) {
+                        self.licenseStatus = 'inactive';
+                        self.hasError = true;
+                        self.loading = false;
+                        return;
+                    }
+                    if (data.success == true) {
+                        let licenseData = data.data.licenseData;
+                        self.licenseStatus = data.data.licenseStatus;
+                        self.loading = false;
+                        self.pressedBtnName = null;
+                        // if the activatation license request sent from the expired license modal
+                        if (self.viewsActive.licenseLearnMore) {
+                            if (data.data.licenseStatus != 'valid') {
+                                self.processNotification("licenseError");
+                                return;
+                            }
+                            if (data.data.licenseStatus == 'valid') {
+                                self.processNotification("licenseActivated");
+                            }
+                        }
+
+                        if (
+                            data.data.licenseStatus == 'inactive' ||
+                            data.data.licenseStatus == 'invalid' ||
+                            data.data.licenseStatus == 'expired'
+                        ) {
+                            self.hasError = true;
+                            if (licenseData.error) {
+                                self.licenseErrorMsg = licenseData.errorMsg
+                            }
                         }
                     }
-                }
-                return;
-            });
+                    return;
+                });
         },
-        deactivateLicense: function() {
+        deactivateLicense: function () {
             this.loading = true;
             this.pressedBtnName = 'sbi';
             let data = new FormData();
-            data.append( 'action', 'sbi_deactivate_license' );
-            data.append( 'nonce', this.nonce );
+            data.append('action', 'sbi_deactivate_license');
+            data.append('nonce', this.nonce);
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == true ) {
-                    this.licenseStatus = data.data.licenseStatus ;
-                    this.loading = false;
-                    this.pressedBtnName = null;
-                }
-                return;
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == true) {
+                        this.licenseStatus = data.data.licenseStatus;
+                        this.loading = false;
+                        this.pressedBtnName = null;
+                    }
+                    return;
+                });
         },
 
         /**
@@ -272,57 +319,57 @@ var sbiSettings = new Vue({
          *
          * @param {object} extension
          */
-        activateExtensionLicense: function( extension ) {
+        activateExtensionLicense: function (extension) {
             let licenseKey = this.extensionsLicenseKey[extension.name];
             this.extensionFieldHasError = false;
             this.loading = true;
             this.pressedBtnName = extension.name;
-            if ( ! licenseKey ) {
+            if (!licenseKey) {
                 this.loading = false;
                 this.extensionFieldHasError = true;
                 return;
             }
             let data = new FormData();
-            data.append( 'action', 'sbi_activate_extension_license' );
-            data.append( 'license_key', licenseKey );
-            data.append( 'extension_name', extension.name );
-            data.append( 'extension_item_name', extension.itemName );
-            data.append( 'nonce', this.nonce );
+            data.append('action', 'sbi_activate_extension_license');
+            data.append('license_key', licenseKey);
+            data.append('extension_name', extension.name);
+            data.append('extension_item_name', extension.itemName);
+            data.append('nonce', this.nonce);
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-            .then(response => response.json())
-            .then(data => {
-                this.loading = false;
-                if ( data.success == true ) {
-                    this.extensionFieldHasError = false;
-                    this.pressedBtnName = null;
-                    if ( data.data.licenseStatus == 'invalid' ) {
-                        this.extensionFieldHasError = true;
-                        this.notificationElement =  {
-                            type : 'error',
-                            text : this.genericText.invalidLicenseKey,
-                            shown : "shown"
-                        };
-                    }
-                    if ( data.data.licenseStatus == 'valid' ) {
-                        this.notificationElement =  {
-                            type : 'success',
-                            text : this.genericText.licenseActivated,
-                            shown : "shown"
-                        };
-                    }
-                    extension.licenseStatus = data.data.licenseStatus;
-                    extension.licenseKey = licenseKey;
+                .then(response => response.json())
+                .then(data => {
+                    this.loading = false;
+                    if (data.success == true) {
+                        this.extensionFieldHasError = false;
+                        this.pressedBtnName = null;
+                        if (data.data.licenseStatus == 'invalid') {
+                            this.extensionFieldHasError = true;
+                            this.notificationElement = {
+                                type: 'error',
+                                text: this.genericText.invalidLicenseKey,
+                                shown: "shown"
+                            };
+                        }
+                        if (data.data.licenseStatus == 'valid') {
+                            this.notificationElement = {
+                                type: 'success',
+                                text: this.genericText.licenseActivated,
+                                shown: "shown"
+                            };
+                        }
+                        extension.licenseStatus = data.data.licenseStatus;
+                        extension.licenseKey = licenseKey;
 
-                    setTimeout(function(){
-                        this.notificationElement.shown =  "hidden";
-                    }.bind(this), 3000);
-                }
-                return;
-            });
+                        setTimeout(function () {
+                            this.notificationElement.shown = "hidden";
+                        }.bind(this), 3000);
+                    }
+                    return;
+                });
         },
 
         /**
@@ -332,302 +379,16 @@ var sbiSettings = new Vue({
          *
          * @param {object} extension
          */
-        deactivateExtensionLicense: function( extension ) {
+        deactivateExtensionLicense: function (extension) {
             let licenseKey = this.extensionsLicenseKey[extension.name];
             this.extensionFieldHasError = false;
             this.loading = true;
             this.pressedBtnName = extension.name;
             let data = new FormData();
-            data.append( 'action', 'sbi_deactivate_extension_license' );
-            data.append( 'extension_name', extension.name );
-            data.append( 'extension_item_name', extension.itemName );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.loading = false;
-                if ( data.success == true ) {
-                    this.extensionFieldHasError = false;
-                    this.pressedBtnName = null;
-                    if ( data.data.licenseStatus == 'deactivated' ) {
-                        this.notificationElement =  {
-                            type : 'success',
-                            text : this.genericText.licenseDeactivated,
-                            shown : "shown"
-                        };
-                    }
-                    extension.licenseStatus = data.data.licenseStatus;
-                    extension.licenseKey = licenseKey;
-
-                    setTimeout(function(){
-                        this.notificationElement.shown =  "hidden";
-                    }.bind(this), 3000);
-                }
-                return;
-            });
-        },
-        testConnection: function() {
-            this.testConnectionStatus = 'loading';
-            let data = new FormData();
-            data.append( 'action', 'sbi_test_connection' );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == false ) {
-                    this.testConnectionStatus = 'error';
-                }
-                if ( data.success == true ) {
-                    this.testConnectionStatus = 'success';
-
-                    setTimeout(function() {
-                        this.testConnectionStatus = null;
-                    }.bind(this), 3000);
-                }
-                return;
-            });
-        },
-        recheckLicense: function( licenseKey, itemName, optionName = null ) {
-            this.recheckLicenseStatus = 'loading';
-            this.pressedBtnName = optionName;
-            let data = new FormData();
-            data.append( 'action', 'sbi_recheck_connection' );
-            data.append( 'license_key', licenseKey );
-            data.append( 'item_name', itemName );
-            data.append( 'option_name', optionName );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == true ) {
-                    if ( data.data.license == 'valid' ) {
-                        this.recheckLicenseStatus = 'success';
-                    }
-                    if ( data.data.license == 'expired' ) {
-                        this.recheckLicenseStatus = 'error';
-                    }
-
-                    // if the api license status has changed from old stored license status
-                    // then reload the page to show proper error message and notices
-                    // or hide error messages and notices
-                    if ( data.data.licenseChanged == true ) {
-                        location.reload();
-                    }
-
-                    setTimeout(function() {
-                        this.pressedBtnName = null;
-                        this.recheckLicenseStatus = null;
-                    }.bind(this), 3000);
-                }
-                return;
-            });
-        },
-        recheckLicenseIcon: function() {
-            if ( this.recheckLicenseStatus == null ) {
-                return this.generalTab.licenseBox.recheckLicense;
-            } else if ( this.recheckLicenseStatus == 'loading' ) {
-                return this.loaderSVG;
-            } else if ( this.recheckLicenseStatus == 'success' ) {
-                return '<i class="fa fa-check-circle"></i> ' + this.generalTab.licenseBox.licenseValid;
-            } else if ( this.recheckLicenseStatus == 'error' ) {
-                return '<i class="fa fa-times-circle"></i> ' + this.generalTab.licenseBox.licenseExpired;
-            }
-        },
-        recheckBtnText: function( btnName ) {
-            if ( this.recheckLicenseStatus == null || this.pressedBtnName != btnName ) {
-                return this.generalTab.licenseBox.recheckLicense;
-            } else if ( this.recheckLicenseStatus == 'loading' && this.pressedBtnName == btnName  ) {
-                return this.loaderSVG;
-            } else if ( this.recheckLicenseStatus == 'success' ) {
-                return '<i class="fa fa-check-circle"></i> ' + this.generalTab.licenseBox.licenseValid;
-            } else if ( this.recheckLicenseStatus == 'error' ) {
-                return '<i class="fa fa-times-circle"></i> ' + this.generalTab.licenseBox.licenseExpired;
-            }
-        },
-        testConnectionIcon: function() {
-            if ( this.testConnectionStatus == 'loading' ) {
-                return this.loaderSVG;
-            } else if ( this.testConnectionStatus == 'success' ) {
-                return '<i class="fa fa-check-circle"></i> ' + this.generalTab.licenseBox.connectionSuccessful;
-            } else if ( this.testConnectionStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i> ${this.generalTab.licenseBox.connectionFailed} <a href="#">${this.generalTab.licenseBox.viewError}</a>`;
-            }
-        },
-        importFile: function() {
-            document.getElementById("import_file").click();
-        },
-        uploadFile: function( event ) {
-            this.uploadStatus = 'loading';
-            let file = this.$refs.file.files[0];
-            let data = new FormData();
-            data.append( 'action', 'sbi_import_settings_json' );
-            data.append( 'file', file );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.uploadStatus = null;
-                this.$refs.file.files[0] = null;
-                if ( data.success == false ) {
-                    this.notificationElement =  {
-                        type : 'error',
-                        text : this.genericText.failedToImportFeed,
-                        shown : "shown"
-                    };
-                }
-                if ( data.success == true ) {
-                    this.feeds = data.data.feeds;
-                    this.notificationElement =  {
-                        type : 'success',
-                        text : this.genericText.feedImported,
-                        shown : "shown"
-                    };
-                }
-                setTimeout(function(){
-                    this.notificationElement.shown =  "hidden";
-                }.bind(this), 3000);
-            });
-        },
-        exportFeedSettings: function() {
-            // return if no feed is selected
-            if ( this.exportFeed === 'none' ) {
-                return;
-            }
-
-            let url = this.ajaxHandler + '?action=sbi_export_settings_json&nonce=' + this.nonce + '&feed_id=' + this.exportFeed;
-            window.location = url;
-        },
-        saveSettings: function() {
-            this.btnStatus = 'loading';
-            this.pressedBtnName = 'saveChanges';
-            let data = new FormData();
-            data.append( 'action', 'sbi_save_settings' );
-            data.append( 'model', JSON.stringify( this.model ) );
-            data.append( 'sbi_license_key', this.licenseKey );
-            data.append( 'extensions_license_key', JSON.stringify( this.extensionsLicenseKey ) );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == false ) {
-                    this.btnStatus = 'error';
-                    return;
-                }
-
-                this.cronNextCheck = data.data.cronNextCheck;
-                this.btnStatus = 'success';
-                setTimeout(function() {
-                    this.btnStatus = null;
-                    this.pressedBtnName = null;
-                }.bind(this), 3000);
-            });
-        },
-        clearCache: function() {
-            this.clearCacheStatus = 'loading';
-            let data = new FormData();
-            data.append( 'action', 'sbi_clear_cache' );
-            data.append( 'model', JSON.stringify( this.model ) );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == false ) {
-                    this.clearCacheStatus = 'error';
-                    return;
-                }
-
-                this.cronNextCheck = data.data.cronNextCheck;
-                this.clearCacheStatus = 'success';
-                setTimeout(function() {
-                    this.clearCacheStatus = null;
-                }.bind(this), 3000);
-            });
-        },
-        showTooltip: function( tooltipName ) {
-            this.tooltipName = tooltipName;
-        },
-        hideTooltip: function() {
-            this.tooltipName = null;
-        },
-        gdprOptions: function() {
-            this.gdprInfoTooltip = null;
-        },
-        gdprLimited: function() {
-            this.gdprInfoTooltip = this.gdprInfoTooltip == null ? true : null;
-        },
-        clearImageResizeCache: function() {
-            this.optimizeCacheStatus = 'loading';
-            let data = new FormData();
-            data.append( 'action', 'sbi_clear_image_resize_cache' );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
-                method: "POST",
-                credentials: 'same-origin',
-                body: data
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ( data.success == false ) {
-                    this.optimizeCacheStatus = 'error';
-                    return;
-                }
-                this.optimizeCacheStatus = 'success';
-                setTimeout(function() {
-                    this.optimizeCacheStatus = null;
-                }.bind(this), 3000);
-            });
-        },
-      resetErrorLog: function() {
-        this.clearErrorLogStatus = 'loading';
-        let data = new FormData();
-        data.append( 'action', 'sbi_clear_error_log' );
-        data.append( 'nonce', this.nonce );
-        fetch(this.ajaxHandler, {
-          method: "POST",
-          credentials: 'same-origin',
-          body: data
-        })
-          .then(response => response.json())
-          .then(data => {
-            if ( ! data.success ) {
-              this.clearErrorLogStatus = 'error';
-              return;
-            }
-            this.clearErrorLogStatus = 'success';
-            setTimeout(function() {
-              this.clearErrorLogStatus = null;
-            }.bind(this), 3000);
-          });
-      },
-        dpaReset: function() {
-            this.dpaResetStatus = 'loading';
-            let data = new FormData();
-            data.append( 'action', 'sbi_dpa_reset' );
-            data.append( 'nonce', this.nonce );
+            data.append('action', 'sbi_deactivate_extension_license');
+            data.append('extension_name', extension.name);
+            data.append('extension_item_name', extension.itemName);
+            data.append('nonce', this.nonce);
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -635,83 +396,465 @@ var sbiSettings = new Vue({
             })
                 .then(response => response.json())
                 .then(data => {
-                    if ( data.success == false ) {
+                    this.loading = false;
+                    if (data.success == true) {
+                        this.extensionFieldHasError = false;
+                        this.pressedBtnName = null;
+                        if (data.data.licenseStatus == 'deactivated') {
+                            this.notificationElement = {
+                                type: 'success',
+                                text: this.genericText.licenseDeactivated,
+                                shown: "shown"
+                            };
+                        }
+                        extension.licenseStatus = data.data.licenseStatus;
+                        extension.licenseKey = licenseKey;
+
+                        setTimeout(function () {
+                            this.notificationElement.shown = "hidden";
+                        }.bind(this), 3000);
+                    }
+                    return;
+                });
+        },
+        testConnection: function () {
+            this.testConnectionStatus = 'loading';
+            let data = new FormData();
+            data.append('action', 'sbi_test_connection');
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == false) {
+                        this.testConnectionStatus = 'error';
+                    }
+                    if (data.success == true) {
+                        this.testConnectionStatus = 'success';
+
+                        setTimeout(function () {
+                            this.testConnectionStatus = null;
+                        }.bind(this), 3000);
+                    }
+                    return;
+                });
+        },
+        recheckLicense: function (optionName = null) {
+            console.log('clicked');
+            this.recheckLicenseStatus = 'loading';
+            this.pressedBtnName = optionName;
+            let data = new FormData();
+            data.append('action', 'sbi_recheck_connection');
+            data.append('license_key', this.licenseKey);
+            data.append('option_name', optionName);
+            data.append('nonce', this.nonce);
+            console.log(this.recheckLicenseStatus);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == true) {
+                        if (data.data.license == 'valid') {
+                            this.recheckLicenseStatus = 'success';
+                        }
+                        if (data.data.license != 'valid') {
+                            this.recheckLicenseStatus = 'error';
+                        }
+
+                        if (data.data.isLicenseUpgraded !== undefined && data.data.isLicenseUpgraded !== false) {
+                            this.isLicenseUpgraded = true;
+                            this.licenseUpgradedInfo = data.data.licenseUpgradedInfo;
+                            this.getUpgradedProTier()
+                        }
+
+                        // if the api license status has changed from old stored license status
+                        // then reload the page to show proper error message and notices
+                        // or hide error messages and notices
+                        if (data.data.licenseChanged == true) {
+                            location.reload();
+                        }
+
+                        setTimeout(function () {
+                            this.pressedBtnName = null;
+                            this.recheckLicenseStatus = null;
+                        }.bind(this), 3000);
+                    }
+                    return;
+                });
+        },
+        recheckLicenseIcon: function () {
+            if (this.recheckLicenseStatus == null) {
+                return this.generalTab.licenseBox.recheckLicense;
+            } else if (this.recheckLicenseStatus == 'loading') {
+                return this.loaderSVG;
+            } else if (this.recheckLicenseStatus == 'success') {
+                return this.checkmarCircleSVG + ' ' + this.generalTab.licenseBox.licenseValid;
+            } else if (this.recheckLicenseStatus == 'error') {
+                return this.timesSVG + this.generalTab.licenseBox.licenseExpired;
+            }
+        },
+        recheckBtnText: function (btnName) {
+            if (this.recheckLicenseStatus == null) {
+                return this.generalTab.licenseBox.recheckLicense;
+            } else if (this.recheckLicenseStatus == 'loading') {
+                return this.loaderSVG;
+            } else if (this.recheckLicenseStatus == 'success') {
+                return this.checkmarCircleSVG + ' ' + this.generalTab.licenseBox.licenseValid;
+            } else if (this.recheckLicenseStatus == 'error') {
+                return this.timesSVG + ' ' + this.generalTab.licenseBox.licenseExpired;
+            }
+        },
+        testConnectionIcon: function () {
+            if (this.testConnectionStatus == 'loading') {
+                return this.loaderSVG;
+            } else if (this.testConnectionStatus == 'success') {
+                return this.checkmarCircleSVG + this.generalTab.licenseBox.connectionSuccessful;
+            } else if (this.testConnectionStatus == 'error') {
+                return `${this.timesSVG} ${this.generalTab.licenseBox.connectionFailed} <a href="#">${this.generalTab.licenseBox.viewError}</a>`;
+            }
+        },
+        importFile: function () {
+            document.getElementById("import_file").click();
+        },
+        uploadFile: function (event) {
+            this.uploadStatus = 'loading';
+            let file = this.$refs.file.files[0];
+            let data = new FormData();
+            data.append('action', 'sbi_import_settings_json');
+            data.append('file', file);
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.uploadStatus = null;
+                    this.$refs.file.files[0] = null;
+                    if (data.success == false) {
+                        this.notificationElement = {
+                            type: 'error',
+                            text: this.genericText.failedToImportFeed,
+                            shown: "shown"
+                        };
+                    }
+                    if (data.success == true) {
+                        this.feeds = data.data.feeds;
+                        this.notificationElement = {
+                            type: 'success',
+                            text: this.genericText.feedImported,
+                            shown: "shown"
+                        };
+                    }
+                    setTimeout(function () {
+                        this.notificationElement.shown = "hidden";
+                    }.bind(this), 3000);
+                });
+        },
+        exportFeedSettings: function () {
+            // return if no feed is selected
+            if (this.exportFeed === 'none') {
+                return;
+            }
+
+            let url = this.ajaxHandler + '?action=sbi_export_settings_json&nonce=' + this.nonce + '&feed_id=' + this.exportFeed;
+            window.location = url;
+        },
+        saveSettings: function () {
+            this.btnStatus = 'loading';
+            this.pressedBtnName = 'saveChanges';
+            let data = new FormData();
+            data.append('action', 'sbi_save_settings');
+            data.append('model', JSON.stringify(this.model));
+            data.append('sbi_license_key', this.licenseKey);
+            data.append('extensions_license_key', JSON.stringify(this.extensionsLicenseKey));
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == false) {
+                        this.btnStatus = 'error';
+                        return;
+                    }
+
+                    this.cronNextCheck = data.data.cronNextCheck;
+                    this.btnStatus = 'success';
+                    setTimeout(function () {
+                        this.btnStatus = null;
+                        this.pressedBtnName = null;
+                    }.bind(this), 3000);
+                });
+        },
+        clearCache: function () {
+            this.clearCacheStatus = 'loading';
+            let data = new FormData();
+            data.append('action', 'sbi_clear_cache');
+            data.append('model', JSON.stringify(this.model));
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == false) {
+                        this.clearCacheStatus = 'error';
+                        return;
+                    }
+
+                    this.cronNextCheck = data.data.cronNextCheck;
+                    this.clearCacheStatus = 'success';
+                    setTimeout(function () {
+                        this.clearCacheStatus = null;
+                    }.bind(this), 3000);
+                });
+        },
+        installclickSocialPlugin: function (ispluginInstalled, isPluginActive, pluginDownloadPath, clickSocialPlugin) {
+            var self = this;
+            self.clickSocialBtnStatus = 'loading';
+            self.disableClickSocialBtn = true;
+            let data = new FormData();
+            data.append('action', !ispluginInstalled ? 'sbi_install_addon' : 'sbi_activate_addon');
+            data.append('nonce', self.nonce);
+            data.append('type', 'plugin');
+            data.append('plugin', !ispluginInstalled ? pluginDownloadPath : clickSocialPlugin);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === true) {
+                        self.clickSocialBtnStatus = 'success';
+                        self.enableClickSocialSetup = true;
+                        self.setupclickSocialPlugin();
+                    } else {
+                        self.clickSocialBtnStatus = 'normal';
+                        self.disableClickSocialBtn = false;
+                    }
+                });
+        },
+        dismissClickSocialNotice: function () {
+            var self = this;
+
+            // Remove the notice instantly from the UI for better user experience
+            self.clickSocialScreen.shouldHideClickSocialNotice = true;
+
+            let data = new FormData();
+            data.append('action', 'sbi_dismiss_clicksocial_notice');
+            data.append('nonce', self.nonce);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+        },
+        clickSocialInstallBtnIcon: function () {
+            if (this.clickSocialBtnStatus == 'loading') {
+                return this.loaderSVG;
+            } else if (this.clickSocialBtnStatus == 'success') {
+                return this.checkmarCircleSVG;
+            } else if (this.clickSocialBtnStatus == 'error') {
+                return this.timesSVG;
+            }
+
+            if (this.clickSocialScreen.isPluginInstalled && this.clickSocialScreen.isPluginActive) {
+                return this.checkmarCircleSVG;
+            }
+
+            return this.clickSocialScreen.installSVG;
+        },
+        clickSocialInstallBtnText: function () {
+            if (this.clickSocialBtnStatus == 'loading') {
+                return 'Installing';
+            } else if (this.clickSocialBtnStatus == 'success') {
+                return 'Installed &amp; Activated Successfully';
+            }
+
+            if (this.clickSocialScreen.isPluginInstalled && !this.clickSocialScreen.isPluginActive) {
+                return 'Activate Plugin';
+            }
+            if (this.clickSocialScreen.isPluginInstalled && this.clickSocialScreen.isPluginActive) {
+                return 'Plugin Installed & Activated';
+            }
+
+            return 'Install Plugin';
+        },
+        setupclickSocialPlugin: function () {
+            var self = this;
+            let data = new FormData();
+            data.append('action', 'sbi_clicksocial_setup_source');
+            data.append('nonce', self.nonce);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === true) {
+                        window.location.href = self.adminUrl + self.clickSocialScreen.setupPage;
+                    }
+                });
+        },
+        showTooltip: function (tooltipName) {
+            this.tooltipName = tooltipName;
+        },
+        hideTooltip: function () {
+            this.tooltipName = null;
+        },
+        gdprOptions: function () {
+            this.gdprInfoTooltip = null;
+        },
+        gdprLimited: function () {
+            this.gdprInfoTooltip = this.gdprInfoTooltip == null ? true : null;
+        },
+        clearImageResizeCache: function () {
+            this.optimizeCacheStatus = 'loading';
+            let data = new FormData();
+            data.append('action', 'sbi_clear_image_resize_cache');
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == false) {
+                        this.optimizeCacheStatus = 'error';
+                        return;
+                    }
+                    this.optimizeCacheStatus = 'success';
+                    setTimeout(function () {
+                        this.optimizeCacheStatus = null;
+                    }.bind(this), 3000);
+                });
+        },
+        resetErrorLog: function () {
+            this.clearErrorLogStatus = 'loading';
+            let data = new FormData();
+            data.append('action', 'sbi_clear_error_log');
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        this.clearErrorLogStatus = 'error';
+                        return;
+                    }
+                    this.clearErrorLogStatus = 'success';
+                    setTimeout(function () {
+                        this.clearErrorLogStatus = null;
+                    }.bind(this), 3000);
+                });
+        },
+        dpaReset: function () {
+            this.dpaResetStatus = 'loading';
+            let data = new FormData();
+            data.append('action', 'sbi_dpa_reset');
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success == false) {
                         this.dpaResetStatus = 'error';
                         return;
                     }
                     this.dpaResetStatus = 'success';
-                    setTimeout(function() {
+                    setTimeout(function () {
                         this.dpaResetStatus = null;
                     }.bind(this), 3000);
                 });
         },
-      resetErrorLogIcon: function() {
-        if ( this.clearErrorLogStatus === null ) {
-          return;
-        }
-        if ( this.clearErrorLogStatus == 'loading' ) {
-          return this.loaderSVG;
-        } else if ( this.clearErrorLogStatus == 'success' ) {
-          return this.checkmarkSVG;
-        } else if ( this.clearErrorLogStatus == 'error' ) {
-          return `<i class="fa fa-times-circle"></i>`;
-        }
-      },
-        saveChangesIcon: function() {
-            if ( this.btnStatus == 'loading' ) {
+        resetErrorLogIcon: function () {
+            if (this.clearErrorLogStatus === null) {
+                return;
+            }
+            if (this.clearErrorLogStatus == 'loading') {
                 return this.loaderSVG;
-            } else if ( this.btnStatus == 'success' ) {
+            } else if (this.clearErrorLogStatus == 'success') {
                 return this.checkmarkSVG;
-            } else if ( this.btnStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+            } else if (this.clearErrorLogStatus == 'error') {
+                return this.timesSVG;
             }
         },
-        importBtnIcon: function() {
-            if ( this.uploadStatus === null ) {
+        saveChangesIcon: function () {
+            if (this.btnStatus == 'loading') {
+                return this.loaderSVG;
+            } else if (this.btnStatus == 'success') {
+                return this.checkmarkSVG;
+            } else if (this.btnStatus == 'error') {
+                return this.timesSVG;
+            }
+        },
+        importBtnIcon: function () {
+            if (this.uploadStatus === null) {
                 return this.uploadSVG;
             }
-            if ( this.uploadStatus == 'loading' ) {
+            if (this.uploadStatus == 'loading') {
                 return this.loaderSVG;
-            } else if ( this.uploadStatus == 'success' ) {
+            } else if (this.uploadStatus == 'success') {
                 return this.checkmarkSVG;
-            } else if ( this.uploadStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+            } else if (this.uploadStatus == 'error') {
+                return this.timesSVG;
             }
         },
-        clearCacheIcon: function() {
-            if ( this.clearCacheStatus === null ) {
+        clearCacheIcon: function () {
+            if (this.clearCacheStatus === null) {
                 return this.reloadSVG;
             }
-            if ( this.clearCacheStatus == 'loading' ) {
+            if (this.clearCacheStatus == 'loading') {
                 return this.loaderSVG;
-            } else if ( this.clearCacheStatus == 'success' ) {
+            } else if (this.clearCacheStatus == 'success') {
                 return this.checkmarkSVG;
-            } else if ( this.clearCacheStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+            } else if (this.clearCacheStatus == 'error') {
+                return this.timesSVG;
             }
         },
-        clearImageResizeCacheIcon: function() {
-            if ( this.optimizeCacheStatus === null ) {
-                return;
+        clearImageResizeCacheIcon: function () {
+            if (this.optimizeCacheStatus === null) {
+                return this.resetSVG;
             }
-            if ( this.optimizeCacheStatus == 'loading' ) {
+            if (this.optimizeCacheStatus == 'loading') {
                 return this.loaderSVG;
-            } else if ( this.optimizeCacheStatus == 'success' ) {
+            } else if (this.optimizeCacheStatus == 'success') {
                 return this.checkmarkSVG;
-            } else if ( this.optimizeCacheStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+            } else if (this.optimizeCacheStatus == 'error') {
+                return this.timesSVG;
             }
         },
-        dpaResetStatusIcon: function() {
-            if ( this.dpaResetStatus === null ) {
+        dpaResetStatusIcon: function () {
+            if (this.dpaResetStatus === null) {
                 return;
             }
-            if ( this.dpaResetStatus == 'loading' ) {
+            if (this.dpaResetStatus == 'loading') {
                 return this.loaderSVG;
-            } else if ( this.dpaResetStatus == 'success' ) {
+            } else if (this.dpaResetStatus == 'success') {
                 return this.checkmarkSVG;
-            } else if ( this.dpaResetStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+            } else if (this.dpaResetStatus == 'error') {
+                return this.timesSVG;
             }
         },
 
@@ -720,15 +863,15 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        toggleStickyWidget: function() {
+        toggleStickyWidget: function () {
             this.stickyWidget = !this.stickyWidget;
         },
 
-        printUsedInText: function( usedInNumber ){
-            if(usedInNumber == 0){
+        printUsedInText: function (usedInNumber) {
+            if (usedInNumber == 0) {
                 return this.genericText.sourceNotUsedYet;
             }
-            return this.genericText.usedIn + ' ' + usedInNumber + ' ' +(usedInNumber == 1 ? this.genericText.feed : this.genericText.feeds);
+            return this.genericText.usedIn + ' ' + usedInNumber + ' ' + (usedInNumber == 1 ? this.genericText.feed : this.genericText.feeds);
         },
 
         /**
@@ -736,24 +879,25 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
         */
-        deleteSource : function(sourceToDelete){
+        deleteSource: function (sourceToDelete) {
             var self = this;
-             let data = new FormData();
-            data.append( 'action', 'sbi_feed_saver_manager_delete_source' );
-            data.append( 'source_id', sourceToDelete.id);
-            data.append( 'nonce', this.nonce );
+            let data = new FormData();
+            data.append('action', 'sbi_feed_saver_manager_delete_source');
+            data.append('source_id', sourceToDelete.id);
+            data.append('username', sourceToDelete.username);
+            data.append('nonce', this.nonce);
             fetch(self.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-            .then(response => response.json())
-            .then(data => {
-                if (sourceToDelete.just_added) {
-                    window.location.href = window.location.href.replace('sbi_access_token','sbi_null');
-                }
-                self.sourcesList = data;
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (sourceToDelete.just_added) {
+                        window.location.href = window.location.href.replace('sbi_access_token', 'sbi_null');
+                    }
+                    self.sourcesList = data;
+                });
         },
 
         /**
@@ -763,8 +907,8 @@ var sbiSettings = new Vue({
          *
          * @return boolean
          */
-        checkNotEmpty : function(value){
-            return value != null && value.replace(/ /gi,'') != '';
+        checkNotEmpty: function (value) {
+            return value != null && value.replace(/ /gi, '') != '';
         },
 
         /**
@@ -772,15 +916,14 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
         */
-        activateView : function(viewName, sourcePopupType = 'creation', ajaxAction = false){
+        activateView: function (viewName, sourcePopupType = 'creation', ajaxAction = false) {
             var self = this;
-            self.viewsActive[viewName] = (self.viewsActive[viewName] == false ) ? true : false;
-            if(viewName == 'sourcePopup' && sourcePopupType == 'creationRedirect'){
-                setTimeout(function(){
+            self.viewsActive[viewName] = (self.viewsActive[viewName] == false) ? true : false;
+            if (viewName == 'sourcePopup' && sourcePopupType == 'creationRedirect') {
+                setTimeout(function () {
                     self.$refs.addSourceRef.processIFConnect()
-                },3500);
+                }, 3500);
             }
-
         },
 
         /**
@@ -788,7 +931,7 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        switchScreen: function(screenType, screenName){
+        switchScreen: function (screenType, screenName) {
             this.viewsActive[screenType] = screenName;
         },
 
@@ -799,10 +942,10 @@ var sbiSettings = new Vue({
          *
          * @return jsonObject / Boolean
          */
-        jsonParse : function(jsonString){
+        jsonParse: function (jsonString) {
             try {
                 return JSON.parse(jsonString);
-            } catch(e) {
+            } catch (e) {
                 return false;
             }
         },
@@ -813,9 +956,9 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        ajaxPost : function(data, callback){
+        ajaxPost: function (data, callback) {
             var self = this;
-            self.$http.post(self.ajaxHandler,data).then(callback);
+            self.$http.post(self.ajaxHandler, data).then(callback);
         },
 
         /**
@@ -825,17 +968,17 @@ var sbiSettings = new Vue({
          *
          * @return boolean
          */
-        hasOwnNestedProperty : function(obj,propertyPath) {
-          if (!propertyPath){return false;}var properties = propertyPath.split('.');
-          for (var i = 0; i < properties.length; i++) {
-            var prop = properties[i];
-            if (!obj || !obj.hasOwnProperty(prop)) {
-              return false;
-            } else {
-              obj = obj[prop];
+        hasOwnNestedProperty: function (obj, propertyPath) {
+            if (!propertyPath) { return false; } var properties = propertyPath.split('.');
+            for (var i = 0; i < properties.length; i++) {
+                var prop = properties[i];
+                if (!obj || !obj.hasOwnProperty(prop)) {
+                    return false;
+                } else {
+                    obj = obj[prop];
+                }
             }
-          }
-          return true;
+            return true;
         },
 
         /**
@@ -843,11 +986,11 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        toggleElementTooltip : function(tooltipText, type, align = 'center'){
+        toggleElementTooltip: function (tooltipText, type, align = 'center') {
             var self = this,
                 target = window.event.currentTarget,
                 tooltip = (target != undefined && target != null) ? document.querySelector('.sb-control-elem-tltp-content') : null;
-            if(tooltip != null && type == 'show'){
+            if (tooltip != null && type == 'show') {
                 self.tooltip.text = tooltipText;
                 var position = target.getBoundingClientRect(),
                     left = position.left + 10,
@@ -857,7 +1000,7 @@ var sbiSettings = new Vue({
                 tooltip.style.textAlign = align;
                 self.tooltip.hover = true;
             }
-            if(type == 'hide'){
+            if (type == 'hide') {
                 self.tooltip.hover = false;
             }
         },
@@ -867,7 +1010,7 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        hoverTooltip : function(type){
+        hoverTooltip: function (type) {
             this.tooltip.hover = type;
         },
 
@@ -876,7 +1019,7 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
         */
-        openDialogBox : function(type, args = []){
+        openDialogBox: function (type, args = []) {
             var self = this,
                 heading = self.dialogBoxPopupScreen[type].heading,
                 description = self.dialogBoxPopupScreen[type].description,
@@ -886,14 +1029,14 @@ var sbiSettings = new Vue({
                 case "deleteSource":
                     self.sourceToDelete = args;
                     heading = heading.replace("#", self.sourceToDelete.username);
-                break;
+                    break;
             }
             self.dialogBox = {
-                active : true,
-                type : type,
-                heading : heading,
-                description : description,
-                customButtons : customButtons
+                active: true,
+                type: type,
+                heading: heading,
+                description: description,
+                customButtons: customButtons
             };
         },
 
@@ -903,7 +1046,7 @@ var sbiSettings = new Vue({
          *
          * @since 4.0
          */
-        confirmDialogAction : function(){
+        confirmDialogAction: function () {
             var self = this;
             switch (self.dialogBox.type) {
                 case 'deleteSource':
@@ -920,7 +1063,7 @@ var sbiSettings = new Vue({
          * @param {object} source
          * @param {int} sourceIndex
          */
-        displayFeedSettings: function(source, sourceIndex) {
+        displayFeedSettings: function (source, sourceIndex) {
             this.expandedFeedID = sourceIndex + 1;
         },
 
@@ -932,47 +1075,69 @@ var sbiSettings = new Vue({
          * @param {object} source
          * @param {int} sourceIndex
          */
-        hideFeedSettings: function() {
+        hideFeedSettings: function () {
             this.expandedFeedID = null;
         },
 
-		/**
-		 * Copy text to clipboard
-		 *
-		 * @since 4.0
-		 */
-         copyToClipBoard : function(value){
-			var self = this;
-			const el = document.createElement('textarea');
-			el.className = 'sbi-fb-cp-clpboard';
-			el.value = value;
-			document.body.appendChild(el);
-			el.select();
-			document.execCommand('copy');
-			document.body.removeChild(el);
-			self.notificationElement =  {
-				type : 'success',
-				text : this.genericText.copiedClipboard,
-				shown : "shown"
-			};
-			setTimeout(function(){
-				self.notificationElement.shown =  "hidden";
-			}, 3000);
-		},
+        /**
+         * Copy text to clipboard
+         *
+         * @since 4.0
+         */
+        copyToClipBoard: function (value) {
+            var self = this;
+            const el = document.createElement('textarea');
+            el.className = 'sbi-fb-cp-clpboard';
+            el.value = value;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            self.notificationElement = {
+                type: 'success',
+                text: this.genericText.copiedClipboard,
+                shown: "shown"
+            };
+            setTimeout(function () {
+                self.notificationElement.shown = "hidden";
+            }, 3000);
+        },
 
-        escapeHTML : function(text) {
-             return text.replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;")
-                        .replace(/"/g, "&quot;")
-                        .replace(/'/g, "&#039;");
+        escapeHTML: function (text) {
+            return text.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        },
+
+        decodeHTMLEntities: function (text) {
+            if ('string' !== typeof text) {
+                return text;
+            }
+
+            const charMap = {
+                '&amp;': '&',
+                '&lt;': '<',
+                '&gt;': '>',
+                '&quot;': '"'
+            }
+
+            Object.entries(charMap).forEach(([key, value]) => {
+                text = text.replaceAll(key, value)
+            })
+
+            // remove script tags
+            text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
+            return text;
         },
         /**
          * View Source Instances
          *
          * @since 4.0
          */
-        viewSourceInstances : function(source){
+        viewSourceInstances: function (source) {
             var self = this;
             self.viewsActive.instanceSourceActive = source;
         },
@@ -984,7 +1149,7 @@ var sbiSettings = new Vue({
          *
          * @return string
          */
-        returnAccountAvatar : function(source){
+        returnAccountAvatar: function (source) {
             if (typeof source.local_avatar_url !== "undefined" && source.local_avatar_url !== '') {
                 return source.local_avatar_url;
             }
@@ -993,6 +1158,251 @@ var sbiSettings = new Vue({
             }
 
             return false;
+        },
+
+        /**
+         * Trigger & Open Personal Account Info Dialog
+         *
+         * @since 6.1
+         *
+         * @return string
+         */
+        openPersonalAccount: function (source) {
+            var self = this;
+            self.$refs.personalAccountRef.personalAccountInfo.id = source.account_id;
+            self.$refs.personalAccountRef.personalAccountInfo.username = source.username;
+            self.$refs.personalAccountRef.personalAccountInfo.bio = source?.header_data?.biography;
+            self.$refs.personalAccountRef.personalAccountPopup = true;
+            self.$refs.personalAccountRef.step = 2;
+        },
+
+        /**
+         * Cancel Personal Account
+         *
+         * @since 6.1
+        */
+        cancelPersonalAccountUpdate: function () {
+            let self = this;
+        },
+
+        successPersonalAccountUpdate: function () {
+            let self = this;
+            self.notificationElement = {
+                type: 'success',
+                text: self.genericText.personalAccountUpdated,
+                shown: "shown"
+            };
+            setTimeout(function () {
+                self.notificationElement.shown = "hidden";
+            }, 3000);
+
+            sbiSettings.$forceUpdate();
+        },
+
+        /**
+         * Loading Bar & Notification
+         *
+         * @since 6.2.0
+         */
+        processNotification: function (notificationType) {
+            var self = this,
+                notification = self.genericText.notification[notificationType];
+            self.loadingBar = false;
+            self.notificationElement = {
+                type: notification.type,
+                text: notification.text,
+                shown: "shown"
+            };
+            setTimeout(function () {
+                self.notificationElement.shown = "hidden";
+            }, 5000);
+        },
+
+        /**
+         * Upgrade Pro/Pro License
+         *
+         * @since 6.2.0
+         */
+        upgradeProProLicense: function () {
+            var self = this;
+
+            self.hasError = false;
+            self.loading = true;
+            self.pressedBtnName = 'sbi-upgrade';
+            self.licenseBtnClicked = true;
+            self.upgradeNewVersion = false;
+            self.upgradeNewVersionUrl = false;
+
+            let data = new FormData();
+            data.append('action', 'sbi_maybe_upgrade_redirect');
+            data.append('license_key', self.licenseKey);
+            data.append('nonce', self.nonce);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    self.pressedBtnName = '';
+                    self.loading = false;
+                    self.licenseBtnClicked = false;
+
+                    if (data.success === false) {
+                        self.licenseStatus = 'invalid';
+                        self.hasError = true;
+
+                        if (typeof data.data !== 'undefined') {
+                            this.licenseErrorMsg = data.data.message
+                        }
+                        return;
+                    }
+                    if (data.success === true) {
+                        if (data.data.same_version === true) {
+                            window.location.href = data.data.url
+                        } else {
+                            self.upgradeNewVersion = true;
+                            self.upgradeNewVersionUrl = data.data.url;
+                            self.upgradeRemoteVersion = data.data.remote_version;
+                        }
+                    }
+                    return;
+                });
+
+        },
+
+        cancelUpgrade: function () {
+            this.upgradeNewVersion = false;
+        },
+
+        getUpgradedProTier: function () {
+            if (this.licenseUpgradedInfo == undefined || this.licenseUpgradedInfo['item_name'] === undefined) {
+                return false;
+            }
+            let licenseType = this.licenseUpgradedInfo['item_name'].toLowerCase(),
+                removeString = [
+                    'instagram',
+                    'feed',
+                    'pro',
+                    ' '
+                ];
+            removeString.forEach(str => {
+                licenseType = licenseType.replace(str, '')
+            });
+            this.licenseUpgradedInfoTierName = licenseType;
+        },
+
+        installActivateWPCodePlugin: function () {
+            let self = this,
+                ispluginInstalled = self.wpCodeInstalled,
+                pluginDownloadPath = 'https://downloads.wordpress.org/plugin/insert-headers-and-footers.zip',
+                pluginFilePath = self.wpCodeProInstalled ? 'wpcode-premium/wpcode.php' : 'insert-headers-and-footers/ihaf.php';
+
+            self.loading = true;
+            self.pressedBtnName = 'sbi';
+
+            let data = new FormData();
+            data.append('action', !ispluginInstalled ? 'sbi_install_addon' : 'sbi_activate_addon');
+            data.append('nonce', self.nonce);
+            data.append('type', 'plugin');
+            data.append('plugin', !ispluginInstalled ? pluginDownloadPath : pluginFilePath);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    self.loading = false;
+                    self.pressedBtnName = null;
+                    if (data.success === true) {
+                        setTimeout(function () {
+                            window.location.href = self.adminUrl + 'admin.php?page=sbi-settings&view=snippets';
+                        }, 1000);
+                    } else {
+                        console.log(data);
+                    }
+                });
+        },
+
+        goToWPCodeDocumentation: function () {
+            window.open('https://smashballoon.com/doc/how-does-the-wpcode-integration-work/?utm_content=learn-more', '_blank', 'noopener');
+        },
+
+        editWPCodeSnippet: function (index) {
+            let self = this,
+                snippet = self.wpCodeSnippets[index];
+
+            window.open(this.decodeHTMLEntities(snippet.install), '_blank');
+        },
+
+        deprecateCustomSnippets: function () {
+            let self = this,
+                deprecateCustomSnippets = self.model.feeds.customCSS !== '' || self.model.feeds.customJS !== '';
+
+            return deprecateCustomSnippets;
+        },
+
+        installMigrateSnippets: function () {
+            let self = this,
+                ispluginInstalled = self.wpCodeInstalled,
+                isPluginActive = self.wpCodeActive,
+                pluginDownloadPath = 'https://downloads.wordpress.org/plugin/insert-headers-and-footers.zip',
+                pluginFilePath = self.wpCodeProInstalled ? 'wpcode-premium/wpcode.php' : 'insert-headers-and-footers/ihaf.php';
+
+            self.loading = true;
+            self.pressedBtnName = 'sbi';
+
+            // if plugin is installed and active, migrate snippets
+            if (ispluginInstalled && isPluginActive) {
+                self.migrateSnippets();
+                return;
+            }
+
+            let data = new FormData();
+            data.append('action', !ispluginInstalled ? 'sbi_install_addon' : 'sbi_activate_addon');
+            data.append('nonce', self.nonce);
+            data.append('type', 'plugin');
+            data.append('plugin', !ispluginInstalled ? pluginDownloadPath : pluginFilePath);
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success === true) {
+                        self.migrateSnippets();
+                    } else {
+                        console.log(data);
+                    }
+                });
+        },
+
+        migrateSnippets: function () {
+            let self = this;
+
+            let data = new FormData();
+            data.append('action', 'sbi_migrate_snippets');
+            data.append('nonce', this.nonce);
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    self.loading = false;
+                    self.pressedBtnName = null;
+                    if (data.success === true) {
+                        setTimeout(function () {
+                            window.location.href = self.wpCodePageUrl
+                        }, 1000);
+                    } else {
+                        console.log(data);
+                    }
+                });
         },
 
     }

@@ -16,7 +16,7 @@ class HelpPage extends BaseSettingPage {
 	protected $template_file = 'settings.index';
 	protected $has_assets = true;
 	protected $menu_position = 3;
-	protected $menu_position_free_version = 2;
+	protected $menu_position_free_version = 3;
 
 	/**
 	 * @var Feed_Builder
@@ -199,6 +199,9 @@ class HelpPage extends BaseSettingPage {
 		$output .= '<br />';
 		$output .= 'Enqueue in Head: ';
 		$output .= isset( $sby_settings['enqueue_js_in_head'] ) && $sby_settings['enqueue_js_in_head'] === true ? 'Enabled' : 'Disabled';
+		$output .= '<br />';
+		$output .= 'Disable WP Posts: ';
+		$output .= !empty($sby_settings['disable_wp_posts']) ? 'True' : 'False';;
 		$output .= '<br />';
 		$output .= 'Enqueue in Shortcode: ';
 		$output .= isset( $sby_settings['enqueue_css_in_shortcode'] ) && $sby_settings['enqueue_css_in_shortcode'] === true ? 'Enabled' : 'Disabled';

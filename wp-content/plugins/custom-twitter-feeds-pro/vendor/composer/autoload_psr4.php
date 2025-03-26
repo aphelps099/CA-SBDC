@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'TwitterFeed\\' => array($baseDir . '/inc'),
+    'Smashballoon\\TwitterFeed\\Vendor\\Smashballoon\\Framework\\' => array($vendorDir . '/smashballoon/framework'),
 );

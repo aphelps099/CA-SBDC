@@ -27,7 +27,8 @@ var cffStorage = window.localStorage;
             addNewSource : {
                 typeSelected        : 'page',
                 manualSourceID      : null,
-                manualSourceToken   : null
+                manualSourceToken   : null,
+			    eventsManualSourceICal 	: null
             },
             selectedSourcesToConnect : [],
             loadingAjax : false
@@ -76,6 +77,7 @@ var cffStorage = window.localStorage;
             };
             if(isEventSource){
                 manualSourceData.privilege = 'events';
+                manualSourceData.iCalUrl = self.addNewSource.eventsManualSourceICal;
             }
             var alerts = document.querySelectorAll(".sb-alerts-wrap");
             if (alerts.length) {
@@ -98,8 +100,8 @@ var cffStorage = window.localStorage;
 
                     } else {
                         self.addNewSource = {typeSelected : 'page', manualSourceID : null,manualSourceToken : null};
-                        self.sourcesList = data;
-                        self.$parent.sourcesList = data;
+                        self.sourcesList = data?.sourcesList || [];
+                        self.$parent.sourcesList = data?.sourcesList || [];
                         self.$parent.viewsActive.sourcePopup = false;
                         if(self.$parent.customizerFeedData){
                             self.$parent.activateView('sourcePopup', 'customizer');
@@ -148,12 +150,20 @@ var cffStorage = window.localStorage;
                     });
                 }else{
                     self.newSourceData.pages.forEach(function(singleSource){
+                        if(self.checkSourceAllLocation(self.newSourceData.pages, singleSource) && singleSource.location === undefined){
+                            singleSource.location = 'All Locations';
+                        }
                         self.returnedApiSourcesList.push(self.createSourceObject('page',singleSource));
                     });
                 }
             }
         },
 
+        checkSourceAllLocation : function( pages, source ){
+            const sourcesList = pages.filter( singleSources => singleSources.name === source.name  );
+            return sourcesList.length > 1;
+
+        },
         /**
          * Create Single Source Object
          *
@@ -168,6 +178,7 @@ var cffStorage = window.localStorage;
                 account_type : type,
                 info : (type == 'group' ? JSON.stringify(object) : '{}'),
                 admin : (type == 'group' ? object.admin  : ''),
+                location : object?.location,
                 username : object.name
             }
         },
@@ -229,17 +240,67 @@ var cffStorage = window.localStorage;
          *
          * @since 4.0
          */
-         processFBConnect : function(){
+        processFBConnect : function(){
             var self = this,
-            fbConnectURL = self.addNewSource.typeSelected == 'page' ? self.sourceConnectionURLs.page : self.sourceConnectionURLs.group,
+            accountType = self.addNewSource.typeSelected,
+            params = accountType === 'page' ? self.sourceConnectionURLs.page : self.sourceConnectionURLs.group,
+            ifConnectURL = params.connect,
             screenType = (self.$parent.customizerFeedData != undefined) ? 'customizer'  : 'creationProcess',
             appendURL = ( screenType == 'customizer' ) ? self.sourceConnectionURLs.stateURL + ',feed_id='+ self.$parent.customizerFeedData.feed_info.id : self.sourceConnectionURLs.stateURL;
             if(screenType != 'customizer'){
                 self.createLocalStorage(screenType);
             }
-            var finalUrl = fbConnectURL + "{'{url=" + appendURL + "}'}";
-            window.location = finalUrl;
 
+            if( self.$parent.isSetupPage === 'true'){
+                appendURL = appendURL+ ',is_setup_page=yes';
+            }
+
+            const urlParams = {
+                'wordpress_user' : params.wordpress_user,
+                'v' : params.v,
+                'vn' : params.vn,
+                'cff_con' : params.cff_con,
+                'has_group' : params.has_group,
+                'state' : "{'{url=" + appendURL + "}'}"
+            };
+
+            if(params.sw_feed) {
+                urlParams['sw-feed'] = 'true';
+            }
+
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = ifConnectURL + (params.has_group === true ? '?has_group=true' : '');
+
+            for (const param in urlParams) {
+                if (urlParams.hasOwnProperty(param)) {
+                    let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = param;
+                    input.value = urlParams[param];
+                    form.appendChild(input);
+                }
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        },
+
+        submitConnectPostForm : function ( postData, connectURL  ) {
+            const formDOM = document.createElement("form");
+
+            for (const [key, value] of Object.entries(postData)) {
+                var elemDOM = document.createElement("input");
+                elemDOM.name = key;
+                elemDOM.value = value
+                formDOM.appendChild(elemDOM)
+            }
+
+            formDOM.method = "POST";
+            formDOM.action = connectURL;
+            document.body.appendChild(formDOM);
+            console.log(connectURL)
+            formDOM.submit()
         },
 
         /**

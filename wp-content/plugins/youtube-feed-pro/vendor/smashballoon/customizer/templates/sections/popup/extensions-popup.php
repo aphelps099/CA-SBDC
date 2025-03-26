@@ -37,10 +37,13 @@
                     </div>
                 </div>
                 <div class="sbc-extpp-btns sbc-fs">
-                    <a class="sbc-extpp-get-btn sbc-btn-orange" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank" class="sbc-fs-link">
-                        {{ sbyLicenseInactiveState ? genericText.activateLicense : sbyLicenseNoticeActive ? genericText.renew : genericText.upgrade}}
+                    <a class="sbc-extpp-get-btn sbc-btn sbc-btn-green" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank">
+                        <div class="sbc-cta-icon" v-if="!sbyIsPro" v-html="svgIcons['whiteBalloon']"></div>
+                        {{ sbyIsPro ? (sbyLicenseInactiveState ? genericText.activateLicense : sbyLicenseNoticeActive ? genericText.renew : genericText.upgrade) : genericText.upgrade }}
                     </a>
-                    <a class="sbc-extpp-get-btn sbc-btn-grey" :href="extensionsPopup[viewsActive.extensionsPopupElement].demoUrl" target="_blank" class="sbc-fs-link">{{genericText.viewDemo}}</a>
+                    <a class="sbc-btn-grey sbc-btn" href="https://smashballoon.com/youtube-feed/?utm_campaign=youtube-free&utm_source=feed-type&utm_medium=playlist&utm_content=LearnMore" target="_blank">
+                        {{ genericText.learnMore }}
+                    </a>
                 </div>
             </div>
         </div>

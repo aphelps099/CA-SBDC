@@ -149,6 +149,23 @@ class SBY_API_Connect_Pro extends SBY_API_Connect
 			$ids = isset( $params['ids'] ) ? $params['ids'] : [];
 			$part = 'id,statistics,contentDetails';
 			$url = 'https://www.googleapis.com/youtube/v3/videos?part='.$part.'&id='.$ids.'&maxResults='.$num.'&' . $access_credentials;
+		} elseif ( $endpoint_slug === 'comments' ) {
+			$part = 'snippet,replies';
+			$video_id = isset( $params['video_id'] ) ? $params['video_id'] : [];
+			$url = 'https://www.googleapis.com/youtube/v3/commentThreads?part='. $part .'&videoId='.$video_id.'&order=relevance&maxResults='.$num.'&' . $access_credentials;
+		} elseif ( $endpoint_slug === 'livestream' ) {
+			$page_token_param = '';
+			$part = 'id';
+			$channel_id = isset( $params['channel_id'] ) ? $params['channel_id'] : '';
+			$event_type = isset( $params['event_type'] ) ? $params['event_type'] : '';
+			$page_token = isset( $params['page_token'] ) ? $params['page_token'] : '';
+
+			if ( !empty($page_token) ) {
+				$page_token_param = '&pageToken=' . $page_token;
+			}
+
+			$url = 'https://www.googleapis.com/youtube/v3/search?part='. $part .'&channelId='.$channel_id .'&eventType='.$event_type .'&order=date&maxResults=50&type=video&' . $access_credentials . $page_token_param;
+
 		} else {
 			$channel_param = 'mine=true';
 			if ( isset( $params['username'] ) ) {

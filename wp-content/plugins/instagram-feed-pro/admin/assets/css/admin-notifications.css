@@ -197,6 +197,10 @@
   cursor: default;
 }
 
+#sbi-notifications .navigation .disabled img {
+  opacity: 0.4;
+}
+
 @media screen and (max-width: 768px) {
   #sbi-notifications {
     padding: 15px 15px 15px 72px;

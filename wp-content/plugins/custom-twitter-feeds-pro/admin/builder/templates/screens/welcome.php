@@ -1,4 +1,4 @@
-<div class="ctf-fb-full-wrapper ctf-fb-fs" v-if="viewsActive.pageScreen == 'welcome' && !iscustomizerScreen">
+<div class="ctf-fb-full-wrapper ctf-fb-fs" v-if="viewsActive.pageScreen == 'welcome' && !iscustomizerScreen && activationPageDismissed">
     <?php
         /**
          * CFF Admin Notices

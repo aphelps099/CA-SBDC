@@ -42,9 +42,12 @@ sbiBuilder = new Vue({
 		ajaxHandler : sbi_builder.ajax_handler,
 		adminPostURL : sbi_builder.adminPostURL,
 		widgetsPageURL : sbi_builder.widgetsPageURL,
+		themeSupportsWidgets : sbi_builder.themeSupportsWidgets,
 		translatedText : sbi_builder.translatedText,
 		socialShareLink : sbi_builder.socialShareLink,
-
+		shouldDisableProFeatures : sbi_builder.shouldDisableProFeatures,
+		legacyCSSEnabled : sbi_builder.legacyCSSEnabled,
+		recheckLicenseStatus: null,
 		welcomeScreen	 : sbi_builder.welcomeScreen,
 		allFeedsScreen 	 : sbi_builder.allFeedsScreen,
 		extensionsPopup  : sbi_builder.extensionsPopup,
@@ -55,14 +58,20 @@ sbiBuilder = new Vue({
 		customizeScreensText 	: sbi_builder.customizeScreens,
 		dialogBoxPopupScreen   	: sbi_builder.dialogBoxPopupScreen,
 		selectFeedTypeScreen 	: sbi_builder.selectFeedTypeScreen,
+		selectFeedTemplateScreen : sbi_builder.selectFeedTemplateScreen,
+		selectFeedThemeScreen 	: sbi_builder.selectFeedThemeScreen,
 		addFeaturedPostScreen 	: sbi_builder.addFeaturedPostScreen,
 		addFeaturedAlbumScreen 	: sbi_builder.addFeaturedAlbumScreen,
 		addVideosPostScreen 	: sbi_builder.addVideosPostScreen,
 		dummyLightBoxScreen 	: false,
+		licenseTierFeatures 	: sbi_builder.licenseTierFeatures,
 
-		svgIcons 	: sbi_builder.svgIcons,
+		svgIcons: sbi_svgs,
 		feedsList 	: sbi_builder.feeds,
 		feedTypes 	: sbi_builder.feedTypes,
+		feedTemplates : sbi_builder.feedTemplates,
+		feedThemes 	: sbi_builder.feedThemes,
+		previewTheme: '',
 		socialInfo 	: sbi_builder.socialInfo,
 		sourcesList : sbi_builder.sources,
 		links : sbi_builder.links,
@@ -72,6 +81,9 @@ sbiBuilder = new Vue({
 
 		//Selected Feed type => User Hashtag Tagged
 		selectedFeed : ['user'],
+		// Selected Feed Template
+		selectedFeedTemplate : 'ft_default',
+		selectedFeedTheme : 'default_theme',
 		selectedFeedPopup : [],
 
 		selectedSources : [],
@@ -84,7 +96,8 @@ sbiBuilder = new Vue({
 		selectedHastagsPopup : [],
 		hashtagInputText : '',
 		hashtagOrderBy : 'recent',
-
+		licenseKey : sbi_builder.licenseKey,
+		licenseBtnClicked : false,
 		viewsActive : {
 			//Screens where the footer widget is disabled
 			footerDiabledScreens : [
@@ -93,19 +106,25 @@ sbiBuilder = new Vue({
 			],
 			footerWidget : false,
 
+			feedthemePopup: false,
+			feedThemeElement : null,
+			feedThemeDropdown: false,
+
 			// welcome, selectFeed
 			pageScreen : 'welcome',
 
-			// feedsType, selectSource, feedsTypeGetProcess
+			// feedsType, selectSource, selectTemplate, feedsTypeGetProcess
 			selectedFeedSection : 'feedsType',
 		    manualSourcePopupInit : sbi_builder.manualSourcePopupInit,
 			sourcePopup : false,
 			feedtypesPopup : false,
+			feedtemplatesPopup : false,
 			feedtypesCustomizerPopup : false,
 			sourcesListPopup : false,
 			// step_1 [Add New Source] , step_2 [Connect to a user pages/groups], step_3 [Add Manually]
 			sourcePopupScreen : 'redirect_1',
-
+			whyRenewLicense : false,
+			licenseLearnMore : false,
 			// creation or customizer
 			sourcePopupType : 'creation',
 			extensionsPopupElement : false,
@@ -190,9 +209,12 @@ sbiBuilder = new Vue({
 		iscustomizerScreen  	: (sbi_builder.customizerFeedData != undefined && sbi_builder.customizerFeedData != false),
 
 		customizerSidebarBuilder : sbi_builder.customizerSidebarBuilder,
+		sbiLicenseNoticeActive: (sbi_builder.sbiLicenseNoticeActive === '1'),
+		sbiLicenseInactiveState: (sbi_builder.sbiLicenseInactiveState === '1'),
 		customizerScreens : {
 			activeTab 		: 'customize',
 			printedType 	: {},
+			printedTemplate : {},
 			activeSection 	: null,
 			previewScreen 	: 'desktop',
 			sourceExpanded 	: null,
@@ -201,7 +223,8 @@ sbiBuilder = new Vue({
 			activeSectionData 	: null,
 			parentActiveSection : null, //For nested Setions
 			parentActiveSectionData : null, //For nested Setions
-			activeColorPicker : null
+			activeColorPicker : null,
+			printedTheme: {},
 		},
 		previewScreens: [
 			'desktop',
@@ -276,7 +299,10 @@ sbiBuilder = new Vue({
 		moderationShoppableModeOffset : 0,
 		moderationShoppableModeOffsetLast : 0,
     	moderationShoppableShowSelected : 0,
-    moderationShoppableisLoading : false
+    	moderationShoppableisLoading : false,
+
+		sw_feed: false,
+		sw_feed_id: false
 	},
 	watch : {
 		feedPreviewOutput : function(){
@@ -314,9 +340,13 @@ sbiBuilder = new Vue({
 	},
 	created: function(){
 		var self = this;
+		const urlParams = new URLSearchParams(window.location.search);
+		// get the socail wall link feed url params
+		self.sw_feed = urlParams.get('sw-feed');
+		self.sw_feed_id = urlParams.get('sw-feed-id');
 		this.$parent = self;
 		if( self.customizerFeedData ){
-			self.template = String("<div>"+self.template+"</div>");
+			self.template = String("<div>" + this.decodeVueHTML(self.template) + "</div>");
 			self.setShortcodeGlobalSettings(true);
 
 			self.feedSettingsDomOptions =  self.jsonParse(jQuery("html").find("#sb_instagram").attr('data-options'));
@@ -359,11 +389,56 @@ sbiBuilder = new Vue({
         },350);
 	},
 	methods: {
+		hasFeature : function ( feature_name ) {
+			var self = this;
+			return self.licenseTierFeatures.includes( feature_name );
+		},
+
 		updateColorValue : function(id){
 			var self = this;
 			self.customizerFeedData.settings[id] = (self.customizerFeedData.settings[id].a == 1) ? self.customizerFeedData.settings[id].hex : self.customizerFeedData.settings[id].hex8;
 		},
 
+		recheckLicense: function( optionName = null ) {
+			var self = this;
+			var licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+            self.recheckLicenseStatus = 'loading';
+			recheckLicenseData = {
+				action : 'sbi_recheck_connection',
+				license_key : self.licenseKey,
+			};
+			self.ajaxPost(recheckLicenseData, function(_ref){
+				var data = _ref.data;
+				if ( data.success == true ) {
+                    if ( data.data.license == 'valid' ) {
+                        self.recheckLicenseStatus = 'success';
+                    }
+                    if ( data.data.license != 'valid' ) {
+                        self.recheckLicenseStatus = 'error';
+                    }
+
+                    setTimeout(function() {
+                        self.recheckLicenseStatus = null;
+						if ( data.data.license == 'valid' ) {
+							licenseNoticeWrapper.remove();
+						}
+                    }.bind(this), 3000);
+                }
+                return;
+			});
+        },
+        recheckBtnText: function( btnName ) {
+			var self = this;
+            if ( self.recheckLicenseStatus == null ) {
+                return self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'loading' ) {
+                return self.svgIcons.loaderSVG + ' ' + self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'success' ) {
+                return self.svgIcons.checkmarkSVG + ' ' + self.genericText.licenseValid;
+            } else if ( self.recheckLicenseStatus == 'error' ) {
+                return self.svgIcons.times2SVG + ' ' + self.genericText.licenseExpired;
+            }
+        },
 
 		/**
 		 * Leave Window Handler
@@ -382,12 +457,49 @@ sbiBuilder = new Vue({
 		},
 
 		/**
+		 * Activate license key from license error post grace period header notice
+		 *
+		 * @since 6.2.0
+		 */
+		 activateLicense: function() {
+			var self = this;
+
+			self.licenseBtnClicked = true;
+
+			if ( self.licenseKey == null ) {
+				self.licenseBtnClicked = false;
+				return;
+			}
+			let licenseData = {
+				action : 'sbi_license_activation',
+				nonce : sbi_admin.nonce,
+				license_key: self.licenseKey
+			};
+			self.ajaxPost(licenseData, function(_ref){
+				self.licenseBtnClicked = false;
+				var data = _ref.data;
+
+				if(data && data.success == false) {
+					self.processNotification("licenseError");
+					return;
+				}
+				if( data !== false ){
+					self.processNotification("licenseActivated");
+				}
+			})
+		},
+
+		/**
 		 * Show & Hide View
 		 *
 		 * @since 6.0
 		 */
 		activateView : function(viewName, sourcePopupType = 'creation', ajaxAction = false){
 			var self = this;
+			if (viewName === 'extensionsPopupElement' && self.customizerFeedData !== undefined && (self.viewsActive.extensionsPopupElement == 'tagged' || self.viewsActive.extensionsPopupElement == 'hashtag' || self.viewsActive.extensionsPopupElement == 'socialwall')) {
+				self.activateView('feedtypesPopup');
+			}
+
 			self.viewsActive[viewName] = (self.viewsActive[viewName] == false ) ? true : false;
 			if(viewName === 'sourcePopup'){
 				self.viewsActive.sourcePopupType = sourcePopupType;
@@ -409,8 +521,8 @@ sbiBuilder = new Vue({
 			if(viewName === 'feedtypesPopup'){
 				self.viewsActive.feedTypeElement = null;
 			}
-			if(viewName === 'extensionsPopupElement' && self.customizerFeedData !== undefined){
-				//self.activateView('feedtypesPopup');
+			if(viewName === 'feedtemplatesPopup'){
+				self.viewsActive.feedTemplatesElement = null;
 			}
 			if(viewName == 'editName'){
 				document.getElementById("sbi-csz-hd-input").focus();
@@ -429,6 +541,14 @@ sbiBuilder = new Vue({
 				self.customizerControlAjaxAction('feedFlyPreview');
 			}
 
+			if(viewName === 'feedthemePopup') {
+				if ( self.shouldDisableProFeatures || ! self.hasFeature('feed_themes') ) {
+					self.viewsActive.extensionsPopupElement = 'feedthemeTemplate';
+				} else {
+					self.viewsActive.feedThemeElement = null;
+					self.viewsActive.feedThemeDropdown = self.viewsActive.feedThemeDropdown ? false : true;
+				}
+			}
 
 			sbiBuilder.$forceUpdate();
 			self.movePopUp();
@@ -492,7 +612,7 @@ sbiBuilder = new Vue({
 		 * @return boolean
 		 */
 		checkNotEmpty : function(value){
-			return value != null && value.replace(/ /gi,'') != '';
+			return value != null && value != undefined && value.replace(/ /gi,'') != '';
 		},
 
 		/**
@@ -544,8 +664,8 @@ sbiBuilder = new Vue({
 		 */
 		ajaxPost : function(data, callback){
 			var self = this;
-      data['nonce'] = this.nonce;
-      self.$http.post(self.ajaxHandler,data).then(callback);
+		    data['nonce'] = this.nonce;
+		    self.$http.post(self.ajaxHandler,data).then(callback);
 		},
 
 		/**
@@ -606,7 +726,12 @@ sbiBuilder = new Vue({
 		 */
 		chooseFeedType : function(feedTypeEl, iscustomizerPopup = false){
 			var self = this;
+			let isFeedAvailable = self.hasFeature(feedTypeEl.type + '_feeds');
 			if(feedTypeEl.type != 'socialwall'){
+				if ( (self.shouldDisableProFeatures || !isFeedAvailable) && feedTypeEl.type !== 'user' ) {
+					self.viewsActive.extensionsPopupElement = feedTypeEl.type;
+					return;
+				}
 				if(self.selectedFeed.includes(feedTypeEl.type)){
 					if(self.selectedFeed.length != 1){
 						self.selectedFeed.splice(self.selectedFeed.indexOf(feedTypeEl.type), 1);
@@ -620,6 +745,45 @@ sbiBuilder = new Vue({
 			sbiBuilder.$forceUpdate();
 		},
 
+		chooseFeedTemplate: function( feedTemplate, iscustomizerPopup = false ) {
+			var self = this;
+			self.selectedFeedTemplate = feedTemplate.type;
+			if( iscustomizerPopup ){
+				if ( self.shouldDisableProFeatures || ! self.hasFeature('feed_templates') ) {
+					self.activateView('feedtemplatesPopup');
+					self.viewsActive.extensionsPopupElement = 'feedTemplate';
+					return;
+				}
+				self.viewsActive.feedTemplateElement = feedTemplate.type;
+			}
+			sbiBuilder.$forceUpdate();
+		},
+
+		chooseFeedTheme: function( feedTheme, iscustomizerPopup = false ) {
+			var self = this;
+			self.selectedFeedTheme = feedTheme.type;
+			if( iscustomizerPopup ){
+				self.viewsActive.feedThemeElement = feedTheme.type;
+			}
+			if ( ( feedTheme.type == 'showcase_carousel' || feedTheme.type == 'simple_carousel' ) && !self.activeExtensions.carousel ) {
+				self.viewsActive.extensionsPopupElement = 'carousel';
+				self.selectedFeedTemplate = 'default';
+				self.viewsActive.feedTemplateElement = null;
+				self.viewsActive.feedtemplatesPopup = null;
+				self.viewsActive.feedthemePopup = null;
+			}
+			sbiBuilder.$forceUpdate();
+		},
+
+		/**
+		 * Get Feed Template Element Title
+		 *
+		 * @since 4.2.0
+		 */
+		getFeedTemplateElTitle : function( $el, isCustomizer = false ) {
+			return $el.title;
+		},
+
 		/**
 		 * Choose Feed Type
 		 *
@@ -627,11 +791,29 @@ sbiBuilder = new Vue({
 		 */
 		selectFeedTypePopup : function( feedTypeEl ){
 			var self = this;
-			if(feedTypeEl.type != 'socialwall'){
-				if(!self.selectedFeedPopup.includes(feedTypeEl.type) && !self.selectedFeed.includes(feedTypeEl.type)){
-					self.selectedFeedPopup.push(feedTypeEl.type);
-				}else{
-					self.selectedFeedPopup.splice(self.selectedFeedPopup.indexOf(feedTypeEl.type), 1);
+			let type = feedTypeEl.type,
+				isFeedAvailable = self.hasFeature(type + '_feeds');
+
+			if(type != 'socialwall'){
+				if ( (self.shouldDisableProFeatures || !isFeedAvailable) && type !== 'user' ) {
+					self.viewsActive.extensionsPopupElement = type;
+					if (self.customizerFeedData !== undefined) {
+						self.viewsActive['feedtypesPopup'] = false;
+					}
+					return;
+				}
+
+				if(!self.selectedFeedPopup.includes(type) && !self.selectedFeed.includes(type)){
+					self.selectedFeedPopup.push(type);
+				}else if(self.selectedFeedPopup.includes(type) && self.selectedFeedPopup.length != 1){
+					self.selectedFeedPopup.splice(self.selectedFeedPopup.indexOf(type), 1);
+				}
+			}
+
+			if(type == 'socialwall'){
+				self.viewsActive.extensionsPopupElement = 'socialwall';
+				if (self.customizerFeedData !== undefined) {
+					self.viewsActive['feedtypesPopup'] = false;
 				}
 			}
 		},
@@ -656,7 +838,13 @@ sbiBuilder = new Vue({
 		 */
 		addFeedTypePopup : function(){
 			var self = this;
-			self.selectedFeed = self.selectedFeedPopup.concat(self.selectedFeed);
+			let selectedFeed = self.selectedFeedPopup.concat(self.selectedFeed);
+				selectedFeed = selectedFeed.filter(function(item, pos) {
+					return selectedFeed.indexOf(item) == pos;
+				});
+			self.selectedFeed = selectedFeed;
+			self.selectedFeedPopup = self.selectedFeed;
+
 			self.activateView('feedtypesPopup');
 			if( self.customizerFeedData ){
 				self.activateView('feedtypesCustomizerPopup');
@@ -864,6 +1052,7 @@ sbiBuilder = new Vue({
 		removeFeedTypeSource : function(feedTypeID){
 			var self = this;
 			self.selectedFeed.splice(self.selectedFeed.indexOf(feedTypeID), 1);
+			self.selectedFeedPopup.splice(self.selectedFeedPopup.indexOf(feedTypeID), 1);
 			if( feedTypeID == 'user' ){
 				self.selectedSourcesUser = [];
 			}
@@ -921,6 +1110,12 @@ sbiBuilder = new Vue({
 				case 'selectSource':
 					checkBtnNext = self.creationProcessCheckSourcesHashtags();
 				break;
+				case 'selectTheme':
+					checkBtnNext = self.selectedSources.length > 0 || self.creationProcessCheckSourcesHashtags() ? true : false;
+				break;
+				case 'selectTemplate':
+					checkBtnNext = self.selectedSources.length > 0 || self.creationProcessCheckSourcesHashtags() ? true : false;
+				break;
 				case 'feedsTypeGetProcess':
 
 				break;
@@ -930,6 +1125,7 @@ sbiBuilder = new Vue({
 		//Next Click in the Creation Process
 		creationProcessNext : function(){
 			var self = this;
+
 			switch (self.viewsActive.selectedFeedSection) {
 				case 'feedsType':
 					if(self.selectedFeed !== null){
@@ -941,15 +1137,44 @@ sbiBuilder = new Vue({
 					}
 				break;
 				case 'selectSource':
-					self.hashtagWriteDetect(true);
+					if(self.selectedSources.length > 0 || self.creationProcessCheckSourcesHashtags() ){
+						if( self.checkPeronalAccount() ){
+							if ( self.shouldDisableProFeatures || ! self.hasFeature('feed_templates') ) {
+								self.isCreateProcessGood = true;
+							} else {
+								if ( self.hasFeature('feed_themes') ) {
+									self.switchScreen('selectedFeedSection', 'selectTheme');
+								} else {
+									self.switchScreen('selectedFeedSection', 'selectTemplate');
+								}
+							}
+						}else{
+							self.$refs.personalAccountRef.personalAccountPopup = true;
+						}
+					}
+				break;
+				case 'selectTheme':
+					if(self.selectedSources.length > 0 || self.creationProcessCheckSourcesHashtags()){
+						self.switchScreen('selectedFeedSection', 'selectTemplate');
+					} else {
+						self.processNotification("selectSourceError");
+					}
+				break;
+				case 'selectTemplate':
 					self.isCreateProcessGood = self.creationProcessCheckSourcesHashtags();
+					if(self.selectedSources.length > 0){
+						self.switchScreen('selectedFeedSection', 'feedsTypeGetProcess');
+						if(!self.extraProcessFeedsTypes.includes(self.selectedFeed))
+							self.isCreateProcessGood = true;
+					}
+					self.hashtagWriteDetect(true);
 				break;
 				case 'feedsTypeGetProcess':
 				break;
 			}
-			if(self.isCreateProcessGood)
+			if(self.isCreateProcessGood){
 				self.submitNewFeed();
-
+			}
 		},
 		changeVideoSource : function( videoSource ){
 			this.videosTypeInfo.type = videoSource;
@@ -1018,13 +1243,19 @@ sbiBuilder = new Vue({
 					wrapElem.classList.add('sb-onboarding-active');
 
 					var step1El = document.querySelectorAll(".sbi-csz-header")[0];
-					step1El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-1"));
+					if( step1El !== undefined ){
+				    	step1El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-1"));
+                    }
 
 					var step2El = document.querySelectorAll(".sb-customizer-sidebar-sec1")[0];
-					step2El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-2"));
+					if( step2El !== undefined ){
+                        step2El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-2"));
+                    }
 
 					var step3El = document.querySelectorAll(".sb-customizer-sidebar-sec1")[0];
-					step3El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-3"));
+					if( step3El !== undefined ){
+                        step3El.appendChild(document.getElementById("sb-onboarding-tooltip-customizer-3"));
+                    }
 
 					self.onboardingHideShow();
 				}
@@ -1034,10 +1265,14 @@ sbiBuilder = new Vue({
 						wrapElem.classList.add('sb-onboarding-active');
 
 						var step1El = document.querySelectorAll(".sbi-fb-wlcm-header .sb-positioning-wrap")[0];
-						step1El.appendChild(document.getElementById("sb-onboarding-tooltip-single-1"));
+					    if( step1El !== undefined ){
+                            step1El.appendChild(document.getElementById("sb-onboarding-tooltip-single-1"));
+                        }
 
 						var step2El = document.querySelectorAll(".sbi-table-wrap")[0];
-						step2El.appendChild(document.getElementById("sb-onboarding-tooltip-single-2"));
+					    if( step2El !== undefined ){
+                            step2El.appendChild(document.getElementById("sb-onboarding-tooltip-single-2"));
+                        }
 						self.onboardingHideShow();
 					}
 				} else {
@@ -1045,13 +1280,19 @@ sbiBuilder = new Vue({
 						wrapElem.classList.add('sb-onboarding-active');
 
 						var step1El = document.querySelectorAll(".sbi-fb-wlcm-header .sb-positioning-wrap")[0];
-						step1El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-1"));
+					    if( step1El !== undefined ){
+                            step1El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-1"));
+                        }
 
 						var step2El = document.querySelectorAll(".sbi-fb-lgc-ctn")[0];
-						step2El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-2"));
+					    if( step2El !== undefined ){
+                            step2El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-2"));
+                        }
 
 						var step3El = document.querySelectorAll(".sbi-legacy-table-wrap")[0];
-						step3El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-3"));
+					    if( step3El !== undefined ){
+                            step3El.appendChild(document.getElementById("sb-onboarding-tooltip-multiple-3"));
+                        }
 
 						self.activateView('legacyFeedsShown');
 						self.onboardingHideShow();
@@ -1069,6 +1310,12 @@ sbiBuilder = new Vue({
 					break;
 				case 'selectSource':
 					self.switchScreen('selectedFeedSection', 'feedsType');
+					break;
+				case 'selectTheme':
+					self.switchScreen('selectedFeedSection', 'selectSource');
+					break;
+				case 'selectTemplate':
+					self.switchScreen('selectedFeedSection', 'selectTheme');
 					break;
 				case 'feedsTypeGetProcess':
 					self.switchScreen('selectedFeedSection', 'selectSource');
@@ -1158,6 +1405,8 @@ sbiBuilder = new Vue({
 				new_insert : 'true',
 				sourcename : self.getSelectedSourceName(self.getSourceIdSelected()),
 				//feedtype : self.selectedFeed,
+				feedtemplate : self.selectedFeedTemplate,
+				feedtheme: self.selectedFeedTheme,
 				type : self.getFeedTypeSaver()
 			};
 
@@ -1165,9 +1414,31 @@ sbiBuilder = new Vue({
 			self.ajaxPost(newFeedData, function(_ref){
 				var data = _ref.data;
 				if(data.feed_id && data.success){
-					window.location = self.builderUrl + '&feed_id=' + data.feed_id;
+					window.location = self.builderUrl + '&feed_id=' + data.feed_id + self.sw_feed_params();
 				}
 			});
+		},
+
+		sw_feed_params: function() {
+			let sw_feed_param = '';
+			if ( this.sw_feed ) {
+				sw_feed_param += '&sw-feed=true';
+			}
+			if ( this.sw_feed_id ) {
+				sw_feed_param += '&sw-feed-id=' + this.sw_feed_id;
+			}
+			return sw_feed_param;
+		},
+
+		swfeedReturnUrl: function() {
+			var self = this;
+			if ( self.sw_feed ) {
+				sw_return_url = 'admin.php?page=sbsw#/create-feed'
+			}
+			if ( self.sw_feed_id ) {
+				sw_return_url = 'admin.php?page=sbsw&feed_id=' + self.sw_feed_id
+			}
+			return sw_return_url;
 		},
 
 		//Select Sources
@@ -1637,6 +1908,7 @@ sbiBuilder = new Vue({
 			var self = this;
 			self.customizerScreens.previewScreen = previewScreen;
 			self.loadingBar = true;
+			window.sbi_preview_device = previewScreen;
 			setTimeout(function(){
 				self.setShortcodeGlobalSettings(false);
 				self.loadingBar = false;
@@ -1716,6 +1988,34 @@ sbiBuilder = new Vue({
 				sbiBuilder.$forceUpdate();
 		},
 
+		/**
+		 * Should show toggleset type cover
+		 *
+		 * @since 2.0
+		 */
+		 shouldShowTogglesetCover : function(toggle) {
+			var self = this;
+			if ( self.shouldDisableProFeatures ) {
+				return toggle.checkExtension != undefined && !self.checkExtensionActive(toggle.checkExtension)
+			} else {
+				return false
+			}
+		},
+
+		/**
+		 * Open extension popup from toggleset cover
+		 *
+		 * @since 2.0
+		 */
+		 togglesetExtPopup : function(toggle, controlID) {
+			var self = this;
+			if(controlID == 'sortby' && toggle.value == 'likes'){
+				window.open( toggle.utmLink , '_blank' );
+				return;
+			}
+			self.viewsActive.extensionsPopupElement = toggle.checkExtension;
+		},
+
 		changeSettingValue : function(settingID, value, doProcess = true, ajaxAction = false) {
 			var self = this;
 			if(doProcess){
@@ -1725,7 +2025,6 @@ sbiBuilder = new Vue({
 				self.customizerControlAjaxAction(ajaxAction, settingID);
 			}
 			self.regenerateLayout(settingID);
-
 		},
 
 		//Shortcode Global Layout Settings
@@ -1786,13 +2085,13 @@ sbiBuilder = new Vue({
 			}
 			return additionalCssClasses;
 		},
-
 		//Shortcode Global Layout Settings
 		setShortcodeGlobalSettings : function(flyPreview = false){
 			var self = this,
 				instagramFeed = jQuery("html").find("#sb_instagram"),
 				feedSettings = self.jsonParse(instagramFeed.attr('data-options')),
 				customizerSettings = self.customizerFeedData.settings;
+			self.alterLightboxBehavior();
 
 			if(JSON.stringify(self.feedSettingsDomOptions) !== JSON.stringify(feedSettings) || flyPreview == true){
 
@@ -1818,7 +2117,7 @@ sbiBuilder = new Vue({
 							 		newHeaderData = source != undefined ? source : null;
 								}
 							});
-							if(newHeaderData.header_data !== null){
+							if(newHeaderData !== null && newHeaderData?.header_data !== undefined){
 								self.customizerFeedData.header = newHeaderData;
 								self.customizerFeedData.headerData = newHeaderData.header_data;
 							}
@@ -1988,7 +2287,6 @@ sbiBuilder = new Vue({
 			}
 		},
 
-		//Header Classes
 		getHeaderClass : function( headerType ){
 			var self = this,
 				customizerSettings = self.customizerFeedData.settings,
@@ -2000,6 +2298,11 @@ sbiBuilder = new Vue({
 			headerClasses += headerType === 'boxed' ? ' sbi_header_style_boxed' : '';
 			headerClasses += self.getHeaderAvatar() === false ? ' sbi_no_avatar' : '';
 			headerClasses += self.getPaletteClass('_header');
+			if( self.customizerScreens.previewScreen == 'mobile' ){
+				headerClasses += ' sbi-mobile-preview ';
+			}
+			var shouldShowBio   = self.checkNotEmpty( self.getHeaderBio() ) ? self.valueIsEnabled( customizerSettings['showbio'] ) : false;
+			headerClasses 		+= !shouldShowBio ? ' sbi_no_bio ' : '';
 			return headerClasses;
 		},
 
@@ -2027,6 +2330,11 @@ sbiBuilder = new Vue({
 				return headerData['data']['username'];
 			}
 			return '';
+		},
+
+		getHeaderUserNameTitle: function () {
+			let username = this.getHeaderUserName();
+			return username !== '' ? '@' + username : '';
 		},
 
 		//Header Media Count
@@ -2078,8 +2386,9 @@ sbiBuilder = new Vue({
 					return headerData['data']['profile_picture'];
 				}
 			}
-			return false;
+			return self.pluginURL +'img/thumb-placeholder.png';
 		},
+
 
 		//Header Bio
 		getHeaderBio : function(){
@@ -2106,6 +2415,20 @@ sbiBuilder = new Vue({
 				customizerSettings 	= self.customizerFeedData.settings,
 				headerData 			= self.customizerFeedData.headerData,
 				headerClass 		= 'sbi_header_text ',
+				shouldShowBio 		= self.checkNotEmpty( self.getHeaderBio() ) ? self.valueIsEnabled( customizerSettings['showbio'] ) : false,
+				shouldShowInfo 		= shouldShowBio || self.valueIsEnabled( customizerSettings['showfollowers'] );
+				headerClass 		+= !shouldShowBio ? 'sbi_no_bio ' : '',
+				headerClass 		+= !shouldShowInfo ? 'sbi_no_info' : '';
+
+			return headerClass;
+		},
+
+		//Header Bio Info Class
+		getHeaderBioInfoClass : function(){
+			var self = this,
+				customizerSettings 	= self.customizerFeedData.settings,
+				headerData 			= self.customizerFeedData.headerData,
+				headerClass 		= 'sbi_bio_info sbi_feedtheme_bio ',
 				shouldShowBio 		= self.checkNotEmpty( self.getHeaderBio() ) ? self.valueIsEnabled( customizerSettings['showbio'] ) : false,
 				shouldShowInfo 		= shouldShowBio || self.valueIsEnabled( customizerSettings['showfollowers'] );
 				headerClass 		+= !shouldShowBio ? 'sbi_no_bio ' : '',
@@ -2159,13 +2482,7 @@ sbiBuilder = new Vue({
 				self.customizerControlAjaxAction(ajaxAction);
 			}
 
-			if(settingID == 'disablelightbox' || settingID == 'shoppablefeed'){
-				if( self.valueIsEnabled( self.customizerFeedData.settings['disablelightbox'] ) || self.valueIsEnabled( self.customizerFeedData.settings['shoppablefeed'] ) ){
-					jQuery('body').find('.sbi_link').addClass('sbi_disable_lightbox');
-				}else{
-					jQuery('body').find('.sbi_link').removeClass('sbi_disable_lightbox');
-				}
-			}
+
 
 			self.regenerateLayout(settingID);
 		},
@@ -2223,10 +2540,23 @@ sbiBuilder = new Vue({
 		checkControlCondition : function(conditionsArray = [], checkExtensionActive = false, checkExtensionActiveDimmed = false){
 			var self = this,
 			isConditionTrue = 0;
-			Object.keys(conditionsArray).forEach(function(condition, index){
-				if(conditionsArray[condition].indexOf(self.customizerFeedData.settings[condition]) !== -1)
-					isConditionTrue += 1
-			});
+			if(conditionsArray['hoverdisplay'] != undefined){
+				if( self.customizerFeedData.settings['hoverdisplay']
+				&& this.checkboxSectionValueExists('hoverdisplay', conditionsArray['hoverdisplay']) ) {
+					isConditionTrue += 1;
+				}else{
+					isConditionTrue += 0;
+				}
+			}else{
+				Object.keys(conditionsArray).forEach(function(condition, index){
+					if(conditionsArray[condition].indexOf(self.customizerFeedData.settings[condition]) !== -1)
+						isConditionTrue += 1
+
+					if( condition == 'checkPersonalAccount' && self[condition] != undefined && self.checkPersonalAccount() == conditionsArray[condition][0]) {
+						isConditionTrue += 1;
+					}
+				});
+			}
 			var extensionCondition = checkExtensionActive != undefined && checkExtensionActive != false ? self.checkExtensionActive(checkExtensionActive) : true,
 				extensionCondition = checkExtensionActiveDimmed != undefined && checkExtensionActiveDimmed != false && !self.checkExtensionActive(checkExtensionActiveDimmed) ? false : extensionCondition;
 
@@ -2329,6 +2659,18 @@ sbiBuilder = new Vue({
 			//self.customizerFeedData.settings.sources = self.customizerScreens.sourcesChoosed;
 			sbiBuilder.$forceUpdate();
 		},
+		customizerFeedThemePrint : function(){
+			var self = this;
+			// Support for versions before v4.2
+			if ( self.customizerFeedData.settings.feedtheme == undefined ) {
+				self.customizerFeedData.settings.feedtheme = 'default_theme';
+			}
+			result = self.feedThemes.filter(function(tp){
+				return tp.type === self.customizerFeedData.settings.feedtheme
+			});
+			self.customizerScreens.printedTheme = result.length > 0 ? result[0] : [];
+			return result.length > 0 ? true : false;
+		},
 		customizerFeedTypePrint : function(){
 			var self = this,
 			combinedTypes = self.feedTypes.concat(self.advancedFeedTypes);
@@ -2338,11 +2680,32 @@ sbiBuilder = new Vue({
 			self.customizerScreens.printedType = result.length > 0 ? result[0] : [];
 			return result.length > 0 ? true : false;
 		},
+		customizerFeedTemplatePrint : function(){
+			var self = this;
+			if ( self.customizerFeedData.settings.feedtemplate == undefined ) {
+				self.customizerFeedData.settings.feedtemplate = 'ft_default';
+			}
+			result = self.feedTemplates.filter(function(tp){
+				return tp.type === self.customizerFeedData.settings.feedtemplate
+			});
+			self.customizerScreens.printedTemplate = result.length > 0 ? result[0] : [];
+			return result.length > 0 ? true : false;
+		},
 		choosedFeedTypeCustomizer : function(feedType){
 			var self = this, result = false;
 			if(
 				(self.viewsActive.feedTypeElement === null && self.customizerFeedData.settings.feedtype === feedType) ||
 				(self.viewsActive.feedTypeElement !== null && self.viewsActive.feedTypeElement == feedType)
+			){
+				result = true;
+			}
+			return result;
+		},
+		choosedFeedTemplateCustomizer : function(feedtemplate){
+			var self = this, result = false;
+			if(
+				(self.viewsActive.feedTemplateElement === null && self.customizerFeedData.settings.feedtemplate === feedtemplate) ||
+				(self.viewsActive.feedTemplateElement !== null && self.viewsActive.feedTemplateElement == feedtemplate)
 			){
 				result = true;
 			}
@@ -2360,6 +2723,19 @@ sbiBuilder = new Vue({
 			self.viewsActive.feedTypeElement = null;
 			self.viewsActive.feedtypesPopup = false;
 			self.customizerControlAjaxAction('feedFlyPreview');
+			sbiBuilder.$forceUpdate();
+		},
+		updateFeedTemplateCustomizer : function(){
+			var self = this;
+			self.customizerFeedData.settings.feedtemplate = self.viewsActive.feedTemplateElement;
+			self.viewsActive.feedTemplateElement = null;
+			self.viewsActive.feedtemplatesPopup = false;
+			self.customizerControlAjaxAction('feedTemplateFlyPreview');
+			sbiBuilder.$forceUpdate();
+		},
+		updateFeedThemeCustomizer : function(feedTheme) {
+			var self = this;
+			self.customizerFeedData.settings.feedtheme = feedTheme;
 			sbiBuilder.$forceUpdate();
 		},
 		updateInputWidth : function(){
@@ -2390,6 +2766,36 @@ sbiBuilder = new Vue({
 				        .replace(/>/g, "&gt;")
 				        .replace(/"/g, "&quot;")
 				        .replace(/'/g, "&#039;");
+		},
+
+		decodeVueHTML: function (text) {
+			// write a regex to match the v-show and v-if attributes
+			const regex = /(?:v-if|v-show|:data-.+?)="([^"]*?)"/g;
+			let match;
+			let decodedText = text;
+
+			const map = {
+				'&amp;': '&',
+				'&lt;': '<',
+				'&gt;': '>',
+				'&quot;': '"',
+				'&#039;': "'",
+			};
+
+			while ((match = regex.exec(text)) !== null) {
+				// This is necessary to avoid infinite loops with zero-width matches
+				if (match.index === regex.lastIndex) {
+					regex.lastIndex++;
+				}
+
+				match.forEach((match, groupIndex) => {
+					if (groupIndex == 1) {
+						decodedText = decodedText.replace(match, match.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, m => map[m]));
+					}
+				});
+			}
+
+			return decodedText;
 		},
 
 		/**
@@ -2432,7 +2838,9 @@ sbiBuilder = new Vue({
 		returnControlStyle : function( control ){
 			var self = this;
 			if(control.style){
-				Object.entries(control.style).map( function(css) {
+				var controlStyle = self.legacyCSSEnabled && control.legacy != undefined
+					? control.legacy : control.style;
+				Object.entries(controlStyle).map( function(css) {
 					var condition = control.condition != undefined || control.checkExtension != undefined ? self.checkControlCondition(control.condition, control.checkExtension) : true;
 					if( condition ){
 						self.feedStyle +=
@@ -2460,7 +2868,7 @@ sbiBuilder = new Vue({
 				case 'feedFlyPreview':
 					self.loadingBar = true;
 					self.templateRender = false;
-          var previewFeedData = {
+          			var previewFeedData = {
 						action : 'sbi_feed_saver_manager_fly_preview',
 						feedID : self.customizerFeedData.feed_info.id,
 						previewSettings : self.customizerFeedData.settings,
@@ -2473,19 +2881,20 @@ sbiBuilder = new Vue({
 			        }
 
 					self.ajaxPost(previewFeedData, function(_ref){
-            self.moderationShoppableisLoading = false;
-            var data = _ref.data;
+                    self.moderationShoppableisLoading = false;
+                    var data = _ref.data;
 						if( data !== false ){
 							self.updatedTimeStamp = new Date().getTime();
 							self.shouldPaginateNext = true;
 							if(self.getModerationShoppableMode && self.moderationShoppableModeOffset >= 1){
-                  self.template = String("<div>"+data.feed_html+"</div>");
-                  if( data?.feedStatus?.shouldPaginate != undefined &&  data.feedStatus.shouldPaginate == false){
-                    self.shouldPaginateNext = false;
-                  }
+			                  self.template = String("<div>"+this.decodeVueHTML(data.feed_html)+"</div>");
+			                  if( data?.feedStatus?.shouldPaginate != undefined &&  data.feedStatus.shouldPaginate == false){
+			                    self.shouldPaginateNext = false;
+			                  }
 							} else{
-	              				self.template = String("<div>"+data+"</div>");
+	              				self.template = String("<div>"+this.decodeVueHTML(data)+"</div>");
 							}
+
 							self.moderationShoppableModeAjaxDone = self.getModerationShoppableMode ? true : false;
 							self.processNotification("previewUpdated");
 						}else{
@@ -2494,6 +2903,26 @@ sbiBuilder = new Vue({
 						jQuery('body').find('#sbi_load .sbi_load_btn').unbind('click')
 					});
 				break;
+				case 'feedTemplateFlyPreview':
+					self.loadingBar = true;
+					var previewFeedData = {
+						action : 'sbi_feed_saver_manager_fly_preview',
+						feedID : self.customizerFeedData.feed_info.id,
+						previewSettings : self.customizerFeedData.settings,
+						isFeedTemplatesPopup : true,
+						feedName : self.customizerFeedData.feed_info.feed_name
+					};
+					self.ajaxPost(previewFeedData, function(_ref){
+						var data = _ref.data;
+						if( data !== false ) {
+							self.customizerFeedData.settings = data.customizerData;
+							self.template = String("<div>" + this.decodeVueHTML(data.feed_html) + "</div>");
+							self.processNotification("previewUpdated");
+						} else {
+							self.processNotification("unkownError");
+						}
+					});
+					break;
 				case 'feedPreviewRender':
 					setTimeout(function(){
 					}, 150);
@@ -2501,6 +2930,11 @@ sbiBuilder = new Vue({
 			}
 		},
 
+		checkModerationList  : function(){
+			if(this.customizerFeedData?.settings?.moderationlist?.list_type_selected === undefined){
+				this.customizerFeedData.settings.moderationlist = {"list_type_selected" : "allow", "allow_list" : [], "block_list" : [] };
+			}
+		},
 
 		/**
 		 * Ajax Action : Save Feed Settings
@@ -2508,10 +2942,11 @@ sbiBuilder = new Vue({
 		 * @since 4.0
 		 */
 		saveFeedSettings : function( leavePage = false ){
-      Object.assign(this.customizerFeedData.settings.moderationlist, this.moderationSettings);
-      this.customizerFeedData.settings.customBlockModerationlist = `${this.customBlockModerationlistTemp}`;
-
-      var self = this,
+			var self = this;
+    		self.checkModerationList();
+		    Object.assign(this.customizerFeedData.settings.moderationlist, this.moderationSettings);
+		    this.customizerFeedData.settings.customBlockModerationlist = `${this.customBlockModerationlistTemp}`;
+    		  var self = this,
 				sources = [],
 				updateFeedData = {
 					action : 'sbi_feed_saver_manager_builder_update',
@@ -2542,6 +2977,7 @@ sbiBuilder = new Vue({
 				}
 			});
 			sbiBuilder.$forceUpdate();
+
 		},
 
 		/**
@@ -2586,9 +3022,9 @@ sbiBuilder = new Vue({
 		*/
 		moderationModePagination : function( type ){
 			var self = this;
-      if ( self.moderationShoppableisLoading ) {
-        return;
-      }
+		    if ( self.moderationShoppableisLoading ) {
+		       	return;
+		    }
 			if( type == 'next'){
 				self.moderationShoppableModeOffset = self.moderationShoppableModeOffset + 1;
 			}
@@ -2605,7 +3041,7 @@ sbiBuilder = new Vue({
 			}
 
 			self.moderationShoppableModeOffsetLast = self.moderationShoppableModeOffset > self.moderationShoppableModeOffsetLast ? self.moderationShoppableModeOffset : self.moderationShoppableModeOffsetLast;
-      self.moderationShoppableisLoading = true;
+      		self.moderationShoppableisLoading = true;
 			self.customizerControlAjaxAction('feedFlyPreview');
 		},
 
@@ -2833,14 +3269,29 @@ sbiBuilder = new Vue({
 			var self = this,
 				customizerSettings = self.customizerFeedData.settings;
 			caption = caption.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&lt;br&gt;|&lt;br \/&gt;/g, '<br>');
-			if( self.checkNotEmpty(customizerSettings.captionlength) ){
-				return '<span class="sbi_caption">' +
-							( self.expandedCaptions.includes(postID)  ? caption : caption.substring( 0, parseInt(customizerSettings.captionlength)) ) +
-						'</span>' +
-						(	caption.length > parseInt(customizerSettings.captionlength) ? '<span class="sbi_expand" style="display:inline-block;" onclick="sbiBuilderToggleCaption('+postID+')"> <a><span class="sbi_more">...</span></a></span>' : '');
-			}
-			var captionLength = !self.checkNotEmpty(customizerSettings.captionlength) ? 50 : parseInt(customizerSettings.captionlength);
-			return '<span class="sbi_caption">' + caption.substring( 0, captionLength) + '</span>';
+
+			var captionLength = self.checkNotEmpty(customizerSettings.captionlength) ? parseInt(customizerSettings.captionlength) : 50;
+
+			return '<span class="sbi_caption" data-text-limit="'+captionLength+'" data-cap-length="'+caption.length+'">' + caption + '</span>' +
+				(caption.length > parseInt(captionLength) ? '<span class="sbi_expand" style="display:inline-block;" onclick="sbiBuilderToggleCaption('+postID+')"> <a><span class="sbi_more">...</span></a></span>' : '');
+		},
+
+		/**
+		 * Returns the caption for posts on hover
+		 *
+		 * @since 6.0
+		 *
+		 * @return string
+		 */
+		getPostHoverCaption : function( caption ){
+			var self = this,
+				customizerSettings = self.customizerFeedData.settings;
+			caption = caption.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/&lt;br&gt;|&lt;br \/&gt;/g, '<br>');
+
+			var captionLength = self.checkNotEmpty(customizerSettings.captionlength) ? parseInt(customizerSettings.captionlength) : 50;
+			var hoverCaptionLength = self.checkNotEmpty(customizerSettings.hovercaptionlength) ? parseInt(customizerSettings.hovercaptionlength) : captionLength;
+
+			return '<span class="sbi_caption" data-text-limit="'+hoverCaptionLength+'" data-cap-length="'+caption.length+'">' + caption + '</span>';
 		},
 
 		/**
@@ -2871,10 +3322,11 @@ sbiBuilder = new Vue({
 			self.shoppableFeed.postCaption = caption.length > 80 ? self.shoppableFeed.postCaption.trim() + '...' : self.shoppableFeed.postCaption;
 
 			var currentPostDOM = shoppableBtn.parentNode.parentNode;
+
 			if(currentPostDOM != undefined && currentPostDOM != null ){
 				var sbiPhoto = currentPostDOM.querySelector('.sbi_photo');
 				self.shoppableFeed.postMedia = sbiPhoto.getAttribute('data-full-res');
-				self.shoppableFeed.postId = currentPostDOM.id.replace('sbi_','');
+				self.shoppableFeed.postId = currentPostDOM.closest('.sbi_item')?.id.replace('sbi_','');
 			}else{
 				self.shoppableFeed.postMedia = self.pluginURL +'img/thumb-placeholder.png';
 			}
@@ -3046,6 +3498,101 @@ sbiBuilder = new Vue({
 			sbiBuilder.$forceUpdate();
 		},
 
+		alterLightboxBehavior : function(){
+			var self = this;
+			jQuery('body').find('.sbi_link:not(.sbi_disable_lightbox) .sbi_link_area').on('click', function(event){
+				event.preventDefault();
+				event.stopPropagation();
+				var customize_lightbox = self.customizerSidebarBuilder['customize'].sections.customize_lightbox;
+				self.customizerScreens.activeSection = 'customize_lightbox';
+				self.customizerScreens.activeSectionData= self.customizerSidebarBuilder['customize'].sections.customize_lightbox;
+				self.switchCustomizerSection('customize_lightbox', customize_lightbox, false, false);
+				sbiBuilder.$forceUpdate();
+			})
+		},
+
+		/**
+		 * Check Personal Account Info
+		 *
+		 * @since 6.1
+		*/
+		checkPeronalAccount : function(){
+			let self 		= this;
+			if( self.selectedSources.length > 0){
+				let sourceInfo = self.sourcesList.filter(function(source){
+					return source.account_id == self.selectedSources[0];
+				});
+				sourceInfo = sourceInfo[0] ? sourceInfo[0] : [];
+				if(sourceInfo?.header_data?.account_type &&
+					sourceInfo?.header_data?.account_type.toLowerCase() === 'personal' &&
+					self.checkSinglePersonalData(sourceInfo?.header_data?.biography)  &&
+					self.checkSinglePersonalData(sourceInfo?.local_avatar)
+					){
+						self.$refs.personalAccountRef.personalAccountInfo.id = sourceInfo.account_id;
+						self.$refs.personalAccountRef.personalAccountInfo.username = sourceInfo.username;
+						return false
+				}
+			}
+			return true;
+		},
+
+		checkPersonalAccount : function(){
+			let self 		= this;
+			if( self.selectedSources.length > 0){
+				let sourceInfo = self.sourcesList.filter(function(source){
+					return source.account_id == self.selectedSources[0];
+				});
+				sourceInfo = sourceInfo[0] ? sourceInfo[0] : [];
+				if(sourceInfo?.header_data?.account_type &&
+					sourceInfo?.header_data?.account_type.toLowerCase() === 'personal'){
+						return true;
+				} else {
+					return false;
+				}
+			}
+			return false;
+		},
+
+		checkSinglePersonalData : function( data ){
+			return data === false || data === undefined || (data !== undefined && data !== false && !this.checkNotEmpty( data ));
+		},
+
+		/**
+		 * Cancel Personal Account
+		 *
+		 * @since 6.1
+		*/
+		cancelPersonalAccountUpdate : function(){
+			let self 		= this;
+			if ( self.shouldDisableProFeatures || ! self.hasFeature('feed_templates') ) {
+				self.submitNewFeed();
+			} else {
+				self.switchScreen('selectedFeedSection', 'selectTemplate');
+			}
+		},
+
+		/**
+		 * Triggered When updating Personal Account info
+		 *
+		 * @since 6.1
+		*/
+		successPersonalAccountUpdate : function(){
+			var self = this;
+			self.processNotification('personalAccountUpdated');
+			this.creationProcessNext();
+		},
+
+		themePreview: function(themeType) {
+			this.previewTheme = ''
+			setTimeout(() => {
+				this.previewTheme = themeType
+			  }, 250)
+		},
+		themePreviewClear: function() {
+			setTimeout(() => {
+				this.previewTheme = ''
+			  }, 250)
+		}
 
 	}
 

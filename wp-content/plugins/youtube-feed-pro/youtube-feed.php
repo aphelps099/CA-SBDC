@@ -3,14 +3,15 @@
 Plugin Name: Feeds for YouTube Pro Business
 Plugin URI: https://smashballoon.com/youtube-feed
 Description: Feeds for YouTube allows you to display completely customizable YouTube feeds from any channel.
-Version: 2.2.1
+Version: 2.6.0
+Requires PHP: 7.4
 Author: Smash Balloon
 Author URI: https://smashballoon.com/
 Text Domain: feeds-for-youtube
 */
 
 /*
-Copyright 2023  Smash Balloon  (email: hey@smashballoon.com)
+Copyright 2024  Smash Balloon  (email: hey@smashballoon.com)
 This program is paid software; you may not redistribute it under any
 circumstances without the expressed written consent of the plugin author.
 This program is distributed in the hope that it will be useful,
@@ -41,17 +42,21 @@ if (!defined('SBY_STORE_URL')) {
     define('SBY_STORE_URL', 'https://smashballoon.com/');
 }
 
+$sby_download_name = "Youtube Feed Pro Business";
+
 if (!defined('SBY_PLUGIN_EDD_NAME')) {
-    define('SBY_PLUGIN_EDD_NAME', 'YouTube Feed Pro Business');
+	define('SBY_PLUGIN_EDD_NAME', $sby_download_name);
 }
 
-
-// The ID of the product. Used for renewals
+// The ID of the legacy product.
 $sby_download_id = 762320; // 762236, 762320, 762322
+
+// The ID of product for new pricing tier. Used for renewals.
+// $sby_download_id = 762320; // 1722787, 1722791, 1722793
 
 if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 	// load custom updater
-	include( dirname( __FILE__ ) . '/EDD_SL_Plugin_Updater.php' );
+	include_once( dirname( __FILE__ ) . '/EDD_SL_Plugin_Updater.php' );
 }
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -61,10 +66,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'SBY_PRO', true );
 
 if ( ! defined( 'SBYVER' ) ) {
-	define( 'SBYVER', '2.2.1' );
+	define( 'SBYVER', '2.6.0' );
 }
 if ( ! defined( 'SBY_DBVERSION' ) ) {
-	define( 'SBY_DBVERSION', '2.0' );
+	define( 'SBY_DBVERSION', '2.3' );
 }
 
 if ( ! defined( 'SBY_BUILDER_DIR' ) ) {
@@ -130,13 +135,13 @@ if ( ! function_exists( 'sby_init' ) ) {
 			define( 'SBY_SEARCH_NAME', 'sbys' );
 		}
 		if ( ! defined( 'SBY_PLUGIN_NAME' ) ) {
-			define( 'SBY_PLUGIN_NAME', __( 'Feeds for YouTube', SBY_TEXT_DOMAIN ) );
+			define( 'SBY_PLUGIN_NAME', __( 'Feeds for YouTube', 'feeds-for-youtube' ) );
 		}
 		if ( ! defined( 'SBY_INDEF_ART' ) ) {
-			define( 'SBY_INDEF_ART', __( 'a', SBY_TEXT_DOMAIN ) );
+			define( 'SBY_INDEF_ART', __( 'a', 'feeds-for-youtube' ) );
 		}
 		if ( ! defined( 'SBY_SOCIAL_NETWORK' ) ) {
-			define( 'SBY_SOCIAL_NETWORK', __( 'YouTube', SBY_TEXT_DOMAIN ) );
+			define( 'SBY_SOCIAL_NETWORK', __( 'YouTube', 'feeds-for-youtube' ) );
 		}
 		if ( ! defined( 'SBY_SETUP_URL' ) ) {
 			define( 'SBY_SETUP_URL', 'https://smashballoon.com/youtube-feed/free' );
@@ -161,6 +166,11 @@ if ( ! function_exists( 'sby_init' ) ) {
 
 		$container = new \SmashBalloon\YouTubeFeed\Services\ServiceContainer();
 		$container->register();
+
+		// Pro Services
+		$pro_container = new \SmashBalloon\YouTubeFeed\Pro\Services\ServiceContainerPro();
+		$pro_container->register();
+
 		global $sby_settings;
 		$sby_settings = get_option( 'sby_settings', array() );
 		$sby_settings = wp_parse_args( $sby_settings, sby_settings_defaults() );
@@ -212,13 +222,13 @@ if ( ! function_exists( 'sby_init' ) ) {
 		register_post_type( SBY_CPT, array(
 			'label'           => SBY_SOCIAL_NETWORK,
 			'labels'          => array(
-				'name'          => SBY_SOCIAL_NETWORK . ' ' . __( 'Videos', SBY_TEXT_DOMAIN ),
-				'singular_name' => __( SBY_SOCIAL_NETWORK . ' ' . 'Video', SBY_TEXT_DOMAIN ),
-				'add_new'       => __( 'Add New Video', SBY_TEXT_DOMAIN ),
-				'add_new_item'  => __( 'Add New Video', SBY_TEXT_DOMAIN ),
-				'edit_item'     => __( 'Edit Video', SBY_TEXT_DOMAIN ),
-				'view_item'     => __( 'View Video', SBY_TEXT_DOMAIN ),
-				'all_items'     => __( 'All Videos', SBY_TEXT_DOMAIN ),
+				'name'          => SBY_SOCIAL_NETWORK . ' ' . __( 'Videos', 'feeds-for-youtube' ),
+				'singular_name' => __( SBY_SOCIAL_NETWORK . ' ' . 'Video', 'feeds-for-youtube' ),
+				'add_new'       => __( 'Add New Video', 'feeds-for-youtube' ),
+				'add_new_item'  => __( 'Add New Video', 'feeds-for-youtube' ),
+				'edit_item'     => __( 'Edit Video', 'feeds-for-youtube' ),
+				'view_item'     => __( 'View Video', 'feeds-for-youtube' ),
+				'all_items'     => __( 'All Videos', 'feeds-for-youtube' ),
 			),
 			'public'          => true,
 			'show_ui'         => true,
@@ -294,11 +304,11 @@ if ( ! function_exists( 'sby_init' ) ) {
 	function sby_cron_custom_interval( $schedules ) {
 		$schedules['sby30mins'] = array(
 			'interval' => 30 * 60,
-			'display'  => __( 'Every 30 minutes' )
+			'display'  => __( 'Every 30 minutes', 'feeds-for-youtube' )
 		);
 		$schedules['sbyweekly'] = array(
 			'interval' => 3600 * 24 * 7,
-			'display'  => __( 'Weekly' )
+			'display'  => __( 'Weekly', 'feeds-for-youtube' )
 		);
 
 		return $schedules;
@@ -424,12 +434,12 @@ if ( ! function_exists( 'sby_init' ) ) {
 	 */
 	function sby_check_for_db_updates() {
 
-		$db_ver = get_option( 'sby_db_version', 0 );
+		$db_ver = get_option( 'sby_db_version', SBY_DBVERSION );
 
 		if ( version_compare( $db_ver, '1.2', '<' ) ) {
 			sby_add_caps();
 
-			update_option( 'sby_db_version', SBY_DBVERSION );
+			update_option( 'sby_db_version', '2.0' );
 		}
 
 		if ( version_compare( $db_ver, '1.3', '<' ) ) {
@@ -614,6 +624,10 @@ if ( ! function_exists( 'sby_init' ) ) {
             'subscribebtnsecondarycolor' => '',
             'subscribebtntextcolor'    => '',
 
+			// pro comments
+			'numcomments' => 20,
+			'enablecomments' => false,
+
 			// Video elements color
 			'playiconcolor'            => '',
 			'videotitlecolor'          => '',
@@ -627,27 +641,28 @@ if ( ! function_exists( 'sby_init' ) ) {
 			//cron
 			'cache_cron_interval'      => '1hour',
 			'cache_cron_time'          => '1:00',
-			'cache_cron_am_pm'         => 'am'
+			'cache_cron_am_pm'         => 'am',
+			'disable_wp_posts'			=> false,
 		);
 
 		return $defaults;
 	}
 
 	// Add a Settings link to the plugin on the Plugins page
-	$plugin_file = 'youtube-feed-pro/youtube-feed-pro.php';
+	$plugin_file = 'youtube-feed-pro/youtube-feed.php';
 	add_filter( "plugin_action_links_{$plugin_file}", 'sby_add_settings_link', 10, 2 );
 	function sby_add_settings_link( $links, $file ) {
-		$sby_settings_link = '<a href="' . admin_url( 'admin.php?page=sby-feed-builder' ) . '">' . __( 'Settings' ) . '</a>';
+		$sby_settings_link = '<a href="' . admin_url( 'admin.php?page=sby-feed-builder' ) . '">' . __( 'Settings', 'feeds-for-youtube' ) . '</a>';
 		array_unshift( $links, $sby_settings_link );
 
 		return $links;
 	}
 
 	function sby_text_domain() {
-		load_plugin_textdomain( 'feeds-for-youtube', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'feeds-for-youtube', false, dirname( plugin_basename(__FILE__) ) . '/languages' );
 	}
 
-	add_action( 'plugins_loaded', 'sby_text_domain' );
+	add_action( 'init', 'sby_text_domain' );
 
 	function sby_plugin_updater() {
 		// retrieve license key from the DB

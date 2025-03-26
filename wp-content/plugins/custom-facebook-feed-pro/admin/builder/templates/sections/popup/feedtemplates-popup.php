@@ -12,8 +12,8 @@
             </p>
             <div class="cff-fb-types cff-fb-fs">
                 <div class="cff-fb-templates-list">
-                    <div :class="['cff-fb-type-el', 'cff-feed-template-' + feedTemplateEl.type]" v-for="(feedTemplateEl, feedTemplateIn) in feedTemplates" :data-active="choosedFeedTemplateCustomizer(feedTemplateEl.type)" @click.prevent.default="chooseFeedTemplate(feedTemplateEl, true)">
-                        <div class="cff-fb-type-el-img cff-fb-fs" v-html="svgIcons[customizerFeedData.settings.feedtype][feedTemplateEl.icon]"></div>
+                    <div :class="['cff-fb-type-el', 'cff-feed-template-' + feedTemplateEl.type]" v-for="(feedTemplateEl, feedTemplateIn) in feedTemplates" :data-active="choosedFeedTemplateCustomizer(feedTemplateEl.type)" @click.prevent.default="checkFeedTemplateTier(feedTemplateEl)">
+                        <div class="cff-fb-type-el-img cff-fb-fs" v-html="svgIcons[customizerFeedData.settings.feedtype +'.'+ feedTemplateEl.icon]"></div>
                         <div class="cff-fb-type-el-info cff-fb-fs">
                             <p class="sb-small-p sb-bold sb-dark-text" v-html="getFeedTemplateElTitle(feedTemplateEl, true)"></p>
                             <span class="sb-caption sb-lightest">{{feedTemplateEl.description}}</span>

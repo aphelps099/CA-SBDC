@@ -53,7 +53,7 @@ $retweeter_screen_name = $retweeter['screen_name'];
 <?php if ( ctf_show( 'avatar', $feed_options ) || ctf_show( 'author', $feed_options ) || ctf_show( 'logo', $feed_options ) || ctf_show( 'date', $feed_options ) ) : ?>
 <div class="ctf-author-box">
     <div class="ctf-author-box-link">
-        <?php if ( ctf_show( 'author', $feed_options ) || ctf_show( 'avatar', $feed_options ) ) : ?>
+        <?php if ( ctf_show( 'author', $feed_options ) ) : ?>
             <?php if ( ctf_show( 'avatar', $feed_options ) ) : ?>
                 <a href="<?php echo esc_url( 'https://twitter.com/' . $author_screen_name ) ?>" class="ctf-author-avatar" target="_blank" rel="nofollow noopener noreferrer" <?php echo $avatar_attr; ?>>
                     <img src="<?php echo esc_url( $avatar_src ) ?>" alt="<?php echo esc_attr( $author_display_screen_name ) ?> avatar" data-avatar="<?php echo esc_url( $avatar ) ?>" width="48" height="48">;
@@ -80,7 +80,13 @@ $retweeter_screen_name = $retweeter['screen_name'];
     </div>
     <?php if ( ctf_show( 'logo', $feed_options ) ) : ?>
         <div class="ctf-corner-logo" <?php echo $logo_attr ?>>
-            <?php echo ctf_get_fa_el( 'fa-twitter' ); ?>
+            <?php 
+                if ( ctf_should_rebrand_to_x() ) {
+                    echo ctf_get_fa_el( 'fa-x' ); 
+                } else {
+                    echo ctf_get_fa_el( 'fa-twitter' ); 
+                }
+            ?>
         </div>
     <?php endif; ?>
 </div>

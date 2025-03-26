@@ -29,7 +29,27 @@
                             <img :src="typeof source.avatar_url !== 'undefined' && source.account_type === 'group' ? source.avatar_url : 'https://graph.facebook.com/'+source.account_id+'/picture'">
                         </div>
                         <div class="cff-fb-srcs-item-inf">
-                            <div class="cff-fb-srcs-item-name"><span class="sb-small-p sb-bold" v-html="source.username"></span></div>
+                            <div class="cff-fb-srcs-item-name">
+                                <span class="sb-small-p sb-bold">
+                                    <span v-html="source.username"></span>
+                                    <em class="sb-small-p sb-small-text" v-if="typeof source?.location !== 'undefined' && source?.location !== 'undefined'"  v-html="'(' +source?.location+ ')'"></em>
+                                </span>
+                                 <div class="sb-group-small-notice" v-if="source?.account_type === 'group' && !$parent.checkTypeForGroupPopup(source)">
+                                <svg width="16" height="16" viewBox="0 0 13 13" fill="none">
+								    <path d="M6.50008 0.666664C3.28008 0.666664 0.666748 3.28 0.666748 6.5C0.666748 9.72 3.28008 12.3333 6.50008 12.3333C9.72008 12.3333 12.3334 9.72 12.3334 6.5C12.3334 3.28 9.72008 0.666664 6.50008 0.666664ZM7.08342 9.41667H5.91675V8.25H7.08342V9.41667ZM7.08342 7.08333H5.91675V3.58333H7.08342V7.08333Z" fill="#D72C2C"/>
+								</svg>
+                                <div class="cff-fb-onbrd-tltp-elem cff-fb-onbrd-tltp-elem-2 sb-tr-2" data-active="true">
+                                    <div class="sb-pointer">
+                                        <svg width="21" height="11" viewBox="0 0 21 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8.59642 0.811655C9.39546 -0.135356 10.8545 -0.135357 11.6536 0.811654L20.25 11H0L8.59642 0.811655Z" fill="white"/>
+                                        </svg>
+                                    </div>
+                                    <div class="cff-fb-onbrd-tltp-txt sb-small-p sb-dark-text ">
+                                        <span v-html="genericText.deperecatedGroupText"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
                             <div class="cff-fb-left-boss">
                                 <div class="cff-fb-srcs-item-type">
                                     <div v-html="source.account_type == 'group' ? svgIcons['users'] : svgIcons['flag']"></div>
@@ -148,6 +168,8 @@
                                 <input type="text" class="cff-fb-source-inp cff-fb-fs" v-model="addNewSource.manualSourceID" :placeholder="selectSourceScreen.modal.enterID">
                                 <div class="cff-fb-source-inp-label cff-fb-fs">{{selectSourceScreen.modal.eventAccessToken}}</div>
                                 <input type="text" class="cff-fb-source-inp cff-fb-fs" v-model="addNewSource.manualSourceToken" :placeholder="selectSourceScreen.modal.enterToken">
+                                <div class="cff-fb-source-inp-label cff-fb-fs" v-html="selectSourceScreen.modal.enterEventiCalUrlDescription"></div>
+                                <input type="text" class="cff-fb-source-inp cff-fb-fs" v-model="addNewSource.eventsManualSourceICal" :placeholder="selectSourceScreen.modal.enterIcalUrl">
                             </div>
                             <button class="cff-fb-source-btn cff-fb-fs sb-btn-blue sb-account-connection-button" @click.prevent.default="addSourceManually(true)">
                                 <div class="cff-fb-icon-success"></div>
@@ -218,19 +240,25 @@
                             </button>
                         </div>
                         <div class="cff-fb-source-list cff-fb-fs">
-                            <div class="cff-fb-srcs-item" v-for="(source, sourceIndex) in returnedApiSourcesList" @click.prevent.default="selectSourcesToConnect(source)" :data-active="selectedSourcesToConnect.includes(source.account_id)" >
+                            <div class="cff-fb-srcs-item" v-for="(source, sourceIndex) in returnedApiSourcesList" @click.prevent.default="selectSourcesToConnect(source)" :data-active="selectedSourcesToConnect.includes(source.account_id)" :data-type="source.account_type">
                                 <div class="cff-fb-srcs-item-chkbx">
                                     <div class="cff-fb-srcs-item-chkbx-ic"></div>
                                 </div>
                                 <div class="cff-fb-srcs-item-avatar">
                                     <img :src="returnGroupPageAvatar(source)">
                                 </div>
-                                <div class="cff-fb-srcs-item-inf" v-bind:class="{ 'sb-has-details' : source.account_type === 'group' }">
+                                <div class="cff-fb-srcs-item-inf" v-bind:class="{ 'sb-has-details' : (source.account_type === 'group' || typeof source?.location !== 'undefined') }">
                                     <div class="cff-fb-srcs-item-name"><span class="sb-small-p sb-bold" v-html="source.username"></span></div>
                                     <div class="cff-fb-srcs-item-type" v-bind:class="{ 'sb-highlight-admin' : source.admin, 'sb-is-group' : source.account_type === 'group' }" v-if="source.account_type === 'group'">
                                         <div class="sb-details-wrap">
                                             <div class="cff-fb-srcs-item-svg" v-html="source.admin ? svgIcons['user_check'] : svgIcons['users']"></div>
                                             <span class="sb-small" v-html="source.admin ? genericText.admin : genericText.member"></span>
+                                        </div>
+                                    </div>
+                                     <div class="cff-fb-srcs-item-type sb-is-page" v-if="typeof source?.location !== 'undefined' && source?.location !== 'undefined'">
+                                        <div class="sb-details-wrap">
+                                            <div class="cff-fb-srcs-item-svg" v-html="svgIcons['locationMap']"></div>
+                                            <span class="sb-small" v-html="source?.location"></span>
                                         </div>
                                     </div>
                                 </div>

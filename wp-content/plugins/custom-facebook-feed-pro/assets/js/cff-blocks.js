@@ -24,7 +24,7 @@
     }));
 
     registerBlockType('cff/cff-feed-block', {
-        title: 'Custom Facebook Feed',
+        title: 'Custom Facebook Feed (Deprecated)',
         icon: cffIcon,
         category: 'widgets',
         attributes: {

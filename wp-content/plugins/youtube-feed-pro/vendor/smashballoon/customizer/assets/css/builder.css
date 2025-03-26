@@ -9,7 +9,12 @@ body{
     --error-red: #D72C2C;
     --customizer-blue: #0096CC;
     --dark-blue: #2A65DB;
-}
+    --sbc-color-1: #fff;
+    --sbc-color-2: #434960;
+    --sbc-color-3: #4A9F36;
+    --sbc-color-4: #141B38;
+    --sbc-color-5: #E6E6EB;
+    --sbc-color-6: #F9F9FA;
 
 #sbc-builder-app {
     display: none;
@@ -885,6 +890,9 @@ Social Links
 }
 
 @media all and (max-width: 960px) {
+    body.sticky-menu .sbc-popup-inside {
+        left: 0px;
+    }
     .sbc-csz-header-insider{
         width: calc(100% - 36px);
     }
@@ -1068,13 +1076,17 @@ Social Links
     background: #E2F5FF;
     border: 1px solid #E2F5FF;
 }
+.sbc-feedtypes-list .sbc-feedtype-el[data-type="favorites"],
+.sbc-feedtemplates-list .sbc-feedtemplate-el[data-feed-type="favorites"] {
+    display: none;
+}
 .sbc-feedtype-el-img {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #f3f4f5;
-    border: 3px solid #f3f4f5;
+    background: #e2f5ff;
+    border: 3px solid #e2f5ff;
     border-right: 1px solid #fff;
     margin-right: 30px;
 }
@@ -1089,13 +1101,14 @@ Social Links
     border: 1px solid #F1F1F1;
     border-bottom: 2px solid #fff;
 }
+.sbc-feedtype-el-img[data-feed-type="channel"] {
+    background-color: #f3f4f5;
+    border-color: #f3f4f5;
+}
 .sbc-feedtype-el[data-active="true"] {
     border: 2px solid #fe544f!important;
 }
-.sbc-feedtype-el-img[data-feed-type=social_wall] {
-    background-color: #fef4ef;
-    border-color: #fef4ef;
-}
+
 .sbc-advanced-feedtypes .sbc-feedtype-el-img[data-feed-type=social_wall] {
     background-color: transparent;
     border-color: transparent;
@@ -1131,6 +1144,10 @@ Social Links
     flex: 1 1 auto;
     padding: 0 20px 0 0 ;
     padding-right: 50px;
+}
+.sbc-feedtype-el-info .sb-small-p {
+    display: flex;
+    align-items: center;
 }
 .sbc-feedtype-el-info span svg {
     margin-left: 6px;
@@ -2020,7 +2037,7 @@ body.folded .sb-customizer-sidebar{
 Controls Style
 */
 .sb-control-label[data-title="true"]{
-    font-weight: 600;
+    font-weight: 500;
 }
 .sb-control-label {
     display: flex;
@@ -2075,6 +2092,9 @@ Controls Style
 	top: 0!important;
 	z-index: 6!important;
     background: rgba(255,255,255,0.4)!important;
+}
+[data-type=heading] .sb-control-elem-overlay{
+    opacity: 0;
 }
 #sbc-builder-app .sb-control-elem-ctn[data-type="heading"] .sb-small-p{
     font-weight: 600;
@@ -2146,14 +2166,11 @@ Controls Style
     padding: 0px;
 }
 .sb-control-elem-ctn[data-layout="block"] input[type="number"] {
-    height: 36px;
+    height: 40px;
     background: #FFFFFF;
     border-radius: 1px 0 0 1px !important;
-    /*border-right-color: #F3F4F5 !important;*/
 }
-.sb-control-elem-ctn[data-layout="block"] [data-contains-suffix="true"] input[type="number"]{
-    border-right-color: #F3F4F5 !important;
-}
+
 .sb-control-elem-ctn[data-child="true"]{
     padding-left: 70px;
 }
@@ -2767,6 +2784,7 @@ Controls Style
 
 /* Preview */
 .sb-customizer-preview {
+    height: 100vh;
     min-height: 100px;
     width: calc(100% - 375px);
     float: right;
@@ -3073,7 +3091,6 @@ Welcome Screen Empty State
     left: 0;
     top: 2px;
     z-index: 98;
-    text-align: center;
     justify-content: center;
     align-items: flex-start;
     padding-top: 100px;
@@ -3124,15 +3141,7 @@ Welcome Screen Empty State
     border-bottom: 1px solid rgba(255, 255, 255, 0.21);
     padding-bottom: 24px;
 }
-.sbc-lb-video-header.no-subscribe-bar {
-    justify-content: flex-end;
-    margin: 0;
-    border-bottom: 0px solid rgba(255, 255, 255, 0.21);
-    padding-bottom: 0px;
-}
-.sbc-lb-video-header.no-subscribe-bar svg {
-    transform: translate(0px, 30px);
-}
+
 .sbc-lb-video-header-left {
     width: 490px;
     display: flex;
@@ -3252,6 +3261,33 @@ Welcome Screen Empty State
 .sbc-popup-inside.sbc-extpp-license-expired-border {
     border-top: 5px solid #D72C2C;
 }
+.sbc-feedtemplates-pp-ctn .sbc-popup-inside {
+    width: 1140px;
+}
+.sbc-feedtemplates-pp-ctn.sbc-feedtypes-ctn .sbc-popup-inside .sbc-feedtemplate-el {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.sbc-feedtemplates-pp-ctn.sbc-feedtypes-ctn .sbc-popup-inside .sbc-feedtemplate-el[data-feed-type="favorites"] {
+    display: none;
+}
+.sbc-feedtypes-ctn .sbc-feedtemplate-el-info svg {
+    width: auto;
+}
+.sbc-feedtemplates-popup .sbc-feedtypes-list .sbc-feedtemplate-el-info {
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 12px 0;
+}
+.sbc-feedtemplates-popup .sbc-feedtypes-list .sbc-feedtemplate-el-info svg {
+    transform: translate(6px, 2px)
+}
+.sbc-feedtypes-ctn .sbc-feedtemplates-list .sbc-feedtemplate-el-info .sb-small-p {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
 .sbc-feedtemplates-popup {
     width: 1172px;
     max-width: calc(100% - 200px);
@@ -3284,6 +3320,13 @@ Welcome Screen Empty State
     grid-column-gap: 1%;
     margin: 30px 0px 20px;
 }
+
+.sbc-feedtypes-list {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-column-gap: 1%;
+    margin: 30px 0px 20px;
+}
 .sbc-feedtemplates.sby-free-style .sbc-feedtemplates-list {
     grid-template-columns: 38%;
 }
@@ -3298,9 +3341,6 @@ Welcome Screen Empty State
 }
 .sbc-feedtemplates.sby-free-style .sbc-feedtemplate-el .sbc-feedtemplate-el-info .sb-caption {
     font-size: 12px !important;
-}
-.sbc-feedtemplates.sby-free-style .sbc-feedtemplate-el svg {
-    height: 140px;
 }
 #sbc-builder-app h4.sbc-customizer-subheading:not(#sb_instagram h5) {
     font-weight: 600;
@@ -4479,12 +4519,20 @@ Feed Instance Popup
     margin-top: 128px;
 }
 
+.sb_youtube:not(.sby_layout_list) .sby-comment-container{
+    display: none;
+
+}
+
+.sb_youtube.sby_layout_gallery .sby_player_outer_wrap .sby-comment-container {
+    display: block;
+}
 
 .sby_layout_list .sby_item:not(:first-child) .sby-player-info .sby-channel-info-bar {
     display: none;
 }
 
-[data-sby-pro="false"] .sbc-lb-video-header .sbc-lb-video-header-left {
+[data-sby-pro="false"] .sby_lb-dataContainer .sby_lb-caption{
     display: none;
 }
 [data-sby-pro="false"] .sbc-lb-video-header {
@@ -4495,4 +4543,227 @@ Feed Instance Popup
 }
 [data-sby-pro="false"] .sbc-lb-video-description {
     display: none;
+}
+
+#sbc-builder-app .account-connection-warning h3 {
+    font-size: 18px;
+    padding-right: 115px;
+}
+.account-connection-warning.sbc-popup.sbc-popup-medium .sbc-pp-popup-inside {
+    width: 460px;
+}
+.account-connection-warning.sbc-popup.sbc-popup-medium .sbc-pp-popup-cls {
+    display: none;
+}
+.account-connection-warning.sbc-popup.sbc-popup-medium .sbc-popup-content .sbc-api-form {
+    align-items: flex-start;
+    justify-content: flex-end;
+    margin-bottom: 0px;
+    gap: 10px;
+}
+.account-connection-warning .sbc-popup-content .sbc-api-form button.sbc-btn-default {
+    background-color: #fff;
+}
+.account-connection-warning.sbc-popup.sbc-popup-medium .sbc-api-form button[type=submit]{
+    padding: 10px 15px;
+}
+.account-connection-warning.sbc-popup.sbc-popup-medium .sbc-api-form button[type=submit] svg {
+    margin-right: 5px;
+}
+.sbc-cta-icon {
+    margin-right: 8px;
+}
+
+
+
+.sb-bold-label .sb-control-label {
+    font-weight: 600;
+}
+
+.sb-input-button-with-icon input{
+    margin-right: 4px;
+}
+
+.sb-input-button-with-icon .sb-control-elem-description {
+    margin-top: 10px;
+}
+
+.sb-input-button-with-icon .sb-control-input-info{
+    line-height: normal;
+    font-weight: 600;
+    padding: 6px 20px 6px 12px;
+    border-left: 1px solid #D0D1D7;
+}
+
+.sb-input-button-with-icon .sb-control-input-info .sb-control-btn-icon{
+    line-height: 1;
+}
+
+.sb-input-button-with-icon .sb-control-input-info svg{
+
+    margin-right: 5px; 
+}
+
+/* === Upsell Banner Common === */
+
+.sbc-upsell-banner *,.sbc-upsell-banner *:before,.sbc-upsell-banner *:after{
+    box-sizing: border-box;
+}
+
+.sbc-upsell-banner {
+    padding: 14px 53px 0 53px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    float: left;
+}
+
+.sbc-upsell-banner .sbc-row {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--sbc-color-1);
+    border-radius: 4px;
+    box-shadow: 0px 4px 5px 0px #0000000D, 0px 1px 2px 0px #0000000D;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-left {
+    width: 319px;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-left img{ 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-right { 
+    width: calc(100% - 319px);
+    padding: 25px 45px 30px;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title{ 
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: -0.01em;
+    text-align: left;
+    margin-bottom: 8px;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-right p { 
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20.8px;
+    color: var(--sbc-color-2);
+    margin-top: 0;
+    margin-bottom: 18px;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-cta .sbc-cta-link { 
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22.4px;
+    padding: 8px 20px;
+    border-radius: 4px;
+    color: var(--sbc-color-1);
+    background-color: var(--sbc-color-3);
+    box-shadow: 0px 1px 1px 0px #00000014, 0px 2px 5px 0px #3C42571F, 0px -1px 1px 0px #0000001F inset;
+}
+
+.sbc-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-cta .sbc-cta-link svg {
+    margin-left: 5px;   
+}
+
+@media (max-width: 768px) {
+
+    .sbc-upsell-banner .sbc-row .sbc-col-left,
+    .sbc-upsell-banner .sbc-row .sbc-col-right {
+        width: 100%;
+    }    
+
+    .sbc-upsell-banner .sbc-row .sbc-col-right { 
+        padding: 20px;
+    }
+
+    .sbc-upsell-banner {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .sbc-click-social-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title,
+    .sbc-click-social-upsell-banner .sbc-row .sbc-col-right p {
+        max-width: 100%;
+    }
+}
+
+/* === AAB Upsell Banner === */
+.sbc-aab-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title { 
+    max-width: 320px;
+}
+
+.sbc-aab-upsell-banner .sbc-row .sbc-col-right p{ 
+    max-width: 450px;
+}
+
+
+/* === Click Social Upsell Banner === */
+
+.sbc-click-social-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title{ 
+    max-width: 466px;
+}
+
+.sbc-click-social-upsell-banner .sbc-row .sbc-col-right p{ 
+    max-width: 375px;
+}
+
+/* === Feed Plugin Upsell Banner === */
+
+.sbc-feed-plugins-upsell-banner {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sbc-upsell-banner.sbc-feed-plugins-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title{
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 28.8px;
+    letter-spacing: -0.01em;
+    color: var(--sbc-color-4);
+    width: 100%;
+    max-width: 383px;
+    margin-bottom: 25px;
+}
+
+.sbc-upsell-banner.sbc-feed-plugins-upsell-banner .sbc-row .sbc-col-right .sbc-upsell-banner-title span{
+   color: var(--cl-orange);
+}
+
+.sbc-upsell-banner.sbc-feed-plugins-upsell-banner .sbc-upsell-banner-cta .sbc-upsell-banner-single-cta{
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22.4px;
+    color: var(--sbc-color-4);
+    border-radius: 4px;
+    background-color: var(--sbc-color-6);
+    padding: 8px 12px 8px 36px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--sbc-color-5);
+    box-shadow: 0px 1px 1px 0px #0000000D, 0px 2px 5px 0px #3C42570D, 0px -1px 1px 0px #0000001F inset;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.sbc-upsell-banner.sbc-feed-plugins-upsell-banner .sbc-upsell-banner-cta .sbc-upsell-banner-single-cta:hover{
+    background-color: var(--sbc-color-1);
+}
+
+.sbc-upsell-banner.sbc-feed-plugins-upsell-banner .sbc-upsell-banner-cta svg{
+    position: absolute;
+    left: 12px;
+    top: 11px;
+    width: 16px;
+    height: 16px;
 }

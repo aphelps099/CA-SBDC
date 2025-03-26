@@ -1,77 +1,95 @@
 <?php
+
 /**
  * Customizer Tab
  *
- *
  * @since 4.0
  */
+
 namespace CustomFacebookFeed\Builder\Tabs;
+
 use CustomFacebookFeed\Builder\CFF_Feed_Builder;
-if(!defined('ABSPATH'))	exit;
+use CustomFacebookFeed\CFF_License_Tier;
+
+if (!defined('ABSPATH')) {
+	exit;
+}
 
 
-class CFF_Customize_Tab{
-
+class CFF_Customize_Tab
+{
+	public static $should_disable_pro_features = false;
+	public static $license_tier_features = false;
 
 	/**
 	 * Get Customize Tab Sections
-	 *
 	 *
 	 * @since 4.0
 	 * @access public
 	 *
 	 * @return array
-	*/
-	static function get_sections(){
+	 */
+	public static function get_sections()
+	{
+		self::$should_disable_pro_features = cff_main_pro()->cff_license_handler->should_disable_pro_features;
+
+		$license_tier = new CFF_License_Tier();
+		self::$license_tier_features = $license_tier->tier_features();
+
 		return [
 			'settings_feedtemplate' => [
-				'heading' 	=> __( 'Template', 'custom-facebook-feed' ),
+				'heading' 	=> __('Template', 'custom-facebook-feed'),
 				'icon' 		=> 'layout',
 				'controls'	=> self::get_settings_feedtemplates_controls()
 			],
+			'settings_feedtheme' => [
+				'heading' 	=> __('Theme', 'custom-facebook-feed'),
+				'icon' 		=> 'color_scheme',
+				'controls'	=> self::get_settings_feedtheme_controls()
+			],
 			'settings_feedtype' => [
-				'heading' 	=> __( 'Feed Type', 'custom-facebook-feed' ),
+				'heading' 	=> __('Feed Type', 'custom-facebook-feed'),
 				'icon' 		=> 'article',
 				'controls'	=> self::get_settings_feedtype_controls()
 			],
 			'customize_feedlayout' => [
-				'heading' 	=> __( 'Feed Layout', 'custom-facebook-feed' ),
+				'heading' 	=> __('Feed Layout', 'custom-facebook-feed'),
 				'icon' 		=> 'feed_layout',
 				'controls'	=> self::get_customize_feedlayout_controls()
 			],
 			'customize_colorscheme' => [
-				'heading' 	=> __( 'Color Scheme', 'custom-facebook-feed' ),
+				'heading' 	=> __('Color Scheme', 'custom-facebook-feed'),
 				'icon' 		=> 'color_scheme',
 				'controls'	=> self::get_customize_colorscheme_controls()
 			],
 			'customize_sections' => [
-				'heading' 	=> __( 'Sections', 'custom-facebook-feed' ),
+				'heading' 	=> __('Sections', 'custom-facebook-feed'),
 				'isHeader' 	=> true,
 			],
 			'customize_header' => [
-				'heading' 	=> __( 'Header', 'custom-facebook-feed' ),
+				'heading' 	=> __('Header', 'custom-facebook-feed'),
 				'icon' 		=> 'header',
 				'separator'	=> 'none',
 				'controls'	=> self::get_customize_header_controls()
 			],
 			'customize_posts' => [
-				'heading' 			=> __( 'Posts', 'custom-facebook-feed' ),
+				'heading' 			=> __('Posts', 'custom-facebook-feed'),
 				'icon' 				=> 'article',
 				'controls'			=> self::get_customize_posts_controls(),
-				'condition'			=> ['feedtype' => ['timeline','reviews','events']],
+				'condition'			=> ['feedtype' => ['timeline','reviews','events','videos','albums']],
 				'separator'			=> 'none',
 				'nested_sections' 	=> [
 					'post_style' => [
-						'heading' 			=> __( 'Post Style', 'custom-facebook-feed' ),
+						'heading' 			=> __('Post Style', 'custom-facebook-feed'),
 						'icon' 				=> 'color_scheme',
 						'isNested'			=> 'true',
-						'condition'			=> ['feedtype' => ['timeline','reviews','events']],
+						'condition'			=> ['feedtype' => ['timeline','reviews','events','videos','albums']],
 						'controls'			=> self::get_nested_post_style_controls(),
 					],
 					'individual_elements' => [
 						'condition'			=> ['feedtype' => ['timeline','reviews','events']],
-						'heading' 			=> __( 'Edit Individual Elements', 'custom-facebook-feed' ),
-						'description' 		=> __( 'Hide or Show individual elements of a post or edit their options', 'custom-facebook-feed' ),
+						'heading' 			=> __('Edit Individual Elements', 'custom-facebook-feed'),
+						'description' 		=> __('Hide or Show individual elements of a post or edit their options', 'custom-facebook-feed'),
 						'icon' 				=> 'text',
 						'separator'			=> 'none',
 						'isNested'			=> 'true',
@@ -81,21 +99,23 @@ class CFF_Customize_Tab{
 				]
 			],
 			'customize_likebox' => [
-				'heading' 	=> __( 'Like Box', 'custom-facebook-feed' ),
+				'heading' 	=> __('Like Box', 'custom-facebook-feed'),
 				'icon' 		=> 'like_box',
 				'separator'	=> 'none',
 				'controls'	=> self::get_customize_likebox_controls()
 			],
 			'customize_loadmorebutton' => [
-				'heading' 	=> __( 'Load More Button', 'custom-facebook-feed' ),
+				'heading' 	=> __('Load More Button', 'custom-facebook-feed'),
 				'icon' 		=> 'load_more',
 				'separator'	=> 'none',
+				'proLabel'		=> !self::$should_disable_pro_features ? null : true,
 				'controls'	=> self::get_customize_loadmorebutton_controls()
 			],
 			'customize_lightbox' => [
-				'heading' 	=> __( 'Lightbox', 'custom-facebook-feed' ),
+				'heading' 	=> __('Lightbox', 'custom-facebook-feed'),
 				'icon' 		=> 'lightbox',
 				'separator'	=> 'none',
+				'proLabel'		=> !self::$should_disable_pro_features ? null : true,
 				'controls'	=> self::get_customize_lightbox_controls()
 			]
 		];
@@ -104,10 +124,12 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Settings Tab Feed Type Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_settings_feedtype_controls(){
+	 */
+	public static function get_settings_feedtype_controls()
+	{
 		return [
 			[
 				'type' 				=> 'customview',
@@ -118,10 +140,12 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Settings Tab Feed Type Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_settings_feedtemplates_controls() {
+	 */
+	public static function get_settings_feedtemplates_controls()
+	{
 		return [
 			[
 				'type' 				=> 'customview',
@@ -131,39 +155,59 @@ class CFF_Customize_Tab{
 	}
 
 	/**
-	 * Get Customize Tab Feed Layout Section
+	 * Get Settings Tab Feed Theme Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_feedlayout_controls(){
+	 */
+	public static function get_settings_feedtheme_controls()
+	{
+		return [
+			[
+				'type' 				=> 'customview',
+				'viewId'			=> 'feedtheme'
+			]
+		];
+	}
+
+	/**
+	 * Get Customize Tab Feed Layout Section
+	 *
+	 * @since 4.0
+	 * @return array
+	 */
+	public static function get_customize_feedlayout_controls()
+	{
+		$svg_rocket_icon = CFF_Feed_Builder::builder_svg_icons('rocketPremiumBlue');
+		$is_carousel_active = \CustomFacebookFeed\CFF_FB_Settings::check_active_extension('carousel');
 		return [
 			[
 				'type' 		=> 'toggleset',
 				'id' 		=> 'feedlayout',
-				'heading' 	=> __( 'Layout', 'custom-facebook-feed' ),
+				'heading' 	=> __('Layout', 'custom-facebook-feed'),
 				'separator'	=> 'bottom',
 				'options'	=> [
 					[
 						'value' => 'list',
 						'icon' => 'list',
-						'label' => __( 'List', 'custom-facebook-feed' )
+						'label' => __('List', 'custom-facebook-feed')
 					],
 					[
 						'value' 		=> 'grid',
 						'icon' 			=> 'grid',
 						'condition'		=> ['feedtype' => ['photos','videos','albums','singlealbum']],
-						'label' 		=> __( 'Grid', 'custom-facebook-feed' )
+						'label' 		=> __('Grid', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'masonry',
 						'icon' => 'masonry',
-						'label' => __( 'Masonry', 'custom-facebook-feed' )
+						'label' => __('Masonry', 'custom-facebook-feed')
 					],
 					[
 						'value' 			=> 'carousel',
 						'icon' 				=> 'carousel',
 						'checkExtension'	=> 'carousel',
-						'label' => __( 'Carousel', 'custom-facebook-feed' )
+						'label' => cff_should_disable_pro() || !$is_carousel_active ? __('Carousel', 'custom-facebook-feed') . ' ' . $svg_rocket_icon : __('Carousel', 'custom-facebook-feed')
 					]
 				]
 			],
@@ -172,12 +216,12 @@ class CFF_Customize_Tab{
 				'id' 				=> 'height',
 				'fieldSuffix' 		=> 'px',
 				'separator'			=> 'bottom',
-				'heading' 			=> __( 'Feed Height', 'custom-facebook-feed' ),
+				'heading' 			=> __('Feed Height', 'custom-facebook-feed'),
 				'style'				=> ['.cff-feed-height' => 'height:{{value}}px;overflow:auto;'],
 			],
 			[
 				'type' 				=> 'heading',
-				'heading' 			=> __( 'Number of Posts', 'custom-facebook-feed' ),
+				'heading' 			=> __('Number of Posts', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'number',
@@ -187,7 +231,7 @@ class CFF_Customize_Tab{
 				'ajaxAction'		=> 'feedFlyPreview',
 				'strongHeading'		=> 'false',
 				'stacked'			=> 'true',
-				'heading' 			=> __( 'Desktop', 'custom-facebook-feed' ),
+				'heading' 			=> __('Desktop', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'number',
@@ -196,7 +240,7 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
 				'stacked'			=> 'true',
-				'heading' 			=> __( 'Mobile', 'custom-facebook-feed' ),
+				'heading' 			=> __('Mobile', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'separator',
@@ -205,7 +249,7 @@ class CFF_Customize_Tab{
 			],
 			[
 				'type' 				=> 'heading',
-				'heading' 			=> __( 'Columns', 'custom-facebook-feed' ),
+				'heading' 			=> __('Columns', 'custom-facebook-feed'),
 				'condition'			=> ['feedlayout' => ['grid','masonry']],
 				'conditionHide'		=> true,
 			],
@@ -217,7 +261,7 @@ class CFF_Customize_Tab{
 				'icon' 				=> 'desktop',
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Desktop', 'custom-facebook-feed' ),
+				'heading' 			=> __('Desktop', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'options'			=> [
 					'1' => '1',
@@ -237,7 +281,7 @@ class CFF_Customize_Tab{
 				'icon' 				=> 'tablet',
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Tablet', 'custom-facebook-feed' ),
+				'heading' 			=> __('Tablet', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'options'			=> [
 					'1' => '1',
@@ -256,7 +300,7 @@ class CFF_Customize_Tab{
 				'icon' 				=> 'mobile',
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Mobile', 'custom-facebook-feed' ),
+				'heading' 			=> __('Mobile', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'options'			=> [
 					'1' => '1',
@@ -265,7 +309,7 @@ class CFF_Customize_Tab{
 				]
 			],
 
-			//Carousel Settings
+			// Carousel Settings
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'carouselheight',
@@ -273,11 +317,11 @@ class CFF_Customize_Tab{
 				'strongHeading'		=> 'false',
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
-				'heading' 			=> __( 'Height of Carousel', 'custom-facebook-feed' ),
+				'heading' 			=> __('Height of Carousel', 'custom-facebook-feed'),
 				'options'			=> [
-					'tallest' => __( 'Always set to tallest post', 'custom-facebook-feed' ),
-					'clickexpand' => __( 'Set to shortest post, button to expand', 'custom-facebook-feed' ),
-					'autoexpand' => __( 'Automatically adjust height (forces 1 column)', 'custom-facebook-feed' ),
+					'tallest' => __('Always set to tallest post', 'custom-facebook-feed'),
+					'clickexpand' => __('Set to shortest post, button to expand', 'custom-facebook-feed'),
+					'autoexpand' => __('Automatically adjust height (forces 1 column)', 'custom-facebook-feed'),
 				]
 			],
 			[
@@ -286,7 +330,7 @@ class CFF_Customize_Tab{
 				'condition'			=> ['feedlayout' => ['carousel']],
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
-				'heading' 		=> __( 'Desktop Columns', 'custom-facebook-feed' ),
+				'heading' 		=> __('Desktop Columns', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'number',
@@ -294,25 +338,25 @@ class CFF_Customize_Tab{
 				'condition'			=> ['feedlayout' => ['carousel']],
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
-				'heading' 		=> __( 'Mobile Columns', 'custom-facebook-feed' ),
+				'heading' 		=> __('Mobile Columns', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'carouselnavigation',
 				'condition'			=> ['feedlayout' => ['carousel']],
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Navigation Arrows Style', 'custom-facebook-feed' ),
+				'heading' 			=> __('Navigation Arrows Style', 'custom-facebook-feed'),
 				'conditionHide'		=> true,
 				'options'			=> [
-					'none' => __( 'Hide arrows', 'custom-facebook-feed' ),
-					'onhover' => __( 'Display on sides of feed on hover', 'custom-facebook-feed' ),
-					'below' => __( 'Below feed, on sides of pagination', 'custom-facebook-feed' ),
+					'none' => __('Hide arrows', 'custom-facebook-feed'),
+					'onhover' => __('Display on sides of feed on hover', 'custom-facebook-feed'),
+					'below' => __('Below feed, on sides of pagination', 'custom-facebook-feed'),
 				]
 			],
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'carouselpagination',
-				'heading' 			=> __( 'Show Pagination', 'custom-facebook-feed' ),
+				'heading' 			=> __('Show Pagination', 'custom-facebook-feed'),
 				'condition'			=> ['feedlayout' => ['carousel']],
 				'stacked'			=> 'true',
 				'conditionHide'		=> true,
@@ -324,7 +368,7 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'carouselautoplay',
-				'heading' 			=> __( 'Enable Autoplay', 'custom-facebook-feed' ),
+				'heading' 			=> __('Enable Autoplay', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'condition'			=> ['feedlayout' => ['carousel']],
 				'conditionHide'		=> true,
@@ -340,8 +384,8 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
 				'step'				=> 200,
-				'prefix' 			=> __( 'Miliseconds', 'custom-facebook-feed' ),
-				'heading' 		=> __( 'Interval Time', 'custom-facebook-feed' ),
+				'prefix' 			=> __('Miliseconds', 'custom-facebook-feed'),
+				'heading' 		=> __('Interval Time', 'custom-facebook-feed'),
 			],
 
 		];
@@ -349,10 +393,12 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Color Scheme Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_colorscheme_controls(){
+	 */
+	public static function get_customize_colorscheme_controls()
+	{
 		$color_scheme_array =
 		[
 			[
@@ -362,22 +408,22 @@ class CFF_Customize_Tab{
 				'options'	=> [
 					[
 						'value' => 'inherit',
-						'label' => __( 'Inherit from Theme', 'custom-facebook-feed' )
+						'label' => __('Inherit from Theme', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'light',
 						'icon' => 'sun',
-						'label' => __( 'Light', 'custom-facebook-feed' )
+						'label' => __('Light', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'dark',
 						'icon' => 'moon',
-						'label' => __( 'Dark', 'custom-facebook-feed' )
+						'label' => __('Dark', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'custom',
 						'icon' => 'cog',
-						'label' => __( 'Custom', 'custom-facebook-feed' )
+						'label' => __('Custom', 'custom-facebook-feed')
 					]
 				]
 			],
@@ -385,7 +431,7 @@ class CFF_Customize_Tab{
 				'type' 				=> 'heading',
 				'condition'			=> ['colorpalette' => ['custom']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Custom Palette', 'custom-facebook-feed' ),
+				'heading' 			=> __('Custom Palette', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
@@ -394,8 +440,8 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Background', 'custom-facebook-feed' ),
-				'tooltip' 			=> __( 'The background color of the posts', 'custom-facebook-feed' ),
+				'heading' 			=> __('Background', 'custom-facebook-feed'),
+				'tooltip' 			=> __('The background color of the posts', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-ctn' => 'background:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
@@ -406,8 +452,8 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Background 2', 'custom-facebook-feed' ),
-				'tooltip' 			=> __( 'The secondary background color which is used for other elements in the feed', 'custom-facebook-feed' ),
+				'heading' 			=> __('Background 2', 'custom-facebook-feed'),
+				'tooltip' 			=> __('The secondary background color which is used for other elements in the feed', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-link-ctn[data-linkbox="off"],.cff-post-item-meta,.cff-post-item-comments-top,.cff-post-item-comments-list,.cff-preview-loadmore-btn' => 'background:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
@@ -418,8 +464,8 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Text', 'custom-facebook-feed' ),
-				'tooltip' 			=> __( 'The primary text color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Text', 'custom-facebook-feed'),
+				'tooltip' 			=> __('The primary text color', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-content,.cff-post-comment-item,.cff-singlemedia-item-info p' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
@@ -430,8 +476,8 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Text 2', 'custom-facebook-feed' ),
-				'tooltip' 			=> __( 'The secondary text color used for ancillary elements in the feed', 'custom-facebook-feed' ),
+				'heading' 			=> __('Text 2', 'custom-facebook-feed'),
+				'tooltip' 			=> __('The secondary text color used for ancillary elements in the feed', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-link-small,.cff-post-item-link-description,.cff-post-item-date' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
@@ -442,7 +488,7 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Link', 'custom-facebook-feed' ),
+				'heading' 			=> __('Link', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-author-name,.cff-post-item-text a,.cff-post-item-text-expand,.cff-post-item-action-txt,.cff-post-meta-txt,.cff-post-meta-link,.cff-preview-loadmore-btn,.cff-singlemedia-item-info h4 a,.cff-post-event-title a,.cff-post-item-link-a' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			]
@@ -451,7 +497,8 @@ class CFF_Customize_Tab{
 		$color_overrides = CFF_Feed_Builder::get_color_overrides();
 		$color_overrides_array = $color_overrides_elements = [];
 		foreach ($color_overrides as $cl_override) {
-			array_push($color_overrides_array,
+			array_push(
+				$color_overrides_array,
 				[
 					'type' 						=> 'heading',
 					'overrideColorCondition' 	=> $cl_override['elements'],
@@ -462,7 +509,8 @@ class CFF_Customize_Tab{
 
 			foreach ($cl_override['controls'] as $cl_override_control) {
 				array_push($color_overrides_elements, $cl_override_control['id']);
-				array_push($color_overrides_array,
+				array_push(
+					$color_overrides_array,
 					[
 						'type' 						=> 'coloroverride',
 						'id' 						=> $cl_override_control['id'],
@@ -476,7 +524,8 @@ class CFF_Customize_Tab{
 				);
 			}
 		}
-		array_push($color_scheme_array,
+		array_push(
+			$color_scheme_array,
 			[
 				'type' 						=> 'separator',
 				'overrideColorCondition' 	=> $color_overrides_elements,
@@ -487,25 +536,26 @@ class CFF_Customize_Tab{
 			[
 				'type' 						=> 'heading',
 				'overrideColorCondition' 	=> $color_overrides_elements,
-				'heading' 					=> __( 'Overrides', 'custom-facebook-feed' ),
-				'description'				=> __( 'These colors have been set from the individual element properties and are overriding the global color scheme', 'custom-facebook-feed' ),
+				'heading' 					=> __('Overrides', 'custom-facebook-feed'),
+				'description'				=> __('These colors have been set from the individual element properties and are overriding the global color scheme', 'custom-facebook-feed'),
 			]
 		);
-		return  array_merge($color_scheme_array,$color_overrides_array);
-
+		return  array_merge($color_scheme_array, $color_overrides_array);
 	}
 
 	/**
 	 * Get Customize Tab Header Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_header_controls(){
+	 */
+	public static function get_customize_header_controls()
+	{
 		return [
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'showheader',
-				'label' 			=> __( 'Enable', 'custom-facebook-feed' ),
+				'label' 			=> __('Enable', 'custom-facebook-feed'),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
 				'options'			=> [
@@ -523,44 +573,44 @@ class CFF_Customize_Tab{
 				'type' 		=> 'toggleset',
 				'id' 		=> 'headertype',
 				'condition'	=> ['showheader' => ['on']],
-				'heading' 	=> __( 'Header Type', 'custom-facebook-feed' ),
+				'heading' 	=> __('Header Type', 'custom-facebook-feed'),
 				'options'	=> [
 					[
 						'value' => 'visual',
 						'icon' => 'visual',
-						'label' => __( 'Visual', 'custom-facebook-feed' )
+						'label' => __('Visual', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'text',
 						'icon' => 'text',
-						'label' => __( 'Text', 'custom-facebook-feed' )
+						'label' => __('Text', 'custom-facebook-feed')
 					]
 				]
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'top' 				=> 10,
 				'bottom' 			=> 10,
 			],
-			//Visual Header Start
+			// Visual Header Start
 			[
 				'type' 				=> 'heading',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Title Text', 'custom-facebook-feed' ),
+				'heading' 			=> __('Title Text', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'headertextsize',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Size', 'custom-facebook-feed' ),
+				'heading' 			=> __('Size', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'style'				=> ['h3.cff-preview-header-name' => 'font-size:{{value}}px!important;'],
 				'options'			=> CFF_Builder_Customizer_Tab::get_text_size_options()
@@ -568,39 +618,39 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'headertextcolor',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-header-name' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'top' 				=> 20,
 				'bottom' 			=> 10,
 			],
 			[
 				'type' 				=> 'heading',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Bio Text', 'custom-facebook-feed' ),
+				'heading' 			=> __('Bio Text', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'headerbiosize',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Size', 'custom-facebook-feed' ),
+				'heading' 			=> __('Size', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'style'				=> ['.cff-preview-header-bio' => 'font-size:{{value}}px!important;'],
 				'options'			=> CFF_Builder_Customizer_Tab::get_text_size_options()
@@ -608,19 +658,19 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'headerbiocolor',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-header-bio' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'top' 				=> 20,
 				'bottom' 			=> 15,
@@ -628,10 +678,10 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'headercover',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'label' 			=> __( 'Cover Photo', 'custom-facebook-feed' ),
+				'label' 			=> __('Cover Photo', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -642,19 +692,19 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'number',
 				'id' 				=> 'headercoverheight',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual'],'headercover' => ['on']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
 				'fieldSuffix' 		=> 'px',
 				'style'				=> ['.cff-preview-header-cover' => 'height:{{value}}px!important;'],
 				'child'				=> 'true',
-				'description' 		=> __( 'Height', 'custom-facebook-feed' ),
+				'description' 		=> __('Height', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'top' 				=> 15,
 				'bottom' 			=> 10,
@@ -662,10 +712,10 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'headername',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'label' 			=> __( 'Name and Avatar', 'custom-facebook-feed' ),
+				'label' 			=> __('Name and Avatar', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -675,8 +725,8 @@ class CFF_Customize_Tab{
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'top' 				=> 10,
 				'bottom' 			=> 10,
@@ -684,10 +734,10 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'headerbio',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'label' 			=> __( 'About (Bio and Likes)', 'custom-facebook-feed' ),
+				'label' 			=> __('About (Bio and Likes)', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -697,8 +747,8 @@ class CFF_Customize_Tab{
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
 				'top' 				=> 10,
 				'bottom' 			=> 10,
@@ -706,10 +756,10 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'headeroutside',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['visual']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['visual']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['visual']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['visual']],
 				'conditionHide'		=> true,
-				'label' 			=> __( 'Display outside scrollable area', 'custom-facebook-feed' ),
+				'label' 			=> __('Display outside scrollable area', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -717,12 +767,12 @@ class CFF_Customize_Tab{
 					'disabled'	=> 'off'
 				]
 			],
-			//Visual Header End
-			//Text Header Start
+			// Visual Header End
+			// Text Header Start
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'top' 				=> 10,
 				'bottom' 			=> 15,
@@ -730,9 +780,9 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'headericonenabled',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
-				'label' 			=> __( 'Icon', 'custom-facebook-feed' ),
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
+				'label' 			=> __('Icon', 'custom-facebook-feed'),
 				'conditionHide'		=> true,
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
@@ -746,10 +796,10 @@ class CFF_Customize_Tab{
 				'id' 				=> 'headericon',
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text'],'headericonenabled'=>['on']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text'],'headericonenabled' => ['on']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Icon Image', 'custom-facebook-feed' ),
+				'heading' 			=> __('Icon Image', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'child'				=> 'true',
 				'options'			=> CFF_Builder_Customizer_Tab::get_header_icons_options()
@@ -757,12 +807,12 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'headericonsize',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text'],'headericonenabled'=>['on']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text'],'headericonenabled' => ['on']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'full',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Icon Size', 'custom-facebook-feed' ),
+				'heading' 			=> __('Icon Size', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'child'				=> 'true',
 				'style'				=> ['.cff-header-text-icon' => 'font-size:{{value}}px!important;'],
@@ -771,20 +821,20 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'headericoncolor',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text'],'headericonenabled'=>['on']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text'],'headericonenabled' => ['on']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
 				'child'				=> 'true',
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 				'style'				=> ['.cff-header-text-icon' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'top' 				=> 15,
 				'bottom' 			=> 15,
@@ -792,21 +842,21 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'textarea',
 				'id' 				=> 'headertext',
-				'heading' 			=> __( 'Text', 'custom-facebook-feed' ),
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'heading' 			=> __('Text', 'custom-facebook-feed'),
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'select',
 				'id' 				=> 'headertextsize',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'full',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Size', 'custom-facebook-feed' ),
+				'heading' 			=> __('Size', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'style'				=> ['.cff-header-text' => 'font-size:{{value}}px!important;'],
 				'options'			=> CFF_Builder_Customizer_Tab::get_text_size_options()
@@ -814,55 +864,55 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'headertextcolor',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'full',
 				'strongHeading'		=> 'false',
 				'style'				=> ['.cff-header-text' => 'color:{{value}};'],
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 				'stacked'			=> 'true'
 			],
 
 			[
 				'type' 				=> 'separator',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'top' 				=> 15,
 				'bottom' 			=> 15,
 			],
 			[
 				'type' 				=> 'heading',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Background', 'custom-facebook-feed' ),
+				'heading' 			=> __('Background', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'headerbg',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-header-text-h' => 'background:{{value}};'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'number',
 				'id' 				=> 'headerpadding',
-				'condition'			=> ['showheader' => ['on'],'headertype'=> ['text']],
-				'conditionDimmed'	=> ['showheader' => ['off'],'headertype'=> ['text']],
+				'condition'			=> ['showheader' => ['on'],'headertype' => ['text']],
+				'conditionDimmed'	=> ['showheader' => ['off'],'headertype' => ['text']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
 				'stacked'			=> 'true',
 				'fieldSuffix'		=> 'px',
 				'style'				=> ['.cff-preview-header-text-h' => 'padding:{{value}}px!important;'],
-				'heading' 			=> __( 'Padding / Spacing', 'custom-facebook-feed' ),
+				'heading' 			=> __('Padding / Spacing', 'custom-facebook-feed'),
 			],
 
 		];
@@ -870,32 +920,39 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Posts Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_posts_controls(){
+	 */
+	public static function get_customize_posts_controls()
+	{
 		return [
 			[
 				'type' 		=> 'toggleset',
 				'id' 		=> 'layout',
-				'heading' 	=> __( 'Layout', 'custom-facebook-feed' ),
+				'heading' 	=> __('Layout', 'custom-facebook-feed'),
 				'conditionHide'		=> true,
+				'proLabel'		=> true,
 				'condition'			=> ['feedtype' => ['timeline','reviews','events'], 'feedlayout' => ['list','carousel']],
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'postSettings',
+				'checkExtensionPopup' 	=> !self::$should_disable_pro_features ? null : 'postSettings',
+				'disabledInput' => !self::$should_disable_pro_features ? null :  'postSettings',
+				'description' 	=> __('Get more layout options by upgrading to pro.', 'custom-facebook-feed'),
 				'options'	=> [
 					[
 						'value' => 'thumb',
 						'icon' => 'thumbnail',
-						'label' => __( 'Thumbnail', 'custom-facebook-feed' )
+						'label' => __('Thumbnail', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'half',
 						'icon' => 'halfwidth',
-						'label' => __( 'Half width', 'custom-facebook-feed' )
+						'label' => __('Half width', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'full',
 						'icon' => 'fullwidth',
-						'label' => __( 'Full width', 'custom-facebook-feed' )
+						'label' => __('Full width', 'custom-facebook-feed')
 					]
 				]
 			],
@@ -909,11 +966,14 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'checkbox',
 				'id' 				=> 'enablenarrow',
-				'label' 			=> __( 'Use Full Width layout when post width is less than 500px', 'custom-facebook-feed' ),
+				'label' 			=> __('Use Full Width layout when post width is less than 500px', 'custom-facebook-feed'),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
 				'conditionHide'		=> true,
 				'condition'			=> ['feedtype' => ['timeline','reviews','events']],
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'postSettings',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null :  'postSettings',
+				'disabledInput' => !self::$should_disable_pro_features ? null :  'postSettings',
 				'options'			=> [
 					'enabled'	=> 'on',
 					'disabled'	=> 'off'
@@ -932,15 +992,17 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Likebox Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_likebox_controls(){
+	 */
+	public static function get_customize_likebox_controls()
+	{
 		return [
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'showlikebox',
-				'label' 			=> __( 'Enable', 'custom-facebook-feed' ),
+				'label' 			=> __('Enable', 'custom-facebook-feed'),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
 				'options'			=> [
@@ -952,16 +1014,16 @@ class CFF_Customize_Tab{
 				'type' 		=> 'toggleset',
 				'id' 		=> 'likeboxsmallheader',
 				'condition'	=> ['showlikebox' => ['on']],
-				'heading' 	=> __( 'Size', 'custom-facebook-feed' ),
+				'heading' 	=> __('Size', 'custom-facebook-feed'),
 				'separator'	=> 'on',
 				'options'	=> [
 					[
 						'value' => 'on',
-						'label' => __( 'Small', 'custom-facebook-feed' )
+						'label' => __('Small', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'off',
-						'label' => __( 'Large', 'custom-facebook-feed' )
+						'label' => __('Large', 'custom-facebook-feed')
 					]
 				]
 			],
@@ -975,10 +1037,10 @@ class CFF_Customize_Tab{
 				'type' 				=> 'select',
 				'id' 				=> 'likeboxpos',
 				'condition'			=> ['showlikebox' => ['on']],
-				'heading' 			=> __( 'Position', 'custom-facebook-feed' ),
+				'heading' 			=> __('Position', 'custom-facebook-feed'),
 				'options'			=> [
-					'top' => __( 'Top', 'custom-facebook-feed' ),
-					'bottom' => __( 'Bottom', 'custom-facebook-feed' )
+					'top' => __('Top', 'custom-facebook-feed'),
+					'bottom' => __('Bottom', 'custom-facebook-feed')
 				]
 			],
 			[
@@ -993,7 +1055,7 @@ class CFF_Customize_Tab{
 				'id' 				=> 'likeboxcover',
 				'condition'			=> ['showlikebox' => ['on']],
 				'labelStrong'		=> 'true',
-				'heading' 			=> __( 'Cover Photo', 'custom-facebook-feed' ),
+				'heading' 			=> __('Cover Photo', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
@@ -1015,8 +1077,8 @@ class CFF_Customize_Tab{
 				'condition'			=> ['showlikebox' => ['on']],
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Custom Width', 'custom-facebook-feed' ),
-				'description' 		=> __( 'By default this is set to auto', 'custom-facebook-feed' ),
+				'heading' 			=> __('Custom Width', 'custom-facebook-feed'),
+				'description' 		=> __('By default this is set to auto', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -1033,7 +1095,7 @@ class CFF_Customize_Tab{
 				'stacked'			=> 'true',
 				'child'				=> 'true',
 				'fieldSuffix'		=> 'px',
-				'heading' 			=> __( 'Width', 'custom-facebook-feed' ),
+				'heading' 			=> __('Width', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'separator',
@@ -1047,8 +1109,8 @@ class CFF_Customize_Tab{
 				'condition'			=> ['showlikebox' => ['on']],
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Custom CTA', 'custom-facebook-feed' ),
-				'description' 		=> __( 'This toggles the custom CTA like  "Shop now" and "Contact"', 'custom-facebook-feed' ),
+				'heading' 			=> __('Custom CTA', 'custom-facebook-feed'),
+				'description' 		=> __('This toggles the custom CTA like "Shop now" and "Contact"', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -1068,8 +1130,8 @@ class CFF_Customize_Tab{
 				'condition'			=> ['showlikebox' => ['on']],
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Show Fans', 'custom-facebook-feed' ),
-				'description' 		=> __( 'Shows visitors which of their friends  follow this Facebook page', 'custom-facebook-feed' ),
+				'heading' 			=> __('Show Fans', 'custom-facebook-feed'),
+				'description' 		=> __('Shows visitors which of their friends follow this Facebook page', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -1089,8 +1151,8 @@ class CFF_Customize_Tab{
 				'condition'			=> ['showlikebox' => ['on']],
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Display outside scrollable area', 'custom-facebook-feed' ),
-				'description' 		=> __( 'Make the Like Box fixed by moving it outside  the scrollable area', 'custom-facebook-feed' ),
+				'heading' 			=> __('Display outside scrollable area', 'custom-facebook-feed'),
+				'description' 		=> __('Make the Like Box fixed by moving it outside the scrollable area', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -1104,17 +1166,22 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Load More Button Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_loadmorebutton_controls(){
+	 */
+	public static function get_customize_loadmorebutton_controls()
+	{
 		return [
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'loadmore',
-				'label' 			=> __( 'Enable', 'custom-facebook-feed' ),
+				'label' 			=> __('Enable', 'custom-facebook-feed'),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'loadMore',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'loadMore',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
 				'options'			=> [
 					'enabled'	=> 'on',
 					'disabled'	=> 'off'
@@ -1129,8 +1196,11 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'text',
 				'id' 				=> 'buttontext',
-				'heading' 			=> __( 'Text', 'custom-facebook-feed' ),
+				'heading' 			=> __('Text', 'custom-facebook-feed'),
 				'condition'			=> ['loadmore' => ['on']],
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'loadMore',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'loadMore',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
 				'stacked'			=> 'true'
 			],
 			[
@@ -1142,7 +1212,7 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'heading',
 				'condition'			=> ['loadmore' => ['on']],
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
@@ -1151,7 +1221,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'background',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Background', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'loadMore',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'loadMore',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Background', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-loadmore-btn' => 'background:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
@@ -1162,7 +1235,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'cursor',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Hover State', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'loadMore',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'loadMore',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Hover State', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-loadmore-btn:hover' => 'background:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
@@ -1173,7 +1249,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'text',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Text', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'loadMore',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'loadMore',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Text', 'custom-facebook-feed'),
 				'style'				=> ['.cff-preview-loadmore-btn' => 'color:{{value}};'],
 				'stacked'			=> 'true'
 			],
@@ -1182,17 +1261,22 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Lightbox Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_customize_lightbox_controls(){
+	 */
+	public static function get_customize_lightbox_controls()
+	{
 		return [
 			[
 				'type' 				=> 'switcher',
 				'id' 				=> 'disablelightbox',
-				'label' 			=> __( 'Enable', 'custom-facebook-feed' ),
+				'label' 			=> __('Enable', 'custom-facebook-feed'),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightbox',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightbox',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
 				'options'			=> [
 					'enabled'	=> 'off',
 					'disabled'	=> 'on'
@@ -1207,7 +1291,7 @@ class CFF_Customize_Tab{
 			[
 				'type' 				=> 'heading',
 				'condition'			=> ['disablelightbox' => ['off']],
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
@@ -1216,7 +1300,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'background',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Background', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightbox',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightbox',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Background', 'custom-facebook-feed'),
 				'style'				=> ['.cff-lightbox-sidebar' => 'background:{{value}}!important;'],
 				'stacked'			=> 'true'
 
@@ -1228,7 +1315,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'text',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Text', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightbox',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightbox',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Text', 'custom-facebook-feed'),
 				'style'				=> ['.cff-lightbox-sidebar .cff-post-item-date,.cff-lightbox-cls,.cff-lightbox-sidebar .cff-post-item-text' => 'color:{{value}}!important;'],
 				'stacked'			=> 'true'
 
@@ -1240,7 +1330,10 @@ class CFF_Customize_Tab{
 				'layout' 			=> 'half',
 				'icon' 				=> 'link',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Link', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightbox',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightbox',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Link', 'custom-facebook-feed'),
 				'style'				=> ['.cff-lightbox-sidebar .cff-post-item-author-name,.cff-lightbox-sidebar .cff-post-meta-link,.cff-lightbox-sidebar .cff-post-comment-item-author.cff-post-meta-link,.cff-lightbox-sidebar .cff-post-item-text a' => 'color:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
@@ -1256,8 +1349,11 @@ class CFF_Customize_Tab{
 				'condition'			=> ['disablelightbox' => ['off']],
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Show Comments', 'custom-facebook-feed' ),
-				'description' 		=> __( 'For Timeline posts only', 'custom-facebook-feed' ),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightbox',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightbox',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'heading' 			=> __('Show Comments', 'custom-facebook-feed'),
+				'description' 		=> __('For Timeline posts only', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'labelStrong'		=> 'true',
 				'options'			=> [
@@ -1276,25 +1372,29 @@ class CFF_Customize_Tab{
 	*/
 	/**
 	 * Get Customize Tab Post Style Nested Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_nested_post_style_controls(){
+	 */
+	public static function get_nested_post_style_controls()
+	{
 		return [
 			[
 				'type' 		=> 'toggleset',
 				'id' 		=> 'poststyle',
-				'heading' 	=> __( 'Post Type', 'custom-facebook-feed' ),
+				'heading' 	=> __('Post Type', 'custom-facebook-feed'),
+				'condition' => ['feedtype' => ['timeline','reviews','events']],
+				'conditionHide' => true,
 				'options'	=> [
 					[
 						'value' => 'boxed',
 						'icon' => 'boxed',
-						'label' => __( 'Boxed', 'custom-facebook-feed' )
+						'label' => __('Boxed', 'custom-facebook-feed')
 					],
 					[
 						'value' => 'regular',
 						'icon' => 'thumbnail',
-						'label' => __( 'Regular', 'custom-facebook-feed' )
+						'label' => __('Regular', 'custom-facebook-feed')
 					]
 				]
 			],
@@ -1302,51 +1402,53 @@ class CFF_Customize_Tab{
 				'type' 				=> 'separator',
 				'top' 				=> 10,
 				'bottom' 			=> 10,
+				'condition' => ['feedtype' => ['timeline','reviews','events']],
+				'conditionHide' => true,
 			],
 			[
 				'type' 				=> 'heading',
-				'condition'			=> ['poststyle' => ['boxed']],
+				'condition'			=> ['poststyle' => ['boxed'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Individual Properties', 'custom-facebook-feed' ),
+				'heading' 			=> __('Individual Properties', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'postbgcolor',
-				'condition'			=> ['poststyle' => ['boxed']],
+				'condition'			=> ['poststyle' => ['boxed'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'icon' 				=> 'background',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Background', 'custom-facebook-feed' ),
+				'heading' 			=> __('Background', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-ctn' => 'background:{{value}};'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'number',
 				'id' 				=> 'postcorners',
-				'condition'			=> ['poststyle' => ['boxed']],
+				'condition'			=> ['poststyle' => ['boxed'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
 				'fieldSuffix' 		=> 'px',
 				'layout' 			=> 'half',
 				'icon' 				=> 'corner',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Border Radius', 'custom-facebook-feed' ),
+				'heading' 			=> __('Border Radius', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-ctn' => 'border-radius:{{value}}px;'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'separator',
 				'top' 				=> 10,
-				'condition'			=> ['poststyle' => ['boxed']],
+				'condition'			=> ['poststyle' => ['boxed'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
 				'bottom' 			=> 5,
 			],
 			[
 				'type' 				=> 'checkbox',
 				'id' 				=> 'boxshadow',
-				'condition'			=> ['poststyle' => ['boxed']],
+				'condition'			=> ['poststyle' => ['boxed'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
-				'label' 			=> __( 'Box Shadow', 'custom-facebook-feed' ),
+				'label' 			=> __('Box Shadow', 'custom-facebook-feed'),
 				'options'			=> [
 					'enabled'	=> 'on',
 					'disabled'	=> 'off'
@@ -1355,46 +1457,39 @@ class CFF_Customize_Tab{
 			],
 			[
 				'type' 				=> 'heading',
-				'condition'			=> ['poststyle' => ['regular']],
+				'condition'			=> ['poststyle' => ['regular'], 'feedtype' => ['timeline','reviews','events']],
+				'conditionHide' => true,
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Separating Line', 'custom-facebook-feed' ),
+				'heading' 			=> __('Separating Line', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'colorpicker',
 				'id' 				=> 'sepcolor',
-				'condition'			=> ['poststyle' => ['regular']],
+				'condition'			=> ['poststyle' => ['regular'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Color', 'custom-facebook-feed' ),
-				'style'				=> ['.cff-post-item-ctn' => 'border-bottom-color:{{value}};'],
+				'heading' 			=> __('Color', 'custom-facebook-feed'),
+				'style'				=> ['.cff-post-item-ctn,.cff-preview-ctn.cff-outline .cff-preview-header-ctn' => 'border-bottom-color:{{value}}!important;'],
 				'stacked'			=> 'true'
 			],
 			[
 				'type' 				=> 'number',
 				'id' 				=> 'sepsize',
-				'condition'			=> ['poststyle' => ['regular']],
+				'condition'			=> ['poststyle' => ['regular'], 'feedtype' => ['timeline','reviews','events']],
 				'conditionHide'		=> true,
 				'fieldSuffix' 		=> 'px',
 				'layout' 			=> 'half',
 				'strongHeading'		=> 'false',
-				'heading' 			=> __( 'Thickness', 'custom-facebook-feed' ),
+				'heading' 			=> __('Thickness', 'custom-facebook-feed'),
 				'style'				=> ['.cff-post-item-ctn' => 'border-bottom-width:{{value}}px;border-bottom-style:solid;'],
 				'stacked'			=> 'true'
-			],
-
-			[
-				'type' 				=> 'separator',
-				'top' 				=> 10,
-				'condition'			=> ['feedtype' => ['albums']],
-				'conditionHide'		=> true,
-				'bottom' 			=> 5,
 			],
 			[
 				'type' 				=> 'heading',
 				'condition'			=> ['feedtype' => ['albums']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Albums Elements', 'custom-facebook-feed' ),
+				'heading' 			=> __('Albums Elements', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'switcher',
@@ -1403,7 +1498,7 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Show Album Title', 'custom-facebook-feed' ),
+				'heading' 			=> __('Show Album Title', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'strongHeading'		=> 'false',
 				'options'			=> [
@@ -1418,7 +1513,7 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Number of posts in album', 'custom-facebook-feed' ),
+				'heading' 			=> __('Number of posts in album', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'strongHeading'		=> 'false',
 				'options'			=> [
@@ -1427,18 +1522,12 @@ class CFF_Customize_Tab{
 				]
 			],
 
-			[
-				'type' 				=> 'separator',
-				'top' 				=> 10,
-				'condition'			=> ['feedtype' => ['videos']],
-				'conditionHide'		=> true,
-				'bottom' 			=> 5,
-			],
+
 			[
 				'type' 				=> 'heading',
 				'condition'			=> ['feedtype' => ['videos']],
 				'conditionHide'		=> true,
-				'heading' 			=> __( 'Videos Elements', 'custom-facebook-feed' ),
+				'heading' 			=> __('Videos Elements', 'custom-facebook-feed'),
 			],
 			[
 				'type' 				=> 'switcher',
@@ -1447,7 +1536,7 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Show Video Title', 'custom-facebook-feed' ),
+				'heading' 			=> __('Show Video Title', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'strongHeading'		=> 'false',
 				'options'			=> [
@@ -1462,7 +1551,7 @@ class CFF_Customize_Tab{
 				'conditionHide'		=> true,
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'heading' 			=> __( 'Show Video Description', 'custom-facebook-feed' ),
+				'heading' 			=> __('Show Video Description', 'custom-facebook-feed'),
 				'stacked'			=> 'true',
 				'strongHeading'		=> 'false',
 				'options'			=> [
@@ -1476,23 +1565,25 @@ class CFF_Customize_Tab{
 
 	/**
 	 * Get Customize Tab Individual Elements Nested Section
+	 *
 	 * @since 4.0
 	 * @return array
-	*/
-	static function get_nested_individual_elements_controls(){
-		return [
+	 */
+	public static function get_nested_individual_elements_controls()
+	{
+		$controls = [
 			[
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include',
 				'value' 	 => 'author',
 				'header' 	 => true,
-				'label' 	=> __( 'Post Author', 'custom-facebook-feed' ),
+				'label' 	=> __('Post Author', 'custom-facebook-feed'),
 				'separator'			=> 'bottom',
 				'section' 	=> [
 					'id' 				=> 'post_styling_author',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Post Author', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The author name and avatar image that\'s shown at the top of each timeline post', 'custom-facebook-feed' ),
+					'heading' 			=> __('Post Author', 'custom-facebook-feed'),
+					'description' 		=> __('The author name and avatar image that\'s shown at the top of each timeline post', 'custom-facebook-feed'),
 					'controls'			=> CFF_Styling_Tab::post_styling_author(),
 				]
 			],
@@ -1501,12 +1592,12 @@ class CFF_Customize_Tab{
 				'id'		=> 'include',
 				'value' 	=> 'text',
 				'separator'	=> 'bottom',
-				'label' 	=> __( 'Post Text', 'custom-facebook-feed' ),
+				'label' 	=> __('Post Text', 'custom-facebook-feed'),
 				'section' 	=> [
 					'id' 				=> 'post_styling_text',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Post Text', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The main text of the Facebook post', 'custom-facebook-feed' ),
+					'heading' 			=> __('Post Text', 'custom-facebook-feed'),
+					'description' 		=> __('The main text of the Facebook post', 'custom-facebook-feed'),
 					'controls'			=> CFF_Styling_Tab::post_styling_text(),
 				]
 
@@ -1518,134 +1609,183 @@ class CFF_Customize_Tab{
 				'separator'	=> 'bottom',
 				'condition'	=> ['feedtype' => ['timeline','reviews']],
 				'conditionHide'		=> true,
-				'label' 	=> __( 'Date', 'custom-facebook-feed' ),
+				'label' 	=> __('Date', 'custom-facebook-feed'),
 				'section' 	=> [
 					'id' 				=> 'post_styling_date',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Post Date', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The date of the post', 'custom-facebook-feed' ),
+					'heading' 			=> __('Post Date', 'custom-facebook-feed'),
+					'description' 		=> __('The date of the post', 'custom-facebook-feed'),
 					'controls'			=> CFF_Styling_Tab::post_styling_date(),
 				]
-			],
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'media',
-				'separator'	=> 'bottom',
-				'label' 	=> __( 'Photos/Videos', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_media',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Photos/Videos', 'custom-facebook-feed' ),
-					'description' 		=> __( 'Any photos or videos in your posts', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_media(),
-				]
-			],
-			[
+			]
+		];
+		if (!self::$should_disable_pro_features) {
+			$controls[] = [
+					'type' 		=> 'checkboxsection',
+					'id'		=> 'include',
+					'value' 	=> 'media',
+					'separator'	=> 'bottom',
+					'label' 	=> __('Photos/Videos', 'custom-facebook-feed'),
+					'section' 	=> [
+						'id' 				=> 'post_styling_media',
+						'separator'			=> 'none',
+						'heading' 			=> __('Photos/Videos', 'custom-facebook-feed'),
+						'description' 		=> __('Any photos or videos in your posts', 'custom-facebook-feed'),
+						'controls'			=> CFF_Styling_Tab::post_styling_media(),
+					]
+			];
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include',
 				'value' 	=> 'social',
 				'separator'	=> 'bottom',
-				'label' 	=> __( 'Likes, Shares and Comments', 'custom-facebook-feed' ),
+				'label' 	=> __('Likes, Shares and Comments', 'custom-facebook-feed'),
 				'section' 	=> [
 					'id' 				=> 'post_styling_social',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Likes, Shares and  Comments Box', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The comments box displayed at the bottom of each timeline post', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_social(),
+					'heading' 			=> __('Likes, Shares and Comments Box', 'custom-facebook-feed'),
+					'description' 		=> __('The comments box displayed at thebottom of each timeline post', 'custom-facebook-feed'),
+					'controls'			=> CFF_Styling_Tab::post_styling_social(self::$license_tier_features),
 				]
-			],
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'eventtitle',
-				'separator'	=> 'bottom',
-				'label' 	=> __( 'Event Title', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_eventtitle',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Event Title', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The title of an event', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_eventtitle(),
-				]
-			],
-			[
+			];
+		}
+
+		$controls[] = [
+			'type' 		=> 'checkboxsection',
+			'id'		=> 'include',
+			'value' 	=> 'eventtitle',
+			'separator'	=> 'bottom',
+			'label' 	=> __('Event Title', 'custom-facebook-feed'),
+			'section' 	=> [
+				'id' 				=> 'post_styling_eventtitle',
+				'separator'			=> 'none',
+				'heading' 			=> __('Event Title', 'custom-facebook-feed'),
+				'description' 		=> __('The title of an event', 'custom-facebook-feed'),
+				'controls'			=> CFF_Styling_Tab::post_styling_eventtitle(),
+			]
+		];
+		if (!self::$should_disable_pro_features) {
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include',
 				'value' 	=> 'eventdetails',
 				'separator'	=> 'bottom',
-				'label' 	=> __( 'Event Details', 'custom-facebook-feed' ),
+				'label' 	=> __('Event Details', 'custom-facebook-feed'),
 				'section' 	=> [
 					'id' 				=> 'post_styling_eventdetails',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Event Details', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The information associated with an event', 'custom-facebook-feed' ),
+					'heading' 			=> __('Event Details', 'custom-facebook-feed'),
+					'description' 		=> __('The information associated with an event', 'custom-facebook-feed'),
 					'controls'			=> CFF_Styling_Tab::post_styling_eventdetails(),
 				]
-			],
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'date',
-				'separator'	=> 'bottom',
-				'condition'	=> ['feedtype' => ['events']],
-				'conditionHide'		=> true,
-				'label' 	=> __( 'Event Date', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_date',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Event Date', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The date of the event', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::event_styling_date(),
-				]
-			],
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'link',
-				'separator'	=> 'bottom',
-				'label' 	=> __( 'Post Action Links', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_link',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Post Action Links', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The "View on Facebook" and "Share" links at the bottom of each post', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_link(),
-				]
-			],
-			/*
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'desc',
-				'separator'	=> 'bottom',
-				'label' 	=> __( 'Shared Post Text', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_desc',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Shared Post Text', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The description text associated with shared photos, videos, or links', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_desc(),
-				]
-			],
-			*/
-			[
-				'type' 		=> 'checkboxsection',
-				'id'		=> 'include',
-				'value' 	=> 'sharedlinks',
-				'separator'	=> 'bottom',
-				'label' 	=> __( 'Shared Link Box', 'custom-facebook-feed' ),
-				'section' 	=> [
-					'id' 				=> 'post_styling_sharedlinks',
-					'separator'			=> 'none',
-					'heading' 			=> __( 'Shared Link Box', 'custom-facebook-feed' ),
-					'description' 		=> __( 'The link info box that\'s created when a  link is shared in a Facebook post', 'custom-facebook-feed' ),
-					'controls'			=> CFF_Styling_Tab::post_styling_sharedlinks(),
-				]
+			];
+		}
+		$controls[] = [
+			'type' 		=> 'checkboxsection',
+			'id'		=> 'include',
+			'value' 	=> 'date',
+			'separator'	=> 'bottom',
+			'condition'	=> ['feedtype' => ['events']],
+			'conditionHide'		=> true,
+			'label' 	=> __('Event Date', 'custom-facebook-feed'),
+			'section' 	=> [
+				'id' 				=> 'post_styling_date',
+				'separator'			=> 'none',
+				'heading' 			=> __('Event Date', 'custom-facebook-feed'),
+				'description' 		=> __('The date of the event', 'custom-facebook-feed'),
+				'controls'			=> CFF_Styling_Tab::event_styling_date(),
 			]
-
-
 		];
-	}
+		$controls[] = [
+			'type' 		=> 'checkboxsection',
+			'id'		=> 'include',
+			'value' 	=> 'link',
+			'separator'	=> 'bottom',
+			'label' 	=> __('Post Action Links', 'custom-facebook-feed'),
+			'section' 	=> [
+				'id' 				=> 'post_styling_link',
+				'separator'			=> 'none',
+				'heading' 			=> __('Post Action Links', 'custom-facebook-feed'),
+				'description' 		=> __('The "View on Facebook" and "Share" links at the bottom of each post', 'custom-facebook-feed'),
+				'controls'			=> CFF_Styling_Tab::post_styling_link(),
+			]
+		];
+		$controls[] = [
+			'type' 		=> 'checkboxsection',
+			'id'		=> 'include',
+			'value' 	=> 'sharedlinks',
+			'separator'	=> 'bottom',
+			'label' 	=> __('Shared Link Box', 'custom-facebook-feed'),
+			'section' 	=> [
+				'id' 				=> 'post_styling_sharedlinks',
+				'separator'			=> 'none',
+				'heading' 			=> __('Shared Link Box', 'custom-facebook-feed'),
+				'description' 		=> __('The link info box that\'s created when a link is shared in a Facebook post', 'custom-facebook-feed'),
+				'controls'			=> CFF_Styling_Tab::post_styling_sharedlinks(),
+			]
+		];
 
+		if (self::$should_disable_pro_features) {
+			$controls[] = [
+				'type' 					=> 'heading',
+				'heading' 				=> __('Advanced', 'custom-facebook-feed'),
+				'proLabel'				=> true,
+				'checkExtensionPopupLeranMore' 	=> 'mediaComment',
+				'description' 			=> __('These properties are available in the PRO version.', 'custom-facebook-feed'),
+			];
+			$controls[] = [
+				'type' 		=> 'checkboxsection',
+				'id'		=> 'include',
+				'value' 	=> 'media',
+				'separator'	=> 'bottom',
+				'label' 	=> __('Photos/Videos', 'custom-facebook-feed'),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'mediaComment',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'mediaComment',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'section' 	=> [
+					'id' 				=> 'post_styling_media',
+					'separator'			=> 'none',
+					'heading' 			=> __('Photos/Videos', 'custom-facebook-feed'),
+					'description' 		=> __('Any photos or videos in your posts', 'custom-facebook-feed'),
+					'controls'			=> CFF_Styling_Tab::post_styling_media(),
+				]
+			];
+			$controls[] = [
+				'type' 		=> 'checkboxsection',
+				'id'		=> 'include',
+				'value' 	=> 'social',
+				'separator'	=> 'bottom',
+				'label' 	=> __('Likes, Shares and Comments', 'custom-facebook-feed'),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'mediaComment',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'mediaComment',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'section' 	=> [
+					'id' 				=> 'post_styling_social',
+					'separator'			=> 'none',
+					'heading' 			=> __('Likes, Shares and Comments Box', 'custom-facebook-feed'),
+					'description' 		=> __('The comments box displayed at thebottom of each timeline post', 'custom-facebook-feed'),
+					'controls'			=> CFF_Styling_Tab::post_styling_social(self::$license_tier_features),
+				]
+			];
+			$controls[] = [
+				'type' 		=> 'checkboxsection',
+				'id'		=> 'include',
+				'value' 	=> 'eventdetails',
+				'separator'	=> 'bottom',
+				'label' 	=> __('Event Details', 'custom-facebook-feed'),
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'events',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'events',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
+				'section' 	=> [
+					'id' 				=> 'post_styling_eventdetails',
+					'separator'			=> 'none',
+					'heading' 			=> __('Event Details', 'custom-facebook-feed'),
+					'description' 		=> __('The information associated with an event', 'custom-facebook-feed'),
+					'controls'			=> CFF_Styling_Tab::post_styling_eventdetails(),
+				]
+			];
+		}
+
+		return $controls;
+	}
 }

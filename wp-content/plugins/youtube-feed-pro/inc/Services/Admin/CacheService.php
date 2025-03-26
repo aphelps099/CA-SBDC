@@ -13,6 +13,9 @@ class CacheService extends ServiceProvider {
 
 	public function ajax_clear_cache() {
 		Util::ajaxPreflightChecks();
+		// clear object cache
+		sby_clear_object_cache();
+		// clear transients
 		sby_clear_cache();
 		wp_clear_scheduled_hook( 'sby_feed_update' );
 		wp_send_json_success();

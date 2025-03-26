@@ -6,6 +6,7 @@ use Smashballoon\Customizer\Feed_Builder;
 use Smashballoon\Customizer\Feed_Saver;
 use SmashBalloon\YouTubeFeed\Helpers\Util;
 use SmashBalloon\YouTubeFeed\SBY_Settings;
+use Smashballoon\Customizer\YouTube_License_Tier;
 
 class SingleVideoPage extends BaseSettingPage {
 	protected $has_assets = true;
@@ -21,10 +22,19 @@ class SingleVideoPage extends BaseSettingPage {
 	public function __construct() {
 		$this->page_title = __('Single Videos', 'feeds-for-youtube');
 		$this->menu_title = __('Single Videos', 'feeds-for-youtube');
+	
+		// YouTube license tier 
+		$license_tier = new YouTube_License_Tier;
+		$license_tier_features = $license_tier->tier_features();
+		// Hide Single Videos page if feature is not available in the tier
+		if (!in_array('convert_videos_to_cpt', $license_tier_features)) {
+			$this->has_page_restriction = true;
+			$this->menu_title = '<span class="sby-single-videos-upsell">' . __('Single Videos', 'feeds-for-youtube') . '</span>';
+		}
 	}
 
 	public function register() {
-		global $wpdb;
+		global $wpdb; 
 		parent::register();
 		$this->posts_table = $wpdb->prefix . 'posts';
 		$this->meta_table  = $wpdb->prefix . 'postmeta';
@@ -74,7 +84,8 @@ class SingleVideoPage extends BaseSettingPage {
 
 		if($_POST['perform'] === 'publish') {
 			foreach ( $query->get_posts() as $post ) {
-				wp_publish_post( $post->ID );
+				$postData = [ 'ID' => $post->ID, 'post_status' => 'publish' ];
+				wp_update_post( $postData );
 			}
 		}
 

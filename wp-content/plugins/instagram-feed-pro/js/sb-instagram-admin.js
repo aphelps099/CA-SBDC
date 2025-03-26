@@ -134,6 +134,27 @@ jQuery(document).ready(function($) {
     }); // ajax call
   });
 
+    $('.sbi-reset-unused-feed-usage').on('click', function (event) {
+        event.preventDefault();
+        const $btn = $(this);
+        $btn.prop('disabled', true).addClass('loading').html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+        $.ajax({
+            url: sbiA.ajax_url,
+            type: 'post',
+            data: {
+                action: 'sbi_reset_unused_feed_usage',
+                sbi_nonce: sbiA.sbi_nonce,
+            },
+            success: function (data) {
+                if (typeof data.data.message !== 'undefined') {
+                    $btn.closest('p').after(data.data.message);
+                    $btn.remove();
+                }
+            },
+            error: function (data) {}
+        });
+    });
+
   $('.sbi-clear-errors-visit-page').on('click', function(event) {
     event.preventDefault();
     var $btn = $(this);
@@ -152,6 +173,148 @@ jQuery(document).ready(function($) {
         window.location.href = $btn.attr('data-url');
       }
     }); // ajax call
+  });
+
+  // Focus the license section on click license expired notice button 
+  jQuery('#sbFocusLicenseSection').on('click', function() {
+    jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
+
+    setTimeout(function() {
+      jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+    }, 2000);
+  });
+
+  // Get the URL parameters
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const params = Object.fromEntries(urlSearchParams.entries());
+
+  // Check if the URL has license section to focus
+  if ( params.focus === "license" ) {
+    jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
+
+    setTimeout(function() {
+      jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+    }, 2000);
+  }
+
+  //Add class to Pro menu item
+  $('.sbi_get_pro').parent().attr({'class':'sbi_get_pro_highlight', 'target':'_blank'});
+    //Click event for other plugins in menu
+    $('.sbi_get_cff, .sbi_get_sbi, .sbi_get_ctf, .sbi_get_yt').parent().on('click', function(e) {
+      e.preventDefault();
+
+      // remove the already opened modal
+      jQuery('#sbi-op-modals').remove();
+
+      // prepend the modal wrapper
+      $('#wpbody-content').prepend('<div class="sbi-fb-source-ctn sb-fs-boss sbi-fb-center-boss" id="sbi-op-modals"><i class="fa fa-spinner fa-spin sbi-loader" aria-hidden="true"></i></div>');
+
+      // determine the plugin name
+      var $self = $(this).find('span'),
+        sb_get_plugin = 'twitter';
+
+      if ($self.hasClass('sbi_get_cff')) {
+        sb_get_plugin = 'facebook';
+      } else if ($self.hasClass('sbi_get_sbi')) {
+        sb_get_plugin = 'instagram';
+      } else if ($self.hasClass('sbi_get_yt')) {
+        sb_get_plugin = 'youtube';
+      }
+
+      // send the ajax request to load plugin name and others data
+      $.ajax({
+        url: sbiA.ajax_url,
+        type: 'post',
+        data: {
+          action: 'sbi_other_plugins_modal',
+          plugin: sb_get_plugin,
+          sbi_nonce: sbiA.sbi_nonce,
+
+        },
+        success: function (data) {
+          if (data.success == true) {
+            $('#sbi-op-modals').html(data.data);
+          }
+        },
+        error: function (e) {
+          console.log(e);
+        }
+      });
+  });
+
+  //Close the modal if clicking anywhere outside it
+  jQuery('body').on('click', '#sbi-op-modals', function(e){
+    if (e.target !== this) return;
+    jQuery('#sbi-op-modals').remove();
+  });
+  jQuery('body').on('click', '.sbi-fb-popup-cls', function(e){
+    jQuery('#sbi-op-modals').remove();
+  });
+
+  $(document).on('click', '#sbi_install_op_btn', function() {
+    console.log('clicked');
+    let self = $(this);
+    let pluginAtts = self.data('plugin-atts');
+    if ( pluginAtts.step == 'install' ) {
+      pluginAtts.plugin = pluginAtts.download_plugin
+    }
+    let loader = '<span class="sbi-btn-spinner"><svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve"><path fill="#fff" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"><animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform></path></svg></span>';
+    self.prepend(loader);
+
+    // send the ajax request to install or activate the plugin
+    $.ajax({
+      url : sbiA.ajax_url,
+      type : 'post',
+      data : {
+        action : pluginAtts.action,
+        nonce : pluginAtts.nonce,
+        plugin : pluginAtts.plugin,
+        download_plugin : pluginAtts.download_plugin,
+        type : 'plugin',
+      },
+      success : function(data) {
+        if ( data.success == true ) {
+          self.find('.sbi-btn-spinner').remove();
+          self.attr('disabled', 'disabled');
+
+          if ( pluginAtts.step == 'install' ) {
+            self.html( data.data.msg );
+          } else {
+            self.html( data.data );
+          }
+
+          if (pluginAtts?.redirect ) {
+            window.location.href = pluginAtts.redirect;
+          }
+        }
+      },
+      error : function(e)  {
+        console.log(e);
+      }
+    });
+  });
+
+  $(document).on('click', '#oembed_api_change_reconnect .sbi-notice-dismiss', function(e) {
+    e.preventDefault();
+    $('#oembed_api_change_reconnect').remove();
+  });
+
+  $(document).on('click', '#sbi-clicksocial-notice .notice-dismiss', function(e) {
+    e.preventDefault();
+    $.ajax({
+      url : sbiA.ajax_url,
+      type : 'post',
+      data : {
+        action: 'sbi_dismiss_clicksocial_upsell',
+        sbi_nonce : sbiA.sbi_nonce,
+      },
+      success : function(data) {
+        $('#sbi-clicksocial-notice').remove();
+      },
+      error : function(data)  {
+        console.log(data);
+      }
+    });
   });
 });
 

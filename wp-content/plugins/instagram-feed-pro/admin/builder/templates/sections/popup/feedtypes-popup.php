@@ -14,7 +14,7 @@
 
         <h4>{{selectFeedTypeScreen.anotherFeedTypeHeading}}</h4>
         <div class="sbi-fb-types-list">
-            <div class="sbi-fb-type-el" v-for="(feedTypeEl, feedTypeIn) in feedTypes" :data-active="selectedFeedPopup.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'" :data-checked="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'" :data-type="feedTypeEl.type" @click.prevent.default="selectFeedTypePopup(feedTypeEl)">
+            <div class="sbi-fb-type-el" v-for="(feedTypeEl, feedTypeIn) in feedTypes" :data-active="selectedFeedPopup.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'" :data-checked="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'" :data-type="feedTypeEl.type" @click.prevent.default="selectFeedTypePopup(feedTypeEl)" :data-disable-feature="licenseTierFeatures.includes(feedTypeEl.type + '_feeds') ? 'false' : 'true'">
                 <div class="sbi-fb-type-el-img sbi-fb-fs" v-html="svgIcons[feedTypeEl.icon]"></div>
                 <div class="sbi-fb-type-el-info sbi-fb-fs">
                     <p class="sb-small-p sb-bold sb-dark-text" v-html="feedTypeEl.title"></p>

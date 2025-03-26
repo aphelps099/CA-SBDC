@@ -130,7 +130,6 @@ Tool to help understand how sending and retrieving feed related info from the da
             event.preventDefault();
 
             var thisData = $(this).serializeArray();
-            console.log(thisData)
             $.ajax({
                 url: cff_builder.ajax_handler,
                 type: 'post',
@@ -138,8 +137,6 @@ Tool to help understand how sending and retrieving feed related info from the da
                 success: function (data) {
                     if (data.indexOf('{') === 0) {
                         data = JSON.parse(data);
-                        console.log(data);
-
                     }
 
                 }

@@ -5,12 +5,12 @@
             <span class="sb-help-text">{{translationTab.description}}</span>
 
             <div class="sb-tab-inner-card">
-                <table class="cff-table">
+                <table class="cff-table" aria-hidden="true">
                     <thead>
                         <tr>
-                            <th>{{translationTab.table.originalText}}</th>
-                            <th>{{translationTab.table.customText}}</th>
-                            <th>{{translationTab.table.context}}</th>
+                            <th scope="col">{{translationTab.table.originalText}}</th>
+                            <th scope="col">{{translationTab.table.customText}}</th>
+                            <th scope="col">{{translationTab.table.context}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -260,9 +260,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>{{translationTab.table.originalText}}</th>
-                            <th>{{translationTab.table.customText}}</th>
-                            <th>{{translationTab.table.context}}</th>
+                            <th scope="col">{{translationTab.table.originalText}}</th>
+                            <th scope="col">{{translationTab.table.customText}}</th>
+                            <th scope="col">{{translationTab.table.context}}</th>
                         </tr>
                     </tfoot>
                 </table>

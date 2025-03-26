@@ -20,12 +20,14 @@
 					{{section.heading}}
 				</div>
 			</div>
+			<!--
 			<div  class="sb-customizer-sidebar-cache-wrapper ctf-fb-fs">
 				<button class="sb-control-action-button sb-btn ctf-fb-fs sb-btn-grey" v-if="customizerScreens.activeTab == 'settings'" @click.prevent.default="clearSingleFeedCache()">
 					<div v-html="svgIcons['update']"></div>
 					<span>{{genericText.clearFeedCache}}</span>
 				</button>
 			</div>
+			-->
 		</div>
 
 		<div class="ctf-fb-fs" v-if="customizerScreens.activeSection != null">
@@ -47,8 +49,10 @@
                         </svg>Elements
                     </a>
 				</div>
-				<h3>{{customizerScreens.activeSectionData.heading}}</h3>
-				<span v-html="customizerScreens.activeSectionData.description"></span>
+				<h3>{{customizerScreens.activeSectionData.heading}} <span v-if="customizerScreens.activeSectionData.proLabel != undefined && customizerScreens.activeSectionData.proLabel" class="sb-breadcrumb-pro-label">PRO</span></h3>
+				<span class="sb-customizer-sidebar-intro">
+					<span v-html="customizerScreens.activeSectionData.description "></span> <a v-if="customizerScreens.activeSectionData.checkExtensionPopup != undefined" @click.prevent.default="viewsActive.extensionsPopupElement = customizerScreens.activeSectionData.checkExtensionPopup">{{genericText.learnMore}}</a>
+				</span>
 			</div>
 			<div class="sb-customizer-sidebar-controls-ctn ctf-fb-fs">
 				<div class="sb-control-ctn ctf-fb-fs" v-for="(control, ctlIndex) in customizerScreens.activeSectionData.controls">

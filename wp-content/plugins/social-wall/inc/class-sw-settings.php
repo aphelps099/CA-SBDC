@@ -57,6 +57,7 @@ class SW_Settings {
 		$this->plugin_type_and_terms = $plugin_types_and_terms;
 
 		$this->settings = wp_parse_args( $atts, $db );
+		$this->settings = $this->apply_global_settings();
 
 		if ( empty( $atts['cols'] ) && $this->settings['layout'] === 'masonry' ) {
 			$this->settings['cols'] = $this->settings['masonrycols'];
@@ -119,6 +120,21 @@ class SW_Settings {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Apply the global settings to the individual feed settings
+	 * 
+	 * @since 2.1.0
+	 */
+	public function apply_global_settings() {
+		$global_settings = get_option( 'sbsw_settings' );
+		if ( $global_settings && is_array($global_settings) ) {
+			$this->settings['ajaxtheme'] = ! empty( $global_settings['ajaxtheme'] ) ? filter_var( $global_settings['ajaxtheme'], FILTER_VALIDATE_BOOLEAN) : false;
+			$this->settings['customtemplates'] = ! empty( $global_settings['customtemplates'] ) ? filter_var( $global_settings['customtemplates'], FILTER_VALIDATE_BOOLEAN) : false;
+		}
+			
+		return $this->settings;
 	}
 
 	/**
@@ -255,13 +271,13 @@ class SW_Settings {
 
 					if ( isset( $feed_type_and_terms['lists'] ) ) {
 						foreach ( $feed_type_and_terms['lists'] as $term_and_params ) {
-							$list = $term_and_params['list'];
-							$this_term_included_string .= substr( $list, 0, 7 );
+							if ( isset( $term_and_params['list'] ) ) {
+								$list = $term_and_params['list'];
+								$this_term_included_string .= substr( $list, 0, 7 );
+							}
 						}
 					}
 					$term_included_string .= strlen( $this_term_included_string ) > 8 ? substr( $this_term_included_string, 0, 8 ) : $this_term_included_string;
-
-
 				}
 			}
 
@@ -290,7 +306,7 @@ class SW_Settings {
 						}
 					}
 				} elseif ( isset( $setting['filter'] ) ) {
-					$filter = explode( ',', str_replace( ' ', '', $setting['filter'] ) );
+					$filter = !is_array($setting['filter']) ? explode( ',', str_replace( ' ', '', $setting['filter'] ) ) : $setting['filter'];
 					foreach ( $filter as $word ) {
 						if ( ! in_array( $word, $filters_included, true ) ) {
 							$filters_included[] = $word;
@@ -309,7 +325,13 @@ class SW_Settings {
 					}
 				}
 				if ( isset( $setting['media'] ) && $setting['media'] !== 'all' ) {
-					$filter = str_replace( ' ', '', $setting['media'] );
+					if ( is_array( $setting['media'] ) ) {
+						$filter = implode( ',', $setting['media'] );
+					} else {
+						$filter = $setting['media'];
+					}
+					$filter = str_replace( ' ', '', $filter );
+
 					$filter_string .= substr( $filter, 0, 1 );
 				}
 				if ( isset( $setting['offset'] ) ) {

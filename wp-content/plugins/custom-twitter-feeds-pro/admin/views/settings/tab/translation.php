@@ -38,21 +38,36 @@
                             <td colspan="3">{{translationTab.table.date}}</td>
                         </tr>
                         <tr>
-                            <td>{{translationTab.table.minutes}}</td>
-                            <td><input type="text" class="ctf-input" :placeholder="model.translation.minutes" v-model:value="model.translation.minutestext"></td>
+                            <td>{{translationTab.table.mtime}}</td>
+                            <td><input type="text" class="ctf-input" :placeholder="translationTab.table.mtime" v-model:value="model.translation.mtime"></td>
                             <td>{{translationTab.table.usedinTimeline}}</td>
                         </tr>
                         <tr>
-                            <td>{{translationTab.table.hours}}</td>
-                            <td><input type="text" class="ctf-input" :placeholder="model.translation.hours" v-model:value="model.translation.hourstext"></td>
+                            <td>{{translationTab.table.htime}}</td>
+                            <td><input type="text" class="ctf-input" :placeholder="translationTab.table.htime" v-model:value="model.translation.htime"></td>
                             <td>{{translationTab.table.usedinTimeline}}</td>
                         </tr>
                         <tr>
-                            <td>{{translationTab.table.now}}</td>
-                            <td><input type="text" class="ctf-input" :placeholder="model.translation.now" v-model:value="model.translation.nowtext"></td>
+                            <td>{{translationTab.table.nowtime}}</td>
+                            <td><input type="text" class="ctf-input" :placeholder="translationTab.table.nowtime" v-model:value="model.translation.nowtime"></td>
                             <td>{{translationTab.table.usedinTimeline}}</td>
                         </tr>
 
+                    </tbody>
+                    <tbody>
+                        <tr class="ctf-table-row-header">
+                            <td colspan="3">{{translationTab.table.threadText}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{translationTab.table.showThread}}</td>
+                            <td><input type="text" class="ctf-input" :placeholder="translationTab.table.showThread" v-model:value="model.translation.showThread"></td>
+                            <td>{{translationTab.table.threadUsedIn}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{translationTab.table.hideThread}}</td>
+                            <td><input type="text" class="ctf-input" :placeholder="translationTab.table.hideThread" v-model:value="model.translation.hideThread"></td>
+                            <td>{{translationTab.table.threadUsedIn}}</td>
+                        </tr>
                     </tbody>
 
                     <tfoot>

@@ -46,7 +46,7 @@ class ShortcodeService extends ServiceProvider {
 			<div id="sbi_mod_error" <?php echo $style; ?>>
 				<span><?php _e('This error message is only visible to WordPress admins', 'feeds-for-youtube' ); ?></span><br />
 				<p><b><?php _e( 'Error: No connected account.', 'feeds-for-youtube' ); ?></b>
-				<p><?php _e( 'Please go to the YouTube Feed settings page to connect an account.', 'feeds-for-youtube' ); ?></p>
+				<p><?php _e( 'Please go to the YouTube Feeds settings page to connect an account.', 'feeds-for-youtube' ); ?></p>
 			</div>
 			<?php
 			$html = ob_get_contents();

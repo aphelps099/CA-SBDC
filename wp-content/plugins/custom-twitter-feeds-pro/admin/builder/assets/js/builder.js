@@ -36,7 +36,7 @@ ctfBuilder = new Vue({
 		updatedTimeStamp : new Date().getTime(),
 		feedSettingsDomOptions : null,
 		newAccountData : ctf_builder.newAccountData,
-
+		license_tier_features : ctf_builder.license_tier_features,
 		$parent : this,
 		plugins: ctf_builder.installPluginsPopup,
 		supportPageUrl: ctf_builder.supportPageUrl,
@@ -49,6 +49,9 @@ ctfBuilder = new Vue({
 		widgetsPageURL : ctf_builder.widgetsPageURL,
 		translatedText : ctf_builder.translatedText,
 		socialShareLink : ctf_builder.socialShareLink,
+		pluginsInfo : ctf_builder.pluginsInfo,
+		shouldDisableProFeatures: ctf_builder.shouldDisableProFeatures,
+		activationPageDismissed: ctf_builder.activationPageDismissed,
 
 		welcomeScreen	 : ctf_builder.welcomeScreen,
 		allFeedsScreen 	 : ctf_builder.allFeedsScreen,
@@ -64,7 +67,9 @@ ctfBuilder = new Vue({
  		selectFeedTemplateScreen 	: ctf_builder.selectFeedTemplateScreen,
 		accountDetails : ctf_builder.accountDetails,
 		dummyLightBoxData 		: ctf_builder.dummyLightBoxData,
+		recheckLicenseStatus: null,
 
+		ctfRebrand 		: ctf_builder.ctfRebrand,
 		svgIcons 		: ctf_builder.svgIcons,
 		feedsList 	: ctf_builder.feeds,
 		feedTypes 	: ctf_builder.feedTypes,
@@ -77,7 +82,7 @@ ctfBuilder = new Vue({
 
 		links : ctf_builder.links,
 		legacyFeedsList   : ctf_builder.legacyFeeds,
-
+		activeExtensions : ctf_builder.activeExtensions,
    		dummyLightBoxScreen 	: false,
 
 		//Selected Feed type => User Hashtag Tagged
@@ -160,8 +165,17 @@ ctfBuilder = new Vue({
 
 			// plugin install popup
 			installPluginPopup : false,
-			installPluginModal: 'facebook'
+			installPluginModal: 'facebook',
+
+			whyRenewLicense : false,
+			licenseLearnMore : false,
+			licenseFlowSuccessModal : false,
         },
+
+		licenseKey: ctf_builder.licenseKey,
+		ctfLicenseNoticeActive: (ctf_builder.ctfLicenseNoticeActive === '1'),
+		ctfLicenseInactiveState: (ctf_builder.ctfLicenseInactiveState === '1'),
+		licenseBtnClicked : false,
 
         //Feeds Pagination
         feedPagination : {
@@ -276,7 +290,10 @@ ctfBuilder = new Vue({
 		},
 
 		loadingAjax : false,
+    	loading: false,
 
+		sw_feed: false,
+		sw_feed_id: false
 	},
 	watch : {
 		feedPreviewOutput : function(){
@@ -309,6 +326,10 @@ ctfBuilder = new Vue({
 	},
 	created: function(){
 		var self = this;
+		const urlParams = new URLSearchParams(window.location.search);
+		// get the socail wall link feed url params
+		self.sw_feed = urlParams.get('sw-feed');
+		self.sw_feed_id = urlParams.get('sw-feed-id');
 		this.$parent = self;
 		if( self.customizerFeedData ){
 			self.template = String("<div>"+self.template+"</div>");
@@ -470,6 +491,131 @@ ctfBuilder = new Vue({
 			});
 		},
 
+        /**
+         * Activate License
+         *
+         * @since 2.1.0
+        */
+		 activateLicense: function() {
+            this.licenseBtnClicked = true;
+
+            if ( !this.licenseKey ) {
+                this.licenseBtnClicked = false;
+                this.processNotification("licenseKeyEmpty");
+                return;
+            }
+
+            let data = new FormData();
+            data.append( 'action', 'ctf_activate_license' );
+            data.append( 'license_key', this.licenseKey );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.licenseBtnClicked = false;
+                if ( data.success == false ) {
+					this.processNotification("licenseError");
+                    return;
+                }
+                if ( data.success == true ) {
+					this.processNotification("licenseActivated");
+                }
+                return;
+            });
+        },
+
+		licenseFlowActiveLicense: function() {
+			var self = this;
+            if ( !self.licenseKey ) {
+                self.processNotification("licenseKeyEmpty");
+                return;
+            }
+
+			self.loadingBar = true;
+
+            let data = new FormData();
+            data.append( 'action', 'ctf_activate_license' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'nonce', self.nonce );
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.licenseBtnClicked = false;
+				if ( data.data.licenseData.error === 'no_activations_left' ) {
+					self.processNotification("noActivationsLeft");
+                    return;
+				}
+				if ( data.data.licenseData.error === 'invalid_item_id' || data.data.licenseData.error === 'item_name_mismatch') {
+					self.processNotification("invalidItemID");
+                    return;
+				}
+                if ( data.success == false ) {
+					this.processNotification("licenseError");
+                    return;
+                }
+                if ( data.success == true ) {
+					self.viewsActive.licenseFlowSuccessModal = true;
+					setTimeout(function() {
+						location.reload();
+					}, 2000);
+                }
+				self.loadingBar = false;
+                return;
+            });
+
+		},
+		
+        recheckLicense: function( optionName  ) {
+			this.recheckLicenseStatus = 'loading';
+			let licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+
+            let data = new FormData();
+            data.append( 'action', 'ctf_recheck_connection' );
+            data.append( 'license_key', this.licenseKey );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+				console.log(data);
+				if ( data.data.license == 'valid' ) {
+					this.recheckLicenseStatus = 'success';
+				}
+				if ( data.data.license != 'valid' ) {
+					this.recheckLicenseStatus = 'error';
+				}
+
+				setTimeout(function() {
+					self.recheckLicenseStatus = null;
+					if ( data.data.license == 'valid' ) {
+						licenseNoticeWrapper.remove();
+					}
+				}.bind(this), 3000);
+                return;
+            });
+        },
+        recheckBtnText: function( btnName ) {
+            if ( this.recheckLicenseStatus == null ) {
+                return this.genericText.recheckLicense;
+            } else if ( this.recheckLicenseStatus == 'loading'  ) {
+                return this.svgIcons.loaderSVG;
+            } else if ( this.recheckLicenseStatus == 'success' ) {
+                return this.svgIcons.checkmark + ' ' + this.genericText.licenseValid;
+            } else if ( this.recheckLicenseStatus == 'error' ) {
+                return this.svgIcons.times2SVG + ' ' + this.genericText.licenseExpired;
+            }
+        },
 		/**
 		 * Show & Hide View
 		 *
@@ -681,13 +827,32 @@ ctfBuilder = new Vue({
 		},
 
 		/**
+		 * Check if current license tier has certain feature
+		 * @param {string} feature_name 
+		 * @returns boolean
+		 */
+		hasFeature : function ( feature_name ) {
+			var self = this;
+			return self.license_tier_features.includes( feature_name );
+		},
+
+		/**
 		 * Choose Feed Type
 		 *
 		 * @since 2.0
 		 */
-		chooseFeedType : function(feedTypeEl, iscustomizerPopup = false){
+		chooseFeedType : function(feedTypeEl, iscustomizerPopup = false) {
 			var self = this;
 			if(feedTypeEl.type != 'socialwall'){
+				let ifFeedAvailable = self.hasFeature(feedTypeEl.type + '_feeds');
+				if ( !ifFeedAvailable ) {
+					self.viewsActive.extensionsPopupElement = feedTypeEl.type;
+					return;
+				}
+				if ( (feedTypeEl.type == 'search' || feedTypeEl.type == 'mentionstimeline') && self.shouldDisableProFeatures ) {
+					self.viewsActive.extensionsPopupElement = feedTypeEl.type;
+					return;
+				}
 				if(self.selectedFeed.includes(feedTypeEl.type)){
 					if(self.selectedFeed.length != 1){
 						self.selectedFeed.splice(self.selectedFeed.indexOf(feedTypeEl.type), 1);
@@ -699,6 +864,22 @@ ctfBuilder = new Vue({
 				self.viewsActive.extensionsPopupElement = 'socialwall';
 			}
 			ctfBuilder.$forceUpdate();
+		},
+
+		/**
+		 * Source add popup
+		 * @param {object} feedTypeEl 
+		 * @returns 
+		 */
+		sourceAddPopup: function( feedTypeEl ) {
+			var self = this;
+			let ifFeedAvailable = self.hasFeature(feedTypeEl.type + '_feeds');
+			if ( !ifFeedAvailable ) {
+				self.activateView('feedtypesPopup');
+				self.viewsActive.extensionsPopupElement = feedTypeEl.type;
+				return;
+			}
+			return !self.selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall' ? self.selectFeedTypePopup(feedTypeEl) : false
 		},
 
 		/**
@@ -847,7 +1028,7 @@ ctfBuilder = new Vue({
 					return self.customizerFeedData.settings.mentions !== undefined && self.valueIsEnabled(self.customizerFeedData.settings.mentions);
 				break;
 				case 'lists':
-					return self.checkNotEmpty(self.customizerFeedData.settings.lists_info) && self.customizerFeedData.settings.lists_info !== undefined && self.jsonParse(self.customizerFeedData.settings.lists_info) !== false && Object.keys(self.jsonParse(self.customizerFeedData.settings.lists_info)).length  > 0;
+					return self.checkNotEmpty(self.customizerFeedData.settings.lists) && self.customizerFeedData.settings.lists !== undefined && self.createSourcesArray(self.customizerFeedData.settings.lists).length > 0;
 				break;
 				case 'lists_ids':
 					return self.checkNotEmpty(self.customizerFeedData.settings.lists) && self.customizerFeedData.settings.lists !== undefined && self.createSourcesArray(self.customizerFeedData.settings.lists).length > 0;
@@ -1002,6 +1183,7 @@ ctfBuilder = new Vue({
 
 		//Check Feed Creation Process Sources & Hashtags
 		creationProcessCheckAppCredentials : function(){
+			return true;
 			var self = this;
 			return self.checkNotEmpty( self.appCredentials.access_token ) && self.checkNotEmpty( self.appCredentials.access_token_secret );
 		},
@@ -1026,6 +1208,7 @@ ctfBuilder = new Vue({
 			Feed Creation Process
 		*/
 		creationProcessCheckAction : function(){
+			return true;
 			var self = this, checkBtnNext = false;
 			switch (self.viewsActive.selectedFeedSection) {
 				case 'feedsType':
@@ -1063,7 +1246,11 @@ ctfBuilder = new Vue({
 				break;
 				case 'selectSource':
 					if( self.creationProcessCheckAppCredentials() ){
-						self.switchScreen('selectedFeedSection', 'selectTemplate');
+						if ( !self.shouldDisableProFeatures && self.hasFeature('feed_templates') ) {
+							self.switchScreen('selectedFeedSection', 'selectTemplate');
+						} else {
+							self.isCreateProcessGood = true;
+						}
 					}
 				break;
 				case 'selectTemplate':
@@ -1120,7 +1307,7 @@ ctfBuilder = new Vue({
 
 			self.viewsActive.onboardingPopup = false;
 			self.viewsActive.onboardingCustomizerPopup = false;
-
+			this.switchCustomizerTab('customize');
 			self.viewsActive.onboardingStep = 0;
             var postData = {
                 action : 'ctf_dismiss_onboarding',
@@ -1228,11 +1415,32 @@ ctfBuilder = new Vue({
 			self.ajaxPost(newFeedData, function(_ref){
 				var data = _ref.data;
 				if(data.feed_id && data.success){
-					window.location = self.builderUrl + '&feed_id=' + data.feed_id;
+					window.location = self.builderUrl + '&feed_id=' + data.feed_id + self.sw_feed_params();
 				}
 			});
 		},
 
+		sw_feed_params: function() {
+			let sw_feed_param = '';
+			if ( this.sw_feed ) {
+				sw_feed_param += '&sw-feed=true';
+			}
+			if ( this.sw_feed_id ) {
+				sw_feed_param += '&sw-feed-id=' + this.sw_feed_id;
+			}
+			return sw_feed_param;
+		},
+
+		swfeedReturnUrl: function() {
+			var self = this;
+			if ( self.sw_feed ) {
+				sw_return_url = 'admin.php?page=sbsw#/create-feed'
+			}
+			if ( self.sw_feed_id ) {
+				sw_return_url = 'admin.php?page=sbsw&feed_id=' + self.sw_feed_id
+			}
+			return sw_return_url;
+		},
 
 		//Open Add Source List Popup
 		openSourceListPopup : function( feedTypeID ){
@@ -1300,7 +1508,7 @@ ctfBuilder = new Vue({
 		*/
 		returnSelectedSourcesByTypeCustomizer : function( feedType ){
 			var self = this;
-			return feedType == 'lists' ? self.selectedFeedModel.listsObject : self.selectedFeedModel[feedType].split(',');
+			return self.selectedFeedModel[feedType].split(',');
 		},
 
 
@@ -1561,6 +1769,14 @@ ctfBuilder = new Vue({
 			return (self.highLightedSection === sectionName ||  self.highLightedSection === 'all')
  		},
 
+		getFeedLastUpdatedDate : function(date){
+			var self = this;
+			if (date === '30 Nov -0001') {
+				return;
+			}
+			return self.genericText.updated + ' ' + date
+		},
+
  		/**
 		 * Enable HightLight Section
 		 *
@@ -1703,6 +1919,10 @@ ctfBuilder = new Vue({
 
 		changeSettingValue : function(settingID, value, doProcess = true, ajaxAction = false) {
 			var self = this;
+			if ( settingID == 'layout' && (value == 'carousel' || value == 'masonry') && ( !self.checkExtensionActive('carousel') || !self.checkExtensionActive('masonry') ) && self.shouldDisableProFeatures ) {
+				self.viewsActive.extensionsPopupElement = 'feedLayout';
+				return;
+			}
 			if(doProcess){
 				self.customizerFeedData.settings[settingID] = value;
 			}
@@ -1774,6 +1994,7 @@ ctfBuilder = new Vue({
 			feedClasses += ' ctf-type-' + customizerSettings.type;
 			feedClasses += ' ctf-' + customizerSettings.layout;
 			feedClasses += ' ctf-styles ' + customizerSettings.class;
+			feedClasses += self.ctfRebrand ? ' ctf-rebranded-x' : '';
 			feedClasses += ' ctf-feed-' + self.customizerFeedData.feed_info.id;
 			feedClasses += (customizerSettings.tweetpoststyle != undefined) ? ' ctf-' + customizerSettings.tweetpoststyle + '-style' : '';
 			feedClasses +=  self.checkNotEmpty( customizerSettings.height ) && customizerSettings.height != 0 ? ' ctf-fixed-height' : '';
@@ -2429,6 +2650,12 @@ ctfBuilder = new Vue({
 				if( data !== false ){
 
 					self.processNotification('cacheCleared');
+					self.customizerFeedData.settings = data.customizerDataSettings;
+					self.updatedTimeStamp = new Date().getTime();
+					self.template = String("<div>"+data.feed_html+"</div>");
+					setTimeout(function(){
+						self.setShortcodeGlobalSettings(true)
+					}, 500)
 				}else{
 					self.processNotification("unkownError");
 				}
@@ -2472,7 +2699,14 @@ ctfBuilder = new Vue({
 			var self = this;
 			Object.assign(self.customizerScreens.sourcesChoosed,self.customizerFeedData.settings.sources);
 			self.selectSourceCustomizer(args, true);
+			self.customizerFeedData.settings = data.customizerDataSettings;
+			self.updatedTimeStamp = new Date().getTime();
+			self.template = String("<div>"+data.feed_html+"</div>");
+			setTimeout(function(){
+				self.setShortcodeGlobalSettings(true)
+			}, 500)
 			ctfBuilder.$forceUpdate();
+
 			window.event.stopPropagation();
 		},
 
@@ -2866,8 +3100,15 @@ ctfBuilder = new Vue({
 
 		chooseFeedTemplate: function( feedTemplate, iscustomizerPopup = false ) {
 			var self = this;
+			if ( self.shouldDisableProFeatures || !self.hasFeature('feed_templates') ) {
+				self.viewsActive.extensionsPopupElement = 'feedTemplates';
+				if ( self.viewsActive.feedtemplatesPopup ) {
+					self.viewsActive.feedtemplatesPopup = false;
+				}
+				return;
+			}
 			self.selectedFeedTemplate = feedTemplate.type;
-			if( iscustomizerPopup ){
+			if( iscustomizerPopup ) {
 				self.viewsActive.feedTemplateElement = feedTemplate.type;
 			}
 			ctfBuilder.$forceUpdate();
@@ -2916,24 +3157,6 @@ ctfBuilder = new Vue({
 				originalDate 	= Date.parse(postDate) / 1000,
 				dateOffset 		= new Date(),
 				offsetTimezone 	= dateOffset.getTimezoneOffset(),
-				periods = [
-					self.translatedText.secondText,
-					self.translatedText.minuteText,
-					self.translatedText.hourText,
-					self.translatedText.dayText,
-					self.translatedText.weekText,
-					self.translatedText.monthText,
-					self.translatedText.yearText
-				],
-				periodsPlural = [
-					self.translatedText.secondsText,
-					self.translatedText.minutesText,
-					self.translatedText.hoursText,
-					self.translatedText.daysText,
-					self.translatedText.weeksText,
-					self.translatedText.monthsText,
-					self.translatedText.yearsText
-				],
 				lengths			= ["60","60","24","7","4.35","12","10"],
 				now 			= dateOffset.getTime()  / 1000,
 				newTime 		= originalDate + offsetTimezone,
@@ -2960,7 +3183,6 @@ ctfBuilder = new Vue({
 					'18' : 'm.d.y - G:i',
 					'19' : 'd.m.y - G:i'
 				};
-
 				if(formatsChoices.hasOwnProperty(dateFortmat)){
 					printDate = date_i18n( formatsChoices[dateFortmat], newTime );
 				}else if(dateFortmat == 'custom'){
@@ -2968,25 +3190,98 @@ ctfBuilder = new Vue({
 					printDate = date_i18n( dateCustom , newTime );
 				}
 				else{
-					if( now > originalDate ) {
-	                	difference = now - originalDate;
+					var ctf_minute = self.translatedText.ctf_minute,
+						ctf_hour = self.translatedText.ctf_hour,
+						ctf_now_str = self.translatedText.ctf_now_str;
 
-					}else{
-	                	difference = originalDate - now;
-					}
-					for(var j = 0; difference >= lengths[j] && j < lengths.length-1; j++) {
-	              	 	difference /= lengths[j];
-	            	}
-	            	difference = Math.round(difference);
-	            	if(difference != 1) {
-		                periods[j] = periodsPlural[j];
-		            }
-					printDate = difference + " " + periods[j];
+	                difference = now - newTime;
+                	if ( difference < 60 ) {
+						printDate = ctf_now_str;
+                	} else if ( difference < (60*60) ) {
+	                    printDate = Math.round( difference/60 )  + '' + ctf_minute;
+	                } else if ( difference < (60*60*24) ) {
+	                    printDate = Math.round( difference/3600 )  + '' + ctf_hour;
+	                } else  {
+	                	var nowDate = new Date(now * 1000),
+							newTimeDate = new Date(newTime * 1000);
+	                	if( nowDate.getUTCFullYear() > newTimeDate.getUTCFullYear() ){
+	                		printDate = date_i18n( 'j M Y' , newTime );
+	                	}else{
+	                		printDate = date_i18n( 'j M' , newTime );
+	                	}
+	                }
 				}
 
 			return printDate;
 		},
 
+		/**
+		 * Social Wall
+		 *
+		 * @since 2.1
+		 *
+		 * @return String
+		 */
+		socialWallLinkOutput : function( type ){
+			let self = this,
+				action = 'install',
+				socialWallInfo = {
+					'install' : {
+						'link' : self.extensionsPopup['socialwall'].buyUrl,
+						'text' : self.genericText.upgrade,
+						'color' : 'orange',
+						'action' : 'install'
+					},
+					'activate' : {
+						'link' : self.extensionsPopup['socialwall'].buyUrl,
+						'text' : self.genericText.activate,
+						'color' : 'blue',
+						'action' : 'activate'
+					},
+					'redirect' : {
+						'link' : self.extensionsPopup['socialwall'].homeUrl,
+						'text' : self.genericText.goSocialWall,
+						'color' : 'blue',
+						'action' : 'redirect'
+					}
+				};
+
+			if( !self.pluginsInfo.social_wall.installed ){
+				action = 'install';
+			}
+			if( self.pluginsInfo.social_wall.installed && !self.pluginsInfo.social_wall.activated ){
+				action = 'activate';
+			}
+			if( self.pluginsInfo.social_wall.installed && self.pluginsInfo.social_wall.activated ){
+				action = 'redirect';
+			}
+			return socialWallInfo[action][type];
+		},
+
+		socialWallLinkClick : function(){
+			let self = this,
+				action = self.socialWallLinkOutput('action')
+			if( action == 'install' || action == 'redirect' ){
+				window.open(
+				  self.socialWallLinkOutput('link'),
+				  action == 'install' ? '_blank' : '_self'
+				);
+			}
+			if( action == 'activate' ){
+				var socialWallData = {
+	                action : 'ctf_activate_social_wall'
+				};
+				self.loading = true;
+	            self.ajaxPost(socialWallData, function(_ref){
+	                var data = _ref.data;
+					self.loading = false;
+					self.pluginsInfo.social_wall = data.data.social_wall;
+	            });
+
+			}
+
+
+		},
 	}
 
 });

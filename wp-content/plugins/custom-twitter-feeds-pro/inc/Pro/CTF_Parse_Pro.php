@@ -11,8 +11,8 @@
  */
 namespace TwitterFeed\Pro;
 
-use TwitterFeed\CtfOauthConnect;
-use TwitterFeed\CtfOauthConnectPro;
+use TwitterFeed\V2\CtfOauthConnect;
+use TwitterFeed\V2\CtfOauthConnectPro;
 use TwitterFeed\CtfFeedPro;
 use TwitterFeed\CTF_GDPR_Integrations;
 
@@ -26,8 +26,15 @@ class CTF_Parse_Pro
 		return $data['id_str'];
 	}
 
+
 	public static function get_user_name( $data ) {
-		return $data['screen_name'];
+		if ( ! empty( $data['screen_name'] ) ) {
+			return $data['screen_name'];
+		}
+		if ( ! empty( $data['user']['screen_name'] ) ) {
+			return $data['user']['screen_name'];
+		}
+		return '';
 	}
 
 	public static function get_retweeter( $data ) {
@@ -231,9 +238,10 @@ class CTF_Parse_Pro
 	}
 
 	public static function get_avatar( $data ) {
-		if ( isset( $data['retweeted_status'] ) ) {
+		// Make sure to check deep for the data as it might not be there.
+		if ( isset( $data['retweeted_status']['user']['profile_image_url_https'] ) ) {
 			return $data['retweeted_status']['user']['profile_image_url_https'];
-		} elseif ( isset( $data['user'] ) ) {
+		} elseif ( isset( $data['user']['profile_image_url_https'] ) ) {
 			return $data['user']['profile_image_url_https'];
 		} elseif ( isset( $data['profile_image_url_https'] ) ) {
 			return $data['profile_image_url_https'];
@@ -530,7 +538,9 @@ class CTF_Parse_Pro
 	        if ( $check_for_duplicates ) { $ctf_feed_classes .= ' ctf-no-duplicates'; }
 	        if ( $feed_options['persistentcache'] ) { $ctf_feed_classes .= ' ctf-persistent'; }
 	        if ( $feed_options['font_method'] === 'fontfile' ) { $ctf_feed_classes .= ' ctf-fontfile'; }
-
+			if ( ctf_should_rebrand_to_x() ) {
+				$ctf_feed_classes .= ' ctf-rebranded-x';
+			}
 	        if( isset($feed_options['colorpalette']) && $feed_options['colorpalette'] !== 'inherit' && $feed_id !== false ){
 	        	$feed_id_class = $feed_options['colorpalette'] === 'custom' ? ('_' . $feed_id) : '';
 	        	$ctf_feed_classes .= ' ctf_palette_' . $feed_options['colorpalette'] . $feed_id_class;
@@ -544,7 +554,7 @@ class CTF_Parse_Pro
     public static function get_header_avatar( $data, $feed_options = array() ) {
         $settings = ctf_get_database_settings();
 	    if ( CTF_GDPR_Integrations::doing_gdpr( $settings ) ) {
-		    $avatar = ctf_get_local_avatar( $feed_options['screenname'], $feed_options );
+		    $avatar = ctf_get_local_avatar( $data, $feed_options );
 	    } else {
 		    $avatar = $data['profile_image_url_https'];
 	    }
@@ -571,57 +581,31 @@ class CTF_Parse_Pro
         return $data['description'];
     }
 
-    public static function get_user_header_json( $data ) {
-        $transient = $data['type'] === 'usertimeline' ? 'ctf_header_' . $data['screenname'] : 'ctf_hometimeline_header';
+	public static function get_user_header_json( $data, $post_info ) {
+		$type = ! empty( $data['type'] ) ? $data['type'] : 'usertimeline';
 
-        $header_json = get_transient( $transient );
-		$header_array = json_decode( $header_json, true );
-        if ( ! $header_json || isset($header_array['errors']) ) {
-            $endpoint = 'accountlookup';
-            if ( $data['type'] === 'usertimeline' ) {
-                $endpoint = 'userslookup';
-            }
+		$types_and_terms = $data['feed_types_and_terms'];
 
-                // Only can be set in the options page
-            $request_settings = array(
-                'consumer_key' => $data['consumer_key'],
-                'consumer_secret' => $data['consumer_secret'],
-                'access_token' => $data['access_token'],
-                'access_token_secret' => $data['access_token_secret'],
-            );
+		$timelines_included = array();
+		foreach ( $types_and_terms as $type_and_term ) {
+			if ( $type_and_term[0] === 'usertimeline' ) {
+				$timelines_included[] = str_replace( '@', '', strtolower( $type_and_term[1] ) );
+			}
+		}
 
-            $CtfFeedPros = new CtfFeedPro( array(), null, null );
 
-            $get_fields = $CtfFeedPros->setGetFieldsArray( $endpoint, $data['screenname'] );
-            // actual connection
-            $twitter_connect = new CtfOauthConnectPro( $request_settings, $endpoint );
-            $twitter_connect->setUrlBase();
-            $twitter_connect->setGetFields( $get_fields );
-            $twitter_connect->setRequestMethod( $data['request_method'] );
+		if ( $type === 'usertimeline' ) {
+			if ( ! empty( $post_info[0]['user'] ) ) {
+				$screeenname = strtolower( CTF_Parse_Pro::get_user_name( $post_info[0]['user'] ) );
 
-            $request_results = $twitter_connect->performRequest();
+				return $post_info[0]['user'];
 
-            $header_json = isset( $request_results->json ) ? $request_results->json : false;
+			}
 
-            if ( $endpoint === 'accountlookup' ) {
-                set_transient( 'ctf_hometimeline_header', $header_json, 60*60 );
-            } else {
-                set_transient( 'ctf_header_' . $data['screenname'], $header_json, 60*60 );
-            }
+		}
 
-        }
-        $header_info = isset( $header_json ) ? json_decode( $header_json, true ) : array();
-        if ( isset( $header_info[0] ) && !isset($header_info['errors'])) {
-            return $header_info = $header_info[0];
-        } elseif ( ! isset( $header_info['screen_name'] ) ) {
-            return [
-            	'name' => $data['screenname'],
-            	'description' => ''
-            ];
-        }
-
-        return $header_info;
-    }
+		return array();
+	}
 
     public static function get_header_tweet_count( $data ) {
         return number_format( intval( $data['statuses_count'] ) );
@@ -642,7 +626,7 @@ class CTF_Parse_Pro
     }
 
     public static function get_post_id( $data ) {
-        return $data['id_str'];
+        return isset( $data['id_str'] ) ? $data['id_str'] : '';
     }
 
     public static function get_item_classes( $data, $feed_options, $i ) {
@@ -875,14 +859,16 @@ class CTF_Parse_Pro
 
     public static function get_media( $data, $num_media = false ) {
         //Media
-        $media = false ;
+        $media = [] ;
 
         if ( isset( $data['extended_entities']['media'] ) ) {
 
             $num_media = count( $data['extended_entities']['media'] );
             for( $ii = 0; $ii < $num_media; $ii++ ) {
                 if ( $data['extended_entities']['media'][$ii]['type'] == 'video' || $data['extended_entities']['media'][$ii]['type'] == 'animated_gif' ) {
-                    $media[$ii]['url'] = $data['extended_entities']['media'][$ii]['video_info']['variants'][$ii]['url'];
+					if (isset($data['extended_entities']['media'][$ii]['video_info'])) {
+						$media[$ii]['url'] = $data['extended_entities']['media'][$ii]['video_info']['variants'][0]['url'];
+					}
                 } else {
                     $media[$ii]['url'] = isset( $data['extended_entities']['media'][$ii]['media_url_https'] ) ? $data['extended_entities']['media'][$ii]['media_url_https'] : '';
                 }
@@ -1119,11 +1105,13 @@ class CTF_Parse_Pro
     }
 
     public static function get_medium_url( $data ) {
-        return $data['url'];
+        if (isset($data['url'])) {
+			return $data['url'];
+		}
     }
 
     public static function get_utc_offset ( $data ) {
-        return $data['user']['utc_offset'];
+        return isset( $data['user']['utc_offset'] ) ? $data['user']['utc_offset'] : '';
     }
 
     public static function get_verified ( $data ) {

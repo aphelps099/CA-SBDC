@@ -9,12 +9,16 @@
         <div>
             <div class="cff-fb-extpp-top cff-fb-fs" :class="iscustomizerScreen && customizerScreens.popupBackButton.includes(viewsActive.extensionsPopupElement) ? 'cff-fb-extpp-top-fdtype' : ''">
                 <div class="cff-fb-extpp-info">
-                    <div v-if="iscustomizerScreen && customizerScreens.popupBackButton.includes(viewsActive.extensionsPopupElement)" class="cff-fb-slctf-back cff-fb-hd-btn cff-btn-grey" @click.prevent.default="activateView('feedtypesPopup')"><svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.3415 1.18184L5.1665 0.00683594L0.166504 5.00684L5.1665 10.0068L6.3415 8.83184L2.52484 5.00684L6.3415 1.18184Z" fill="#141B38"></path></svg> <span>Back</span></div>
+                    <div v-if="iscustomizerScreen && customizerScreens.popupBackButton.includes(viewsActive.extensionsPopupElement)" class="cff-fb-slctf-back cff-fb-hd-btn cff-btn-grey" @click.prevent.default="backToPrevPopup()"><svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.3415 1.18184L5.1665 0.00683594L0.166504 5.00684L5.1665 10.0068L6.3415 8.83184L2.52484 5.00684L6.3415 1.18184Z" fill="#141B38"></path></svg> <span>Back</span></div>
+                    <div class="cff-extpp-license-notice cff-fb-fs" v-if="cffLicenseNoticeActive">
+                        <span v-html="genericText.licenseInactive" v-if="cffLicenseInactiveState"></span>
+                        <span v-html="genericText.licenseExpired"  v-if="!cffLicenseInactiveState"></span>
+                    </div>
                     <div class="cff-fb-extpp-head cff-fb-fs"><h2 v-html="extensionsPopup[viewsActive.extensionsPopupElement].heading"></h2></div>
                     <div class="cff-fb-extpp-desc cff-fb-fs sb-caption" v-html="extensionsPopup[viewsActive.extensionsPopupElement].description"></div>
-                    <div v-if="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn" v-html="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn"></div>
+                    <div v-if="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn && !cffLicenseNoticeActive" v-html="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn"></div>
                 </div>
-                <div class="cff-fb-extpp-img" v-html="extensionsPopup[viewsActive.extensionsPopupElement].img">
+                <div class="cff-fb-extpp-img" v-html="svgIcons['extensions-popup'][viewsActive.extensionsPopupElement]">
                 </div>
             </div>
             <div class="cff-fb-extpp-bottom cff-fb-fs">
@@ -30,7 +34,9 @@
                     </div>
                 </div>
                 <div class="cff-fb-extpp-btns cff-fb-fs">
-                    <a class="cff-fb-extpp-get-btn cff-btn-orange" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank" class="cff-fb-fs-link">{{genericText.upgrade}}</a>
+                    <a class="cff-fb-extpp-get-btn cff-btn-orange" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank" class="cff-fb-fs-link">
+                        {{ cffLicenseInactiveState ? genericText.activateLicense : cffLicenseNoticeActive ? genericText.renew : genericText.upgrade}}
+                    </a>
                     <a class="cff-fb-extpp-get-btn cff-btn-grey" :href="extensionsPopup[viewsActive.extensionsPopupElement].demoUrl" target="_blank" class="cff-fb-fs-link" v-html="viewsActive.extensionsPopupElement == 'socialwall' ? genericText.viewDemo : genericText.learnMore"></a>
                 </div>
             </div>

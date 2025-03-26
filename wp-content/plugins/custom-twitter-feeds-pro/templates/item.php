@@ -17,6 +17,8 @@ $disablelightbox = $feed_options['disablelightbox'];
 $disable_lightbox_class = $disablelightbox ? ' ctf-disable-lightbox' : '';
 
 $post = CTF_Parse_Pro::get_post( $tweet_set[$i] );
+$has_threads = isset($post['threads']) && count($post['threads']) >= 1 && is_array($post['threads']);
+$tweet_threads = $has_threads ? $post['threads'] : [];
 $id_post_id = CTF_Parse_Pro::get_post_id( $tweet_set[$i] );
 $post_id  = CTF_Parse_Pro::get_post_id( $post );
 $post_text = CTF_Display_Elements_Pro::post_text( $post, $feed_options );
@@ -28,30 +30,24 @@ $author_screen_name = CTF_Parse_Pro::get_author_screen_name( $post );
 $tweet_classes = CTF_Parse_Pro::get_item_classes( $tweet_set, $feed_options, $i);
 $retweeter = CTF_Parse_Pro::get_retweeter_name( $tweet_set, $i );
 $replied_to  = CTF_Parse_Pro::get_replied_to( $post );
-
+$feed_layout = isset($feed_options['layout']) ? $feed_options['layout'] : 'list';
 $quoted = CTF_Parse_Pro::get_quoted_tc( $post );
 $quoted_media = CTF_Parse_Pro::get_quoted_media( $quoted, $num_media );
 
-$retweet_count = CTF_Parse_Pro::get_retweet_count( $post );
-$favorite_count = CTF_Parse_Pro::get_favorite_count( $post );
-
+$retweet_count = CTF_Parse_Pro::get_retweet_count($post);
+$favorite_count = CTF_Parse_Pro::get_favorite_count($post);
 
 $tweet_action_end_url = $post_id . '&related=' . $author_screen_name;
 
-$retweet_status = CTF_Parse_Pro::get_retweet_status( $tweet_set[$i] );
-$retweet_post_id = CTF_Parse_Pro::get_retweet_id( $tweet_set[$i] );
+$retweet_status = CTF_Parse_Pro::get_retweet_status($tweet_set[$i]);
+$retweet_post_id = CTF_Parse_Pro::get_retweet_id($tweet_set[$i]);
 
+$actions_attr = CTF_Display_Elements_Pro::get_element_attribute('actions', $feed_options);
+$viewtwitterlink_attr = CTF_Display_Elements_Pro::get_element_attribute('viewtwitterlink', $feed_options);
+$viewtwitterlink_text_attr = CTF_Display_Elements_Pro::get_element_attribute('viewtwitterlink_text', $feed_options);
+$linkto_attr = CTF_Display_Elements_Pro::get_element_attribute('linkto', $feed_options);
 
-$actions_attr = CTF_Display_Elements_Pro::get_element_attribute( 'actions', $feed_options );
-$viewtwitterlink_attr = CTF_Display_Elements_Pro::get_element_attribute( 'viewtwitterlink', $feed_options );
-$viewtwitterlink_text_attr = CTF_Display_Elements_Pro::get_element_attribute( 'viewtwitterlink_text', $feed_options );
-$linkto_attr = CTF_Display_Elements_Pro::get_element_attribute( 'linkto', $feed_options );
-
-
-$twittercards_attr = CTF_Display_Elements_Pro::get_element_attribute( 'twitter_cards', $feed_options );
-
-
-
+$twittercards_attr = CTF_Display_Elements_Pro::get_element_attribute('twitter_cards', $feed_options);
 ?>
 
 <div class="<?php echo esc_attr( $tweet_classes ) ?>" id="ctf_<?php echo esc_attr( $id_post_id ) ?>">
@@ -82,6 +78,12 @@ $twittercards_attr = CTF_Display_Elements_Pro::get_element_attribute( 'twitter_c
     </div>
     <?php endif; ?>
 
+	<?php if ($has_threads && $feed_layout !== 'carousel') : ?>
+		<button class="ctf-btn-show-threads" data-show-thread-text="<?php echo esc_attr($show_thread_txt); ?>" data-hide-thread-text="<?php echo esc_attr($hide_thread_txt); ?>">
+            <?php echo esc_html($show_thread_txt); ?>
+        </button>
+	<?php endif; ?>
+
     <div class="ctf-tweet-actions" <?php echo $actions_attr; ?>>
     <?php if ( ctf_show( 'actions', $feed_options ) ) : ?>
         <a href="<?php echo esc_url( 'https://twitter.com/intent/tweet?in_reply_to=' . $tweet_action_end_url ) ?>" class="ctf-reply" target="_blank" rel="nofollow noopener noreferrer">
@@ -109,5 +111,17 @@ $twittercards_attr = CTF_Display_Elements_Pro::get_element_attribute( 'twitter_c
         <?php endif; ?>
     <?php endif; ?>
 
-    </div>
+	</div>
+
+	<?php
+	if ($has_threads && $feed_layout === 'masonry') {
+		$this->tweet_threads_html($post_id, $tweet_threads, $feed_options, $is_pagination);
+	}
+	?>
 </div>
+
+<?php
+if ($has_threads && $feed_layout === 'list') {
+	$this->tweet_threads_html($post_id, $tweet_threads, $feed_options, $is_pagination);
+}
+?>

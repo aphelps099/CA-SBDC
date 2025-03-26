@@ -29,11 +29,12 @@
 					<div class="sbi_lb-data">
 						<div class="sbi_lb-details">
 							<span class="sbi_lb-caption" style="">
-								<a class="sbi_lightbox_username" href="https://www.instagram.com/landscapeswelove/" target="_blank" rel="noopener">
+								<a class="sbi_lightbox_username" href="https://www.instagram.com/smashballoon/" target="_blank" rel="noopener">
 									<img src="<?php echo esc_url(SBI_BUILDER_URL . 'assets/img/landscapeswelove.jpg' ) ?>">
-									<p>@landscapeswelove</p>
+									<p>@example_user</p>
 								</a>
-								<span class="sbi_caption_text">The morning sun warms the mountain top as it calls forth another day of wonder. <a href="https://www.instagram.com/explore/tags/morning/" target="_blank" rel="nofollow noopener">#morning</a>
+								<span class="sbi_caption_text">
+									This is example post with an example caption to show how it is displayed in the lightbox. This is an example <a>Link</a> inside the lightbox caption.
 								</span>
 							</span>
 							<span class="sbi_lb-number">1 / {{customizerFeedData.settings.num}}</span>
@@ -104,34 +105,17 @@
 									</div>
 								</div>
 								<div class="sbi_lb-commentBox sbi_dummy-lb-commentBox" v-if="$parent.valueIsEnabled(customizerFeedData.settings.lightboxcomments)">
-									<p class="sbi_lb-comment" id="sbi_com_18157782217101862" data-sbi-created="">
-										<a class="sbi_lb-commenter" href="https://www.instagram.com/kapo.or430/" target="_blank" rel="noopener">kapo.or430</a>
-										<span class="sbi_lb-comment-text">
-											<img draggable="false" role="img" class="emoji" alt="❤️" src="https://s.w.org/images/core/emoji/13.1.0/svg/2764.svg">
-											<img draggable="false" role="img" class="emoji" alt="❤️" src="https://s.w.org/images/core/emoji/13.1.0/svg/2764.svg">
-										</span>
-									</p>
-									<p class="sbi_lb-comment" id="sbi_com_17867400277910460" data-sbi-created="">
-										<a class="sbi_lb-commenter" href="https://www.instagram.com/dannon.dance/" target="_blank" rel="noopener">dannon.dance</a>
-										<span class="sbi_lb-comment-text">Beauty <img draggable="false" role="img" class="emoji" alt="😍" src="https://s.w.org/images/core/emoji/13.1.0/svg/1f60d.svg">
-										</span>
-									</p>
-									<p class="sbi_lb-comment" id="sbi_com_17861444342024321" data-sbi-created="">
-										<a class="sbi_lb-commenter" href="https://www.instagram.com/d.c.graphixs/" target="_blank" rel="noopener">d.c.graphixs</a>
-										<span class="sbi_lb-comment-text">Beautiful <img draggable="false" role="img" class="emoji" alt="🔥" src="https://s.w.org/images/core/emoji/13.1.0/svg/1f525.svg">please follow back please thank you <img draggable="false" role="img" class="emoji" alt="😊" src="https://s.w.org/images/core/emoji/13.1.0/svg/1f60a.svg">
-										</span>
-									</p>
-									<p class="sbi_lb-comment" id="sbi_com_17851825924785670" data-sbi-created="">
-										<a class="sbi_lb-commenter" href="https://www.instagram.com/test.user.ua/" target="_blank" rel="noopener">test.user.ua</a>
-										<span class="sbi_lb-comment-text">real situation</span>
+									<p class="sbi_lb-comment" id="sbi_com_18031479127005270" data-sbi-created="">
+										<a class="sbi_lb-commenter" href="https://www.instagram.com/smashballoon/" target="_blank" rel="noopener">johndoe</a>
+										<span class="sbi_lb-comment-text">This is an example comment shown in the lightbox</span>
 									</p>
 									<p class="sbi_lb-comment" id="sbi_com_18031479127005270" data-sbi-created="">
-										<a class="sbi_lb-commenter" href="https://www.instagram.com/erickmen0316/" target="_blank" rel="noopener">erickmen0316</a>
-										<span class="sbi_lb-comment-text">1234</span>
+										<a class="sbi_lb-commenter" href="https://www.instagram.com/smashballoon/" target="_blank" rel="noopener">janesmith</a>
+										<span class="sbi_lb-comment-text">This is another example comment</span>
 									</p>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</script>
+</script>

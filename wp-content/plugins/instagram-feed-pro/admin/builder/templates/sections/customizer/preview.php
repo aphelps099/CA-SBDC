@@ -5,7 +5,7 @@
 		 *
 		 * @since 4.0
 		 */
-		do_action('sbi_admin_notices');
+		// do_action('sbi_admin_notices');
 
 		$feed_id = ! empty( $_GET['feed_id'] ) ? (int)$_GET['feed_id'] : 0;
 	?>
@@ -21,7 +21,12 @@
 			</div>
 		</div>
 
-		<div class="sbi-preview-ctn sbi-fb-fs">
+		<div
+		class="sbi-preview-ctn sbi-fb-fs"
+		:class="(customizerFeedData.settings.feedtheme ? 'sbi-theme sbi-' + customizerFeedData.settings.feedtheme : 'sbi-theme sbi-default_theme')"
+		:data-boxshadow="valueIsEnabled(customizerFeedData.settings.boxshadow) && customizerFeedData.settings.poststyle === 'boxed'"
+		:data-post-style="customizerFeedData.settings.poststyle"
+		>
 			<div>
 				<component :is="{template}"></component>
 			</div>

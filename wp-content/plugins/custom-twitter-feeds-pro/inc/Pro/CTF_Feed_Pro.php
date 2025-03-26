@@ -11,7 +11,13 @@
 namespace TwitterFeed\Pro;
 use TwitterFeed\Admin\SB_Twitter_Cache;
 use TwitterFeed\CtfCache;
-use TwitterFeed\CtfOauthConnectPro;
+use TwitterFeed\SmashTwitter\ErrorReport;
+use TwitterFeed\SmashTwitter\TweetFilterer;
+use TwitterFeed\SmashTwitter\TweetSetModifier;
+use TwitterFeed\V2\CtfOauthConnectPro;
+use TwitterFeed\Builder\CTF_Db;
+use TwitterFeed\SmashTwitter\Request;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -101,6 +107,9 @@ class CTF_Feed_Pro
 	 * @since 2.1.3/5.2.3
 	 */
 	protected $one_post_found;
+
+	protected $max_api_calls;
+
 
 	private $last_id_data;
 
@@ -205,7 +214,7 @@ class CTF_Feed_Pro
 	public function regular_cache_exists() {
 		//Check whether the cache transient exists in the database and is available for more than one more minute
 		if ( strpos( $this->regular_feed_transient_name, 'ctf_!' ) !== false ) {
-			$this->transient_data = $this->cache->get_transient($this->transient_name);
+			$this->transient_data = $this->cache->get_transient( $this->regular_feed_transient_name );
 
 			$transient_exists = $this->cache->get_persistent( $this->regular_feed_transient_name );
 		} else {
@@ -388,6 +397,29 @@ class CTF_Feed_Pro
 			$num = min( 200, $num * 3 );
 		}
 
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$feed_id =  $settings['feed'];
+			$cache_time = DAY_IN_SECONDS;
+
+			$page = 0; // force to 0 for this type of use of the cache
+
+			$repository = new \TwitterFeed\SmashTwitter\TweetRepository( $settings['feed_types_and_terms'], $feed_id, new \TwitterFeed\SmashTwitter\TweetAggregator(), new \TwitterFeed\CtfCache( $feed_id, $cache_time, $page ), new TweetSetModifier(), new ErrorReport() );
+			$doing_cron_update = ! empty( $settings['doingcronupdate'] );
+
+			$repository->get_set_cache( $doing_cron_update );
+			$tweet_set = $repository->get_tweets();
+
+			if ( is_array( $tweet_set ) ) {
+				$tweet_set = self::filterTweetSet($tweet_set, $settings);
+			}
+
+			$this->post_data = $tweet_set;
+
+			$this->next_pages = false;
+
+			return;
+		}
+
 		$one_successful_connection = false;
 		$one_post_found = false;
 		$next_page_found = false;
@@ -547,6 +579,50 @@ class CTF_Feed_Pro
 		return $twitter_connect->performRequest();
 	}
 
+	/**
+	 * Update API Statistics
+	 *
+	 * @since 2.4
+	 *
+	 * @return boolean
+	 */
+	public static function update_api_statistics()
+	{
+		// get site access token
+		$ctf_options = get_option('ctf_options', array());
+		$site_access_token = !empty($ctf_options['site_access_token']) ? $ctf_options['site_access_token'] : false;
+		// get ctf statuses option
+		$ctf_statuses_option = get_option('ctf_statuses', array());
+
+		if (empty($site_access_token)) {
+			return false;
+		}
+
+		// Make the API Request
+		$args = array(
+			'body' => array(
+				'site_token' => $site_access_token
+			)
+		);
+
+		$request = new Request('apistats', $args, array());
+		$response = $request->fetch();
+
+		// return if there's error in the response
+		if (is_wp_error($response)) {
+			return false;
+		}
+		// verify if the returned data is in correct format
+		if (!is_array($response) && !isset($response['remaining_api_counts'])) {
+			return false;
+		}
+		// save the api statistics data to the options
+		$ctf_statuses_option['smash_twitter']['apistats'] = $response;
+		update_option('ctf_statuses', $ctf_statuses_option);
+
+		return $response;
+	}
+
 	public static function reduceTweetSetData( $tweets ) {
 
 		$tweet_count = count( $tweets );
@@ -554,19 +630,48 @@ class CTF_Feed_Pro
 		$trimmed_tweets = array();
 
 		foreach ( $tweets as $tweet ) {
-
 			$trimmed_tweet = array();
-
-			$trimmed_tweet['user']['name']                    = $tweet['user']['name'];
-			$trimmed_tweet['user']['screen_name']             = $tweet['user']['screen_name'];
-			$trimmed_tweet['user']['verified']                = $tweet['user']['verified'];
-			$trimmed_tweet['user']['profile_image_url_https'] = $tweet['user']['profile_image_url_https'];
-			$trimmed_tweet['user']['utc_offset']              = $tweet['user']['utc_offset'];
-			$trimmed_tweet['text']                            = isset( $tweet['text'] ) ? $tweet['text'] : $tweet['full_text'];
-			$trimmed_tweet['id_str']                          = $tweet['id_str'];
-			$trimmed_tweet['created_at']                      = $tweet['created_at'];
-			$trimmed_tweet['retweet_count']                   = $tweet['retweet_count'];
-			$trimmed_tweet['favorite_count']                  = $tweet['favorite_count'];
+			if ( isset($tweet['user']['name']) ) {
+				$trimmed_tweet['user']['name']                    = $tweet['user']['name'];
+			}
+			if ( isset( $tweet['user']['screen_name'] ) ) {
+				$trimmed_tweet['user']['screen_name']             = $tweet['user']['screen_name'];
+			}
+			if ( isset( $tweet['user']['verified'] ) ) {
+				$trimmed_tweet['user']['verified']                = $tweet['user']['verified'];
+			}
+			if ( isset( $tweet['user']['profile_image_url_https'] ) ) {
+				$trimmed_tweet['user']['profile_image_url_https'] = $tweet['user']['profile_image_url_https'];
+			}
+			if ( isset( $tweet['user']['utc_offset'] ) ) {
+				$trimmed_tweet['user']['utc_offset']              = $tweet['user']['utc_offset'];
+			}
+			if ( isset( $tweet['user']['statuses_count'] ) ) {
+				$trimmed_tweet['user']['statuses_count']          = $tweet['user']['statuses_count'];
+			}
+			if ( isset( $tweet['user']['followers_count'] ) ) {
+				$trimmed_tweet['user']['followers_count']         = $tweet['user']['followers_count'];
+			}
+			if ( isset( $tweet['user']['rest_id'] ) ) {
+				$trimmed_tweet['user']['rest_id']         = $tweet['user']['rest_id'];
+			}
+			if ( isset( $tweet['user']['description'] ) ) {
+				$trimmed_tweet['user']['description']             = $tweet['user']['description'];
+			}
+			$full_text = isset( $tweet['full_text'] ) ? $tweet['full_text'] : '';
+			$trimmed_tweet['text']                            = isset( $tweet['text'] ) ? $tweet['text'] : $full_text;
+			if ( isset( $tweet['id_str'] ) ) {
+				$trimmed_tweet['id_str']                          = $tweet['id_str'];
+			}
+			if ( isset( $tweet['created_at'] ) ) {
+				$trimmed_tweet['created_at']                      = $tweet['created_at'];
+			}
+			if ( isset( $tweet['retweet_count'] ) ) {
+				$trimmed_tweet['retweet_count']                   = $tweet['retweet_count'];
+			}
+			if ( isset( $tweet['favorite_count'] ) ) {
+				$trimmed_tweet['favorite_count']                  = $tweet['favorite_count'];
+			}
 
 			if ( isset( $tweet['entities']['urls'][0] ) ) {
 				foreach ( $tweet['entities']['urls'] as $url ) {
@@ -574,9 +679,13 @@ class CTF_Feed_Pro
 						'url'          => $url['url'],
 						'expanded_url' => $url['expanded_url'],
 						'display_url'  => $url['display_url'],
-
 					);
 				}
+			}
+
+			// includes threads
+			if (isset($tweet['threads']) && is_array($tweet['threads']) && count($tweet['threads']) >= 1) {
+				$trimmed_tweet['threads'] = self::reduceTweetSetData($tweet['threads']);
 			}
 
 			if ( isset( $tweet['retweeted_status'] ) ) {
@@ -659,19 +768,20 @@ class CTF_Feed_Pro
 						$trimmed_tweet['extended_entities']['media'][$i]['sizes'] = $tweet['extended_entities']['media'][$i]['sizes'];
 					}
 					if ( $tweet['extended_entities']['media'][$i]['type'] == 'video' || $tweet['extended_entities']['media'][$i]['type'] == 'animated_gif' ) {
-						$preferred_variant = $tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
-						$highest_bitrate = 0;
-						foreach ( $tweet['extended_entities']['media'][$i]['video_info']['variants'] as $variant ) {
-							if ( isset( $variant['content_type'] )
-							     && $variant['content_type'] == 'video/mp4'
-								&& $variant['bitrate'] > $highest_bitrate ) {
-								$highest_bitrate = $variant['bitrate'];
-								$preferred_variant = $variant['url'];
+						if ( isset( $tweet['extended_entities']['media'][$i]['video_info'] ) ) {
+							$preferred_variant = $tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
+							$highest_bitrate = 0;
+							foreach ( $tweet['extended_entities']['media'][$i]['video_info']['variants'] as $variant ) {
+								if ( isset( $variant['content_type'] )
+									&& $variant['content_type'] == 'video/mp4'
+									&& $variant['bitrate'] > $highest_bitrate ) {
+									$highest_bitrate = $variant['bitrate'];
+									$preferred_variant = $variant['url'];
+								}
 							}
+							$trimmed_tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['url'] = $preferred_variant;
+							$trimmed_tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['bitrate'] = $highest_bitrate;
 						}
-						$trimmed_tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['url'] = $preferred_variant;
-						$trimmed_tweet['extended_entities']['media'][$i]['video_info']['variants'][0]['bitrate'] = $highest_bitrate;
-
 					}
 				}
 
@@ -722,13 +832,15 @@ class CTF_Feed_Pro
 						$trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['sizes'] = $tweet['retweeted_status']['extended_entities']['media'][$i]['sizes'];
 					}
 					if ( $tweet['retweeted_status']['extended_entities']['media'][$i]['type'] == 'video' || $tweet['retweeted_status']['extended_entities']['media'][$i]['type'] == 'animated_gif' ) {
-						foreach ( $tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'] as $variant ) {
-							if ( isset( $variant['content_type'] ) && $variant['content_type'] == 'video/mp4' ) {
-								$trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+						if (isset($tweet['retweeted_status']['extended_entities']['media'][$i]['video_info'])) {
+							foreach ( $tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'] as $variant ) {
+								if ( isset( $variant['content_type'] ) && $variant['content_type'] == 'video/mp4' ) {
+									$trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+								}
 							}
-						}
-						if ( ! isset( $trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] ) ) {
-							$trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
+							if ( ! isset( $trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] ) ) {
+								$trimmed_tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['retweeted_status']['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
+							}
 						}
 					}
 				}
@@ -748,13 +860,15 @@ class CTF_Feed_Pro
 						$trimmed_tweet['retweeted_status']['entities']['media'][$i]['sizes'] = $tweet['retweeted_status']['entities']['media'][$i]['sizes'];
 					}
 					if ( $tweet['retweeted_status']['entities']['media'][$i]['type'] == 'video' || $tweet['retweeted_status']['entities']['media'][$i]['type'] == 'animated_gif' ) {
-						foreach ( $tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'] as $variant ) {
-							if ( isset( $variant['content_type'] ) && $variant['content_type'] == 'video/mp4' ) {
-								$trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+						if (isset($tweet['retweeted_status']['entities']['media'][$i]['video_info'])) {
+							foreach ($tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'] as $variant) {
+								if (isset( $variant['content_type'] ) && $variant['content_type'] == 'video/mp4') {
+									$trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+								}
 							}
-						}
-						if ( ! isset( $trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'] ) ) {
-							$trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][0]['url'];
+							if (!isset($trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'])) {
+								$trimmed_tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['retweeted_status']['entities']['media'][$i]['video_info']['variants'][0]['url'];
+							}
 						}
 					}
 				}
@@ -771,13 +885,15 @@ class CTF_Feed_Pro
 					$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['media_url_https'] = $tweet['quoted_status']['extended_entities']['media'][$i]['media_url_https'];
 					$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['type'] = $tweet['quoted_status']['extended_entities']['media'][$i]['type'];
 					if ( $tweet['quoted_status']['extended_entities']['media'][$i]['type'] == 'video' || $tweet['quoted_status']['extended_entities']['media'][$i]['type'] == 'animated_gif' ) {
-						foreach ( $tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'] as $variant ) {
-							if ( isset( $variant['content_type'] ) && $variant['content_type'] == 'video/mp4' ) {
-								$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+						if (isset($tweet['quoted_status']['extended_entities']['media'][$i]['video_info'])) {
+							foreach ($tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'] as $variant) {
+								if (isset($variant['content_type']) && $variant['content_type'] == 'video/mp4') {
+									$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $variant['url'];
+								}
 							}
-						}
-						if ( ! isset( $trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] ) ) {
-							$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
+							if (!isset($trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'])) {
+								$trimmed_tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][$i]['url'] = $tweet['quoted_status']['extended_entities']['media'][$i]['video_info']['variants'][0]['url'];
+							}
 						}
 					}
 				}
@@ -870,6 +986,11 @@ class CTF_Feed_Pro
 				}
 			}
 
+			$api_twitter_card = false;
+			if ( isset( $tweet['card'] ) ) {
+				$api_twitter_card = CTF_Twitter_Card_Generator::parse_api_card_data($tweet['card']);
+			}
+
 
 			// used to generate twitter cards
 			if ( isset( $tweet['entities']['urls'][0]['expanded_url'] ) ) {
@@ -910,6 +1031,36 @@ class CTF_Feed_Pro
 				}
 			}
 
+			if ( ! empty( $api_twitter_card ) ) {
+				$trimmed_tweet['twitter_card'] = $api_twitter_card;
+
+				if ( isset( $tweet['entities']['urls'][0]['expanded_url'] ) ) {
+
+					$target_one = $tweet['entities']['urls'][0]['expanded_url'];
+					$target_two = $tweet['entities']['urls'][0]['url'];
+
+					$remove_url_from_tweet = apply_filters( 'ctf_should_remove_url_from_text', true );
+					if ( $remove_url_from_tweet ) {
+						$trimmed_tweet['text'] = CTF_Feed_Pro::removeStringFromText( $target_one, $trimmed_tweet['text'] );
+						$trimmed_tweet['text'] = CTF_Feed_Pro::removeStringFromText( $target_two, $trimmed_tweet['text'] );
+					}
+
+				}
+
+
+				if ( isset( $tweet['retweeted_status']['entities']['urls'][0]['expanded_url'] ) ) {
+
+					$target_one = $tweet['retweeted_status']['entities']['urls'][0]['expanded_url'];
+					$target_two = $tweet['retweeted_status']['entities']['urls'][0]['url'];
+
+					$remove_url_from_tweet = apply_filters( 'ctf_should_remove_url_from_text', true );
+					if ( $remove_url_from_tweet ) {
+						$trimmed_tweet['retweeted_status']['text'] = CTF_Feed_Pro::removeStringFromText( $target_one, $trimmed_tweet['retweeted_status']['text'] );
+						$trimmed_tweet['retweeted_status']['text'] = CTF_Feed_Pro::removeStringFromText( $target_two, $trimmed_tweet['retweeted_status']['text'] );
+					}
+				}
+			}
+
 			$trimmed_tweets[] = $trimmed_tweet;
 
 		}
@@ -945,6 +1096,12 @@ class CTF_Feed_Pro
 			if ( $keep ) {
 				$tweets_that_pass_filter[] = $tweet;
 			}
+		}
+
+		if ( CTF_DOING_SMASH_TWITTER ) {
+			$filterer = new TweetFilterer();
+
+			$tweets_that_pass_filter = $filterer::maybe_filter_for_timeline_static( $tweets_that_pass_filter, $settings );
 		}
 
 		return $tweets_that_pass_filter;
@@ -1182,6 +1339,9 @@ class CTF_Feed_Pro
 	 *  connected account if not available in the API response
 	 */
 	public function set_remote_header_data( $settings, $feed_types_and_terms ) {
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			return;
+		}
 		$this->header_data = false;
 		$endpoint = 'accountlookup';
 		if ( $settings['type'] === 'usertimeline' ) {
@@ -1416,6 +1576,34 @@ class CTF_Feed_Pro
 
 	}
 
+	/**
+	 * Update last_api_updated date
+	 *
+	 * @since 2.4
+	 * @params int $feed_id
+	 * @return int $success
+	 */
+	public static function update_last_api_updated_data($feed_id)
+	{
+		$args = array(
+			'id' => $feed_id
+		);
+
+		// Get default date and time format from WordPress
+		$date_format = get_option('date_format');
+		$time_format = get_option('time_format');
+
+		$data = array();
+		$data[] = array(
+			'key' => 'last_api_updated',
+			'values' => array(date('Y-m-d H:i:s'))
+		);
+
+		$success = CTF_Db::feeds_update($data, $args);
+
+		return $success;
+	}
+
 	protected function remove_duplicate_posts() {
 		$posts = $this->post_data;
 		$ids_in_feed = array();
@@ -1434,6 +1622,23 @@ class CTF_Feed_Pro
 
 		$this->add_report( 'removed duplicates: ' . implode(', ', $removed ) );
 		$this->set_post_data( $non_duplicate_posts );
+	}
+
+	/**
+	 * Check if the time is passed
+	 * then updated the stats form the API
+	 *
+	 * @return void
+	 */
+	public static function should_update_stats()
+	{
+		$ctf_statuses = get_option('ctf_statuses', []);
+		$reset_time = !empty($ctf_statuses['smash_twitter']['apistats']['next_reset_time'])
+			? $ctf_statuses['smash_twitter']['apistats']['next_reset_time']
+			: 0;
+		if ($reset_time < current_time('timestamp')) {
+			CTF_Feed_Pro::update_api_statistics();
+		}
 	}
 
 }

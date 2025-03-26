@@ -11,6 +11,7 @@ namespace Smashballoon\Customizer;
 if (!\defined('ABSPATH')) {
     exit;
 }
+/** @internal */
 class Builder_Customizer
 {
     /**

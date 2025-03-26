@@ -50,6 +50,11 @@ class SB_Instagram_Post_Set {
 	private $first_post_top_time_stamp;
 
 	/**
+	 * @var array
+	 */
+	private $image_sizes;
+
+	/**
 	 * SB_Instagram_Post_Set constructor.
 	 *
 	 * @param array $post_data
@@ -194,6 +199,38 @@ class SB_Instagram_Post_Set {
 		}
 
 		$this->resized_image_data_for_set = $resized_image_data_for_set;
+	}
+
+	/**
+	 * Loop through set of posts and update the json_data column in the database
+	 * 
+	 */
+	public function maybe_update_json_data_for_posts() {
+		$posts_iterated_through     = 0;
+		$number_updated             = 0;
+
+		foreach ( $this->post_data as $single_instagram_post_data ) {
+
+			if ( isset( $single_instagram_post_data['id'] ) && $posts_iterated_through < 100 ) {
+				$single_post = new SB_Instagram_Post( $single_instagram_post_data['id'] );
+				$single_post->set_instagram_api_data( $single_instagram_post_data );
+
+				if ( empty( $this->first_post_top_time_stamp ) ) {
+					$this_post_top_time_stamp = empty( $single_post->get_top_time_stamp() ) ? $this->fill_in_timestamp : $single_post->get_top_time_stamp();
+					$this->first_post_top_time_stamp = $this_post_top_time_stamp;
+				}
+
+				if ( $single_post->exists_in_posts_table() ) {
+					$single_post->update_db_data( true, $this->transient_name, array(), '', '', date( 'Y-m-d H:i:s', strtotime( $this->first_post_top_time_stamp ) - ( 120 * $posts_iterated_through ) ) );
+					
+					$number_updated++;
+				}
+				
+			}
+
+			$posts_iterated_through++;
+		}
+
 	}
 
 }

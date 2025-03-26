@@ -1,9 +1,9 @@
-=== Custom Facebook Feed Pro ===
+=== Custom Facebook Feed Pro Smash ===
 Author: Smash Balloon
 Support Website: https://smashballoon.com/custom-facebook-feed/
 Requires at least: 4.1
-Tested up to: 5.9.2
-Version: 4.2.3
+Tested up to: 6.7
+Version: 4.7.0
 License: Non-distributable, Not for resale
 
 The Custom Facebook Feed allows you to display a completely customizable Facebook feed of any public Facebook page on your website.
@@ -30,10 +30,171 @@ Display a **completely customizable**, **responsive** and **search engine crawla
 1. Install the Custom Facebook Feed either via the WordPress plugin directory, or by uploading the files to your web server (in the /wp-content/plugins/ directory).
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Navigate to the 'Facebook Feed' settings page to configure your feed.
-4. Use the shortcode [custom-facebook-feed] in your page, post or widget to display your feed.
-5. You can display multiple feeds of different Facebook pages by specifying a Page ID directly in the shortcode: [custom-facebook-feed id=smashballoon num=5].
+4. Use the shortcode [custom-facebook-feed feed=1] in your page, post or widget to display your feed.
+5. You can display multiple feeds of different Facebook pages by creating additional feeds and adding the feed ID directly in the shortcode: [custom-facebook-feed feed=1].
 
 == Changelog ==
+= 4.7.0 =
+* New: Added support for a new GDPR consent plugin [WPConsent](https://wpconsent.com/?utm_campaign=facebook-pro-readme&utm_source=changelog&utm_medium=wpconsentannouncement).
+* New: Added support for GDPR Cookie Compliance by Moove Agency and Real Cookie Banner GDPR plugins.
+* Fix: Improved compatibility with the latest versions of Divi and Elementor.
+* Fix: Additional plugin hardening.
+* Fix: Lots of miscellaneous fixes for video feeds, videos in the lightbox, missing posts, and others.
+
+= 4.6.6 =
+* Tweak: Added support for our new [Feed Analytics](https://smashballoon.com/?utm_campaign=facebook-pro-readme&utm_source=changelog&utm_medium=feedanalyticsannouncement) product. Get insights as to how your feeds are being used by site visitors.
+
+= 4.6.5 =
+* Fix: Fixed missing Events feed when adding multiple feeds in the same page with Ajax theme option enabled.
+* Fix: Fixed wrong date displayed for recurring events.
+* Fix: Fixed missing posts in when using the Multifeed Extension.
+* Fix: Fixed 404 error when editing a feed caused by SVG icons in some environments.
+* Fix: Fixed an issue with multiple timezones applied in the same events feed that would cause the wrong time to be displayed.
+* Fix: Fixed an issue with the Multifeed extension and Social Wall, the feeds were not respecting the chronological order of posts.
+* Fix: Fixed an issue with the sources list popup when there are multiple sources in a feed.
+* Fix: Added Borlabs V3 support.
+* Fix: Misc PHP warnings would appear when data was missing from the API.
+
+= 4.6.4 =
+* Fix: Fixed issue preventing the lightbox from being disabled when the setting to do so was applied.
+* Fix: Fixed an issue with time zones applying correctly to feeds on the front-end of the site.
+* Fix: Fixed an issue with recurring events for events feeds.
+
+= 4.6.3 =
+* Fix: Removed guzzle library that was causing conflicts with some other plugins.
+
+= 4.6.2 =
+* Important: Due to Meta (Facebook) changes, how our plugin supports Facebook oEmbeds has also changed. If you are using the oEmbed feature to display Facebook oEmbeds, you will need to reconnect your account. Visit the oEmbeds page within the Facebook Feeds settings page to do the reconnection before May 14, 2024.
+* Fix: Fixed an issue causing recurring events to cause event list to show out of order.
+* Fix: Fixed issues due to time zones and events.
+
+= 4.6.1 =
+* Fix: Fixed featured post not displaying in the customizer
+* Fix: Fixed an issue causing the Date Range extension to not work properly
+* Fix: Fixed an issue with the Masonry layout load more button (existing posts were hiding pictures)
+
+= 4.6 =
+* Important: Meta (Facebook) is ending support for group feeds. [See our related FAQ](https://smashballoon.com/doc/facebook-api-changes-affecting-groups-april-2024/?facebook&utm_campaign=facebook-pro-readme&utm_source=changelog&utm_medium=groupdeprecation) for more information. Existing feeds with a Facebook group source will stop updating as of April 2024.
+* Important: Minimum PHP version raised to 7.1.
+* Tweak: Fixed issues related to comments and metaboxes showing incorrect information.
+* Tweak: Improved the metabox icons for all feed themes.
+* Tweak: Added support for manually setting the time zone for events feeds. This will allow you to correct the time zone offset and fix incorrect start and end date times.
+* Fix: Removed HTML comments from the author template.
+* Fix: Fixed a rare issue related to SVG icons and some settings pages showing a 404 error.
+* Fix: Fixed formatting issues with tags & mentions.
+* Fix: Fixed an issue causing the usage tracking option to always remain enabled.
+
+= 4.5.5 =
+* Tweak: Plugin hardening.
+
+= 4.5.4 =
+* Events feeds are now able to work like they did prior to the changes that required using an iCal URL. This should allow for past events to display as well as include some events that were previously excluded from the feed.
+* Fixed an issue causing Group events to not load.
+* Fixed an issue with Multifeed and events feeds.
+* Fixed an issue with the lightbox text line break.
+
+= 4.5.3 =
+* Fix: Fixed manual API limit value not applied.
+* Fix: Fixed an issue with Featured Posts not being displayed.
+* Tweak: Added more functionality that protects your Facebook data.
+
+= 4.5.2 =
+* Fix: Made several improvements to how our upcoming events in events feeds works for more reliability.
+* Fix: Fixed PHP error affecting versions of PHP earlier than 7.0.
+* Tweak: Improved and hardened our code base to improve reliability.
+
+= 4.5.1 =
+* Fix: Added a workaround for a bug from Facebook that is preventing upcoming events from displaying in events feeds. Reconnect your events feed sources to add an iCal URL to retrieve upcoming events for your feed.
+* Fix: Fixed a limit of only 20 feeds displaying as selectable when creating a Custom Facebook Feeds widget.
+* Fix: Fixed PHP deprecation warning for PHP8.1+ regarding dynamic property.
+
+= 4.5 =
+* New: Made many improvements to our Gutenberg block for adding feeds to make it easy to select a feed and add it to a page or post.
+* Tweak: Videos that are not "published" will not appear in the feed.
+* Tweak: Changed how accounts are connected for enhanced privacy.
+* Fix: Fixed PHP notice "PHP Deprecated: str_replace(): Passing null to parameter #3" that would occur in PHP 8.2+.
+* Fix: Fixed PHP warning "undefined index" when there were no shortcode arguments and the feed locator was triggered.
+* Fix: Fixed an issue with how we create and send emails that would cause the incorrect from email address to be used.
+* Fix: Fixed an issue saving settings when CFF extensions plugin is activated
+* Fix: Fixed PHP warning in the header like counts
+
+= 4.4.1 =
+* Fix: License information was not being processed correctly leading to some features not being available even when a license was active
+* Fix: Fixed and issue causing the front-end JavaScript file not to be compressed and optimized.
+
+= 4.4 =
+* New: New "Feed Themes" feature. Choose a theme for your feed that will add an attractive and coordinated design throughout your feed elements. Impress your visitors and gain more followers.
+* New: Connect individual locations when connecting an account to display posts from just one specific location instead of only from your main page.
+* Fix: In some circumstances, Facebook was sending albums data in an incorrect order. We've now included a workaround so albums always display in order of the date they were created.
+* Fix: Fixed YouTube videos not playing in the lightbox under certain circumstances.
+* Fix: Fixed a fatal PHP error that would occur in PHP8+.
+* Fix: Fixed low resolution image appearing in the lightbox under certain circumstances.
+* Fix: Fixed incorrect links that would cause logged-out visitors to link to the incorrect page on facebook.com.
+
+= 4.3.6 =
+* Tweak: Added a notice to help with creating a feed for our latest [Social Wall 2.0](https://smashballoon.com/pricing/all-access/?utm_source=plugin-pro&utm_campaign=sbi&utm_medium=readme&utm_content=Social+Wall+20) update.
+* Fix: Fixed additional deprecation warning that would affect our Elementor integration.
+
+= 4.3.5 =
+* Fix: Fixed the integration with the Cookie Yes plugin for GDPR related features to work with the latest and migrated version of Cookie Yes.
+* Fix: Fixed a PHP warning that would occur with our Reviews extension.
+* Fix: Hashtags in the post content would cause the max text length feature not to work properly.
+* Fix: Fixed the resolution of images in the lightbox for photos feed not always being correct.
+* Fix: Fixed an issue causing missing posts for timeline feeds on the front end of the site but not the customizer.
+
+= 4.3.4 =
+* Tweak: Vue.js code is now loaded from a local file shipped with the plugin rather than an external CDN for use with the customizer in the admin area.
+* Fix: Fixed a compatibility issue with the Complianz Cookie Consent plugin integration.
+* Fix: For events feeds, the "Buy Tickets" action couldn't be disabled.
+* Fix: For events feeds, disabling the event details would also disable the post text.
+* Fix: Comments for group feeds were not working in some circumstances.
+* Fix: Displaying post text could not be disabled for some feed types.
+
+= 4.3.3 =
+* Fix: Updated GDPR permissions system to work with the latest versions of the Complianz GDPR Consent plugin.
+* Fix: Fixed an issue with feed location when retrieving comments from a cache.
+* Fix: Fixed group feeds having HTML being inserted into links that contained underscores due to how Markdown was supported.
+
+= 4.3.2 =
+* Fix: Changed how the plugin's code was included to prevent conflicts with SMTP plugins that overwrite wp_mail().
+
+= 4.3.1 =
+* Fix: Fixed avatars from visitor accounts not showing in the lightbox.
+* Fix: PHP error that would occur when trying to use the new Facebook Feed Divi block with the Divi Builder plugin and PHP version 7.3 or lower.
+* Fix: Photo feeds would show broken images in the feed preview under certain circumstances.
+* Fix: Fixed event feeds showing an error in the API response in certain circumstances.
+* Fix: Tagged accounts in post content were not linking correctly.
+
+= 4.3 =
+* New: Elementor and Divi Builder widgets. We've added new Elementor and Divi Builder widgets to make it easier to embed your feeds.
+* New: Iframes from YouTube and Vimeo will not load until the rest of the page content has loaded to improve page performance.
+* Fix: Some post content that included special characters would display incorrectly.
+* Fix: Comments for posts would appear correctly in the feed preview but not on the front-end for some feeds.
+* Fix: When the text shortening setting was enabled, unexpected text would appear in some circumstances.
+* Fix: For the carousel layout available with the carousel extension, the setting to automatically adjust the height of the feed would not work correctly when expanding post content on mobile devices.
+
+= 4.2.6 =
+* Tweak: Added a new setting to allow disabling of the JavaScript image loading. Deactivate "JavaScript Image Loading" on the advanced tab if you are using a lazy loading plugin and blank images are displaying in your feed.
+* Fix: Group posts with special formatting (markdown) will now display like they do in Facebook.
+* Fix: Fixed several issues related to accessibility and screen readers.
+* Fix: Fixed an issue where shortening the text content might result in emoji being cut off and displaying as plain text.
+* Fix: Fixed an error with group posts and the Social Wall plugin.
+* Fix: Fixed an error with the carousel layout in the feed preview when customizing a feed.
+* Fix: Fixed an issue with translations not showing the default value to be customized in the customizer.
+
+= 4.2.5 =
+* Fix: Fixed issues with hashtags and account mention links in the post text in some specific situations.
+* Fix: Fixed PHP warnings when visiting the support page before creating a feed.
+
+= 4.2.4 =
+* Fix: Linked post tags and hashtags weren't linked correctly in the post text in some languages.
+* Fix: Events feeds with a masonry layout would not load more posts correctly.
+* Fix: Events feeds would not have the proper styling and settings applied to the load more button.
+* Fix: When there were multiple feeds on a page, some images would not show for the first feed under certain circumstances.
+* Fix: Fixed and issue with the dark theme not applying correctly to some feeds.
+* Fix: Re-added setting for video post titles.
+* Fix: Added support for oEmbed URLs with the structure "https://www.facebook.com/permalink.php?story_fbid=1234567890&id=1123456789"
+
 = 4.2.3 =
 * Tweak: Updated our logo and color scheme throughout the plugin to match our new [website](https://smashballoon.com/).
 * Tweak: Minified the CSS and JavaScript files for better performance.
@@ -301,7 +462,7 @@ Display a **completely customizable**, **responsive** and **search engine crawla
 * Fix: Added a rare issue when using the "offset" setting and the masonry layout to display reviews using the [Reviews extension](https://smashballoon.com/extensions/reviews/).
 
 = 3.15 =
-* New: Added compatibility with our new [Social Wall](http://smashballoon.com/social-wall/?utm_source=plugin-pro&utm_campaign=cff&utm_medium=readme) plugin, which allows you to combine feeds from Instagram, Facebook, Twitter, and YouTube into one social media "wall". If you are using our Smash Balloon All-Access Bundle then the Social Wall plugin is included at no additional cost. Just log into your account to download and install the plugin.
+* New: Added compatibility with our new [Social Wall](https://smashballoon.com/social-wall/?utm_source=plugin-pro&utm_campaign=cff&utm_medium=readme) plugin, which allows you to combine feeds from Instagram, Facebook, Twitter, and YouTube into one social media "wall". If you are using our Smash Balloon All-Access Bundle then the Social Wall plugin is included at no additional cost. Just log into your account to download and install the plugin.
 * Fix: Added a workaround for an issue caused by lazy-loading plugins which sometimes resulted in blank images in the feed.
 * Fix: Fixed an issue with the Like Box widget not displaying if it's width was set to a fractional pixel.
 * Fix: Iframes would be hidden in the lightbox in some themes.

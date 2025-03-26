@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use InstagramFeed\Helpers\Util;
+use InstagramFeed\SB_Instagram_Data_Encryption;
+
 
 class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 
@@ -53,9 +55,9 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				$this->connected_accounts = $this->get_connected_accounts_from_settings();
 
 				if ( $this->settings['type'] === 'mixed' ) {
-					$this->atts['tagged'] = $this->settings['tagged'];
+					$this->atts['tagged'] = isset($this->settings['tagged']) ? $this->settings['tagged'] : '';
 					$this->atts['user'] = $this->settings['id'];
-					$this->atts['hashtag'] = $this->settings['hashtag'];
+					$this->atts['hashtag'] = isset($this->settings['hashtag']) ? $this->settings['hashtag'] : '';
 				}
 
 				foreach ( $this->atts as $key => $value ) {
@@ -97,6 +99,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				$this->connected_accounts = $this->get_connected_accounts_from_settings();
 
 			}
+
 			$this->settings = wp_parse_args( $this->settings, \InstagramFeed\Builder\SBI_Feed_Saver::settings_defaults() );
 
 		}
@@ -251,7 +254,6 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 		$this->settings = apply_filters( 'sbi_feed_settings', $this->settings, $this->connected_accounts );
 
 		if ( SB_Instagram_GDPR_Integrations::doing_gdpr( $this->settings ) ) {
-			$this->settings['stories'] = false;
 			SB_Instagram_GDPR_Integrations::init();
 		}
 
@@ -360,7 +362,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				'background' => isset($db[ 'sb_instagram_background' ]) ? $db[ 'sb_instagram_background' ] : '',
 				'imageres' => isset($db[ 'sb_instagram_image_res' ]) ? $db[ 'sb_instagram_image_res' ] : '',
 				'media' => isset($db[ 'sb_instagram_media_type' ]) ? $db[ 'sb_instagram_media_type' ] : '',
-				'videotypes' => isset($db[ 'videotypes' ]) ? $db[ 'videotypes' ] : 'regular,igtv',
+				'videotypes' => isset($db[ 'videotypes' ]) ? $db[ 'videotypes' ] : 'regular,reels',
 				'showcaption' => isset($db[ 'sb_instagram_show_caption' ]) ? $db[ 'sb_instagram_show_caption' ] : true,
 				'captionlength' => isset($db[ 'sb_instagram_caption_length' ]) ? $db[ 'sb_instagram_caption_length' ] : '',
 				'captioncolor' => isset($db[ 'sb_instagram_caption_color' ]) ? $db[ 'sb_instagram_caption_color' ] : '',
@@ -466,8 +468,10 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			&& $settings['shoppablefeed'] !== 'false'
 			&& ! empty( $settings['shoppablefeed'] ) ) {
 			$settings['captionlinks'] = true;
-			$settings['shoppablelist'] = json_decode( $settings['shoppablelist'], true ) ? json_decode( $settings['shoppablelist'], true ) : array();
 
+			if ( ! is_array( $settings['shoppablelist'] ) ) {
+				$settings['shoppablelist'] = json_decode( $settings['shoppablelist'], true ) ? json_decode( $settings['shoppablelist'], true ) : array();
+			}
 		}
 
 		if ( ! isset( $atts['media'] ) ) {
@@ -485,21 +489,38 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				$include_videos = $settings['videosposts'] !== 'false' && ! empty( $settings['videosposts'] );
 			}
 
-			if ( $include_photos && $include_videos ) {
+			if ( isset( $settings['reelsposts'] ) ) {
+				$include_reels = $settings['reelsposts'] !== 'false' && ! empty( $settings['reelsposts'] ) ? true : false;
+			} else {
+				$include_reels = ($settings['media'] === 'all' || $include_videos) !== false ? true : false;
+				if ( $include_reels ) {
+					$settings['reelsposts'] = true;
+				} else {
+					$settings['reelsposts'] = false;
+				}
+			}
+
+			if ( $include_photos && $include_videos && $include_reels ) {
 				$settings['media'] = 'all';
-			} elseif ( $include_videos ) {
+			} elseif( $include_photos && ( $include_videos || $include_reels ) ) {
+				$settings['media'] = array( 'photos', 'videos' );
+			} elseif ( $include_videos || $include_reels ) {
 				$settings['media'] = 'videos';
 			} else {
 				$settings['media'] = 'photos';
 			}
 		} else {
-			$include_videos = $settings['media'] === 'all' || $settings['media'] === 'videos' && strpos( $settings['videotypes'], 'regular' );
+			$include_reels = $settings['media'] === 'all' || $settings['media'] === 'videos' && strpos( $settings['videotypes'], 'reels' ) !== false;
+			$include_videos = $settings['media'] === 'all' || $settings['media'] === 'videos' && strpos( $settings['videotypes'], 'regular' ) !== false;
 		}
 
 		if ( ! isset( $atts['videotypes'] ) ) {
+
 			$video_types = array();
+			if ( $include_reels ) {
+				$video_types[] = 'reels';
+			}
 			if ( $include_videos ) {
-				$video_types[] = 'igtv';
 				$video_types[] = 'regular';
 			}
 			$settings['videotypes'] = implode( ',', $video_types );
@@ -721,14 +742,17 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			isset( $this->settings[ 'whitelist' ] ) ? $sb_instagram_white_list = trim( $this->settings['whitelist'] ) : $sb_instagram_white_list = '';
 			$sbi_transient_name = 'sbi_';
 			$sbi_transient_name .= substr( $sb_instagram_white_list, 0, 3 );
-
-			if ( $this->settings['media'] !== 'all' ) {
-				$sbi_transient_name .= substr( $this->settings['media'], 0, 1 );
+			if ( is_array( $this->settings['media'] ) ){
+				$string_media_setting = implode( '', $this->settings['media'] );
+			} else {
+				$string_media_setting = (string) $this->settings['media'];
+			}
+			if ( $string_media_setting !== 'all' ) {
+				$sbi_transient_name .= substr( $string_media_setting, 0, 1 );
 				if ( $this->settings['media'] === 'videos' ) {
-					$video_types = ! empty( $this->settings['videotypes'] ) ? explode( ',', str_replace( ' ', '', strtolower( $this->settings['videotypes'] ) ) ) : array( 'igtv', 'regular' );
-					if ( ! in_array( 'igtv', $video_types ) ) {
-						$sbi_transient_name .= 'i';
-
+					$video_types = ! empty( $this->settings['videotypes'] ) ? explode( ',', str_replace( ' ', '', strtolower( $this->settings['videotypes'] ) ) ) : array( 'igtv', 'regular', 'reels' );
+					if ( ! in_array( 'reels', $video_types ) ) {
+						$sbi_transient_name .= 'e';
 					} elseif ( ! in_array( 'regular', $video_types ) ) {
 						$sbi_transient_name .= 'r';
 					}
@@ -912,7 +936,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 					$user = implode( ', ', $usernames_not_connected );
 				}
 
-				$settings_link = '<a href="'.get_admin_url().'?page=sb-instagram-feed" target="_blank">' . __( 'plugin Settings page', 'instagram-feed' ) . '</a>';
+				$settings_link = '<a href="'.get_admin_url().'admin.php?page=sbi-settings" target="_blank">' . __( 'plugin Settings page', 'instagram-feed' ) . '</a>';
 
 				$error_message_return = array(
 					'error_message' => sprintf( __( 'Error: There is no connected account for the user %s.', 'instagram-feed' ), $user ),
@@ -991,9 +1015,12 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			$error = false;
 			$hashtag = str_replace('#', '', $hashtag );
 			if ( ! empty( $hashtag ) ) {
-				if ( isset( $saved_hashtag_ids[ $hashtag ] ) ) {
-					$hashtag_id = $saved_hashtag_ids[ $hashtag ];
-					$connected_accounts_in_feed[ $hashtag_id ] = $connected_business_accounts[0];
+				$saved_user_id = isset( $saved_hashtag_ids[ $hashtag ]['connected_account']['user_id'] ) && ! empty( $saved_hashtag_ids[ $hashtag ]['connected_account']['user_id'] ) ? $saved_hashtag_ids[ $hashtag ]['connected_account']['user_id'] : false;
+				$account_exists = $saved_user_id ? SB_Instagram_Connected_Account::lookup( (int) $saved_user_id, 'business' ) : false;
+				if ( $account_exists && isset( $saved_hashtag_ids[ $hashtag ] ) && isset( $saved_hashtag_ids[ $hashtag ]['connected_account'] ) ) {
+					$hashtag_id = isset( $saved_hashtag_ids[ $hashtag ]['id'] ) ? $saved_hashtag_ids[ $hashtag ]['id'] : $saved_hashtag_ids[ $hashtag ];
+					$connected_account = $account_exists ? $account_exists : $connected_business_accounts[0];
+					$connected_accounts_in_feed[ $hashtag_id ] = $connected_account;
 					$feed_type_and_terms[ 'hashtags_' . $hashtag_order_suffix ][] = array(
 						'term' => $hashtag_id,
 						'params' => array( 'hashtag_id' => $hashtag_id ),
@@ -1016,7 +1043,11 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 
 							if ( ! $sb_instagram_posts_manager->hashtag_has_error( $hashtag ) ) {
 								$connected_business_account = $connected_business_accounts[ $i ];
-								$new_hashtag_id = SB_Instagram_Settings_Pro::get_remote_hashtag_id_from_hashtag_name( $hashtag, $connected_business_account );
+								if ( ! empty( $saved_hashtag_ids[ $hashtag ] ) ) {
+									$new_hashtag_id = $saved_hashtag_ids[ $hashtag ]['id'];
+								} else {
+									$new_hashtag_id = SB_Instagram_Settings_Pro::get_remote_hashtag_id_from_hashtag_name( $hashtag, $connected_business_account );
+								}
 
 								if ( $new_hashtag_id ) {
 									$hashtag_id = $new_hashtag_id;
@@ -1027,11 +1058,14 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 										'hashtag_name' => $hashtag
 									);
 									$new_hashtag_ids = array(
-										$hashtag => $new_hashtag_id
+										$hashtag => array(
+											'id' => $new_hashtag_id,
+											'connected_account' => $connected_business_account
+										)
 									);
 									SB_Instagram_Settings_Pro::update_hashtag_ids( $new_hashtag_ids );
 
-								} else {
+								} elseif( ! $new_hashtag_id && $i === count( $connected_business_accounts ) - 1 ) {
 									$feed_type_and_terms[ 'hashtags_' . $hashtag_order_suffix ][] = array(
 										'term' => '',
 										'params' => array(),
@@ -1098,7 +1132,6 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 	private function set_tagged_feed( $tagged ) {
 		global $sb_instagram_posts_manager;
 
-		$this->settings['sortby'] = 'alternate';
 		$feed_type_and_terms['tagged'] = array();
 		$connected_accounts_in_feed = array();
 
@@ -1149,15 +1182,14 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			} else {
 				$user = implode( ', ', $usernames_not_connected );
 			}
-/*
+
 			$error_message_return = array(
 				'error_message' => sprintf( __( 'Error: There is no connected business account for the user %s.', 'instagram-feed' ), $user ),
-				'admin_only' => sprintf( __( 'A connected business account related to the tagged Instagram account is required to display tagged feeds. Please visit %s to learn how to connect a business account.', 'instagram-feed' ), '<a href="https://smashballoon.com/migrate-to-new-instagram-hashtag-api/">' . __( 'this page', 'instagram-feed' ) . '</a>' ),
+				'admin_only' => sprintf( __( 'A connected business account related to the tagged Instagram account is required to display tagged feeds. Please visit %s to learn how to connect a business account.', 'instagram-feed' ), '<a href="https://smashballoon.com/doc/instagram-business-profiles/?instagram" target="_blank">' . __( 'this page', 'instagram-feed' ) . '</a>' ),
 				'frontend_directions' => '',
 				'backend_directions' => ''
 			);
 			$sb_instagram_posts_manager->maybe_set_display_error( 'configuration', $error_message_return );
-*/
 		}
 
 		$this->add_feed_type_and_terms( $feed_type_and_terms );
@@ -1182,7 +1214,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 		global $sb_instagram_posts_manager;
 
 		$is_using_access_token_in_shortcode = ! empty( $this->atts['accesstoken'] );
-		$settings_link = '<a href="'.get_admin_url().'?page=sb-instagram-feed" target="_blank">' . __( 'plugin Settings page', 'instagram-feed' ) . '</a>';
+		$settings_link = '<a href="'.get_admin_url().'admin.php?page=sbi-settings" target="_blank">' . __( 'plugin Settings page', 'instagram-feed' ) . '</a>';
 		if ( $is_using_access_token_in_shortcode ) {
 			$error_message_return = array(
 				'error_message' => __( 'Error: Cannot add access token directly to the shortcode.', 'instagram-feed' ),
@@ -1217,7 +1249,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				$sbi_statuses_option = get_option( 'sbi_statuses', array() );
 
 
-				if ( ! $sbi_statuses_option['support_legacy_shortcode'] ) {
+				if ( isset( $sbi_statuses_option['support_legacy_shortcode'] ) && ! $sbi_statuses_option['support_legacy_shortcode'] ) {
 
 					if ( empty( $this->atts['feed'] ) ) {
 						$error_message_return = array(
@@ -1289,11 +1321,6 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				' ',
 				'@'
 			), '', $this->settings['tagged'] ) );
-			if ( count( $tagged ) > 1 ) {
-				$this->settings['sortby'] = 'alternate';
-			} else {
-				$this->settings['sortby'] = 'api';
-			}
 
 			$this->set_tagged_feed( $tagged );
 
@@ -1479,6 +1506,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			'videotypes',
 			'showcaption',
 			'captionlength',
+			'hovercaptionlength',
 			'captioncolor',
 			'captionsize',
 			'showlikes',
@@ -1546,6 +1574,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			'caching_type',
 			'ajax_post_load',
 			'caching_type',
+			'reelsposts'
 		);
 
 		return $public;
@@ -1559,12 +1588,29 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 	 * @since 5.0
 	 */
 	public static function get_hashtag_ids() {
-		$ids = get_option( 'sbi_hashtag_ids', array() );
-		if ( ! is_array( $ids ) ) {
-			$encryption = new SB_Instagram_Data_Encryption();
-			$ids = json_decode( $encryption->decrypt( $ids ), true );
+		$ids_with_accounts = get_option( 'sbi_hashtag_ids_with_connected_accounts', array() );
+		$encryption = new SB_Instagram_Data_Encryption();
+
+		if ( empty( $ids_with_accounts ) ) {
+			$ids = get_option( 'sbi_hashtag_ids', array() );
+			if ( ! is_array( $ids ) ) {
+				$ids = json_decode( $encryption->decrypt( $ids ), true );
+			}
+			$ids_with_accounts = array();
+
+			if( ! empty( $ids ) ) {
+				foreach ( $ids as $hashtag => $id ) {
+					$ids_with_accounts[ $hashtag ] = array(
+						'id' => $id,
+					);
+				}
+				update_option( 'sbi_hashtag_ids_with_connected_accounts', $encryption->encrypt( sbi_json_encode( $ids_with_accounts ) ), false );
+			}
 		}
-		return $ids;
+		if ( ! is_array( $ids_with_accounts ) ) {
+			$ids_with_accounts = json_decode( $encryption->decrypt( $ids_with_accounts ), true );
+		}
+		return $ids_with_accounts;
 	}
 
 	/**
@@ -1576,15 +1622,14 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 	 * @since 5.0
 	 */
 	public static function update_hashtag_ids( $hashtag_name_id_pairs ) {
-		$existing = get_option( 'sbi_hashtag_ids', array() );
+		$existing = self::get_hashtag_ids();
 		$encryption = new SB_Instagram_Data_Encryption();
 		if ( ! is_array( $existing ) ) {
 			$existing = json_decode( $encryption->decrypt( $existing ), true );
 		}
-
+		$existing = is_array( $existing ) ? $existing : [];
 		$new = array_merge( $existing, $hashtag_name_id_pairs );
-
-		update_option( 'sbi_hashtag_ids', $encryption->encrypt( sbi_json_encode( $new ) ), false );
+		update_option( 'sbi_hashtag_ids_with_connected_accounts', $encryption->encrypt( sbi_json_encode( $new ) ), false );
 	}
 
 	/**
@@ -1727,8 +1772,6 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			'sb_instagram_autoscrolldistance' => 200,
 
 			//Misc
-			'sb_instagram_custom_css'           => '',
-			'sb_instagram_custom_js'            => '',
 			'sb_instagram_requests_max'         => '5',
 			'sb_instagram_minnum' => '0',
 			'sb_instagram_cron'                 => 'unset',
@@ -1779,8 +1822,14 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			$include_all_businesses = ! empty( $this->settings['hashtag'] );
 		}
 
-		$ids = is_array( $this->settings['id'] ) ? $this->settings['id'] : explode( ',', str_replace(' ', '', $this->settings['id'] ) );
-		$tagged = is_array( $this->settings['tagged'] ) ? $this->settings['tagged'] : explode( ',', str_replace(' ', '', $this->settings['tagged'] ) );
+		$ids = array();
+		if ( ! empty( $this->settings['id'] ) ) {
+			$ids = is_array( $this->settings['id'] ) ? $this->settings['id'] : explode( ',', str_replace(' ', '', $this->settings['id'] ) );
+		}
+		$tagged = array();
+		if ( ! empty( $this->settings['tagged'] ) ) {
+			$tagged = is_array( $this->settings['tagged'] ) ? $this->settings['tagged'] : explode( ',', str_replace(' ', '', $this->settings['tagged'] ) );
+		}
 
 		$account_ids = array_merge( $ids, $tagged );
 
@@ -1866,13 +1915,17 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 			),
 			'videotypes'         => array(
 				'method'       => 'enum_array',
-				'allowed_vals' => array( 'regular', 'igtv' ),
+				'allowed_vals' => array( 'regular', 'reels' ),
 			),
 			'showcaption'        => array(
 				'method'       => 'string_true',
 				'allowed_vals' => 'any',
 			),
 			'captionlength'      => array(
+				'method'       => 'intval',
+				'allowed_vals' => 500,
+			),
+			'hovercaptionlength' => array(
 				'method'       => 'intval',
 				'allowed_vals' => 500,
 			),
@@ -2271,7 +2324,7 @@ class SB_Instagram_Settings_Pro extends SB_Instagram_Settings{
 				'background'           => isset( $db['sb_instagram_background'] ) ? $db['sb_instagram_background'] : '',
 				'imageres'             => isset( $db['sb_instagram_image_res'] ) ? $db['sb_instagram_image_res'] : '',
 				'media'                => isset( $db['sb_instagram_media_type'] ) ? $db['sb_instagram_media_type'] : '',
-				'videotypes'           => isset( $db['videotypes'] ) ? $db['videotypes'] : 'regular,igtv',
+				'videotypes'           => isset( $db['videotypes'] ) ? $db['videotypes'] : 'regular,,reels',
 				'showcaption'          => isset( $db['sb_instagram_show_caption'] ) ? $db['sb_instagram_show_caption'] : true,
 				'captionlength'        => isset( $db['sb_instagram_caption_length'] ) ? $db['sb_instagram_caption_length'] : '',
 				'captioncolor'         => isset( $db['sb_instagram_caption_color'] ) ? $db['sb_instagram_caption_color'] : '',

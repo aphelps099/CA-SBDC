@@ -1,59 +1,4 @@
 jQuery(document).ready(function($){
-
-    // access token retrieving
-    var $ctfRetrievedAccessToken = $('#ctf-retrieved-access-token'),
-        $ctfRetrievedAccessTokenSecret = $('#ctf-retrieved-access-token-secret'),
-        $ctfRetrievedDefaultScreenName = $('#ctf-retrieved-default-screen-name'),
-
-    // toggle token input fields
-        $ctfConsumerFields = $('.ctf-toggle-consumer'),
-        $ctfAccessFields = $('.ctf-toggle-access'),
-        $ctfHaveOwnTokens = $('#ctf_have_own_tokens');
-
-    if ( $ctfRetrievedAccessToken.length ) {
-        $('#ctf_access_token').val($ctfRetrievedAccessToken.val());
-        $('#ctf_access_token_secret').val($ctfRetrievedAccessTokenSecret.val());
-        if($('#ctf_usertimeline_text').val() == '') {
-            $('#ctf_usertimeline_text').val($ctfRetrievedDefaultScreenName.val());
-        }
-
-        if(!$ctfHaveOwnTokens.is(':checked')) {
-            $.ajax({
-                url: ctf.ajax_url,
-                type: 'post',
-                data: {
-                    action: 'ctf_auto_save_tokens',
-                    security: ctf.sb_nonce,
-                    access_token: $ctfRetrievedAccessToken.val(),
-                    access_token_secret: $ctfRetrievedAccessTokenSecret.val(),
-                    just_tokens: true
-                },
-                success: function (data) {
-                    $('#ctf_access_token').after('<span class="ctf-success"><i class="fa fa-check-circle"></i> saved</span>');
-                    $('#ctf_access_token_secret').after('<span class="ctf-success"><i class="fa fa-check-circle"></i> saved</span>');
-                }
-            });
-        }
-    }
-
-    function toggleAccessInputs() {
-        if($ctfHaveOwnTokens.is(':checked')) {
-            $ctfAccessFields.show();
-            $ctfConsumerFields.show();
-        } else {
-            $ctfConsumerFields.hide();
-            if($ctfAccessFields.find('#ctf_access_token').val() == '' && $ctfAccessFields.find('#ctf_access_token_secret').val() == '') {
-                $ctfAccessFields.hide();
-                $ctfConsumerFields.hide();
-            }
-        }
-    }
-    toggleAccessInputs();
-
-    $ctfHaveOwnTokens.on('change', function() {
-        toggleAccessInputs();
-    });
-
     //Change 'What is this?' text for search/hashtags field
     $('#ctf_search_radio').siblings('.ctf-tooltip-link').text('How to build a search feed');
 
@@ -534,7 +479,27 @@ jQuery(document).ready(function($){
         jQuery(this).remove();
     });
 
+    // Focus the license section on click license expired notice button 
+	jQuery('#sbFocusLicenseSection').on('click', function() {
+		jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
 
+		setTimeout(function() {
+			jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+		}, 2000);
+	});
+
+	// Get the URL parameters
+	const urlSearchParams = new URLSearchParams(window.location.search);
+	const params = Object.fromEntries(urlSearchParams.entries());
+
+	// Check if the URL has license section to focus
+	if ( params.focus === "license" ) {
+		jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
+
+		setTimeout(function() {
+		jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+		}, 2000);
+	}
 
   // Social Wall Menu Workaround
   //toplevel_page_sbsw #adminmenu a[href="admin.php?page=sb-instagram-feed"]

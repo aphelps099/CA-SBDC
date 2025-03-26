@@ -1,5 +1,5 @@
 <script type="text/x-template" id="cff-post-lightbox-component">
-	<div class="cff-lightbox-ctn" v-if="singlePost != null" :data-visibility="lightBox.visibility" :data-type="lightBox.type" id="cff-lightbox-ctn" :data-comments="$parent.valueIsEnabled(customizerFeedData.settings.lightboxcomments) ? 'true' : 'false'">
+	<div class="cff-lightbox-ctn" :class="($parent.customizerFeedData.settings.feedtheme ? 'cff-theme cff-' + $parent.customizerFeedData.settings.feedtheme : '')" v-if="singlePost != null" :data-visibility="lightBox.visibility" :data-type="lightBox.type" id="cff-lightbox-ctn" :data-comments="$parent.valueIsEnabled(customizerFeedData.settings.lightboxcomments) ? 'true' : 'false'" :data-preview-colorscheme="customizerFeedData.settings.colorpalette">
 		<div class="cff-lightbox-closer" @click.prevent.default="$parent.hideLightBox()"></div>
 		<div class="cff-lightbox-content">
 			<div class="cff-lightbox-content-insider">
@@ -46,26 +46,27 @@
 </script>
 
 <script type="text/x-template" id="cff-post-dummy-lightbox-component">
-<div class="cff-lightbox-ctn cff-dummy-lightbox-ctn" :data-visibility="dummyLightBoxData.visibility" data-type="photos">
+    <div class="cff-lightbox-ctn cff-dummy-lightbox-ctn" :class="($parent.customizerFeedData.settings.feedtheme ? 'cff-theme cff-' + $parent.customizerFeedData.settings.feedtheme : '')" :data-visibility="dummyLightBoxData.visibility" data-type="photos" :data-preview-colorscheme="customizerFeedData.settings.colorpalette">
 	<div class="cff-lightbox-closer" @click.prevent.default="$parent.hideLightBox()"></div>
-	<div class="cff-lightbox-content">
-		<div class="cff-lightbox-content-insider">
-			<div class="cff-lightbox-element">
-				<div class="cff-lightbox-image">
-					<img :src="dummyLightBoxData.image">
-				</div>
-			</div>
-			<div class="cff-lightbox-sidebar">
-				<div class="cff-lightbox-cls" @click.prevent.default="$parent.hideLightBox()"></div>
-				<cff-post-author-component v-if="dummyLightBoxData.post" :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData"></cff-post-author-component>
-				<div class="cff-post-item-text cff-fb-fs">
-					<cff-post-event-detail-component :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData"></cff-post-event-detail-component>
-					<span v-html="$parent.printPostText( dummyLightBoxData.post, true )"></span>
-				</div>
-				<cff-post-meta-component v-if="dummyLightBoxData.post && $parent.valueIsEnabled(customizerFeedData.settings.lightboxcomments)" :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData" :translated-text="translatedText"></cff-post-meta-component>
-			</div>
-			<div class="cff-lightbox-prev cff-lightbox-nav"><div class="cff-lightbox-nav-icon"></div></div>
-			<div class="cff-lightbox-next cff-lightbox-nav"><div class="cff-lightbox-nav-icon"></div></div>
-		</div>
-	</div>
+        <div class="cff-lightbox-content">
+            <div class="cff-lightbox-content-insider">
+                <div class="cff-lightbox-element">
+                    <div class="cff-lightbox-image">
+                        <img :src="dummyLightBoxData.image">
+                    </div>
+                </div>
+                <div class="cff-lightbox-sidebar">
+                    <div class="cff-lightbox-cls" @click.prevent.default="$parent.hideLightBox()"></div>
+                    <cff-post-author-component v-if="dummyLightBoxData.post" :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData"></cff-post-author-component>
+                    <div class="cff-post-item-text cff-fb-fs">
+                        <cff-post-event-detail-component :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData"></cff-post-event-detail-component>
+                        <span v-html="$parent.printPostText( dummyLightBoxData.post, true )"></span>
+                    </div>
+                    <cff-post-meta-component v-if="dummyLightBoxData.post && $parent.valueIsEnabled(customizerFeedData.settings.lightboxcomments)" :single-post="dummyLightBoxData.post" :customizer-feed-data="customizerFeedData" :translated-text="translatedText"></cff-post-meta-component>
+                </div>
+                <div class="cff-lightbox-prev cff-lightbox-nav"><div class="cff-lightbox-nav-icon"></div></div>
+                <div class="cff-lightbox-next cff-lightbox-nav"><div class="cff-lightbox-nav-icon"></div></div>
+            </div>
+        </div>
+    </div>
 </script>

@@ -168,20 +168,28 @@ $json_array = array();
 
                 <?php if ( $empty_connected_accounts && empty ( $feeds ) ) :
     	            $json_array['instagram']['exclude'] = true; ?>
-                    <div id="sbi_admin" style="margin-top: 15px;">
-                        <div id="sbi_config">
-                        <?php sbi_get_connect_account_button( 'admin.php?page=sbsw' ); ?>
-                        </div>
-                    </div>
-                <?php elseif ( empty ( $feeds ) && isset( $account_and_feed_info['support_legacy'] ) ): ?>
+					<?php if ( class_exists( 'InstagramFeed\Builder\SBI_Db') ) : ?>
 					<div id="sbi_admin" class="sbsw-connect-account-btn-small">
 						<div id="sbi_config">
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="instagram"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+						</div>
+					</div>
+				<?php else : ?>
+					<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+						<div id="sbi_config">
+							<?php sbi_get_connect_account_button( 'admin.php?page=sbsw' ); ?>
+						</div>
+					</div>
+				<?php endif; ?>
+                <?php elseif ( empty ( $feeds ) ): ?>
+					<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+						<div id="sbi_config">
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="instagram"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
 						</div>
 					</div>
                 <?php endif; ?>
 
-            <?php if ( ! $empty_connected_accounts && ! empty( $account_and_feed_info['support_legacy'] ) ) : ?>
+            <?php if ( ! $empty_connected_accounts && ! isset( $account_and_feed_info['support_legacy'] ) ) : ?>
 
             <div class="sbsw-feed-settings">
                 <div class="sbsw-feed-type">
@@ -223,12 +231,20 @@ $json_array = array();
                         <?php endforeach; ?>
                     </div>
                 	<?php if ( empty ( $feeds ) ) : ?>
+						<?php if ( class_exists( 'InstagramFeed\Builder\SBI_Db') ) : ?>
+							<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+								<div id="sbi_config">
+									<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="instagram"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+								</div>
+							</div>
+							<?php else : ?>
+							<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+								<div id="sbi_config">
+									<?php sbi_get_connect_account_button( 'admin.php?page=sbsw' ); ?>
+								</div>
+							</div>
+						<?php endif; ?>
 
-                    <div id="sbi_admin" class="sbsw-connect-account-btn-small">
-                        <div id="sbi_config">
-                            <?php sbi_get_connect_account_button( 'admin.php?page=sbsw' ); ?>
-                        </div>
-                    </div>
 					<?php endif; ?>
                 </div>
 
@@ -240,7 +256,7 @@ $json_array = array();
             </div>
             <?php endif; ?>
 
-			<?php if ( ! empty( $feeds ) && empty( $account_and_feed_info['support_legacy'] ) ) :
+			<?php if ( ! empty( $feeds ) ) :
 				$json_array['instagram'] = array(
 					'current' => array(
 						'type' => 'feed',
@@ -278,7 +294,7 @@ $json_array = array();
 
 						<div id="sbi_admin" class="sbsw-connect-account-btn-small">
 							<div id="sbi_config">
-								<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=sbi-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="instagram"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
 							</div>
 						</div>
 					</div>
@@ -294,6 +310,7 @@ $json_array = array();
 		    $if_connected_accounts = $connected_accounts;
 		    $available_types = $account_and_feed_info['available_types'];
 		    $empty_connected_accounts = empty( $connected_accounts );
+		    $cff_statuses = get_option( 'cff_statuses', array() );
 
             // var_dump( get_object_vars($connected_accounts) );
             // var_dump( $connected_accounts );
@@ -389,78 +406,230 @@ $json_array = array();
             </div>
             <?php endif; ?>
 
+            <?php /* Need updated UI for selecting feeds */ if( false && empty($cff_statuses['support_legacy_shortcode'])) : ?>
+            	<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+            		<div id="sbi_config">
+            			<a href="<?php echo esc_url( admin_url( 'admin.php?page=cff-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="facebook"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+            		</div>
+            	</div>
+            <?php endif; ?>
         </div>
 	    <?php endif; ?>
 
-	    <?php if ( $tw_active && $tw_compatible ) :
-		    $account_and_feed_info = ctf_get_account_and_feed_info();
-            $default_type_and_terms = $account_and_feed_info['type_and_terms'];
-            $connected_accounts = $account_and_feed_info['connected_accounts'];
-            $if_connected_accounts = $connected_accounts;
 
-            $available_types = $account_and_feed_info['available_types'];
+		<?php if ( $tw_active && $tw_compatible ) :
+			$account_and_feed_info = ctf_get_account_and_feed_info();
 
-            $empty_connected_accounts = empty( $connected_accounts );
+			$ctf_statuses = get_option( 'ctf_statuses', array() );
+			if ( empty( $ctf_statuses['support_legacy_shortcode'] ) ) {
+				$account_and_feed_info['support_legacy'] = false;
+			} else {
+				$account_and_feed_info['support_legacy'] = true;
+			}
 
-            $json_array['twitter'] = array(
-            'current' => array(
-            'type' => $default_type_and_terms['type'],
-            'term' => implode(',',$default_type_and_terms['terms'])
-            ),
-            'available_types' => $available_types,
-            'settings' => $account_and_feed_info['settings']
-            );
-            ?>
-            <div class="sbsw-default-feed-wrap" data-plugin="twitter">
+			if ( class_exists( 'TwitterFeed\Builder\CTF_Db') ) {
+				$account_and_feed_info['feeds'] = TwitterFeed\Builder\CTF_Db::feeds_query();
+			}
 
-                <?php if ( !$empty_connected_accounts ){ ?>
-                    <div class="sbsw-platform-label">
+			$feeds = ! empty( $account_and_feed_info['feeds'] ) ? $account_and_feed_info['feeds'] : array();
+
+			$default_type_and_terms = $account_and_feed_info['type_and_terms'];
+			$connected_accounts = $account_and_feed_info['connected_accounts'];
+			$if_connected_accounts = $connected_accounts;
+
+			$available_types = $account_and_feed_info['available_types'];
+
+			$empty_connected_accounts = empty( $connected_accounts );
+			$json_array['twitter'] = array(
+				'current' => array(
+					'type' => $default_type_and_terms['type'],
+					'term' => implode(',',$default_type_and_terms['terms'])
+				),
+				'available_types' => $available_types,
+				'settings' => $account_and_feed_info['settings']
+			);
+			?>
+			<div class="sbsw-default-feed-wrap" data-plugin="twitter">
+
+				<?php if ( !$empty_connected_accounts  ){ ?>
+					<div class="sbsw-platform-label">
                         <span class="sbsw-added">
                             <?php echo SW_Display_Elements::get_icon( 'yes' ); ?>
-                            <?php echo __( 'Added to Wall', 'social-wall' ); ?>
+							<?php echo __( 'Added to Wall', 'social-wall' ); ?>
                         </span>
-                        <span class="sbsw-removed">
+						<span class="sbsw-removed">
                             <?php echo SW_Display_Elements::get_icon( 'no' ); ?>
-                            <?php echo __( 'Not in Wall', 'social-wall' ); ?>
+							<?php echo __( 'Not in Wall', 'social-wall' ); ?>
                         </span>
-                        <button class="sbsw-add-remove-plugin button"><?php echo __( 'Remove', 'social-wall' ); ?></button>
-                    </div>
-                <?php } ?>
+						<button class="sbsw-add-remove-plugin button"><?php echo __( 'Remove', 'social-wall' ); ?></button>
+					</div>
+				<?php } ?>
 
-                <h4 class="sbsw-platform-name"><?php echo SW_Display_Elements::get_icon( 'twitter' ); ?>Twitter</h4>
+				<h4 class="sbsw-platform-name"><?php echo SW_Display_Elements::get_icon( 'twitter' ); ?>Twitter</h4>
 
-			    <?php if ( empty( $connected_accounts ) ) :
-				    $json_array['twitter']['exclude'] = true; ?>
-                <div id="ctf-admin">
-                <?php CtfAdmin::the_admin_access_token_configure_html( $_GET, 'admin.php?page=sbsw', false ); ?>
-                </div>
-                <?php endif; ?>
+				<?php if ( empty( $connected_accounts ) && ! class_exists( 'TwitterFeed\Builder\CTF_Db') ) :
+					$json_array['twitter']['exclude'] = true; ?>
+					<div id="ctf-admin">
+						<div id="ctf_config">
 
-	            <?php if ( ! empty( $connected_accounts ) ) : ?>
-                <div class="sbsw-feed-settings">
-                    <h4><?php echo __( 'Feed Type:', 'social-wall' ); ?></h4>
+							<?php
+							$page = 'admin.php?page=sbsw';
+							$show_link = false;
+							?>
 
-                    <select class="sbsw-type-select" name="sbsw_twitter_types">
-					    <?php foreach ( $available_types as $available_type ) :
-						    $selected = $available_type['shortcode'] === $default_type_and_terms['type'] ? ' selected' : '';
-						    ?>
-                            <option value="<?php echo esc_attr( $available_type['shortcode'] ); ?>"<?php echo $selected; ?>><?php echo esc_html( $available_type['label'] ); ?></option>
-					    <?php endforeach; ?>
-                    </select>
+							<?php if (isset($_GET['oauth_token'])): ?>
+								<a href="<?php echo OAUTH_PROCESSOR_URL . admin_url($page); ?>" id="ctf-get-token"><i class="fa fa-twitter"></i><?php _e('Log in to Twitter and get my Access Token and Secret'); ?></a>
+								<?php if ($show_link): ?>
 
-                    <div class="sbsw-text-input-wrap">
-                        <input type="text" name="sbsw-twitter-text" value="<?php echo esc_attr( $json_array['twitter']['current']['term'] ); ?>">
-                        <span class="sbsw-text-input-instructions"></span>
-                    </div>
+									<a class="ctf-tooltip-link" href="https://smashballoon.com/custom-twitter-feeds/token/" target="_blank" rel="nofollow noopener"><?php _e("Button not working?", 'custom-twitter-feeds'); ?></a>
+								<?php
+								endif; ?>
 
-                    <div class="sbsw-message-wrap">
-                        <p>This type of feed will use the account that is attached to your access token</p>
-                    </div>
-                </div>
-			    <?php endif; ?>
+								<input type="hidden" id="ctf-retrieved-access-token" value="<?php echo esc_html(sanitize_text_field($_GET['oauth_token'])); ?>">
+								<input type="hidden" id="ctf-retrieved-access-token-secret" value="<?php echo esc_html(sanitize_text_field($_GET['oauth_token_secret'])); ?>">
+								<input type="hidden" id="ctf-retrieved-default-screen-name" value="<?php echo esc_html(sanitize_text_field($_GET['screen_name'])); ?>">
 
-            </div>
-	    <?php endif; ?>
+							<?php
+							elseif (isset($_GET['error']) && !isset($_GET['oauth_token'])): ?>
+
+								<p class="ctf_notice"><?php _e('There was an error with retrieving your access tokens. Please <a href="https://smashballoon.com/custom-twitter-feeds/token/" target="_blank" rel="nofollow noopener">use this tool</a> to get your access token and secret.'); ?></p><br>
+								<a href="<?php echo OAUTH_PROCESSOR_URL . admin_url($page); ?>" id="ctf-get-token"><i class="fa fa-twitter"></i><?php _e('Log in to Twitter and get my Access Token and Secret'); ?></a>
+								<?php if ($show_link): ?>
+
+									<a class="ctf-tooltip-link" href="https://smashballoon.com/custom-twitter-feeds/token/" target="_blank" rel="nofollow noopener"><?php _e("Button not working?", 'custom-twitter-feeds'); ?></a>
+								<?php
+								endif; ?>
+							<?php
+							elseif ( ! class_exists( 'TwitterFeed\Builder\CTF_Db' ) ) : ?>
+
+								<a href="<?php echo OAUTH_PROCESSOR_URL . admin_url($page); ?>" id="ctf-get-token"><i class="fa fa-twitter"></i><span class="ctf-connect-btn-text"><?php _e('Log in to Twitter and get my Access Token and Secret'); ?></span><span class="sbsw-btn-text" style="display: none;"><?php _e('Connect a Twitter Account'); ?></span></a>
+								<?php if ($show_link): ?>
+
+									<a class="ctf-tooltip-link" href="https://smashballoon.com/custom-twitter-feeds/token/" target="_blank" rel="nofollow noopener"><?php _e("Button not working?", 'custom-twitter-feeds'); ?></a>
+								<?php
+								endif; ?>
+							<?php
+							endif; ?>
+
+						</div>
+					</div>
+				<?php endif; ?>
+
+
+				<?php if ( ! empty( $feeds ) ) :
+					$json_array['twitter'] = array(
+						'current' => array(
+							'type' => 'feed',
+							'term' => (int)$feeds[0]['id']
+						),
+						'available_types' => $available_types,
+						'settings' => $account_and_feed_info['settings']
+					);
+					?>
+
+					<div class="sbsw-feed-settings">
+
+						<div class="sbsw-connected-accounts-wrap">
+							<div class="sbsw-connected-accounts-inner">
+								<h4><?php echo __( 'Select Feed for Wall:', 'social-wall' ); ?></h4>
+								<?php
+								foreach ( $feeds as $key => $feed ) :
+									$is_default = false;
+									$wrap_class = '';
+									$button_class = '';
+									$button_text = __( 'Use', 'social-wall' );
+									if ( $key === 0 ) {
+										$wrap_class = ' sbsw-selected';
+										$button_class = ' sbsw-is-default';
+										$button_text = __( 'Selected', 'social-wall' );
+									}
+									?>
+
+									<div class="sbsw-connected-account<?php echo esc_attr( $wrap_class ); ?>" data-id="<?php echo esc_attr( $feed['id'] ); ?>" data-user="<?php echo esc_attr( $feed['id'] ); ?>">
+										<button class="sbsw-add-remove-account button<?php echo esc_attr( $button_class ); ?>"><?php echo esc_html( $button_text ); ?></button>
+										<p><?php echo esc_html( $feed['feed_name'] ); ?></p>
+									</div>
+								<?php endforeach; ?>
+							</div>
+							<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+								<div id="sbi_config">
+									<a href="<?php echo esc_url( admin_url( 'admin.php?page=ctf-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="twitter"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<?php if ( empty( $feeds )  ) : ?>
+					<?php if ( class_exists( 'TwitterFeed\Builder\CTF_Db') ) : ?>
+						<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+							<div id="sbi_config">
+								<a href="<?php echo esc_url( admin_url( 'admin.php?page=ctf-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="twitter"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php if ( ! empty( $connected_accounts ) ) : ?>
+						<div class="sbsw-feed-settings">
+							<h4><?php echo __( 'Feed Type:', 'social-wall' ); ?></h4>
+
+							<select class="sbsw-type-select" name="sbsw_twitter_types">
+								<?php foreach ( $available_types as $available_type ) :
+									$selected = $available_type['shortcode'] === $default_type_and_terms['type'] ? ' selected' : '';
+									?>
+									<option value="<?php echo esc_attr( $available_type['shortcode'] ); ?>"<?php echo $selected; ?>><?php echo esc_html( $available_type['label'] ); ?></option>
+								<?php endforeach; ?>
+							</select>
+
+							<div class="sbsw-text-input-wrap">
+								<input type="text" name="sbsw-twitter-text" value="<?php echo esc_attr( $json_array['twitter']['current']['term'] ); ?>">
+								<span class="sbsw-text-input-instructions"></span>
+							</div>
+
+							<div class="sbsw-message-wrap">
+								<p>This type of feed will use the account that is attached to your access token</p>
+							</div>
+						</div>
+					<?php endif; ?>
+				<?php endif; ?>
+
+				<?php if ( ! empty( $connected_accounts ) && ! isset( $account_and_feed_info['support_legacy'] ) ) : ?>
+					<div class="sbsw-feed-settings">
+						<h4><?php echo __( 'Feed Type:', 'social-wall' ); ?></h4>
+
+						<select class="sbsw-type-select" name="sbsw_twitter_types">
+							<?php foreach ( $available_types as $available_type ) :
+								$selected = $available_type['shortcode'] === $default_type_and_terms['type'] ? ' selected' : '';
+								?>
+								<option value="<?php echo esc_attr( $available_type['shortcode'] ); ?>"<?php echo $selected; ?>><?php echo esc_html( $available_type['label'] ); ?></option>
+							<?php endforeach; ?>
+						</select>
+
+						<div class="sbsw-text-input-wrap">
+							<input type="text" name="sbsw-twitter-text" value="<?php echo esc_attr( $json_array['twitter']['current']['term'] ); ?>">
+							<span class="sbsw-text-input-instructions"></span>
+						</div>
+
+						<div class="sbsw-message-wrap">
+							<p>This type of feed will use the account that is attached to your access token</p>
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<?php if(! isset($ctf_statuses['support_legacy_shortcode'])) : ?>
+            	<div id="sbi_admin" class="sbsw-connect-account-btn-small">
+            		<div id="sbi_config">
+            			<a href="<?php echo esc_url( admin_url( 'admin.php?page=ctf-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="twitter"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+            		</div>
+            	</div>
+            <?php endif; ?>
+
+			</div>
+		<?php endif; ?>
+
+
+
+
 
 	    <?php if ( $yt_active && $yt_compatible ) :
 		    $account_and_feed_info = sby_get_account_and_feed_info();
@@ -473,6 +642,10 @@ $json_array = array();
 		    $available_types = $account_and_feed_info['available_types'];
 
 		    $empty_connected_accounts = empty( $connected_accounts ) || isset( $connected_accounts['rss_only'] );
+
+            $feed_builder = class_exists('Smashballoon\Customizer\Container') ? Smashballoon\Customizer\Container::getInstance()->get("Smashballoon\Customizer\Feed_Builder") : false;
+            $sby_feeds = $feed_builder !== false ? $feed_builder->get_feed_list() : [];
+            $sby_statuses = get_option('sby_statuses');
 
 		    $json_array['youtube'] = array(
 			    'current' => array(
@@ -514,12 +687,10 @@ $json_array = array();
 					    $oauth_processor_url = SBY_OAUTH_PROCESSOR_URL;
 				    }
 				    ?>
-                    <div id="sby_admin">
-                        <a href="<?php echo $oauth_processor_url . admin_url( 'admin.php?page=sbsw' ); ?>" id="sbspf_get_token"><?php echo sprintf( __( 'Connect to %s to Create a Feed', 'youtube-feed' ), 'YouTube' ); ?></a>
-                    </div>
+
                 <?php endif; ?>
 
-	            <?php if ( ! $empty_connected_accounts ) : ?>
+	            <?php if ( ! $empty_connected_accounts && ! isset( $sby_statuses['support_legacy_shortcode'] )) : ?>
                 <div class="sbsw-feed-settings">
 
                     <h4><?php echo __( 'Feed Type:', 'social-wall' ); ?></h4>
@@ -540,6 +711,55 @@ $json_array = array();
                 </div>
 			    <?php endif; ?>
 
+	            <?php if ( ! empty( $sby_feeds ) ) :
+		            $json_array['youtube'] = array(
+			            'current' => array(
+				            'type' => 'feed',
+				            'term' => (int)$sby_feeds[0]['id']
+			            ),
+			            'available_types' => $available_types,
+			            'settings' => $account_and_feed_info['settings']
+		            );
+		            ?>
+
+                    <div class="sbsw-feed-settings">
+
+                        <div class="sbsw-connected-accounts-wrap">
+                            <div class="sbsw-connected-accounts-inner">
+                                <h4><?php echo __( 'Select Feed for Wall:', 'social-wall' ); ?></h4>
+					            <?php
+					            foreach ( $sby_feeds as $key => $feed ) :
+						            $is_default = false;
+						            $wrap_class = '';
+						            $button_class = '';
+						            $button_text = __( 'Use', 'social-wall' );
+						            if ( $key === 0 ) {
+							            $wrap_class = ' sbsw-selected';
+							            $button_class = ' sbsw-is-default';
+							            $button_text = __( 'Selected', 'social-wall' );
+						            }
+						            ?>
+
+                                    <div class="sbsw-connected-account<?php echo esc_attr( $wrap_class ); ?>" data-id="<?php echo esc_attr( $feed['id'] ); ?>" data-user="<?php echo esc_attr( $feed['id'] ); ?>">
+                                        <button class="sbsw-add-remove-account button<?php echo esc_attr( $button_class ); ?>"><?php echo esc_html( $button_text ); ?></button>
+                                        <p><?php echo esc_html( $feed['feed_name'] ); ?></p>
+                                    </div>
+					            <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+	            <?php endif; ?>
+	            <?php if ( class_exists( 'SmashBalloon\YouTubeFeed\Pro\SBY_Settings_Pro') ) : ?>
+                    <div id="sbi_admin" class="sbsw-connect-account-btn-small">
+                        <div id="sbi_config">
+                            <a href="<?php echo esc_url( admin_url( 'admin.php?page=sby-feed-builder' ) ); ?>" class="sbi_new_feed sbi_admin_btn" data-plugin="youtube"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.66537 5.66659H5.66536V9.66659H4.33203V5.66659H0.332031V4.33325H4.33203V0.333252H5.66536V4.33325H9.66537V5.66659Z" fill="white"></path></svg> <?php esc_html_e( 'Create a New Feed', 'social-wall' ); ?></a>
+                        </div>
+                    </div>
+	            <?php else : ?>
+                    <div id="sby_admin">
+                        <a href="<?php echo $oauth_processor_url . admin_url( 'admin.php?page=sbsw' ); ?>" id="sbspf_get_token"><?php echo sprintf( __( 'Connect to %s to Create a Feed', 'youtube-feed' ), 'YouTube' ); ?></a>
+                    </div>
+	            <?php endif; ?>
             </div>
 	    <?php endif; ?>
 
@@ -647,4 +867,25 @@ $json_array = array();
 </div>
 <?php } elseif ( isset( $_GET['final_response'] ) ) { ?>
     <input type="hidden" id="cff-reloader" class="wrap sbsw-reload" data-reload="<?php echo esc_attr( admin_url('admin.php?page=sbsw') ); ?>">
-<?php }
+<?php } ?>
+
+<div class="sbsw-createfeed-fs">
+	<div class="sbsw-createfeed-popup" data-loading="true">
+		<div class="sbsw-createfeed-loader"></div>
+		<div class="sbsw-createfeed-cls"></div>
+		<img src="<?php echo trailingslashit( SBSW_PLUGIN_URL ) . 'img/create-feed.png' ?>" data-hideon-loading="true">
+		<div class="sbsw-createfeed-img" data-hideon-loading="false">
+			<span class="sbsw-createfeed-plugin-icon"></span>
+			<svg class="sbsw-createfeed-smash-icon" width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M29.8187 18.4092C29.8187 8.40884 23.2636 0.30188 15.1746 0.30188C7.08566 0.30188 0.527588 8.40884 0.527588 18.4092C0.527588 27.9962 6.53441 35.8185 14.1411 36.4746L13.3322 39.0361L18.4042 38.6047L16.6247 36.4297C24.0306 35.5309 29.8187 27.8074 29.8187 18.4092Z" fill="#FE544F"/><path fill-rule="evenodd" clip-rule="evenodd" d="M18.6666 6.66782L19.3714 13.9397L26.6738 14.1495L21.3914 19.0611L25.5636 25.0956L18.5349 23.7744L16.404 30.8033L13.1687 24.5089L6.63594 27.5023L9.14898 20.7546L2.77771 17.541L9.59798 15.3476L7.71599 8.62884L14.1684 12.3074L18.6666 6.66782Z" fill="white"/></svg>
+		</div>
+		<h3>
+			<span data-hideon-loading="true"><?php echo __( 'Add a New Social Wall Feed', 'social-wall' ) ?></span>
+			<span class="sbsw-createfeed-head2 sbsw-createfeed-plg" data-hideon-loading="false"><?php echo __( 'Redirecting to {#} Feed in', 'social-wall' ) ?> <span class="sbsw-createfeed-headcounter"></span>...</span>
+		</h3>
+		<p class="sbsw-createfeed-plg"><?php echo __( 'To add a new {#} feed to Social Wall, you need to create it within the {#} Plugin', 'social-wall' ) ?></p>
+		<div class="sbsw-createfeed-popup-btns">
+			<a class="sbsw-go-btn sbsw-createfeed-plg button button-primary" data-hideon-loading="true"><?php echo __( 'Go to {#} Feed', 'social-wall' ) ?></a>
+			<a class="sbsw-cancel-btn button button-secondary"><?php echo __( 'Cancel', 'social-wall' ) ?></a>
+		</div>
+	</div>
+</div>

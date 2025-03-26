@@ -2,6 +2,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+use TwitterFeed\Pro\CTF_Parse_Pro;
+use TwitterFeed\Pro\CTF_Display_Elements_Pro;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Parse_Pro;
+use SmashBalloon\YouTubeFeed\SBY_Parse;
+use SmashBalloon\TikTokFeeds\Common\FeedParse as SBTT_Parse_Pro;
 
 class SW_Display_Elements
 {
@@ -115,48 +120,90 @@ class SW_Display_Elements
 			return '';
 		}
 
-		return SW_Display_Elements::format_date( SW_Parse::get_timestamp( $post, $plugin ), $settings );
+		return $settings['dateBeforeText'] . ' ' . SW_Display_Elements::format_date( SW_Parse::get_timestamp( $post, $plugin ), $settings ) . ' ' . $settings['dateAfterText'];
 	}
 
 	public static function full_date( $timestamp, $settings ) {
 		return date_i18n( SW_Display_Elements::date_format_setting( $settings ), $timestamp + sbsw_get_utc_offset() );
 	}
 
-	public static function format_date( $timestamp, $settings ) {
-		$use_custom = isset( $settings['dateformat'] ) ? $settings['dateformat'] === 'custom' : false;
+	/**
+	 * Format date and time and convert to desired date format
+	 */
+	public static function format_date( $timestamp, $feedSettings ) {
+		$originalDate   = $timestamp;
+		$dateOffset     = new \DateTime();
+		$offsetTimezone = $dateOffset->getOffset() / 60;
+		$periods = [
+			__('second', 'sb-customizer'),
+			__('minute', 'sb-customizer'),
+			__('hour', 'sb-customizer'),
+			__('day', 'sb-customizer'),
+			__('week', 'sb-customizer'),
+			__('month', 'sb-customizer'),
+			__('year', 'sb-customizer')
+		];
+		$periodsPlural = [
+			__('seconds', 'sb-customizer'),
+			__('minutes', 'sb-customizer'),
+			__('hours', 'sb-customizer'),
+			__('days', 'sb-customizer'),
+			__('weeks', 'sb-customizer'),
+			__('months', 'sb-customizer'),
+			__('years', 'sb-customizer')
+		];
+		$lengths = ["60", "60", "24", "7", "4.35", "12", "10"];
+		$now = $dateOffset->getTimestamp();
+		$newTime = (int)$originalDate + (int)$offsetTimezone;
+		$printDate = '';
+		$dateFortmat = $feedSettings['dateformat'];
+		$agoText = __('ago', 'sb-customizer');
+		$difference = null;
+		$formatsChoices = [
+			'2'  => 'F jS, g:i a',
+			'3'  => 'F jS',
+			'4'  => 'D F jS',
+			'5'  => 'l F jS',
+			'6'  => 'D M jS, Y',
+			'7'  => 'l F jS, Y',
+			'8'  => 'l F jS, Y - g:i a',
+			'9'  => "l M jS, 'y",
+			'10' => 'm.d.y',
+			'11' => 'm/d/y',
+			'12' => 'd.m.y',
+			'13' => 'd/m/y',
+			'14' => 'd-m-Y, G:i',
+			'15' => 'jS F Y, G:i',
+			'16' => 'd M Y, G:i',
+			'17' => 'l jS F Y, G:i',
+			'18' => 'm.d.y - G:i',
+			'19' => 'd.m.y - G:i'
+		];
 
-		if ( $use_custom ) {
-			return SW_Display_Elements::full_date( $timestamp, $settings );
+		if (isset($formatsChoices[$dateFortmat])) {
+			$printDate = date_i18n($formatsChoices[$dateFortmat], $newTime);
+		} elseif ($dateFortmat === 'custom') {
+			$dateCustom = $feedSettings['customdate'];
+			$printDate = date_i18n($dateCustom, $newTime);
 		} else {
-			$now                 = time();
-			$difference          = $now - $timestamp;
-			// future date, is a live stream
-			if ( $difference < HOUR_IN_SECONDS ) {
-				$num_text  = floor( $difference / 60 );
-
-				return max( 1, $num_text ) . __( $settings['minutetext'], 'social-wall' );
-			} elseif ( $difference < 1 * DAY_IN_SECONDS ) {
-				$num_text  = floor( $difference / HOUR_IN_SECONDS );
-
-				return max( 1, $num_text ) . __( $settings['hourtext'], 'social-wall' );
-			} elseif ( $difference < WEEK_IN_SECONDS ) {
-				$num_text  = floor( $difference / DAY_IN_SECONDS );
-
-				return max( 1, $num_text ) . __( $settings['daytext'], 'social-wall' );
-			} elseif ( $difference < MONTH_IN_SECONDS ) {
-				$num_text  = floor( $difference / WEEK_IN_SECONDS );
-
-				return max( 1, $num_text ) . __( $settings['weektext'], 'social-wall' );
-			} elseif ( $difference < YEAR_IN_SECONDS ) {
-				$num_text  = floor( $difference / MONTH_IN_SECONDS );
-
-				return max( 1, $num_text ) . __( $settings['monthtext'], 'social-wall' );
+			if ($now > $originalDate) {
+				$difference = (int)$now - (int)$originalDate;
+			} else {
+				$difference = (int)$originalDate - (int)$now;
 			}
-			$num_text  = floor( $difference / YEAR_IN_SECONDS );
 
-			return max( 1, $num_text ) . __( $settings['yeartext'], 'social-wall' );
+			for ($j = 0; $difference >= $lengths[$j] && $j < count($lengths) - 1; $j++) {
+				$difference /= $lengths[$j];
+			}
+
+			$difference = round($difference);
+			if ($difference !== 1) {
+				$periods[$j] = $periodsPlural[$j];
+			}
+
+			$printDate = $difference . " " . $periods[$j] . " " . $agoText;
 		}
-
+		return $printDate;
 	}
 
 	public static function get_icon( $icon ) {
@@ -169,7 +216,12 @@ class SW_Display_Elements
 		} elseif ( $icon === 'youtube' ) {
 			return '<svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="sby_new_logo svg-inline--fa fa-youtube fa-w-18"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" class=""></path></svg>';
 		} elseif ( $icon === 'twitter' ) {
+			if ( function_exists('ctf_should_rebrand_to_x' ) && ctf_should_rebrand_to_x()) {
+				return '<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M21.1161 6.27344H24.2289L17.4284 14.0459L25.4286 24.6225H19.1645L14.2583 18.2079L8.6444 24.6225H5.52976L12.8035 16.309L5.12891 6.27344H11.552L15.9868 12.1367L21.1161 6.27344ZM20.0236 22.7594H21.7484L10.6148 8.03871H8.7639L20.0236 22.7594Z"></path></svg>';
+			}
 			return '<svg class="svg-inline--fa fa-twitter fa-w-16" aria-hidden="true" aria-label="twitter logo" data-fa-processed="" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>';
+		} elseif ($icon === 'tiktok') {
+			return '<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 449.45 515.38"><path fill="#d2d2d2" fill-rule="nonzero" d="M382.31 103.3c-27.76-18.1-47.79-47.07-54.04-80.82-1.35-7.29-2.1-14.8-2.1-22.48h-88.6l-.15 355.09c-1.48 39.77-34.21 71.68-74.33 71.68-12.47 0-24.21-3.11-34.55-8.56-23.71-12.47-39.94-37.32-39.94-65.91 0-41.07 33.42-74.49 74.48-74.49 7.67 0 15.02 1.27 21.97 3.44V190.8c-7.2-.99-14.51-1.59-21.97-1.59C73.16 189.21 0 262.36 0 352.3c0 55.17 27.56 104 69.63 133.52 26.48 18.61 58.71 29.56 93.46 29.56 89.93 0 163.08-73.16 163.08-163.08V172.23c34.75 24.94 77.33 39.64 123.28 39.64v-88.61c-24.75 0-47.8-7.35-67.14-19.96z"></path></svg>';
 		} elseif ( $icon === 'share' ) {
 			return '<svg aria-hidden="true" focusable="false" data-prefix="fal" data-icon="share" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-share fa-w-18"><path fill="currentColor" d="M564.907 196.35L388.91 12.366C364.216-13.45 320 3.746 320 40.016v88.154C154.548 130.155 0 160.103 0 331.19c0 94.98 55.84 150.231 89.13 174.571 24.233 17.722 58.021-4.992 49.68-34.51C100.937 336.887 165.575 321.972 320 320.16V408c0 36.239 44.19 53.494 68.91 27.65l175.998-184c14.79-15.47 14.79-39.83-.001-55.3zm-23.127 33.18l-176 184c-4.933 5.16-13.78 1.73-13.78-5.53V288c-171.396 0-295.313 9.707-243.98 191.7C72 453.36 32 405.59 32 331.19 32 171.18 194.886 160 352 160V40c0-7.262 8.851-10.69 13.78-5.53l176 184a7.978 7.978 0 0 1 0 11.06z" class=""></path></svg>';
 		} elseif ( $icon === 'link' ) {
@@ -289,14 +341,16 @@ class SW_Display_Elements
 		$style_options = get_option( 'cff_style_settings', array() );
 		$cff_event_date_formatting = isset( $style_options[ 'cff_event_date_formatting' ] ) ? $style_options[ 'cff_event_date_formatting' ] : '';
 		$cff_event_date_custom = isset( $style_options[ 'cff_event_date_custom' ] ) ? $style_options[ 'cff_event_date_custom' ] : '';
+		$cff_timezone = isset($style_options[ 'cff_timezone' ]) ?  $style_options[ 'cff_timezone' ] :  'America/Chicago';
+
 		$cff_event_timezone_offset = '';
 
 		if ( ! empty( $start_time ) || ! empty ( $end_time ) ) {
-			$formatted_start_time = str_replace( array( '<k>','</k>' ), '', CustomFacebookFeed\CFF_Utils::cff_eventdate($start_time, $cff_event_date_formatting, $cff_event_date_custom, $cff_event_timezone_offset) );
+			$formatted_start_time = str_replace( array( '<k>','</k>' ), '', CustomFacebookFeed\CFF_Utils::cff_eventdate($start_time, $cff_event_date_formatting, $cff_event_date_custom, $cff_event_timezone_offset, $cff_timezone) );
 			$content .= sbsw_esc_html_with_br( $formatted_start_time );
 
 			if ( ! empty ( $end_time ) ) {
-				$formatted_end_time = str_replace( array( '<k>','</k>' ), '', CustomFacebookFeed\CFF_Utils::cff_eventdate($end_time, $cff_event_date_formatting, $cff_event_date_custom, $cff_event_timezone_offset) );
+				$formatted_end_time = str_replace( array( '<k>','</k>' ), '', CustomFacebookFeed\CFF_Utils::cff_eventdate($end_time, $cff_event_date_formatting, $cff_event_date_custom, $cff_event_timezone_offset, $cff_timezone) );
 				$content .= ' - ' . sbsw_esc_html_with_br( $formatted_end_time );
 			}
 		}
@@ -449,6 +503,11 @@ class SW_Display_Elements
 			} elseif ( $first_url && CTF_Parse_Pro::should_retrieve_twitter_card( $post ) ) {
 				$content .= CTF_Display_Elements_Pro::get_twitter_card_placeholder( $post, $first_url );
 			}
+		} elseif ($plugin === 'tiktok') {
+			$content = sbsw_esc_html_with_br(SBTT_Parse_Pro::get_video_description($post));
+			if (!empty(trim($content)))  {
+				$content = '<p class="sbsw-content-text">' . sbsw_maybe_shorten_text($content, $textlength, true) . '</p>';
+			}
 		}
 
 		return $content;
@@ -567,6 +626,11 @@ class SW_Display_Elements
 			$name = CustomFacebookFeed\CFF_Parse_Pro::get_name( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$name = CTF_Parse_Pro::get_name( $post );
+		} elseif ($plugin === 'tiktok') {
+			if (isset($data['tiktok'])) {
+				$source = SW_Parse::get_matching_source($data['tiktok'], $post);
+				$name = SBTT_Parse_Pro::get_username($source);
+			}
 		}
 
 		return $name;
@@ -592,6 +656,108 @@ class SW_Display_Elements
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Get statistics data for post
+	 * 
+	 * @since 2.0
+	 */
+	public static function get_escaped_stats_data( $data, $post, $misc_data, $plugin = '', $settings = array() ) {
+		if ( empty( $plugin ) ) {
+			$plugin = SW_Parse::get_plugin( $post );
+		}
+
+		$html = '';
+		if ( $plugin === 'youtube' ) {
+			$views_count = SBY_Parse_Pro::get_view_count( $post, $misc_data['youtube'] );
+			$likes_count = SBY_Parse_Pro::get_like_count( $post, $misc_data['youtube'] );
+			$comments_count = SBY_Parse_Pro::get_comment_count( $post, $misc_data['youtube'] );
+
+			$counts = array(
+				'views_count' => $views_count,
+				'likes_count' => $likes_count,
+				'comments_count' => $comments_count,
+			);
+			// get stats
+		} elseif ( $plugin === 'instagram' ) {
+			$likes_count         = SB_Instagram_Parse_Pro::get_likes_count( $post );
+			$comments_count      = SB_Instagram_Parse_Pro::get_comments_count( $post );
+
+			$counts = array(
+				'likes_count' => $likes_count,
+				'comments_count' => $comments_count,
+			);
+		} elseif ( $plugin === 'facebook' ) {
+			$status_type = CustomFacebookFeed\CFF_Parse_Pro::get_status_type( $post );
+			if ( $status_type === 'album' ) {
+				$count_count         = CustomFacebookFeed\CFF_Parse_Pro::get_count_count( $post );
+				$html = '<span class="sbsw-cff-count sbsw-count">' . SW_Display_Elements::get_icon( 'image' ) . sbsw_format_count( $count_count ) . '</span>';
+
+			} elseif ( $status_type === 'event' ) {
+				$interested_count         = CustomFacebookFeed\CFF_Parse_Pro::get_interested_count( $post );
+				$attending_count      = CustomFacebookFeed\CFF_Parse_Pro::get_attending_count( $post );
+
+				$counts = array(
+					'interested_count' => $interested_count,
+					'attending_count' => $attending_count,
+				);
+
+				$html = '<span class="sbsw-cff-interested sbsw-interested">' . SW_Display_Elements::get_icon( 'heart' ) . sbsw_format_count( $interested_count ) . '</span>';
+				$html .= '<span class="sbsw-cff-attending sbsw-attending">' . SW_Display_Elements::get_icon( 'user' ) . sbsw_format_count( $attending_count ) . '</span>';
+
+			} else {
+				$likes_count         = CustomFacebookFeed\CFF_Parse_Pro::get_likes_count( $post );
+				$comments_count      = CustomFacebookFeed\CFF_Parse_Pro::get_comments_count( $post );
+
+				$counts = array(
+					'likes_count' => $likes_count,
+					'comments_count' => $comments_count,
+				);
+
+				$html = '<span class="sbsw-cff-likes sbsw-likes">' . SW_Display_Elements::get_icon( 'like' ) . sbsw_format_count( $likes_count ) . '</span>';
+				$html .= '<span class="sbsw-cff-comments sbsw-comments">' . SW_Display_Elements::get_icon( 'comments' ) . sbsw_format_count( $comments_count ) . '</span>';
+
+			}
+		} elseif ( $plugin === 'twitter' ) {
+			$screen_name = CTF_Parse_Pro::get_handle( $post );
+			$id = CTF_Parse_Pro::get_tweet_id( $post );
+			$retweet_count = (int)CTF_Parse_Pro::get_retweet_count( $post );
+			$favorite_count = (int)CTF_Parse_Pro::get_favorite_count( $post );
+			$reply_icon = SW_Display_Elements::get_icon( 'comments' );
+			$retweet_icon = SW_Display_Elements::get_icon( 'retweet' );
+			$favorite_icon = SW_Display_Elements::get_icon( 'heart' );
+
+			$counts = array(
+				'retweet_count' => $retweet_count,
+				'favourite_count' => $favorite_count,
+			);
+
+			$html .= '<a href="https://twitter.com/intent/retweet?tweet_id=' . $id . '&related=' . $screen_name . '" class="sbsw-ctf-retweet" target="_blank">' . $retweet_icon;
+			$html .= '<span class="sbsw-ctf-action-count sbsw-ctf-retweet-count">';
+			if ( $retweet_count > 0 ) {
+				$html .= sbsw_format_count( $retweet_count );
+			}
+			$html .= '</span><span class="sbsw-screenreader">Retweet on Twitter ' . $id . '</span></a>';
+			$html .= '<a href="https://twitter.com/intent/like?tweet_id=' . $id . '&related=' . $screen_name . '" class="sbsw-ctf-like" target="_blank">' . $favorite_icon . '';
+			$html .= '<span class="sbsw-ctf-action-count sbsw-ctf-favorite-count">';
+			if ( $favorite_count > 0 ) {
+				$html .= sbsw_format_count( $favorite_count );
+			}
+			$html .= '</span><span class="sbsw-screenreader">Like on Twitter ' . $id . '</span></a>';
+		} elseif ($plugin === 'tiktok') {
+			$views_count = SBTT_Parse_Pro::get_post_view_count($post);
+			$likes_count = SBTT_Parse_Pro::get_post_likes_count($post);
+			$comments_count = SBTT_Parse_Pro::get_post_comment_count($post);
+
+			$counts = array(
+				'views_count' => $views_count,
+				'likes_count' => $likes_count,
+				'comments_count' => $comments_count,
+			);
+		}
+
+		return $counts;
 	}
 
 	public static function get_escaped_stats_html( $data, $post, $misc_data, $plugin = '', $settings = array() ) {
@@ -657,8 +823,15 @@ class SW_Display_Elements
 				$html .= sbsw_format_count( $favorite_count );
 			}
 			$html .= '</span><span class="sbsw-screenreader">Like on Twitter ' . $id . '</span></a>';
-		}
+		} elseif ($plugin === 'tiktok') {
+			$views_count = SBTT_Parse_Pro::get_post_view_count($post);
+			$likes_count = SBTT_Parse_Pro::get_post_likes_count($post);
+			$comments_count = SBTT_Parse_Pro::get_post_comment_count($post);
 
+			$html = '<span class="sbsw-sbi-views sbsw-views">' . SW_Display_Elements::get_icon('views') . sbsw_format_count($views_count) . '</span>';
+			$html .= '<span class="sbsw-sbi-likes sbsw-likes">' . SW_Display_Elements::get_icon('heart') . sbsw_format_count($likes_count) . '</span>';
+			$html .= '<span class="sbsw-sbi-comments sbsw-comments">' . SW_Display_Elements::get_icon('comments') . sbsw_format_count($comments_count) . '</span>';
+		}
 		return $html;
 	}
 
@@ -677,8 +850,10 @@ class SW_Display_Elements
 		} elseif ( $plugin === 'twitter' ) {
 			$content = '';
 			if ( isset( $post['retweeted_status'] ) ) {
+				$x_reposted_text =   function_exists('ctf_should_rebrand_to_x') && ctf_should_rebrand_to_x() ? __('Reposted', 'social-wall') : __('Retweeted', 'social-wall');
+
 				$retweet_icon = '<svg viewBox="0 0 24 24" aria-hidden="true" aria-label="retweet" role="img"><path d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.148.147.34.22.532.22s.384-.073.53-.22c.293-.293.293-.768 0-1.06l-3.5-3.5c-.293-.294-.768-.294-1.06 0l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.337-.75-.75-.75z"></path></svg>';
-				$content      = '<div class="sbsw-retweeted-text"><span>' . $retweet_icon . '</span><a href="https://twitter.com/' . CTF_Parse_Pro::get_retweeter( $post ) .'" target="_blank" rel="noopener nofollow noreferrer"><span class="sbsw-retweeter-name">'. CTF_Parse_Pro::get_retweeter( $post ) . ' </span>' . __( 'Retweeted', 'social-wall' ) . '</a></div>';
+				$content      = '<div class="sbsw-retweeted-text"><span>' . $retweet_icon . '</span><a href="https://twitter.com/' . CTF_Parse_Pro::get_retweeter( $post ) .'" target="_blank" rel="noopener nofollow noreferrer"><span class="sbsw-retweeter-name">'. CTF_Parse_Pro::get_retweeter( $post ) . ' </span>' . esc_html( $x_reposted_text ) . '</a></div>';
 			}
 		}
 
@@ -704,6 +879,10 @@ class SW_Display_Elements
 
 		if ( ! is_object( $post ) && isset( $post['retweeted_status'] ) ) {
 			$classes .= ' sbsw-retweet';
+		}
+
+		if ( function_exists('ctf_should_rebrand_to_x') && ctf_should_rebrand_to_x() ) {
+			$classes .= ' sbsw-x-branding';
 		}
 
 		return $classes;
@@ -733,14 +912,17 @@ class SW_Display_Elements
 		}
 		$description = SW_Parse::get_description( $post, $plugin );
 		$account_link = SW_Parse::get_account_link( $account_data, $post, $plugin );
-
+		$permalink = SW_Parse::get_post_permalink( $post );
+		
 		$data_array = array(
 			'avatar' => $avatar,
 			'full_name' => $full_name,
 			'media_type' => $media_type,
 			'media_url' => $media_url,
 			'title' => sbsw_esc_html_with_br( sbsw_replace_double_quotes( $description ) ),
-			'account_url' => $account_link
+			'account_url' => $account_link,
+			'permalink' => $permalink,
+			'plugin' => $plugin
 		);
 
 		if ( $plugin === 'facebook' && CustomFacebookFeed\CFF_Parse_Pro::get_status_type( $post ) === 'event' ) {
@@ -748,6 +930,10 @@ class SW_Display_Elements
 			if ( ! empty ( $description ) ) {
 				$data_array['title'] .=  sbsw_esc_html_with_br( sbsw_replace_double_quotes( $description ) );
 			}
+		}
+
+		if ($plugin === 'tiktok' && empty($media_url)) {
+			$data_array['embed_html'] = html_entity_decode(SBTT_Parse_Pro::get_post_embed_html($post));
 		}
 
 		$attr = ' data-lightbox-info="' . esc_attr( json_encode( $data_array ) ) . '"';
@@ -773,6 +959,19 @@ class SW_Display_Elements
 			if ( ! empty( $media ) ) {
 				$data_array = CTF_Parse_Pro::get_media_src_set( $media[0] );
 			}
+		} elseif ($plugin === 'tiktok') {
+			if (! empty($post['local_cover_image_url'])) {
+				$data_array = array(
+					'300' => $post['local_cover_image_url'],
+					'd' => $post['local_cover_image_url'],
+				);
+			} else {
+				$data_array = array(
+					'300' => isset($post['cover_image_url']) ? $post['cover_image_url'] : '',
+					'd' => isset($post['cover_image_url']) ? $post['cover_image_url'] : '',
+				);
+			}
+
 		}
 
 		$attr = ' data-available-images="' . esc_attr( json_encode( $data_array ) ) . '"';

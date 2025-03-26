@@ -11,7 +11,12 @@ use TwitterFeed\Pro\CTF_Feed_Pro;
 use TwitterFeed\Pro\CTF_Parse_Pro;
 use TwitterFeed\Pro\CTF_Display_Elements_Pro;
 use TwitterFeed\Builder\CTF_Feed_Saver_Manager;
-use TwitterFeed\CtfOauthConnectPro;
+use TwitterFeed\Pro\CTF_Twitter_Card_Generator;
+use TwitterFeed\V2\CtfOauthConnectPro;
+use TwitterFeed\SmashTwitter\ErrorReport;
+use TwitterFeed\SmashTwitter\SettingsFilter;
+use TwitterFeed\SmashTwitter\TweetFilterer;
+use TwitterFeed\SmashTwitter\TweetSetModifier;
 
 if (!defined('ABSPATH')) {
     die('-1');
@@ -29,6 +34,16 @@ class CtfFeedPro extends CtfFeed {
 
     public $ids_in_set_w_media;
 
+	/**
+	 * @var SettingsFilter
+	 */
+	public $settings_filter;
+
+	/**
+	 * @var ErrorReport
+	 */
+	public $error_report;
+
     /**
      * creates and returns all of the data needed to generate the output for the feed
      *
@@ -38,20 +53,31 @@ class CtfFeedPro extends CtfFeed {
      * @return CtfFeedPro           the complete object for the feed
      */
     public static function init($atts, $last_id_data = '', $num_needed_input = 0, $ids_to_remove = array() , $persistent_index = 1, $preview_settings = false) {
-        if ( empty( $atts['feed'] ) ) {
+		if ( ! is_array( $atts ) ) {
+			$atts = array();
+		}
+
+		if ( empty( $atts['feed'] ) ) {
             $ctf_statuses = get_option( 'ctf_statuses', array() );
             if ( empty( $ctf_statuses['support_legacy_shortcode'] ) ) {
                 if ( empty( $atts ) ) {
                     $atts = array();
                 }
                 $atts['feed'] = 1;
+            } else {
+				$atts['is_legacy'] = true;
             }
-        }
+        } elseif ( ! empty( $atts['feed'] ) && $atts['feed'] === 'legacy' ) {
+			$atts['is_legacy'] = true;
+		}
 
         $feed = new CtfFeedPro($atts, $last_id_data, $num_needed_input, $preview_settings);
-        if( !isset($feed->feed_options['feederror']) && empty($feed->feed_options['feederror']) ){
+	    $feed->settings_filter = new SettingsFilter();
+	    $feed->error_report = new ErrorReport();
+	    if( !isset($feed->feed_options['feederror']) && empty($feed->feed_options['feederror']) ){
             $feed->setFeedOptions();
-            if ($feed->feed_options['layout'] === 'carousel') {
+
+		    if ($feed->feed_options['layout'] === 'carousel') {
                 $feed->setCarouselClasses();
             }
             elseif ($feed->feed_options['layout'] === 'masonry') {
@@ -63,7 +89,7 @@ class CtfFeedPro extends CtfFeed {
             }
 
             $feed->setCacheTypeOption();
-            if ($feed->feed_options['persistentcache']) {
+            if (CTF_DOING_SMASH_TWITTER || $feed->feed_options['persistentcache'] || ctf_should_switch_to_smash_twitter() ) {
                 $feed->persistent_index = $persistent_index;
             }
             $settings = ctf_get_database_settings();
@@ -92,12 +118,12 @@ class CtfFeedPro extends CtfFeed {
         $this->feed_options['screenname'] = isset( $this->atts['screenname'] ) ? $this->atts['screenname'] : ( isset( $this->db_options['usertimeline_text'] ) ? $this->db_options['usertimeline_text'] : '' );
 
         if ( isset( $this->atts['home'] ) && $this->atts['home'] == 'true' ) {
-            $this->feed_options['feed_types_and_terms'][] = array( 'hometimeline', '' );
+            $this->feed_options['feed_types_and_terms'][] = array( 'hometimeline', 'hometimeline' );
             $this->feed_options['feed_types_and_terms_display'][] = 'hometimeline';
         }
 
         if ( isset( $this->atts['mentions'] ) && $this->atts['mentions'] == 'true' ) {
-            $this->feed_options['feed_types_and_terms'][] = array( 'mentionstimeline', '' );
+            $this->feed_options['feed_types_and_terms'][] = array( 'mentionstimeline', 'mentionstimeline' );
             $this->feed_options['feed_types_and_terms_display'][] = 'mentionstimeline';
 
         }
@@ -121,12 +147,13 @@ class CtfFeedPro extends CtfFeed {
                 foreach ( $searches as $search ) {
                     $this->feed_options['feed_types_and_terms'][] = array( 'search', str_replace( "'", '"', $search ) );
                     $this->feed_options['feed_types_and_terms_display'][] = str_replace( "'", '"', $search );
-
+					if ( ! empty( $search ) ) {
+						$this->check_for_duplicates = true;
+					}
                 }
 
             }
 
-            $this->check_for_duplicates = true;
         }
 
         if ( isset( $this->atts['hashtag'] ) ) {
@@ -135,6 +162,9 @@ class CtfFeedPro extends CtfFeed {
             $hashtag_list = explode( ',', $hashtags );
             foreach ( $hashtag_list as $hashtag ) {
                 $this->feed_options['feed_types_and_terms_display'][] = str_replace( "'", '"', $hashtag );
+	            if ( ! empty( $hashtag ) ) {
+		            $this->check_for_duplicates = true;
+	            }
             }
             $hashtags = str_replace( ',', ' OR ', $hashtags );
             if ( strlen( $hashtags < 45 ) ) {
@@ -144,7 +174,6 @@ class CtfFeedPro extends CtfFeed {
                 $this->feed_options['feed_types_and_terms'][] = array( 'hashtag', $hashtags );
             }
 
-            $this->check_for_duplicates = true;
         }
 
         if ( isset( $this->atts['lists'] ) ) {
@@ -154,19 +183,17 @@ class CtfFeedPro extends CtfFeed {
                 $this->feed_options['feed_types_and_terms'][] = array( 'lists', $list );
                 $this->feed_options['feed_types_and_terms_display'][] = $list;
             }
-        }
+        } else if ( isset( $this->atts['lists_id'] ) ) {
+	        $lists = explode( ',', $this->atts['lists_id'] );
 
-        if ( isset( $this->atts['list'] ) ) {
-            $lists = explode( ',', $this->atts['list'] );
-
-            foreach ( $lists as $list ) {
-                $this->feed_options['feed_types_and_terms'][] = array( 'lists', $list );
-                $this->feed_options['feed_types_and_terms_display'][] = $list;
-            }
+	        foreach ( $lists as $list ) {
+		        $this->feed_options['feed_types_and_terms'][] = array( 'lists', $list );
+		        $this->feed_options['feed_types_and_terms_display'][] = $list;
+	        }
         }
 
         // if there is only one feed type and term, just use the single feed creation method
-        if ( sizeof( $this->feed_options['feed_types_and_terms'] ) == 1 ) {
+        if ( sizeof( $this->feed_options['feed_types_and_terms'] ) == 1 && $this->feed_options['feed_types_and_terms'][0][0] !== 'lists' ) {
             $this->feed_options['type'] = $this->feed_options['feed_types_and_terms'][0][0];
             $this->feed_options['feed_term'] = $this->feed_options['feed_types_and_terms'][0][1];
             $this->feed_options['feed_types_and_terms'] = '';
@@ -361,9 +388,22 @@ class CtfFeedPro extends CtfFeed {
      * sets the transient name for the caching system
      */
     public function setTransientName() {
-        $this->transient_name = 'ctf____' . $this->last_id_data;
+		if ( CTF_DOING_SMASH_TWITTER ) {
+			if ( empty( $this->raw_shortcode_atts['is_legacy'] ) ) {
+				$this->transient_name = $this->feed_id;
+				return;
+			}
 
-        $last_id_data = substr($this->last_id_data, -5, 5);
+		}
+		$suffix = $this->last_id_data;
+        $last_id_data = ( $this->last_id_data ) ? substr($this->last_id_data, -5, 5) : '';
+
+	    if ( CTF_DOING_SMASH_TWITTER ) {
+		    $suffix = '';
+		    $last_id_data = '';
+	    }
+        $this->transient_name = 'ctf____' . $suffix;
+
         $num = isset($this->feed_options['num']) && !empty($this->feed_options['num']) ? $this->feed_options['num'] : 1;
         $reply = $this->feed_options['includereplies'] === true ? 'r' : '';
         $includewords = !empty($this->feed_options['includewords']) ? substr(str_replace(array(
@@ -394,11 +434,11 @@ class CtfFeedPro extends CtfFeed {
                 $this->transient_name = substr('ctf__' . $feedID . $last_id_data . $screenname . $num . $reply . $includewords . $remove_by_id_str . $excludewords . $noretweets, 0, 45);
             break;
             case 'search':
-                $hashtag = isset($this->feed_options['feed_term']) ? $this->feed_options['feed_term'] : '';
-                $this->transient_name = substr('ctf_' . $feedID . $last_id_data . substr($hashtag, 0, 20) . $includewords . $num . $reply . $remove_by_id_str . $excludewords . $noretweets, 0, 45);
+                $search = isset($this->feed_options['search']) ? $this->feed_options['search'] : '';
+                $this->transient_name = substr('ctf_' . $feedID . $last_id_data . substr($search, 0, 20) . $includewords . $num . $reply . $remove_by_id_str . $excludewords . $noretweets, 0, 45);
             break;
             case 'hashtag':
-                $hashtag = isset($this->feed_options['feed_term']) ? str_replace(' -filter:retweets', '', $this->feed_options['feed_term']) : '';
+                $hashtag = isset($this->feed_options['hashtag']) ? str_replace(' -filter:retweets', '', $this->feed_options['hashtag']) : '';
                 $this->transient_name = substr('ctf_' . $feedID . $last_id_data . substr($hashtag, 0, 20) . $includewords . $num . $reply . $remove_by_id_str . $excludewords . $noretweets, 0, 45);
             break;
             case 'mentionstimeline':
@@ -420,7 +460,6 @@ class CtfFeedPro extends CtfFeed {
                 }
 
         }
-
     }
 
     /**
@@ -430,6 +469,34 @@ class CtfFeedPro extends CtfFeed {
      * @return bool|mixed   false if none is set, tweet set otherwise
      */
     public function maybeSetTweetsFromCache() {
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$feed_id =  ! empty( $this->raw_shortcode_atts['feed'] ) ? $this->raw_shortcode_atts['feed'] : 1;
+			$cache_time = DAY_IN_SECONDS;
+			if ( ! empty( $this->raw_shortcode_atts['is_legacy'] ) ) {
+				$cache_time = 6 * HOUR_IN_SECONDS;
+			}
+
+			$page = 0; // force to 0 for this type of use of the cache
+
+			if ( empty( $this->persistent_index ) || empty( $this->last_id_data ) ) {
+				$offset = false;
+			} else {
+				$offset = $this->persistent_index;
+			}
+
+			$repository = new \TwitterFeed\SmashTwitter\TweetRepository( $this->feed_options['feed_types_and_terms'], $this->transient_name, new \TwitterFeed\SmashTwitter\TweetAggregator(), new \TwitterFeed\CtfCache( $feed_id, $cache_time, $page ), new TweetSetModifier(), $this->error_report );
+			$found = $repository->paged_cache( $offset, $this->feed_options['num'] );
+
+			if ( ! $found ) {
+				$this->tweet_set = array();
+			} else {
+				$this->tweet_set = $repository->get_tweets();
+
+				$this->tweet_set = $this->filterTweetSet($this->tweet_set, false);
+			}
+
+			return $this->tweet_set;
+		}
         if ($this->feed_options['persistentcache'] && ($this->feed_options['type'] == 'search' || $this->feed_options['type'] == 'hashtag')) {
             $persistent_cache_tweets = $this->persistentCacheTweets();
             if (is_array($persistent_cache_tweets)) {
@@ -509,13 +576,18 @@ class CtfFeedPro extends CtfFeed {
             ' '
         ) , '', $this->feed_options['excludewords']) , 0, 5) : '';
         $feedID = (!empty($this->atts['feedid'])) ? $this->atts['feedid'] . '_' : '';
-        $cache_name = substr('ctf_!_' . $feedID . $this->feed_options['feed_term'] . $includewords . $excludewords, 0, 45);
+		$feed_term = ! empty( $this->feed_options['feed_term'] ) ? $this->feed_options['feed_term'] : '';
+        $cache_name = substr('ctf_!_' . $feedID . $feed_term . $includewords . $excludewords, 0, 45);
         if ($this->feed_options['type'] === 'hashtag') {
             $cache_name = str_replace(' -filter:retweets', '', $cache_name);
         }
-        $cache_time_limit_reached = $this->cache->get_transient($cache_name) ? false : true;
+        $cache_time_limit_reached = $this->cache->get_transient($this->transient_name) ? false : true;
+        // return if cache limit reached, so tweets will be pulled from Twitter via the API
+        if ( $cache_time_limit_reached ) {
+            return false;
+        }
 
-        $existing_cache = $this->cache->get_persistent( $cache_name );
+        $existing_cache = $this->cache->get_persistent( $this->transient_name );
 
         if ($existing_cache && !is_array($existing_cache)) {
             $existing_cache = json_decode($existing_cache, $assoc = true);
@@ -531,9 +603,9 @@ class CtfFeedPro extends CtfFeed {
         elseif ($existing_cache) {
             // use "since-id" to look for more in an api request
             $since_id = $existing_cache[0]['id_str'];
-            $api_obj = $this->getTweetsSinceID($since_id, 'search', $this->feed_options['feed_term'], $this->feed_options['count']);
+            $api_obj = $this->getTweetsSinceID($since_id, 'search', $feed_term, $this->feed_options['count']);
             // add any new tweets to the cache
-            $tweet_set = json_decode($api_obj->json, $assoc = true);
+            $tweet_set = json_decode($api_obj->json, $assoc = true)['data'];
 
             $tweet_set = isset($tweet_set['statuses']) ? $tweet_set['statuses'] : array();
 
@@ -563,10 +635,12 @@ class CtfFeedPro extends CtfFeed {
 
         }
         else {
-            // make a request for last 200 tweets
-            $api_obj = $this->apiConnectionResponse('search', $this->feed_options['feed_term']);
-            // cache them in a regular option
-            $this->tweet_set = json_decode($api_obj->json, $assoc = true);
+	        // make a request for last 200 tweets
+	        if ( ! empty( $this->feed_options['feed_term'] ) ) {
+		        $api_obj = $this->apiConnectionResponse('search', $this->feed_options['feed_term']);
+		        // cache them in a regular option
+		        $this->tweet_set = json_decode($api_obj->json, $assoc = true)['data'];
+	        }
             // check for errors/tweets present
             if (isset($this->tweet_set['errors'][0])) {
                 if (empty($this->api_obj)) {
@@ -800,6 +874,9 @@ class CtfFeedPro extends CtfFeed {
         }
         $tweet_text = ' ' . preg_replace('/[,.!?:;"]+/', '', $tweet_text) . ' '; // spaces added so that we can use strpos instead of regex to find words
         $tweet_text = strtolower(preg_replace('/[\n]+/', ' ', $tweet_text));
+		if ( strpos( $tweet_text, ' rt ' ) === 0 ) {
+			return true;
+		}
         // don't bother with filtering process if both filters are empty
         if (!empty($good_text) || !empty($bad_text)) {
             if ($filter_and_or == 'and' && !empty($good_text) && !empty($bad_text)) {
@@ -835,10 +912,10 @@ class CtfFeedPro extends CtfFeed {
         if ($limit) {
             $tweets_needed = $this->feed_options['count'] + 1; // magic number here should be ADT
 
-        }
-        else {
+        } else {
             $tweets_needed = 200;
         }
+
         $tweets_to_remove_strip_ctf = str_replace('ctf_', '', $this->feed_options['remove_by_id']);
         $ids_of_tweets_to_remove = !empty($tweets_to_remove_strip_ctf) ? explode(',', str_replace(' ', '', $tweets_to_remove_strip_ctf)) : '';
         $i = 0; // index of working_tweet_set
@@ -879,6 +956,12 @@ class CtfFeedPro extends CtfFeed {
             }
 
         }
+
+	    if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+		    $filterer = new TweetFilterer();
+
+		    $working_tweet_set = $filterer->maybe_filter_for_timeline( $working_tweet_set, $this );
+		}
 
         if (is_array($working_tweet_set)) {
             return array_values($working_tweet_set);
@@ -989,135 +1072,199 @@ class CtfFeedPro extends CtfFeed {
      */
     public function maybeSetTweetsFromTwitter() {
         $this->setTweetsToRetrieve();
-
-        if (empty($this->feed_options['feed_types_and_terms']) || !isset($this->feed_options['feed_types_and_terms'])) {
-            $feed_term = isset($this->feed_options['feed_term']) ? $this->feed_options['feed_term'] : '';
-            if (empty($feed_term) && $this->feed_options['type'] !== 'hometimeline' && $this->feed_options['type'] !== 'mentionstimeline') {
-                $this->tweet_set = false;
-                return;
-            }
-            $api_obj = $this->apiConnectionResponse($this->feed_options['type'], $feed_term);
-
-            $this->tweet_set = json_decode($api_obj->json, $assoc = true);
-
-            $working_tweet_set = $this->tweet_set;
-            if (!isset($working_tweet_set['errors'][0])) {
-                if (isset($working_tweet_set[0])) {
-                    $value = array_values(array_slice($working_tweet_set, -1));
-                    $this->last_id_data = $value[0]['id_str'];
-                }
-
-                $working_tweet_set = $this->reduceTweetSetData($working_tweet_set);
-                if ($working_tweet_set === false) {
-                    $working_tweet_set = array();
-                }
-            }
-
-            $num_tweets = is_array($working_tweet_set) ? count($working_tweet_set) : 500;
-            // remove the last tweet as it is returned in the next request
-            if (!isset($working_tweet_set['errors'][0]) && isset($working_tweet_set[0]) && $num_tweets < $this->feed_options['count']) {
-                // remove the last tweet as it is returned in the next request
-                $value = array_values(array_slice($working_tweet_set, -1));
-                $last_tweet_id = $value[0]['id_str'];
-                if ($last_tweet_id === $this->last_id_data) {
-                    array_pop($working_tweet_set);
-                }
-
-                $original_count = $this->feed_options['count'];
-                $this->feed_options['count'] = 200;
-                $api_obj = $this->apiConnectionResponse($this->feed_options['type'], $feed_term);
-                $tweet_set_to_merge = json_decode($api_obj->json, $assoc = true);
-
-                if (isset($tweet_set_to_merge['statuses'])) {
-                    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
-                }
-                elseif (isset($tweet_set_to_merge[0]['created_at'])) {
-                    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
-                }
-
-                $this->feed_options['count'] = $original_count;
-            }
-
-            $this->tweet_set = $working_tweet_set;
-        }
-        else {
-            $working_tweet_set = array();
-            foreach ($this->feed_options['feed_types_and_terms'] as $feed_type_and_term) {
-                $api_obj = $this->apiConnectionResponse($feed_type_and_term[0], $feed_type_and_term[1]);
-                $tweet_set_to_merge = json_decode($api_obj->json, $assoc = true);
-
-                if (isset($tweet_set_to_merge['statuses'])) {
-                    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
-                }
-                elseif (isset($tweet_set_to_merge[0]['created_at'])) {
-                    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
-                }
-            }
-            if (!isset($working_tweet_set['errors'][0])) {
-                if (isset($working_tweet_set[0])) {
-                    $value = array_values(array_slice($working_tweet_set, -1));
-                    $this->last_id_data = $value[0]['id_str'];
-                }
-                $working_tweet_set = $this->reduceTweetSetData($working_tweet_set);
-                if ($working_tweet_set === false) {
-                    $working_tweet_set = array();
-                }
-            }
-            $num_tweets = is_array($working_tweet_set) ? count($working_tweet_set) : 500;
-
-            if (!isset($working_tweet_set['errors'][0]) && $num_tweets < $this->feed_options['count']) {
-
-                $value = array_values(array_slice($working_tweet_set, -1));
-                $last_tweet_id = $value[0]['id_str'];
-                if ($last_tweet_id === $this->last_id_data) {
-                    array_pop($working_tweet_set);
-                }
-                $original_count = $this->feed_options['count'];
-                $this->feed_options['count'] = 200;
-                //last_id_data
-                foreach ($this->feed_options['feed_types_and_terms'] as $feed_type_and_term) {
-                    $api_obj = $this->apiConnectionResponse($feed_type_and_term[0], $feed_type_and_term[1]);
-                    $tweet_set_to_merge = json_decode($api_obj->json, $assoc = true);
-
-                    if (isset($tweet_set_to_merge['statuses'])) {
-                        $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
-                    }
-                    elseif (isset($tweet_set_to_merge[0]['created_at'])) {
-                        $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
-                    }
-                }
-
-                $this->feed_options['count'] = $original_count;
-            }
-
-            $this->tweet_set = $this->sortTweetSetByDate($working_tweet_set);
-        }
-
-        // check for errors/tweets present
-        if (isset($this->tweet_set['errors'][0])) {
-
-	        if (empty($this->api_obj)) {
-                $this->api_obj = new \stdClass();
-            }
-            $this
-                ->api_obj->api_error_no = $this->tweet_set['errors'][0]['code'];
-            $this
-                ->api_obj->api_error_message = $this->tweet_set['errors'][0]['message'];
-		}
-
-        $tweets = isset($this->tweet_set['statuses']) ? $this->tweet_set['statuses'] : $this->tweet_set;
-
-        if (empty($tweets)) {
-			if ( empty( $this->tweet_set['errors'][0]['message'] ) ) {
-				$this->errors['error_message'] = 'No Tweets returned';
+	    if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+		    $feed_id =  ! empty( $this->raw_shortcode_atts['feed'] ) ? $this->raw_shortcode_atts['feed'] : 1;
+		    $cache_time = DAY_IN_SECONDS;
+		    if ( ! empty( $this->raw_shortcode_atts['is_legacy'] ) ) {
+			    $cache_time = 6 * HOUR_IN_SECONDS;
+		    }
+			$page = 0; // force to 0 for this type of use of the cache
+			$make_new_api_request = true;
+			if ( empty( $this->persistent_index ) || empty( $this->last_id_data ) ) {
+				$offset = false;
+			} else {
 				$this->tweet_set = false;
+				return;
 			}
 
-        } elseif ( !empty( $this->tweet_set['errors'][0]['message'] ) ) {
+		    $repository = new \TwitterFeed\SmashTwitter\TweetRepository( $this->feed_options['feed_types_and_terms'], $this->transient_name, new \TwitterFeed\SmashTwitter\TweetAggregator(), new \TwitterFeed\CtfCache( $feed_id, $cache_time, $page ), new TweetSetModifier(), $this->error_report );
+		    $doing_cron_update = ! empty( $this->raw_shortcode_atts['doingcronupdate'] );
+			if (isset($this->raw_shortcode_atts['make_api_request']) && $this->raw_shortcode_atts['make_api_request'] === false) {
+				$make_new_api_request = false;
+			}
+			$repository->get_set_cache($make_new_api_request, $doing_cron_update);
 
-        } else {
-            $this->tweet_set = $this->reduceTweetSetData($tweets);
-        }
+		    $this->tweet_set = $repository->get_tweets();
+
+		    if ( empty( $this->tweet_set ) ) {
+			    $this->error_report->process_error( 'no_tweets_found', true );
+		    }
+
+		    $this->tweet_set = $this->filterTweetSet($this->tweet_set, false);
+
+		    if ( empty( $this->tweet_set ) ) {
+			    $this->error_report->process_error( 'too_much_filtering', true );
+		    }
+
+	    } else {
+		    $this->api_obj = $this->apiConnect($this->feed_options['type'], !empty($this->feed_options['feed_term']) ? $this->feed_options['feed_term'] : $this->feed_options['screenname']);
+            // if the api_obj returns empty, that means Official Twitter API is not working
+            // switch to use our Smash Twitter API
+            if (is_null($this->api_obj)) {
+                $ctf_options = get_option('ctf_options', array());
+                $ctf_options['ctf_use_smash_twitter_api'] = 'yes';
+                update_option('ctf_options', $ctf_options);
+                return;
+            }
+			$json_array = json_decode($this->api_obj->json, $assoc = true);
+			$this->tweet_set = isset($json_array['data']) && is_array($json_array['data']) ? $json_array['data'] : $json_array;
+			// Update last_api_updated column
+			$feed_id = !empty($this->raw_shortcode_atts['feed']) ? $this->raw_shortcode_atts['feed'] : 1;
+			CTF_Feed_Pro::update_last_api_updated_data($feed_id);
+
+		    if (empty($this->feed_options['feed_types_and_terms']) || !isset($this->feed_options['feed_types_and_terms'])) {
+			    $feed_term = isset($this->feed_options['feed_term']) ? $this->feed_options['feed_term'] : $this->feed_options['screenname'];
+			    if (empty($feed_term) && $this->feed_options['type'] !== 'hometimeline' && $this->feed_options['type'] !== 'mentionstimeline') {
+				    $this->tweet_set = false;
+				    return;
+			    }
+
+			    $api_obj = $this->apiConnectionResponse($this->feed_options['type'], $feed_term);
+
+			    $this->tweet_set = json_decode($api_obj->json, $assoc = true)['data'];
+
+			    $working_tweet_set = $this->tweet_set;
+			    if (!isset($working_tweet_set['errors'][0])) {
+				    if (isset($working_tweet_set[0])) {
+					    $value = array_values(array_slice($working_tweet_set, -1));
+					    $this->last_id_data = $value[0]['id_str'];
+				    }
+
+				    $working_tweet_set = $this->reduceTweetSetData($working_tweet_set);
+				    if ($working_tweet_set === false) {
+					    $working_tweet_set = array();
+				    }
+			    }
+
+			    $num_tweets = is_array($working_tweet_set) ? count($working_tweet_set) : 500;
+			    // remove the last tweet as it is returned in the next request
+			    if (!isset($working_tweet_set['errors'][0]) && isset($working_tweet_set[0]) && $num_tweets < $this->feed_options['count']) {
+				    // remove the last tweet as it is returned in the next request
+				    $value = array_values(array_slice($working_tweet_set, -1));
+				    $last_tweet_id = $value[0]['id_str'];
+				    if ($last_tweet_id === $this->last_id_data) {
+					    array_pop($working_tweet_set);
+				    }
+
+				    $original_count = $this->feed_options['count'];
+				    $this->feed_options['count'] = 200;
+				    $api_obj = $this->apiConnectionResponse($this->feed_options['type'], $feed_term);
+				    $tweet_set_to_merge = json_decode($api_obj->json, $assoc = true)['data'];
+
+				    if (isset($tweet_set_to_merge['statuses'])) {
+					    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
+				    }
+				    elseif (isset($tweet_set_to_merge[0]['created_at'])) {
+					    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
+				    }
+
+				    $this->feed_options['count'] = $original_count;
+			    }
+
+			    $this->tweet_set = $working_tweet_set;
+		    }
+		    else {
+			    $working_tweet_set = array();
+
+			    foreach ($this->feed_options['feed_types_and_terms'] as $feed_type_and_term) {
+				    if ( $feed_type_and_term[1] === " -filter:retweets" || empty( $feed_type_and_term[1] ) ) {
+					    continue;
+				    }
+
+				    $api_obj = $this->apiConnectionResponse($feed_type_and_term[0], $feed_type_and_term[1]);
+				    $json_array = json_decode($api_obj->json, $assoc = true);
+				    $tweet_set_to_merge = !empty($json_array['data']) && is_array($json_array['data']) ? $json_array['data'] : [];
+
+				    if (isset($tweet_set_to_merge['statuses'])) {
+					    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
+				    }
+				    elseif (isset($tweet_set_to_merge[0]['created_at'])) {
+					    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
+				    }
+			    }
+			    if (!isset($working_tweet_set['errors'][0])) {
+				    if (isset($working_tweet_set[0])) {
+					    $value = array_values(array_slice($working_tweet_set, -1));
+					    $this->last_id_data = $value[0]['id_str'];
+				    }
+				    $working_tweet_set = $this->reduceTweetSetData($working_tweet_set);
+				    if ($working_tweet_set === false) {
+					    $working_tweet_set = array();
+				    }
+			    }
+			    $num_tweets = is_array($working_tweet_set) ? count($working_tweet_set) : 500;
+
+			    if (!isset($working_tweet_set['errors'][0]) && $num_tweets < $this->feed_options['count']) {
+
+				    $value = array_values(array_slice($working_tweet_set, -1));
+				    $last_tweet_id = ! empty( $value[0]['id_str'] ) ? $value[0]['id_str'] : '';
+				    if ($last_tweet_id === $this->last_id_data) {
+					    array_pop($working_tweet_set);
+				    }
+				    $original_count = $this->feed_options['count'];
+				    $this->feed_options['count'] = 200;
+				    //last_id_data
+				    foreach ($this->feed_options['feed_types_and_terms'] as $feed_type_and_term) {
+					    if ( $feed_type_and_term[1] === " -filter:retweets" || empty( $feed_type_and_term[1] ) ) {
+						    continue;
+					    }
+					    $api_obj = $this->apiConnectionResponse($feed_type_and_term[0], $feed_type_and_term[1]);
+						$json_array = json_decode($api_obj->json, $assoc = true);
+						$tweet_set_to_merge = !empty($json_array['data']) && is_array($json_array['data']) ? $json_array['data'] : [];
+
+					    if (isset($tweet_set_to_merge['statuses'])) {
+						    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge['statuses']);
+					    }
+					    elseif (isset($tweet_set_to_merge[0]['created_at'])) {
+						    $working_tweet_set = array_merge($working_tweet_set, $tweet_set_to_merge);
+					    }
+				    }
+
+				    $this->feed_options['count'] = $original_count;
+			    }
+
+			    $this->tweet_set = $this->sortTweetSetByDate($working_tweet_set);
+		    }
+
+		    // check for errors/tweets present
+		    if (isset($this->tweet_set['errors'][0])) {
+
+			    if (empty($this->api_obj)) {
+				    $this->api_obj = new \stdClass();
+			    }
+			    $this
+				    ->api_obj->api_error_no = $this->tweet_set['errors'][0]['code'];
+			    $this
+				    ->api_obj->api_error_message = $this->tweet_set['errors'][0]['message'];
+		    }
+
+		    $tweets = isset($this->tweet_set['statuses']) ? $this->tweet_set['statuses'] : $this->tweet_set;
+
+		    if (empty($tweets)) {
+			    if ( empty( $this->tweet_set['errors'][0]['message'] ) ) {
+				    $this->errors['error_message'] = 'No Tweets returned';
+				    $this->tweet_set = false;
+			    }
+
+		    } elseif ( !empty( $this->tweet_set['errors'][0]['message'] ) ) {
+
+		    } else {
+			    $this->tweet_set = $this->reduceTweetSetData($tweets);
+		    }
+
+	    }
+
+
     }
 
     /**
@@ -1593,7 +1740,7 @@ class CtfFeedPro extends CtfFeed {
      * @return string $tweet_html
      */
     public function getTweetSetHtml($is_pagination = 0) {
-        $feed_id                = $this->feedID();
+	    $feed_id                = $this->feedID();
         $options                = ctf_get_database_settings();
         $tweet_set              = isset($this->tweet_set['statuses']) ? $this->tweet_set['statuses'] : $this->tweet_set;
         $tweet_html             = $this->feed_html;
@@ -1619,8 +1766,11 @@ class CtfFeedPro extends CtfFeed {
 
 
         if (!$is_pagination) {
+	        if ( empty( $this->was_error_or_empty( $this->tweet_set ) ) ) {
+		        $this->error_report->process_error( 'no_tweets_found_cache' );
+	        }
             ob_start();
-            include ctf_get_feed_template_part('feed', $feed_options);
+            include ctf_get_feed_template_part( 'feed', $feed_options);
             $tweet_html .= ob_get_contents();
             ob_get_clean();
         }
@@ -1636,11 +1786,22 @@ class CtfFeedPro extends CtfFeed {
         $tweet_set = isset($this->tweet_set['statuses']) ? $this->tweet_set['statuses'] : $this->tweet_set;
         $tweet_count = CTF_Parse_Pro::get_tweet_count($tweet_set);
         $len = min($this->feed_options['num'] + $is_pagination, $tweet_count);
-        $i = $is_pagination; // starts at index "1" to offset duplicate tweet
-        $tweet_html = '';
-        if ($is_pagination && (!isset($tweet_set[1]['id_str']))) {
-            $tweet_html = $this->getOutOfTweetsHtml($this->feed_options);
-        }
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$i = 0; // starts at index "1" to offset duplicate tweet
+			$was_pagination = $is_pagination;
+			$is_pagination = 0;
+			$tweet_html = '';
+			if ($was_pagination && (!isset($tweet_set[0]['id_str']))) {
+				$tweet_html = $this->getOutOfTweetsHtml($this->feed_options);
+			}
+		} else {
+			$i = $is_pagination; // starts at index "1" to offset duplicate tweet
+			$tweet_html = '';
+			if ($is_pagination && (!isset($tweet_set[1]['id_str']))) {
+				$tweet_html = $this->getOutOfTweetsHtml($this->feed_options);
+			}
+		}
+
         ob_start();
 
         $this->tweet_loop($tweet_set, $this->feed_options, $is_pagination);
@@ -1653,6 +1814,8 @@ class CtfFeedPro extends CtfFeed {
     public function tweet_loop($tweet_set, $settings, $is_pagination) {
         $feed_options = $this->feed_options;
         $dbsettings = ctf_get_database_settings();
+		$show_thread_txt = isset($dbsettings['showThread']) ? $dbsettings['showThread'] : __('Show Thread', 'custom-twitter-feeds');
+		$hide_thread_txt = isset($dbsettings['hideThread']) ? $dbsettings['hideThread'] : __('Hide Thread', 'custom-twitter-feeds');
 
         $tweet_count = CTF_Parse_Pro::get_tweet_count($tweet_set);
         $len = min($this->feed_options['num'] + $is_pagination, $tweet_count);
@@ -1713,5 +1876,31 @@ class CtfFeedPro extends CtfFeed {
         }
         $this->ids_in_set_w_media = $ids_in_set_w_media;
     }
-}
 
+	public function tweet_threads_html($post_id, $tweet_threads, $feed_options, $is_pagination)
+	{
+		echo '<div class="ctf-threads-wrapper" data-tweet-id="' . esc_attr($post_id) . '">';
+		// We pass the threads tweet array and let it loop over
+		$this->tweet_loop($tweet_threads, $feed_options, $is_pagination);
+		echo '</div>';
+	}
+
+	public function should_show_footer( $tweet_set ) {
+		return $this->was_error_or_empty( $tweet_set );
+	}
+
+	public function was_error_or_empty( $tweet_set ) {
+		if ( empty( $tweet_set ) ) {
+			return false;
+		}
+		if ( ! empty( $tweet_set ) && isset( $tweet_set[0] ) && is_string( $tweet_set[0] ) && $tweet_set[0] === 'error' ) {
+			return false;
+		}
+		$error = $this->error_report->get_critical_error();
+		if ( ! empty( $error ) && empty( $tweet_set ) ) {
+			return false;
+		}
+
+		return true;
+	}
+}

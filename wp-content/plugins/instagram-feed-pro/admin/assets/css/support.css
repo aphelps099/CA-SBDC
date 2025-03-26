@@ -17,6 +17,9 @@
 /* start commented backslash hack \*/
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
+body #wpcontent {
+	padding-left: 0px;
+}
 #sbi-support {
     -webkit-font-smoothing: antialiased;
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
@@ -49,6 +52,36 @@
 	background: #BC120E!important;
 	color: #fff!important;
 }
+/*blue*/
+.sb-btn-blue{
+	background: #0068A0!important;
+	color: #fff!important;
+}
+.sb-btn-blue:hover{
+	background: #0096CC!important;
+	border-color: #0096CC!important;
+	color: #fff!important;
+}
+.sb-btn-blue:focus,
+.sb-btn-blue:active{
+	background: #004D77!important;
+	border-color: #004D77!important;
+	color: #fff!important;
+}
+/*red*/
+.sb-btn-red {
+    background: #D72C2C !important;
+    color: #fff !important;
+}
+.sb-btn-red:hover {
+    background: #DF5757 !important;
+    color: #fff !important;
+}
+.sb-btn-red:focus {
+    background: #841919 !important;
+    color: #fff !important;
+}
+
 .sbi-fb-cp-clpboard{
     width: 0px;
     height: 0px;
@@ -203,6 +236,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 33px;
 }
 .sbi-section-header h2{
     font-weight: 600;
@@ -394,7 +428,8 @@
 }
 
 /*** 3.3 - CONTACT SUPPORT BLOCK ***/
-.sbi-support-contact-block {
+.sbi-support-contact-block,
+.sbi-tempuser-settings-section{
     background: #FFFFFF;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
     border-radius: 2px;
@@ -601,7 +636,8 @@
 .sbi-export-settings-section .sbi-export-right{
     display: flex;
 }
-.sbi-export-settings-section .sbi-export-left h3 {
+.sbi-export-settings-section .sbi-export-left h3,
+.sbi-tempuser-left h3 {
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -843,79 +879,6 @@
     color: inherit;
 }
 
-/*** SB NOTIFICATION ELEMENT ***/
-.sb-notification-ctn{
-    position: fixed;
-    bottom: -100px;
-    left: 200px;
-    z-index: 99999;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-left: 3px solid #fff;
-    line-height: 1em;
-    padding: 10px 20px;
-    padding-left: 0px;
-    border-radius: 4px;
-    box-shadow: 0px 26.7377px 77.2886px rgba(0, 0, 0, 0.107828), 0px 14.2952px 41.3222px rgba(0, 0, 0, 0.0894161), 0px 8.01379px 23.1649px rgba(0, 0, 0, 0.075), 0px 4.25607px 12.3027px rgba(0, 0, 0, 0.0605839), 0px 1.77104px 5.11942px rgba(0, 0, 0, 0.0421718);
-
-}
-.sb-notification-ctn[data-active="hidden"]{
-    -webkit-animation: sbi-notification-hide .5s forwards linear;
-    animation: sbi-notification-hide .5s forwards linear;
-}
-.sb-notification-ctn[data-active="shown"]{
-    -webkit-animation: sbi-notification-show .5s forwards linear;
-    animation: sbi-notification-show .5s forwards linear;
-}
-@-webkit-keyframes sbi-notification-show { 0%{bottom: -100px;} 50%{bottom: 70px;} 70%{bottom: 60px;} 85%{bottom: 65px;} 100%{bottom: 50px;}}
-@keyframes sbi-notification-show { 0%{bottom: -100px;} 50%{bottom: 70px;} 70%{bottom: 60px;} 85%{bottom: 65px;} 100%{bottom: 50px;}}
-
-@-webkit-keyframes sbi-notification-hide {0%{bottom: 50px;}55%{bottom: 65px;}70%{bottom: 60px;}85%{bottom: 70px;}100%{bottom: -100px;}}
-@keyframes sbi-notification-hide {0%{bottom: 50px;}55%{bottom: 65px;}70%{bottom: 60px;}85%{bottom: 70px;}100%{bottom: -100px;}}
-
-.sb-notification-ctn[data-type="success"]{
-    border-color: #59AB46;
-}
-.sb-notification-ctn[data-type="error"]{
-    border-color: #D72C2C;
-}
-.sb-notification-ctn[data-type="message"]{
-    border-color: #141B38;
-}
-.sb-notification-icon{
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 10px;
-    margin-right: 15px;
-}
-.sb-notification-icon svg{
-    width: 22px;
-    height: 22px;
-    float: left;
-    fill: currentColor;
-}
-
-.sb-notification-ctn[data-type="success"] .sb-notification-icon{
-    color: #59AB46;
-}
-.sb-notification-ctn[data-type="error"] .sb-notification-icon{
-    color: #D72C2C;
-}
-.sb-notification-ctn[data-type="message"] .sb-notification-icon{
-    color: #141B38;
-}
-
-.sb-notification-ctn span{
-    font-size: 14px;
-    color: #141B38;
-    font-weight:500;
-}
-
 /*** 6.0 - RESPONSIVENESS ***/
 @media (max-width: 1024px) {
     .sbi-support-contact-block {
@@ -1025,4 +988,183 @@
   right: auto;
   top: 10px;
   bottom: auto;
+}
+
+
+/* Settings page license inactive notice */
+.sby-license-inactive-agp {
+	padding: 16px 20px 20px 60px;
+	background: #FFFFFF;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	display: flex;
+	justify-content: space-between;
+	border-top: 2px solid #D72C2C;
+	position: relative;
+  }
+  .sby-license-inactive-agp .sb-left-content svg,
+  .sby-license-inactive-agp .sb-left-content .sb-notice-icon {
+	position: absolute;
+	left:22px;
+	top: 19px;
+  }
+  .sby-license-inactive-agp .sb-left-content h4{
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 140%;
+	margin: 0px;
+  }
+  .sby-license-inactive-agp .sb-left-content p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin: 0px;
+  }
+  .sby-license-inactive-agp .sb-right .sby-buttons{
+	display: flex;
+	gap: 8px;
+  }
+  .sby-license-inactive-agp .sb-right .sby-buttons a {
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 160%;
+    color: #141B38;
+  }
+  .sb-focus-box-section {
+	animation-duration: 2s;
+	animation-name: slidein;
+  }
+
+  @keyframes slidein {
+	from {
+	  background-color: #efb7b5;
+	}
+	to {
+	  background-color: #fff;
+	}
+  }
+  /* end Settings page license inactive notice */
+
+.sbi-tempuser-settings-section{
+    display: grid;
+    grid-template-columns: 55% 45%;
+}
+.sbi-templogin-settings-section{
+    display: block;
+}
+.sbi-tempuser-left{
+    display: grid;
+    grid-template-columns: 85%;
+}
+.sbi-tempuser-settings-section:not(.sbi-templogin-settings-section) .sb-btn{
+    padding: 12px 16px;
+    padding-top: 10px;
+}
+.sbi-tempuser-right{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.sbi-tempuser-list{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sbi-tempuser-list tr:first-of-type{
+    border-bottom: 1px solid #E6E6EB;
+    background: linear-gradient(0deg, #F9F9FA, #F9F9FA),
+            linear-gradient(0deg, #E6E6EB, #E6E6EB);
+    color: #696D80;
+}
+.sbi-tempuser-list tr{
+    text-align: left;
+}
+.sbi-tempuser-list tr th{
+    padding: 5px 10px;
+    border-bottom: 1px solid #E6E6EB;
+}
+.sbi-tempuser-list tr td {
+    padding: 15px 10px;
+}
+
+.sb-tempuser-btns{
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 10px;
+}
+.sbi-tempuser-list .sb-tempuser-link{
+    font-size: 11px;
+    max-width: 396px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.sbi-tempuser-list .sb-tempuser-expires {
+    color: green;
+    font-weight: 600;
+}
+
+.sbi-fb-tempuser-icon-ctn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    background: #BFE8FF;
+}
+.sbi-fb-tempuser-icon{
+    display: flex;
+    width: 80px;
+    height: 80px;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 5px 0px #0000000D,
+     0px 1px 2px 0px #0000000D;
+     border-radius: 50px;
+}
+.sbi-fb-tempuser-icon svg{
+    float: left;
+}
+.sbi-fb-tempuser-content-item{
+    padding: 20px 25px;
+    display: flex;
+    align-items: flex-start;
+    column-gap: 10px;
+}
+.sbi-fb-tempuser-item-num{
+    width: 28px;
+    height: 28px;
+    font-weight: 600;
+    color: #141B38;
+    background: #F3F4F5;
+    border-radius: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+.sbi-fb-tempuser-item-text strong {
+    margin-top: 2px;
+}
+.sbi-fb-tempuser-item-text p{
+    margin: 0.1em 0;
+}
+
+.sbi-fb-tempuser-footer-btn{
+    display: flex;
+    justify-content: flex-end;
+    padding: 25px;
+    border-top: 1px solid #eee;
+}
+.sbi-fb-source-popup.sbi-fb-tempuser-popup h3{
+    font-size: 21px;
+    margin: 10px;
+}
+.sbi-fb-tempuser-footer-btn .sb-btn {
+    padding: 10px 16px;
 }

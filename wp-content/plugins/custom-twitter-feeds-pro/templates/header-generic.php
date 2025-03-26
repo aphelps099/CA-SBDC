@@ -25,7 +25,15 @@ $header_attr = CTF_Display_Elements_Pro::get_element_attribute( 'header', $feed_
             <p class="ctf-header-no-bio"><?php echo esc_html( $header_text ) ?></p>
         </div>
         <div class="ctf-header-img">
-            <div class="ctf-header-generic-icon"><?php echo ctf_get_fa_el( 'fa-twitter' ) ?></div>
+            <div class="ctf-header-generic-icon">
+                <?php 
+                    if ( ctf_should_rebrand_to_x() ) {
+                        echo ctf_get_fa_el( 'fa-x' );
+                    } else {
+                        echo ctf_get_fa_el( 'fa-twitter' );
+                    }
+                ?>
+            </div>
         </div>
     </a>
 </div>

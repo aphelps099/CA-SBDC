@@ -1,6 +1,6 @@
 <?php
 /**
- * YouTube Feed Cache
+ * YouTube Feeds Cache
  *
  * For the new feed builder
  *

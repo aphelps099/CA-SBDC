@@ -39,7 +39,7 @@ class SBY_Admin_Notice {
         $output .= '<div id="sbc-notice-bar" class="sbc-header-notice">';
         $output .= sprintf(
             '<span class="sbc-notice-bar-message">%s <a href="%s" target="_blank" rel="noopener noreferrer">%s</a></span>',
-            __('You\'re using YouTube Feed Lite. To unlock more features consider', 'feeds-for-youtube'),
+            __('You\'re using YouTube Feeds Lite. To unlock more features consider', 'feeds-for-youtube'),
             $upgrade_url,
             __('upgrading to Pro', 'feeds-for-youtube')
         );

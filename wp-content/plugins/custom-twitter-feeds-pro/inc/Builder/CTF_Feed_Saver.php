@@ -230,7 +230,9 @@ class CTF_Feed_Saver {
 
 		if ( $this->is_legacy ) {
 			$to_save_json = ctf_json_encode( $settings_array );
-			return update_option( 'ctf_legacy_feed_settings', $to_save_json, false );
+
+			update_option( 'ctf_legacy_feed_settings', $to_save_json, false );
+			return true;
 		}
 
 		$this->sanitized_and_sorted_data['feeds'][] = array(
@@ -451,7 +453,7 @@ class CTF_Feed_Saver {
 				'showheader' => true,
 				'persistentcache' => true,
 				'selfreplies' => true,
-				'autores' => true,
+				'autores' => false,
 				'disableintents' => false,
 		     	'customtemplates' => false,
 				'shorturls' => false,
@@ -509,7 +511,7 @@ class CTF_Feed_Saver {
 				'headerstyle' => 'standard', //NEW
 				'headerbgcolor' => '#',
 				'customheadertextcolor' => '#',
-				'customheadertext' => __( 'We are on Twitter', 'custom-twitter-feeds' ),
+				'customheadertext' => ctf_should_rebrand_to_x() ? __('We are on X', 'custom-twitter-feeds') : __('We are on Twitter', 'custom-twitter-feeds'),
 				'customheadersize' => 'small',
 
 
@@ -538,7 +540,7 @@ class CTF_Feed_Saver {
 				'iconsize' => 12,
 				'iconcolor' => '#',
 				'viewtwitterlink' => true, //NEW
-				'twitterlinktext' => 'Twitter',
+				'twitterlinktext' => ctf_should_rebrand_to_x() ? 'X' : 'Twitter',
 				'buttoncolor' => '#',
 				'buttonhovercolor' => '#',
 				'buttontextcolor' => '#',

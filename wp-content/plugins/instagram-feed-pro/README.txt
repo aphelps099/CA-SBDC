@@ -1,10 +1,9 @@
-=== Instagram Feed Pro ===
-Contributors: smashballoon
+=== Instagram Feed Pro Developer ===
+Contributors: smashballoon, craig-at-smash-balloon, am, smub
 Support Website: https://smashballoon/instagram-feed/
 Requires at least: 4.1
-Tested up to: 5.9.3
-Stable tag: 6.0.5
-Version: 6.0.5
+Tested up to: 6.7
+Version: 6.7.0
 License: Non-distributable, Not for resale
 
 Display beautifully clean, customizable, and responsive feeds from multiple Instagram accounts
@@ -40,13 +39,171 @@ Display Instagram photos from any non-private Instagram accounts, either in the 
 5. You can display multiple Instagram feeds by using shortcode options, for example: `[instagram-feed id=YOUR_USER_ID_HERE cols=3 width=50 widthunit=%]`
 
 == Changelog ==
+= 6.7.0 =
+* New - Added a new setting to support Instagram's new 3:4 aspect ratio. Edit your feed, select the "Layout" tab and choose among a 1:1 square, 4:5 portrait, or 3:4 Instagram official aspect ratio.
+* New - Added support for a new GDPR consent plugin [WPConsent](https://wpconsent.com/?utm_campaign=instagram-pro-readme&utm_source=changelog&utm_medium=wpconsentannouncement).
+* Fix - Fixed lightbox appearing at the bottom of the page when using the AJAX theme loading fix setting.
+
+= 6.6.1 =
+* Fix - Prevented PHP error "Fatal error: Uncaught TypeError: unserialize()"
+* Fix - Removed advertisements for ClickSocial that appear in the block editor.
+
+= 6.6.0 =
+* New - Added information regarding our newest product [ClickSocial](https://clicksocial.com/?utm_campaign=instagram-pro-readme&utm_source=changelog&utm_medium=clicksocialannouncement)! Schedule your social media posts through the WordPress dashboard.
+* Fix - Added a notice and more details if a database update fails. Most commonly this is due to the MySQL user not having permissions to alter tables.
+* Fix - Improved our compatibility with the latest versions of Divi and Elementor.
+* Fix - Resolved a PHP warning related to _load_textdomain_just_in_time.
+* Fix - Additional plugin hardening.
+
+= 6.5.1 =
+* Tweak: Added support for our new [Feed Analytics](https://smashballoon.com/?utm_campaign=instagram-free-readme&utm_source=changelog&utm_medium=feedanalyticsannouncement) product. Get insights as to how your feeds are being used by site visitors.
+
+= 6.5.0 =
+* Important: For users with a personal account connection, you will need to reconnect your account before December 2024 after updating to version 6.5 or higher. [Learn more](https://smashballoon.com/doc/instagram-business-basic/?utm_campaign=instagram-pro-readme&utm_source=changelog&utm_medium=basicdisplayapichange "Learn more")
+* Important: Custom JavaScript and Custom CSS settings are being deprecated. To further enhance our plugin's security and reliability we are moving away from our custom settings in favor of WPCode, the robust custom code management system available to all.
+* New: Added a formal integration with [WPCode](https://wordpress.org/plugins/insert-headers-and-footers/?utm_campaign=instagram-free-readme&utm_source=changelog&utm_medium=wpcodeintegration). Use WPCode for all customizations that require code changes. We include examples to make customization easy.
+* New: Added support for GDPR Cookie Compliance by Moove Agency and Real Cookie Banner GDPR plugins.
+* Fix: Existing data is no longer deleted after removing the free version if the Pro version is also installed.
+* Fix: Fixed a rare issue causing 404 errors when editing a feed.
+* Fix: When using custom templates for the Instagram Feeds plugin, files in the sub-elements directory can also be customized.
+
+= 6.4.1 =
+* Fix: Plugin hardening.
+
+= 6.4 =
+* New: Added webp image support for the local image optimization feature. This will improve the performance of your feed by serving images in the webp format when possible.
+* Fix: Added support for Borlabs Cookie v3.0.
+* Fix: Added a workaround to play the feed videos inline on iOS devices.
+* Fix: Fixed an issue with sbi-spite.png not being found when using the "Use legacy CSS" setting.
+* Fix: Added a sbi namespace to the .animated CSS to prevent conflicts with other plugins.
+
+= 6.3.6 =
+* Tweak: Enhanced the secure custom login tool for the support team to troubleshoot certain API issues on your site.
+* Tweak: Improved and hardened our code base to improve reliability.
+* Tweak: Activating the pro version while free was still activated returned an WP Error. Now the pro version deactivates the free version without an error when both are installed.
+* Fix: Fixed the design issue with Instagram Feed Divi module.
+
+= 6.3.5 =
+* Tweak: Improved and hardened our code base to improve reliability.
+* Fix: Fixed the shoppable feeds not working when the caption length was less than set caption limit.
+
+= 6.3.4 =
+* Tweak: Add a filter "sbi_feed_template_part" to allow for custom paths to custom templates. Allows for custom templating with the Oxygen builder.
+* Fix: Fixed the usage error not dismissing for all users.
+* Fix: Fixed carousel navigation arrows not appearing as circles in some themes.
+* Fix: Fixed a problem with our code that would remove admin footer text from other sources.
+* Fix: Resetting optimized images would also reset Instagram Feed settings.
+
+= 6.3.3 =
+* Fix: Fixed a rare issue with some themes or page builders that would cause only the first item in a feed to display.
+* Fix: Updated our GDPR related code to work with the latest versions of the Complianz GDPR/CCPA Cookie Consent plugin.
+* Fix: Fixed an issue that would cause CSS files to not work with browser caches.
+* Fix: Fixed a PHP error that would occur in PHP 8.1+ under certain circumstances.
+
+= 6.3.2 =
+* Tweak: Created a secure custom login tool for the support team. When you enable this feature (disabled by default) a support team member can use a link to troubleshoot certain issues on your site.
+* Fix: Fixed an issue causing slashes added to custom text containing an apostrophe.
+
+= 6.3.1 =
+* Fix: Some Instagram Feed notices would become non-dismissible if the user logged out or a day passed since first being displayed.
+* Fix: Fixed an error preventing the plugin from being un-installed.
+
+= 6.3 =
+* New: New "Feed Themes" feature. Choose a theme for your feed that will add an attractive and coordinated design throughout your feed elements. Impress your visitors and gain more followers.
+* New: Revamped our Instagram Feed block for easy feed selection and display.
+* Tweak: Custom avatars are now supported in the lightbox.
+* Fix: Fixed an issue that would prevent an account from refreshing even after reconnecting when displaying hashtag feeds.
+* Fix: Fixed a PHP warning for PHP 8.2 "unsupported operand types".
+* Fix: Header bio would not update automatically when it was updated on Instagram.
+* Fix: Fixed missing text domain preventing translation of some strings.
+* Fix: Custom files for the text header were not being recognized when using custom templates.
+
+= 6.2.4 =
+* Fix: Fixed personal accounts unable to retrieve new tweets and showing an error with the code 100.
+* Fix: Updated API calls for business accounts to work with upcoming changes from Instagram.
+
+= 6.2.3 =
+* Tweak: Added a notice to help with creating a feed for our latest [Social Wall 2.0](https://smashballoon.com/pricing/all-access/?utm_source=plugin-pro&utm_campaign=sbi&utm_medium=readme&utm_content=Social+Wall+20) update.
+* Fix: Fixed additional deprecation warning that would affect our Elementor integration.
+* Fix: Fixed a CSS parsing error.
+
+= 6.2.2 =
+* New: Added a setting to control the length of the caption that appears when hovering over a post separate from the length of the caption that appears beneath the post.
+* Tweak: Changed how error notice emails are sent to use the default "from" address rather than a custom one to prevent issues with SMTP services.
+* Fix: Several improvements were made to how the maximum text length feature is applied as well as improving how closely what is shown in the feed preview matches the front-end feed.
+* Fix: Fixed the integration with the Cookie Yes plugin for GDPR related features to work with the latest and migrated version of Cookie Yes.
+* Fix: Fixed an error that would occur with PHP8 and connected accounts that would not expire.
+* Fix: Fixed deprecation warnings for the Elementor integration.
+
+= 6.2.1 =
+* Tweak: Vue.js code is now loaded from a local file shipped with the plugin rather than an external CDN for use with the customizer in the admin area.
+* Tweak: Reels posts and Video posts that don't play in the lightbox due to an expiring video file will instead use an iFrame to play the video.
+* Fix: Fixed a message in the feed Gutenberg Block reporting a license was inactive when it was active and valid.
+* Fix: Fixed an issue where exported hashtag and tagged feeds were not able to be imported using our import feature.
+* Fix: Fixed inconsistencies with the 30+ hashtag limit workaround to make the workaround more reliable.
+* Fix: Fixed tablet columns setting not applying correctly in all situations.
+* Fix: Fixed a compatibility issue with the Complianz Cookie Consent plugin integration.
+
+= 6.2 =
+* New: Added the ability to filter "Reels" posts in feeds. In addition to videos and photos you can now choose to show or hide Instagram "Reels" posts.
+* Tweak: Toggling oEmbeds on and off on the oEmbeds admin page will clear oEmbed caches of failed oEmbeds due to an API error.
+* Tweak: Added a workaround to retrieve missing images if none were returned by Instagram for a post.
+* Fix: Fixed the incorrect CSS file being referenced when using Elementor.
+* Fix: Custom colors assigned to the Follow button would not apply when using a custom color palette.
+* Fix: Fixed stories feature not working when using GDPR features.
+* Fix: Fixed PHP Notice:  Undefined index: isFeedTemplatesPopup.
+* Fix: Fixed an issue where posts available in a hashtag feed with multiple hashtags would disappear after a period of time.
+* Fix: Added additional plugin hardening.
+* Fix: Fixed a bug that cause an inability to connect multiple new sources under certain circumstances.
+* Fix: Browser would crash when opening the feed editor if header data was not available for an account.
+* Fix: "Extensions" menu item would show up when Social Wall was installed and lead to an error page.
+
+= 6.1.1 =
+* Tweak: Updated API requests for the tagged feeds to include timestamps for better sorting of tagged and mixed feeds that use tagged posts.
+* Tweak: Deleting all platform data will also delete any connected sources.
+* Fix: Fixed line breaks causing the caption character limit to be shorter than was indicated.
+* Fix: Fixed posts missing in the customizer when using moderation mode under some circumstances.
+* Fix: Fixed an error that would cause shoppable feeds not to use custom urls set in the customizer.
+* Fix: Fixed custom header text not updating on the front end when using the new text header.
+* Fix: PHP error that would occur when trying to use the new Instagram Feed Divi block with the Divi Builder plugin and PHP version 7.3 or lower.
+
+= 6.1 =
+* New: Introducing our new Feed Templates feature! You can now select a feed template when creating a feed to make it much quicker and easier to get started with the type of feed you want to display. Selecting a template preconfigures the feed customization settings to match that template, saving you time and effort.
+* New: Added a Post Style setting which allows you to add a boxed style to your posts, with a background color, border radius, and box shadow.
+* New: Added a new custom text header option, so you can now add custom text to the header for your feed.
+* New: Add a header image and bio text for personal sources. Go to the settings page and click on the gear icon to add this to an existing source.
+* New: Elementor and Divi Builder widgets. We've added new Elementor and Divi Builder widgets to make it easier to embed your feeds.
+* Tweak: If WordPress cron is not working, the plugin will automatically fall back to updating caches when the feed loads.
+* Tweak: When installing Instagram Feed Pro for the first time, encryption keys and salts will automatically be added to your wp-config.php file.
+* Fix: For captions with emoji, the maximum text length setting would be inaccurate.
+* Fix: Auto load more on scroll setting was not working for new feeds.
+* Fix: The number of posts would be inaccurate in the feed preview when using the customizer for mobile devices.
+* Fix: All sources would be removed when the grace period to address app permission issues ended. Now only the single source will be removed.
+* Fix: Several improvements to moderation mode and pagination were made.
+
+= 6.0.8 =
+* Fix: If the number of posts for mobile was higher than the number of posts for desktop, the number of posts for desktop would be incorrect.
+* Fix: When using a recent hashtag feed, if a post had been made within the last 24 hours, the plugin would not include top posts in the feed.
+
+= 6.0.7 =
+* Tweak: Added a warning notice to allow a grace period before Instagram data is permanently deleted from your site after deauthorizing the Smash Balloon Instagram app. Due to Instagram requirements, any Instagram data on your site must be deleted within a reasonable time after the app has been deauthorized. The new warning notice provides a 7 day grace period to allow you time to reauthorize the app if you don't want the data to be deleted.
+* Tweak: Reconnecting an account now results in deleting the original connection in the database and adding a new one. This will prevent issues with some caching systems like Redis.
+* Fix: The Infinity loop type for carousel feeds was not working for certain feed configurations.
+* Fix: Removed the ".animated" CSS rule to prevent conflicts.
+* Fix: Screen reader text was visible in the feed with some themes.
+* Fix: Removed all Font Awesome icons and no longer include the CSS file from the Font Awesome CDN.
+
+= 6.0.6 =
+* Fix: When using the shoppable feeds feature, trying to view the second page of posts in the customizer would not work.
+* Fix: Only the first 20 sources were available when creating feeds and changing sources for a feed.
+* Fix: Admin notices from other plugins would display on the Instagram Feeds pages when a notification for Instagram Feed was available.
+
 = 6.0.5 =
 * Tweak: Several improvements to moderation mode. Show moderated posts only, improved pagination, and improved how far back in the feed's history posts can be moderated.
 * Tweak: Removed the setting to filter for Instagram Live as this is no longer supported by Instagram.
 * Fix: Posts on the "allow list" would stop displaying if there were a lot of newer posts from the source that were not in the allow list.
 * Fix: Fixed the customizer sidebar being hidden when JetPack's Master Bar feature was enabled.
 * Fix: Added back support for the "class" shortcode setting for all feeds.
-* Fix: Only the first 20 sources were available when creating feeds and changing sources for a feed.
 * Fix: The carousel layout was not showing the proper number of posts when there was a different number of posts for mobile and desktop.
 
 = 6.0.4 =

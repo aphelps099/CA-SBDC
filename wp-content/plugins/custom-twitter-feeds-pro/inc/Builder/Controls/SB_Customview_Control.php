@@ -69,7 +69,7 @@ class SB_Customview_Control extends SB_Controls_Base{
 			<div class="sb-control-feedtype-list ctf-fb-fs" v-if="feedTypeID != 'mentionstimeline' && feedTypeID != 'hometimeline'">
 				<div class="sb-control-feedtype-list-item" v-for="selectedSource in returnSelectedSourcesByTypeCustomizer(feedTypeID)">
 					<div class="sb-control-feedtype-list-item-icon" v-html="svgIcons[selectSourceScreen.multipleTypes[feedTypeID].icon]"></div>
-					<span v-html="feedTypeID == 'lists' ? selectedSource.name : selectedSource"></span>
+					<span v-html="selectedSource"></span>
 				</div>
 			</div>
 

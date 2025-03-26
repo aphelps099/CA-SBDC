@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use SB\SocialWall\Utility\Helpers;
+
 class SW_Admin {
 
 	protected $vars;
@@ -32,6 +34,12 @@ class SW_Admin {
 	protected $false_fields;
 
 	protected $textarea_fields;
+
+	protected $settings;
+
+	protected $icon;
+
+	protected $position;
 
 	public function __construct( $vars, $base_path, $slug, $plugin_name, $capability, $icon, $position, $tabs, $settings, $active_tab = false, $option_name = 'sbsw_settings' ) {
 		$this->vars = $vars;
@@ -90,6 +98,7 @@ class SW_Admin {
 
 		//Show menu tooltip once only
 		$sbsw_seen_menu_tooltip = get_option('sbsw_seen_menu_tooltip');
+		$nonce = wp_create_nonce('sbsw_admin_settings');
 
 		echo "<script type='text/javascript'>
         jQuery(document).ready( function($) {
@@ -97,9 +106,31 @@ class SW_Admin {
         	var on_cff_settings = jQuery('#cff-builder-app').length || jQuery('#cff-settings').length || jQuery('#cff-extensions').length || jQuery('#cff-oembeds').length || jQuery('#cff-about').length || jQuery('#cff-support').length,
         		on_sbi_settings = jQuery('#sbi_admin.wrap').length || jQuery('#sbi-builder-app').length || jQuery('#sbi-settings').length || jQuery('#sbi-extensions').length || jQuery('#sbi-oembeds').length || jQuery('#sbi-about').length || jQuery('#sbi-support').length,
         		on_ctf_settings = jQuery('#ctf-admin.wrap').length,
-        		on_yt_settings = jQuery('#sbspf_admin.wrap h1:contains(\'Feeds for YouTube\')').length;
+        		on_yt_settings = jQuery('#sbspf_admin.wrap h1:contains(\'Feeds for YouTube\')').length,
+        		on_tt_settings = jQuery('#sb-app').length;
+			var nonce = '" . $nonce . "';
 
-        	if( on_cff_settings || on_sbi_settings || on_ctf_settings || on_yt_settings ){
+			function get_sw_plugin_icon(plugin) {
+				// check if the plugin contains such string 
+				if(plugin === 'Facebook') {
+					return '<svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8 1.35999C4.33334 1.35999 1.33334 4.35332 1.33334 8.03999C1.33334 11.3733 3.77334 14.14 6.96 14.64V9.97332H5.26667V8.03999H6.96V6.56665C6.96 4.89332 7.95334 3.97332 9.48 3.97332C10.2067 3.97332 10.9667 4.09999 10.9667 4.09999V5.74665H10.1267C9.3 5.74665 9.04 6.25999 9.04 6.78665V8.03999H10.8933L10.5933 9.97332H9.04V14.64C10.611 14.3919 12.0415 13.5903 13.0733 12.38C14.1051 11.1697 14.6702 9.63041 14.6667 8.03999C14.6667 4.35332 11.6667 1.35999 8 1.35999Z\" fill=\"#141B38\"></svg>';
+				}
+				if(plugin === 'Instagram') {
+					return '<svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10 5.50781C7.5 5.50781 5.50781 7.53906 5.50781 10C5.50781 12.5 7.5 14.4922 10 14.4922C12.4609 14.4922 14.4922 12.5 14.4922 10C14.4922 7.53906 12.4609 5.50781 10 5.50781ZM10 12.9297C8.39844 12.9297 7.07031 11.6406 7.07031 10C7.07031 8.39844 8.35938 7.10938 10 7.10938C11.6016 7.10938 12.8906 8.39844 12.8906 10C12.8906 11.6406 11.6016 12.9297 10 12.9297ZM15.7031 5.35156C15.7031 4.76562 15.2344 4.29688 14.6484 4.29688C14.0625 4.29688 13.5938 4.76562 13.5938 5.35156C13.5938 5.9375 14.0625 6.40625 14.6484 6.40625C15.2344 6.40625 15.7031 5.9375 15.7031 5.35156ZM18.6719 6.40625C18.5938 5 18.2812 3.75 17.2656 2.73438C16.25 1.71875 15 1.40625 13.5938 1.32812C12.1484 1.25 7.8125 1.25 6.36719 1.32812C4.96094 1.40625 3.75 1.71875 2.69531 2.73438C1.67969 3.75 1.36719 5 1.28906 6.40625C1.21094 7.85156 1.21094 12.1875 1.28906 13.6328C1.36719 15.0391 1.67969 16.25 2.69531 17.3047C3.75 18.3203 4.96094 18.6328 6.36719 18.7109C7.8125 18.7891 12.1484 18.7891 13.5938 18.7109C15 18.6328 16.25 18.3203 17.2656 17.3047C18.2812 16.25 18.5938 15.0391 18.6719 13.6328C18.75 12.1875 18.75 7.85156 18.6719 6.40625ZM16.7969 15.1562C16.5234 15.9375 15.8984 16.5234 15.1562 16.8359C13.9844 17.3047 11.25 17.1875 10 17.1875C8.71094 17.1875 5.97656 17.3047 4.84375 16.8359C4.0625 16.5234 3.47656 15.9375 3.16406 15.1562C2.69531 14.0234 2.8125 11.2891 2.8125 10C2.8125 8.75 2.69531 6.01562 3.16406 4.84375C3.47656 4.10156 4.0625 3.51562 4.84375 3.20312C5.97656 2.73438 8.71094 2.85156 10 2.85156C11.25 2.85156 13.9844 2.73438 15.1562 3.20312C15.8984 3.47656 16.4844 4.10156 16.7969 4.84375C17.2656 6.01562 17.1484 8.75 17.1484 10C17.1484 11.2891 17.2656 14.0234 16.7969 15.1562Z\" fill=\"#141B38\"/></svg>';
+				}
+				if(plugin === 'Twitter') {
+					return '<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.9733 4.00002C14.46 4.23335 13.9067 4.38669 13.3333 4.46002C13.92 4.10669 14.3733 3.54669 14.5867 2.87335C14.0333 3.20669 13.42 3.44002 12.7733 3.57335C12.2467 3.00002 11.5067 2.66669 10.6667 2.66669C9.09999 2.66669 7.81999 3.94669 7.81999 5.52669C7.81999 5.75335 7.84665 5.97335 7.89332 6.18002C5.51999 6.06002 3.40665 4.92002 1.99999 3.19335C1.75332 3.61335 1.61332 4.10669 1.61332 4.62669C1.61332 5.62002 2.11332 6.50002 2.88665 7.00002C2.41332 7.00002 1.97332 6.86669 1.58665 6.66669V6.68669C1.58665 8.07335 2.57332 9.23335 3.87999 9.49335C3.46047 9.60816 3.02005 9.62413 2.59332 9.54002C2.77439 10.1083 3.12901 10.6056 3.60733 10.962C4.08565 11.3183 4.66362 11.5158 5.25999 11.5267C4.24907 12.327 2.99598 12.7596 1.70665 12.7534C1.47999 12.7534 1.25332 12.74 1.02665 12.7134C2.29332 13.5267 3.79999 14 5.41332 14C10.6667 14 13.5533 9.64002 13.5533 5.86002C13.5533 5.73335 13.5533 5.61335 13.5467 5.48669C14.1067 5.08669 14.5867 4.58002 14.9733 4.00002Z\" fill=\"#141B38\"/></svg>';
+				}
+				if(plugin === 'YouTube') {
+					return '<svg width=\"16\" height=\"16\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.66667 9.99998L10.1267 7.99998L6.66667 5.99998V9.99998ZM14.3733 4.77998C14.46 5.09331 14.52 5.51331 14.56 6.04665C14.6067 6.57998 14.6267 7.03998 14.6267 7.43998L14.6667 7.99998C14.6667 9.45998 14.56 10.5333 14.3733 11.22C14.2067 11.82 13.82 12.2066 13.22 12.3733C12.9067 12.46 12.3333 12.52 11.4533 12.56C10.5867 12.6066 9.79333 12.6266 9.06 12.6266L8 12.6666C5.20667 12.6666 3.46667 12.56 2.78 12.3733C2.18 12.2066 1.79333 11.82 1.62667 11.22C1.54 10.9066 1.48 10.4866 1.44 9.95331C1.39333 9.41998 1.37333 8.95998 1.37333 8.55998L1.33333 7.99998C1.33333 6.53998 1.44 5.46665 1.62667 4.77998C1.79333 4.17998 2.18 3.79331 2.78 3.62665C3.09333 3.53998 3.66667 3.47998 4.54667 3.43998C5.41333 3.39331 6.20667 3.37331 6.94 3.37331L8 3.33331C10.7933 3.33331 12.5333 3.43998 13.22 3.62665C13.82 3.79331 14.2067 4.17998 14.3733 4.77998Z\" fill=\"#141B38\"/></svg>';
+				}
+				if(plugin === 'TikTok') {
+					return '<svg width=\"16\" height=\"16\" xmlns=\"http://www.w3.org/2000/svg\" shape-rendering=\"geometricPrecision\" text-rendering=\"geometricPrecision\" image-rendering=\"optimizeQuality\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" viewBox=\"0 0 449.45 515.38\"><path fill=\"#444444\" fill-rule=\"nonzero\" d=\"M382.31 103.3c-27.76-18.1-47.79-47.07-54.04-80.82-1.35-7.29-2.1-14.8-2.1-22.48h-88.6l-.15 355.09c-1.48 39.77-34.21 71.68-74.33 71.68-12.47 0-24.21-3.11-34.55-8.56-23.71-12.47-39.94-37.32-39.94-65.91 0-41.07 33.42-74.49 74.48-74.49 7.67 0 15.02 1.27 21.97 3.44V190.8c-7.2-.99-14.51-1.59-21.97-1.59C73.16 189.21 0 262.36 0 352.3c0 55.17 27.56 104 69.63 133.52 26.48 18.61 58.71 29.56 93.46 29.56 89.93 0 163.08-73.16 163.08-163.08V172.23c34.75 24.94 77.33 39.64 123.28 39.64v-88.61c-24.75 0-47.8-7.35-67.14-19.96z\"></path></svg>';
+				}
+				
+			}
+
+        	if( on_cff_settings || on_sbi_settings || on_ctf_settings || on_yt_settings || on_tt_settings ){
         		jQuery('#toplevel_page_sbsw, #toplevel_page_sbsw > a.wp-has-submenu').addClass('wp-has-current-submenu wp-menu-open');
 
         		var sbsw_menu_sel = '';
@@ -111,6 +142,8 @@ class SW_Admin {
 	        		sbsw_menu_sel = '.sbsw_ctf_menu';
 	        	} else if( on_yt_settings ){
 	        		sbsw_menu_sel = '.sbsw_yt_menu';
+	        	} else if( on_tt_settings ){
+	        		sbsw_menu_sel = '.sbsw_tt_menu';
 	        	}
 	        	jQuery('#toplevel_page_sbsw '+sbsw_menu_sel).closest('li').addClass('current');
         	}
@@ -121,24 +154,77 @@ class SW_Admin {
         		jQuery('.sbsw_missing_plugin_modal').remove();
 
         		var pluginName = jQuery(this).text(),
-        			platformName = pluginName.split(' ')[0];
-
+        			platformName = pluginName.split(' ')[0]
+					pluginLogo = get_sw_plugin_icon(platformName);
         		var sbsw_missing_html = '<div class=\"sbsw_missing_plugin_modal\">';
         		sbsw_missing_html += '<div class=\"sbsw_missing_inner\">';
-        		sbsw_missing_html += '<h3>Add '+platformName+' Posts to Your Social Wall</h3>';
-
-        		sbsw_missing_html += '<p>The '+pluginName+' plugin is not installed. If you have this plugin, click <a href=\"plugins.php\">here</a> to install it. Otherwise, use the button below to get it.</p>';
-        		sbsw_missing_html += '<p><a href=\"'+jQuery(this).attr('href')+'\" target=\"_blank\" class=\"button button-primary\">Get '+pluginName+' Pro</a></p>';
+				sbsw_missing_html += '<span class=\"plugin-logo\">'+ pluginLogo +'</span>';
+        		sbsw_missing_html += '<h3>Add '+platformName+' Posts</h3>';
+				
+        		sbsw_missing_html += '<p>The '+pluginName+' plugin is not installed. To add the '+pluginName+' to your Social Wall, click the button below to get it.</p>';
+        		sbsw_missing_html += '<p class=\"modal-buttons\"><button class=\"button button-default sw-close-missng-modal\">Close</button> <a href=\"'+jQuery(this).attr('href')+'\" target=\"_blank\" class=\"button button-primary\">Get '+pluginName+' Pro</a></p>';
         		sbsw_missing_html += '</div>';
         		sbsw_missing_html += '</div>';
 
-				jQuery('body').append( sbsw_missing_html + '<style>.sbsw_missing_plugin_modal{position:fixed;z-index:999;width:100%;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.3)}.sbsw_missing_inner{position:absolute;top:140px;left:50%;width:480px;margin:0 0 0 -245px;padding:25px 35px;background:#fff;text-align:center;-webkit-box-shadow:0 1px 20px rgba(0,0,0,.2);box-shadow:0 1px 20px rgba(0,0,0,.2);-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px}</style>' );
+				jQuery('body').append( sbsw_missing_html + '<style>.sbsw_missing_plugin_modal{position:fixed;z-index:999;width:calc(100% - 160px);top:0;left:160px;bottom:0;background:rgba(146, 149, 166, 0.5);display:flex;justify-content:center;align-items:center;}.sbsw_missing_inner, .sbsw-plugin-modal-inner{width:460px;;padding:1.25rem 1.5rem  1.5rem  3.5rem;position:relative;background:#fff;-webkit-box-shadow:0 1px 10px rgb(0 0 0 / 10%);box-shadow:0 1px 10px rgb(0 0 0 / 10%);-moz-border-radius:0.5rem;-webkit-border-radius:0.5rem;border-radius:0.5rem;box-sizing:border-box;}.sbsw_missing_inner h3{margin: 0 0px 10px;font-size:16px;font-weight:600}.sbsw_missing_inner .plugin-logo{position: absolute;left: 20px;top: 22px}.sbsw_missing_inner p{font-size: 0.875rem;line-height:1.25rem;margin-top: -4px;padding-right:30px;color:#272727b8}.sbsw_missing_inner .modal-buttons{margin-top:30px; display: flex;justify-content: flex-end;margin-bottom: 0px; padding-right: 0px;gap: 8px}.sbsw_missing_inner .modal-buttons .button {padding: 0.5rem 0.75rem;font-weight: 600;line-height: 1.6;box-shadow:1px 2px 3px rgba(0,0,0,.2);border-radius: 4px} .sbsw_missing_inner .modal-buttons .button-primary{background-color:#0068a0!important;} .sbsw_missing_inner .modal-buttons .button-default{border-color:#dedede!important;color: #000}</style>' );
         	});
         	//Close the modal if clicking anywhere outside it
         	jQuery('body').on('click', '.sbsw_missing_plugin_modal', function(e){
         		if (e.target !== this) return;
         		jQuery('.sbsw_missing_plugin_modal').remove();
-        	});";
+        	});
+			jQuery('body').on('click', '.sw-close-missng-modal', function(e){
+        		jQuery('.sbsw_missing_plugin_modal').remove();
+        	});
+			
+        	//SW plugin inactive modal
+        	jQuery('.toplevel_page_sbsw .sbsw_plugin_inactive').parent().on('click', function(e){
+        		e.preventDefault();
+        		jQuery('.sbsw_missing_plugin_modal').remove();
+
+        		var pluginName = jQuery(this).text(),
+        			platformName = pluginName.split(' ')[0],
+					pluginLogo = get_sw_plugin_icon(platformName);
+
+        		var sbsw_missing_html = '<div class=\"sbsw_missing_plugin_modal\">';
+        		sbsw_missing_html += '<div class=\"sbsw_missing_inner\">';
+				sbsw_missing_html += '<span class=\"plugin-logo\">'+ pluginLogo +'</span>';
+        		sbsw_missing_html += '<h3>Activate '+platformName+' Feed</h3>';
+
+        		sbsw_missing_html += '<p>To add '+pluginName+' posts to the wall, you need to activate the plugin first.</p>';
+        		sbsw_missing_html += '<p class=\"modal-buttons\"><button class=\"button button-default sw-close-missng-modal\">Close</button> <a href=\"'+jQuery(this).attr('href')+'\" target=\"_blank\" class=\"button button-primary sw-activate-plugin\" data-plugin-name=\"'+pluginName+'\" >'+ loader +' Activate Plugin</a></p>';
+        		sbsw_missing_html += '</div>';
+        		sbsw_missing_html += '</div>';
+
+				jQuery('body').append( sbsw_missing_html + '<style>.sbsw_missing_plugin_modal{position:fixed;z-index:999;width:calc(100% - 160px);top:0;left:160px;bottom:0;background:rgba(146, 149, 166, 0.5);display:flex;justify-content:center;align-items:center;}.sbsw_missing_inner, .sbsw-plugin-modal-inner{width:460px;;padding:1.25rem 1.5rem  1.5rem  3.5rem;position:relative;background:#fff;-webkit-box-shadow:0 1px 10px rgb(0 0 0 / 10%);box-shadow:0 1px 10px rgb(0 0 0 / 10%);-moz-border-radius:0.5rem;-webkit-border-radius:0.5rem;border-radius:0.5rem;box-sizing:border-box;}.sbsw_missing_inner h3{margin: 0 0px 10px;font-size:16px;font-weight:600}.sbsw_missing_inner .plugin-logo{position: absolute;left: 20px; top: 22px}.sbsw_missing_inner p{font-size: 0.875rem;line-height:1.25rem;margin-top: -4px;padding-right:30px;color:#272727b8}.sbsw_missing_inner .modal-buttons{margin-top:30px; display: flex;justify-content: flex-end;margin-bottom: 0px; padding-right: 0px;gap: 8px}.sbsw_missing_inner .modal-buttons .button {padding: 0.5rem 0.75rem;font-weight: 600;line-height: 1.6;box-shadow:1px 2px 3px rgba(0,0,0,.2);border-radius: 4px} .sbsw_missing_inner .modal-buttons .button-primary{background-color:#0068a0!important;display:flex;gap: 5px;}.sbsw_missing_inner .modal-buttons .button-primary svg{display:none} .sbsw_missing_inner .modal-buttons .button-default{border-color:#dedede!important;color: #000}</style>' );
+        	});
+        	//Close the modal if clicking anywhere outside it
+        	jQuery('body').on('click', '.sbsw_missing_plugin_modal', function(e){
+        		if (e.target !== this) return;
+        		jQuery('.sbsw_missing_plugin_modal').remove();
+        	});
+			jQuery('body').on('click', '.sw-close-missng-modal', function(e){
+        		jQuery('.sbsw_missing_plugin_modal').remove();
+        	});
+			jQuery('body').on('click', '.sw-activate-plugin', function(e){
+				e.preventDefault();
+				var self = jQuery(this);
+				var pluginName = self.data('plugin-name');
+				self.find('svg').show();
+
+				jQuery.ajax({
+					type : \"post\",
+					dataType : \"json\",
+					url : ajaxurl,
+					data : {action: \"sw_activate_plugin\", plugin : pluginName, nonce: nonce},
+					success: function(response) {
+						self.find('svg').hide();
+						location.reload();
+					}
+				 });
+			});
+			
+			";
 
         if( !$sbsw_seen_menu_tooltip ){
         	//Add an initial direction tooltip for menu
@@ -1121,8 +1207,8 @@ class SW_Admin {
 	public function create_menus() {
 
 		add_menu_page(
-			'Social Feeds',
-			'Social Feeds',
+			'Social Wall',
+			'Social Wall',
 			$this->capability,
 			$this->slug,
 			array( $this, 'create_options_page' ),
@@ -1130,42 +1216,82 @@ class SW_Admin {
 			$this->position
 		);
 
+		$installed_plugins = Helpers::get_installed_plugins_for_sw_menu();
+		$active_plugins = Helpers::get_active_plugins_for_sw_menu();
+
 		$capability = current_user_can( 'manage_social_wall_options' ) ? 'manage_social_wall_options' : 'manage_options';
 
 		//Change the menu links based on whether the plugin is installed or not
 		$sbsw_sbi_menu_text = '<span class="sbsw_sbi_menu">Instagram Feed</span>';
 		$sbsw_sbi_menu_link = 'sb-instagram-feed';
-		if ( ! defined( 'SBIVER' ) ) {
+		if ( ! isset( $installed_plugins['is_instagram_installed'] ) ) {
 			$sbsw_sbi_menu_text = '<span class="sbsw_plugin_missing">Instagram Feed</span>';
+			$sbsw_sbi_menu_link = 'https://smashballoon.com/instagram-feed/';
+		} else if ( ! isset( $active_plugins['is_instagram_active'] ) ) {
+			$sbsw_sbi_menu_text = '<span class="sbsw_plugin_inactive">Instagram Feed</span>';
 			$sbsw_sbi_menu_link = 'https://smashballoon.com/instagram-feed/';
 		} else {
 		    if ( version_compare( SBIVER, '6.0', '>=' ) ) {
 			    $sbsw_sbi_menu_link = admin_url( 'admin.php?page=sbi-feed-builder' );
             }
         }
+
 		$sbsw_cff_menu_text = '<span class="sbsw_cff_menu">Facebook Feed</span>';
 		$sbsw_cff_menu_link = defined( 'CFFVER' ) && version_compare(CFFVER, 4.0, '<' ) ? admin_url( 'admin.php?page=cff-top' ) : admin_url( 'admin.php?page=cff-feed-builder' );
-		if ( ! defined( 'CFFVER' ) ){
+		if ( ! isset( $installed_plugins['is_facebook_installed'] ) ) {
 			$sbsw_cff_menu_text = '<span class="sbsw_plugin_missing">Facebook Feed</span>';
 			$sbsw_cff_menu_link = 'https://smashballoon.com/custom-facebook-feed/';
+		} else if ( ! isset( $active_plugins['is_facebook_active'] ) ) {
+			$sbsw_cff_menu_text = '<span class="sbsw_plugin_inactive">Facebook Feed</span>';
+			$sbsw_cff_menu_link = 'https://smashballoon.com/custom-facebook-feed/';
 		}
+
 		$sbsw_ctf_menu_text = '<span class="sbsw_ctf_menu">Twitter Feed</span>';
 		$sbsw_ctf_menu_link = 'custom-twitter-feeds';
-		if ( ! defined( 'CTF_VERSION' ) ) {
+		if ( ! isset( $installed_plugins['is_twitter_installed'] ) ) {
 			$sbsw_ctf_menu_text = '<span class="sbsw_plugin_missing">Twitter Feed</span>';
 			$sbsw_ctf_menu_link = 'https://smashballoon.com/custom-twitter-feeds/';
+		} else if ( ! isset( $active_plugins['is_twitter_active'] ) ) {
+			$sbsw_ctf_menu_text = '<span class="sbsw_plugin_inactive">Twitter Feed</span>';
+			$sbsw_ctf_menu_link = 'https://smashballoon.com/custom-twitter-feeds/';
+		} else{
+			if ( version_compare( CTF_VERSION, '2.0', '>=' ) ) {
+			    $sbsw_ctf_menu_link = admin_url( 'admin.php?page=ctf-feed-builder' );
+            }
 		}
+
 		$sbsw_yt_menu_text = '<span class="sbsw_yt_menu">YouTube Feed</span>';
 		$sbsw_yt_menu_link = 'youtube-feed';
-		if ( ! defined( 'SBYVER' ) ) {
+		if ( ! isset( $installed_plugins['is_youtube_installed'] ) ) {
 			$sbsw_yt_menu_text = '<span class="sbsw_plugin_missing">YouTube Feed</span>';
 			$sbsw_yt_menu_link = 'https://smashballoon.com/youtube-feed/';
+		} else if ( ! isset( $active_plugins['is_youtube_active'] ) ) {
+			$sbsw_yt_menu_text = '<span class="sbsw_plugin_inactive">YouTube Feed</span>';
+			$sbsw_yt_menu_link = 'https://smashballoon.com/youtube-feed/';
+		} else {
+			if ( version_compare( SBYVER, '2.0', '>=' ) ) {
+				$sbsw_yt_menu_link = admin_url( 'admin.php?page=sby-feed-builder' );
+			}
+		}
+
+		$sbsw_tt_menu_text = '<span class="sbsw_tt_menu">TikTok Feeds</span>';
+		$sbsw_tt_menu_link = 'tiktok-feeds';
+		if (!isset($installed_plugins['is_tiktok_installed'])) {
+			$sbsw_tt_menu_text = '<span class="sbsw_plugin_missing">TikTok Feeds</span>';
+			$sbsw_tt_menu_link = 'https://smashballoon.com/tiktok-feeds/';
+		} elseif (!isset($active_plugins['is_tiktok_active'])) {
+			$sbsw_tt_menu_text = '<span class="sbsw_plugin_inactive">TikTok Feeds</span>';
+			$sbsw_tt_menu_link = 'https://smashballoon.com/tiktok-feeds/';
+		} else {
+			if (sbsw_tiktok_feeds_is_minimum_version()) {
+				$sbsw_tt_menu_link = admin_url('admin.php?page=sbtt');
+			}
 		}
 
 		add_submenu_page(
 			'sbsw',
-			'Create a Social Wall',
-			'Create a Social Wall',
+			'Social Wall',
+			'Social Wall',
 			$capability,
 			$this->slug
 		);
@@ -1197,11 +1323,19 @@ class SW_Admin {
 	        $capability,
 	        $sbsw_yt_menu_link
 	    );
+		add_submenu_page(
+			'sbsw',
+			'TikTok Feed',
+			$sbsw_tt_menu_text,
+			$capability,
+			$sbsw_tt_menu_link
+		);
 
 		// //Hide the other plugin menus
-	    remove_menu_page( 'sb-instagram-feed' );
-	    remove_menu_page( 'cff-top' );
-	    remove_menu_page( 'custom-twitter-feeds' );
+		remove_menu_page('sb-instagram-feed');
+		remove_menu_page('cff-top');
+		remove_menu_page('custom-twitter-feeds');
+		remove_menu_page('sbtt');
 	    //YouTube menu hidden with CSS: sbsw_hide_yt_menu()
 
 		$this->after_create_menues();
@@ -1211,6 +1345,7 @@ class SW_Admin {
 	public function sbsw_hide_yt_menu(){
 		echo '<style>';
 		echo '#adminmenu li.menu-top.toplevel_page_youtube-feed{ display: none !important; }';
+		echo '#adminmenu li.menu-top.toplevel_page_sby-feed-builder{ display: none !important; }';
 		echo 'ul#adminmenu .toplevel_page_sbsw a.wp-has-current-submenu:after, .toplevel_page_sbsw ul#adminmenu>li.current>a.current:after{ z-index: 10001; }';
 		echo '</style>';
 	}
@@ -1248,7 +1383,9 @@ class SW_Admin {
 	}
 
 	public function create_options_page() {
-		require_once trailingslashit( $this->base_path ) . 'main.php';
+		wp_enqueue_script( 'sbsw-main-script' );
+		wp_enqueue_style( 'sbsw-main-style' );
+		echo '<div id="sbsw-app"></div>';
 	}
 
 	public function next_step() {

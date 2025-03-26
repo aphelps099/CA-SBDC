@@ -119,6 +119,8 @@ class SB_Instagram_Cron_Updater_Pro extends  SB_Instagram_Cron_Updater {
 			$instagram_feed->add_db_only_posts( $transient_name, $settings, $feed_type_and_terms );
 		}
 
+		do_action( 'sbi_before_feed_cache_update', $instagram_feed, $transient_name, $instagram_feed_settings->get_connected_accounts_in_feed() );
+
 		$post_data = $instagram_feed->get_post_data();
 		if ( $instagram_feed->using_an_allow_list( $settings ) && ( $instagram_feed->out_of_next_pages() || count( $post_data ) < $settings['minnum'] ) ) {
 			$instagram_feed->add_report( 'Adding allow list only posts' );
@@ -143,8 +145,6 @@ class SB_Instagram_Cron_Updater_Pro extends  SB_Instagram_Cron_Updater {
 		}
 
 		if ( $include_resize ) {
-			$post_data         = $instagram_feed->get_post_data();
-			$post_data         = array_slice( $post_data, 0, $settings['num'] );
 			$fill_in_timestamp = date( 'Y-m-d H:i:s', time() + 150 );
 
 			$image_sizes = array(

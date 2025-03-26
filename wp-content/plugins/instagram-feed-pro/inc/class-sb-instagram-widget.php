@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class SBI_Widget extends \WP_Widget
 {
-	function __construct() {
+	public function __construct() {
 		add_action( 'widgets_init', array( $this, 'sbi_feed_widget' ) );
 		add_filter( 'widget_text', 'do_shortcode' );
 
@@ -32,7 +32,7 @@ class SBI_Widget extends \WP_Widget
 	 *
 	 * @since 6.0
 	 */
-	function sbi_feed_widget() {
+	public function sbi_feed_widget() {
 		register_widget( 'InstagramFeed\SBI_Widget' );
 	}
 
@@ -207,7 +207,7 @@ class SBI_Widget extends \WP_Widget
 	 * @param array $instance An array of the current settings for this widget.
 	 */
 	public function form( $instance ) {
-	    $content = isset ( $instance['content'] ) ? strip_tags( $instance['content'] ) : false;
+		$content = isset ( $instance['content'] ) ? strip_tags( $instance['content'] ) : false;
 
 		$exported_feeds = Builder\SBI_Db::feeds_query();
 		$feeds = array();

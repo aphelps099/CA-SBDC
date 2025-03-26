@@ -15,6 +15,8 @@ use TwitterFeed\Admin\CTF_HTTP_Request;
 use TwitterFeed\CTF_GDPR_Integrations;
 use TwitterFeed\Pro\CTF_Resizer;
 use TwitterFeed\SB_Twitter_Cron_Updater_Pro;
+use TwitterFeed\SmashTwitter\AuthRoutine;
+use TwitterFeed\Pro\CTF_Feed_Pro;
 
 class CTF_Global_Settings {
 	//use CTF_Settings;
@@ -73,7 +75,7 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_save_settings() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -134,8 +136,10 @@ class CTF_Global_Settings {
 		/**
 		 * Feeds Tab
 		 */
-		$ctf_settings['custom_css']    			= $feeds['customCSS'];
-		$ctf_settings['custom_js'] 				= $feeds['customJS'];
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$ctf_settings['custom_css'] = $feeds['customCSS'];
+			$ctf_settings['custom_js']  = $feeds['customJS'];
+		}
 		$ctf_settings['gdpr'] 			        = sanitize_text_field( $feeds['gdpr'] );
 		$ctf_settings['ctf_caching_type']    	= sanitize_text_field( $feeds['cachingType'] );
 		$ctf_settings['cache_time']    			= sanitize_text_field( $feeds['cacheTime'] );
@@ -147,6 +151,7 @@ class CTF_Global_Settings {
 		/**
 		 * Advanced Tab
 		 */
+		$ctf_settings['rebranding'] 			= (bool)$advanced['rebranding'];
 		$ctf_settings['resizing'] 				= (bool)$advanced['resizing'];
 		$ctf_settings['persistentcache'] 		= (bool)$advanced['persistentcache'];
 		$ctf_settings['ajax_theme'] 			= (bool)$advanced['ajax_theme'];
@@ -201,7 +206,11 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_activate_license() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
+
+		if ( ! wp_doing_ajax() ) {
+			return;
+		}
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -214,20 +223,48 @@ class CTF_Global_Settings {
 			) );
 		}
 		$license_key = sanitize_text_field( $_POST[ 'license_key' ] );
+		update_option( 'ctf_license_key', $license_key );
+
+		$auth_routine = new AuthRoutine();
+		$result_token = $auth_routine->run_register( $license_key );
+		$results = $auth_routine->run_license_activation( $result_token );
+		if ( ! empty( $results['data']['api_data'] ) ) {
+			$ctf_license_data = $results['data']['api_data'];
+			if( !empty( $ctf_license_data ) && $ctf_license_data['license'] === 'valid' ) {
+				update_option( 'ctf_license_data', $results['data']['api_data'] );
+			}
+		}
+
 		// make the remote api call and get license data
 		$ctf_license_data = $this->get_license_data( $license_key, 'activate_license', CTF_PRODUCT_NAME );
 
 		// update the license data
-		if( !empty( $ctf_license_data ) ) {
+		if( !empty( $ctf_license_data ) && $ctf_license_data['license'] === 'valid' ) {
 			update_option( 'ctf_license_data', $ctf_license_data );
+			// update the licnese key only when the license status is activated
+			update_option( 'ctf_license_key', $license_key );
+			// update the license status
+			update_option( 'ctf_license_status', $ctf_license_data['license'] );
+		} else if ( empty( get_option( 'ctf_license_data' ) ) ) {
+			update_option( 'ctf_license_data', array('license' => 'invalid') );
 		}
-		// update the licnese key only when the license status is activated
-		update_option( 'ctf_license_key', $license_key );
-		// update the license status
-		update_option( 'ctf_license_status', $ctf_license_data['license'] );
+
+		// make license check_api true so next time it expires it checks again
+		update_option( 'ctf_check_license_api_when_expires', 'true' );
+		update_option( 'ctf_check_license_api_post_grace_period', 'true' );
 
 		// Check if there is any error in the license key then handle it
 		$ctf_license_data = $this->get_license_error_message( $ctf_license_data );
+
+		if (!empty($ctf_license_data['license']) && $ctf_license_data['license'] === 'valid') {
+			$ctf_statuses_option = get_option('ctf_statuses', array());
+
+			$ctf_statuses_option['activation_page_dismiss'] = true;
+
+			update_option('ctf_statuses', $ctf_statuses_option);
+		}
+
+		CTF_Feed_Pro::should_update_stats();
 
 
 		// Send ajax response back to client end
@@ -235,7 +272,10 @@ class CTF_Global_Settings {
 			'licenseStatus' => $ctf_license_data['license'],
 			'licenseData' => $ctf_license_data
 		);
-		new CTF_Response( true, $data );
+		new CTF_Response(
+			$ctf_license_data['license'] == 'valid' ? true : false,
+			$data
+		);
 	}
 
 	/**
@@ -246,29 +286,54 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_deactivate_license() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
 		}
 
-		$license_key = trim( get_option( 'ctf_license_key' ) );
-		$ctf_license_data = $this->get_license_data( $license_key, 'deactivate_license', CTF_PRODUCT_NAME );
-		// update the license data
-		if( !empty( $ctf_license_data ) ) {
-			update_option( 'ctf_license_data', $ctf_license_data );
-		}
-		if ( ! $ctf_license_data['success'] ) {
+		$ctf_license = trim( get_option( 'ctf_license_key' ) );
+
+		$auth_routine = new AuthRoutine();
+		$results = $auth_routine->run_license_deactivation();
+
+		if ( is_wp_error( $results ) ) {
 			new CTF_Response( false, array() );
 		}
-		// remove the license keys and update license key status
-		if( $ctf_license_data['license'] == 'deactivated' ) {
-			update_option( 'ctf_license_status', 'inactive' );
-			$data = array(
-				'licenseStatus' => 'inactive'
-			);
-			new CTF_Response( true, $data );
+
+		// data to send in our API request
+		$ctf_api_params = array(
+			'edd_action'=> 'deactivate_license',
+			'license'   => $ctf_license,
+			'url'       => home_url(),
+			'item_name' => urlencode( CTF_PRODUCT_NAME ) // the name of our product in EDD
+		);
+
+		// Call the custom API.
+		$ctf_response = wp_remote_get( add_query_arg( $ctf_api_params, CTF_STORE_URL ), array( 'timeout' => 15, 'sslverify' => false ) );
+		// make sure the response came back okay
+		if ( is_wp_error( $ctf_response ) ) {
+			new CTF_Response( false, array() );
 		}
+
+		// decode the license data
+		$ctf_license_data = json_decode( wp_remote_retrieve_body( $ctf_response ) );
+
+		// $license_data->license will be either "deactivated" or "failed"
+		if ( $ctf_license_data->license === 'deactivated' || $ctf_license_data->license === 'failed' ) {
+			update_option( 'ctf_license_data', $ctf_license_data );
+			// update the license status
+			update_option( 'ctf_license_status', $ctf_license_data->license );
+		} else {
+			delete_option( 'ctf_license_data' );
+			// update the license status
+			delete_option( 'ctf_license_status' );
+		}
+
+		$data = array(
+			'licenseStatus' => 'inactive'
+		);
+		new CTF_Response( true, $data );
 	}
 
 	/**
@@ -279,7 +344,7 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_test_connection() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -299,7 +364,6 @@ class CTF_Global_Settings {
 		// Make the remote API request
 		$request = CTF_HTTP_Request::request( 'GET', $url, $args );
 		if ( CTF_HTTP_Request::is_error( $request ) ) {
-			ray($request);
 			new CTF_Response( false, array(
 				'hasError' => true
 			) );
@@ -318,7 +382,7 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_recheck_connection() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -326,7 +390,7 @@ class CTF_Global_Settings {
 
 		// Do the form validation
 		$license_key = isset( $_POST['license_key'] ) ? sanitize_text_field( $_POST['license_key'] ) : '';
-		$item_name = isset( $_POST['item_name'] ) ? sanitize_text_field( $_POST['item_name'] ) : '';
+		$item_name = isset( $_POST['item_name'] ) ? sanitize_text_field( $_POST['item_name'] ) : CTF_PRODUCT_NAME;
 		$option_name = isset( $_POST['option_name'] ) ? sanitize_text_field( $_POST['option_name'] ) : '';
 		if ( empty( $license_key ) || empty( $item_name ) ) {
 			new CTF_Response( false, array() );
@@ -338,10 +402,21 @@ class CTF_Global_Settings {
 		// update options data
 		$license_changed = $this->update_recheck_license_data( $ctf_license_data, $item_name, $option_name );
 
+		if (isset($ctf_license_data['success'], $ctf_license_data['license']) && $ctf_license_data['success'] === true && $ctf_license_data['license'] === 'valid') {
+			CTF_Upgrader_Pro::check_license_upgraded($ctf_license_data, $license_key);
+		}
+
+		// Get the token for consuming the API again if the License key was rechecked.
+
+		$auth_routine = new AuthRoutine();
+		$auth_routine->run_license_activation($auth_routine->run_register());
+
 		// send AJAX response back
 		new CTF_Response( true, array(
 			'license' => $ctf_license_data['license'],
-			'licenseChanged' => $license_changed
+			'licenseChanged' => $license_changed,
+			'isLicenseUpgraded'   => get_option('ctf_islicence_upgraded'),
+			'licenseUpgradedInfo' => get_option('ctf_upgraded_info')
 		) );
 	}
 
@@ -361,8 +436,11 @@ class CTF_Global_Settings {
 		// if we are updating plugin's license data
 		if ( CTF_PRODUCT_NAME == $item_name ) {
 			// compare the old stored license status with new license status
-			if ( get_option( 'ctf_license_status' ) != $license_data['license'] ) {
+			if ( get_option( 'ctf_license_status' ) != $license_data['license'] && isset( $license_data['license'] ) && $license_data['license'] == 'valid' ) {
 				$license_changed = true;
+				// make license check_api true so next time it expires it checks again
+				update_option( 'ctf_check_license_api_when_expires', 'true' );
+				update_option( 'ctf_check_license_api_post_grace_period', 'true' );
 			}
 			update_option( 'ctf_license_data', $license_data );
 			update_option( 'ctf_license_status', $license_data['license'] );
@@ -371,7 +449,7 @@ class CTF_Global_Settings {
 		// If we are updating extensions license data
 		if ( CTF_PRODUCT_NAME != $item_name ) {
 			// compare the old stored license status with new license status
-			if ( get_option( 'ctf_license_status_' . $option_name ) != $license_data['license'] ) {
+			if ( get_option( 'ctf_license_status_' . $option_name ) != $license_data['license'] && $license_data['license'] == 'valid'  ) {
 				$license_changed = true;
 			}
 			update_option( 'ctf_license_status_' . $option_name, $license_data['license'] );
@@ -393,7 +471,7 @@ class CTF_Global_Settings {
 	 * @return CTF_Response
 	 */
 	public function ctf_import_settings_json() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -461,49 +539,40 @@ class CTF_Global_Settings {
 	 * @since 2.0
 	 */
 	public function ctf_clear_cache_settings() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
 		}
 
+		$ctf_statuses_option = get_option('ctf_statuses', array());
+
+		$remaining_api_counts = isset($ctf_statuses_option['smash_twitter']['apistats']['remaining_api_counts']) ? $ctf_statuses_option['smash_twitter']['apistats']['remaining_api_counts'] : 0;
+		$next_reset_time = isset($ctf_statuses_option['smash_twitter']['apistats']['next_reset_time']) ? $ctf_statuses_option['smash_twitter']['apistats']['next_reset_time'] : 0;
+		$next_reset_time = ctf_api_next_reset_time((int)$next_reset_time);
+		// Updated remaining API data count and next reset time
+		$api_stats = CTF_Feed_Pro::update_api_statistics();
+		if (isset($api_stats['remaining_api_counts']) && $api_stats['next_reset_time']) {
+			$remaining_api_counts = $api_stats['remaining_api_counts'];
+			$next_reset_time = ctf_api_next_reset_time($api_stats['next_reset_time']);
+		}
+
 		// Get the updated cron schedule interval and time settings from user input and update the database
 		$model = isset( $_POST[ 'model' ] ) ? sanitize_text_field( $_POST['model'] ) : null;
-		if ( $model !== null ) {
+		if ( $model !== null) {
 			$model = (array) \json_decode( \stripslashes( $model ) );
 			$feeds = (array) $model['feeds'];
 			$ctf_options = wp_parse_args( get_option( 'ctf_options' ), $this->default_settings_options() );
 
 			$cron_clear_cache = isset($ctf_options['cron_cache_clear']) ? $ctf_options['cron_cache_clear'] : 'no';
-			ctf_clear_cache_sql();
 
-			/*
-			$cache_time = isset($feeds['cache_time']) ? (int)$feeds['cache_time'] : 1;
-			$cache_time_unit = isset($feeds['cache_time_unit']) ? (int)$feeds['cache_time_unit'] : 3600;
-			if ($cron_clear_cache == 'no') {
-				wp_clear_scheduled_hook('ctf_cron_job');
+			if ($remaining_api_counts !== 0) { // Stored Cache shouldn't be cleared in case of No Credits remaining
+				ctf_clear_cache_sql();
+
+				// Clear the stored caches.
+				$cache_handler = new CTF_Cache_Handler();
+				$cache_handler->clear_all_cache();
 			}
-			elseif ($cron_clear_cache == 'yes') {
-				//Clear the existing cron event
-				wp_clear_scheduled_hook('ctf_cron_job');
-				//Set the event schedule based on what the caching time is set to
-				if ($cache_time_unit == 3600 && $cache_time > 5) {
-					$ctf_cron_schedule = 'twicedaily';
-				}
-				elseif ($cache_time_unit == 86400) {
-					$ctf_cron_schedule = 'daily';
-				}
-				else {
-					$ctf_cron_schedule = 'hourly';
-				}
-
-				wp_schedule_event(time() , $ctf_cron_schedule, 'ctf_cron_job');
-			}
-			*/
-
-			// Clear the stored caches.
-			$cache_handler = new CTF_Cache_Handler();
-			$cache_handler->clear_all_cache();
 
 			$ctf_cache_cron_interval = $ctf_options['ctf_cache_cron_interval'];
 			$ctf_cache_cron_time     = $ctf_options['ctf_cache_cron_time'];
@@ -513,10 +582,11 @@ class CTF_Global_Settings {
 		}
 
 
-
-		new CTF_Response( true, array(
-			'cronNextCheck' => $this->get_cron_next_check()
-		) );
+		new CTF_Response(true, array(
+			'cronNextCheck' => $this->get_cron_next_check(),
+			'remaining_api_counts' => $remaining_api_counts,
+			'next_reset_time' => $next_reset_time,
+		));
 	}
 
 	/**
@@ -525,7 +595,7 @@ class CTF_Global_Settings {
 	 * @since 2.0
 	 */
 	public function ctf_clear_image_resize_cache() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
 		}
@@ -540,7 +610,7 @@ class CTF_Global_Settings {
 	 * @since 2.0
 	 */
 	public function ctf_clear_persistent_cache() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -557,7 +627,7 @@ class CTF_Global_Settings {
 	 * @since 2.0
 	 */
 	public function ctf_clear_twittercard_cache() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -577,7 +647,7 @@ class CTF_Global_Settings {
 	 * @since 2.0
 	 */
 	public function ctf_dpa_reset() {
-		check_ajax_referer( 'ctf_admin_nonce', 'nonce' );
+		check_ajax_referer( 'ctf-admin', 'nonce' );
 
 		if ( ! ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
 			wp_send_json_error(); // This auto-dies.
@@ -630,6 +700,9 @@ class CTF_Global_Settings {
 		$license_key = null;
 		if ( get_option('ctf_license_key') ) {
 			$license_key = get_option('ctf_license_key');
+		}
+		if ( ! is_array( $ctf_license_data ) ) {
+			return $ctf_license_data;
 		}
 
 		$upgrade_url 	= sprintf('https://smashballoon.com/pricing/twitter-feed/?license_key=%s&upgrade=true&utm_campaign=twitter-pro&utm_source=settings&utm_medium=upgrade-license', $license_key);
@@ -691,25 +764,27 @@ class CTF_Global_Settings {
 		// remove admin page update footer
 		add_filter( 'update_footer', [$this, 'remove_admin_footer_text'] );
 
-        $cap = current_user_can( 'manage_custom_instagram_feed_options' ) ? 'manage_custom_instagram_feed_options' : 'manage_options';
-        $cap = apply_filters( 'ctf_settings_pages_capability', $cap );
+		$cap = current_user_can( 'manage_custom_instagram_feed_options' ) ? 'manage_custom_instagram_feed_options' : 'manage_options';
+		$cap = apply_filters( 'ctf_settings_pages_capability', $cap );
 
 		$notice = '';
 		/*if ( \ctf_main_pro()->ctf_error_reporter->are_critical_errors() ) {
 			$notice = ' <span class="update-plugins ctf-error-alert"><span>!</span></span>';
 		}*/
 
-       $global_settings = add_submenu_page(
-           'custom-twitter-feeds',
-           __( 'Settings', 'custom-twitter-feeds' ),
-           __( 'Settings ' . $notice , 'custom-twitter-feeds' ),
-           $cap,
-           'ctf-settings',
-           [$this, 'global_settings'],
-           1
-       );
-       add_action( 'load-' . $global_settings, [$this,'builder_enqueue_admin_scripts']);
-   }
+		if ( ctf_activation_page_dismissed() ) {
+			$global_settings = add_submenu_page(
+				'custom-twitter-feeds',
+				__( 'Settings', 'custom-twitter-feeds' ),
+				__( 'Settings ' . $notice , 'custom-twitter-feeds' ),
+				$cap,
+				'ctf-settings',
+				[$this, 'global_settings'],
+				1
+			);
+			add_action( 'load-' . $global_settings, [$this,'builder_enqueue_admin_scripts']);
+		}
+	}
 
 	/**
 	 * Enqueue Builder CSS & Script.
@@ -718,8 +793,8 @@ class CTF_Global_Settings {
 	 *
 	 * @since 2.0
 	 */
-    public function builder_enqueue_admin_scripts(){
-        if( ! get_current_screen() ) {
+	public function builder_enqueue_admin_scripts(){
+		if( ! get_current_screen() ) {
 			return;
 		}
 		$screen = get_current_screen();
@@ -743,19 +818,29 @@ class CTF_Global_Settings {
 			$date = time() - (DAY_IN_SECONDS * 90);
 			if ( $date > $license_last_check ) {
 				// make the remote api call and get license data
-				$ctf_license_data = $this->get_license_data( $license_key );
+				$ctf_license_data = ctf_license_handler()->get_license_data;
 				if( !empty($ctf_license_data) ) update_option( 'ctf_license_data', $ctf_license_data );
 				update_option( 'ctf_license_last_check_timestamp', time() );
 			} else {
 				$ctf_license_data = get_option( 'ctf_license_data' );
 			}
-			// update the license data with proper error messages when necessary
-			$ctf_license_data = $this->get_license_error_message( $ctf_license_data );
-			$ctf_status = $ctf_license_data['license'];
-			$licenseErrorMsg = ( isset( $ctf_license_data['error'] ) && isset( $ctf_license_data['errorMsg'] ) ) ? $ctf_license_data['errorMsg'] : null;
+			if ( is_array( $ctf_license_data ) ) {
+				// update the license data with proper error messages when necessary
+				$ctf_license_data = $this->get_license_error_message( $ctf_license_data );
+				$ctf_status = $ctf_license_data['license'];
+				$licenseErrorMsg = ( isset( $ctf_license_data['error'] ) && isset( $ctf_license_data['errorMsg'] ) ) ? $ctf_license_data['errorMsg'] : null;
+
+			} else {
+				$ctf_license_data = array();
+			}
 		}
 
 		$ctf_options = get_option( 'ctf_options', array() );
+
+		$ctf_statuses_option = get_option('ctf_statuses', array());
+		$remaining_api_counts = isset($ctf_statuses_option['smash_twitter']['apistats']['remaining_api_counts']) ? $ctf_statuses_option['smash_twitter']['apistats']['remaining_api_counts'] : 0;
+		$next_reset_time = isset($ctf_statuses_option['smash_twitter']['apistats']['next_reset_time']) ? $ctf_statuses_option['smash_twitter']['apistats']['next_reset_time'] : 0;
+		$next_reset_time = ctf_api_next_reset_time($next_reset_time);
 
 		wp_enqueue_style(
 			'settings-style',
@@ -764,7 +849,7 @@ class CTF_Global_Settings {
 			CTF_VERSION
 		);
 
-	    \TwitterFeed\Builder\CTF_Feed_Builder::global_enqueue_ressources_scripts(true);
+		\TwitterFeed\Builder\CTF_Feed_Builder::global_enqueue_ressources_scripts(true);
 
 
 		wp_enqueue_script(
@@ -776,8 +861,8 @@ class CTF_Global_Settings {
 		);
 
 		$license_key = null;
-		if ( get_option('ctf_license_key') ) {
-			$license_key = get_option('ctf_license_key');
+		if ( ctf_license_handler()->get_license_key ) {
+			$license_key = ctf_license_handler()->get_license_key;
 		}
 
 		$has_license_error = false;
@@ -798,13 +883,21 @@ class CTF_Global_Settings {
 		$ctf_settings = array(
 			'admin_url' 		=> admin_url(),
 			'ajax_handler'		=> admin_url( 'admin-ajax.php' ),
-			'nonce'             => wp_create_nonce( 'ctf_admin_nonce' ),
+			'nonce'             => wp_create_nonce( 'ctf-admin' ),
 			'supportPageUrl'    => admin_url( 'admin.php?page=ctf-support' ),
 			'builderUrl'		=> admin_url( 'admin.php?page=ctf-feed-builder' ),
 			'links'				=> $this->get_links_with_utm(),
+			'ctfLicenseInactiveState' => ctf_license_inactive_state() ? true : false,
+			'ctfLicenseNoticeActive' =>  ctf_license_notice_active() ? true : false,
+			'ctf_doing_smash_twitter' => CTF_DOING_SMASH_TWITTER,
+			'remainingApiCounts' => $remaining_api_counts,
+			'apiNextResetTime' => $next_reset_time,
+			'userLicenseRequestLimit' => ctf_license_handler()->get_user_license_limit,
 			'pluginItemName'	=> CTF_PRODUCT_NAME,
 			'licenseType'		=> 'pro',
 			'licenseKey'		=> $license_key,
+			'isLicenseUpgraded'       => get_option('ctf_islicence_upgraded', false),
+			'licenseUpgradedInfo'     => get_option('ctf_upgraded_info', []),
 			'licenseStatus'		=> $ctf_status,
 			'licenseErrorMsg'	=> $licenseErrorMsg,
 			'extensionsLicense' => array(),
@@ -846,14 +939,15 @@ class CTF_Global_Settings {
 					'activate' => __( 'Activate', 'custom-twitter-feeds' ),
 				),
 				'manageAccount'	=> array(
-					'title'	=> __( 'Connected Twitter Account', 'custom-twitter-feeds' ),
-					'description'	=> __( 'This account is used to display home timeline, or fetch data from Twitter API for other timeline.<br/>Changing this will not affect Hashtag, Search or List Timelines, but will change Home and Mentions timelines.', 'custom-twitter-feeds' ),
+					'title'	=> __( 'Twitter Integration', 'custom-twitter-feeds' ),
+					'description'	=> sprintf(__( 'Your feeds are automatically updated several times per day. <br />Read more %shere%s about Twitter latest changes and how they affect our product.', 'custom-twitter-feeds' ), '<a href="https://smashballoon.com/doc/smash-balloon-twitter-changes/?twitter" target="_blank">', '</a>' ),
+
 					'button'	=> __( 'Change', 'custom-twitter-feeds' ),
 					'buttonConnect'	=> __( 'Connect new Account', 'custom-twitter-feeds' ),
-					'buttonConnectOwnApp'	=> __( 'Connect your Own App', 'custom-twitter-feeds' ),
+					'buttonConnectOwnApp'	=> __( 'Connect your Own App (V2)', 'custom-twitter-feeds' ),
 					'titleApp'	=> __( 'Connected Twitter App', 'custom-twitter-feeds' ),
-					'cKey'		=> __( 'Consumer Key', 'custom-twitter-feeds' ),
-					'cSecret'	=> __( 'Consumer Secret', 'custom-twitter-feeds' ),
+					'cKey'		=> __( 'API Key', 'custom-twitter-feeds' ),
+					'cSecret'	=> __( 'API Key Secret', 'custom-twitter-feeds' ),
 					'aToken'	=> __( 'Access Token', 'custom-twitter-feeds' ),
 					'aTokenSecret'	=> __( 'Access Token Secret', 'custom-twitter-feeds' ),
 				),
@@ -897,11 +991,12 @@ class CTF_Global_Settings {
 					'inTheBackground'        => __( 'In the Background', 'custom-twitter-feeds' ),
 					'cacheTypeOptions' => array(
 						'background'	=> __( 'Background', 'custom-twitter-feeds' ),
-						'page'	=> __( 'Page', 'custom-twitter-feeds' ),
+						//'page'	=> __( 'Page', 'custom-twitter-feeds' ),
 					),
 					'inTheBackgroundOptions' => array(
-						'30mins'  => __( 'Every 30 minutes', 'custom-twitter-feeds' ),
-						'1hour'   => __( 'Every hour', 'custom-twitter-feeds' ),
+						//'30mins'  => __( 'Every 30 minutes', 'custom-twitter-feeds' ),
+						//'1hour'   => __( 'Every hour', 'custom-twitter-feeds' ),
+						'2hour'   => __( 'Every 2 hours', 'custom-twitter-feeds' ),
 						'12hours' => __( 'Every 12 hours', 'custom-twitter-feeds' ),
 						'24hours' => __( 'Every 24 hours', 'custom-twitter-feeds' ),
 					),
@@ -913,6 +1008,12 @@ class CTF_Global_Settings {
 					'am'                     => __( 'AM', 'custom-twitter-feeds' ),
 					'pm'                     => __( 'PM', 'custom-twitter-feeds' ),
 					'clearCache'             => __( 'Clear All Caches', 'custom-twitter-feeds' ),
+					'cacheCredits'			=> __('cache credits remaining', 'custom-twitter-feeds'),
+					'resets'			=> __('Resets', 'custom-twitter-feeds'),
+					'youCanClear'			=> __('You can clear cache', 'custom-twitter-feeds'),
+					'moreTimes'			=> __('more times today', 'custom-twitter-feeds'),
+					'dueToTwitter'			=> __('Due to new Twitter API, we can no longer support unlimited fetching of Tweets. You\'re now limited to', 'custom-twitter-feeds'),
+					'fetchsPerWeek'			=> __('fetches per day.', 'custom-twitter-feeds'),
 				),
 				'gdprBox' => array(
 					'title'	=> __( 'GDPR', 'custom-twitter-feeds' ),
@@ -964,14 +1065,21 @@ class CTF_Global_Settings {
 					'loadMoreCtnx' => __( 'Used in the button that loads more posts', 'custom-twitter-feeds' ),
 
 					'date' => __( 'Date', 'custom-twitter-feeds' ),
-					'minutes' => __( 'Minutes', 'custom-twitter-feeds' ),
-					'hours' => __( 'Hours', 'custom-twitter-feeds' ),
-					'now' => __( 'Now', 'custom-twitter-feeds' ),
+					'mtime' => __( 'Minutes', 'custom-twitter-feeds' ),
+					'htime' => __( 'Hours', 'custom-twitter-feeds' ),
+					'nowtime' => __( 'Now', 'custom-twitter-feeds' ),
 					'usedinTimeline' => __( 'Used for tweet timeline', 'custom-twitter-feeds' ),
-
+					'threadText' => __( 'Thread Text', 'custom-twitter-feeds' ),
+					'showThread' => __( 'Show Thread', 'custom-twitter-feeds' ),
+					'hideThread' => __( 'Hide Thread', 'custom-twitter-feeds' ),
+					'threadUsedIn' => __( 'Used for threads show/hide button', 'custom-twitter-feeds' ),
 				)
 			),
 			'advancedTab'	=> array(
+				'rebrandingBox' => array(
+					'title' => __( 'Change Twitter to X', 'custom-twitter-feeds' ),
+					'helpText' => __( 'Changes the branding from Twitter to X across the plugin, including your feeds.', 'custom-twitter-feeds' ),
+				),
 				'optimizeBox' => array(
 					'title' => __( 'Optimize Images', 'custom-twitter-feeds' ),
 					'helpText' => __( 'This will create multiple local copies of images in different sizes. The plugin then displays the smallest version based on the size of the feed.', 'custom-twitter-feeds' ),
@@ -1110,7 +1218,7 @@ class CTF_Global_Settings {
 			'ctf_settings',
 			$ctf_settings
 		);
-    }
+	}
 
 	/**
 	 * Get Extensions License Information
@@ -1159,8 +1267,8 @@ class CTF_Global_Settings {
 		$ctf_settings = wp_parse_args( get_option( 'ctf_options' ), $this->default_settings_options() );
 		$cachetype 			        = $ctf_settings['ctf_caching_type'] ;
 		$cache_time_unit 			= $ctf_settings['cache_time_unit'] ;
-    	$cache_time 				= $ctf_settings['cache_time'];
-    	$ctf_cache_cron_interval 	= $ctf_settings['ctf_cache_cron_interval'];
+		$cache_time 				= $ctf_settings['cache_time'];
+		$ctf_cache_cron_interval 	= $ctf_settings['ctf_cache_cron_interval'];
 		$ctf_cache_cron_time     	= $ctf_settings['ctf_cache_cron_time'];
 		$ctf_cache_cron_am_pm   	= $ctf_settings['ctf_cache_cron_am_pm'];
 
@@ -1168,7 +1276,10 @@ class CTF_Global_Settings {
 		$ctf_ajax = $ctf_settings['ajax_theme'];
 		$active_gdpr_plugin = CTF_GDPR_Integrations::gdpr_plugins_active();
 		$ctf_preserve_settings = $ctf_settings['preserve_settings'];
-
+		if ( current_user_can( 'unfiltered_html' ) ) {
+			$custom_css = isset( $ctf_settings['custom_css'] ) ? wp_strip_all_tags( stripslashes( $ctf_settings['custom_css'] ) ) : '';
+			$custom_js = isset( $ctf_settings['custom_js'] ) ? stripslashes( $ctf_settings['custom_js'] ) : '';
+		}
 		return array(
 			'general' => array(
 				'preserveSettings' => $ctf_preserve_settings
@@ -1183,21 +1294,23 @@ class CTF_Global_Settings {
 				'cacheTime'		=> $cache_time,
 				'gdpr'				=> $ctf_settings['gdpr'],
 				'gdprPlugin'		=> $active_gdpr_plugin,
-				'customCSS'			=> isset( $ctf_settings['custom_css'] ) ? stripslashes( $ctf_settings['custom_css'] ) : '',
-				'customJS'			=> isset( $ctf_settings['custom_js'] ) ? stripslashes( $ctf_settings['custom_js'] ) : '',
+				'customCSS'			=> $custom_css,
+				'customJS'			=> $custom_js,
 			),
 			'translation' => array(
 				'retweetedtext' => $ctf_settings['retweetedtext'],
 				'inreplytotext' => $ctf_settings['inreplytotext'],
 				'buttontext' => $ctf_settings['buttontext'],
-				'minutestext' => $ctf_settings['minutestext'],
-				'hourstext' => $ctf_settings['hourstext'],
-				'nowtext' => $ctf_settings['nowtext'],
+				'mtime' => $ctf_settings['mtime'],
+				'htime' => $ctf_settings['htime'],
+				'nowtime' => $ctf_settings['nowtime'],
+				'showThread' => $ctf_settings['showThread'],
+				'hideThread' => $ctf_settings['hideThread'],
 			),
 			'advanced' => array(
+				'rebranding' => $ctf_settings['rebranding'],
 				'resizing' => $ctf_settings['resizing'],
 				'usage_tracking' => $usage_tracking['enabled'],
-				'resizing' => $ctf_settings['resizing'],
 				'persistentcache' => $ctf_settings['persistentcache'],
 				'ajax_theme' => $ctf_settings['ajax_theme'],
 				'headenqueue' => $ctf_settings['headenqueue'],
@@ -1222,6 +1335,9 @@ class CTF_Global_Settings {
 	 * @return array
 	 */
 	public function default_settings_options() {
+		$ctf_settings = get_option('ctf_options');
+		$should_rebrand = isset( $ctf_settings['rebranding'] ) && $ctf_settings['rebranding'] === true;
+
 		return [
 			'preserve_settings' => '',
 			'cache_time' => 1,
@@ -1233,8 +1349,11 @@ class CTF_Global_Settings {
 			'ctf_cache_cron_am_pm'              => 'am',
 
 			//Translation Goes Here
+			'showThread' => __('Show Thread', 'custom-twitter-feeds'),
+			'hideThread' => __('Hide Thread', 'custom-twitter-feeds'),
 
 			//----------
+			'rebranding' => true,
 			'resizing' => true,
 			'persistentcache' => true,
 			'ajax_theme' => false,
@@ -1248,12 +1367,12 @@ class CTF_Global_Settings {
 			'cron_cache_clear' => 'unset',
 			'sslonly' => false,
 			'curlcards' => true,
-			'retweetedtext' => 'Retweeted',
+			'retweetedtext' => $should_rebrand ? 'Reposts' : 'Retweeted',
 			'buttontext' => 'Load More',
 			'inreplytotext' => 'In Reply To',
-			'minutestext' => 'Minutes',
-			'hourstext' => 'Hours',
-			'nowtext' => 'Now',
+			'mtime' => 'm',
+			'htime' => 'h',
+			'nowtime' => 'now',
 
 		];
 
@@ -1307,13 +1426,20 @@ class CTF_Global_Settings {
 			$output = __( 'Nothing currently scheduled', 'custom-twitter-feeds' );
 		}
 
+		$site_cache_limit = ctf_get_site_cache_limit();
+
+		$output = sprintf(
+			__('Note: Your site will receive up to %s daily source updates.', 'custom-twitter-feeds'),
+			$site_cache_limit
+		);
+
 		return $output;
 
 
 
 	}
 
-   	/**
+	/**
 	 * Settings Page View Template
 	 *
 	 * @since 2.0

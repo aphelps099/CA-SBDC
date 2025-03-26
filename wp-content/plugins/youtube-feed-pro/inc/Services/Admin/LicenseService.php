@@ -384,7 +384,7 @@ class LicenseService extends ServiceProvider {
 			$sby_expired_box_classes = "sby-license-expired";
 
 			$sby_expired_box_msg = '<svg style="width:16px;height:16px;" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-exclamation-triangle fa-w-18 fa-2x"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z" class=""></path></svg>';
-			$sby_expired_box_msg .= "<b>Important: Your Feeds for YouTube Pro license key has expired.</b><br /><span>You are no longer receiving updates that protect you against upcoming YouTube platform changes.</span>";
+			$sby_expired_box_msg .= "<b>Important: Your YouTube Feeds Pro license key has expired.</b><br /><span>You are no longer receiving updates that protect you against upcoming YouTube platform changes.</span>";
 
 			//Create the re-check link using the existing query string in the URL
 			$sby_url = '?' . $_SERVER["QUERY_STRING"];
@@ -403,15 +403,15 @@ class LicenseService extends ServiceProvider {
                 <p>With WordPress updates being released continually, we make sure the plugin is always compatible with the latest version so you can update WordPress without needing to worry.</p>
 
                 <h4><svg style='width:16px;height:16px;' aria-hidden='true' focusable='false' data-prefix='far' data-icon='life-ring' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' class='svg-inline--fa fa-life-ring fa-w-16 fa-2x' data-ce-key='500'><path fill='currentColor' d='M256 504c136.967 0 248-111.033 248-248S392.967 8 256 8 8 119.033 8 256s111.033 248 248 248zm-103.398-76.72l53.411-53.411c31.806 13.506 68.128 13.522 99.974 0l53.411 53.411c-63.217 38.319-143.579 38.319-206.796 0zM336 256c0 44.112-35.888 80-80 80s-80-35.888-80-80 35.888-80 80-80 80 35.888 80 80zm91.28 103.398l-53.411-53.411c13.505-31.806 13.522-68.128 0-99.974l53.411-53.411c38.319 63.217 38.319 143.579 0 206.796zM359.397 84.72l-53.411 53.411c-31.806-13.505-68.128-13.522-99.973 0L152.602 84.72c63.217-38.319 143.579-38.319 206.795 0zM84.72 152.602l53.411 53.411c-13.506 31.806-13.522 68.128 0 99.974L84.72 359.398c-38.319-63.217-38.319-143.579 0-206.796z' class='' data-ce-key='501'></path></svg>Expert Technical Support</h4>
-                <p>Without a valid license key you will no longer be able to receive updates or support for the YouTube Feed plugin. A renewed license key grants you access to our top-notch, quick and effective support for another full year.</p>
+                <p>Without a valid license key you will no longer be able to receive updates or support for the YouTube Feeds plugin. A renewed license key grants you access to our top-notch, quick and effective support for another full year.</p>
 
-                <h4><svg style='width:16px;height:16px;' aria-hidden='true' focusable='false' data-prefix='fas' data-icon='unlock' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512' class='svg-inline--fa fa-unlock fa-w-14 fa-2x' data-ce-key='477'><path fill='currentColor' d='M400 256H152V152.9c0-39.6 31.7-72.5 71.3-72.9 40-.4 72.7 32.1 72.7 72v16c0 13.3 10.7 24 24 24h32c13.3 0 24-10.7 24-24v-16C376 68 307.5-.3 223.5 0 139.5.3 72 69.5 72 153.5V256H48c-26.5 0-48 21.5-48 48v160c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z' class='' data-ce-key='478'></path></svg>All Pro YouTube Feed Features</h4>
+                <h4><svg style='width:16px;height:16px;' aria-hidden='true' focusable='false' data-prefix='fas' data-icon='unlock' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512' class='svg-inline--fa fa-unlock fa-w-14 fa-2x' data-ce-key='477'><path fill='currentColor' d='M400 256H152V152.9c0-39.6 31.7-72.5 71.3-72.9 40-.4 72.7 32.1 72.7 72v16c0 13.3 10.7 24 24 24h32c13.3 0 24-10.7 24-24v-16C376 68 307.5-.3 223.5 0 139.5.3 72 69.5 72 153.5V256H48c-26.5 0-48 21.5-48 48v160c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V304c0-26.5-21.5-48-48-48z' class='' data-ce-key='478'></path></svg>All Pro YouTube Feeds Features</h4>
                 <p>Live Streaming API, Custom End-of-Video Actions, YouTube Search API, Carousel Sliders, Combine Feeds, Convert Videos to WP Posts, Favorites, Video Filtering, Smart Video Player Loading, and more!</p>
             </div>";
 
 			if( $sby_check_license && !$sby_license_expired ){
 				$sby_expired_box_classes = "sby-license-expired sby-license-valid";
-				$sby_expired_box_msg = "Thanks ".$sby_license_data["customer_name"].", your Feeds for YouTube Pro license key is valid.";
+				$sby_expired_box_msg = "Thanks ".$sby_license_data["customer_name"].", your YouTube Feeds Pro license key is valid.";
 			}
 
 			_e("<div class='".$sby_expired_box_classes."'>");
@@ -481,7 +481,7 @@ class LicenseService extends ServiceProvider {
 	 * @since 2.0
 	 */
 	public function get_post_grace_period_header_notice( $license_status = 'expired' ) {
-		$notice_text = 'Your YouTube Feed Pro License has expired. Renew to keep using PRO features.';
+		$notice_text = 'Your YouTube Feeds Pro License has expired. Renew to keep using PRO features.';
 		if ( $license_status == 'sby-license-inactive-state' ) {
 			$notice_text = 'Your license key is inactive. Please add license key to enable PRO features.';
 		}

@@ -1,6 +1,8 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+use InstagramFeed\Integrations\WPCode;
+
 /**
  * Deactivate addon.
  *
@@ -152,10 +154,18 @@ function sbi_install_addon() {
 			$type = sanitize_key( $_POST['type'] );
 		}
 
+		$referrer = '';
+		if (!empty($_POST['referrer'])) {
+			$referrer = sanitize_key($_POST['referrer']);
+		}
+
 		// Activate the plugin silently.
 		$activated = activate_plugin( $plugin_basename );
 
 		if ( ! is_wp_error( $activated ) ) {
+			if ($plugin_basename === 'custom-facebook-feed/custom-facebook-feed.php' && $referrer === 'oembeds') {
+				delete_option('cff_plugin_do_activation_redirect');
+			}
 			wp_send_json_success(
 				array(
 					'msg'          => 'plugin' === $type ? esc_html__( 'Plugin installed & activated.', 'instagram-feed' ) : esc_html__( 'Addon installed & activated.', 'instagram-feed' ),
@@ -208,3 +218,113 @@ function sbi_encrypt_decrypt( $action, $string ) {
 
 	return $output;
 }
+
+/**
+ * AJAX dismiss ClickSocial notice
+ */
+function sbi_dismiss_clicksocial_notice() {
+	// Run a security check.
+	check_ajax_referer( 'sbi-admin', 'nonce' );
+
+	if ( ! sbi_current_user_can( 'manage_instagram_feed_options' ) ) {
+		wp_send_json_error();
+	}
+
+	$user_id = get_current_user_id();
+	update_user_meta( $user_id, 'sbi_dismiss_clicksocial_notice', strtotime( 'now' ) );
+
+	wp_send_json_success();
+}
+add_action( 'wp_ajax_sbi_dismiss_clicksocial_notice', 'sbi_dismiss_clicksocial_notice');
+
+/**
+ * AJAX setup for the ClickSocial plugin to store the source information of Instagram Feed
+ */
+function sbi_clicksocial_setup_source() {
+	// Run a security check.
+	check_ajax_referer( 'sbi-admin', 'nonce' );
+
+	if ( ! sbi_current_user_can( 'manage_instagram_feed_options' ) ) {
+		wp_send_json_error();
+	}
+
+	update_option( 'clicksocial_source', 'sb' );
+
+	wp_send_json_success();
+}
+add_action( 'wp_ajax_sbi_clicksocial_setup_source', 'sbi_clicksocial_setup_source');
+
+/**
+ * Ajax function to migrate Custom CSS and JS to WPCode Snippets
+ * 
+ * @since 6.4.1
+ */
+function sbi_migrate_snippets() {
+	// Run a security check.
+	check_ajax_referer( 'sbi-admin', 'nonce' );
+
+	if ( ! sbi_current_user_can( 'manage_instagram_feed_options' ) ) {
+		wp_send_json_error();
+	}
+
+	// Check if the WP Code plugin is installed
+	if ( !function_exists('wpcode') ) {
+		wp_send_json_error( esc_html__( 'WPCode plugin is not installed.', 'instagram-feed' ) );
+	}
+
+	$settings = sbi_get_database_settings();
+	isset($settings['sb_instagram_custom_css']) ? $sb_instagram_custom_css = trim($settings['sb_instagram_custom_css']) : $sb_instagram_custom_css = '';
+	isset($settings['sb_instagram_custom_js']) ? $sb_instagram_custom_js = trim($settings['sb_instagram_custom_js']) : $sb_instagram_custom_js = '';
+
+	// Check if the Custom CSS and JS are empty
+	if ( empty($sb_instagram_custom_css) && empty($sb_instagram_custom_js) ) {
+		wp_send_json_error( esc_html__( 'No Custom CSS or JS to migrate.', 'instagram-feed' ) );
+	}
+
+	$snippets = array();
+
+	// Migration of Custom CSS
+	if ( !empty($sb_instagram_custom_css) ) {
+		$snippets[] = array(
+			'code_type' => 'css',
+			'code' => wp_strip_all_tags(stripslashes($sb_instagram_custom_css)),
+			'location' => 'site_wide_header',
+			'auto_insert' => 1,
+			'title' => 'Instagram Feed Custom CSS',
+			'note' => 'Custom CSS from Instagram Feed settings',
+			'tags' => array('instagram-feed', 'custom-css'),
+			'active' => true,
+		);
+	}
+
+	// Migration of Custom JS
+	if ( !empty($sb_instagram_custom_js) ) {
+		$sb_instagram_custom_js = "var sbi_custom_js = function() {\n" . stripslashes($sb_instagram_custom_js) . "\n};";
+		$snippets[] = array(
+			'code_type' => 'js',
+			'code' => $sb_instagram_custom_js,
+			'location' => 'site_wide_footer',
+			'auto_insert' => 1,
+			'title' => 'Instagram Feed Custom JS',
+			'note' => 'Custom JS from Instagram Feed settings',
+			'tags' => array('instagram-feed', 'custom-js'),
+			'active' => true,
+		);
+	}
+
+	$success = WPCode::create_snippets($snippets);
+
+	if ($success) {
+		// Clear the Custom CSS and JS
+		$settings = get_option('sb_instagram_settings', []);
+		$settings['sb_instagram_custom_css'] = '';
+		$settings['sb_instagram_custom_js'] = '';
+
+		update_option('sb_instagram_settings', $settings);
+
+		wp_send_json_success($snippets);
+	} else {
+		wp_send_json_error(__('Failed to migrate snippets.', 'instagram-feed'));
+	}
+}
+add_action('wp_ajax_sbi_migrate_snippets', 'sbi_migrate_snippets' );

@@ -10,7 +10,9 @@
 namespace InstagramFeed\Helpers;
 
 use InstagramFeed\Builder\SBI_Db;
+use InstagramFeed\Builder\SBI_Feed_Saver;
 use InstagramFeed\Builder\SBI_Source;
+use InstagramFeed\Vendor\Smashballoon\Framework\Utilities\UsageTracking;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,6 +31,7 @@ class SB_Instagram_Tracking {
 		add_action( 'init', array( $this, 'schedule_send' ) );
 		add_filter( 'cron_schedules', array( $this, 'add_schedules' ) );
 		add_action( 'sbi_usage_tracking_cron', array( $this, 'send_checkin' ) );
+		add_filter( 'sb_usage_tracking_data', array( $this, 'filter_usage_tracking_data' ), 10, 2 );
 	}
 
 	private function normalize_and_format( $key, $value ) {
@@ -171,9 +174,7 @@ class SB_Instagram_Tracking {
 
 		if ( ! empty( $feeds ) ) {
 			//recursive json decode
-			$feed_settings = array_map( static function($item) {
-				return json_decode($item, true);
-			}, json_decode($feeds[0]['settings'], true));
+			$feed_settings = json_decode($feeds[0]['settings'], true);
 			//map array values to key => value pairs in the $feed_settings array
 			array_walk($feed_settings, static function($value, $key) use(&$feed_settings) {
 				if(is_array($value)) {
@@ -210,7 +211,7 @@ class SB_Instagram_Tracking {
 		}
 		$settings_to_send['business_accounts']          = $con_bus_accounts;
 		$settings_to_send['recently_searched_hashtags'] = $recently_searched_hashtags;
-		$sbi_cache = new \SB_Instagram_Cache(null);
+		$sbi_cache = new \SB_Instagram_Cache('');
 
 		$settings_to_send['num_found_feed_caches']     = (int)$sbi_cache->get_cache_count();
 		$settings_to_send['recently_requested_caches'] = (int)$sbi_cache->get_cache_count(true);
@@ -218,6 +219,7 @@ class SB_Instagram_Tracking {
 		$settings_to_send['custom_header_template']         = '' !== locate_template( 'sbi/header.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_header_boxed_template']   = '' !== locate_template( 'sbi/header-boxed.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_header_generic_template'] = '' !== locate_template( 'sbi/header-generic.php', false, false ) ? 1 : 0;
+		$settings_to_send['custom_header_text_template'] = '' !== locate_template( 'sbi/header-text.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_item_template']           = '' !== locate_template( 'sbi/item.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_footer_template']         = '' !== locate_template( 'sbi/footer.php', false, false ) ? 1 : 0;
 		$settings_to_send['custom_feed_template']           = '' !== locate_template( 'sbi/feed.php', false, false ) ? 1 : 0;
@@ -267,35 +269,7 @@ class SB_Instagram_Tracking {
 			return false;
 		}
 
-		// Send a maximum of once per week
-		$usage_tracking = get_option(
-			'sbi_usage_tracking',
-			array(
-				'last_send' => 0,
-				'enabled'   => sbi_is_pro_version(),
-			)
-		);
-		if ( is_numeric( $usage_tracking['last_send'] ) && $usage_tracking['last_send'] > strtotime( '-1 week' ) && ! $ignore_last_checkin ) {
-			return false;
-		}
-
-		$request = wp_remote_post(
-			'https://usage.smashballoon.com/v1/checkin/',
-			array(
-				'method'      => 'POST',
-				'timeout'     => 5,
-				'redirection' => 5,
-				'httpversion' => '1.1',
-				'blocking'    => false,
-				'body'        => $this->get_data(),
-				'user-agent'  => 'MI/' . SBIVER . '; ' . get_bloginfo( 'url' ),
-			)
-		);
-
-		// If we have completed successfully, recheck in 1 week
-		$usage_tracking['last_send'] = time();
-		update_option( 'sbi_usage_tracking', $usage_tracking, false );
-		return true;
+		return UsageTracking::send_usage_update($this->get_data(), 'sbi');
 	}
 
 	private function tracking_allowed() {
@@ -341,5 +315,71 @@ class SB_Instagram_Tracking {
 			'display'  => __( 'Once Weekly', 'instagram-feed' ),
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Filter the usage tracking data
+	 *
+	 * @param array $data
+	 * @param string $plugin_slug
+	 *
+	 * @handles sb_usage_tracking_data
+	 *
+	 * @return array|mixed
+	 */
+	public function filter_usage_tracking_data( $data, $plugin_slug ) {
+		if ( 'sbi' !== $plugin_slug ) {
+			return $data;
+		}
+
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
+		if ( ! isset( $data['settings'] ) ) {
+			$data['settings'] = [];
+		}
+
+		$tracked_boolean_settings = explode( ',',
+			'width,widthunit,widthresp,height,heightunit,disablelightbox,captionlinks,offset,apinum,
+			lightboxcomments,numcomments,hovereffect,hovercolor,hovertextcolor,hoverdisplay,hovercaptionlength,
+			background,imageres,showcaption,captionlength,captioncolor,captionsize,showlikes,likescolor,likessize,
+			hidephotos,poststyle,postbgcolor,postcorners,boxshadow,showbutton,buttoncolor,buttonhovercolor,
+			buttontextcolor,buttontext,showfollow,followcolor,followhovercolor,followtextcolor,followtext,
+			showheader,headercolor,headerstyle,showfollowers,showbio,custombio,customavatar,headerprimarycolor,
+			headersecondarycolor,headersize,stories,storiestime,headeroutside,headertext,headertextsize,
+			headertextcolor,class,ajaxtheme,excludewords,includewords,maxrequests,carouselrows,carouselarrows,
+			carouselpag,carouselautoplay,carouseltime,highlightoffset,highlightpattern,highlighthashtag,
+			highlightids,whitelist,autoscroll,autoscrolldistance,permanent,mediavine,customtemplates,
+			colorpalette,custombgcolor1,customtextcolor1,customtextcolor2,customlinkcolor1,custombuttoncolor1,
+			custombuttoncolor2,photosposts,videosposts,reelsposts,shoppablefeed,shoppablelist,moderationlist,
+			customBlockModerationlist,enablemoderationmode'
+		);
+
+		$tracked_string_settings = explode( ',',
+			'type,order,sortby,num,nummobile,cols,colstablet,colsmobile,layout,media,videotypes,carouselloop,highlighttype,gdpr,feedtheme'
+		);
+
+		$feeds = SBI_Db::feeds_query();
+		$settings_defaults = SBI_Feed_Saver::settings_defaults();
+
+		// Track settings of the first feed
+		if ( ! empty( $feeds ) ) {
+			$feed = $feeds[0];
+			$feed_settings = ( new SBI_Feed_Saver( $feed['id'] ) )->get_feed_settings();
+
+			if(!is_array($feed_settings)) {
+				return $data;
+			}
+
+			$booleans = UsageTracking::tracked_settings_to_booleans($tracked_boolean_settings, $settings_defaults, $feed_settings);
+			$strings = UsageTracking::tracked_settings_to_strings($tracked_string_settings, $feed_settings);
+
+			if ( is_array( $booleans ) && is_array( $strings ) ) {
+				$data['settings'] = array_merge( $data['settings'], $booleans, $strings );
+			}
+		}
+
+		return $data;
 	}
 }

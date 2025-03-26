@@ -6,7 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use TwitterFeed\CtfCache;
 use TwitterFeed\CtfFeedPro;
+use TwitterFeed\Builder\CTF_Db;
 use TwitterFeed\Pro\CTF_Feed_Pro;
 use TwitterFeed\Builder\CTF_Feed_Saver;
 
@@ -18,13 +20,13 @@ class SB_Twitter_Cron_Updater_Pro {
 	 * @since 2.0
 	 */
 	public static function do_feed_updates() {
-		$cron_records = \TwitterFeed\Builder\CTF_Db::feed_caches_query( array( 'cron_update' => true ) );
-		$num          = count( $cron_records );
-		if ( $num === \TwitterFeed\Builder\CTF_Db::RESULTS_PER_CRON_UPDATE ) {
-			wp_schedule_single_event( time() + 120, 'ctf_cron_additional_batch' );
+		$cron_records = \TwitterFeed\Builder\CTF_Db::feed_caches_query(array('cron_update' => true));
+		$num          = count($cron_records);
+		if ($num === \TwitterFeed\Builder\CTF_Db::RESULTS_PER_CRON_UPDATE) {
+			wp_schedule_single_event(time() + 120, 'ctf_cron_additional_batch');
 		}
 
-		self::update_batch( $cron_records );
+		self::update_batch($cron_records);
 	}
 
 	/**
@@ -43,7 +45,7 @@ class SB_Twitter_Cron_Updater_Pro {
 		foreach ( $cron_records as $feed_cache ) {
 			$feed_id = $feed_cache['feed_id'];
 
-			$result = self::do_single_feed_cron_update( $feed_id );
+			$result = self::do_single_feed_cron_update($feed_id, true);
 
 			$report[ $feed_id ] = $result;
 		}
@@ -58,30 +60,43 @@ class SB_Twitter_Cron_Updater_Pro {
 	 *
 	 * @return array
 	 */
-	public static function do_single_feed_cron_update( $feed_id ) {
-		$atts         = array( 'feed' => $feed_id );
+	public static function do_single_feed_cron_update($feed_id, $make_api_request)
+	{
+		$atts         = array('feed' => $feed_id);
 		$atts['doingcronupdate'] = true;
-		$twitter_feed = CtfFeedPro::init( $atts, null, 0, array(), 1, false );
+		$atts['make_api_request'] = $make_api_request;
+		$return = array();
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$twitter_feed = CtfFeedPro::init( $atts, null, 0, array(), 1, false );
+			$twitter_feed->feed_options['cache_time'] = 5;
 
-		// if there is an error, display the error html, otherwise the feed
-		if ( ! $twitter_feed->tweet_set || $twitter_feed->missing_credentials || ! isset( $twitter_feed->tweet_set[0]['created_at'] ) ) {
-			if ( ! empty( $twitter_feed->tweet_set['errors'] ) ) {
-				$twitter_feed->maybeCacheTweets();
+			$twitter_feed->maybeCacheTweets();
+			$return[] = $twitter_feed->feed_options['feed_types_and_terms'];
+		} else {
+			$twitter_feed = CtfFeedPro::init( $atts, null, 0, array(), 1, false );
+
+			// if there is an error, display the error html, otherwise the feed
+			if ( ! $twitter_feed->tweet_set || $twitter_feed->missing_credentials || ! isset( $twitter_feed->tweet_set[0]['created_at'] ) ) {
+				if ( ! empty( $twitter_feed->tweet_set['errors'] ) ) {
+					$twitter_feed->maybeCacheTweets();
+				}
+
+				return array(
+					'success' => false,
+					'error'   => $twitter_feed->tweet_set['errors'],
+				);
 			}
 
-			return array(
-				'success' => false,
-				'error'   => $twitter_feed->tweet_set['errors'],
-			);
+			if ( ! $twitter_feed->feed_options['persistentcache'] ) {
+				$twitter_feed->maybeCacheTweets();
+			}
 		}
 
-		if ( ! $twitter_feed->feed_options['persistentcache'] ) {
-			$twitter_feed->maybeCacheTweets();
-		}
 		do_action( 'ctf_after_single_feed_cron_update', $twitter_feed->transient_name );
 
 		return array(
 			'success' => true,
+			'data' => $return
 		);
 	}
 

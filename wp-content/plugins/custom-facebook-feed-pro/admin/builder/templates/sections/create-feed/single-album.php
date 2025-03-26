@@ -14,12 +14,12 @@
 		</div>
 		<div class="cff-fb-sglelm-right">
 			<div class="cff-fb-sglelm-img-ctn" v-if="!singleAlbumFeedInfo.isError && !singleAlbumFeedInfo.success">
-				<img src="<?php echo CFF_BUILDER_URL .'assets/img/process-single-album.png' ?>">
+				<img src="<?php echo CFF_BUILDER_URL . 'assets/img/process-single-album.png' ?>" alt="<?php __('Single Album Icon', 'custom-facebook-feed') ?>">
 				<strong>{{addFeaturedAlbumScreen.preview}}</strong>
 				<span>{{addFeaturedAlbumScreen.previewDescription}}</span>
 			</div>
 			<div class="cff-fb-sglelm-img-ctn cff-fb-sglelm-img-errorctn" v-if="singleAlbumFeedInfo.isError">
-				<img src="<?php echo CFF_BUILDER_URL .'assets/img/process-error-fetch.png' ?>">
+				<img src="<?php echo CFF_BUILDER_URL . 'assets/img/process-error-fetch.png' ?>" alt="<?php __('Single Album Error', 'custom-facebook-feed') ?>">
 				<span class="cff-fb-fs">{{addFeaturedAlbumScreen.couldNotFetch}}</span>
 			</div>
 			<div class="cff-fb-sglelm-preview cff-fb-fs"  v-if="!singleAlbumFeedInfo.isError && singleAlbumFeedInfo.success" :style="'background-image:url(' + (hasOwnNestedProperty(singleAlbumFeedInfo, 'info.thumbnail') ? singleAlbumFeedInfo.info.thumbnail : '') + ');'">

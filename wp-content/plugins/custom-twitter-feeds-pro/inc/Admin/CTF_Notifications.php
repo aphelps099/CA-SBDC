@@ -173,6 +173,11 @@ class CTF_Notifications {
 		$option = $this->get_option();
 
 		foreach ( $notifications as $notification ) {
+			// Ignore if not a targeted plugin
+			if ( ! empty( $notification['plugin'] ) && is_array( $notification['plugin'] ) && ! in_array( self::PLUGIN, $notification['plugin'], true ) ) {
+				continue;
+			}
+
 			// Ignore if max wp version detected
 			if ( ! empty( $notification['maxwpver'] ) && version_compare( get_bloginfo( 'version' ), $notification['maxwpver'], '>' ) ) {
 				continue;
@@ -261,6 +266,10 @@ class CTF_Notifications {
 				unset( $notifications[ $key ] );
 			}
 
+			if ( empty( $notification['recent_install_override'] ) && $this->recently_installed() ) {
+				unset( $notifications[ $key ] );
+			}
+
 			// Ignore if max version has been reached
 			if ( ! empty( $notification['maxver'] ) && version_compare( $notification['maxver'],  CTF_VERSION ) < 0 ) {
 				unset( $notifications[ $key ] );
@@ -291,6 +300,26 @@ class CTF_Notifications {
 	}
 
 	/**
+	 * @return bool
+	 *
+	 * @since 1.4.5/1.4.2
+	 */
+	public function recently_installed() {
+		$ctf_statuses_option = get_option( 'ctf_statuses', array() );
+
+		if ( ! isset( $ctf_statuses_option['first_install'] ) ) {
+			return false;
+		}
+
+		// Plugin was installed less than a week ago
+		if ( (int) $ctf_statuses_option['first_install'] > time() - WEEK_IN_SECONDS ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get notification data.
 	 *
 	 * @since 2.6/5.9
@@ -303,6 +332,32 @@ class CTF_Notifications {
 		}
 
 		$option = $this->get_option();
+
+		$ctf_options = get_option('ctf_options', array());
+
+		if (empty($ctf_options['site_access_token'])) {
+			$notifications = array(
+				array(
+					'title'   => 'Twitter API Changes',
+					'content' => 'It looks like your site key is missing. Please try reactivating your license key on the settings page or contact support for help.',
+					'image'   => 'balloon',
+					'type'    => array( 'pro' ),
+					'id'      => 'license',
+					"btns"    => array(
+						'primary'  => array(
+							'url'  => admin_url('admin.php?page=ctf-settings&focus=license'),
+							'text' => 'Settings Page',
+							'attr' => array(
+							)
+						)
+					),
+					'start'   => '2022-02-08 00:00:00',
+					'end'     => '2024-02-08 00:00:00',
+				)
+			);
+			return $notifications;
+		}
+
 
 		// Update notifications using async task.
 		if ( empty( $option['update'] ) || ctf_get_current_time() > $option['update'] + DAY_IN_SECONDS ) {
@@ -465,8 +520,10 @@ class CTF_Notifications {
 	 * @since 2.6/5.9
 	 */
 	public function output() {
-		$current_screen = get_current_screen();
 		// if we are one single feed page then return
+		if ( isset( $_GET['feed_id'] ) ) {
+			return;
+		}
 
 		$notifications = $this->get();
 

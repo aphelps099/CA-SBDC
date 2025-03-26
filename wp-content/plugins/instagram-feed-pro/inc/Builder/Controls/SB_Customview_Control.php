@@ -40,7 +40,9 @@ class SB_Customview_Control extends SB_Controls_Base {
 		$this->get_control_shoppable_enabled_output( $controlEditingTypeModel );
 		$this->get_control_shoppable_selected_post_output( $controlEditingTypeModel );
 		$this->get_control_moderation_mode_output( $controlEditingTypeModel );
-
+		$this->get_control_feed_template_output( $controlEditingTypeModel );
+		$this->get_control_feedtheme_output( $controlEditingTypeModel );
+		$this->get_control_likescomments_info_output( $controlEditingTypeModel );
 	}
 
 
@@ -56,15 +58,132 @@ class SB_Customview_Control extends SB_Controls_Base {
 	<div class="sb-control-shoppbale-disabled-ctn sb-control-imginfo-ctn" v-if="control.viewId == 'shoppabledisabled'">
 		<div class="sb-control-imginfo-elem sbi-fb-fs">
 			<div class="sb-control-imginfo-icon sbi-fb-fs" v-html="svgIcons['shoppableDisabled']"></div>
-			<div class="sb-control-imginfo-text sbi-fb-fs" data-textalign="left">
-				<strong class="sb-bold sb-dark-text " v-html="customizeScreensText.shoppableFeedScreen.heading1"></strong>
-				<span v-html="customizeScreensText.shoppableFeedScreen.description1"></span>
+			<div class="sb-control-imginfo-text sbi-fb-fs" data-textalign="left" :data-lef="shouldDisableProFeatures">
+				<strong
+					class="sb-bold sb-dark-text"
+					v-html="customizeScreensText.shoppableFeedScreen.headingRenew"
+					v-if="shouldDisableProFeatures && !sbiLicenseInactiveState"
+					>
+				</strong>
+				<strong 
+					class="sb-bold sb-dark-text" 
+					v-html="customizeScreensText.shoppableFeedScreen.heading1" 
+					v-if="!shouldDisableProFeatures && licenseTierFeatures.includes('shoppable_feeds')"
+					>
+				</strong>
+				<strong
+					class="sb-bold sb-dark-text"
+					v-html="customizeScreensText.shoppableFeedScreen.headingActivate"
+					v-if="sbiLicenseInactiveState"
+					>
+				</strong>
+				<strong 
+					class="sb-bold sb-dark-text" 
+					v-html="customizeScreensText.shoppableFeedScreen.heading3" 
+					v-if="!shouldDisableProFeatures && !licenseTierFeatures.includes('shoppable_feeds')"
+					>
+				</strong>
+				<span v-html="customizeScreensText.shoppableFeedScreen.description1" v-if="!shouldDisableProFeatures && licenseTierFeatures.includes('shoppable_feeds')"></span>
+				<span v-html="customizeScreensText.shoppableFeedScreen.descriptionRenew" v-if="shouldDisableProFeatures || !licenseTierFeatures.includes('shoppable_feeds')"></span>
 			</div>
+			<button class="sb-button-standard sbi-btn sb-btn-blue sbi-fb-fs" @click.prevent.default="viewsActive.extensionsPopupElement = 'shoppablefeed'" v-if="shouldDisableProFeatures || !licenseTierFeatures.includes('shoppable_feeds')">{{genericText.learnMore}}</button>
 		</div>
 	</div>
 		<?php
 	}
 
+	/**
+	 * Feed Templates Output Control
+	 *
+	 *
+	 * @since 4.0
+	 * @access public
+	 *
+	 * @return HTML
+	 */
+	public function get_control_feed_template_output($controlEditingTypeModel){
+		?>
+		<div :class="['sb-control-feedtype-ctn sb-control-feedtemplate-ctn', 'sbi-feedtemplate-' + customizerScreens.printedTemplate.type]" v-if="control.viewId == 'feedtemplate'">
+			<div class="sbi-fb-type-el" v-if="customizerFeedTemplatePrint()"  @click.prevent.default="activateView('feedtemplatesPopup')">
+				<div class="sbi-fb-type-el-img sbi-fb-fs" v-html="svgIcons[customizerScreens.printedTemplate.icon]"></div>
+				<div class="sbi-fb-type-el-info sbi-fb-fs">
+					<strong class="sbi-fb-fs" v-html="getFeedTemplateElTitle(customizerScreens.printedTemplate, true)"></strong>
+				</div>
+			</div>
+			<button class="sb-control-action-button sb-btn sbi-fb-fs sb-btn-grey" @click.prevent.default="activateView('feedtemplatesPopup')">
+				<div v-html="svgIcons['edit']"></div>
+				<span>{{genericText.change}}</span>
+			</button>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Feed Theme Output Control
+	 *
+	 * @since 4.4
+	 * @access public
+	 *
+	 * @return HTML
+	*/
+	public function get_control_feedtheme_output($controlEditingTypeModel) {
+		?>
+		<div id="sb-control-feedtheme" :class="['sb-control-feedtype-ctn sb-control-feedtheme-ctn', 'sbi-feedtheme-' + customizerScreens.printedTheme.type]" v-if="control.viewId == 'feedtheme'">
+			<div class="sbi-fb-type-el" v-if="customizerFeedThemePrint()"  @click.prevent.default="activateView('feedthemePopup')">
+				<div class="sbi-fb-type-el-img sbi-fb-fs">
+					<!-- default -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'default_theme'">
+						<img src="<?php echo esc_url( SBI_PLUGIN_URL . 'admin/assets/img/feed-theme/default_theme.jpg' ); ?>" width="100%" alt="default">
+					</div>
+
+					<!-- modern -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'modern'">
+						<img src="<?php echo esc_url( SBI_PLUGIN_URL . 'admin/assets/img/feed-theme/modern.jpg' ); ?>" width="100%" alt="modern">
+					</div>
+
+					<!-- socila wall -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'social_wall'">
+						<img src="<?php echo esc_url( SBI_PLUGIN_URL . 'admin/assets/img/feed-theme/social_wall.jpg' ); ?>" width="100%" alt="social wall">
+					</div>
+
+					<!-- outline -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'outline'">
+						<img src="<?php echo esc_url( SBI_PLUGIN_URL . 'admin/assets/img/feed-theme/outline.jpg' ); ?>" width="100%" alt="outline">
+					</div>
+
+					<!-- overlap -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'overlap'">
+						<img src="<?php echo esc_url( SBI_PLUGIN_URL . 'admin/assets/img/feed-theme/overlap.jpg' ); ?>" width="100%" alt="overlap">
+					</div>
+
+				</div>
+				<div class="sbi-fb-type-el-info sbi-fb-fs">
+					<strong class="sbi-fb-fs" v-html="customizerScreens.printedTheme.title"></strong>
+				</div>
+			</div>
+			<button class="sb-control-action-button sb-btn sbi-fb-fs sb-btn-grey" @click.prevent.default="activateView('feedthemePopup')">
+				<div>
+					<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M1.175 0.160156L5 3.97682L8.825 0.160156L10 1.33516L5 6.33516L0 1.33516L1.175 0.160156Z" fill="#141B38"/>
+					</svg>
+				</div>
+				<span>{{genericText.change}}</span>
+			</button>
+			<ul class="sb-theme-options" v-if="viewsActive.feedThemeDropdown">
+				<li
+				class="sb-theme-option"
+				v-for="{title, type} in feedThemes"
+				@click.prevent.default="updateFeedThemeCustomizer(type)"
+				@mouseover="themePreview(type)"
+				@mouseleave="themePreviewClear()"
+				>
+					<span>{{title}}</span>
+					<span class="sb-theme-active" v-if="title == customizerScreens.printedTheme.title">{{genericText.active}}</span>
+				</li>
+			</ul>
+		</div>
+		<?php
+	}
 
 	/**
 	 * Shoppable Feed Enabled Output Control
@@ -229,6 +348,24 @@ class SB_Customview_Control extends SB_Controls_Base {
 
 		</div>
 	</div>
+		<?php
+	}
+
+	/**
+	 * Info Output
+	 * 
+	 * @since 6.3
+	 */
+	public function get_control_likescomments_info_output( $controlEditingTypeModel ) {
+		?>
+		<div class="sb-customizer-sidebar-sec-elinfo sbi-fb-fs sb-control-likescommentsinfo-element" v-if="control.viewId == 'likesCommentsInfo' && checkPersonalAccount()">
+			<div class="sb-customizer-sidebar-sec-el-content">
+				<div class="sb-small-p sb-bold sb-dark-text">{{genericText.likesCommentsInfo.heading}}</div>
+				<div class="sb-small-p">{{genericText.likesCommentsInfo.info}}</div>
+				<div class="sb-small-p sb-bold sb-linkText" v-html="genericText.likesCommentsInfo.linkText"></div>
+			</div>
+			<div class="sb-customizer-icon" v-html="svgIcons['likesCommentsSVG']"></div>
+		</div>
 		<?php
 	}
 

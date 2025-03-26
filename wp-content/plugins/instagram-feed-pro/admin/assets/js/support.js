@@ -21,12 +21,26 @@ var support_data = {
     nonce: sbi_support.nonce,
     icons: sbi_support.icons,
     images: sbi_support.images,
-    svgIcons : sbi_support.svgIcons,
+    svgIcons: sbi_svgs,
+    sbiLicenseNoticeActive: (sbi_support.sbiLicenseNoticeActive === '1'),
+    sbiLicenseInactiveState: (sbi_support.sbiLicenseInactiveState === '1'),
+    licenseKey : sbi_support.licenseKey,
+    recheckLicenseStatus: null,
+    licenseBtnClicked : false,
+    viewsActive : {
+        whyRenewLicense : false,
+        licenseLearnMore : false,
+        tempLoginAboutPopup : false
+    },
     notificationElement : {
         type : 'success', // success, error, warning, message
         text : '',
         shown : null
-    }
+    },
+    //Tenmp User Account
+    tempUser : sbi_support.tempUser,
+    createStatus : null,
+    deleteStatus : null
 }
 
 var sbisupport = new Vue({
@@ -37,6 +51,53 @@ var sbisupport = new Vue({
     },
     data: support_data,
     methods: {
+        recheckLicense: function( optionName = null ) {
+			var self = this;
+			var licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+            self.recheckLicenseStatus = 'loading';
+			let data = new FormData();
+            data.append( 'action', 'sbi_recheck_connection' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'option_name', optionName );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if ( data.success == true ) {
+                    if ( data.data.license == 'valid' ) {
+                        this.recheckLicenseStatus = 'success';
+                    }
+                    if ( data.data.license != 'valid' ) {
+                        this.recheckLicenseStatus = 'error';
+                    }
+
+                    setTimeout(function() {
+                        this.recheckLicenseStatus = null;
+						if ( data.data.license == 'valid' ) {
+							licenseNoticeWrapper.remove();
+						}
+                    }.bind(this), 3000);
+                }
+                return;
+            });
+        },
+        recheckBtnText: function( btnName ) {
+			var self = this;
+            if ( self.recheckLicenseStatus == null ) {
+                return self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'loading' ) {
+                return self.svgIcons.loaderSVG + ' ' + self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'success' ) {
+                return self.svgIcons.checkmarkSVG + ' ' + self.genericText.licenseValid;
+            } else if ( self.recheckLicenseStatus == 'error' ) {
+                return self.svgIcons.times2SVG + ' ' + self.genericText.licenseExpired;
+            }
+        },
         copySystemInfo: function() {
             let self = this;
             const el = document.createElement('textarea');
@@ -56,6 +117,29 @@ var sbisupport = new Vue({
                 this.notificationElement.shown =  "hidden";
             }.bind(self), 3000);
         },
+        /**
+		 * Copy text to clipboard
+		 *
+		 * @since 4.0
+		 */
+         copyToClipBoard : function(value){
+			var self = this;
+			const el = document.createElement('textarea');
+			el.className = 'sbi-fb-cp-clpboard';
+			el.value = value;
+			document.body.appendChild(el);
+			el.select();
+			document.execCommand('copy');
+			document.body.removeChild(el);
+			self.notificationElement =  {
+				type : 'success',
+				text : this.genericText.copiedToClipboard,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 3000);
+		},
         expandSystemInfo: function() {
             this.systemInfoBtnStatus = ( this.systemInfoBtnStatus == 'collapsed' ) ? 'expanded' : 'collapsed';
         },
@@ -110,6 +194,66 @@ var sbisupport = new Vue({
             }
         },
         /**
+         * Activate View
+         *
+         * @since 6.2.0
+        */
+         activateView : function(viewName, sourcePopupType = 'creation', ajaxAction = false){
+            var self = this;
+            self.viewsActive[viewName] = (self.viewsActive[viewName] == false ) ? true : false;
+        },
+
+		/**
+		 * Activate license key from license error post grace period header notice
+		 *
+		 * @since 6.2.0
+		 */
+		 activateLicense: function() {
+			var self = this;
+			if ( self.licenseKey == null ) {
+                return;
+			}
+            self.licenseBtnClicked = true;
+            let data = new FormData();
+            data.append( 'action', 'sbi_license_activation' );
+            data.append( 'nonce', sbi_admin.nonce );
+            data.append( 'license_key', self.licenseKey );
+            fetch(sbi_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.licenseBtnClicked = false;
+				if(data && data.success == false) {
+					self.processNotification("licenseError");
+					return;
+				}
+				if( data.success != false ){
+					self.processNotification("licenseActivated");
+				}
+            });
+		},
+        /**
+		 * Loading Bar & Notification
+		 *
+		 * @since 6.2.0
+		 */
+		processNotification : function( notificationType ){
+			var self = this,
+				notification = self.genericText.notification[ notificationType ];
+			self.loadingBar = false;
+			self.notificationElement =  {
+				type : notification.type,
+				text : notification.text,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 5000);
+		},
+        /**
          * Toggle Sticky Widget view
          *
          * @since 4.0
@@ -117,5 +261,73 @@ var sbisupport = new Vue({
          toggleStickyWidget: function() {
             this.stickyWidget = !this.stickyWidget;
         },
+
+        /**
+         * Create New Temp User
+         *
+         * @since 4.0
+         */
+        createTempUser: function() {
+            const self = this;
+            self.createStatus = 'loading';
+            let data = new FormData();
+            data.append( 'action', 'sbi_create_temp_user' );
+            data.append( 'nonce', sbi_admin.nonce );
+            fetch(sbi_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.createStatus = null;
+                if( data.success ){
+                    self.tempUser = data.user;
+                }
+                self.notificationElement =  {
+                    type : data.success === true ? 'success' : 'error',
+                    text : data.message,
+                    shown : "shown"
+                };
+                setTimeout(function(){
+                    self.notificationElement.shown =  "hidden";
+                }, 5000);
+            });
+
+        },
+
+        /**
+         * Delete Temp User
+         *
+         * @since 4.0
+         */
+        deleteTempUser: function() {
+            const self = this;
+            self.deleteStatus = 'loading';
+            let data = new FormData();
+            data.append( 'action', 'sbi_delete_temp_user' );
+            data.append( 'nonce', sbi_admin.nonce );
+            data.append( 'userId', self.tempUser.id );
+            fetch(sbi_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.deleteStatus = null;
+                if( data.success ){
+                    self.tempUser = null;
+                }
+                self.notificationElement =  {
+                    type : data.success === true ? 'success' : 'error',
+                    text : data.message,
+                    shown : "shown"
+                };
+                setTimeout(function(){
+                    self.notificationElement.shown =  "hidden";
+                }, 5000);
+            });
+        }
     },
 })

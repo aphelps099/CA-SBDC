@@ -2,6 +2,9 @@
 
 namespace SmashBalloon\YouTubeFeed\Helpers;
 
+use SmashBalloon\YouTubeFeed\Pro\SBY_API_Connect_Pro;
+use SmashBalloon\YouTubeFeed\SBY_API_Connect;
+
 class Util {
 	public static function isPro() {
 		return defined( 'SBY_PRO' ) && SBY_PRO === true;
@@ -29,6 +32,7 @@ class Util {
 		$allowed_screens = array( 
 			'dashboard', 
 			'toplevel_page_sby-feed-builder',
+			'youtube-feed_page_youtube-feed-setup',
 			'youtube-feed_page_youtube-feed-settings',
 			'youtube-feed_page_youtube-feed-single-videos',
 			'youtube-feed_page_youtube-feed-support',
@@ -210,48 +214,77 @@ class Util {
 	 * Make API request to get channel ID from YouTube handle
 	 */
 	public static function get_channel_id_by_api_request( $url ) {
-		$api_register_url = SBY_API_URL . 'auth/register?url=' . get_home_url();
-		$api_url = SBY_API_URL . 'youtube/handle?channel_url=' . $url;
+		$response = new \stdClass();
+		$path = parse_url($url, PHP_URL_PATH);
+		$basename = basename($path); // This will give you the username part
 
-		// Get Authorization Token
-		$request = wp_remote_post( $api_register_url );
-		if ( is_wp_error( $request ) ) {
-			return;
-		}
-		$response = json_decode( wp_remote_retrieve_body( $request ) );
-		if ( $response->success && empty( $response->token ) || ! $response->success && empty( $response->data->token ) ) {
-			error_log('returning due to empty token');
-			return;
-		}
-		if ( $response->success ) {
-			$api_token = $response->token;
-		} else {
-			$api_token = $response->data->token;
+		if( !empty($basename) ) {
+				$username = strpos($basename, '@') === 0 ? substr($basename, 1) : $basename;
+			
+				$params = array(
+					'channel_handle' => $username
+				);
+
+				$connected_account = sby_get_first_connected_account();
+				$sby_api_connect = new SBY_API_Connect($connected_account, 'channels', $params );
+				$sby_api_connect->connect();
+
+				$data = $sby_api_connect->get_data();
+
+
+				if ( ! $sby_api_connect->is_youtube_error() ) {
+					$channelId = !empty($data['items'][0]['id']) ? $data['items'][0]['id'] : '';
+					$response->channel_id = $channelId;
+			}
 		}
 
-		// Get Channel ID
-		$request = wp_remote_get( $api_url, array(
-			'headers' => array(
-				'Authorization' => 'Bearer ' . $api_token,
-			),
-		));
-		if ( is_wp_error( $request ) ) {
-			return;
-		}
-		$response = json_decode( wp_remote_retrieve_body( $request ) );
+		if( empty($response->channel_id)) {
+			$api_register_url = SBY_API_URL . 'auth/register?url=' . get_home_url();
+			$api_url = SBY_API_URL . 'youtube/handle?channel_url=' . $url;
 
-		self::save_channel_id( $url, $response );
+			// Get Authorization Token
+			$request = wp_remote_post( $api_register_url );
+			if ( is_wp_error( $request ) ) {
+				return;
+			}
+			$response = json_decode( wp_remote_retrieve_body( $request ) );
+			if ( $response->success && empty( $response->token ) || ! $response->success && empty( $response->data->token ) ) {
+				error_log('returning due to empty token');
+				return;
+			}
+			if ( $response->success ) {
+				$api_token = $response->token;
+			} else {
+				$api_token = $response->data->token;
+			}
+
+			// Get Channel ID
+			$request = wp_remote_get( $api_url, array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $api_token,
+				),
+			));
+
+			if ( is_wp_error( $request ) ) {
+				return;
+			}
+
+			$response = json_decode( wp_remote_retrieve_body( $request ) );
+
+		}
+
+		self::cache_saved_channel_id( $url, $response );
 
 		return $response->channel_id;
 	}
 
 	/**
-	 * Save channel ID to database
+	 * Cache saved channel ID to database
 	 * 
 	 * @return void
 	 */
-	public static function save_channel_id( $url, $response ) {
-		$channel_ids = get_option( 'sby_api_channel_ids' );
+	public static function cache_saved_channel_id( $url, $response ) {
+		$channel_ids = get_option( 'sby_saved_channel_ids' );
 		$channel_ids = json_decode( $channel_ids, true );
 
 		if ( empty( $channel_ids ) ) {
@@ -268,16 +301,16 @@ class Util {
 		}
 
 		$channel_ids[ '@' . strtolower($channel_handle) ] = $response->channel_id;
-		update_option( 'sby_api_channel_ids', json_encode( $channel_ids ) );
+		update_option( 'sby_saved_channel_ids', json_encode( $channel_ids ) );
 	}
 
 	/**
-	 * Get channel ID from channel IDs saved in the database
+	 * Get channel ID from saved channel IDs cached in the database
 	 * 
 	 * @return null|string
 	 */
-	public static function get_channel_id( $channel ) {
-		$channel_ids = get_option( 'sby_api_channel_ids' );
+	public static function get_saved_channel_id( $channel ) {
+		$channel_ids = get_option( 'sby_saved_channel_ids' );
 		$channel_ids = json_decode( $channel_ids, true );
 		if ( empty( $channel_ids ) ) {
 			return;
@@ -299,6 +332,26 @@ class Util {
 		}
 
 		return $channel_id;
+	}
+
+	/**
+	 * @return string
+	 *
+	 * @since 2.1.1
+	 */
+	public static function sby_get_resized_uploads_url() {
+		$upload = wp_upload_dir();
+
+		$base_url = $upload['baseurl'];
+		$home_url = home_url();
+
+		if ( strpos( $home_url, 'https:' ) !== false ) {
+			str_replace( 'http:', 'https:', $base_url );
+		}
+
+		$resize_url = apply_filters( 'sby_resize_url', trailingslashit( $base_url ) . trailingslashit( SBY_UPLOADS_NAME ) );
+
+		return $resize_url;
 	}
 
 }

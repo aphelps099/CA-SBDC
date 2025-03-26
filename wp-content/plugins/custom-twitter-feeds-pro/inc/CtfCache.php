@@ -13,7 +13,7 @@ class CtfCache {
 	/**
 	 * @var string
 	 */
-	private $feed_id;
+	public $feed_id;
 
 	/**
 	 * @var int
@@ -99,8 +99,9 @@ class CtfCache {
 	 *
 	 * @return bool|int
 	 */
-	public function set_transient( $transient_name, $value ) {
-		return $this->update_or_insert( $transient_name, $value );
+	public function set_transient( $transient_name, $value, $backup = false, $cron_update = true ) {
+		$this->simultaneous_cache_update($transient_name, $value, $backup, $cron_update);
+		return $this->update_or_insert( $transient_name, $value, $backup, $cron_update );
 	}
 
 	/**
@@ -125,12 +126,19 @@ class CtfCache {
 	 *
 	 * @return bool|int|\mysqli_result|resource|null
 	 */
-	public function update_or_insert( $transient_name, $cache_value, $include_backup = true, $cron_update = true ) {
-		if ( strpos( $this->feed_id, '_CUSTOMIZER' ) !== false ) {
+	public function update_or_insert($transient_name, $cache_value, $include_backup = true, $cron_update = true, $custom_feed_id = null)
+	{
+		$feed_to_update = $custom_feed_id !== null ? $custom_feed_id : $this->feed_id;
+
+		if (strpos($feed_to_update, '_CUSTOMIZER') !== false) {
 			$cron_update = false;
 		}
 
 		if ( ! empty( $this->page ) ) {
+			$cron_update = false;
+		}
+
+		if ($feed_to_update === 'legacy') {
 			$cron_update = false;
 		}
 
@@ -142,7 +150,7 @@ class CtfCache {
 			SELECT * FROM $cache_table_name
 			WHERE feed_id = %s
 			AND cache_key = %s",
-			$this->feed_id,
+			$feed_to_update,
 			$transient_name
 		);
 
@@ -158,7 +166,7 @@ class CtfCache {
 		$format[]             = '%s';
 
 		if ( ! empty( $existing[0] ) ) {
-			$where['feed_id'] = $this->feed_id;
+			$where['feed_id'] = $feed_to_update;
 			$where_format[]   = '%s';
 
 			$where['cache_key'] = $transient_name;
@@ -172,7 +180,7 @@ class CtfCache {
 			$data['cron_update'] = $cron_update === true ? 'yes' : '';
 			$format[]            = '%s';
 
-			$data['feed_id'] = $this->feed_id;
+			$data['feed_id'] = $feed_to_update;
 			$format[]        = '%s';
 
 			$affected = $wpdb->insert( $cache_table_name, $data, $format );
@@ -188,7 +196,7 @@ class CtfCache {
 	 */
 	private function query_ctf_feed_caches( $transient_name ) {
 		$feed_cache = wp_cache_get( $transient_name );
-		if ( false === $feed_cache ) {
+		if ( false === $feed_cache || ! is_array( $feed_cache ) ) {
 			global $wpdb;
 			$cache_table_name = $wpdb->prefix . 'ctf_feed_caches';
 
@@ -219,5 +227,30 @@ class CtfCache {
 		}
 
 		return $additional_suffix;
+	}
+
+	/**
+	 * Update or insert
+	 * In case of default cache update
+	 * We will update the Customizer cache too & vice versa
+	 * Reduce the number of API calls
+	 *
+	 * @param string $transient_name
+	 * @param string $cache_value
+	 * @param bool $include_backup
+	 * @param bool $cron_update
+	 *
+	 * @return void
+	 */
+	private function simultaneous_cache_update($transient_name, $value, $backup, $cron_update)
+	{
+		$feed_to_update = $this->feed_id;
+		//Check the Type of Transient, we create the other
+		if (strpos( $this->feed_id, '_CUSTOMIZER' ) !== false) {
+			$feed_to_update = str_replace('_CUSTOMIZER', '', $this->feed_id);
+		} else {
+			$feed_to_update .= '_CUSTOMIZER';
+		}
+		$this->update_or_insert($transient_name, $value, $backup, $cron_update, $feed_to_update);
 	}
 }

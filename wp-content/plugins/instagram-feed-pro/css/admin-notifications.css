@@ -169,7 +169,6 @@
 }
 
 #sbi-notifications .navigation a {
-  display: block;
   width: 32px;
   height: 32px;
   border: 1px solid #DCDDE1;
@@ -214,6 +213,11 @@
   color: #8C8F9A;
   cursor: default;
 }
+
+#sbi-notifications .navigation .disabled img {
+  opacity: 0.4;
+}
+
 @media screen and (max-width: 880px) {
   #sbi-notifications .messages .message .buttons {
     flex-wrap: wrap;

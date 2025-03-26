@@ -7,6 +7,8 @@
  * @since 6.0
  */
 
+use InstagramFeed\SB_Instagram_Data_Encryption;
+
 class SB_Instagram_Cache {
 
 	/**

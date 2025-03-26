@@ -14,6 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use InstagramFeed\Helpers\Util;
+use InstagramFeed\SB_Instagram_Data_Encryption;
 
 class SB_Instagram_Feed
 {
@@ -71,6 +72,11 @@ class SB_Instagram_Feed
 	 * @var int
 	 */
 	private $num_api_calls;
+
+	/**
+	 * @var int
+	 */
+	private $max_api_calls;
 
 	/**
 	 * @var array
@@ -169,7 +175,9 @@ class SB_Instagram_Feed
 	}
 
 	public function set_cache( $cache_seconds, $settings, $feed_id = false ) {
-		$feed_id = $this->regular_feed_transient_name;
+		if ( ! $feed_id ) {
+			$feed_id = $this->regular_feed_transient_name;
+		}
 
 		$feed_page = 1;
 		$this->encryption = new SB_Instagram_Data_Encryption();
@@ -339,7 +347,7 @@ class SB_Instagram_Feed
 	public function set_post_data_from_cache( $atts = array() ) {
 		$posts_json = $this->cache->get( 'posts' );
 
-		$posts_data = json_decode( $posts_json, true );
+		$posts_data = $posts_json !== null ? json_decode( $posts_json, true ) : false;
 
 		if ( $posts_data ) {
 			$post_data = isset( $posts_data['data'] ) ? $posts_data['data'] : array();
@@ -476,7 +484,7 @@ class SB_Instagram_Feed
 
 				$id_string = "'" . implode( "','", $ids ) . "'";
 				$results = $wpdb->get_results( "
-			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes
+			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes, p.mime_type
 			FROM $posts_table_name AS p
 			INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 			WHERE p.instagram_id IN($id_string)
@@ -486,14 +494,17 @@ class SB_Instagram_Feed
 				if ( !empty( $results ) && is_array( $results ) ) {
 
 					foreach ( $results as $result ) {
-						$sizes = maybe_unserialize( $result['sizes'] );
+						$sizes = Util::safe_unserialize( $result['sizes'] );
 						if ( ! is_array( $sizes ) ) {
 							$sizes = array( 'full' => 640 );
 						}
+						$extension = isset( $result['mime_type'] ) &&  $result['mime_type'] === 'image/webp'
+							? '.webp' : '.jpg';
 						$return[ $result['instagram_id'] ] = array(
 							'id' => $result['media_id'],
 							'ratio' => $result['aspect_ratio'],
-							'sizes' => $sizes
+							'sizes' => $sizes,
+							'extension' => $extension
 						);
 					}
 
@@ -503,7 +514,7 @@ class SB_Instagram_Feed
 				$num = $num_or_array_of_ids;
 
 				$results = $wpdb->get_results( $wpdb->prepare( "
-			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes
+			SELECT p.media_id, p.instagram_id, p.aspect_ratio, p.sizes, p.mime_type
 			FROM $posts_table_name AS p
 			INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 			WHERE f.feed_id = %s
@@ -515,14 +526,17 @@ class SB_Instagram_Feed
 				if ( !empty( $results ) && is_array( $results ) ) {
 
 					foreach ( $results as $result ) {
-						$sizes = maybe_unserialize( $result['sizes'] );
+						$sizes = Util::safe_unserialize( $result['sizes'] );
 						if ( ! is_array( $sizes ) ) {
 							$sizes = array( 'full' => 640 );
 						}
+						$extension = isset( $result['mime_type'] ) &&  $result['mime_type'] === 'image/webp'
+							? '.webp' : '.jpg';
 						$return[ $result['instagram_id'] ] = array(
 							'id' => $result['media_id'],
 							'ratio' => $result['aspect_ratio'],
-							'sizes' => $sizes
+							'sizes' => $sizes,
+							'extension' => $extension
 						);
 					}
 
@@ -787,7 +801,7 @@ class SB_Instagram_Feed
 						}
 					} else {
 
-						if ( $this->can_try_another_request( $type, $connected_accounts_for_feed[ $term ] ) ) {
+						if ( ! $connection->is_wp_error() && $this->can_try_another_request( $type, $connected_accounts_for_feed[ $term ] ) ) {
 							$this->add_report( 'trying other accounts' );
 							$i = 0;
 							$attempted = array( $connected_accounts_for_feed[ $term ]['access_token'] );
@@ -799,7 +813,9 @@ class SB_Instagram_Feed
 									&& ! $success
 									&& $this->can_try_another_request( $type, $connected_accounts_for_feed[ $term ], $i ) ) {
 								$different = $this->get_different_connected_account( $type, $attempted );
-								$this->add_report( 'trying the account ' . $different['user_id'] );
+								if ( ! empty( $different['user_id'] ) ) {
+									$this->add_report( 'trying the account ' . $different['user_id'] );
+								}
 
 								if ( $different ) {
 									$connected_accounts_for_feed[ $term ] = $this->get_different_connected_account( $type, $attempted );
@@ -950,13 +966,14 @@ class SB_Instagram_Feed
 				$this->header_data['local_avatar'] = false;
 				$sb_instagram_posts_manager->remove_error( 'connection', $connected_accounts_for_feed[ $first_user ] );
 
-				if ( ! empty( $connected_accounts_for_feed[ $first_user ]['local_avatar_url'] ) ) {
-					$this->header_data['local_avatar'] = $connected_accounts_for_feed[ $first_user ]['local_avatar_url'];
-				}
-				if ( empty( $this->header_data['bio'] )
-					 && isset( $connected_accounts_for_feed[ $first_user ]['bio'] ) ) {
+				$single_source = InstagramFeed\Builder\SBI_Source::update_single_source( $connected_accounts_for_feed[ $first_user ] );
 
-					$this->header_data['bio'] = sbi_decode_emoji( $connected_accounts_for_feed[ $first_user ]['bio'] );
+				if ( ! empty( $single_source['local_avatar_url'] ) ) {
+					$this->header_data['local_avatar'] = $single_source['local_avatar_url'];
+				}
+
+				if( isset( $this->header_data['biography'] ) && ! empty( $this->header_data['biography'] ) ) {
+					$this->header_data['bio'] = sbi_decode_emoji( $this->header_data['biography'] );
 				}
 			} else {
 				$this->should_use_backup = true;
@@ -1159,13 +1176,13 @@ class SB_Instagram_Feed
 	 *
 	 * @since 2.0/5.0
 	 */
-	public function get_the_feed_html( $settings, $atts, $feed_types_and_terms, $connected_accounts_for_feed ) {
+	public function get_the_feed_html( $settings, $atts, $feed_types_and_terms, $connected_accounts_for_feed, $moderation_posts = false ) {
 		global $sb_instagram_posts_manager;
 
 		if ( empty( $this->post_data ) && ! empty( $connected_accounts_for_feed ) && $settings['minnum'] > 0 ) {
 			$this->handle_no_posts_found( $settings, $feed_types_and_terms );
 		}
-		$posts = array_slice( $this->post_data, 0, $settings['minnum'] );
+		$posts = $moderation_posts !== false ? $moderation_posts : array_slice( $this->post_data, 0, $settings['minnum'] );
 		$header_data = ! empty( $this->header_data ) ? $this->header_data : false;
 
 		$first_user = ! empty( $feed_types_and_terms['users'][0] ) ? $feed_types_and_terms['users'][0]['term'] : false;
@@ -1194,7 +1211,8 @@ class SB_Instagram_Feed
 
 
 		$other_atts .= ' data-postid="' . esc_attr( get_the_ID() ) . '"';
-		$other_atts .= ' data-locatornonce="' . esc_attr( wp_create_nonce( 'sbi-locator-nonce-' . get_the_ID() . '-' . $this->regular_feed_transient_name ) ) . '"';
+		$nonce_suffix = ! empty( $settings['moderationmode'] ) ? '' : $this->regular_feed_transient_name;
+		$other_atts .= ' data-locatornonce="' . esc_attr( wp_create_nonce( 'sbi-locator-nonce-' . get_the_ID() . '-' . $nonce_suffix ) ) . '"';
 
 		$other_atts = $this->add_other_atts( $other_atts, $settings );
 
@@ -1397,7 +1415,7 @@ class SB_Instagram_Feed
 	 *
 	 * @since 2.0/5.0
 	 */
-	protected function filter_posts( $post_set, $settings = array() ) {
+	public function filter_posts( $post_set, $settings = array() ) {
 		// array_unique( $post_set, SORT_REGULAR);
 
 		return $post_set;
@@ -1714,6 +1732,7 @@ class SB_Instagram_Feed
 			$return_post_set = $post_set;
 
 		} else {
+
 			// compares posted on dates of posts
 			usort($post_set, 'sbi_date_sort' );
 			$return_post_set = $post_set;
@@ -1774,8 +1793,7 @@ class SB_Instagram_Feed
 	 *
 	 * @since 6.0
 	 */
-
-	function get_feed_container_css_classes( $settings ){
+	public function get_feed_container_css_classes( $settings ){
 		$customizer = $settings['customizer'];
 		if($customizer){
 

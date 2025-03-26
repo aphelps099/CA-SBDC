@@ -3,6 +3,7 @@
 namespace CustomFacebookFeed\Helpers;
 
 /** \WP_Upgrader_Skin class */
+
 require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader-skin.php';
 
 /**
@@ -12,15 +13,16 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader-skin.php';
  *
  * @since 1.5.6.1
  */
-class PluginSilentUpgraderSkin extends \WP_Upgrader_Skin {
-
+class PluginSilentUpgraderSkin extends \WP_Upgrader_Skin
+{
 	/**
 	 * Empty out the header of its HTML content and only check to see if it has
 	 * been performed or not.
 	 *
 	 * @since 1.5.6.1
 	 */
-	public function header() {
+	public function header()
+	{
 	}
 
 	/**
@@ -28,7 +30,8 @@ class PluginSilentUpgraderSkin extends \WP_Upgrader_Skin {
 	 *
 	 * @since 1.5.6.1
 	 */
-	public function footer() {
+	public function footer()
+	{
 	}
 
 	/**
@@ -41,7 +44,8 @@ class PluginSilentUpgraderSkin extends \WP_Upgrader_Skin {
 	 *
 	 * @return array
 	 */
-	public function error( $errors ) {
+	public function error($errors)
+	{
 		return $errors;
 	}
 
@@ -52,6 +56,7 @@ class PluginSilentUpgraderSkin extends \WP_Upgrader_Skin {
 	 *
 	 * @param string $type Type of update count to decrement.
 	 */
-	public function decrement_update_count( $type ) {
+	public function decrement_update_count($type)
+	{
 	}
 }

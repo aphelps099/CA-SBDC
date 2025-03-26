@@ -1,13 +1,13 @@
-=== Feeds for YouTube Pro ===
+=== Feeds for YouTube Pro Business ===
 Author: Smash Balloon
 Contributors: smashballoon, craig-at-smash-balloon
 Support Website: http://smashballoon/youtube-feed/
 Tags: YouTube, YouTube feed, YouTube widget, YouTube player, YouTube gallery
 Requires at least: 4.1
-Tested up to: 6.3
-Stable tag: 2.2.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires PHP: 7.4
+Tested up to: 6.7
+Stable tag: 2.6.0
+License: Non-distributable, Not for resale
 
 Feeds for YouTube Pro allows you to display completely customizable YouTube feeds from any channel.
 
@@ -49,8 +49,8 @@ For simple step-by-step directions on how to set up the Feeds for YouTube Pro pl
 1. Install the Feeds for YouTube Pro plugin either via the WordPress plugin directory, or by uploading the files to your web server (in the /wp-content/plugins/ directory).
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Navigate to the 'Feeds for YouTube Pro' settings page to configure your YouTube gallery.
-4. Use the shortcode [youtube-feed] in your page, post or widget to display your feed.
-5. You can display multiple YouTube channels with different configurations by specifying the necessary parameters directly in the shortcode: [youtube-feed channel=smashballoon].
+4. Use the shortcode [youtube-feed feed=1] in your page, post or widget to display your feed.
+5. You can display multiple YouTube channels with different configurations by creating additional feeds specifying the feed ID directly in the shortcode: [youtube-feed feed=2].
 
 For simple step-by-step directions on how to set up the Feeds for YouTube Pro plugin please refer to our [setup guide](http://smashballoon.com/youtube-feed/docs/setup/ 'Feeds for YouTube Pro setup guide').
 
@@ -84,7 +84,7 @@ The Feeds for YouTube Pro plugin is brand new and so we're currently working on 
 
 = Can I display multiple YouTube feeds on my site or on the same page? =
 
-Yep. You can display multiple YouTube feeds by using our built-in shortcode options, for example: `[youtube-feed channel="smashballoon" num=3]`.
+Yep. You can display multiple YouTube feeds by using our built-in shortcode options, for example: `[youtube-feed feed=2]`.
 
 = How do I embed a YouTube gallery directly into a WordPress page template? =
 
@@ -105,6 +105,79 @@ The Feeds for YouTube Pro plugin should work in compatibility with most, if not 
 7. To display a feed just copy and paste the shortcode into a widget or page
 
 == Changelog ==
+
+= 2.6.0 =
+* New: Added support for a new GDPR consent plugin (WPConsent)[https://wpconsent.com/?utm_campaign=youtube-free-readme&utm_source=changelog&utm_medium=wpconsentannouncement]
+* New: Added support for GDPR Cookie Compliance by Moove Agency and Real Cookie Banner GDPR plugins.
+* Fix: Resolved an issue that sometimes prevented past live streams from appearing in the feed.
+
+= 2.5.2 =
+* Fix: Fixed an issue preventing Social Wall from showing YouTube stats.
+* Fix: Fixed an issue with our GDPR features and the wrong videos being linked to.
+
+= 2.5.1 =
+* Fix - Fixed an issue with a file name causing YouTube Feeds to be undetectable by Social Wall.
+
+= 2.5 =
+* Tweak - Added easy installers for our latest Smash Balloon Products. Try [ClickSocial](https://clicksocial.com/?utm_source=plugin-free&utm_campaign=sby&utm_medium=readme&utm_content=ClickSocial), [Reviews Feed](https://smashballoon.com/reviews-feed/?utm_source=plugin-free&utm_campaign=sby&utm_medium=readme&utm_content=ReviewsFeed), and [TikTok Feeds](https://smashballoon.com/tiktok-feeds/?utm_source=plugin-free&utm_campaign=sby&utm_medium=readme&utm_content=TikTok) today!
+* Fix - PHP warning related to _load_textdomain_just_in_time are now resolved
+* Fix - Fixed an issue with the profile picture when showing a Livestream feed.
+* Fix - Improved compatibility with the latest versions of Divi and Elementor. Use our related integrations to easily add your feeds to your site!
+
+= 2.4.2 =
+* Tweak: Added support for our new [Feed Analytics](https://smashballoon.com/?utm_campaign=youtube-pro-readme&utm_source=changelog&utm_medium=feedanalyticsannouncement) product. Get insights as to how your feeds are being used by site visitors.
+* Fix: Fixed an issue with video playback when Elementor was being used.
+* Fix: Fixed an issue with the feed customizer when previewing the carousel layout.
+* Fix: Fixed PHP deprecation warnings related to the use of dynamic properties.
+* Fix: Fixed an issue with HTML rendering affecting specific hosts.
+* Fix: Fixed a PHP error that would occur for some users related to listing sources.
+
+= 2.4.1 =
+* Fix: Resolved a fatal error that occurred when previewing a single video.
+
+= 2.4 =
+New: Added support for displaying video comments. Show the latest comments from your viewers in the lightbox or below the video in video lists.
+Fix: Plugin hardening.
+Tweak: Improved translation support for multiple languages.
+Tweak: Added support for Borlabs 3.0 and our GDPR features.
+
+= 2.3.3 =
+* New: Added feature to show comments for each video.
+* Fix: Subscribe button icon color inherit.
+* Fix: Subscribe button color naming.
+
+= 2.3.2 =
+* Fix: Fixed an issue that caused some feed templates to not be accessible for all license tiers.
+
+= 2.3.1 =
+* Fix: Plugin hardening.
+* Fix: Viewing stats were not displaying for the "Basic" tier.
+* Tweak: Removed JavaScript mapping that was causing a reference to a compromised URL in a comment (there was no real security risk but it was being flagged by WordFence).
+
+= 2.3 =
+* New: Added support for displaying YouTube feeds using an Elementor widget and Divi modules.
+* Fix: Fixed the text and icon alignment in the header when both the subscribers and description were hidden.
+* Fix: After clicking a video thumbnail in the gallery layout, site visitors are automatically scrolled to the video player.
+* Fix: JSON feed import feature has been fixed.
+* Fix: Settings page link has been added to the plugins page action buttons.
+* Fix: Single videos were having incorrect URLs.
+* Fix: Single videos were displaying warnings on post previews.
+* Fix: Fixed a conflict with WP Engine and the plugin notifications.
+* Fix: Plugin hardening.
+
+= 2.2.4 =
+* Fix: Plugin hardening.
+
+= 2.2.3 =
+* Fix: Fixed an issue causing the next update schedule time found on the settings page to be inaccurate.
+* New: Added a setting to show past live streams when using the live streams feed type. This is found when editing the feed type in the customizer.
+
+= 2.2.2 =
+* Fix: Plugin hardening.
+* Fix: Removed unused files in the "templates" folder.
+* Fix: Fixed a deprecation notice in PHP 8.1+ "strpos(): Passing null to parameter #1 ($haystack) of type string is deprecated"
+* Fix: Custom text that included single quotes would show with slashes on the front-end of the feed.
+
 = 2.2.1 =
 * Fix: Fixed PHP error affecting single video posts Class 'SmashBalloon\YouTubeFeed\SBY_CPT' not found
 

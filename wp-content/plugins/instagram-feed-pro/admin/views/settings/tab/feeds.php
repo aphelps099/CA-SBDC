@@ -29,7 +29,7 @@
         <div class="tab-label">
             <h3>
                 {{feedsTab.gdprBox.title}}
-                <span class="sb-tooltip-info gdpr-tooltip" id="sbi-tooltip" v-html="tooltipHelpSvg"   @mouseover.prevent.default="toggleElementTooltip(feedsTab.gdprBox.tooltip, 'show', 'left')" @mouseleave.prevent.default="toggleElementTooltip('', 'hide')"></span>
+                <span class="sb-tooltip-info gdpr-tooltip" id="sbi-tooltip" v-html="tooltipHelpSvg" @mouseover.prevent.default="toggleElementTooltip(feedsTab.gdprBox.tooltip, 'show', 'left')" @mouseleave.prevent.default="toggleElementTooltip('', 'hide')"></span>
             </h3>
         </div>
         <div class="sbi-tab-form-field">
@@ -44,7 +44,7 @@
                 <div class="help-text" v-if="model.feeds.gdpr == 'auto'" :class="['gdpr-help-text-' + model.feeds.gdpr, {'sb-gdpr-active': model.feeds.gdprPlugin}]">
                     <span class="gdpr-active-icon" v-if="model.feeds.gdprPlugin">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10.0003 1.66667C5.41699 1.66667 1.66699 5.41667 1.66699 10C1.66699 14.5833 5.41699 18.3333 10.0003 18.3333C14.5837 18.3333 18.3337 14.5833 18.3337 10C18.3337 5.41667 14.5837 1.66667 10.0003 1.66667ZM8.33366 14.1667L4.16699 10L5.34199 8.82501L8.33366 11.8083L14.6587 5.48334L15.8337 6.66667L8.33366 14.1667Z" fill="#59AB46"/>
+                            <path d="M10.0003 1.66667C5.41699 1.66667 1.66699 5.41667 1.66699 10C1.66699 14.5833 5.41699 18.3333 10.0003 18.3333C14.5837 18.3333 18.3337 14.5833 18.3337 10C18.3337 5.41667 14.5837 1.66667 10.0003 1.66667ZM8.33366 14.1667L4.16699 10L5.34199 8.82501L8.33366 11.8083L14.6587 5.48334L15.8337 6.66667L8.33366 14.1667Z" fill="#59AB46" />
                         </svg>
                     </span>
                     <div v-html="feedsTab.gdprBox.infoAuto" :class="{'sb-text-bold': model.feeds.gdprPlugin}"></div>
@@ -65,7 +65,23 @@
             </div>
         </div>
     </div>
-    <div class="sb-tab-box sb-custom-css-box sb-reset-box-style clearfix">
+    <div class="sb-tab-box sb-deprecate-notice clearfix" v-if="deprecateCustomSnippets()">
+        <div class="sb-notice-content">
+            <p class="sb-notice-title">{{feedsTab.customSnippetsDeprecation.title}}</p>
+            <p class="sb-notice-description">{{feedsTab.customSnippetsDeprecation.info}}</p>
+        </div>
+        <div class="sb-notice-action">
+            <button class='sb-btn sb-btn-secondary' @click.prevent.default="installMigrateSnippets()">
+                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" v-if="!loading">
+                    <path d="M12.5 9.99996V12H4.49996V9.99996H3.16663V12C3.16663 12.7333 3.76663 13.3333 4.49996 13.3333H12.5C13.2333 13.3333 13.8333 12.7333 13.8333 12V9.99996H12.5ZM11.8333 7.33329L10.8933 6.39329L9.16663 8.11329V2.66663H7.83329V8.11329L6.10663 6.39329L5.16663 7.33329L8.49996 10.6666L11.8333 7.33329Z" fill="black" />
+                </svg>
+                <span v-if="loading && pressedBtnName === 'sbi'" v-html="loaderSVG"></span>
+                {{sbi_settings.wpCode.pluginInstalled ? (sbi_settings.wpCode.pluginActive ? feedsTab.customSnippetsDeprecation.migrateButton : feedsTab.customSnippetsDeprecation.activateButton) : feedsTab.customSnippetsDeprecation.installButton}}
+
+            </button>
+        </div>
+    </div>
+    <div class="sb-tab-box sb-custom-css-box sb-reset-box-style clearfix" v-if="deprecateCustomSnippets()">
         <div class="tab-label">
             <h3>{{feedsTab.customCSSBox.title}}</h3>
         </div>
@@ -77,7 +93,7 @@
             </div>
         </div>
     </div>
-    <div class="sb-tab-box sb-custom-js-box clearfix">
+    <div class="sb-tab-box sb-custom-js-box clearfix" v-if="deprecateCustomSnippets()">
         <div class="tab-label">
             <h3>{{feedsTab.customJSBox.title}}</h3>
         </div>

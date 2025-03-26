@@ -205,7 +205,7 @@ Buttons
     letter-spacing: 0;
 }
 
-#ctf-builder-app h4:not(#sb_instagram h5) {
+#ctf-builder-app h4 {
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -256,8 +256,14 @@ Buttons
     line-height: 150%;
     color: #141B38;
 }
+#ctf-builder-app .sb-caption a {
+    text-decoration: underline;
+}
 #ctf-builder-app .sb-caption.sb-caption-lighter {
     color: #5F6368;
+}
+#ctf-builder-app .sb-caption span.sb-text-capital {
+    text-transform: capitalize;
 }
 
 #ctf-builder-app .sb-small {
@@ -418,7 +424,8 @@ Social Links
     outline: none;
 }
 #wpcontent,
-.facebook-feed_page_ctf-feed-builder #wpcontent{
+.twitter-feed_page_ctf-feed-builder #wpcontent,
+.twitter-feed-1_page_ctf-feed-builder #wpcontent{
     padding-left: 0px;
 }
 #wpfooter{
@@ -465,6 +472,7 @@ Header
     background: #fff;
     padding: 0px 52px;
     z-index: 99;
+    overflow: hidden;
 }
 .ctf-fb-header-left {
     display: flex;
@@ -1035,7 +1043,6 @@ Welcome Screen Empty State
     background: #f3f4f5;
     border: 3px solid #f3f4f5;
     border-right: 1px solid #fff;
-    margin-right: 30px;
 }
 .ctf-fb-type-el[data-active="true"] .ctf-fb-type-el-img{
     border: 1px solid #F1F1F1;
@@ -1047,19 +1054,41 @@ Welcome Screen Empty State
 .ctf-fb-adv-types .ctf-fb-type-el-img{
     background: #FCF4EF;
 }
-.ctf-fb-type-el-info{
+.ctf-fb-type-el-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
     flex: 1 1 auto;
-    padding: 0 20px;
-    padding-right: 50px;
+    padding: 0px 20px 0 40px;
+    height: 100%;
+    justify-content: center;
+}
+[data-disable-pro="true"] .ctf-fb-types-list .ctf-fb-type-el[data-type="search"],
+[data-disable-pro="true"] .ctf-fb-types-list .ctf-fb-type-el[data-type="mentionstimeline"],
+[data-disable-pro="true"] .ctf-fb-types-list .ctf-fb-type-el[data-type="lists"],
+[data-disable-pro="true"] .ctf-fb-types-list .ctf-fb-type-el[data-type="socialwall"] {
+    background: #d8d9dc;
+    opacity: .8;
 }
 .ctf-fb-type-el-link{
     font-size: 13px;
     font-weight: 400;
     margin-bottom: 5px;
+}
+.sb-breadcrumb-pro-label {
+    color: #fff !important;
+    display: inline-block;
+    background: var(--cl-orange);
+    padding: 5px 8px;
+    font-size: 11px;
+    line-height: 1em !important;
+    border-radius: 4px;
+    -webkit-transform: translateX(5px) translateY(-4px);
+    transform: translateX(8px) translateY(-2px);
+}
+.sb-control-elem-description a {
+    cursor: pointer;
 }
 .ctf-fb-type-el-info .sb-caption{
     font-size: 13px!important;
@@ -1078,9 +1107,6 @@ Welcome Screen Empty State
     margin: 0px;
 }
 
-#ctf-builder-app .ctf-fb-type-el[data-active="true"] .ctf-fb-type-el-info {
-
-}
 #ctf-builder-app .ctf-fb-type-el p svg {
     width: 14px;
     height: 14px;
@@ -1132,6 +1158,7 @@ Welcome Screen Empty State
     margin-right: auto;
     height: auto;
     padding: 7px 37px 7px 36px;
+    transition: none;
 }
 .ctf-fb-slctf-back svg,
 .ctf-fb-slctf-nxt svg {
@@ -1974,8 +2001,22 @@ Source Screen
     bottom: 0;
     z-index: 1;
 }
-.ctf-fb-extensions-popup{
-
+.ctf-fb-extpp-info .ctf-extpp-license-notice {
+    margin-bottom: 7px;
+}
+.ctf-fb-extpp-info .ctf-fb-extpp-head{
+    margin-bottom: 8px;
+}
+.ctf-fb-extpp-info .ctf-extpp-license-notice span {
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 160%;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background: #D72C2C;
+    border-radius: 2px;
+    padding: 2px 5px;
 }
 .ctf-fb-extpp-top{
     display: flex;
@@ -2395,6 +2436,23 @@ tbody .ctf-fd-lst-chkbx {
 .ctf-fd-lst-type{
     display: block;
     text-transform: capitalize;
+}
+.ctf-fd-lst-type .ctf-feed-last-updated {
+    margin-left: 8px;
+    position: relative;
+}
+.ctf-fd-lst-type .ctf-feed-last-updated {
+    text-transform: initial;
+}
+.ctf-fd-lst-type .ctf-feed-last-updated:after {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 8px;
+    width: 2px;
+    height: 2px;
+    background: #434960;
+    border-radius: 10px;
 }
 .sb-instances-cell {
     margin-top: 4px;
@@ -3025,7 +3083,7 @@ Controls Style
 	position: absolute!important;
 	left: 0!important;
 	top: 0!important;
-	z-index: 3!important;
+	z-index: 9!important;
     background: rgba(255,255,255,0.4)!important;
 }
 #ctf-builder-app .sb-control-elem-ctn[data-type="heading"] .sb-small-p{
@@ -4487,7 +4545,18 @@ width: calc(100% - 20px);
     fill: #0096CC;
     margin-right: 6px;
 }
-
+.ctf-feedtype-section[data-type="lists"] .ctf-fb-wh-inp{
+    margin: 20px 0px 10px;
+}
+.ctf-feedtype-section[data-type="lists"] .ctf-feedtype-sec-wrap .ctf-feedtype-sec-desc{
+    margin-bottom: 0px;
+}
+.ctf-feedtype-section .ctf-feedtype-sec-wrap .ctf-feedtype-sec-desc .ctf-strong-highlight {
+    background-color: #fff7e5;
+    color: #995c00;
+    font-weight: normal;
+    font-size: 14px;
+}
 .ctf-feedtype-sec-icon-heading span{
     color: #141B38;
     font-weight:600;
@@ -5472,4 +5541,588 @@ color: #fff!important;
 }
 [data-preview-device="mobile"] [data-header-size="small"] .ctf-header-type-text{
     font-size: 28px!important;
+}
+
+/* Expired License Why Renew Popup */
+.ctf-license-why-renew .ctf-license-popup {
+    width: 1166px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.ctf-license-why-renew .ctf-license-popup .sb-llm-header p {
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 160%;
+	color: #434960;
+	margin-top: 0;
+}
+.ctf-license-why-renew .ctf-license-popup .sb-why-renew-list-parent {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+.ctf-license-why-renew .ctf-license-popup .sb-why-renew-list {
+    width: calc((100% / 2) - 0px);
+    box-sizing: border-box;
+    padding-left: 50px;
+    position: relative;
+    margin-bottom: 49px;
+    padding-right: 40px;
+}
+.ctf-license-why-renew .sb-why-renew-list .sb-icon {
+    position: absolute;
+    left: 0px;
+}
+#ctf-builder-app .ctf-license-why-renew .sb-why-renew-list .sb-list-item h4{
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 26px;
+    color: #141B38;
+    margin: 0px;
+    text-align: left;
+}
+#ctf-builder-app .ctf-license-why-renew .sb-why-renew-list .sb-list-item p {
+    font-size: 14px;
+    line-height: 22px;
+    margin: 3px 0 0;
+    text-align: left;
+    color: #676c80;
+}
+#ctf-builder-app .ctf-license-why-renew .sb-why-renew-list .sb-list-item h4 {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 26px;
+    color: #141B38;
+    margin: 0px;
+    text-align: left;
+}
+/* End Expired License Why Renew Popup */
+
+/* Learn More Modal for License DRM */
+.ctf-license-learn-more {
+    backdrop-filter: blur(2px);
+}
+.ctf-license-learn-more .ctf-license-popup {
+	border-top: 5px solid #D72C2C;
+	width: 1166px;
+	padding: 55px 50px;
+	box-sizing: border-box;
+	background-color: #fff;
+	position: relative;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-header h2 {
+	font-weight: 600;
+	font-size: 36px;
+	line-height: 125%;
+	margin: 2px 0px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-header p {
+	font-weight: 400;
+    font-size: 16px;
+    line-height: 160%;
+    margin-top: 8px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits {
+	display: flex;
+	gap: 10px;
+	margin-top: 22px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block {
+	padding: 16px 24px 20px 70px;
+	border: 1px solid #E8E8EB;
+	border-radius: 8px;
+	position: relative;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block h4 {
+	font-size: 14px !important;
+	line-height: 160% !important;
+	margin: 4px 0 !important;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block .sb-icon {
+	position: absolute;
+	left: 19px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block p {
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 160%;
+    color: #434960;
+    margin-top: 0px;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form {
+	background: #F9F9FA;
+	border-bottom: 1px solid #DCDDE1;
+	border-radius: 6px;
+	padding: 33px 32px;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form h3 {
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 120%;
+	margin: 0px;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin-top: 0;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-input {
+	padding: 9px 16px;
+	width: 483px;
+	height: 50px;
+	background: #FFFFFF;
+	border: 1px solid #D0D1D7;
+	border-radius: 1px;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 160%;
+	color: #8C8F9A;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-modal-license-key-form{
+	display: flex;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-input::placeholder {
+	color: #8C8F9A;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-btn-license-activate {
+    background: #0068A0;
+    border-radius: 2px;
+    padding: 11px 24px;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-btn-license-activate span {
+	margin-right: 4px;
+	height: 20px;
+	display: inline;
+}
+.ctf-license-learn-more .sb-llm-license-key-block {
+	background: #FFFFFF;
+	border: 1px solid #DCDDE1;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	border-radius: 6px;
+	margin-top: 15px;
+}
+.ctf-license-learn-more .sb-llm-lk-footer {
+	text-align: center;
+}
+.ctf-license-learn-more .sb-llm-lk-footer p {
+	margin: 0px;
+	font-size: 14px;
+	line-height: 160%;
+	color: #141B38;
+	padding: 6px 0;
+}
+.ctf-license-learn-more .sb-llm-lk-footer a {
+	font-weight: 600;
+	color: #0068A0;
+	margin-left: 12px;
+	text-decoration: none;
+}
+.ctf-license-learn-more .sb-llm-lk-footer a:focus {
+	outline: none;
+}
+/* End Learn More Modal for License DRM */
+.ctf-builder-app-lite-dismiss #ctf-license-expired-agp {
+    position: fixed!important;
+    top: 32px;
+    width: 100%;
+    z-index: 999;
+    left: 0;
+}
+.ctf-builder-app-lite-dismiss .ctf-fb-header {
+    top: 64px;
+}
+.ctf-builder-app-lite-dismiss .sb-customizer-sidebar {
+    top: 128px;
+}
+.ctf-builder-app-lite-dismiss .sb-customizer-preview {
+    margin-top: 100px;
+}
+.sb-control-elem-ctn[data-disabled="true"] .sb-control-checkbox {
+    background: #D0D1D7!important;
+    border-color: #c1c1c1!important;
+}
+.sb-control-elem-ctn[data-disabled="true"] .sb-control-checkboxsection-btn {
+    display: none;
+}
+.sb-customizer-sidebar-intro a {
+    cursor: pointer;
+}
+.sb-customizer-sidebar-intro {
+    margin-bottom: 10px;
+    display: block;
+    line-height: 1.5em !important;
+}
+
+
+/* Social Wall feed link bar styles */
+.ctf-sw-feed-link-bar {
+    background: #434960;
+    text-align: center;
+    padding: 3px;
+}
+.ctf-sw-feed-link-bar .ctf-sw-feed-link-bar-message {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    color: #FFFFFF;
+}
+.ctf-sw-feed-link-bar  a {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 160%;
+    text-decoration-line: underline;
+    color: #FFFFFF;
+    margin-left: 20px;
+    transition: all .2s ease;
+}
+.ctf-sw-feed-link-bar  a:hover {
+    color: #D0D1D7;
+}
+
+/* Social wall feed link bar styles for the customizer */
+.sw-feed-link-bar-present.ctf-customizer-screen:not(.ctf-builder-app-lite-dismiss) .ctf-sw-feed-link-bar{
+    background: #468737;
+    position: fixed;
+    top: 32px;
+    width: calc(100% - 160px);
+    right: 0;
+    z-index: 99;
+}
+.sw-feed-link-bar-present.ctf-customizer-screen:not(.ctf-builder-app-lite-dismiss) .ctf-fb-header {
+    top: 60px;
+}
+.sw-feed-link-bar-present.ctf-customizer-screen:not(.ctf-builder-app-lite-dismiss) .sb-customizer-sidebar {
+    top: 125px;
+}
+.sw-feed-link-bar-present.ctf-customizer-screen:not(.ctf-builder-app-lite-dismiss) .sb-customizer-preview {
+    margin-top: 92px;
+}
+
+/* Social Wall feed link bar styles for the customizer also when lite app dismiss or upgrade to pro bar present at the same time*/
+.ctf-builder-app-lite-dismiss.sw-feed-link-bar-present.ctf-customizer-screen .ctf-sw-feed-link-bar{
+    background: #468737;
+    position: fixed;
+    top: 64px;
+    width: calc(100% - 160px);
+    right: 0;
+    z-index: 99;
+}
+.ctf-builder-app-lite-dismiss.sw-feed-link-bar-present.ctf-customizer-screen .ctf-fb-header {
+    top: 92px;
+}
+.ctf-builder-app-lite-dismiss.sw-feed-link-bar-present.ctf-customizer-screen .sb-customizer-sidebar {
+    top: 156px;
+}
+.ctf-builder-app-lite-dismiss.sw-feed-link-bar-present.ctf-customizer-screen .sb-customizer-preview {
+    margin-top: 128px;
+}
+
+/* License Flow Styles */
+.ctf-fb-header.sb-onboarding-highlight {
+    overflow: visible;
+}
+.ctf-license-flow-wrapper {
+    padding-top: 165px;
+    overflow: hidden;
+}
+.ctf-license-flow-wrapper .sb-loadingbar-ctn {
+    position: absolute;
+    left: 0px;
+    top: 65px;
+}
+.sb-dash-license-ctn{
+    max-width: 880px;
+    min-height: 100px;
+    overflow: auto;
+    background: #fff;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    margin: auto;
+    margin-bottom: 100px;
+}
+.sb-dash-license-section{
+    padding: 55px 21%;
+}
+.sb-dash-license-section.sb-dash-license-centered-cards {
+    padding: 45px 65px 45px 75px;
+}
+.sb-dash-license-section:nth-of-type(even) {
+    background: #F9F9FA;
+}
+.sb-dash-license-centered{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+.sb-dash-license-centered h3 {
+    text-align: center;
+}
+.sb-dash-license-centered strong {
+    color: #141B38;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%; /* 19.2px */
+}
+.sb-dash-license-centered img{
+    width: 184px;
+}
+.sb-dash-license-logo{
+    margin-bottom: 30px;
+}
+.sb-dash-license-input-ctn{
+    display: flex;
+    column-gap: 10px;
+    margin-top: 30px;
+    width: 100%;
+}
+.sb-dash-license-input-ctn .sb-input-ctn {
+    width: 78%;
+}
+.sb-dash-license-input-ctn .sb-input-ctn input[type=password] {
+    border: 1px solid #dbdbdb;
+}
+.sb-dash-license-input-ctn button {
+    width: 22%;
+    min-width: 100px;
+    border-radius: 4px;
+    background: #0068A0;
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.08), 0px 2px 5px 0px rgba(60, 66, 87, 0.12), 0px -1px 1px 0px rgba(0, 0, 0, 0.12) inset;
+    font-weight: 600;
+}
+.sb-dash-license-input-ctn button svg {
+    fill: #ffffff;
+}
+.sb-dash-license-input-ctn input {
+    color: #696D80;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%; /* 22.4px */
+    height: 38px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #E6E6EB;
+    background: #FFF;
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.04);
+    padding: 10px 15px;
+}
+.sb-dash-license-buy-ctn{
+    width: 100%;
+    height: 38px;
+    margin-top: 10px;
+    background: #F9F9FA;
+    border: 1px solid #E6E6EB;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 13px;
+    box-sizing: border-box;
+}
+.sb-dash-license-buy-ctn span {
+    color: #141B38;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+}
+.sb-dash-license-buy-ctn a {
+    color: #0068A0;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 160%;
+}
+.sb-dash-license-buy-ctn a svg {
+    width: 11px;
+    height: 11px;
+    fill: #0068a0;
+}
+.sb-dash-license-buy-ctn > a{
+    margin-right: 30px;
+}
+.sb-dash-license-info-cards{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 10px;
+    margin-top: 15px;
+}
+.sb-dash-license-card {
+    background: #fff;
+    box-sizing: border-box;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+.sb-dash-license-card svg{
+    width: 30px;
+    height: auto;
+    margin-bottom: 20px;
+}
+.sb-dash-license-support-heading{
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+.sb-dash-license-support-heading .sb-light-text {
+    color: #8C8F9A;
+}
+.sb-dash-license-card > p{
+    margin: .7em 0;
+}
+
+.sb-dash-support-form .sb-btn {
+    height: 38px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+.sb-dash-support-form .sb-btn svg {
+    width: 9px;
+    height: 9px;
+    fill: #fff;
+}
+.sb-dash-support-form .sb-btn .sb-btn-icon {
+    width: 8px;
+    margin-left: 10px;
+}
+
+@media (max-width: 960px) {
+    .sb-dash-license-section.sb-dash-license-centered-cards {
+        padding: 45px 3%;
+    }
+}
+@media (max-width: 767px) {
+    .sb-dash-license-section {
+        padding: 55px 10%;
+    }
+    .sb-dash-license-section.sb-dash-license-centered-cards {
+        padding: 45px 25px 45px 25px;
+    }
+    .ctf-license-flow-wrapper {
+        padding-top: 100px;
+    }
+    .sb-dash-license-info-cards {
+        grid-template-columns: 1fr;
+    }
+    .sb-dash-license-info-cards .sb-dash-license-card {
+        margin-bottom: 25px;
+    }
+}
+@media (max-width: 450px) {
+    .sb-dash-license-section {
+        padding: 35px 5%;
+    }
+    .sb-dash-license-buy-ctn {
+        height: auto;
+        flex-direction: column;
+        padding: 5px;
+    }
+}
+/*
+	Three Dots Loading Animation
+*/
+.ctf-three-dots-loading-animation {
+	text-align: center;
+    margin-bottom: 34px;
+}
+.ctf-three-dots-loading-animation div{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-radius: 50px;
+	margin: 0 10px;
+	position: relative;
+	background-color: #0096CC;
+  	color: #0096CC;
+	-webkit-animation: sb-source-redirect 1s infinite linear alternate;
+  	 	 animation: sb-source-redirect 1s infinite linear alternate;
+    -webkit-animation-delay: .5s;
+    	animation-delay: .5s;
+}
+
+.ctf-three-dots-loading-animation div:before,
+.ctf-three-dots-loading-animation div:after{
+	content: '';
+  	display: inline-block;
+  	position: absolute;
+  	top: 0;
+}
+
+.ctf-three-dots-loading-animation div:before{
+	left: -35px;
+  	width: 20px;
+  	height: 20px;
+  	border-radius: 50px;
+  	background-color: #0096CC;
+  	color: #0096CC;
+  	-webkit-animation: sb-source-redirect 1s infinite alternate;
+  		animation: sb-source-redirect 1s infinite alternate;
+  	-webkit-animation-delay: 0s;
+  		animation-delay: 0s;
+}
+
+.ctf-three-dots-loading-animation div:after{
+	left: 35px;
+ 	width: 20px;
+ 	height: 20px;
+ 	border-radius: 50px;
+ 	background-color: #0096CC;
+ 	color: #0096CC;
+ 	-webkit-animation: sb-source-redirect 1s infinite alternate;
+ 		animation: sb-source-redirect 1s infinite alternate;
+ 	-webkit-animation-delay: 1s;
+ 		animation-delay: 1s;
+}
+
+@-webkit-keyframes sb-source-redirect {
+   0% {background-color: #0096CC;}
+  50%,100% {background-color: #B5E5FF;}
+}
+@keyframes sb-source-redirect {
+  0% {background-color: #0096CC;}
+  50%,100% {background-color: #B5E5FF;}
+}
+
+/* License Flow Modal */
+.ctf-license-flow-modal {
+    backdrop-filter: blur(2px);
+}
+
+.ctf-license-flow-modal .ctf-license-flow-modal-inside {
+    min-height: 230px;
+    width: 460px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    padding: 56px;
+    box-sizing: border-box;
+    box-shadow: 0px 1.771044135093689px 5.119424343109131px 0px rgba(0, 0, 0, 0.04), 0px 4.256065368652344px 12.302688598632812px 0px rgba(0, 0, 0, 0.06), 0px 8.013792991638184px 23.164871215820312px 0px rgba(0, 0, 0, 0.08), 0px 14.29523754119873px 41.32217025756836px 0px rgba(0, 0, 0, 0.09), 0px 26.7376708984375px 77.28857421875px 0px rgba(0, 0, 0, 0.11);
+    flex-direction: column;
+    text-align: center;
+}
+.ctf-license-flow-modal .ctf-license-flow-modal-inside p {
+    color: #434960;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 160%;
+    margin: 0px;
 }

@@ -1,13 +1,13 @@
-=== Custom Twitter Feeds Pro ===
+=== Custom Twitter Feeds Pro Developer ===
 Author: Smash Balloon
 Contributors: smashballoon, craig-at-smash-balloon
-Support Website: http://smashballoon/custom-twitter-feeds/
-Tested up to: 5.9.3
+Support Website: https://smashballoon/custom-twitter-feeds/
+Tested up to: 6.7.2
 Requires PHP: 5.6
-Stable tag: 2.0
+Stable tag: 2.4.6
 License: Non-distributable, Not for resale
 
-Custom Twitter Feeds Pro allows you to display completely customizable Twitter feeds of your user timeline, home timeline, hashtag, and more on your website.
+Custom Twitter Feeds Pro allows you to display completely customizable X (formerly Twitter) feeds of your user timeline, a specific hashtag, or a search term on your website.
 
 == Description ==
 Display **completely customizable**, **responsive** and **search engine crawlable** versions of your Twitter feed on your website. Completely match the look and feel of the site with tons of customization options!
@@ -41,6 +41,120 @@ If you like the plugin then please consider leaving a [review](https://wordpress
 For simple step-by-step directions on how to set up Custom Twitter Feeds plugin please refer to our [setup guide](http://smashballoon.com/custom-twitter-feeds/docs/ 'Custom Twitter Feeds setup guide').
 
 == Changelog ==
+= 2.4.6 =
+* Tweak: Made several improvements to the way feeds are updated to make them more reliable.
+* Fix: Fixed multiple issues related to credit limits which would cause the feed to not update and the remaining credits reported to be inaccurate.
+* Fix: Fixed several minor issues and made several security improvements.
+
+= 2.4.5 =
+* Tweak: Added support for our new [Feed Analytics](https://smashballoon.com/?utm_campaign=twitter-pro-readme&utm_source=changelog&utm_medium=feedanalyticsannouncement) product. Get insights as to how your feeds are being used by site visitors.
+
+= 2.4.4 =
+* New: Added support for GDPR Cookie Compliance by Moove Agency and Real Cookie Banner by devowl.io GDPR plugins.
+* Fix: Added better support for object cache clearing when the feed updates to prevent conflicts with Redis cache and other WordPress caching systems.
+
+= 2.4.3 =
+* Fix: Plugin hardening.
+
+= 2.4.2 =
+* Fix: Fixed several issues to make feed updates more consistent and reliable.
+
+= 2.4.1 =
+* Fix: Plugin hardening.
+* Fix: PHP warnings would be triggered when using a timeline feed.
+* Fix: Fixed an issue preventing reporting on when a feed was last updated.
+
+= 2.4 =
+* New: Added support for X (formerly Twitter) threads. See all threaded posts (tweets) by clicking a button shown underneath the opening post in the thread.
+* Tweak: Added a note on the "All Feeds" page of when a feed was last successfully updated.
+* Tweak: Made the caching system "smarter" to be ultra-efficient with API requests.
+* Tweak: Added information about API credits remaining and when they will reset on the Settings page, "Feeds" tab.
+* Fix: Images in Twitter cards were not being stored and served locally.
+* Fix: Fixed PHP warnings that would occur under some conditions
+* Fix: Fixed several issues with using your own Twitter App including missing images and properly loading more posts.
+
+= 2.3.1 =
+* New: Added translation files for German, Spanish, Italian and more.
+* Fix: Fixed PHP Fatal error: Uncaught TypeError: Illegal offset type in isset or empty.
+
+= 2.3 =
+* New: Added support for using your own Twitter App. Go to the "Settings" page, "Twitter Integration" area.
+* New: Added a setting to rebrand your Twitter feeds to "X". Go to the "Settings" page, "Advanced" tab to enable the branding change.
+* Fix: Fixed Twitter card images not displaying in the customizer.
+* Fix: Fixed issues with license activation that would cause some confusion.
+* Fix: Added a workaround in the event cron is broken so feeds will continue to update.
+
+= 2.2.5 =
+* Fix: Fixed an error that would occur when trying to change license keys leading to an inability to retrieve new tweets.
+* Fix: Fixed an occasional timeout error when trying to fetch new tweets for feeds.
+* Fix: Fixed a PHP error that would occur when trying to activate a license key under certain circumstances.
+
+= 2.2.4 =
+* Fix: Fixed a fatal PHP error that would occur when there was an error activating a license for a new site.
+* Fix: Fixed the GDPR features integration with the latest versions of the Cookie Yes plugin.
+
+= 2.2.3 =
+* Tweak: Promoted tweets (tweets that do not fit the feed source) are automatically removed for feeds that contain only hashtags. Search feeds may still contain promoted tweets. Clear your cache on the "Settings" page to update existing feeds with this change.
+* Fix: Fixed a fatal PHP error that would occur when the WordPress object cache would store tweet data is the incorrect data type.
+* Fix: Fixed a fatal PHP error that would occur when a few specific errors from the Smash Balloon Twitter API site would occur.
+
+= 2.2.2 =
+* Fix: Fixed quote tweets and retweeted tweets showing up twice in a user timeline feed.
+* Fix: Fixed an issue where tweets would show the link for a Twitter card above the Twitter card.
+* Fix: Added better error reporting so issues connecting with the new Twitter API would have better instructions.
+* Fix: Fixed a compatibility issue with Social Wall and the new Twitter API workaround.
+* Fix: Fixed PHP errors related to using a legacy feed.
+* Fix: Fixed several issues preventing legacy feeds from working properly.
+* Fix: Prevented a connected account from causing issues with loading more tweets and the persistent cache.
+* Fix: Fixed the clear single feed cache button not working in the customizer.
+* Fix: Fixed the customizer not updating when sources and other settings were changed.
+
+= 2.2.1 =
+* Fix: Fixed a compatibility issue with Social Wall and the new Twitter API workaround.
+* Fix: Fixed a PHP error that would occur when using a shortcode with no arguments and PHP 8.0+.
+* Fix: Fixed a PHP deprecation warning when using a custom text length and PH?P 8.0+.
+
+= 2.2 =
+* Tweak: An unlimited number of feeds and sources will update with a limit of 12 updates per day spread out among the feeds. For example, if you have 24 feeds with one source, each feed will update every-other day. If you have just one feed and one source, this feed can be updated up to 12 times a day. Read details [here](https://smashballoon.com/doc/smash-balloon-twitter-changes/?twitter).
+* Tweak: Users will be able to load more tweets, with a varying number of total tweets available (not infinite). Tweets are cached and the number of available tweets when loading more will grow over time.
+* Fix: Twitter Cards were not always available. They are now available and will be more reliable with the API changes!
+* Fix: Retweets and Quoted tweets were not working properly in the feed.
+
+= 2.1 =
+* New: Added our new solution for updating feeds! This version limits updates to one feed once a day. We plan on increasing this limit in the future. Read details [here](https://smashballoon.com/doc/smash-balloon-twitter-changes/?twitter).
+
+= 2.0.6 =
+* Tweak: API calls are prevented in the event that the Twitter API returns an error.
+* Fix: The feature for using your own Twitter App credentials was not working.
+
+= 2.0.5 =
+* Fix: Home timeline feeds were not working if legacy feeds were not also enabled.
+* Fix: Fixed an issue with our integration with Borlabs GDPR consent plugin to apply changes to the feed only when consent is given.
+
+= 2.0.4 =
+* Fix: Updated our integration with Complianz GDPR consent plugin to apply changes to the feed when consent is given.
+* Fix: In some circumstances GIFs and some images in the feed were being served from Twitter's CDN when GDPR features were active.
+* Fix: User Timeline feeds would not show retweets even when enabled. This is also fixed for the Social Wall integration.
+
+= 2.0.3 =
+* Fix: Feeds showing a single Twitter list of tweets would not work under some circumstances.
+* Fix: Disabling the "author" element in the customizer would not remove the author element from the shortcode feed unless the author avatar was also disabled.
+* Fix: Fixed empty API requests being made in some circumstances.
+* Fix: Fixed multiple PHP warnings that would occur when certain settings were not configured as expected.
+* Fix: When using the masonry layout, the last tweet would not show a dividing line underneath even if the dividing line was enabled in settings.
+* Fix: If a custom date format was entered for a feed, it would be used even if the date format was not set to "custom".
+
+= 2.0.2 =
+* Fix: Browser loading animation would not work on pages with a Twitter Feed.
+* Fix: For GDPR plugins that Custom Twitter Feeds integrates with, other plugins that also integrate with those GDPR plugins would not work properly when Custom Twitter Feeds was active.
+* Fix: Images would not always appear after GDPR consent given.
+
+= 2.0.1 =
+* Fix: Added more workarounds for encoding issues in Twitter Cards.
+* Fix: Fixed the default date format showing differently in the customizer than it did on the front-end.
+* Fix: Fixed translations for date words not applying correctly.
+* Fix: Tablet columns were not working correctly for some layouts.
+
 = 2.0 =
 * Important: Minimum supported WordPress version has been raised from 3.5 to 4.1.
 * New: Our biggest update ever! We've completely redesigned the plugin settings from head to toe to make it easier to create, manage, and customize your Twitter feeds.

@@ -15,8 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <!-- Custom Twitter Feeds by Smash Balloon -->
 <div id="ctf" <?php echo $ctf_feed_classes ?> data-ctfshortcode="<?php echo $this->getShortCodeJSON() ?>" <?php echo $ctf_main_atts ?> data-ctfneeded="<?php echo esc_attr( $ctf_data_needed ) ?>">
+	<?php do_action( 'ctf_before_feed_start', $this ); ?>
+
     <?php if ( $feed_options['showheader'] || ctf_doing_customizer($feed_options) ) :
-        CTF_Display_Elements_Pro::display_header( $feed_options );
+        CTF_Display_Elements_Pro::display_header( $feed_options, $tweet_set );
     endif; ?>
 
     <div class="ctf-tweet-items">
@@ -24,7 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
     <?php
-    include ctf_get_feed_template_part( 'footer', $feed_options );
+    if ( $this->should_show_footer( $tweet_set ) ) {
+	    include ctf_get_feed_template_part( 'footer', $feed_options );
+    }
 
     /**
      * Things to add before the closing "div" tag for the main feed element. Several

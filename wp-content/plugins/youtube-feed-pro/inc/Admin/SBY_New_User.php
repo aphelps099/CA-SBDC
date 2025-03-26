@@ -315,7 +315,7 @@ class SBY_New_User extends SBY_Notifications {
 							<img src="<?php echo esc_url( str_replace( array( 'sbi', 'png' ), array( 'sby', 'svg' ), $img_src ) ); ?>" alt="notice">
 						</div>
 						<div class="sby-notice-text">
-							<p class="sby-notice-text-p"><?php echo __( 'Are you enjoying the YouTube Feed Plugin?', 'feeds-for-youtube' ); ?></p>
+							<p class="sby-notice-text-p"><?php echo __( 'Are you enjoying the YouTube Feeds Plugin?', 'feeds-for-youtube' ); ?></p>
 						</div>
 						<div class="sby-notice-consent-btns">
 							<?php
@@ -455,7 +455,7 @@ class SBY_New_User extends SBY_Notifications {
 		if ( $type == 'review' ) {
 			$content = __( 'It really helps to support the plugin and help others to discover it too!', 'feeds-for-youtube' );
 		} else if ( $type == 'discount' ) {
-			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free YouTube Feed.', 'feeds-for-youtube' );
+			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free YouTube Feeds.', 'feeds-for-youtube' );
 		} else {
 			if ( ! empty( $notification['content'] ) ) {
 				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );

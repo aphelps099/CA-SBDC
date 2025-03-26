@@ -5,57 +5,64 @@
  *
  * @since 4.0
  */
+
 namespace CustomFacebookFeed;
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if (! defined('ABSPATH')) {
+	exit; // Exit if accessed directly
+}
 
 use CustomFacebookFeed\Builder\CFF_Db;
 
 class CFF_Widget extends \WP_Widget
 {
-    function __construct() {
-        add_action( 'widgets_init', array( $this, 'cff_feed_widget' ) );
-        add_filter( 'widget_text', 'do_shortcode' );
+	public function __construct()
+	{
+		add_action('widgets_init', array( $this, 'cff_feed_widget' ));
+		add_filter('widget_text', 'do_shortcode');
 
-        parent::__construct(
-            'cff-feed-widget',
-            __( 'Facebook Feed', 'custom-facebook-feed' ),
-            array(
-                'classname' => 'cff-feed-widget',
-                'description' => __( 'Display your facebook feed', 'custom-facebook-feed' ),
-            )
-        );
+		parent::__construct(
+			'cff-feed-widget',
+			__('Facebook Feed', 'custom-facebook-feed'),
+			array(
+				'classname' => 'cff-feed-widget',
+				'description' => __('Display your facebook feed', 'custom-facebook-feed'),
+			)
+		);
 
-        add_action( 'admin_footer', [ $this, 'feed_widget_tooltip'] );
-    }
+		add_action('admin_footer', [ $this, 'feed_widget_tooltip']);
+	}
 
-    /**
-     * CFF Load Feed Widget
-     *
-     * @since 4.0
-     */
-    function cff_feed_widget() {
-	    register_widget( 'CustomFacebookFeed\CFF_Widget' );
-    }
+	/**
+	 * CFF Load Feed Widget
+	 *
+	 * @since 4.0
+	 */
+	public function cff_feed_widget()
+	{
+		register_widget('CustomFacebookFeed\CFF_Widget');
+	}
 
 	/**
 	 * Feed Widget Tooltip
 	 *
 	 * @since 4.0
 	 */
-    public function feed_widget_tooltip() {
-        if( ! get_current_screen() ) {
+	public function feed_widget_tooltip()
+	{
+		if (! get_current_screen()) {
 			return;
 		}
 		$screen = get_current_screen();
-        if ( 'widgets' !== $screen->id ) {
-            return;
-		}
-
-		if ( !isset( $_GET['cff_feed_id'] ) ) {
+		if ('widgets' !== $screen->id) {
 			return;
 		}
 
-		$feed_id = sanitize_text_field( wp_unslash( $_GET['cff_feed_id'] ) );
+		if (!isset($_GET['cff_feed_id'])) {
+			return;
+		}
+
+		$feed_id = sanitize_text_field(wp_unslash($_GET['cff_feed_id']));
 
 		?>
 			<script>
@@ -77,7 +84,7 @@ class CFF_Widget extends \WP_Widget
 				.cff-feed-widget-tooltip {
 					position: absolute;
 					top: 60px;
-    				left: 25px;
+					left: 25px;
 					background: #fff;
 					width: 334px;
 					height: 160px;
@@ -142,10 +149,9 @@ class CFF_Widget extends \WP_Widget
 				}
 			</style>
 		<?php
+	}
 
-    }
-
-    /**
+	/**
 	 * Output the HTML for this widget.
 	 *
 	 * @since 4.0
@@ -153,22 +159,23 @@ class CFF_Widget extends \WP_Widget
 	 * @param array $args     An array of standard parameters for widgets in this theme.
 	 * @param array $instance An array of settings for this widget instance.
 	 */
-	public function widget( $args, $instance ) {
-		$title = isset( $instance['title'] ) ? apply_filters( 'widget_title', $instance['title'] ) : '';
-        $feed_id = isset( $instance['feed_id'] ) ? strip_tags( $instance['feed_id'] ) : null;
+	public function widget($args, $instance)
+	{
+		$title = isset($instance['title']) ? apply_filters('widget_title', $instance['title']) : '';
+		$feed_id = isset($instance['feed_id']) ? strip_tags($instance['feed_id']) : null;
 
-        echo $args['before_widget'];
+		echo $args['before_widget'];
 
-        if ( ! empty( $title ) ) {
-            echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
-        }
+		if (! empty($title)) {
+			echo $args['before_title'] . esc_html($title) . $args['after_title'];
+		}
 
-        if ( $feed_id !== null ) {
-        	$feed = sprintf( '[custom-facebook-feed feed=%s]', $feed_id );
-        	echo do_shortcode( $feed );
-        }
+		if ($feed_id !== null) {
+			$feed = sprintf('[custom-facebook-feed feed=%s]', $feed_id);
+			echo do_shortcode($feed);
+		}
 
-        echo $args['after_widget'];
+		echo $args['after_widget'];
 	}
 
 	/**
@@ -182,12 +189,13 @@ class CFF_Widget extends \WP_Widget
 	 *
 	 * @return array The validated and (if necessary) amended settings
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update($new_instance, $old_instance)
+	{
 
-		$new_instance['title']      = wp_strip_all_tags( $new_instance['title'] );
-		$new_instance['feed_id']    = ! empty( $new_instance['feed_id'] ) ? (int) $new_instance['feed_id'] : 0;
-		$new_instance['show_title'] = isset( $new_instance['show_title'] ) ? '1' : false;
-		$new_instance['show_desc']  = isset( $new_instance['show_desc'] ) ? '1' : false;
+		$new_instance['title']      = wp_strip_all_tags($new_instance['title']);
+		$new_instance['feed_id']    = ! empty($new_instance['feed_id']) ? (int) $new_instance['feed_id'] : 0;
+		$new_instance['show_title'] = isset($new_instance['show_title']) ? '1' : false;
+		$new_instance['show_desc']  = isset($new_instance['show_desc']) ? '1' : false;
 
 		return $new_instance;
 	}
@@ -199,10 +207,11 @@ class CFF_Widget extends \WP_Widget
 	 *
 	 * @param array $instance An array of the current settings for this widget.
 	 */
-	public function form( $instance ) {
-        $exported_feeds = CFF_Db::feeds_query();
+	public function form($instance)
+	{
+		$exported_feeds = CFF_Db::all_feeds_query();
 		$feeds = array();
-		foreach( $exported_feeds as $feed_id => $feed ) {
+		foreach ($exported_feeds as $feed_id => $feed) {
 			$feeds[] = array(
 				'id' => $feed['id'],
 				'name' => $feed['feed_name']
@@ -211,31 +220,31 @@ class CFF_Widget extends \WP_Widget
 
 		?>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
-				<?php echo esc_html( _x( 'Title:', 'Widget', 'custom-facebook-feed' ) ); ?>
+			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
+				<?php echo esc_html(_x('Title:', 'Widget', 'custom-facebook-feed')); ?>
 			</label>
 			<input type="text"
-			       id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-			       name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>"
-			       value="<?php echo isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : ''; ?>" class="widefat"/>
+				   id="<?php echo esc_attr($this->get_field_id('title')); ?>"
+				   name="<?php echo esc_attr($this->get_field_name('title')); ?>"
+				   value="<?php echo isset($instance['title']) ? esc_attr($instance['title']) : ''; ?>" class="widefat"/>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'feed_id' ) ); ?>">
-				<?php echo esc_html( _x( 'Feed:', 'Widget', 'custom-facebook-feed' ) ); ?>
+			<label for="<?php echo esc_attr($this->get_field_id('feed_id')); ?>">
+				<?php echo esc_html(_x('Feed:', 'Widget', 'custom-facebook-feed')); ?>
 			</label>
 			<select class="widefat"
-					id="<?php echo esc_attr( $this->get_field_id( 'feed_id' ) ); ?>"
-					name="<?php echo esc_attr( $this->get_field_name( 'feed_id' ) ); ?>">
+					id="<?php echo esc_attr($this->get_field_id('feed_id')); ?>"
+					name="<?php echo esc_attr($this->get_field_name('feed_id')); ?>">
 				<?php
-				if ( ! empty( $feeds ) ) {
-					echo '<option value="" selected disabled>' . esc_html_x( 'Select your feed', 'Widget', 'custom-facebook-feed' ) . '</option>';
-					foreach ( $feeds as $feed ) {
-						$feed_id = isset( $feed['id'] ) ? $feed['id'] : '';
-						$selected = isset( $instance['feed_id'] ) ? selected( $instance['feed_id'], $feed_id, false ) : '';
-						echo '<option value="' . esc_attr( $feed_id ) . '" ' . $selected . '>' . esc_html( $feed['name'] ) . '</option>';
+				if (! empty($feeds)) {
+					echo '<option value="" selected disabled>' . esc_html_x('Select your feed', 'Widget', 'custom-facebook-feed') . '</option>';
+					foreach ($feeds as $feed) {
+						$feed_id = isset($feed['id']) ? $feed['id'] : '';
+						$selected = isset($instance['feed_id']) ? selected($instance['feed_id'], $feed_id, false) : '';
+						echo '<option value="' . esc_attr($feed_id) . '" ' . $selected . '>' . esc_html($feed['name']) . '</option>';
 					}
 				} else {
-					echo '<option value="">' . esc_html_x( 'No feeds', 'Widget', 'custom-facebook-feed' ) . '</option>';
+					echo '<option value="">' . esc_html_x('No feeds', 'Widget', 'custom-facebook-feed') . '</option>';
 				}
 				?>
 			</select>

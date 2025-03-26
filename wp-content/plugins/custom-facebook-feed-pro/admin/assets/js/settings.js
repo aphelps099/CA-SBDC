@@ -5,6 +5,7 @@ var settings_data = {
     adminUrl: cff_settings.admin_url,
     nonce: cff_settings.nonce,
     ajaxHandler: cff_settings.ajax_handler,
+    iCalURLs 	: cff_settings.iCalURLs,
     model: cff_settings.model,
     feeds: cff_settings.feeds,
     links: cff_settings.links,
@@ -12,7 +13,7 @@ var settings_data = {
     sourcesList : cff_settings.sources,
     dialogBoxPopupScreen   : cff_settings.dialogBoxPopupScreen,
     selectSourceScreen      : cff_settings.selectSourceScreen,
-
+    licenseBtnClicked : false,
     socialWallActivated: cff_settings.socialWallActivated,
     socialWallLinks: cff_settings.socialWallLinks,
     stickyWidget: false,
@@ -58,7 +59,7 @@ var settings_data = {
 
     cogSVG: cff_settings.cogSVG,
     deleteSVG: cff_settings.deleteSVG,
-    svgIcons : cff_settings.svgIcons,
+    svgIcons : cff_svgs,
 
     testConnectionStatus: null,
     recheckLicenseStatus: null,
@@ -83,7 +84,12 @@ var settings_data = {
         sourcePopupScreen : 'redirect_1',
         sourcePopupType : 'creation',
         instanceSourceActive : null,
+        whyRenewLicense : false,
+        licenseLearnMore : false,
+        iCalUrlPopup : false,
     },
+    cffLicenseNoticeActive: (cff_settings.cffLicenseNoticeActive === '1'),
+    cffLicenseInactiveState: (cff_settings.cffLicenseInactiveState === '1'),
     //Add New Source
     newSourceData        : cff_settings.newSourceData ? cff_settings.newSourceData : null,
     sourceConnectionURLs : cff_settings.sourceConnectionURLs,
@@ -107,11 +113,22 @@ var settings_data = {
     appLoaded : false,
     previewLoaded : false,
     loadingBar : true,
-    notificationElement : {
-        type : 'success', // success, error, warning, message
-        text : '',
-        shown : null
-    }
+    addIcalUrl : {
+        reconnectPage : false,
+		pageToken : null,
+		url : null,
+		source_id : null,
+		loadingAjax : false,
+		success: false,
+		isError : false,
+		errorMessage : ''
+    },
+    upgradeNewVersion : false,
+    upgradeNewVersionUrl : false,
+    upgradeRemoteVersion : '',
+    isLicenseUpgraded : cff_settings.isLicenseUpgraded,
+    licenseUpgradedInfo : cff_settings.licenseUpgradedInfo,
+    licenseUpgradedInfoTierName : null
 };
 
 // The tab component
@@ -188,6 +205,10 @@ var cffSettings = new Vue({
             settings_data.appLoaded = true;
         },350);
 
+        if( this.licenseUpgradedInfo ){
+            this.getUpgradedProTier()
+        }
+
     },
     computed: {
         getStyle: function() {
@@ -200,11 +221,7 @@ var cffSettings = new Vue({
             };
         },
         chooseDirection: function() {
-            if (settings_data.forwards == true) {
-                return "slide-fade";
-            } else {
-                return "slide-fade";
-            }
+            return "slide-fade";
         }
     },
     methods:  {
@@ -212,6 +229,7 @@ var cffSettings = new Vue({
             this.hasError = false;
             this.loading = true;
             this.pressedBtnName = 'cff';
+            this.licenseBtnClicked = true;
 
             let data = new FormData();
             data.append( 'action', 'cff_activate_license' );
@@ -224,7 +242,9 @@ var cffSettings = new Vue({
             })
             .then(response => response.json())
             .then(data => {
+                this.licenseBtnClicked = false;
                 if ( data.success == false ) {
+					this.processNotification("licenseError");
                     this.licenseStatus = 'inactive';
                     this.hasError = true;
                     this.loading = false;
@@ -235,6 +255,13 @@ var cffSettings = new Vue({
                     this.licenseStatus = data.data.licenseStatus;
                     this.loading = false;
                     this.pressedBtnName = null;
+					this.processNotification("licenseActivated");
+
+                    // Remove the license notices
+                    jQuery('#sby-license-inactive-agp').remove();
+                    this.viewsActive.licenseLearnMore = false;
+
+					jQuery('.cff_get_pro_highlight, .cff_get_sbr, .cff_get_sbi, .cff_get_yt, .cff_get_ctf').closest('li').remove();
 
                     if (
                         data.data.licenseStatus == 'inactive' ||
@@ -424,6 +451,11 @@ var cffSettings = new Vue({
                     }
                     if ( data.data.license == 'expired' ) {
                         this.recheckLicenseStatus = 'error';
+                    }
+                    if ( data.data.isLicenseUpgraded !== undefined && data.data.isLicenseUpgraded !== false ) {
+                        this.isLicenseUpgraded = true;
+                        this.licenseUpgradedInfo = data.data.licenseUpgradedInfo;
+                        this.getUpgradedProTier()
                     }
 
                     // if the api license status has changed from old stored license status
@@ -963,6 +995,24 @@ var cffSettings = new Vue({
 			}, 3000);
 		},
 
+		/**
+		 * Loading Bar & Notification
+		 *
+		 * @since 4.0
+		 */
+         processNotification : function( notificationType ){
+			var self = this,
+				notification = self.genericText.notification[ notificationType ];
+			self.loadingBar = false;
+			self.notificationElement =  {
+				type : notification.type,
+				text : notification.text,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 5000);
+		},
 
         /**
          * View Source Instances
@@ -974,6 +1024,159 @@ var cffSettings = new Vue({
             self.viewsActive.instanceSourceActive = source;
             //self.movePopUp();
         },
+
+        checkSourceiCalUrl : function( source ) {
+			return source.privilege !== 'events' || (source.privilege === 'events' && this.iCalURLs[source.account_id] !== undefined);
+		},
+
+        chooseAccountId : function( source_account_id, is_connect_page = false ) {
+            let self = this;
+			self.addIcalUrl.source_id = source_account_id;
+			self.addIcalUrl.reconnectPage = is_connect_page;
+			self.addIcalUrl.url = self.iCalURLs[source_account_id] !== undefined ? self.iCalURLs[source_account_id] : ''
+            this.activateView('iCalUrlPopup')
+            cffSettings.$forceUpdate();
+		},
+
+        print_ical_url : function( source ) {
+			return source.privilege === 'events' && this.iCalURLs[source.account_id] !== undefined ? this.iCalURLs[source.account_id] : ''
+		},
+
+        connectEventiCalUrl : function() {
+			let self = this;
+
+			if( self.checkNotEmpty(self.addIcalUrl.url) && self.checkNotEmpty(self.addIcalUrl.source_id) ) {
+				self.addIcalUrl.loadingAjax = true;
+				self.addIcalUrl.isError = false;
+				self.addIcalUrl.success = false;
+                self.addIcalUrl.errorMessage = '';
+
+                let data = new FormData();
+                data.append( 'action', 'cff_feed_saver_manager_add_events_ical_url' );
+                data.append( 'nonce', this.nonce );
+                data.append( 'ical_url', self.addIcalUrl.url );
+                data.append( 'source_id', self.addIcalUrl.source_id );
+
+                if( self.addIcalUrl.reconnectPage === true && self.checkNotEmpty(self.addIcalUrl.pageToken) ){
+                    data.append( 'reconnect_page', true );
+                    data.append( 'access_token', self.addIcalUrl.pageToken );
+                }
+
+
+                fetch(this.ajaxHandler, {
+                    method: "POST",
+                    credentials: 'same-origin',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+    				self.addIcalUrl.loadingAjax = false;
+                    self.iCalURLs = data.data.ical_urls;
+
+                    if(data?.data?.sourcesList){
+                        self.sourcesList  = data.data.sourcesList;
+                    }
+
+                    if ( data.success === false ) {
+                        self.addIcalUrl.isError = true;
+                        self.addIcalUrl.errorMessage = data.data.message;
+        				self.addIcalUrl.success = false;
+                    }else{
+                        self.addIcalUrl.errorMessage = '';
+                        self.addIcalUrl.isError = false;
+        				self.addIcalUrl.success = true;
+                        setTimeout(function() {
+                            self.addIcalUrl.errorMessage = '';
+                            self.activateView('iCalUrlPopup')
+                            self.addIcalUrl.isError = false;
+        				    self.addIcalUrl.success = false;
+                        }, 3000);
+                    }
+                    return;
+                });
+
+			}
+
+		},
+
+        /**
+		 * Upgrade Pro/Pro License
+		 *
+		 * @since 6.2.0
+		 */
+        upgradeProProLicense : function(){
+            var self = this;
+
+            self.hasError = false;
+            self.loading = true;
+            self.pressedBtnName = 'cff-upgrade';
+            self.licenseBtnClicked = true;
+            self.upgradeNewVersion = false;
+            self.upgradeNewVersionUrl = false;
+
+            let data = new FormData();
+            data.append( 'action', 'cff_maybe_upgrade_redirect' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'nonce', self.nonce );
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                self.pressedBtnName = '';
+                self.loading = false;
+                self.licenseBtnClicked = false;
+
+                if (data.success === false) {
+                    self.licenseStatus = 'invalid';
+                    self.hasError = true;
+
+                    if (typeof data.data !== 'undefined') {
+                        this.licenseErrorMsg = data.data.message
+                    }
+                    return;
+                }
+                if (data.success === true) {
+                    if( data.data.same_version === true ){
+                        window.location.href = data.data.url
+                    }else{
+                        self.upgradeNewVersion = true;
+                        self.upgradeNewVersionUrl = data.data.url;
+                        self.upgradeRemoteVersion  = data.data.remote_version;
+                    }
+                }
+                return;
+            });
+
+        },
+
+        cancelUpgrade : function(){
+            this.upgradeNewVersion = false;
+        },
+
+        getUpgradedProTier : function(){
+            if( this.licenseUpgradedInfo == undefined || this.licenseUpgradedInfo['item_name'] === undefined ){
+                return false;
+            }
+            let licenseType = this.licenseUpgradedInfo['item_name'].toLowerCase(),
+                removeString = [
+                    'custom',
+                    'facebook',
+                    'plugin',
+                    'wordpress',
+                    'feeds',
+                    'feed',
+                    'pro',
+                    ' '
+                ];
+                removeString.forEach(str => {
+                    licenseType = licenseType.replace(str, '')
+                });
+            this.licenseUpgradedInfoTierName = licenseType;
+        }
     }
 });
 

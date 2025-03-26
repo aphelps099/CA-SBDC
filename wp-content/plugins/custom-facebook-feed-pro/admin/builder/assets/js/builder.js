@@ -2,6 +2,18 @@ var cffBuilder,
 	cffStorage = window.localStorage,
 	sketch = VueColor.Sketch;
 
+// function foldAdminMenu() {
+// 	let url = new URL(window.location)
+// 	if (! url.search) return
+
+// 	let params = new URLSearchParams(url.search);
+// 	if (! params.has('feed_id') || params.get('page') != 'cff-feed-builder') return
+
+// 	const body = document.querySelector('.facebook-feed_page_cff-feed-builder')
+// 	body.classList.add('folded')
+// }
+// foldAdminMenu()
+
 /**
  * VueJS Iframe, Link, Video Component
  *
@@ -48,11 +60,13 @@ var postPreviewComponents = [
 		'lightbox',
 		'full-layout',
 		'half-layout',
+		'half-theme-layout',
 		'thumb-layout',
 		'videosposts',
 		'reviewsposts',
 		'dummy-lightbox',
-		'likebox'
+		'likebox',
+		'actionlinks',
 	];
 
 postPreviewComponents.forEach( function( component ) {
@@ -81,10 +95,12 @@ cffBuilder = new Vue({
     },
 	mixins: [VueClickaway.mixin],
 	data: {
+		plugin_path: cff_builder.cff_plugin_path,
 		nonce : cff_builder.nonce,
 		plugins: cff_builder.installPluginsPopup,
 		supportPageUrl: cff_builder.supportPageUrl,
 		builderUrl 	: cff_builder.builderUrl,
+		iCalURLs 	: cff_builder.iCalURLs,
 		pluginType	: cff_builder.pluginType,
 		genericText	: cff_builder.genericText,
 		ajaxHandler : cff_builder.ajax_handler,
@@ -93,7 +109,8 @@ cffBuilder = new Vue({
 		translatedText : cff_builder.translatedText,
 		socialShareLink : cff_builder.socialShareLink,
 		manualSourcePopupInit : cff_builder.manualSourcePopupInit,
-
+		shouldDisableProFeatures : cff_builder.shouldDisableProFeatures,
+		recheckLicenseStatus: null,
 		welcomeScreen	 : cff_builder.welcomeScreen,
 		allFeedsScreen 	 : cff_builder.allFeedsScreen,
 		extensionsPopup  : cff_builder.extensionsPopup,
@@ -105,27 +122,33 @@ cffBuilder = new Vue({
 		dialogBoxPopupScreen   	: cff_builder.dialogBoxPopupScreen,
 		selectFeedTypeScreen 	: cff_builder.selectFeedTypeScreen,
 		selectFeedTemplateScreen 	: cff_builder.selectFeedTemplateScreen,
+		selectFeedThemeScreen 	: cff_builder.selectFeedThemeScreen,
 		addFeaturedPostScreen 	: cff_builder.addFeaturedPostScreen,
 		addFeaturedAlbumScreen 	: cff_builder.addFeaturedAlbumScreen,
 		addVideosPostScreen 	: cff_builder.addVideosPostScreen,
 		dummyLightBoxData 		: cff_builder.dummyLightBoxData,
+		addEventiCalUrlScreen 	: cff_builder.addEventiCalUrlScreen,
 
-		svgIcons 	: cff_builder.svgIcons,
+		svgIcons 	: cff_svgs,
 		feedsList 	: cff_builder.feeds,
 		feedTypes 	: cff_builder.feedTypes,
 		feedTemplates 	: cff_builder.feedTemplates,
+		feedThemes 	: cff_builder.feedThemes,
+		previewTheme: '',
 		socialInfo 	: cff_builder.socialInfo,
 		sourcesList : cff_builder.sources,
 		links : cff_builder.links,
 		legacyFeedsList   : cff_builder.legacyFeeds,
 		activeExtensions  : cff_builder.activeExtensions,
 		advancedFeedTypes : cff_builder.advancedFeedTypes,
-
+		loaderSVG : cff_svgs.loaderSVG,
+		groupSourcesNumber : cff_builder.groupSourcesNumber,
 		//Selected Feed type => TimeLine / Photos ... or Advanced ones!
 		selectedFeed : 'timeline',
 
 		// Selected Feed Template
 		selectedFeedTemplate : 'default',
+		selectedFeedTheme : 'default_theme',
 
 		// Will be changed depending on the feed type Selected ()
 		type : [
@@ -155,14 +178,18 @@ cffBuilder = new Vue({
 			sourcePopup : false,
 			feedtypesPopup : false,
 			feedtemplatesPopup : false,
+			feedthemePopup: false,
 			// step_1 [Add New Source] , step_2 [Connect to a user pages/groups], step_3 [Add Manually]
 			sourcePopupScreen : 'redirect_1',
-
+			whyRenewLicense : false,
+			licenseLearnMore : false,
 			// creation or customizer
 			sourcePopupType : 'creation',
 			extensionsPopupElement : false,
 			feedTypeElement : null,
 			feedTemplateElement : null,
+			feedThemeElement : null,
+			feedThemeDropdown: false,
 			instanceFeedActive : null,
 			clipboardCopiedNotif : false,
 			legacyFeedsShown : false,
@@ -180,7 +207,8 @@ cffBuilder = new Vue({
 
 			// plugin install popup
 			installPluginPopup : false,
-			installPluginModal: 'instagram'
+			installPluginModal: 'instagram',
+	        iCalUrlPopup : false,
         },
 
         //Feeds Pagination
@@ -198,7 +226,8 @@ cffBuilder = new Vue({
 		addNewSource : {
 			typeSelected 		: 'page',
 			manualSourceID 		: null,
-			manualSourceToken 	: null
+			manualSourceToken 	: null,
+			eventsManualSourceICal 	: null
 		},
 		selectedSourcesToConnect : [],
 
@@ -232,6 +261,12 @@ cffBuilder = new Vue({
 			success: false,
 			playListUrlError : false
 		},
+		eventFeedInfo : {
+			url : '',
+			info : {},
+			success: false,
+			isError : false
+		},
 
 		customizerFeedDataInitial : null,
 		customizerFeedData 	: cff_builder.customizerFeedData,
@@ -239,10 +274,15 @@ cffBuilder = new Vue({
 		iscustomizerScreen  	: (cff_builder.customizerFeedData != undefined && cff_builder.customizerFeedData != false),
 
 		customizerSidebarBuilder : cff_builder.customizerSidebarBuilder,
+		cffLicenseNoticeActive: (cff_builder.cffLicenseNoticeActive === '1'),
+		cffLicenseInactiveState: (cff_builder.cffLicenseInactiveState === '1'),
+		licenseKey : cff_builder.licenseKey,
+		licenseBtnClicked : false,
 		customizerScreens : {
 			activeTab 		: 'customize',
 			printedType 	: {},
 			printedTemplate : {},
+			printedTheme: {},
 			activeSection 	: null,
 			previewScreen 	: 'desktop',
 			sourceExpanded 	: null,
@@ -252,7 +292,7 @@ cffBuilder = new Vue({
 			parentActiveSection : null, //For nested Setions
 			parentActiveSectionData : null, //For nested Setions
 			activeColorPicker : null,
-			popupBackButton : ['photos','videos','albums','events','reviews','featuredpost','singlealbum','socialwall']
+			popupBackButton : ['photos','videos','albums','events','reviews','featuredpost','singlealbum','socialwall', 'feedTemplate']
 		},
 		previewScreens: [
 			'desktop',
@@ -313,6 +353,23 @@ cffBuilder = new Vue({
 			text : '',
 			shown : null
 		},
+
+		sw_feed: false,
+		sw_feed_id: false,
+        license_tier_features : cff_builder.license_tier_features,
+
+		addIcalUrl : {
+			reconnectPage : false,
+			pageToken : null,
+			url : null,
+			source_id : null,
+			loadingAjax : false,
+			success: false,
+			isError : false,
+			errorMessage : ''
+		},
+		showEventsTimezoneNotice : false,
+		showEventsTimezoneNoticeType : "fix"
 	},
 	computed : {
 		feedStyleOutput : function(){
@@ -325,7 +382,10 @@ cffBuilder = new Vue({
 	},
 	created: function(){
 		var self = this;
-		console.log(self.customizerFeedData)
+		const urlParams = new URLSearchParams(window.location.search);
+		// get the socail wall link feed url params
+		self.sw_feed = urlParams.get('sw-feed');
+		self.sw_feed_id = urlParams.get('sw-feed-id');
 		if( self.customizerFeedData ){
 			setTimeout(function(){
 				self.generateMasonryGridHeight('update');
@@ -334,6 +394,11 @@ cffBuilder = new Vue({
 			self.customizerFeedDataInitial = JSON.parse(JSON.stringify(self.customizerFeedData));
 			self.customizerFeedData.settings.num = (typeof self.customizerFeedData.settings.num === 'boolean') ? '5' : self.customizerFeedData.settings.num;
 			self.customizerFeedData.settings.nummobile = (typeof self.customizerFeedData.settings.nummobile === 'boolean') ? '5' : self.customizerFeedData.settings.nummobile;
+			if(self.customizerFeedData.settings.sources.map === undefined) {
+				self.customizerFeedData.settings.sources = [];
+			}
+
+			self.showEventsTimezoneNotice = self.customizerFeedData.settings.feedtype === 'events' && (self.customizerFeedData.settings.eventstimezoneoffsetchanged === 'false' || self.customizerFeedData.settings.eventstimezoneoffsetchanged === false);
 		}
 
 		if(self.customizerFeedData == undefined){
@@ -343,8 +408,6 @@ cffBuilder = new Vue({
 			self.feedPagination.pagesNumber = self.feedPagination.feedsCount != null ? Math.ceil(self.feedPagination.feedsCount / self.feedPagination.itemsPerPage) : 1
 		}
 
-
-
 		self.loadingBar = false;
         /* Onboarding - move elements so the position is in context */
 		self.positionOnboarding();
@@ -353,12 +416,53 @@ cffBuilder = new Vue({
 		}, 500);
 
 		self.appLoaded = true;
+
 	},
 	methods: {
 		updateColorValue : function(id){
 			var self = this;
 			self.customizerFeedData.settings[id] = (self.customizerFeedData.settings[id].a == 1) ? self.customizerFeedData.settings[id].hex : self.customizerFeedData.settings[id].hex8;
 		},
+
+		/**
+		 * Activate license key from license error post grace period header notice
+		 *
+		 * @since 4.4.0
+		 */
+		 activateLicense: function() {
+			var self = this;
+
+			self.licenseBtnClicked = true;
+
+			if ( self.licenseKey == null ) {
+				self.licenseBtnClicked = false;
+				return;
+			}
+			let licenseData = {
+				action : 'cff_activate_license',
+				nonce : cff_builder.nonce,
+				license_key: self.licenseKey
+			};
+			self.ajaxPost(licenseData, function(_ref){
+				self.licenseBtnClicked = false;
+				var data = _ref.data;
+
+				if(data && data.success == false) {
+					self.processNotification("licenseError");
+					return;
+				}
+				if( data !== false ){
+					self.processNotification("licenseActivated");
+					// remove license notices
+                    self.viewsActive.licenseLearnMore = false;
+					jQuery('#cff-license-expired-agp').slideUp();
+					jQuery('#cff-builder-app').removeClass('cff-builder-app-lite-dismiss');
+
+					jQuery('.cff_get_pro_highlight, .cff_get_sbr, .cff_get_sbi, .cff_get_yt, .cff_get_ctf').closest('li').remove();
+				}
+			})
+		},
+
 		/**
 		 * Show & Hide View
 		 *
@@ -387,6 +491,10 @@ cffBuilder = new Vue({
 			if(viewName === 'feedtemplatesPopup'){
 				self.viewsActive.feedTemplatesElement = null;
 			}
+			if(viewName === 'feedthemePopup'){
+				self.viewsActive.feedThemeElement = null;
+				self.viewsActive.feedThemeDropdown = self.viewsActive.feedThemeDropdown ? false : true;
+			}
 			if(viewName === 'extensionsPopupElement' && self.customizerFeedData !== undefined){
 				//self.activateView('feedtypesPopup');
 			}
@@ -413,7 +521,46 @@ cffBuilder = new Vue({
 			cffBuilder.$forceUpdate();
 			self.movePopUp();
 		},
+		recheckLicense: function( optionName = null ) {
+			var self = this;
+			var licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+            self.recheckLicenseStatus = 'loading';
+			recheckLicenseData = {
+				action : 'cff_recheck_connection',
+				license_key : self.licenseKey,
+			};
+			self.ajaxPost(recheckLicenseData, function(_ref){
+				var data = _ref.data;
+				if ( data.success == true ) {
+                    if ( data.data.license == 'valid' ) {
+                        self.recheckLicenseStatus = 'success';
+                    }
+                    if ( data.data.license != 'valid' ) {
+                        self.recheckLicenseStatus = 'error';
+                    }
 
+                    setTimeout(function() {
+                        self.recheckLicenseStatus = null;
+						if ( data.data.license == 'valid' ) {
+							licenseNoticeWrapper.remove();
+						}
+                    }.bind(this), 3000);
+                }
+                return;
+			});
+        },
+        recheckBtnText: function() {
+			var self = this;
+            if ( self.recheckLicenseStatus == null ) {
+                return self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'loading' ) {
+                return self.svgIcons.loaderSVG + ' ' + self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'success' ) {
+                return self.svgIcons.checkmarkSVG + ' ' + self.genericText.licenseValid;
+            } else if ( self.recheckLicenseStatus == 'error' ) {
+                return self.svgIcons.times2SVG + ' ' + self.genericText.licenseExpired;
+            }
+        },
 		/**
 		 * Show/Hide View or Redirect to plugin dashboard page
 		 *
@@ -549,6 +696,15 @@ cffBuilder = new Vue({
 		  return true;
 		},
 
+		backToPrevPopup() {
+			var self = this;
+            if( self.viewsActive.extensionsPopupElement === 'feedTemplate' ){
+                self.activateView('feedtemplatesPopup');
+            }else{
+                self.activateView('feedtypesPopup');
+            }
+			self.viewsActive.extensionsPopupElement = false;
+		},
 
 		/**
 		 * Feed List Pagination
@@ -588,7 +744,14 @@ cffBuilder = new Vue({
 		 */
 		chooseFeedType : function(feedTypeGroup, feedElement, iscustomizerPopup = false){
 			var self = this;
-			if(feedTypeGroup == 'advanced' && feedElement.extensionActive !== true){
+			if ( self.shouldDisableProFeatures && feedElement.type !== 'timeline' ) {
+				if ( self.viewsActive.feedtypesPopup ) {
+					self.activateView('feedtypesPopup');
+				}
+				self.viewsActive.extensionsPopupElement = feedElement.type;
+				return;
+			}
+			if(feedTypeGroup == 'advanced' && feedElement.extensionActive !== true && !self.shouldDisableProFeatures){
 				self.viewsActive.extensionsPopupElement = feedElement.type;
 				if(self.customizerFeedData !== undefined){
 					self.activateView('feedtypesPopup');
@@ -613,6 +776,11 @@ cffBuilder = new Vue({
 			var self = this;
 			self.selectedFeedTemplate = feedTemplate.type;
 			if( iscustomizerPopup ){
+				if ( self.shouldDisableProFeatures ) {
+					self.activateView('feedtemplatesPopup');
+					self.viewsActive.extensionsPopupElement = 'feedTemplate';
+					return;
+				}
 				self.viewsActive.feedTemplateElement = feedTemplate.type;
 			}
 			if ( ( feedTemplate.type == 'showcase_carousel' || feedTemplate.type == 'simple_carousel' ) && !self.activeExtensions.carousel ) {
@@ -620,6 +788,23 @@ cffBuilder = new Vue({
 				self.selectedFeedTemplate = 'default';
 				self.viewsActive.feedTemplateElement = null;
 				self.viewsActive.feedtemplatesPopup = null;
+				self.viewsActive.feedthemePopup = null;
+			}
+			cffBuilder.$forceUpdate();
+		},
+
+		chooseFeedTheme: function( feedTheme, iscustomizerPopup = false ) {
+			var self = this;
+			self.selectedFeedTheme = feedTheme.type;
+			if( iscustomizerPopup ){
+				self.viewsActive.feedThemeElement = feedTheme.type;
+			}
+			if ( ( feedTheme.type == 'showcase_carousel' || feedTheme.type == 'simple_carousel' ) && !self.activeExtensions.carousel ) {
+				self.viewsActive.extensionsPopupElement = 'carousel';
+				self.selectedFeedTemplate = 'default';
+				self.viewsActive.feedTemplateElement = null;
+				self.viewsActive.feedtemplatesPopup = null;
+				self.viewsActive.feedthemePopup = null;
 			}
 			cffBuilder.$forceUpdate();
 		},
@@ -667,11 +852,11 @@ cffBuilder = new Vue({
 			var feedType = isCustomizer ? self.customizerFeedData.settings.feedtype : self.selectedFeed;
 			if ( $el.type == 'simple_carousel' || $el.type == 'showcase_carousel' ) {
 				title = $el.title + self.svgIcons.rocketPremium;
-			} else if ( $el.type == 'simple_cards' && feedType != 'timeline' ) {
+			} else if ( $el.type == 'simple_cards' && (feedType != 'timeline' && feedType != 'events')) {
 				title = self.genericText.largeGrid;
 			} else if ( $el.type == 'latest_post' && (feedType == 'photos' || feedType == 'singlealbum') ) {
 				title = self.genericText.singlePhoto;
-			} else if ( $el.type == 'latest_post' && (feedType == 'albums' || feedType == 'videos') ) {
+			} else if ( $el.type == 'latest_post' && feedType == 'albums') {
 				title = self.genericText.latestAlbum;
 			} else {
 				title = $el.title;
@@ -729,6 +914,9 @@ cffBuilder = new Vue({
 				case 'selectSource':
 					checkBtnNext = self.selectedSources.length > 0 ? true : false;
 				break;
+				case 'selectTheme':
+					checkBtnNext = self.selectedSources.length > 0 ? true : false;
+				break;
 				case 'selectTemplate':
 					checkBtnNext = self.selectedSources.length > 0 ? true : false;
 				break;
@@ -756,6 +944,16 @@ cffBuilder = new Vue({
 						else
 							self.videosTypeInfo.playListUrlError = false;
 					}
+					/*
+					console.log(self.checkCreationFeedTypeChosen('events_page'))
+					if(self.selectedFeed === 'events' && self.checkCreationFeedTypeChosen('events_page') && self.checkNotEmpty(self.eventFeedInfo.url)){
+						checkBtnNext = true;
+						if(self.eventFeedInfo.url === self.feedCreationInfoUrl && self.eventFeedInfo.isError)
+						checkBtnNext = false;
+					else
+					self.eventFeedInfo.isError = false;
+				}
+				*/
 				break;
 			}
 			return checkBtnNext;
@@ -778,13 +976,25 @@ cffBuilder = new Vue({
 						self.processNotification("selectSourceError");
 					}
 					if(self.selectedSources.length > 0){
+						if (self.hasFeature('feed_themes')) {
+							self.switchScreen('selectedFeedSection', 'selectTheme');
+						} else {
+							self.switchScreen('selectedFeedSection', 'selectTemplate');
+						}
+					}
+				break;
+				case 'selectTheme':
+					if(self.selectedSources.length == 0){
+						self.processNotification("selectSourceError");
+					}
+					if(self.selectedSources.length > 0){
 						self.switchScreen('selectedFeedSection', 'selectTemplate');
 					}
 				break;
 				case 'selectTemplate':
 					if(self.selectedSources.length > 0){
 						self.switchScreen('selectedFeedSection', 'feedsTypeGetProcess');
-						if(!self.extraProcessFeedsTypes.includes(self.selectedFeed))
+						if(!self.extraProcessFeedsTypes.includes(self.selectedFeed) )
 							self.isCreateProcessGood = true;
 					}
 				break;
@@ -810,8 +1020,10 @@ cffBuilder = new Vue({
 					}
 				break;
 			}
-			if(self.isCreateProcessGood)
+			if(self.isCreateProcessGood){
 				self.submitNewFeed();
+			}
+
 
 			cffBuilder.$forceUpdate();
 		},
@@ -857,7 +1069,7 @@ cffBuilder = new Vue({
 
 			self.viewsActive.onboardingPopup = false;
 			self.viewsActive.onboardingCustomizerPopup = false;
-
+			this.switchCustomizerTab('customize');
 			self.viewsActive.onboardingStep = 0;
             var postData = {
                 action : 'cff_dismiss_onboarding',
@@ -936,8 +1148,11 @@ cffBuilder = new Vue({
 				case 'selectSource':
 					self.switchScreen('selectedFeedSection', 'feedsType');
 					break;
-				case 'selectTemplate':
+				case 'selectTheme':
 					self.switchScreen('selectedFeedSection', 'selectSource');
+					break;
+				case 'selectTemplate':
+					self.switchScreen('selectedFeedSection', 'selectTheme');
 					break;
 				case 'feedsTypeGetProcess':
 					self.switchScreen('selectedFeedSection', 'selectSource');
@@ -957,7 +1172,20 @@ cffBuilder = new Vue({
 				case "videos":
 					isShown = (self.viewsActive.selectedFeedSection == 'feedsTypeGetProcess' && self.selectedFeed == 'videos');
 				break;
-			}
+				/*
+				case "events_page":
+					let onlyPageSources = self.sourcesList.map( source => {
+						if(source.account_type === 'page' )
+						return source.account_id;
+				});
+				delete onlyPageSources[undefined];
+				let isPage = self.selectedSources.filter(
+					sourceID => onlyPageSources.includes(sourceID)
+					);
+					isShown = (self.viewsActive.selectedFeedSection == 'feedsTypeGetProcess' && self.selectedFeed == 'events' && isPage.length > 0);
+					break;
+					*/
+				}
 			return isShown;
 		},
 		//Get Single Album info in the creation Process
@@ -966,7 +1194,8 @@ cffBuilder = new Vue({
 			var singleAlbumData = {
 				action : 'cff_source_get_featured_post_preview',
 				url_or_id : self.singleAlbumFeedInfo.url,
-				source_id : self.selectedSources[0]
+				source_id : self.selectedSources[0],
+                feed_type : 'album'
 			};
 			self.ajaxPost(singleAlbumData, function(_ref){
 				var data = _ref.data;
@@ -977,17 +1206,25 @@ cffBuilder = new Vue({
 					var albumID = data.id.split("_");
 					albumID = albumID[1] != undefined ? albumID[1] : data.id;
 
-					self.singleAlbumFeedInfo.info = {
-						title : data.attachments.data[0].title ? data.attachments.data[0].title : '',
-						description : data.story ? data.story : '',
-						thumbnail : self.hasOwnNestedProperty(data,'full_picture') ? data.full_picture : '',
-						album : albumID
-					};
+                    if( data?.attachments?.data[0] ){
+                        self.singleAlbumFeedInfo.info = {
+                            title : data.attachments.data[0].title ? data.attachments.data[0].title : '',
+                            description : data.story ? data.story : '',
+                            thumbnail : self.hasOwnNestedProperty(data,'full_picture') ? data.full_picture : '',
+                            album : albumID
+                        };
+                    }else if( data?.cover_photo?.source ){
+                         self.singleAlbumFeedInfo.info = {
+                            title : data?.name ? data.name : '',
+                            description : data?.story ? data.story : '',
+                            thumbnail : data?.cover_photo?.source ? data?.cover_photo?.source : '',
+                            album : albumID
+                        };
+                    }
 					self.isCreateProcessGood = true;
 				}
 			});
 		},
-
 		//Get Videos Play List Info
 		getVideosPlaylistCreationProcessInfo : function(){
 			var self = this,
@@ -1035,6 +1272,27 @@ cffBuilder = new Vue({
 				}
 			});
 		},
+		//Get Events iCal URL
+		getEventsIcalURLCreationProcessInfo : function(){
+			var self = this;
+			var eventFeedData = {
+				action : 'cff_feed_saver_manager_check_events_ical_url',
+				ical_url : self.eventFeedInfo.url,
+				source_id : self.selectedSources[0]
+			};
+			self.ajaxPost(eventFeedData, function(_ref){
+				var data = _ref.data.data;
+				if(self.hasOwnNestedProperty(data,'error')){
+					self.eventFeedInfo.isError = true, self.eventFeedInfo.success = false, self.eventFeedInfo.info = {};
+				}else {
+					self.eventFeedInfo.isError = false,self.eventFeedInfo.success = true;
+					self.eventFeedInfo.info = {
+						description : data.message ? data.message.substr(0, 60) + '...' : ''
+					};
+					self.isCreateProcessGood = true;
+				}
+			});
+		},
 		getSelectedSourceName : function(sourceID){
 			var self = this;
 			var sourceInfo = self.sourcesList.filter(function(source){
@@ -1052,6 +1310,7 @@ cffBuilder = new Vue({
 				sourcename : self.getSelectedSourceName(self.selectedSources[0]),
 				feedtype : self.selectedFeed,
 				feedtemplate : self.selectedFeedTemplate,
+				feedtheme: self.selectedFeedTheme,
 				type : self.type
 			};
 			if(self.selectedFeed == 'featuredpost'){
@@ -1063,13 +1322,39 @@ cffBuilder = new Vue({
 			if(self.selectedFeed == 'videos'){
 				newFeedData.playlist = (self.videosTypeInfo.info.playlistID != undefined && self.videosTypeInfo.type == 'playlist') ? self.videosTypeInfo.info.playlistID : '';
 			}
+			if(self.selectedFeed == 'events' && self.checkCreationFeedTypeChosen('events_page') ){
+				newFeedData.ical_url = self.eventFeedInfo.url;
+			}
 			self.fullScreenLoader = true;
+
 			self.ajaxPost(newFeedData, function(_ref){
 				var data = _ref.data;
 				if(data.feed_id && data.success){
-					window.location = self.builderUrl + '&feed_id=' + data.feed_id;
+					window.location = self.builderUrl + '&feed_id=' + data.feed_id + self.sw_feed_params();
 				}
 			});
+		},
+
+		sw_feed_params: function() {
+			let sw_feed_param = '';
+			if ( this.sw_feed ) {
+				sw_feed_param += '&sw-feed=true';
+			}
+			if ( this.sw_feed_id ) {
+				sw_feed_param += '&sw-feed-id=' + this.sw_feed_id;
+			}
+			return sw_feed_param;
+		},
+
+		swfeedReturnUrl: function() {
+			var self = this;
+			if ( self.sw_feed ) {
+				sw_return_url = 'admin.php?page=sbsw#/create-feed'
+			}
+			if ( self.sw_feed_id ) {
+				sw_return_url = 'admin.php?page=sbsw&feed_id=' + self.sw_feed_id
+			}
+			return sw_return_url;
 		},
 
 		//Source Ative
@@ -1256,6 +1541,16 @@ cffBuilder = new Vue({
 			});
 
 			return result;
+		},
+
+		feedThemeAction: function() {
+			var self = this;
+			if (self.hasFeature('feed_themes')) {
+				self.activateView('feedthemePopup');
+			} else {
+				// self.activateView('postSettings');
+				self.viewsActive.extensionsPopupElement = 'feedThemes'
+			}
 		},
 
 
@@ -1487,7 +1782,7 @@ cffBuilder = new Vue({
 				self.processDateRange();
 			}
 			if(settingID == 'feedlayout'  && value == 'masonry'){
-				self.customizerFeedData.settings['layout'] = 'fullwidth';
+				self.customizerFeedData.settings['layout'] = 'full';
 			}
 
 			if(settingID == 'feedlayout' && value == 'carousel' && !self.checkExtensionActive('carousel')){
@@ -1543,6 +1838,10 @@ cffBuilder = new Vue({
 		changeCheckboxSectionValue : function(settingID, value, ajaxAction = false){
 			var self = this;
 			var settingValue = self.customizerFeedData.settings[settingID];
+			if( !Array.isArray(settingValue) && settingID == 'include'){
+				settingValue = settingValue.split(',');
+			}
+
 			if(!Array.isArray(settingValue) && settingID == 'type'){
 				settingValue = [settingValue];
 			}
@@ -1581,7 +1880,7 @@ cffBuilder = new Vue({
 		checkControlCondition : function(conditionsArray = [], checkExtensionActive = false, checkExtensionActiveDimmed = false){
 			var self = this,
 			isConditionTrue = 0;
-			Object.keys(conditionsArray).map(function(condition, index){
+			Object.keys(conditionsArray).forEach(function(condition, index){
 				if(conditionsArray[condition].indexOf(self.customizerFeedData.settings[condition]) !== -1)
 					isConditionTrue += 1
 			});
@@ -1599,7 +1898,7 @@ cffBuilder = new Vue({
 		checkControlOverrideColor : function(overrideConditionsArray = []){
 			var self = this,
 			isConditionTrue = 0;
-			overrideConditionsArray.map(function(condition, index){
+			overrideConditionsArray.forEach(function(condition, index){
 				if(self.checkNotEmpty(self.customizerFeedData.settings[condition]) && self.customizerFeedData.settings[condition].replace(/ /gi,'') != '#'){
 					isConditionTrue += 1
 				}
@@ -1694,6 +1993,18 @@ cffBuilder = new Vue({
 			self.customizerScreens.printedTemplate = result.length > 0 ? result[0] : [];
 			return result.length > 0 ? true : false;
 		},
+		customizerFeedThemePrint : function(){
+			var self = this;
+			// Support for versions before v4.2
+			if ( self.customizerFeedData.settings.feedtheme == undefined ) {
+				self.customizerFeedData.settings.feedtheme = 'default_theme';
+			}
+			result = self.feedThemes.filter(function(tp){
+				return tp.type === self.customizerFeedData.settings.feedtheme
+			});
+			self.customizerScreens.printedTheme = result.length > 0 ? result[0] : [];
+			return result.length > 0 ? true : false;
+		},
 		customizerFeedTypePrint : function(){
 			var self = this,
 			combinedTypes = self.feedTypes.concat(self.advancedFeedTypes);
@@ -1747,6 +2058,12 @@ cffBuilder = new Vue({
 			self.viewsActive.feedTemplateElement = null;
 			self.viewsActive.feedtemplatesPopup = false;
 			self.customizerControlAjaxAction('feedTemplateFlyPreview');
+			cffBuilder.$forceUpdate();
+		},
+		updateFeedThemeCustomizer : function(feedTheme){
+			var self = this;
+			self.customizerFeedData.settings.feedtheme = feedTheme;
+			// self.customizerControlAjaxAction('feedThemeFlyPreview');
 			cffBuilder.$forceUpdate();
 		},
 		updateInputWidth : function(){
@@ -1853,7 +2170,7 @@ cffBuilder = new Vue({
 						feedID : self.customizerFeedData.feed_info.id,
 						previewSettings : self.customizerFeedData.settings,
 					};
-					self.ajaxPost(previewFeedData, function(_ref){
+                    self.ajaxPost(previewFeedData, function(_ref){
 						var data = _ref.data;
 						if( data !== false ){
 							self.disableJQueryNodes();
@@ -1956,6 +2273,7 @@ cffBuilder = new Vue({
 				carouselElement = jQuery('.cff-preview-posts-list-ctn'),
 				customizerSettings = self.customizerFeedData.settings,
 				currentDevice = self.customizerScreens.previewScreen;
+				self.disableJQueryNodes();
 			if(customizerSettings.feedlayout === 'carousel' && self.activeExtensions['carousel'] == true){
 				carouselElement.addClass('cff-carousel');
 				var carouselHeightInput = customizerSettings.carouselheight,
@@ -1984,9 +2302,8 @@ cffBuilder = new Vue({
 			            afterInit = function(){
 			                self.cffUpdateSize(carouselElement);
 			            };
-	            	}else{
+	            	}
 						carouselElement.find('.cff-carousel-expand').remove();
-					}
 
 
 	            var carouselSettings = {
@@ -2194,21 +2511,23 @@ cffBuilder = new Vue({
 
 			//Masonry Layout
 			if(feedlayout === 'masonry'){
-				var $masonryParent = jQuery('.cff-preview-posts-masonry').isotope({
-				  	itemSelector: '.cff-post-item-ctn',
-				  	percentPosition: true,
-				  	masonry: {
-				    	columnWidth: '.cff-post-item-ctn'
-				  	}
-				});
-				// layout Isotope after each image loads
-				$masonryParent.imagesLoaded().progress( function() {
-				  	if(typeAppend == 'update'){
-				  		$masonryParent.isotope('reloadItems').isotope();
-				  	}else{
-				  		$masonryParent.isotope('layout');
-				  	}
-				});
+				setTimeout(function() {
+					var $masonryParent = jQuery('.cff-preview-posts-masonry').isotope({
+					  	itemSelector: '.cff-post-item-ctn',
+					  	percentPosition: true,
+					  	masonry: {
+					    	columnWidth: '.cff-post-item-ctn'
+					  	}
+					});
+					// layout Isotope after each image loads
+					$masonryParent.imagesLoaded().progress( function() {
+					  	if(typeAppend == 'update'){
+					  		$masonryParent.isotope('reloadItems').isotope();
+					  	}else{
+					  		$masonryParent.isotope('layout');
+					  	}
+					});
+				}, 500)
 			}else{
 				if(jQuery('.cff-preview-posts-list-ctn').data('isotope')){
 					jQuery('.cff-preview-posts-list-ctn').isotope('destroy')
@@ -2217,37 +2536,43 @@ cffBuilder = new Vue({
 
 			//Grid Layout
 			if(feedlayout === 'grid'){
-				var grid = document.getElementsByClassName('cff-preview-posts-grid')[0];
-				if( grid ) {
-			       var allItems = document.querySelectorAll('.cff-post-item-ctn');
-			       if( allItems ) {
-			       		var plusHeight = (feedtype == 'videos' || feedtype == 'albums') ? 70 : 0;
-			        	allItems.forEach( function(item, index) {
-			        		item.style.height = parseFloat(item.getBoundingClientRect().width + plusHeight) + 'px';
-				 		    item.style.gridRowEnd = 'unset';
-			        	});
-			       }
-				}
+				setTimeout(function() {
+					var grid = document.getElementsByClassName('cff-preview-posts-grid')[0];
+					if( grid ) {
+				       var allItems = document.querySelectorAll('.cff-post-item-ctn');
+				       if( allItems ) {
+				       		var plusHeight = (feedtype == 'videos' || feedtype == 'albums') ? 70 : 0;
+				        	allItems.forEach( function(item, index) {
+				        		item.style.height = parseFloat(item.getBoundingClientRect().width + plusHeight) + 'px';
+					 		    item.style.gridRowEnd = 'unset';
+				        	});
+				       }
+					}
+				}, 500)
 			}
 
 			if(feedlayout == 'carousel'){
-				var allItems = document.querySelectorAll('.cff-post-item-ctn');
-				if( allItems ) {
-					allItems.forEach( function(item, index) {
-						item.style.height = 'unset';
-						item.style.gridRowEnd = 'unset';
-					});
-				}
+				setTimeout(function() {
+					var allItems = document.querySelectorAll('.cff-post-item-ctn');
+					if( allItems ) {
+						allItems.forEach( function(item, index) {
+							item.style.height = 'unset';
+							item.style.gridRowEnd = 'unset';
+						});
+					}
+				}, 500)
 			}
 
 			if(feedlayout == 'carousel' && feedtype == 'singlealbum'){
-				var allItems = document.querySelectorAll('.owl-item');
-				if( allItems ) {
-					allItems.forEach( function(item, index) {
-						item.style.height = item.getBoundingClientRect().width + 'px';
-						item.style.gridRowEnd = 'unset';
-					});
-				}
+				setTimeout(function() {
+					var allItems = document.querySelectorAll('.owl-item');
+					if( allItems ) {
+						allItems.forEach( function(item, index) {
+							item.style.height = item.getBoundingClientRect().width + 'px';
+							item.style.gridRowEnd = 'unset';
+						});
+					}
+				}, 500)
 			}
 
 		},
@@ -2270,13 +2595,10 @@ cffBuilder = new Vue({
  				switch (currentDevice) {
  					case 'desktop':
  						return self.customizerFeedData.settings.cols;
-					break;
 					case 'tablet':
  						return self.customizerFeedData.settings.colstablet;
-					break;
 					case 'mobile':
  						return self.customizerFeedData.settings.colsmobile;
-					break;
  				}
  			}
  			return false;
@@ -2555,7 +2877,12 @@ cffBuilder = new Vue({
 			}else{
 				var numberOfPosts = (self.customizerScreens.previewScreen == 'desktop') ? customizerSettings.num : (self.checkNotEmpty(customizerSettings.nummobile) ? customizerSettings.nummobile : customizerSettings.num);
 					numberOfPosts = self.checkNotEmpty(numberOfPosts) ? numberOfPosts : 0;
-				return (customizerSettings.feedlayout == 'carousel') ? self.customizerFeedData.posts : self.customizerFeedData.posts.slice(0, numberOfPosts);
+                let returnedPosts = self.customizerFeedData.posts.filter( post => {
+                    if(self.checkShowPost(post)){
+                        return post;
+                    }
+                }  );
+				return (customizerSettings.feedlayout == 'carousel') ? returnedPosts : returnedPosts.slice(0, numberOfPosts);
 			}
 		},
 
@@ -2956,7 +3283,6 @@ cffBuilder = new Vue({
 									'unshimmedUrl' 	: self.hasOwnNestedProperty( dataObject, 'unshimmed_url') 	? dataObject.unshimmed_url : null
 								}
 							};
-						break;
 						case 'link':
 							var domain = (self.hasOwnNestedProperty( dataObject, 'unshimmed_url')) ? (new URL(dataObject.unshimmed_url)).hostname : null;
 							return {
@@ -2969,7 +3295,6 @@ cffBuilder = new Vue({
 									'domain' 		: domain
 								}
 							};
-						break;
 					}
 				}
 			}else if(post.embed_html){
@@ -2997,6 +3322,7 @@ cffBuilder = new Vue({
 		getPostTypeTimeline : function( post ){
 			var self = this,
 				postType = (post.message) ? 'statuses' : (post.description ? 'statuses' : 'empty');
+
 			if( self.hasOwnNestedProperty(post, 'attachments.data') &&  post.attachments.data[0] ){
 				if( post.attachments.data[0].media_type ){
 					switch (post.attachments.data[0].media_type) {
@@ -3051,7 +3377,7 @@ cffBuilder = new Vue({
 		 */
 		processPhotoSource : function( post ){
 			var pictureSourceFallBack = 'https://graph.facebook.com/'+ post.id +'/picture?type=normal&width=9999&height=9999&access_token=' + ((this.customizerFeedData.settings.sources[0] != undefined) ? this.customizerFeedData.settings.sources[0].access_token : ''),
-				pictureSrc = ( post.images &&  post.images[0] && post.images[0].source) ? post.images[0].source : pictureSourceFallBack;
+				pictureSrc = ( post.images &&  post.images[0] && post.images[0].source) ? post.images[0].source : (post.full_picture || pictureSourceFallBack);
 			if(post.images){
 				var currentWidth = 0;
 				post.images.forEach( function(singleImage) {
@@ -3147,7 +3473,6 @@ cffBuilder = new Vue({
 			holderHeading = '',
 			holderText = '',
 			settings = self.customizerFeedData.settings;
-
 			if( settings.feedtype == 'singlealbum' ){
 				holderIcon 		= self.checkNotEmpty(settings.album) && postsLength == 0 ? self.svgIcons['issueSinglePreview'] :  self.svgIcons['albumsPreview'];
 				holderHeading 	= self.checkNotEmpty(settings.album) && postsLength == 0 ? self.addFeaturedAlbumScreen.couldNotFetch : self.addFeaturedAlbumScreen.previewHeading;
@@ -3312,7 +3637,191 @@ cffBuilder = new Vue({
 			setTimeout(function(){
 				self.notificationElement.shown =  "hidden";
 			}, 5000);
+		},
+
+		themePreview: function(themeType) {
+			this.previewTheme = ''
+			setTimeout(() => {
+				this.previewTheme = themeType
+			  }, 250)
+		},
+		themePreviewClear: function() {
+			setTimeout(() => {
+				this.previewTheme = ''
+			  }, 250)
+		},
+
+        hasFeature : function ( feature_name ) {
+            var self = this;
+            return self.license_tier_features.includes( feature_name );
+        },
+
+        checkFeedTypeTier : function( feedType, advancedFeedType = false ) {
+            var self = this,
+                typeTiers = {
+                   'photos' : 'photos_albums_feeds',
+                    'albums' : 'photos_albums_feeds',
+                    'videos' : 'video_feeds',
+                    'events' : 'events_feeds'
+                },
+                feedTypeTierIncluder = Object.keys( typeTiers ).includes( feedType ) ? self.hasFeature( typeTiers[feedType] ) : true;
+
+                if ( !feedTypeTierIncluder && advancedFeedType && self.viewsActive.feedtypesPopup ) {
+					self.activateView('feedtypesPopup');
+				}
+            return feedTypeTierIncluder;
+        },
+
+        checkFeedTemplateTier : function( feedTemplateEl ) {
+            var self = this;
+            if ( !self.hasFeature('feed_templates')  && self.viewsActive.feedtemplatesPopup ) {
+                self.viewsActive.extensionsPopupElement = 'feedTemplate'
+                self.activateView('feedtemplatesPopup');
+			}else{
+                self.chooseFeedTemplate(feedTemplateEl, true)
+            }
+        },
+
+		checkFeedEventSourceiCalUrl : function( feed ) {
+			let self = this,
+				feedSettings = feed['settings'];
+			if(feedSettings['type'] !== 'events'){
+				return true;
+			}
+			let resp = false;
+			if( Array.isArray( feedSettings['sources'] ) ){
+				feedSettings['sources'].forEach( source => {
+					resp = self.iCalURLs[source.account_id] !== undefined || (source?.account_type && source.account_type !== 'page');
+				} )
+			}else{
+				let curSource = self.sourcesList.filter( source => {
+					return feedSettings['sources'] === source.account_id;
+				} )
+				resp = self.iCalURLs[feedSettings['sources']] !== undefined || (curSource[0]?.account_type && curSource[0].account_type !== 'page');
+
+			}
+			return resp;
+		},
+		clickAddFeedEventSourceiCalUrl : function( feed ) {
+			let self = this,
+				feedSettings = feed['settings'];
+			if(feedSettings['type'] !== 'events'){
+				return true;
+			}
+			let source_id = false;
+			if( Array.isArray( feedSettings['sources'] ) ){
+				feedSettings['sources'].forEach( source => {
+					source_id = source.account_id;
+				} )
+
+			}else{
+				source_id = feedSettings['sources']
+			}
+			if(source_id !== false){
+				self.chooseAccountId(source_id)
+			}
+		},
+
+		checkSourceiCalUrl : function( source ) {
+			return source.privilege !== 'events' || (source.privilege === 'events' && this.iCalURLs[source.account_id] !== undefined);
+		},
+
+        chooseAccountId : function( source_account_id, is_connect_page = false ) {
+            let self = this;
+			self.addIcalUrl.source_id = source_account_id;
+			self.addIcalUrl.reconnectPage = is_connect_page;
+			self.addIcalUrl.url = self.iCalURLs[source_account_id] !== undefined ? self.iCalURLs[source_account_id] : ''
+            this.activateView('iCalUrlPopup')
+            cffBuilder.$forceUpdate();
+		},
+
+        print_ical_url : function( source ) {
+			return source.privilege === 'events' && this.iCalURLs[source.account_id] !== undefined ? this.iCalURLs[source.account_id] : ''
+		},
+
+        connectEventiCalUrl : function() {
+			let self = this;
+
+			if( self.checkNotEmpty(self.addIcalUrl.url) && self.checkNotEmpty(self.addIcalUrl.source_id) ) {
+				self.addIcalUrl.loadingAjax = true;
+				self.addIcalUrl.isError = false;
+				self.addIcalUrl.success = false;
+                self.addIcalUrl.errorMessage = '';
+
+                let data = new FormData();
+                data.append( 'action', 'cff_feed_saver_manager_add_events_ical_url' );
+                data.append( 'nonce', this.nonce );
+                data.append( 'ical_url', self.addIcalUrl.url );
+                data.append( 'source_id', self.addIcalUrl.source_id );
+
+                if( self.addIcalUrl.reconnectPage === true && self.checkNotEmpty(self.addIcalUrl.pageToken) ){
+                    data.append( 'reconnect_page', true );
+                    data.append( 'access_token', self.addIcalUrl.pageToken );
+                }
+
+
+                fetch(this.ajaxHandler, {
+                    method: "POST",
+                    credentials: 'same-origin',
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+    				self.addIcalUrl.loadingAjax = false;
+                    self.iCalURLs = data.data.ical_urls;
+
+                    if(data?.data?.sourcesList){
+                        self.sourcesList  = data.data.sourcesList;
+                    }
+
+                    if ( data.success === false ) {
+                        self.addIcalUrl.isError = true;
+                        self.addIcalUrl.errorMessage = data.data.message;
+        				self.addIcalUrl.success = false;
+                    }else{
+                        self.addIcalUrl.errorMessage = '';
+                        self.addIcalUrl.isError = false;
+        				self.addIcalUrl.success = true;
+                        setTimeout(function() {
+                            self.addIcalUrl.errorMessage = '';
+                            self.activateView('iCalUrlPopup')
+                            self.addIcalUrl.isError = false;
+        				    self.addIcalUrl.success = false;
+                        }, 3000);
+                    }
+                    return;
+                });
+
+			}
+
+		},
+
+		getShowEventsTimezoneNoticeType : function() {
+			let settings = this.customizerFeedData.settings;
+			if (
+				(settings.eventstimezoneoffsetchanged === false || settings.eventstimezoneoffsetchanged === 'false') &&
+				(settings.eventstimezoneoffset === true || settings.eventstimezoneoffset === 'true')
+			) {
+				this.showEventsTimezoneNoticeType = 'dismiss'
+			}
+			return this.showEventsTimezoneNoticeType;
+		},
+
+		openFixEventTimezoneIssue : function() {
+			var self = this,
+				individual_elements = self.customizerSidebarBuilder['settings'].sections.settings_advanced;
+				self.customizerScreens.activeSection = 'settings_advanced';
+				self.customizerScreens.activeSectionData= self.customizerSidebarBuilder['settings'].sections.settings_advanced;
+				self.switchCustomizerSection('settings_advanced', individual_elements, false, false);
+				cffBuilder.$forceUpdate();
+		},
+
+		dimissEventsTimezoneNotice : function() {
+			this.customizerFeedData.settings.eventstimezoneoffsetchanged = true;
+			this.showEventsTimezoneNotice = false;
+			cffBuilder.$forceUpdate();
 		}
+
 
 
 	}

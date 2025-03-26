@@ -25,7 +25,7 @@ $media_url               = SBY_Display_Elements::get_optimum_media_url( $api_dat
 $media_full_res          = SBY_Parse::get_media_url( $api_data );
 $media_all_sizes_json    = SBY_Parse::get_media_src_set( $api_data );
 $permalink = SBY_Parse::get_permalink( $api_data );
-$img_alt                 = SBY_Parse::get_caption( $api_data, __( 'Image for post' ) . ' ' . $post_id );
+$img_alt                 = SBY_Parse::get_caption( $api_data, __( 'Image for post', 'feeds-for-youtube' ) . ' ' . $post_id );
 $player_outer_wrap_style_attr = SBY_Display_Elements::get_style_att( 'player_outer_wrap', $settings );
 
 // Pro Elements
@@ -69,6 +69,5 @@ $sby_meta_size_color_styles = SBY_Display_Elements_Pro::get_sby_meta_size_color_
 		<?php
 		$context = 'single';
 		include sby_get_feed_template_part( 'info', $settings ); ?>
-
     </div>
 </div>

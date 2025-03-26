@@ -18,5 +18,5 @@ $text_header_display_condition = SBY_Display_Elements::get_text_header_display_c
 $header_text_content = SBY_Display_Elements::get_text_header_content( $settings );
 ?>
 <div <?php echo $text_header_display_condition; ?> class="sb_youtube_header sby-header-type-text" <?php echo $text_header_attrs ?>>
-    <span <?php echo $header_text_content; ?>><?php echo $settings['customheadertext']; ?></span>
+    <span <?php echo $header_text_content; ?>><?php echo esc_html( $settings['customheadertext'] ); ?></span>
 </div>

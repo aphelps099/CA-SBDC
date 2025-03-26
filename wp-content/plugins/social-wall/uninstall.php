@@ -5,7 +5,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 //If the user is preserving the settings then don't delete them
 $options = get_option( 'sbsw_settings' );
-$sbsw_preserve_settings = isset( $options[ 'preserve_settings' ] ) ? $options[ 'preserve_settings' ] : false;
+$sbsw_preserve_settings = isset( $options['preserve_settings'] ) ? $options['preserve_settings'] : false;
 
 // allow the user to preserve their settings in case they are upgrading
 if ( ! $sbsw_preserve_settings ) {

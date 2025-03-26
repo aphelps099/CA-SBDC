@@ -1251,7 +1251,7 @@ body{
 	color: #0068A0;
 	background: #fff;
 	border: 1px solid #DCDDE1;
-	margin-bottom: 14px;
+	margin: 14px 0px;
 }
 
 .ctf-fb-extpp-lite-btn svg {
@@ -2830,3 +2830,158 @@ body{
 .ctf-fb-source-msg-success{
     color : var(--success-green);
 }
+.ctf-fb-extpp-get-btn svg{
+	float: left;
+	margin-right: 5px;
+}
+
+/** Remove when own app implemented **/
+.ctf-fb-connectaccount-popup .ctf-fb-source-bottom {
+	display: none;
+}
+
+
+/* Settings page license inactive notice */
+.ctf-license-inactive-agp {
+	padding: 16px 20px 20px 60px;
+	background: #FFFFFF;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	display: flex;
+	justify-content: space-between;
+	border-top: 2px solid #D72C2C;
+	position: relative;
+  }
+  .ctf-license-inactive-agp .sb-left-content svg {
+	position: absolute;
+	left:22px;
+	top: 19px;
+  }
+  .ctf-license-inactive-agp .sb-left-content h4{
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 140%;
+	margin: 0 0 4px 0;
+  }
+  .ctf-license-inactive-agp .sb-left-content p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin: 0px;
+  }
+  .ctf-license-inactive-agp .sb-right .ctf-buttons{
+	display: flex;
+	gap: 8px;
+  }
+  .ctf-license-inactive-agp .sb-right .ctf-buttons a {
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 160%;
+  }
+  .sb-focus-box-section {
+	animation-duration: 2s;
+	animation-name: slidein;
+  }
+
+  @keyframes slidein {
+	from {
+	  background-color: #efb7b5;
+	}
+	to {
+	  background-color: #fff;
+	}
+  }
+  /* end Settings page license inactive notice */
+
+  /* Pro to Pro Upgrade Section */
+  .sb-propro-box {
+  	margin-top: -15px;
+  	margin-bottom: 12px;
+  	background: #F7FDFF !important;
+  	padding: 0px !important;
+
+  }
+
+  .sb-protopro-upgrade-ctn {
+  	width: 100%;
+  	float: left;
+  	padding: 25px;
+  	display: flex;
+  	box-sizing: border-box;
+  }
+
+  .sb-protopro-upgrade-text {
+  	display: flex;
+  	flex-direction: column;
+  	color: #004D77;
+  	font-size: 14px;
+  	line-height: 1.7em;
+  }
+
+  .sb-protopro-upgrade-ctn .ctf-btn {
+  	margin-left: auto;
+  	padding: 0px 10px;
+  	line-height: 1em;
+  	height: 40px;
+  	font-size: 12px;
+  }
+
+  .sb-protopro-upgrade-ctn .ctf-btn svg {
+  	float: left;
+  	margin-right: 5px;
+  }
+
+  .sb-protopro-upgrade-type {
+  	padding: 3px 6px;
+  	border-radius: 5px;
+  	background: #E2F5FF;
+  	line-height: 1em;
+  	margin-left: 5px;
+  	text-transform: capitalize;
+  }
+
+  .sb-pro-newversion-popup-ctn {
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  }
+
+  .sb-pro-newversion-popup {
+  	width: 440px;
+  	padding: 20px 25px;
+  	background-color: #fff;
+  	border-radius: 8px;
+  	box-shadow: 0px 1.771044135093689px 5.119424343109131px 0px #0000000B,
+  		0px 4.256065368652344px 12.302688598632812px 0px #0000000F,
+  		0px 8.013792991638184px 23.164871215820312px 0px #00000013,
+  		0px 14.29523754119873px 41.32217025756836px 0px #00000017,
+  		0px 26.7376708984375px 77.28857421875px 0px #0000001B;
+  }
+
+  .sb-pro-newversion-popup-txt {
+  	display: flex;
+  	flex-direction: column;
+  }
+
+  .sb-pro-newversion-popup-txt strong {
+  	font-size: 17px;
+  	margin-bottom: 10px;
+  	margin-top: 10px;
+  }
+
+  .sb-pro-newversion-popup-txt span {
+  	font-size: 14px;
+  }
+
+  .sb-pro-newversion-popup-btns {
+  	margin-top: 30px;
+  	display: flex;
+  	justify-content: flex-end;
+  	column-gap: 10px;
+  }
+
+  .sb-pro-newversion-popup-btns .ctf-btn {
+  	height: 38px;
+  	font-size: 13px;
+  }

@@ -1,7 +1,7 @@
 <?php
 
 // composer autoload
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 if (!defined('SBY_DBVERSION')) {
     define('SBY_DBVERSION', '1.4');

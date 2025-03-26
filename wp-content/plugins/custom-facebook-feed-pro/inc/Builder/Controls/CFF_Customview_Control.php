@@ -1,16 +1,21 @@
 <?php
+
 /**
  * Customizer Builder
  * Custom View
  *	This control will used for custom HTMlL controls like (source, feed type...)
+ *
  * @since 4.0
  */
+
 namespace CustomFacebookFeed\Builder\Controls;
 
-if(!defined('ABSPATH'))	exit;
+if (!defined('ABSPATH')) {
+	exit;
+}
 
-class CFF_Customview_Control extends CFF_Controls_Base{
-
+class CFF_Customview_Control extends CFF_Controls_Base
+{
 	/**
 	 * Get control type.
 	 *
@@ -20,40 +25,110 @@ class CFF_Customview_Control extends CFF_Controls_Base{
 	 * @access public
 	 *
 	 * @return string
-	*/
-	public function get_type(){
+	 */
+	public function get_type()
+	{
 		return 'customview';
 	}
 
 	/**
 	 * Output Control
 	 *
-	 *
 	 * @since 4.0
 	 * @access public
 	 *
 	 * @return HTML
-	*/
-	public function get_control_output($controlEditingTypeModel){
+	 */
+	public function get_control_output($controlEditingTypeModel)
+	{
 		$this->get_control_sources_output($controlEditingTypeModel);
+		$this->get_control_feedtheme_output($controlEditingTypeModel);
 		$this->get_control_feedtemplate_output($controlEditingTypeModel);
 		$this->get_control_feedtype_output($controlEditingTypeModel);
 	}
 
 	/**
-	 * Feed Templates Output Control
+	 * Feed Theme Output Control
 	 *
+	 * @since 4.4
+	 * @access public
+	 *
+	 * @return HTML
+	 */
+	public function get_control_feedtheme_output($controlEditingTypeModel)
+	{
+		?>
+		<div id="sb-control-feedtheme" :class="['sb-control-feedtype-ctn sb-control-feedtheme-ctn', 'cff-feedtheme-' + customizerScreens.printedTheme.type, 'feed-theme-' + hasFeature('feed_themes') ]" v-if="control.viewId == 'feedtheme'">
+			<div class="cff-fb-type-el" v-if="customizerFeedThemePrint()"  @click.prevent.default="feedThemeAction()">
+				<div class="cff-fb-type-el-img cff-fb-fs">
+					<!-- default -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'default_theme'">
+						<img src="<?php echo esc_url(CFF_PLUGIN_URL . 'admin/assets/img/customizer-theme/default_theme.jpg'); ?>" width="100%" alt="default">
+					</div>
+
+					<!-- modern -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'modern'">
+						<img src="<?php echo esc_url(CFF_PLUGIN_URL . 'admin/assets/img/customizer-theme/modern.jpg'); ?>" width="100%" alt="modern">
+					</div>
+
+					<!-- socila wall -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'social_wall'">
+						<img src="<?php echo esc_url(CFF_PLUGIN_URL . 'admin/assets/img/customizer-theme/social_wall.jpg'); ?>" width="100%" alt="social wall">
+					</div>
+
+					<!-- outline -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'outline'">
+						<img src="<?php echo esc_url(CFF_PLUGIN_URL . 'admin/assets/img/customizer-theme/outline.jpg'); ?>" width="100%" alt="outline">
+					</div>
+
+					<!-- overlap -->
+					<div  v-if="customizerFeedData.settings.feedtheme == 'overlap'">
+						<img src="<?php echo esc_url(CFF_PLUGIN_URL . 'admin/assets/img/customizer-theme/overlap.jpg'); ?>" width="100%" alt="overlap">
+					</div>
+
+				</div>
+				<div class="cff-fb-type-el-info cff-fb-fs">
+					<strong class="cff-fb-fs" v-html="customizerScreens.printedTheme.title"></strong>
+				</div>
+			</div>
+			<button class="sb-control-action-button sb-btn cff-fb-fs sb-btn-grey" @click.prevent.default="feedThemeAction()">
+				<div>
+					<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M1.175 0.160156L5 3.97682L8.825 0.160156L10 1.33516L5 6.33516L0 1.33516L1.175 0.160156Z" fill="#141B38"/>
+					</svg>
+				</div>
+				<span>{{genericText.change}}</span>
+			</button>
+			<ul class="sb-theme-options" v-if="viewsActive.feedThemeDropdown">
+				<li
+				class="sb-theme-option"
+				v-for="{title, type} in feedThemes"
+				@click.prevent.default="hasFeature('feed_themes') ? updateFeedThemeCustomizer(type) : alert('Poup for Feed Themes')"
+				@mouseover="themePreview(type)"
+				@mouseleave="themePreviewClear()"
+				>
+					<span>{{title}}</span>
+					<span class="sb-theme-active" v-if="title == customizerScreens.printedTheme.title">{{genericText.active}}</span>
+				</li>
+			</ul>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Feed Templates Output Control
 	 *
 	 * @since 4.0
 	 * @access public
 	 *
 	 * @return HTML
-	*/
-	public function get_control_feedtemplate_output($controlEditingTypeModel){
-	?>
-		<div :class="['sb-control-feedtype-ctn sb-control-feedtemplate-ctn', 'cff-feedtemplate-' + customizerScreens.printedTemplate.type]" v-if="control.viewId == 'feedtemplate'">
+	 */
+	public function get_control_feedtemplate_output($controlEditingTypeModel)
+	{
+		?>
+		<div id="'sb-control-feedtemplate" :class="['sb-control-feedtype-ctn sb-control-feedtemplate-ctn', 'cff-feedtemplate-' + customizerScreens.printedTemplate.type]" v-if="control.viewId == 'feedtemplate'">
 			<div class="cff-fb-type-el" v-if="customizerFeedTemplatePrint()"  @click.prevent.default="activateView('feedtemplatesPopup')">
-				<div class="cff-fb-type-el-img cff-fb-fs" v-html="svgIcons[customizerFeedData.settings.feedtype][customizerScreens.printedTemplate.icon]"></div>
+				<div class="cff-fb-type-el-img cff-fb-fs" v-html="svgIcons[customizerFeedData.settings.feedtype + '.' + customizerScreens.printedTemplate.icon]"></div>
 				<div class="cff-fb-type-el-info cff-fb-fs">
 					<strong class="cff-fb-fs" v-html="getFeedTemplateElTitle(customizerScreens.printedTemplate, true)"></strong>
 				</div>
@@ -81,20 +156,21 @@ class CFF_Customview_Control extends CFF_Controls_Base{
 				</button>
 			</div>
 		</div>
-	<?php
+
+		<?php
 	}
 
 	/**
 	 * Feed Type Output Control
 	 *
-	 *
 	 * @since 4.0
 	 * @access public
 	 *
 	 * @return HTML
-	*/
-	public function get_control_feedtype_output($controlEditingTypeModel){
-	?>
+	 */
+	public function get_control_feedtype_output($controlEditingTypeModel)
+	{
+		?>
 		<div class="sb-control-feedtype-ctn" v-if="control.viewId == 'feedtype'">
 			<div class="cff-fb-type-el" v-if="customizerFeedTypePrint()"  @click.prevent.default="activateView('feedtypesPopup')">
 				<div class="cff-fb-type-el-img cff-fb-fs" v-html="svgIcons[customizerScreens.printedType.icon]"></div>
@@ -126,19 +202,19 @@ class CFF_Customview_Control extends CFF_Controls_Base{
 				</button>
 			</div>
 		</div>
-	<?php
-		}
+		<?php
+	}
 
 	/**
 	 * Sources Output Control
-	 *
 	 *
 	 * @since 4.0
 	 * @access public
 	 *
 	 * @return HTML
-	*/
-	public function get_control_sources_output($controlEditingTypeModel){
+	 */
+	public function get_control_sources_output($controlEditingTypeModel)
+	{
 		?>
 		<div class="sb-control-sources-ctn" v-if="control.viewId == 'sources'" :data-multifeed="activeExtensions['multifeed'] ? 'true' : 'false'">
 			<div class="cff-fb-srcs-item" v-for="(source, sourceIndex) in customizerFeedData.settings.sources" :data-expanded="customizerScreens.sourceExpanded === source.account_id" :data-type="source.account_type">
@@ -151,7 +227,7 @@ class CFF_Customview_Control extends CFF_Controls_Base{
 						<div v-html="svgIcons['delete']"></div>
 					</div>
 					<div class="cff-fb-srcs-item-avatar">
-						<img :src="typeof source.avatar_url !== 'undefined' && source.account_type === 'group' ? source.avatar_url : 'https://graph.facebook.com/'+source.account_id+'/picture'">
+						<img :src="typeof source.avatar_url !== 'undefined' && source.account_type === 'group' ? source.avatar_url : 'https://graph.facebook.com/'+source.account_id+'/picture'" :alt="source.username">
 					</div>
 					<div class="cff-fb-srcs-item-inf">
 						<div class="cff-fb-srcs-item-name sb-small-p sb-bold"><span v-html="source.username"></span></div>

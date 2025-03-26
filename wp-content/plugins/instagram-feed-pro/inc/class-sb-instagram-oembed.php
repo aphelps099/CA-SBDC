@@ -25,7 +25,7 @@ class SB_Instagram_Oembed {
 	public function __construct() {
 		if ( self::can_do_oembed() ) {
 			if ( self::can_check_for_old_oembeds() ) {
-				add_action( 'the_post', array( 'SB_Instagram_Oembed', 'check_page_for_old_oembeds' ) );
+				add_action( 'init', array( 'SB_Instagram_Oembed', 'clear_checks' ) );
 			}
 			add_filter( 'oembed_providers', array( 'SB_Instagram_Oembed', 'oembed_providers' ), 10, 1 );
 			add_filter( 'oembed_fetch_url', array( 'SB_Instagram_Oembed', 'oembed_set_fetch_url' ), 10, 3 );
@@ -92,10 +92,8 @@ class SB_Instagram_Oembed {
 	 * @since 2.5/5.8
 	 */
 	public static function can_check_for_old_oembeds() {
-		/**
-		 * TODO: if setting is enabled
-		 */
-		return true;
+		$sbi_statuses = get_option( 'sbi_statuses', array() );
+		return !isset($sbi_statuses['clear_old_oembed_checks']);
 	}
 
 	/**
@@ -112,7 +110,7 @@ class SB_Instagram_Oembed {
 	public static function oembed_providers( $providers ) {
 		$oembed_url = self::oembed_url();
 		if ( $oembed_url ) {
-			$providers['#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i'] = array( $oembed_url, true );
+			$providers['#https?://(www\.)?instagr(\.am|am\.com)/(p|tv|reel)/.*#i'] = array( $oembed_url, true );
 			// for WP 4.9
 			$providers['#https?://(www\.)?instagr(\.am|am\.com)/p/.*#i'] = array( $oembed_url, true );
 		}
@@ -126,7 +124,7 @@ class SB_Instagram_Oembed {
 	 *
 	 * @param string $provider
 	 * @param string $url
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return string
 	 *
@@ -157,14 +155,14 @@ class SB_Instagram_Oembed {
 	 *
 	 * @param string $html
 	 * @param string $url
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return string
 	 *
 	 * @since 2.5/5.8
 	 */
 	public static function oembed_result( $html, $url, $args ) {
-		if ( preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) === 1 ) {
+		if ( preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv|reel)/.*#i', $url ) === 1 ) {
 			if ( strpos( $html, 'class="instagram-media"' ) !== false ) {
 				$html = '<div class="sbi-embed-wrap">' . str_replace( 'class="instagram-media"', 'class="instagram-media sbi-embed"', $html ) . '</div>';
 			}
@@ -186,7 +184,7 @@ class SB_Instagram_Oembed {
 	 * @since 2.5/5.8
 	 */
 	public static function oembed_ttl( $ttl, $url, $attr, $post_ID ) {
-		if ( preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv)/.*#i', $url ) === 1 ) {
+		if ( preg_match( '#https?://(www\.)?instagr(\.am|am\.com)/(p|tv|reel)/.*#i', $url ) === 1 ) {
 			$ttl = 30 * YEAR_IN_SECONDS;
 		}
 
@@ -202,7 +200,7 @@ class SB_Instagram_Oembed {
 	 * @since 2.5/5.8
 	 */
 	public static function oembed_url() {
-		return 'https://graph.facebook.com/v8.0/instagram_oembed';
+		return 'https://graph.facebook.com/instagram_oembed';
 	}
 
 	/**
@@ -217,21 +215,19 @@ class SB_Instagram_Oembed {
 		$oembed_token_settings = get_option( 'sbi_oembed_token', array() );
 		$will_expire           = self::oembed_access_token_will_expire();
 		if ( ! empty( $oembed_token_settings['access_token'] )
-			 && ( ! $will_expire || $will_expire > time() ) ) {
+		     && ( ! $will_expire || $will_expire > time() ) ) {
 			return sbi_maybe_clean( sbi_fixer( $oembed_token_settings['access_token'] ) );
 		} else {
 			$connected_accounts = SB_Instagram_Connected_Account::get_all_connected_accounts();
 
-			foreach ( $connected_accounts as $connected_account ) {
-				if ( empty( $oembed_token_settings['access_token'] ) ) {
-					if ( isset( $connected_account['type'] ) && $connected_account['type'] === 'business' ) {
-						$oembed_token_settings['access_token'] = $connected_account['access_token'];
-					}
+			foreach ($connected_accounts as $connected_account) {
+				if (empty($oembed_token_settings['access_token']) && isset($connected_account['type']) && $connected_account['type'] === 'business') {
+					$oembed_token_settings['access_token'] = $connected_account['access_token'];
 				}
 			}
 
-			if ( ! empty( $oembed_token_settings['access_token'] ) ) {
-				return sbi_maybe_clean( sbi_fixer( $oembed_token_settings['access_token'] ) );
+			if (!empty($oembed_token_settings['access_token'])) {
+				return sbi_maybe_clean(sbi_fixer($oembed_token_settings['access_token']));
 			}
 
 			if ( class_exists( 'CFF_Oembed' ) ) {
@@ -259,31 +255,6 @@ class SB_Instagram_Oembed {
 	}
 
 	/**
-	 * Before links in the content are processed, old oembed post meta
-	 * records are deleted so new oembed data will be retrieved and saved.
-	 * If this check has been done and no old oembeds are found, a flag
-	 * is saved as post meta to skip the process.
-	 *
-	 * @since 2.5/5.8
-	 */
-	public static function check_page_for_old_oembeds() {
-		if ( is_admin() ) {
-			return;
-		}
-
-		$post_ID       = get_the_ID();
-		$done_checking = (int) get_post_meta( $post_ID, '_sbi_oembed_done_checking', true ) === 1;
-
-		if ( ! $done_checking ) {
-
-			$num_found = self::delete_instagram_oembed_caches( $post_ID );
-			if ( $num_found === 0 ) {
-				update_post_meta( $post_ID, '_sbi_oembed_done_checking', 1 );
-			}
-		}
-	}
-
-	/**
 	 * Loop through post meta data and if it's an oembed and has content
 	 * that looks like an Instagram oembed, delete it
 	 *
@@ -303,7 +274,7 @@ class SB_Instagram_Oembed {
 		foreach ( $post_metas as $post_meta_key => $post_meta_value ) {
 			if ( '_oembed_' === substr( $post_meta_key, 0, 8 ) ) {
 				if ( strpos( $post_meta_value[0], 'class="instagram-media"' ) !== false
-					 && strpos( $post_meta_value[0], 'sbi-embed-wrap' ) === false ) {
+				     && strpos( $post_meta_value[0], 'sbi-embed-wrap' ) === false ) {
 					$total_found++;
 					delete_post_meta( $post_ID, $post_meta_key );
 					if ( '_oembed_time_' !== substr( $post_meta_key, 0, 13 ) ) {
@@ -330,6 +301,10 @@ class SB_Instagram_Oembed {
 		    FROM $table_name
 		    WHERE meta_key = '_sbi_oembed_done_checking';"
 		);
+
+		$sbi_statuses = get_option('sbi_statuses', array());
+		$sbi_statuses['clear_old_oembed_checks'] = true;
+		update_option('sbi_statuses', $sbi_statuses);
 	}
 }
 

@@ -24,6 +24,7 @@
 
             self.initWidthResponsiveToggle();
             self.initActionButtons();
+            self.initNewFeedButtons();
 
             this.addManualAccessTokenListener();
 
@@ -278,6 +279,53 @@
 
             }
         },
+        initNewFeedButtons: function() {
+            $('.sbi_new_feed').on('click', function(event){
+                event.preventDefault();
+                let pluginName = $(this).attr('data-plugin'),
+                    pluginURL  = $(this).attr('href');
+                $('.sbsw-createfeed-popup').attr('data-loading', 'false');
+                $('.sbsw-go-btn').attr('href', pluginURL);
+                $('.sbsw-createfeed-plg').each(function(){
+                    let replacedText = $(this).html().replaceAll('{#}', `<span class="sbsw-plg-name">${pluginName}</span>`);
+                    $(this).html(replacedText);
+                });
+                $('.sbsw-go-btn').attr('data-plugin', pluginName);
+                $('.sbsw-createfeed-fs').fadeIn(150);
+            });
+
+            $('.sbsw-go-btn').on('click', function(){
+                event.preventDefault();
+                $('.sbsw-createfeed-popup').attr('data-loading', 'true');
+
+                let pluginName = $(this).attr('data-plugin'),
+                    pluginURL  = $(this).attr('href'),
+                    goPluginIntervalCounter = 3,
+                    pluginIcon = sbspf.svgIcons[pluginName];
+
+                window.localStorage.setItem('selectedPluginFeed', pluginName);
+
+                window.goPluginIntervalCounter = goPluginIntervalCounter;
+                $('.sbsw-createfeed-headcounter').html(window.goPluginIntervalCounter);
+                $('.sbsw-createfeed-plugin-icon').html(pluginIcon);
+
+                window.goPluginInterval = setInterval(function(){
+                   if(window.goPluginIntervalCounter == 1){
+                        window.location.href = pluginURL;
+                   }
+                   window.goPluginIntervalCounter--;
+                   $('.sbsw-createfeed-headcounter').html(window.goPluginIntervalCounter);
+                }, 1000);
+
+            });
+
+            $('.sbsw-cancel-btn, .sbsw-createfeed-cls').on('click', function(){
+                $('.sbsw-createfeed-fs').fadeOut(50);
+                clearInterval(window.goPluginInterval);
+                $('.sbsw-createfeed-popup').attr('data-loading', 'false');
+            });
+
+        },
         initActionButtons: function() {
             $('#sbspf_admin .sbspf-button-action').each(function(){
                 $(this).click(function() {
@@ -434,6 +482,7 @@
             success: onSuccess
         });
     }
+
 
     function SbYoutubeAdmin(plugin,$adminEl) {
         SbspfAdmin.call(this, plugin,$adminEl);
@@ -1071,9 +1120,11 @@
                         $(this).find('.sbsw-text-input-wrap').hide();
                     } else if (plugin === 'twitter') {
                         var type = pluginData.current.type,
-                            inputType = pluginData.available_types[type].input,
-                            instructions = typeof pluginData.available_types[type].instructions !== 'undefined' ? pluginData.available_types[type].instructions : '';
-                        $(this).find('.sbsw-connected-accounts-wrap').hide();
+                          inputType = typeof pluginData.available_types[type] !== 'undefined' ? pluginData.available_types[type].input : 'connected',
+                          instructions = typeof pluginData.available_types[type] !== 'undefined' && typeof pluginData.available_types[type].instructions !== 'undefined' ? pluginData.available_types[type].instructions : '';
+                        if( $(this).find('.sbsw-connected-account').length === 0) {
+                          $(this).find('.sbsw-connected-accounts-wrap').hide();
+                        }
                         if (inputType === 'message') {
                             $(this).find('.sbsw-message-wrap').show();
                             $(this).find('.sbsw-text-input-wrap').hide();
@@ -1086,9 +1137,8 @@
                     } else if (plugin === 'youtube') {
                         var type = pluginData.current.type,
                             type = type === 'channel' ? 'channels' : type,
-                            inputType = pluginData.available_types[type].input,
-                            instructions = typeof pluginData.available_types[type].instructions !== 'undefined' ? pluginData.available_types[type].instructions : '';
-                        $(this).find('.sbsw-connected-accounts-wrap').hide();
+                            inputType = typeof pluginData.available_types[type] !== 'undefined' && typeof pluginData.available_types[type].input !== 'undefined' ? pluginData.available_types[type].input : 'feed',
+                            instructions = typeof pluginData.available_types[type] !== 'undefined' && typeof pluginData.available_types[type].instructions !== 'undefined' ? pluginData.available_types[type].instructions : '';
                         if (inputType === 'message') {
                             $(this).find('.sbsw-message-wrap').show();
                             $(this).find('.sbsw-text-input-wrap').hide();
@@ -1097,7 +1147,7 @@
                             $(this).find('.sbsw-message-wrap').hide();
                             $(this).find('.sbsw-text-input-wrap').show();
                             $(this).find('.sbsw-text-input-wrap .sbsw-text-input-instructions').html(instructions);
-                            if (pluginData.available_types[type].term_shortcode === 'channel' && pluginData.channel_ids_names[ pluginData.current.term ] !== 'undefined') {
+                            if (typeof pluginData.available_types[type] !== 'undefined' && pluginData.available_types[type].term_shortcode === 'channel' && pluginData.channel_ids_names[ pluginData.current.term ] !== 'undefined') {
                                 $(this).find('.sbsw-text-input-wrap .sbsw-text-input-identity').html(pluginData.channel_ids_names[ pluginData.current.term ]);
                             } else {
                                 $(this).find('.sbsw-text-input-wrap .sbsw-text-input-identity').html('');
@@ -1161,7 +1211,10 @@
                 var type = this.state.twitter.current.type,
                     term = this.state.twitter.current.term,
                     shortcodeType = '';
-                if (typeof this.state.twitter.available_types[type] !== 'undefined'
+              if (typeof this.state.twitter.available_types[type] === 'undefined') {
+                type = 'feed';
+                shortcodeType =  ' feed="' + this.state.twitter.current.term +'"';
+              } else if (typeof this.state.twitter.available_types[type] !== 'undefined'
                     && this.state.twitter.current.term !== '') {
                     var term = this.state.twitter.current.term;
 
@@ -1181,6 +1234,9 @@
                     type = type === 'channel' ? 'channels' : type,
                     term = this.state.youtube.current.term,
                     shortcodeType = '';
+                if ( type === 'feed' && typeof this.state.youtube.available_types.feed === 'undefined' ) {
+                    this.state.youtube.available_types.feed = { term_shortcode : 'feed' };
+                }
                 if (typeof this.state.youtube.available_types[type] !== 'undefined'
                     && this.state.youtube.current.term !== '') {
                     var term = this.state.youtube.current.term;
@@ -1189,9 +1245,12 @@
                         || this.state.youtube.available_types[type].term_shortcode === 'mentionstimeline' ) {
                         term = true;
                     }
-                    shortcodeType = ' ' + this.state.youtube.settings.type + '="' + this.state.youtube.available_types[type].term_shortcode +'"' + ' ' + this.state.youtube.available_types[type].term_shortcode + '="' + term +'"';
+                    if(type === 'feed') {
+                        shortcodeType =  ' feed="' + this.state.youtube.current.term +'"';
+                    } else {
+                        shortcodeType = ' ' + this.state.youtube.settings.type + '="' + this.state.youtube.available_types[type].term_shortcode +'"' + ' ' + this.state.youtube.available_types[type].term_shortcode + '="' + term +'"';
+                    }
                 }
-
                 ytShortcode = '    [youtube-feed'+shortcodeType+']\n';
             }
 

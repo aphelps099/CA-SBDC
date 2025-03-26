@@ -1,7 +1,6 @@
 var support_data = {
     genericText: cff_support.genericText,
     articles: cff_support.articles,
-    links: cff_support.links,
     system_info: cff_support.system_info,
     system_info_n: cff_support.system_info_n,
     exportFeed: 'none',
@@ -22,12 +21,26 @@ var support_data = {
     nonce: cff_support.nonce,
     icons: cff_support.icons,
     images: cff_support.images,
-    svgIcons : cff_support.svgIcons,
+    recheckLicenseStatus: null,
     notificationElement : {
         type : 'success', // success, error, warning, message
         text : '',
         shown : null
-    }
+    },
+    licenseKey: cff_support.licenseKey,
+    cffLicenseNoticeActive: (cff_support.cffLicenseNoticeActive === '1'),
+    cffLicenseInactiveState: (cff_support.cffLicenseInactiveState === '1'),
+    svgIcons: cff_support.svgIcons,
+    licenseBtnClicked: false,
+    viewsActive : {
+        whyRenewLicense : false,
+        licenseLearnMore : false,
+        tempLoginAboutPopup : false
+    },
+    //Tenmp User Account
+    tempUser : cff_support.tempUser,
+    createStatus : null,
+    deleteStatus : null
 }
 
 var cffsupport = new Vue({
@@ -38,6 +51,64 @@ var cffsupport = new Vue({
     },
     data: support_data,
     methods: {
+
+        activateLicense: function() {
+            var self = this;
+            self.licenseBtnClicked = true;
+
+            let data = new FormData();
+            data.append( 'action', 'cff_activate_license' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'nonce', self.nonce );
+            fetch(cff_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+				self.licenseBtnClicked = false;
+
+				if(data && data.success == false) {
+					self.processNotification("licenseError");
+					return;
+				}
+				if( data !== false ){
+					self.processNotification("licenseActivated");
+				}
+                return;
+            });
+        },
+        /**
+         * Activate View
+         *
+         * @since 4.0
+        */
+         activateView : function(viewName){
+             var self = this;
+            self.viewsActive[viewName] = (self.viewsActive[viewName] == false ) ? true : false;
+        },
+
+
+		/**
+		 * Loading Bar & Notification
+		 *
+		 * @since 4.0
+		 */
+         processNotification : function( notificationType ){
+			var self = this,
+				notification = self.genericText.notification[ notificationType ];
+			self.loadingBar = false;
+			self.notificationElement =  {
+				type : notification.type,
+				text : notification.text,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 5000);
+		},
+
         copySystemInfo: function() {
             let self = this;
             const el = document.createElement('textarea');
@@ -117,6 +188,51 @@ var cffsupport = new Vue({
                 window.open( this.siteSearchUrlWithArgs, '_blank');
             }
         },
+
+        recheckLicense: function( optionName = null ) {
+            this.recheckLicenseStatus = 'loading';
+			let licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+
+            let data = new FormData();
+            data.append( 'action', 'cff_recheck_connection' );
+            data.append( 'license_key', this.licenseKey );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if ( data.success == true ) {
+                    if ( data.data.license == 'valid' ) {
+                        this.recheckLicenseStatus = 'success';
+                    }
+                    if ( data.data.license != 'valid' ) {
+                        this.recheckLicenseStatus = 'error';
+                    }
+
+                    setTimeout(function() {
+                        self.recheckLicenseStatus = null;
+                        if ( data.data.license == 'valid' ) {
+                            licenseNoticeWrapper.remove();
+                        }
+                    }.bind(this), 3000);
+                }
+                return;
+            });
+        },
+        recheckBtnText: function( btnName ) {
+            if ( this.recheckLicenseStatus == null ) {
+                return this.genericText.recheckLicense;
+            } else if ( this.recheckLicenseStatus == 'loading' ) {
+                return this.svgIcons.loaderSVG;
+            } else if ( this.recheckLicenseStatus == 'success' ) {
+                return this.svgIcons.checkmark + ' ' + this.genericText.licenseValid;
+            } else if ( this.recheckLicenseStatus == 'error' ) {
+                return this.svgIcons.times2SVG + ' ' + this.genericText.licenseExpired;
+            }
+        },
         /**
          * Toggle Sticky Widget view
          *
@@ -125,5 +241,96 @@ var cffsupport = new Vue({
          toggleStickyWidget: function() {
             this.stickyWidget = !this.stickyWidget;
         },
+        /**
+		 * Copy text to clipboard
+		 *
+		 * @since 4.0
+		 */
+         copyToClipBoard : function(value){
+			var self = this;
+			const el = document.createElement('textarea');
+			el.className = 'cff-fb-cp-clpboard';
+			el.value = value;
+			document.body.appendChild(el);
+			el.select();
+			document.execCommand('copy');
+			document.body.removeChild(el);
+			self.notificationElement =  {
+				type : 'success',
+				text : this.genericText.copiedToClipboard,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 3000);
+		},
+          /**
+         * Create New Temp User
+         *
+         * @since 4.0
+         */
+        createTempUser: function() {
+            const self = this;
+            self.createStatus = 'loading';
+            let data = new FormData();
+            data.append( 'action', 'cff_create_temp_user' );
+            data.append( 'nonce', cff_support.nonce );
+            fetch(cff_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.createStatus = null;
+                if( data.success ){
+                    self.tempUser = data.user;
+                }
+                self.notificationElement =  {
+                    type : data.success === true ? 'success' : 'error',
+                    text : data.message,
+                    shown : "shown"
+                };
+                setTimeout(function(){
+                    self.notificationElement.shown =  "hidden";
+                }, 5000);
+            });
+
+        },
+
+        /**
+         * Delete Temp User
+         *
+         * @since 4.0
+         */
+        deleteTempUser: function() {
+            const self = this;
+            self.deleteStatus = 'loading';
+            let data = new FormData();
+            data.append( 'action', 'cff_delete_temp_user' );
+            data.append( 'nonce', cff_support.nonce );
+            data.append( 'userId', self.tempUser.id );
+            fetch(cff_support.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.deleteStatus = null;
+                if( data.success ){
+                    self.tempUser = null;
+                }
+                self.notificationElement =  {
+                    type : data.success === true ? 'success' : 'error',
+                    text : data.message,
+                    shown : "shown"
+                };
+                setTimeout(function(){
+                    self.notificationElement.shown =  "hidden";
+                }, 5000);
+            });
+        }
+
     },
 })

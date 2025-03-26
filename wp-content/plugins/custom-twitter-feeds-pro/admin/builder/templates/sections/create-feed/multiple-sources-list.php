@@ -9,11 +9,16 @@
             <div class="ctf-feedtype-sec-icon-heading ctf-fb-fs">
                 <span v-html="feedType.heading"></span>
             </div>
-            <div class="ctf-feedtype-sec-desc ctf-fb-fs sb-caption sb-lighter" v-html="feedType.description"></div>
+            <div class="ctf-feedtype-sec-desc ctf-fb-fs sb-caption sb-lighter" v-html="feedType.description" v-if="feedTypeID !== 'lists'"></div>
 
             <div class="ctf-fb-fs" v-if="feedType.actionType == 'inputField'">
                 <input type="text" v-if="customizerFeedData" class="ctf-fb-wh-inp ctf-fb-fs" v-model="selectedFeedModelPopup[feedTypeID]" :placeholder="feedType.placeHolder">
                 <input type="text" v-else class="ctf-fb-wh-inp ctf-fb-fs" v-model="selectedFeedModel[feedTypeID]" :placeholder="feedType.placeHolder">
+            </div>
+
+            <div class="ctf-feedtype-sec-desc ctf-fb-fs sb-caption sb-lighter" v-html="feedType.description" v-if="feedTypeID === 'lists'"></div>
+            <div v-if="feedType.bulletList" v-if="feedTypeID === 'lists'">
+                <div v-for="listItem in feedType.bulletList" class="ctf-feedtype-sec-desc ctf-fb-fs sb-caption sb-lighter" v-html="listItem"></div>
             </div>
 
             <div class="ctf-fb-fs" v-if="feedType.actionType == 'connectAccount'">

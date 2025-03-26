@@ -3,8 +3,8 @@
 		<h4>{{selectFeedTemplateScreen.feedTemplateHeading}}</h4>
 		<p class="sb-caption sb-lighter">{{selectFeedTemplateScreen.feedTemplateDescription}}</p>
 		<div class="cff-fb-templates-list">
-			<div class="cff-fb-type-el" v-for="(feedTemplateEl, feedTemplateIn) in feedTemplates" :data-active="selectedFeedTemplate === feedTemplateEl.type" @click.prevent.default="chooseFeedTemplate(feedTemplateEl)">
-				<div :class="['cff-fb-type-el-img cff-fb-fs', 'cff-feedtemplate-' + feedTemplateEl.type]" v-html="svgIcons[selectedFeed][feedTemplateEl.icon]"></div>
+			<div class="cff-fb-type-el" v-for="(feedTemplateEl, feedTemplateIn) in feedTemplates" :data-active="selectedFeedTemplate === feedTemplateEl.type" @click.prevent.default="hasFeature('feed_templates') ? chooseFeedTemplate(feedTemplateEl)  : viewsActive.extensionsPopupElement = 'feedTemplate'">
+				<div :class="['cff-fb-type-el-img cff-fb-fs', 'cff-feedtemplate-' + feedTemplateEl.type]" v-html="svgIcons[selectedFeed +'.'+ feedTemplateEl.icon]"></div>
 				<div class="cff-fb-type-el-info cff-fb-fs">
 					<p class="sb-small-p sb-bold sb-dark-text" v-html="getFeedTemplateElTitle(feedTemplateEl)"></p>
 				</div>

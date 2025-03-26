@@ -93,7 +93,7 @@ class SBY_Feed
 
 	private $do_page_cache_all;
 
-	private $channel_id_avatars;
+	protected $channel_id_avatars;
 	/**
 	 * SBY_Feed constructor.
 	 *
@@ -511,10 +511,10 @@ class SBY_Feed
 		if ( empty( $this->channels_data[ $term ] ) ) {
 			if ( $connected_account_for_term['expires'] < time() + 5 ) {
 				$error_message = '<p><b>' . __( 'Reconnect to YouTube to show this feed.', 'feeds-for-youtube' ) . '</b></p>';
-				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', SBY_TEXT_DOMAIN ) . '</p>';
+				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', 'feeds-for-youtube' ) . '</p>';
 
 				if ( current_user_can( 'manage_youtube_feed_options' ) ) {
-					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feed Settings Area' ) . '</a>';
+					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feeds Settings Area', 'feeds-for-youtube' ) . '</a>';
 				}
 				global $sby_posts_manager;
 
@@ -596,7 +596,7 @@ class SBY_Feed
 		return false;
 	}
 
-	public function make_workaround_connection( $connected_account_for_term, $type, $params ) {
+	public function make_workaround_connection( $connected_account_for_term, $type, $params, $feed_id = '' ) {
 		return $this->make_api_connection( $connected_account_for_term, $type, $params );
 	}
 
@@ -666,7 +666,9 @@ class SBY_Feed
 				if ( ! $this->is_efficient_type( $type ) && $this->is_pageable() ) {
 
 					if ( $this->requires_workaround_connection( $type ) ) {
-						$api_connect_playlist_items = $this->make_workaround_connection( $connected_account_for_term, $type, $params );
+						$feed_id  = !empty($settings['feed']) ? $settings['feed'] : '';
+
+						$api_connect_playlist_items = $this->make_workaround_connection( $connected_account_for_term, $type, $params, $feed_id );
 						$this->add_report( 'Workaround API call made for ' . $term );
 
 					} else {
@@ -687,6 +689,8 @@ class SBY_Feed
 						$data = $api_connect_playlist_items->get_data();
 
 						if ( isset( $data['items'][0] ) ) {
+							// clear object cache after successful API connection
+							sby_clear_object_cache();
 							$post_set = $this->filter_posts( $data['items'], $settings );
 
 							$this->successful_video_api_request_made = true;
@@ -1084,10 +1088,10 @@ class SBY_Feed
 			$connected_account_for_term = sby_get_first_connected_account();
 			if ( $connected_account_for_term['expires'] < time() + 5 ) {
 				$error_message = '<p><b>' . __( 'Reconnect to YouTube to show this feed.', 'feeds-for-youtube' ) . '</b></p>';
-				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', SBY_TEXT_DOMAIN ) . '</p>';
+				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', 'feeds-for-youtube' ) . '</p>';
 
 				if ( current_user_can( 'manage_youtube_feed_options' ) ) {
-					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feed Settings Area' ) . '</a>';
+					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feeds Settings Area', 'feeds-for-youtube' ) . '</a>';
 				}
 				global $sby_posts_manager;
 
@@ -1149,10 +1153,10 @@ class SBY_Feed
 					$connected_account_for_term = sby_get_first_connected_account();
 					if ( $connected_account_for_term['expires'] < time() + 5 ) {
 						$error_message = '<p><b>' . __( 'Reconnect to YouTube to show this feed.', 'feeds-for-youtube' ) . '</b></p>';
-						$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', SBY_TEXT_DOMAIN ) . '</p>';
+						$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', 'feeds-for-youtube' ) . '</p>';
 		
 						if ( current_user_can( 'manage_youtube_feed_options' ) ) {
-							$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feed Settings Area' ) . '</a>';
+							$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feeds Settings Area', 'feeds-for-youtube' ) . '</a>';
 						}
 						global $sby_posts_manager;
 		
@@ -1371,8 +1375,7 @@ class SBY_Feed
 			if ( ! $this->feed_exists( $settings['feed'] ) ) {
 				$error_title = sprintf( __( 'Error: No feed found with the ID %s.', 'feeds-for-youtube' ),
 					$settings['feed'] );
-				$error_description = __( 'Go to the All Feeds page and select an ID from an existing feed.',
-					'feeds-for-youtube' );
+				$error_description = __( 'Go to the All Feeds page and select an ID from an existing feed.', 'feeds-for-youtube' );
 			}
 
 			$sby_posts_manager->add_frontend_error( 'noposts', sprintf($error_template, $error_title, $error_description) );
@@ -1424,12 +1427,12 @@ class SBY_Feed
 			}
 		}
 		if ( isset( $atts['classname'] ) ) {
-			$classes[] = $atts['classname'];
+			$classes[] = sanitize_text_field( $atts['classname'] );
 		}
 
 		$additional_classes = '';
 		if ( ! empty( $classes ) ) {
-			$additional_classes = ' ' . implode( ' ', $classes );
+			$additional_classes = ' ' . esc_attr( implode( ' ', $classes ) );
 		}
 
 		$other_atts = $this->add_other_atts( $other_atts, $settings );
@@ -1495,10 +1498,10 @@ class SBY_Feed
 			if ( sby_doing_customizer( $settings ) ) {
 				$other_atts .= ' :data-sby-flags="$parent.getFlagsAttr()"';
 			} else {
-				$other_atts .= ' data-sby-flags="' . implode(',', $flags ) . '"';
+				$other_atts .= ' data-sby-flags="' . esc_attr( implode(',', $flags ) ) . '"';
 			}
 		}
-		$other_atts .= ' data-postid="' . get_the_ID() . '"';
+		$other_atts .= ' data-postid="' . esc_attr( get_the_ID() ) . '"';
 		if ( $settings['layout'] === 'grid' || $settings['layout'] === 'carousel' ) {
 			$other_atts .= ' data-sby-supports-lightbox="1"';
 		}
@@ -1535,7 +1538,7 @@ class SBY_Feed
 			ob_start();
 			$html = ob_get_contents();
 			ob_get_clean();		?>
-            <p><?php _e( 'No posts found.', SBY_TEXT_DOMAIN ); ?></p>
+            <p><?php _e( 'No posts found.', 'feeds-for-youtube' ); ?></p>
 			<?php
 			$html = ob_get_contents();
 			ob_get_clean();

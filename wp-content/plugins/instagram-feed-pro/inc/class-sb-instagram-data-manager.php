@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use InstagramFeed\SB_Instagram_Data_Encryption;
 class SB_Instagram_Data_Manager {
 
 	/**
@@ -39,6 +40,7 @@ class SB_Instagram_Data_Manager {
 		add_action( 'sbi_before_display_instagram', array( $this, 'check' ) );
 		add_action( 'sbi_before_display_instagram', array( $this, 'maybe_update_legacy_sources' ) );
 		add_action( 'sb_instagram_twicedaily', array( $this, 'maybe_delete_old_data' ) );
+		add_action( 'sbi_before_feed_cache_update' , array( $this, 'update_expired_media_urls' ), 10, 3 );
 	}
 
 	/**
@@ -57,7 +59,6 @@ class SB_Instagram_Data_Manager {
 
 			$this->update_statuses( $statuses );
 		}
-
 	}
 
 	/**
@@ -86,13 +87,15 @@ class SB_Instagram_Data_Manager {
 	 * @since 2.9.4/5.12.4
 	 */
 	public function maybe_delete_old_data() {
+		global $sb_instagram_posts_manager;
+
 		$statuses = $this->get_statuses();
 
 		$data_was_deleted = false;
 
-		if ( $statuses['last_used'] < sbi_get_current_time() - ( 21 * DAY_IN_SECONDS ) ) {
-			global $sb_instagram_posts_manager;
+		do_action( 'sbi_before_delete_old_data', $statuses );
 
+		if ( $statuses['last_used'] < sbi_get_current_time() - ( 21 * DAY_IN_SECONDS ) ) {
 			$this->delete_caches();
 			$this->delete_comments_data();
 			$this->delete_hashtag_data();
@@ -127,6 +130,7 @@ class SB_Instagram_Data_Manager {
 
 		delete_option( 'sbi_top_api_calls' );
 		delete_option( 'sbi_local_avatars' );
+		delete_option( 'sbi_local_avatars_info' );
 	}
 
 	/**
@@ -142,7 +146,7 @@ class SB_Instagram_Data_Manager {
 		$feeds_posts_table_name = $wpdb->prefix . SBI_INSTAGRAM_FEEDS_POSTS;
 
 		$non_hashtag_posts = $wpdb->get_results(
-			"SELECT p.id, p.media_id FROM $table_name as p
+			"SELECT p.id, p.media_id, p.mime_type FROM $table_name as p
 					INNER JOIN $feeds_posts_table_name AS f ON p.id = f.id
 					WHERE f.hashtag = '';",
 			ARRAY_A
@@ -152,15 +156,17 @@ class SB_Instagram_Data_Manager {
 		$file_suffixes = array( 'thumb', 'low', 'full' );
 
 		foreach ( $non_hashtag_posts as $post ) {
+			$extension = isset( $post['mime_type'] ) &&  $post['mime_type'] === 'image/webp' 
+							? '.webp' : '.jpg';
 			foreach ( $file_suffixes as $file_suffix ) {
-				$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $post['media_id'] . $file_suffix . '.jpg';
+				$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $post['media_id'] . $file_suffix . $extension;
 				if ( is_file( $file_name ) ) {
 					unlink( $file_name );
 				}
 			}
 		}
 
-		$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . '.jpg';
+		$file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . $extension;
 		if ( is_file( $file_name ) ) {
 			unlink( $file_name );
 		}
@@ -337,7 +343,6 @@ class SB_Instagram_Data_Manager {
 		delete_option( 'sbi_single_cache' );
 
 		\InstagramFeed\Builder\SBI_Db::clear_sbi_feed_caches();
-		\InstagramFeed\Builder\SBI_Db::clear_sbi_sources();
 
 	}
 
@@ -397,13 +402,29 @@ class SB_Instagram_Data_Manager {
 			$comment_cache = $comment_cache_transient ? json_decode( $comment_cache_transient, true ) : array();
 
 			set_transient( 'sbinst_comment_cache', $encryption->encrypt( sbi_json_encode( $comment_cache ) ), 0 );
-			$ids = get_option( 'sbi_hashtag_ids', array() );
-			if ( ! is_array( $ids ) ) {
-				$encryption = new SB_Instagram_Data_Encryption();
-				$ids        = json_decode( $encryption->decrypt( $ids ), true );
-			}
 
-			update_option( 'sbi_hashtag_ids', $encryption->encrypt( sbi_json_encode( $ids ) ), false );
+			$ids_with_accounts = get_option( 'sbi_hashtag_ids_with_connected_accounts', array() );
+			$encryption = new SB_Instagram_Data_Encryption();
+			
+			if ( empty( $ids_with_accounts ) ) {
+				$ids = get_option( 'sbi_hashtag_ids', array() );
+				if ( ! is_array( $ids ) ) {
+					$ids = json_decode( $encryption->decrypt( $ids ), true );
+				}
+				$ids_with_accounts = array();
+				
+				if( ! empty( $ids ) ) {
+					foreach ( $ids as $hashtag => $id ) {
+						$ids_with_accounts[ $hashtag ] = array(
+							'id' => $id,
+						);
+					}
+				}
+			}
+			if ( ! is_array( $ids_with_accounts ) ) {
+				$ids_with_accounts = json_decode( $encryption->decrypt( $ids_with_accounts ), true );
+			}
+			update_option( 'sbi_hashtag_ids_with_connected_accounts', $encryption->encrypt( sbi_json_encode( $ids_with_accounts ) ), false );
 		}
 	}
 
@@ -452,7 +473,7 @@ class SB_Instagram_Data_Manager {
 			$args = array(
 				'timeout' => 20,
 			);
-			$response = wp_remote_get( $url, $args );
+			$response = wp_safe_remote_get( $url, $args );
 
 			if ( ! is_wp_error( $response ) ) {
 				$this->key_salt = $response['body'];
@@ -478,7 +499,7 @@ class SB_Instagram_Data_Manager {
 			$args = array(
 				'timeout' => 20,
 			);
-			$response = wp_remote_get( $url, $args );
+			$response = wp_safe_remote_get( $url, $args );
 
 			if ( ! is_wp_error( $response ) ) {
 				$this->key_salt = $response['body'];
@@ -524,4 +545,47 @@ class SB_Instagram_Data_Manager {
 			'num_db_updates' => 0,
 		);
 	}
+
+	/**
+	 * Update the expired media urls
+	 */
+	public function update_expired_media_urls( $instagram_feed, $transient_name, $connected_accounts ) {
+		$refetch_posts = $instagram_feed->get_refetch_posts();
+		$access_token = sbi_maybe_clean( SB_Instagram_Oembed::last_access_token() );
+
+		if ( ! empty( $access_token ) && ! empty( $connected_accounts ) && ! empty( $refetch_posts ) ) {
+	
+			$post_data = $instagram_feed->get_post_data();
+			$refetched_posts = array();
+
+			foreach ( $refetch_posts as $post ) {
+				$permalink = isset( $post['permalink'] ) && $post['permalink'] ? $post['permalink'] : '';
+				$embed_url = $permalink ? $permalink . 'embed/' : '';
+				$created_on = isset( $post['created_on'] ) && $post['created_on'] ? $post['created_on'] : '';
+				
+				if ( ! empty( $embed_url ) ) {
+					$post['iframe'] = $embed_url;
+					$post['posted_on'] = $created_on;
+					$refetched_posts[] = $post;
+				}
+			}
+
+			// merge the refetched posts with the original posts if iframe is set
+			if ( ! empty( $refetched_posts ) ) {
+				foreach ( $post_data as $key => $post ) {
+					foreach ( $refetched_posts as $refetched_post ) {
+						if ( $post['id'] === $refetched_post['id'] && isset( $refetched_post['iframe'] ) ) {
+							$post_data[ $key ]['iframe'] = $refetched_post['iframe'];
+							$post_data[ $key ]['posted_on'] = $refetched_post['posted_on'];
+						}
+					}
+				}
+				$instagram_feed->set_post_data( $post_data );	
+				$fill_in_timestamp = date( 'Y-m-d H:i:s', time() + 150 );
+				$post_set = new SB_Instagram_Post_Set( $post_data, $transient_name, $fill_in_timestamp );
+				$post_set->maybe_update_json_data_for_posts();
+			}
+		}
+	}
+
 }

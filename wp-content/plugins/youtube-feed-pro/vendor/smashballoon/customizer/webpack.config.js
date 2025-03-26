@@ -17,7 +17,7 @@ module.exports = {
         host: 'localhost',
         hot: true,
         allowedHosts: ['all'],
-        port: 8088
+        port: 8089
     },
     module: {
         rules: [

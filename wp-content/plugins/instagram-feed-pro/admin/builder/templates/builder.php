@@ -1,6 +1,10 @@
-<div id="sbi-builder-app" class="sbi-fb-fs sbi-builder-app" :data-app-loaded="appLoaded ? 'true' : 'false'">
+<div id="sbi-builder-app" class="sbi-fb-fs sbi-builder-app" :data-app-loaded="appLoaded ? 'true' : 'false'" :data-disable-pro="shouldDisableProFeatures ? 'true' : 'false'" 
+:class="{'sbi-builder-app-lite-dismiss' : shouldDisableProFeatures == true && iscustomizerScreen, 'sw-feed-link-bar-present' : sw_feed, 'sbi-customizer-screen': iscustomizerScreen}"
+>
 	<?php
-		$icons = InstagramFeed\Builder\SBI_Feed_Builder::builder_svg_icons();
+		$icons = function($icon) {
+			return InstagramFeed\Builder\SBI_Feed_Builder::builder_svg_icons($icon);
+		};
 		include_once SBI_BUILDER_DIR . 'templates/sections/header.php';
 		include_once SBI_BUILDER_DIR . 'templates/screens/select-feed.php';
 		include_once SBI_BUILDER_DIR . 'templates/screens/welcome.php';

@@ -7,7 +7,6 @@
 
 namespace SmashBalloon\YouTubeFeed\Pro;
 
-use SmashBalloon\YouTubeFeed\Pro\SBY_CPT;
 use SmashBalloon\YouTubeFeed\SBY_Display_Elements;
 
 class SBY_Display_Elements_Pro extends SBY_Display_Elements
@@ -213,7 +212,7 @@ class SBY_Display_Elements_Pro extends SBY_Display_Elements
 		}
 	}
 
-	public static function get_list_type_subscribe_bar_attr( $settings, $post_index ) {
+	public static function get_list_type_subscribe_bar_attr( $settings ) {
 		$customizer = sby_doing_customizer( $settings );
 
 		if ( ! $customizer ) {
@@ -221,5 +220,21 @@ class SBY_Display_Elements_Pro extends SBY_Display_Elements
 		}
 		
 		return self::create_condition_show_vue( $customizer,  '$parent.valueIsEnabled($parent.customizerFeedData.settings.layout == \'list\' && $parent.customizerFeedData.settings.enablesubscriberlink)');
+	}
+
+	/**
+	 * Comment data attributes
+	 *
+	 * @param array $settings
+	 *
+	 * @return string
+	 *
+	 * @since 2.3.3
+	 */
+	public static function get_comment_data_attributes( $settings ) {
+		if ( ! sby_doing_customizer( $settings ) ) {
+			return '';
+		}
+		return ' ' . self::display_vue_condition( 'enablecomments' );
 	}
 }

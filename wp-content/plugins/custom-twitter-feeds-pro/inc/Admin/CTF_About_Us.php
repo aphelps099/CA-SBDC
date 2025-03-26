@@ -53,16 +53,18 @@ class CTF_About_Us {
         $cap = current_user_can( 'manage_twitter_feed_options' ) ? 'manage_twitter_feed_options' : 'manage_options';
         $cap = apply_filters( 'ctf_settings_pages_capability', $cap );
 
-       $about_us = add_submenu_page(
-           'custom-twitter-feeds',
-           __( 'About Us', 'custom-twitter-feeds' ),
-           __( 'About Us', 'custom-twitter-feeds' ),
-           $cap,
-           self::SLUG,
-           [$this, 'about_us'],
-           4
-       );
-       add_action( 'load-' . $about_us, [$this,'about_us_enqueue_assets']);
+        if ( ctf_activation_page_dismissed() ) {
+            $about_us = add_submenu_page(
+                'custom-twitter-feeds',
+                __( 'About Us', 'custom-twitter-feeds' ),
+                __( 'About Us', 'custom-twitter-feeds' ),
+                $cap,
+                self::SLUG,
+                [$this, 'about_us'],
+                4
+            );
+            add_action( 'load-' . $about_us, [$this,'about_us_enqueue_assets']);
+        }
    }
 
    	/**
@@ -171,6 +173,11 @@ class CTF_About_Us {
             $is_youtube_installed = true;
         }
 
+        $license_key = null;
+		if ( ctf_license_handler()->get_license_key ) {
+			$license_key = ctf_license_handler()->get_license_key;
+		}
+
         $return = array(
 			'admin_url' 		=> admin_url(),
             'supportPageUrl'    => admin_url( 'admin.php?page=ctf-support' ),
@@ -179,12 +186,33 @@ class CTF_About_Us {
 			'nonce'		        =>  wp_create_nonce( 'ctf-admin' ),
 			'socialWallLinks'   => \TwitterFeed\Builder\CTF_Feed_Builder::get_social_wall_links(),
 			'socialWallActivated' => is_plugin_active( 'social-wall/social-wall.php' ),
+			'licenseKey'		=> $license_key,
+			'ctfLicenseInactiveState' => ctf_license_inactive_state() ? true : false,
+			'ctfLicenseNoticeActive' =>  ctf_license_notice_active() ? true : false,
+			'svgIcons' => \TwitterFeed\Builder\CTF_Feed_Builder::builder_svg_icons(),
 			'genericText'       => array(
 				'help' => __( 'Help', 'custom-twitter-feeds' ),
 				'title' => __( 'About Us', 'custom-twitter-feeds' ),
 				'title2' => __( 'Our Other Social Media Feed Plugins', 'custom-twitter-feeds' ),
 				'title3' => __( 'Plugins we recommend', 'custom-twitter-feeds' ),
 				'description2' => __( 'We’re more than just an Instagram plugin! Check out our other plugins and add more content to your site.', 'custom-twitter-feeds' ),
+				'recheckLicense' => __( 'Recheck license', 'custom-twitter-feeds' ),
+				'licenseValid' => __( 'License valid', 'custom-twitter-feeds' ),
+				'licenseExpired' => __( 'License expired', 'custom-twitter-feeds' ),
+                'notification' => array(
+                    'licenseActivated'   => array(
+                        'type' => 'success',
+                        'text' => __( 'License Successfully Activated', 'custom-twitter-feeds' ),
+                    ),
+                    'licenseError'   => array(
+                        'type' => 'error',
+                        'text' => __( 'Couldn\'t Activate License', 'custom-twitter-feeds' ),
+                    ),
+                    'licenseKeyEmpty'   => array(
+                        'type' => 'error',
+                        'text' => __( 'Please enter a license key', 'custom-twitter-feeds' ),
+                    ),
+                )
             ),
             'aboutBox'      => array(
                 'atSmashBalloon' => __( 'At Smash Balloon, we build software that helps you create beautiful responsive social media feeds for your website in minutes.', 'custom-twitter-feeds' ),
@@ -239,62 +267,80 @@ class CTF_About_Us {
                 'installed' => isset( $installed_plugins['social-wall/social-wall.php'] ) ? true : false,
                 'activated' => is_plugin_active('social-wall/social-wall.php'),
             ),
-            'recommendedPlugins'      => array(
-                'wpforms'  => array(
-                    'plugin' => 'wpforms-lite/wpforms.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/wpforms-lite.zip',
-                    'title' => __( 'WPForms', 'custom-twitter-feeds' ),
-                    'description' => __( 'The most beginner friendly drag & drop WordPress forms plugin allowing you to create beautiful contact forms, subscription forms, payment forms, and more in minutes, not hours!', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-wpforms.png',
-                    'installed' => isset( $installed_plugins['wpforms-lite/wpforms.php'] ) ? true : false,
-                    'activated' => is_plugin_active('wpforms-lite/wpforms.php'),
-                ),
-                'monsterinsights'  => array(
-                    'plugin' => 'google-analytics-for-wordpress/googleanalytics.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/google-analytics-for-wordpress.zip',
-                    'title' => __( 'MonsterInsights', 'custom-twitter-feeds' ),
-                    'description' => __( 'MonsterInsights makes it “effortless” to properly connect your WordPress site with Google Analytics, so you can start making data-driven decisions to grow your business.', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-mi.png',
-                    'installed' => isset( $installed_plugins['google-analytics-for-wordpress/googleanalytics.php'] ) ? true : false,
-                    'activated' => is_plugin_active('google-analytics-for-wordpress/googleanalytics.php'),
-                ),
-                'optinmonster'  => array(
-                    'plugin' => 'optinmonster/optin-monster-wp-api.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/optinmonster.zip',
-                    'title' => __( 'OptinMonster', 'custom-twitter-feeds' ),
-                    'description' => __( 'Our high-converting optin forms like Exit-Intent® popups, Fullscreen Welcome Mats, and Scroll boxes help you dramatically boost conversions and get more email subscribers.', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-om.png',
-                    'installed' => isset( $installed_plugins['optinmonster/optin-monster-wp-api.php'] ) ? true : false,
-                    'activated' => is_plugin_active('optinmonster/optin-monster-wp-api.php'),
-                ),
-                'wp_mail_smtp'  => array(
-                    'plugin' => 'wp-mail-smtp/wp_mail_smtp.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/wp-mail-smtp.zip',
-                    'title' => __( 'WP Mail SMTP', 'custom-twitter-feeds' ),
-                    'description' => __( 'Make sure your website\'s emails reach the inbox. Our goal is to make email deliverability easy and reliable. Trusted by over 1 million websites.', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-smtp.png',
-                    'installed' => isset( $installed_plugins['wp-mail-smtp/wp_mail_smtp.php'] ) ? true : false,
-                    'activated' => is_plugin_active('wp-mail-smtp/wp_mail_smtp.php'),
-                ),
-                'rafflepress'  => array(
-                    'plugin' => 'rafflepress/rafflepress.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/rafflepress.zip',
-                    'title' => __( 'RafflePress', 'custom-twitter-feeds' ),
-                    'description' => __( 'Turn your visitors into brand ambassadors! Easily grow your email list, website traffic, and social media followers with powerful viral giveaways & contests.', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-rp.png',
-                    'installed' => isset( $installed_plugins['rafflepress/rafflepress.php'] ) ? true : false,
-                    'activated' => is_plugin_active('rafflepress/rafflepress.php'),
-                ),
-                'aioseo'  => array(
-                    'plugin' => 'all-in-one-seo-pack/all_in_one_seo_pack.php',
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/all-in-one-seo-pack.zip',
-                    'title' => __( 'All in One SEO Pack', 'custom-twitter-feeds' ),
-                    'description' => __( 'Out-of-the-box SEO for WordPress. Features like XML Sitemaps, SEO for custom post types, SEO for blogs, business sites, or ecommerce sites, and much more.', 'custom-twitter-feeds' ),
-                    'icon' => $images_url . 'plugin-seo.png',
-                    'installed' => isset( $installed_plugins['all-in-one-seo-pack/all_in_one_seo_pack.php'] ) ? true : false,
-                    'activated' => is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php'),
-                )
-            ),
+			'recommendedPlugins'      => array(
+				'aioseo'  => array(
+					'plugin' => 'all-in-one-seo-pack/all_in_one_seo_pack.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/all-in-one-seo-pack.zip',
+					'title' => __( 'All in One SEO Pack', 'custom-twitter-feeds' ),
+					'description' => __( 'The original WordPress SEO plugin and toolkit that improves your website’s search rankings. Comes with all the SEO features like Local SEO, WooCommerce SEO, sitemaps, SEO optimizer, schema, and more.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-seo.png',
+					'installed' => isset( $installed_plugins['all-in-one-seo-pack/all_in_one_seo_pack.php'] ) ? true : false,
+					'activated' => is_plugin_active('all-in-one-seo-pack/all_in_one_seo_pack.php'),
+				),
+				'wpforms'  => array(
+					'plugin' => 'wpforms-lite/wpforms.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/wpforms-lite.zip',
+					'title' => __( 'WPForms', 'custom-twitter-feeds' ),
+					'description' => __( 'The best drag & drop WordPress form builder. Easily create beautiful contact forms, surveys, payment forms, and more with our 900+ form templates. Trusted by over 6 million websites as the best forms plugin.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-wpforms.png',
+					'installed' => isset( $installed_plugins['wpforms-lite/wpforms.php'] ) ? true : false,
+					'activated' => is_plugin_active('wpforms-lite/wpforms.php'),
+				),
+				'monsterinsights'  => array(
+					'plugin' => 'google-analytics-for-wordpress/googleanalytics.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/google-analytics-for-wordpress.zip',
+					'title' => __( 'MonsterInsights', 'custom-twitter-feeds' ),
+					'description' => __( 'The leading WordPress analytics plugin that shows you how people find and use your website, so you can make data driven decisions to grow your business. Properly set up Google Analytics without writing code.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-mi.png',
+					'installed' => isset( $installed_plugins['google-analytics-for-wordpress/googleanalytics.php'] ) ? true : false,
+					'activated' => is_plugin_active('google-analytics-for-wordpress/googleanalytics.php'),
+				),
+				'optinmonster'  => array(
+					'plugin' => 'optinmonster/optin-monster-wp-api.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/optinmonster.zip',
+					'title' => __( 'OptinMonster', 'custom-twitter-feeds' ),
+					'description' => __( 'Instantly get more subscribers, leads, and sales with the #1 conversion optimization toolkit. Create high converting popups, announcement bars, spin a wheel, and more with smart targeting and personalization.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-om.png',
+					'installed' => isset( $installed_plugins['optinmonster/optin-monster-wp-api.php'] ) ? true : false,
+					'activated' => is_plugin_active('optinmonster/optin-monster-wp-api.php'),
+				),
+				'wp_mail_smtp'  => array(
+					'plugin' => 'wp-mail-smtp/wp_mail_smtp.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/wp-mail-smtp.zip',
+					'title' => __( 'WP Mail SMTP', 'custom-twitter-feeds' ),
+					'description' => __( 'Improve your WordPress email deliverability and make sure that your website emails reach user’s inbox with the #1 SMTP plugin for WordPress. Over 3 million websites use it to fix WordPress email issues.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-smtp.png',
+					'installed' => isset( $installed_plugins['wp-mail-smtp/wp_mail_smtp.php'] ) ? true : false,
+					'activated' => is_plugin_active('wp-mail-smtp/wp_mail_smtp.php'),
+				),
+				'rafflepress'  => array(
+					'plugin' => 'rafflepress/rafflepress.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/rafflepress.zip',
+					'title' => __( 'RafflePress', 'custom-twitter-feeds' ),
+					'description' => __( 'Turn your website visitors into brand ambassadors! Easily grow your email list, website traffic, and social media followers with the most powerful giveaways & contests plugin for WordPress.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-rp.png',
+					'installed' => isset( $installed_plugins['rafflepress/rafflepress.php'] ) ? true : false,
+					'activated' => is_plugin_active('rafflepress/rafflepress.php'),
+				),
+				'seedprod'  => array(
+					'plugin' => 'coming-soon/coming-soon.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/coming-soon.zip',
+					'title' => __( 'SeedProd Website Builder', 'custom-twitter-feeds' ),
+					'description' => __( 'The fastest drag & drop landing page builder for WordPress. Create custom landing pages without writing code, connect a CRM, collect subscribers, and grow an audience. Trusted by 1 million sites.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-seedprod.png',
+					'installed' => isset( $installed_plugins['coming-soon/coming-soon.php'] ) ? true : false,
+					'activated' => is_plugin_active('coming-soon/coming-soon.php'),
+				),
+				'pushengage'  => array(
+					'plugin' => 'pushengage/main.php',
+					'download_plugin' => 'https://downloads.wordpress.org/plugin/pushengage.zip',
+					'title' => __( 'PushEngage Web Push Notifications', 'custom-twitter-feeds' ),
+					'description' => __( 'Connect with your visitors after they leave your website with the leading web push notification software. Over 10,000+ businesses worldwide use PushEngage to send 15 billion notifications each month.', 'custom-twitter-feeds' ),
+					'icon' => $images_url . 'plugin-pushengage.png',
+					'installed' => isset( $installed_plugins['cpushengage/main.php'] ) ? true : false,
+					'activated' => is_plugin_active('pushengage/main.php'),
+				)
+			),
             'buttons'          => array(
                 'add' => __( 'Add', 'custom-twitter-feeds' ),
                 'viewDemo' => __( 'View Demo', 'custom-twitter-feeds' ),

@@ -134,6 +134,10 @@ class CTF_Display_Elements_Pro {
 
 	public static function get_twitter_card_html( $parts, $twittercards_attr ) {
 
+        if ( empty( $parts['url'] ) ) {
+            return '';
+        }
+
 		$twitter_card_url = $parts['url'];
 		$type             = $parts['type'];
 		$image_url        = $parts['image_url'];
@@ -153,7 +157,7 @@ class CTF_Display_Elements_Pro {
 				if ( ! empty( $parts['local'] ) ) {
 					$image_url = trailingslashit( CTF_PLUGIN_URL ) . 'img/placeholder.png';
 				}
-				$card_html .= '<div class="ctf-tc-image" data-bg="' . esc_url( $image_url ) . '">';
+				$card_html .= '<div class="ctf-tc-image" data-bg="' . htmlspecialchars_decode( $image_url ) . '">';
 				$card_html .= CTF_Display_Elements_Pro::get_twitter_card_media_html( $parts );
 				$card_html .= '</div>';
 			}
@@ -190,6 +194,9 @@ class CTF_Display_Elements_Pro {
 	}
 
 	public static function get_twitter_card_placeholder( $post, $first_url, $short_url = '' ) {
+        if ( CTF_DOING_SMASH_TWITTER ) {
+            return '';
+        }
 		return '<span class="ctf-twitter-card-placeholder" data-tweet-id="' . esc_attr( CTF_Parse_Pro::get_tweet_id( $post ) ) . '" data-tc-url="' . esc_attr( $first_url ) . '" data-tc-short-url="' . esc_attr( $short_url ) . '"></span>';
 	}
 
@@ -250,7 +257,7 @@ class CTF_Display_Elements_Pro {
 
 	public static function media_link_attributes( $medium, $post, $feed_options, $disablelightbox ) {
         $media_link_atts = array();
-
+		$utc_offset = isset( $post['user']['utc_offset'] ) ? $post['user']['utc_offset'] : '';
 		if ( ! $disablelightbox ) {
 			$media_link_atts = array(
 				'data-title' => $post['text'],
@@ -259,7 +266,7 @@ class CTF_Display_Elements_Pro {
 				'data-id' => CTF_Parse_Pro::get_post_id( $post ),
 				'data-url' => 'https://twitter.com/' .$post['user']['screen_name'] . '/status/' . $post['id_str'],
 				'data-avatar' => CTF_Parse_Pro::get_avatar( $post ),
-				'data-date' => ctf_get_formatted_date( $post['created_at'] , $feed_options, $post['user']['utc_offset'] ),
+				'data-date' => ctf_get_formatted_date( $post['created_at'] , $feed_options, $utc_offset ),
 				'data-ctf-lightbox' => 1,
 				'data-video' => '',
 				'data-iframe' => '',
@@ -267,7 +274,7 @@ class CTF_Display_Elements_Pro {
 			if ( $medium['type'] == 'iframe' ) {
 				$media_link_atts['data-iframe'] = $medium['url'];
             }
-            if ($medium['type'] == 'video' || $medium['type'] == 'animated_gif') {
+            if (($medium['type'] == 'video' || $medium['type'] == 'animated_gif') && isset($medium['url'])) {
                 $media_link_atts['data-video'] = $medium['url'];
             }
 		};
@@ -363,6 +370,7 @@ class CTF_Display_Elements_Pro {
 
     public static function header_type( $feed_options ) {
 	    $header_template = 'header-generic';
+
 	    if ( $feed_options['type'] === 'usertimeline' || $feed_options['type'] === 'mentionstimeline' || $feed_options['type'] === 'hometimeline' ) {
 		    $header_template = 'header';
 	    }
@@ -640,7 +648,10 @@ class CTF_Display_Elements_Pro {
 	 *
 	 * @since 2.0
 	 */
-	public static function display_header( $feed_options ){
+	public static function display_header( $feed_options, $tweet_set = array() ){
+		if ( empty( $tweet_set ) || (isset( $tweet_set[0] ) && is_string( $tweet_set[0] ) && $tweet_set[0] === 'error') ) {
+            return;
+		}
 		if( ctf_doing_customizer( $feed_options ) ){
 			$header_template = 'header-generic';
 		    if ( $feed_options['type'] === 'usertimeline' || $feed_options['type'] === 'mentionstimeline' || $feed_options['type'] === 'hometimeline' ) {
@@ -649,8 +660,15 @@ class CTF_Display_Elements_Pro {
         	include ctf_get_feed_template_part( $header_template, $feed_options );
         	include ctf_get_feed_template_part( 'header-text', $feed_options );
 		}else{
-        	include ctf_get_feed_template_part( CTF_Display_Elements_Pro::header_type( $feed_options ), $feed_options );
+            include ctf_get_feed_template_part( CTF_Display_Elements_Pro::header_type( $feed_options ), $feed_options );
 		}
+	}
+
+	public static function display_footer( $feed_options, $tweet_set = array() ){
+		if ( empty( $tweet_set ) || (isset( $tweet_set[0] ) && is_string( $tweet_set[0] ) && $tweet_set[0] === 'error') ) {
+			return;
+		}
+		include ctf_get_feed_template_part( 'footer', $feed_options );
 	}
 
     /**

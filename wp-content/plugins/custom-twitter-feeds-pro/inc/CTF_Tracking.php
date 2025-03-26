@@ -8,6 +8,10 @@
 namespace TwitterFeed;
 
 // Exit if accessed directly
+use Smashballoon\Framework\Utilities\UsageTracking;
+use TwitterFeed\Builder\CTF_Db;
+use TwitterFeed\Builder\CTF_Feed_Saver;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,6 +30,7 @@ class CTF_Tracking {
 		add_filter( 'cron_schedules', array( $this, 'add_schedules' ) );
 		add_action( 'ctf_usage_tracking_cron', array( $this, 'send_checkin' ) );
 		add_action( 'admin_init', array( $this, 'save_setting' ) );
+		add_filter( 'sb_usage_tracking_data', array( $this, 'filter_usage_tracking_data' ), 10, 2 );
 	}
 
 	private function normalize_and_format( $key, $value ) {
@@ -134,7 +139,7 @@ class CTF_Tracking {
 			'showheader' => '1',
 			'persistentcache' => '1',
 			'selfreplies' => '1',
-			'autores' => '1',
+			'autores' => '',
 			'disableintents' => '0',
 	      'customtemplates' => '0',
 			'shorturls' => '0',
@@ -357,26 +362,8 @@ class CTF_Tracking {
 			return false;
 		}
 
-		// Send a maximum of once per week
-		$usage_tracking = get_option( 'ctf_usage_tracking', array( 'last_send' => 0, 'enabled' => ctf_is_pro_version() ) );
-		if ( is_numeric( $usage_tracking['last_send'] ) && $usage_tracking['last_send'] > strtotime( '-1 week' ) && ! $ignore_last_checkin ) {
-			return false;
-		}
 
-		$request = wp_remote_post( 'https://usage.smashballoon.com/v1/checkin/', array(
-			'method'      => 'POST',
-			'timeout'     => 5,
-			'redirection' => 5,
-			'httpversion' => '1.1',
-			'blocking'    => false,
-			'body'        => $this->get_data(),
-			'user-agent'  => 'MI/' . CTF_VERSION . '; ' . get_bloginfo( 'url' )
-		) );
-
-		// If we have completed successfully, recheck in 1 week
-		$usage_tracking['last_send'] = time();
-		update_option( 'ctf_usage_tracking', $usage_tracking, false );
-		return true;
+		return UsageTracking::send_usage_update($this->get_data(), 'ctf');
 	}
 
 	private function tracking_allowed() {
@@ -427,5 +414,75 @@ class CTF_Tracking {
 			update_option( 'ctf_usage_tracking', $usage_tracking, false );
 		}
 	}
+
+	/**
+	 * Filter the usage tracking data
+	 *
+	 * @param array $data
+	 * @param string $plugin_slug
+	 *
+	 * @handles sb_usage_tracking_data
+	 *
+	 * @return array|mixed
+	 */
+	public function filter_usage_tracking_data( $data, $plugin_slug ) {
+		if ( 'ctf' !== $plugin_slug ) {
+			return $data;
+		}
+
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
+
+		if ( ! isset( $data['settings'] ) ) {
+			$data['settings'] = [];
+		}
+
+		$tracked_boolean_settings = explode( ',',
+			'ajax_theme,consumer_key,consumer_secret,access_token,access_token_secret,includereplies,
+			includeretweets,width_mobile_no_fixed,include_replied_to,include_retweeter,include_author,
+			include_avatar,include_author_text,include_text,include_date,include_actions,include_linkbox,
+			include_media,include_twittercards,include_logo,include_twitterlink,creditctf,showbutton,
+			showheader,disableintents,customtemplates,shorturls,disablelightbox,masonry,carousel,carouselnavarrows,
+			carouselpag,carouselautoplay,autoscroll,width,width_unit,height,height_unit,class,layout,carouseltime,
+			maxmedia,imagecols,autoscrolldistance,includewords,excludewords,includeanyall,filterandor,excludeanyall,
+			remove_by_id,custom_css,custom_js,showbio,disablelinks,linktexttotwitter,bgcolor,headertextcolor,headertext,
+			headersize,headerstyle,headerbgcolor,customheadertextcolor,customheadertext,customheadersize,timezone,
+			dateformat,datecustom,mtime,htime,nowtime,datetextsize,datetextweight,datetextcolor,authortextcolor,
+			authortextsize,authortextweight,logosize,logocolor,tweettextsize,tweettextweight,textcolor,textlength,
+			retweetedtext,linktextcolor,quotedauthorsize,quotedauthorweight,iconsize,iconcolor,viewtwitterlink,
+			twitterlinktext,buttoncolor,buttonhovercolor,buttontextcolor,buttontext,inreplytotext,feedtemplate,
+			cardstextsize,cardstextcolor,colorpalette,custombgcolor,customaccentcolor,customtextcolor1,
+			customtextcolor2,customlinkcolor,tweetpoststyle,tweetbgcolor,tweetcorners,tweetboxshadow,
+			tweetsepcolor,tweetsepsize,tweetsepline'
+		);
+
+		$tracked_string_settings = explode( ',',
+			'type,num,masonrycols,masonrytabletcols,masonrymobilecols,carouselrows,carouselcols,
+			carouseltabletcols,carouselmobilecols,carouselloop,carouselarrows,carouselheight'
+		);
+
+		$feeds = CTF_Db::feeds_query();
+		$settings_defaults = CTF_Feed_Saver::settings_defaults();
+
+		// Track settings of the first feed
+		if ( ! empty( $feeds ) ) {
+			$feed = $feeds[0];
+			$feed_settings = ( new CTF_Feed_Saver( $feed['id'] ) )->get_feed_settings();
+
+			if(!is_array($feed_settings)) {
+				return $data;
+			}
+
+
+			$booleans = UsageTracking::tracked_settings_to_booleans($tracked_boolean_settings, $settings_defaults, $feed_settings);
+			$strings = UsageTracking::tracked_settings_to_strings($tracked_string_settings, $feed_settings);
+
+			if ( is_array( $booleans ) && is_array( $strings ) ) {
+				$data['settings'] = array_merge( $data['settings'], $booleans, $strings );
+			}
+		}
+
+		return $data;
+	}
 }
-new CTF_Tracking();

@@ -150,9 +150,9 @@ if(!ctf_js_exists) {
           a[f] = isNaN(m) ? 0 : m
         }
         var p = a.paddingLeft + a.paddingRight, y = a.paddingTop + a.paddingBottom,
-          g = a.marginLeft + a.marginRight, v = a.marginTop + a.marginBottom,
-          _ = a.borderLeftWidth + a.borderRightWidth, z = a.borderTopWidth + a.borderBottomWidth, I = d && r,
-          x = t(s.width);
+            g = a.marginLeft + a.marginRight, v = a.marginTop + a.marginBottom,
+            _ = a.borderLeftWidth + a.borderRightWidth, z = a.borderTopWidth + a.borderBottomWidth, I = d && r,
+            x = t(s.width);
         x !== !1 && (a.width = x + (I ? 0 : p + _));
         var S = t(s.height);
         return S !== !1 && (a.height = S + (I ? 0 : y + z)), a.innerWidth = a.width - (p + _), a.innerHeight = a.height - (y + z), a.outerWidth = a.width + g, a.outerHeight = a.height + v, a
@@ -160,10 +160,10 @@ if(!ctf_js_exists) {
     }
 
     var r, a = "undefined" == typeof console ? e : function (t) {
-        console.error(t)
-      },
-      u = ["paddingLeft", "paddingRight", "paddingTop", "paddingBottom", "marginLeft", "marginRight", "marginTop", "marginBottom", "borderLeftWidth", "borderRightWidth", "borderTopWidth", "borderBottomWidth"],
-      h = u.length, d = !1;
+          console.error(t)
+        },
+        u = ["paddingLeft", "paddingRight", "paddingTop", "paddingBottom", "marginLeft", "marginRight", "marginTop", "marginBottom", "borderLeftWidth", "borderRightWidth", "borderTopWidth", "borderBottomWidth"],
+        h = u.length, d = !1;
     return s
   }), function (t, e) {
     "use strict";
@@ -243,8 +243,8 @@ if(!ctf_js_exists) {
     return i.htmlInit = function (e, o) {
       i.docReady(function () {
         var s = i.toDashed(o), r = "data-" + s, a = document.querySelectorAll("[" + r + "]"),
-          u = document.querySelectorAll(".js-" + s), h = i.makeArray(a).concat(i.makeArray(u)),
-          d = r + "-options", l = t.jQuery;
+            u = document.querySelectorAll(".js-" + s), h = i.makeArray(a).concat(i.makeArray(u)),
+            d = r + "-options", l = t.jQuery;
         h.forEach(function (t) {
           var i, s = t.getAttribute(r) || t.getAttribute(d);
           try {
@@ -278,14 +278,14 @@ if(!ctf_js_exists) {
     }
 
     var s = document.documentElement.style, r = "string" == typeof s.transition ? "transition" : "WebkitTransition",
-      a = "string" == typeof s.transform ? "transform" : "WebkitTransform",
-      u = {WebkitTransition: "webkitTransitionEnd", transition: "transitionend"}[r], h = {
-        transform: a,
-        transition: r,
-        transitionDuration: r + "Duration",
-        transitionProperty: r + "Property",
-        transitionDelay: r + "Delay"
-      }, d = o.prototype = Object.create(t.prototype);
+        a = "string" == typeof s.transform ? "transform" : "WebkitTransform",
+        u = {WebkitTransition: "webkitTransitionEnd", transition: "transitionend"}[r], h = {
+          transform: a,
+          transition: r,
+          transitionDuration: r + "Duration",
+          transitionProperty: r + "Property",
+          transitionDelay: r + "Delay"
+        }, d = o.prototype = Object.create(t.prototype);
     d.constructor = o, d._create = function () {
       this._transn = {ingProperties: {}, clean: {}, onEnd: {}}, this.css({position: "absolute"})
     }, d.handleEvent = function (t) {
@@ -301,16 +301,16 @@ if(!ctf_js_exists) {
       }
     }, d.getPosition = function () {
       var t = getComputedStyle(this.element), e = this.layout._getOption("originLeft"),
-        i = this.layout._getOption("originTop"), o = t[e ? "left" : "right"], n = t[i ? "top" : "bottom"],
-        s = parseFloat(o), r = parseFloat(n), a = this.layout.size;
+          i = this.layout._getOption("originTop"), o = t[e ? "left" : "right"], n = t[i ? "top" : "bottom"],
+          s = parseFloat(o), r = parseFloat(n), a = this.layout.size;
       o.indexOf("%") != -1 && (s = s / 100 * a.width), n.indexOf("%") != -1 && (r = r / 100 * a.height), s = isNaN(s) ? 0 : s, r = isNaN(r) ? 0 : r, s -= e ? a.paddingLeft : a.paddingRight, r -= i ? a.paddingTop : a.paddingBottom, this.position.x = s, this.position.y = r
     }, d.layoutPosition = function () {
       var t = this.layout.size, e = {}, i = this.layout._getOption("originLeft"),
-        o = this.layout._getOption("originTop"), n = i ? "paddingLeft" : "paddingRight",
-        s = i ? "left" : "right", r = i ? "right" : "left", a = this.position.x + t[n];
+          o = this.layout._getOption("originTop"), n = i ? "paddingLeft" : "paddingRight",
+          s = i ? "left" : "right", r = i ? "right" : "left", a = this.position.x + t[n];
       e[s] = this.getXValue(a), e[r] = "";
       var u = o ? "paddingTop" : "paddingBottom", h = o ? "top" : "bottom", d = o ? "bottom" : "top",
-        l = this.position.y + t[u];
+          l = this.position.y + t[u];
       e[h] = this.getYValue(l), e[d] = "", this.css(e), this.emitEvent("layout", [this])
     }, d.getXValue = function (t) {
       var e = this.layout._getOption("horizontal");
@@ -717,7 +717,7 @@ if(!ctf_js_exists) {
     }
 
     var o = i.prototype,
-      n = ["_resetLayout", "_getItemLayoutPosition", "_manageStamp", "_getContainerSize", "_getElementOffset", "needsResizeLayout", "_getOption"];
+        n = ["_resetLayout", "_getItemLayoutPosition", "_manageStamp", "_getContainerSize", "_getElementOffset", "needsResizeLayout", "_getOption"];
     return n.forEach(function (t) {
       o[t] = function () {
         return e.prototype[t].apply(this.smashotope, arguments)
@@ -767,7 +767,7 @@ if(!ctf_js_exists) {
         this.columnWidth = i && e(i).outerWidth || this.containerWidth
       }
       var o = this.columnWidth += this.gutter, n = this.containerWidth + this.gutter, s = n / o, r = o - n % o,
-        a = r && r < 1 ? "round" : "floor";
+          a = r && r < 1 ? "round" : "floor";
       s = Math[a](s), this.cols = Math.max(s, 1)
     }, o.getContainerWidth = function () {
       var t = this._getOption("fitWidth"), i = t ? this.element.parentNode : this.element, o = e(i);
@@ -775,7 +775,7 @@ if(!ctf_js_exists) {
     }, o._getItemLayoutPosition = function (t) {
       t.getSize();
       var e = t.size.outerWidth % this.columnWidth, i = e && e < 1 ? "round" : "ceil",
-        o = Math[i](t.size.outerWidth / this.columnWidth);
+          o = Math[i](t.size.outerWidth / this.columnWidth);
       o = Math.min(o, this.cols);
       for (var n = this.options.horizontalOrder ? "_getHorizontalColPosition" : "_getTopColPosition", s = this[n](o, t), r = {
         x: this.columnWidth * s.col,
@@ -800,7 +800,7 @@ if(!ctf_js_exists) {
       return this.horizontalColIndex = n ? i + t : this.horizontalColIndex, {col: i, y: this._getColGroupY(i, t)}
     }, o._manageStamp = function (t) {
       var i = e(t), o = this._getElementOffset(t), n = this._getOption("originLeft"), s = n ? o.left : o.right,
-        r = s + i.outerWidth, a = Math.floor(s / this.columnWidth);
+          r = s + i.outerWidth, a = Math.floor(s / this.columnWidth);
       a = Math.max(0, a);
       var u = Math.floor(r / this.columnWidth);
       u -= r % this.columnWidth ? 0 : 1, u = Math.min(this.cols - 1, u);
@@ -856,7 +856,7 @@ if(!ctf_js_exists) {
     }, i._getItemLayoutPosition = function (t) {
       t.getSize();
       var e = (this.smashotope.size.innerWidth - t.size.outerWidth) * this.options.horizontalAlignment,
-        i = this.y;
+          i = this.y;
       return this.y += t.size.outerHeight, {x: e, y: i}
     }, i._getContainerSize = function () {
       return {height: this.y}
@@ -965,7 +965,7 @@ if(!ctf_js_exists) {
       function t(t) {
         if ("string" != typeof t) return t;
         var i = h(t).split(" "), o = i[0], n = o.match(/^\[(.+)\]$/), s = n && n[1], r = e(s, o),
-          a = d.sortDataParsers[i[1]];
+            a = d.sortDataParsers[i[1]];
         return t = a ? function (t) {
           return t && a(r(t))
         } : function (t) {
@@ -1194,16 +1194,16 @@ if(!ctf_js_exists) {
     "function" == typeof define && define.amd ? define("packery/js/item", ["outlayer/outlayer", "./rect"], b) : "object" == typeof module && module.exports ? module.exports = b(require("outlayer"), require("./rect")) : a.Packery.Item = b(a.Outlayer, a.Packery.Rect)
   }(window, function (a, b) {
     var c = document.documentElement.style, d = "string" == typeof c.transform ? "transform" : "WebkitTransform",
-      e = function () {
-        a.Item.apply(this, arguments)
-      }, f = e.prototype = Object.create(a.Item.prototype), g = f._create;
+        e = function () {
+          a.Item.apply(this, arguments)
+        }, f = e.prototype = Object.create(a.Item.prototype), g = f._create;
     f._create = function () {
       g.call(this), this.rect = new b
     };
     var h = f.moveTo;
     return f.moveTo = function (a, b) {
       var c = Math.abs(this.position.x - a), d = Math.abs(this.position.y - b),
-        e = this.layout.dragItemCount && !this.isPlacing && !this.isTransitioning && 1 > c && 1 > d;
+          e = this.layout.dragItemCount && !this.isPlacing && !this.isTransitioning && 1 > c && 1 > d;
       return e ? void this.goTo(a, b) : void h.apply(this, arguments)
     }, f.enablePlacing = function () {
       this.removeTransitionStyles(), this.isTransitioning && d && (this.element.style[d] = "none"), this.isTransitioning = !1, this.getSize(), this.layout._setRectSize(this.element, this.rect), this.isPlacing = !0
@@ -1319,8 +1319,8 @@ if(!ctf_js_exists) {
       return b[c] != this.size[c]
     }, j.resizeShiftPercentLayout = function () {
       var b = this._getItemsForLayout(this.items), c = this._getOption("horizontal"), d = c ? "y" : "x",
-        e = c ? "height" : "width", f = c ? "rowHeight" : "columnWidth", g = c ? "innerHeight" : "innerWidth",
-        h = this[f];
+          e = c ? "height" : "width", f = c ? "rowHeight" : "columnWidth", g = c ? "innerHeight" : "innerWidth",
+          h = this[f];
       if (h = h && h + this.gutter) {
         this._getMeasurements();
         var i = this[f] + this.gutter;
@@ -1531,8 +1531,8 @@ if(!ctf_js_exists) {
               var i = {};
               if (a.settings.useDataHtmlAttr) {
                 var t = u.attr("data-ctf_imgLiquid-fill"),
-                  e = u.attr("data-ctf_imgLiquid-horizontalAlign"),
-                  o = u.attr("data-ctf_imgLiquid-verticalAlign");
+                    e = u.attr("data-ctf_imgLiquid-horizontalAlign"),
+                    o = u.attr("data-ctf_imgLiquid-verticalAlign");
                 ("true" === t || "false" === t) && (i.fill = Boolean("true" === t)), void 0 === e || "left" !== e && "center" !== e && "right" !== e && -1 === e.indexOf("%") || (i.horizontalAlign = e), void 0 === o || "top" !== o && "bottom" !== o && "center" !== o && -1 === o.indexOf("%") || (i.verticalAlign = o)
               }
               return ctf_imgLiquid.isIE && a.settings.ieFadeInDisabled && (i.fadeInTime = 0), i
@@ -1562,8 +1562,8 @@ if(!ctf_js_exists) {
     // Use imagefill to set the images as backgrounds so they can be square
     !function () {
       var css = ctf_imgLiquid.injectCss,
-        head = document.getElementsByTagName('head')[0],
-        style = document.createElement('style');
+          head = document.getElementsByTagName('head')[0],
+          style = document.createElement('style');
       style.type = 'text/css';
       if (style.styleSheet) {
         style.styleSheet.cssText = css;
@@ -1658,7 +1658,7 @@ if(!ctf_js_exists) {
   //Link @tags
   function ctfReplaceTags(tag) {
     var replacementString = tag.replace('(','').trim(),
-      slash = tag.indexOf('(') > -1 ? '(' : '';
+        slash = tag.indexOf('(') > -1 ? '(' : '';
     return ' '+slash+'<a href="https://twitter.com/' + replacementString.substring(1) + '" target="_blank" rel="nofollow noopener">' + replacementString + '</a>';
   }
 
@@ -1704,7 +1704,7 @@ if(!ctf_js_exists) {
       elem.each(function() {
         jQuery(this).find('span.fa').each(function() {
           var faClass = jQuery(this).attr('class').match(/fa-[a-z-]+/),
-            styles = jQuery(this).attr('style');
+              styles = jQuery(this).attr('style');
           if (faClass && typeof ctfIconSVG[faClass[0]] !== 'undefined') {
             var theStyle = typeof styles !== 'undefined' ? 'style="'+styles+'" ' : '';
             jQuery(this).replaceWith('<svg '+theStyle+ctfIconSVG[faClass[0]]);
@@ -1795,13 +1795,13 @@ if(!ctf_js_exists) {
     }, {
       filter: ["width", "items", "settings"], run: function (a) {
         var b = this.settings.margin || "", c = !this.settings.autoWidth, d = this.settings.rtl,
-          e = {width: "auto", "margin-left": d ? b : "", "margin-right": d ? "" : b};
+            e = {width: "auto", "margin-left": d ? b : "", "margin-right": d ? "" : b};
         !c && this.$stage.children().css(e), a.css = e
       }
     }, {
       filter: ["width", "items", "settings"], run: function (a) {
         var b = (this.width() / this.settings.items).toFixed(3) - this.settings.margin, c = null,
-          d = this._items.length, e = !this.settings.autoWidth, f = [];
+            d = this._items.length, e = !this.settings.autoWidth, f = [];
         for (a.items = {
           merge: !1,
           width: b
@@ -1811,8 +1811,8 @@ if(!ctf_js_exists) {
     }, {
       filter: ["items", "settings"], run: function () {
         var b = [], c = this._items, d = this.settings, e = Math.max(2 * d.items, 4),
-          f = 2 * Math.ceil(c.length / 2), g = d.loop && c.length ? d.rewind ? e : Math.max(e, f) : 0, h = "",
-          i = "";
+            f = 2 * Math.ceil(c.length / 2), g = d.loop && c.length ? d.rewind ? e : Math.max(e, f) : 0, h = "",
+            i = "";
         for (g /= 2; g--;) b.push(this.normalize(b.length / 2, !0)), h += c[b[b.length - 1]][0].outerHTML, b.push(this.normalize(c.length - 1 - (b.length - 1) / 2, !0)), i = c[b[b.length - 1]][0].outerHTML + i;
         this._clones = b, a(h).addClass("cloned").appendTo(this.$stage), a(i).addClass("cloned").prependTo(this.$stage)
       }
@@ -1850,7 +1850,7 @@ if(!ctf_js_exists) {
     }, {
       filter: ["width", "position", "items", "settings"], run: function () {
         var a, b, c, d, e = this.settings.rtl ? 1 : -1, f = 2 * this.settings.stagePadding,
-          g = this.coordinates(this.current()) + f, h = g + this.width() * e, i = [];
+            g = this.coordinates(this.current()) + f, h = g + this.width() * e, i = [];
         for (c = 0, d = this._coordinates.length; c < d; c++) a = this._coordinates[c - 1] || 0, b = Math.abs(this._coordinates[c]) + f * e, (this.op(a, "<=", g) && this.op(a, ">", h) || this.op(b, "<", g) && this.op(b, ">", h)) && i.push(c);
         this.$stage.children(".active").removeClass("active"), this.$stage.children(":eq(" + i.join("), :eq(") + ")").addClass("active"), this.settings.center && (this.$stage.children(".center").removeClass("center"), this.$stage.children().eq(this.current()).addClass("center"))
       }
@@ -1917,11 +1917,11 @@ if(!ctf_js_exists) {
       }, this)))
     }, e.prototype.onDragMove = function (a) {
       var b = null, c = null, d = null, e = this.difference(this._drag.pointer, this.pointer(a)),
-        f = this.difference(this._drag.stage.start, e);
+          f = this.difference(this._drag.stage.start, e);
       this.is("dragging") && (a.preventDefault(), this.settings.loop ? (b = this.coordinates(this.minimum()), c = this.coordinates(this.maximum() + 1) - b, f.x = ((f.x - b) % c + c) % c + b) : (b = this.settings.rtl ? this.coordinates(this.maximum()) : this.coordinates(this.minimum()), c = this.settings.rtl ? this.coordinates(this.minimum()) : this.coordinates(this.maximum()), d = this.settings.pullDrag ? -1 * e.x / 5 : 0, f.x = Math.max(Math.min(f.x, b + d), c + d)), this._drag.stage.current = f, this.animate(f.x))
     }, e.prototype.onDragEnd = function (b) {
       var d = this.difference(this._drag.pointer, this.pointer(b)), e = this._drag.stage.current,
-        f = d.x > 0 ^ this.settings.rtl ? "left" : "right";
+          f = d.x > 0 ^ this.settings.rtl ? "left" : "right";
       a(c).off(".owl.core"), this.$element.removeClass(this.options.grabClass), (0 !== d.x && this.is("dragging") || !this.is("valid")) && (this.speed(this.settings.dragEndSpeed || this.settings.smartSpeed), this.current(this.closest(e.x, 0 !== d.x ? f : this._drag.direction)), this.invalidate("position"), this.update(), this._drag.direction = f, (Math.abs(d.x) > 3 || (new Date).getTime() - this._drag.time > 300) && this._drag.target.one("click.owl.core", function () {
         return !1
       })), this.is("dragging") && (this.leave("dragging"), this.trigger("dragged"))
@@ -1995,7 +1995,7 @@ if(!ctf_js_exists) {
       return 0 === c ? 0 : Math.min(Math.max(Math.abs(b - a), 1), 6) * Math.abs(c || this.settings.smartSpeed)
     }, e.prototype.to = function (a, b) {
       var c = this.current(), d = null, e = a - this.relative(c), f = (e > 0) - (e < 0), g = this._items.length,
-        h = this.minimum(), i = this.maximum();
+          h = this.minimum(), i = this.maximum();
       this.settings.loop ? (!this.settings.rewind && Math.abs(e) > g / 2 && (e += f * -1 * g), a = c + e, d = ((a - h) % g + g) % g + h, d !== a && d - e <= i && d - e > 0 && (c = d - e, a = d, this.reset(c))) : this.settings.rewind ? (i += 1, a = (a % i + i) % i) : a = Math.max(h, Math.min(i, a)), this.speed(this.duration(c, a, b)), this.current(a), this.$element.is(":visible") && this.update()
     }, e.prototype.next = function (a) {
       a = a || !1, this.to(this.relative(this.current()) + 1, a)
@@ -2058,10 +2058,10 @@ if(!ctf_js_exists) {
       a.removeEventListener ? a.removeEventListener(b, c, d) : a.detachEvent && a.detachEvent("on" + b, c)
     }, e.prototype.trigger = function (b, c, d, f, g) {
       var h = {item: {count: this._items.length, index: this.current()}},
-        i = a.camelCase(a.grep(["on", b, d], function (a) {
-          return a
-        }).join("-").toLowerCase()),
-        j = a.Event([b, "owl", d || "carousel"].join(".").toLowerCase(), a.extend({relatedTarget: this}, h, c));
+          i = a.camelCase(a.grep(["on", b, d], function (a) {
+            return a
+          }).join("-").toLowerCase()),
+          j = a.Event([b, "owl", d || "carousel"].join(".").toLowerCase(), a.extend({relatedTarget: this}, h, c));
       return this._supress[b] || (a.each(this._plugins, function (a, b) {
         b.onTrigger && b.onTrigger(j)
       }), this.register({
@@ -2179,7 +2179,7 @@ if(!ctf_js_exists) {
     };
     e.Defaults = {autoHeight: !1, autoHeightClass: "ctf-owl-height"}, e.prototype.update = function () {
       var b = this._core._current, c = b + this._core.settings.items,
-        d = this._core.$stage.children().toArray().slice(b, c), e = [], f = 0;
+          d = this._core.$stage.children().toArray().slice(b, c), e = [], f = 0;
       a.each(d, function (b, c) {
         e.push(a(c).height())
       }), f = Math.max.apply(null, e), this._core.$stage.parent().height(f).addClass(this._core.settings.autoHeightClass)
@@ -2211,10 +2211,10 @@ if(!ctf_js_exists) {
     };
     e.Defaults = {video: !1, videoHeight: !1, videoWidth: !1}, e.prototype.fetch = function (a, b) {
       var c = function () {
-          return a.attr("data-vimeo-id") ? "vimeo" : a.attr("data-vzaar-id") ? "vzaar" : "youtube"
-        }(), d = a.attr("data-vimeo-id") || a.attr("data-youtube-id") || a.attr("data-vzaar-id"),
-        e = a.attr("data-width") || this._core.settings.videoWidth,
-        f = a.attr("data-height") || this._core.settings.videoHeight, g = a.attr("href");
+            return a.attr("data-vimeo-id") ? "vimeo" : a.attr("data-vzaar-id") ? "vzaar" : "youtube"
+          }(), d = a.attr("data-vimeo-id") || a.attr("data-youtube-id") || a.attr("data-vzaar-id"),
+          e = a.attr("data-width") || this._core.settings.videoWidth,
+          f = a.attr("data-height") || this._core.settings.videoHeight, g = a.attr("href");
       if (!g) throw new Error("Missing video URL.");
       if (d = g.match(/(http:|https:|)\/\/(player.|www.|app.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com)|vzaar\.com)\/(video\/|videos\/|embed\/|channels\/.+\/|groups\/.+\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/), d[3].indexOf("youtu") > -1) c = "youtube"; else if (d[3].indexOf("vimeo") > -1) c = "vimeo"; else {
         if (!(d[3].indexOf("vzaar") > -1)) throw new Error("Video URL not supported.");
@@ -2228,9 +2228,9 @@ if(!ctf_js_exists) {
       }, b.attr("data-video", g), this.thumbnail(a, this._videos[g])
     }, e.prototype.thumbnail = function (b, c) {
       var d, e, f, g = c.width && c.height ? 'style="width:' + c.width + "px;height:" + c.height + 'px;"' : "",
-        h = b.find("img"), i = "src", j = "", k = this._core.settings, l = function (a) {
-          e = '<div class="ctf-owl-video-play-icon"></div>', d = k.lazyLoad ? '<div class="ctf-owl-video-tn ' + j + '" ' + i + '="' + a + '"></div>' : '<div class="ctf-owl-video-tn" style="opacity:1;background-image:url(' + a + ')"></div>', b.after(d), b.after(e)
-        };
+          h = b.find("img"), i = "src", j = "", k = this._core.settings, l = function (a) {
+            e = '<div class="ctf-owl-video-play-icon"></div>', d = k.lazyLoad ? '<div class="ctf-owl-video-tn ' + j + '" ' + i + '="' + a + '"></div>' : '<div class="ctf-owl-video-tn" style="opacity:1;background-image:url(' + a + ')"></div>', b.after(d), b.after(e)
+          };
       if (b.wrap('<div class="ctf-owl-video-wrapper"' + g + "></div>"), this._core.settings.lazyLoad && (i = "data-src", j = "ctf-owl-lazy"), h.length) return l(h.attr(i)), h.remove(), !1;
       "youtube" === c.type ? (f = "//img.youtube.com/vi/" + c.id + "/hqdefault.jpg", l(f)) : "vimeo" === c.type ? a.ajax({
         type: "GET",
@@ -2253,8 +2253,8 @@ if(!ctf_js_exists) {
       this._core.trigger("stop", null, "video"), this._playing.find(".ctf-owl-video-frame").remove(), this._playing.removeClass("ctf-owl-video-playing"), this._playing = null, this._core.leave("playing"), this._core.trigger("stopped", null, "video")
     }, e.prototype.play = function (b) {
       var c, d = a(b.target), e = d.closest("." + this._core.settings.itemClass),
-        f = this._videos[e.attr("data-video")], g = f.width || "100%",
-        h = f.height || this._core.$stage.height();
+          f = this._videos[e.attr("data-video")], g = f.width || "100%",
+          h = f.height || this._core.$stage.height();
       this._playing || (this._core.enter("playing"), this._core.trigger("play", null, "video"), e = this._core.items(this._core.relative(e.index())), this._core.reset(e.index()), "youtube" === f.type ? c = '<iframe width="' + g + '" height="' + h + '" src="//www.youtube.com/embed/' + f.id + "?autoplay=1&rel=0&v=" + f.id + '" frameborder="0" allowfullscreen></iframe>' : "vimeo" === f.type ? c = '<iframe src="//player.vimeo.com/video/' + f.id + '?autoplay=1" width="' + g + '" height="' + h + '" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>' : "vzaar" === f.type && (c = '<iframe frameborder="0"height="' + h + '"width="' + g + '" allowfullscreen mozallowfullscreen webkitAllowFullScreen src="//view.vzaar.com/' + f.id + '/player?autoplay=true"></iframe>'), a('<div class="ctf-owl-video-frame">' + c + "</div>").insertAfter(e.find(".ctf-owl-video")), this._playing = e.addClass("ctf-owl-video-playing"))
     }, e.prototype.isInFullScreen = function () {
       var b = c.fullscreenElement || c.mozFullScreenElement || c.webkitFullscreenElement;
@@ -2281,8 +2281,8 @@ if(!ctf_js_exists) {
       if (1 === this.core.settings.items && a.support.animation && a.support.transition) {
         this.core.speed(0);
         var b, c = a.proxy(this.clear, this), d = this.core.$stage.children().eq(this.previous),
-          e = this.core.$stage.children().eq(this.next), f = this.core.settings.animateIn,
-          g = this.core.settings.animateOut;
+            e = this.core.$stage.children().eq(this.next), f = this.core.settings.animateIn,
+            g = this.core.settings.animateOut;
         this.core.current() !== this.previous && (g && (b = this.core.coordinates(this.previous) - this.core.coordinates(this.next), d.one(a.support.animation.end, c).css({left: b + "px"}).addClass("animated ctf-owl-animated-out").addClass(g)), f && e.one(a.support.animation.end, c).addClass("animated ctf-owl-animated-in").addClass(f))
       }
     }, e.prototype.clear = function (b) {
@@ -2292,7 +2292,7 @@ if(!ctf_js_exists) {
       for (a in this.handlers) this.core.$element.off(a, this.handlers[a]);
       for (b in Object.getOwnPropertyNames(this)) "function" != typeof this[b] && (this[b] = null)
     },
-      a.fn.ctfOwlCarousel.Constructor.Plugins.Animate = e
+        a.fn.ctfOwlCarousel.Constructor.Plugins.Animate = e
   }(window.Zepto || window.jQuery, window, document), function (a, b, c, d) {
     var e = function (b) {
       this._core = b, this._timeout = null, this._paused = !1, this._handlers = {
@@ -2396,8 +2396,8 @@ if(!ctf_js_exists) {
       for (c in Object.getOwnPropertyNames(this)) "function" != typeof this[c] && (this[c] = null)
     }, e.prototype.update = function () {
       var a, b, c, d = this._core.clones().length / 2, e = d + this._core.items().length,
-        f = this._core.maximum(!0), g = this._core.settings,
-        h = g.center || g.autoWidth || g.dotsData ? 1 : g.dotsEach || g.items;
+          f = this._core.maximum(!0), g = this._core.settings,
+          h = g.center || g.autoWidth || g.dotsData ? 1 : g.dotsEach || g.items;
       if ("page" !== g.slideBy && (g.slideBy = Math.min(g.slideBy, g.items)), g.dots || "page" == g.slideBy) for (this._pages = [], a = d, b = 0, c = 0; a < e; a++) {
         if (b >= h || 0 === b) {
           if (this._pages.push({
@@ -2410,7 +2410,7 @@ if(!ctf_js_exists) {
       }
     }, e.prototype.draw = function () {
       var b, c = this._core.settings, d = this._core.items().length <= c.items,
-        e = this._core.relative(this._core.current()), f = c.loop || c.rewind;
+          e = this._core.relative(this._core.current()), f = c.loop || c.rewind;
       this._controls.$relative.toggleClass("disabled", !c.nav || d), c.nav && (this._controls.$previous.toggleClass("disabled", !f && e <= this._core.minimum(!0)), this._controls.$next.toggleClass("disabled", !f && e >= this._core.maximum(!0))), this._controls.$absolute.toggleClass("disabled", !c.dots || d), c.dots && (b = this._pages.length - this._controls.$absolute.children().length, c.dotsData && 0 !== b ? this._controls.$absolute.html(this._templates.join("")) : b > 0 ? this._controls.$absolute.append(new Array(b + 1).join(this._templates[0])) : b < 0 && this._controls.$absolute.children().slice(b).remove(), this._controls.$absolute.find(".active").removeClass("active"), this._controls.$absolute.children().eq(a.inArray(this.current(), this._pages)).addClass("active"))
     }, e.prototype.onTrigger = function (b) {
       var c = this._core.settings;
@@ -2450,16 +2450,16 @@ if(!ctf_js_exists) {
         }, this), "changed.owl.carousel": a.proxy(function (c) {
           if (c.namespace && "position" === c.property.name) {
             var d = this._core.items(this._core.relative(this._core.current())),
-              e = a.map(this._hashes, function (a, b) {
-                return a === d ? b : null
-              }).join();
+                e = a.map(this._hashes, function (a, b) {
+                  return a === d ? b : null
+                }).join();
             if (!e || b.location.hash.slice(1) === e) return;
             b.location.hash = e
           }
         }, this)
       }, this._core.options = a.extend({}, e.Defaults, this._core.options), this.$element.on(this._handlers), a(b).on("hashchange.owl.navigation", a.proxy(function (a) {
         var c = b.location.hash.substring(1), e = this._core.$stage.children(),
-          f = this._hashes[c] && e.index(this._hashes[c]);
+            f = this._hashes[c] && e.index(this._hashes[c]);
         f !== d && f !== this._core.current() && this._core.to(this._core.relative(f), !1, !0)
       }, this))
     };
@@ -2598,8 +2598,8 @@ if(!ctf_js_exists) {
         firstRowElement.style.marginBottom = owlMargin + 'px';
 
         rowContainer
-          .append(firstRowElement)
-          .append(secondArr[index]);
+            .append(firstRowElement)
+            .append(secondArr[index]);
 
         carousel.append(rowContainer);
       });
@@ -2619,8 +2619,8 @@ if(!ctf_js_exists) {
         evenElement.style.marginBottom = owlMargin + 'px';
 
         rowContainer
-          .append(evenElement)
-          .append(aOddElements[index]);
+            .append(evenElement)
+            .append(aOddElements[index]);
 
         carousel.append(rowContainer);
       });
@@ -2664,8 +2664,8 @@ if(!ctf_js_exists) {
         var e = "DEPRECATED METHOD: " + c + "\n" + d + " AT \n";
         return function () {
           var c = new Error("get-stack-trace"),
-            d = c && c.stack ? c.stack.replace(/^[^\(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace",
-            f = a.console && (a.console.warn || a.console.log);
+              d = c && c.stack ? c.stack.replace(/^[^\(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace",
+              f = a.console && (a.console.warn || a.console.log);
           return f && f.call(a.console, e, d), b.apply(this, arguments)
         }
       }
@@ -2771,7 +2771,7 @@ if(!ctf_js_exists) {
 
       function z(a, b, c) {
         var d = c.pointers.length, e = c.changedPointers.length, f = b & Ea && d - e === 0,
-          g = b & (Ga | Ha) && d - e === 0;
+            g = b & (Ga | Ha) && d - e === 0;
         c.isFirst = !!f, c.isFinal = !!g, f && (a.session = {}), c.eventType = b, A(a, c), a.emit("hammer.input", c), a.recognize(c), a.session.prevInput = c
       }
 
@@ -2999,7 +2999,7 @@ if(!ctf_js_exists) {
       }
 
       var la, ma = ["", "webkit", "Moz", "MS", "ms", "o"], na = b.createElement("div"), oa = "function",
-        pa = Math.round, qa = Math.abs, ra = Date.now;
+          pa = Math.round, qa = Math.abs, ra = Date.now;
       la = "function" != typeof Object.assign ? function (a) {
         if (a === d || null === a) throw new TypeError("Cannot convert undefined or null to object");
         for (var b = Object(a), c = 1; c < arguments.length; c++) {
@@ -3009,15 +3009,15 @@ if(!ctf_js_exists) {
         return b
       } : Object.assign;
       var sa = h(function (a, b, c) {
-          for (var e = Object.keys(b), f = 0; f < e.length;) (!c || c && a[e[f]] === d) && (a[e[f]] = b[e[f]]), f++;
-          return a
-        }, "extend", "Use `assign`."), ta = h(function (a, b) {
-          return sa(a, b, !0)
-        }, "merge", "Use `assign`."), ua = 1, va = /mobile|tablet|ip(ad|hone|od)|android/i,
-        wa = "ontouchstart" in a, xa = u(a, "PointerEvent") !== d, ya = wa && va.test(navigator.userAgent),
-        za = "touch", Aa = "pen", Ba = "mouse", Ca = "kinect", Da = 25, Ea = 1, Fa = 2, Ga = 4, Ha = 8, Ia = 1,
-        Ja = 2, Ka = 4, La = 8, Ma = 16, Na = Ja | Ka, Oa = La | Ma, Pa = Na | Oa, Qa = ["x", "y"],
-        Ra = ["clientX", "clientY"];
+            for (var e = Object.keys(b), f = 0; f < e.length;) (!c || c && a[e[f]] === d) && (a[e[f]] = b[e[f]]), f++;
+            return a
+          }, "extend", "Use `assign`."), ta = h(function (a, b) {
+            return sa(a, b, !0)
+          }, "merge", "Use `assign`."), ua = 1, va = /mobile|tablet|ip(ad|hone|od)|android/i,
+          wa = "ontouchstart" in a, xa = u(a, "PointerEvent") !== d, ya = wa && va.test(navigator.userAgent),
+          za = "touch", Aa = "pen", Ba = "mouse", Ca = "kinect", Da = 25, Ea = 1, Fa = 2, Ga = 4, Ha = 8, Ia = 1,
+          Ja = 2, Ka = 4, La = 8, Ma = 16, Na = Ja | Ka, Oa = La | Ma, Pa = Na | Oa, Qa = ["x", "y"],
+          Ra = ["clientX", "clientY"];
       x.prototype = {
         handler: function () {
         }, init: function () {
@@ -3039,11 +3039,11 @@ if(!ctf_js_exists) {
         }
       });
       var Va = {pointerdown: Ea, pointermove: Fa, pointerup: Ga, pointercancel: Ha, pointerout: Ha},
-        Wa = {2: za, 3: Aa, 4: Ba, 5: Ca}, Xa = "pointerdown", Ya = "pointermove pointerup pointercancel";
+          Wa = {2: za, 3: Aa, 4: Ba, 5: Ca}, Xa = "pointerdown", Ya = "pointermove pointerup pointercancel";
       a.MSPointerEvent && !a.PointerEvent && (Xa = "MSPointerDown", Ya = "MSPointerMove MSPointerUp MSPointerCancel"), i(M, x, {
         handler: function (a) {
           var b = this.store, c = !1, d = a.type.toLowerCase().replace("ms", ""), e = Va[d],
-            f = Wa[a.pointerType] || a.pointerType, g = f == za, h = r(b, a.pointerId, "pointerId");
+              f = Wa[a.pointerType] || a.pointerType, g = f == za, h = r(b, a.pointerId, "pointerId");
           e & Ea && (0 === a.button || g) ? 0 > h && (b.push(a), h = b.length - 1) : e & (Ga | Ha) && (c = !0), 0 > h || (b[h] = a, this.callback(this.manager, e, {
             pointers: b,
             changedPointers: [a],
@@ -3053,7 +3053,7 @@ if(!ctf_js_exists) {
         }
       });
       var Za = {touchstart: Ea, touchmove: Fa, touchend: Ga, touchcancel: Ha}, $a = "touchstart",
-        _a = "touchstart touchmove touchend touchcancel";
+          _a = "touchstart touchmove touchend touchcancel";
       i(N, x, {
         handler: function (a) {
           var b = Za[a.type];
@@ -3069,7 +3069,7 @@ if(!ctf_js_exists) {
         }
       });
       var ab = {touchstart: Ea, touchmove: Fa, touchend: Ga, touchcancel: Ha},
-        bb = "touchstart touchmove touchend touchcancel";
+          bb = "touchstart touchmove touchend touchcancel";
       i(P, x, {
         handler: function (a) {
           var b = ab[a.type], c = Q.call(this, a, b);
@@ -3094,7 +3094,7 @@ if(!ctf_js_exists) {
         }
       });
       var eb = u(na.style, "touchAction"), fb = eb !== d, gb = "compute", hb = "auto", ib = "manipulation",
-        jb = "none", kb = "pan-x", lb = "pan-y", mb = X();
+          jb = "none", kb = "pan-x", lb = "pan-y", mb = X();
       V.prototype = {
         set: function (a) {
           a == gb && (a = this.compute()), fb && this.manager.element.style && mb[a] && (this.manager.element.style[eb] = a), this.actions = a.toLowerCase().trim()
@@ -3208,7 +3208,7 @@ if(!ctf_js_exists) {
         },
         process: function (a) {
           var b = this.options, c = a.pointers.length === b.pointers, d = a.distance < b.threshold,
-            f = a.deltaTime > b.time;
+              f = a.deltaTime > b.time;
           if (this._input = a, !d || !c || a.eventType & (Ga | Ha) && !f) this.reset(); else if (a.eventType & Ea) this.reset(), this._timer = e(function () {
             this.state = rb, this.tryEmit()
           }, b.time, this); else if (a.eventType & Ga) return rb;
@@ -3252,12 +3252,12 @@ if(!ctf_js_exists) {
           return [ib]
         }, process: function (a) {
           var b = this.options, c = a.pointers.length === b.pointers, d = a.distance < b.threshold,
-            f = a.deltaTime < b.time;
+              f = a.deltaTime < b.time;
           if (this.reset(), a.eventType & Ea && 0 === this.count) return this.failTimeout();
           if (d && f && c) {
             if (a.eventType != Ga) return this.failTimeout();
             var g = this.pTime ? a.timeStamp - this.pTime < b.interval : !0,
-              h = !this.pCenter || H(this.pCenter, a.center) < b.posThreshold;
+                h = !this.pCenter || H(this.pCenter, a.center) < b.posThreshold;
             this.pTime = a.timeStamp, this.pCenter = a.center, h && g ? this.count += 1 : this.count = 1, this._input = a;
             var i = this.count % b.taps;
             if (0 === i) return this.hasRequireFailures() ? (this._timer = e(function () {
@@ -3517,16 +3517,16 @@ if(!ctf_js_exists) {
             (function() {
               if (window.__twitterIntentHandler) return;
               var intentRegex = /twitter\.com\/intent\/(\w+)/,
-                windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
-                width = 550,
-                height = 420,
-                winHeight = screen.height,
-                winWidth = screen.width;
+                  windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
+                  width = 550,
+                  height = 420,
+                  winHeight = screen.height,
+                  winWidth = screen.width;
 
               function handleIntent(e) {
                 e = e || window.event;
                 var target = e.target || e.srcElement,
-                  m, left, top;
+                    m, left, top;
 
                 while (target && target.nodeName.toLowerCase() !== 'a') {
                   target = target.parentNode;
@@ -3543,7 +3543,7 @@ if(!ctf_js_exists) {
                     }
 
                     window.open(target.href, 'intent', windowOptions + ',width=' + width +
-                      ',height=' + height + ',left=' + left + ',top=' + top);
+                        ',height=' + height + ',left=' + left + ',top=' + top);
                     e.returnValue = false;
                     e.preventDefault && e.preventDefault();
                   }
@@ -3579,342 +3579,344 @@ if(!ctf_js_exists) {
         /* Lightbox v2.7.1 by Lokesh Dhakar - http://lokeshdhakar.com/projects/lightbox2/ - Heavily modified specifically for this plugin */
         (function() {
           var a = jQuery,
-            b = function() {
-              function a() {
-                this.fadeDuration = 500, this.fitImagesInViewport = !0, this.resizeDuration = 700, this.positionFromTop = 50, this.showImageNumberLabel = !0, this.alwaysShowNavOnTouchDevices = !1, this.wrapAround = !1
-              }
-              return a.prototype.albumLabel = function(a, b) {
-                return a + " / " + b
-              }, a
-            }(),
-            c = function() {
-              function b(a) {
-                this.options = a, this.album = [], this.currentImageIndex = void 0, this.init()
-              }
-              return b.prototype.init = function() {
-                this.enable(), this.build()
-              }, b.prototype.enable = function() {
-                var b = this;
-                a("body").on("click", "a[data-ctf-lightbox]", function(c) {
-                  return b.start(a(c.currentTarget)), !1
-                })
-              }, b.prototype.build = function() {
-                var b = this;
-                if (typeof a("#ctf_lightbox").find(".ctf_lb-container").hammer !== 'function') {
-                  var Hammer = {
-                    Manager: {
-                      prototype: {}
-                    }
-                  };
-                  (function (factory) {
-                    if (typeof define === 'function' && define.amd) {
-                      define(['jquery', 'hammerjs'], factory);
-                    } else if (typeof exports === 'object') {
-                      factory(require('jquery'), require('hammerjs'));
-                    } else {
-                      factory(jQuery, Hammer);
-                    }
-                  }(function (jQuery, Hammer) {
-                    function hammerify(el, options) {
-                    }
+              b = function() {
+                function a() {
+                  this.fadeDuration = 500, this.fitImagesInViewport = !0, this.resizeDuration = 700, this.positionFromTop = 50, this.showImageNumberLabel = !0, this.alwaysShowNavOnTouchDevices = !1, this.wrapAround = !1
+                }
+                return a.prototype.albumLabel = function(a, b) {
+                  return a + " / " + b
+                }, a
+              }(),
+              c = function() {
+                function b(a) {
+                  this.options = a, this.album = [], this.currentImageIndex = void 0, this.init()
+                }
+                return b.prototype.init = function() {
+                  this.enable(), this.build()
+                }, b.prototype.enable = function() {
+                  var b = this;
+                  a("body").on("click", "a[data-ctf-lightbox]", function(c) {
+                    window.ctfCurrentLightboxPostID = a(c.currentTarget).attr("data-id");
 
-                    jQuery.fn.hammer = function (options) {
-                      return this.each(function () {
-                        hammerify(this, options);
-                      });
+                    return b.start(a(c.currentTarget)), !1
+                  })
+                }, b.prototype.build = function() {
+                  var b = this;
+                  if (typeof a("#ctf_lightbox").find(".ctf_lb-container").hammer !== 'function') {
+                    var Hammer = {
+                      Manager: {
+                        prototype: {}
+                      }
                     };
-                    // extend the emit method to also trigger jQuery events
-                    Hammer.Manager.prototype.emit = (function (originalEmit) {
-                      return function (type, data) {
-                        originalEmit.call(this, type, data);
-                        jQuery(this.element).trigger({
-                          type: type,
-                          gesture: data
+                    (function (factory) {
+                      if (typeof define === 'function' && define.amd) {
+                        define(['jquery', 'hammerjs'], factory);
+                      } else if (typeof exports === 'object') {
+                        factory(require('jquery'), require('hammerjs'));
+                      } else {
+                        factory(jQuery, Hammer);
+                      }
+                    }(function (jQuery, Hammer) {
+                      function hammerify(el, options) {
+                      }
+
+                      jQuery.fn.hammer = function (options) {
+                        return this.each(function () {
+                          hammerify(this, options);
                         });
                       };
-                    })(Hammer.Manager.prototype.emit);
-                  }));
-                }
-                a(""+
-                  lbBuilder.template()).appendTo(a("body")), this.$lightbox = a("#ctf_lightbox"), this.$overlay = a("#ctf_lightboxOverlay"), this.$outerContainer = this.$lightbox.find(".ctf_lb-outerContainer"), this.$container = this.$lightbox.find(".ctf_lb-container"), this.containerTopPadding = parseInt(this.$container.css("padding-top"), 10), this.containerRightPadding = parseInt(this.$container.css("padding-right"), 10), this.containerBottomPadding = parseInt(this.$container.css("padding-bottom"), 10), this.containerLeftPadding = parseInt(this.$container.css("padding-left"), 10), this.$overlay.hide().on("click", function() {
-                  return b.end(), !1
-                }), jQuery(document).on('click', function(event, b, c) {
-                  //Fade out the lightbox if click anywhere outside of the two elements defined below
-                  if (!jQuery(event.target).closest('.ctf_lb-outerContainer').length) {
-                    if (!jQuery(event.target).closest('.ctf_lb-dataContainer').length) {
-                      //Fade out lightbox
-                      lbBuilder.afterSlideChange();
-
-                      jQuery('#ctf_lightboxOverlay, #ctf_lightbox').fadeOut();
-                    }
+                      // extend the emit method to also trigger jQuery events
+                      Hammer.Manager.prototype.emit = (function (originalEmit) {
+                        return function (type, data) {
+                          originalEmit.call(this, type, data);
+                          jQuery(this.element).trigger({
+                            type: type,
+                            gesture: data
+                          });
+                        };
+                      })(Hammer.Manager.prototype.emit);
+                    }));
                   }
-                }), this.$lightbox.hide(),
-                  jQuery('#ctf_lightboxOverlay').on("click", function(c) {
+                  a(""+
+                      lbBuilder.template()).appendTo(a("body")), this.$lightbox = a("#ctf_lightbox"), this.$overlay = a("#ctf_lightboxOverlay"), this.$outerContainer = this.$lightbox.find(".ctf_lb-outerContainer"), this.$container = this.$lightbox.find(".ctf_lb-container"), this.containerTopPadding = parseInt(this.$container.css("padding-top"), 10), this.containerRightPadding = parseInt(this.$container.css("padding-right"), 10), this.containerBottomPadding = parseInt(this.$container.css("padding-bottom"), 10), this.containerLeftPadding = parseInt(this.$container.css("padding-left"), 10), this.$overlay.hide().on("click", function() {
+                    return b.end(), !1
+                  }), jQuery(document).on('click', function(event, b, c) {
+                    //Fade out the lightbox if click anywhere outside of the two elements defined below
+                    if ( !jQuery(event.target).is("a") && !jQuery(event.target).closest('.ctf_lb-outerContainer').length) {
+                      if (!jQuery(event.target).closest('.ctf_lb-dataContainer').length) {
+                        //Fade out lightbox
+                        lbBuilder.afterSlideChange();
+
+                        jQuery('#ctf_lightboxOverlay, #ctf_lightbox').fadeOut();
+                      }
+                    }
+                  }), this.$lightbox.hide(),
+                      jQuery('#ctf_lightboxOverlay').on("click", function(c) {
+                        lbBuilder.afterSlideChange();
+
+                        return "ctf_lightbox" === a(c.target).attr("id") && b.end(), !1
+                      }), this.$lightbox.find(".ctf_lb-prev").on("click", function() {
                     lbBuilder.afterSlideChange();
 
-                    return "ctf_lightbox" === a(c.target).attr("id") && b.end(), !1
-                  }), this.$lightbox.find(".ctf_lb-prev").on("click", function() {
-                  lbBuilder.afterSlideChange();
+                    return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
+                  }), this.$lightbox.find(".ctf_lb-container").hammer().on("swiperight", function() {
+                    lbBuilder.afterSlideChange();
 
-                  return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
-                }), this.$lightbox.find(".ctf_lb-container").hammer().on("swiperight", function() {
-                  lbBuilder.afterSlideChange();
+                    return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
+                  }), this.$lightbox.find(".ctf_lb-next").on("click", function() {
+                    lbBuilder.afterSlideChange();
 
-                  return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
-                }), this.$lightbox.find(".ctf_lb-next").on("click", function() {
-                  lbBuilder.afterSlideChange();
+                    return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
+                  }), this.$lightbox.find(".ctf_lb-container").hammer().on("swipeleft", function() {
+                    lbBuilder.afterSlideChange();
 
-                  return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
-                }), this.$lightbox.find(".ctf_lb-container").hammer().on("swipeleft", function() {
-                  lbBuilder.afterSlideChange();
+                    return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
+                  }), this.$lightbox.find(".ctf_lb-loader, .ctf_lb-close").on("click", function() {
 
-                  return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
-                }), this.$lightbox.find(".ctf_lb-loader, .ctf_lb-close").on("click", function() {
+                    lbBuilder.afterSlideChange();
 
-                  lbBuilder.afterSlideChange();
-
-                  return b.end(), !1
-                })
-              }, b.prototype.start = function(b) {
-                function c(a) {
-                  d.album.push(lbBuilder.getData(a));
-                }
-                var d = this,
-                  e = a(window);
-                e.on("resize", a.proxy(this.sizeOverlay, this)), a("select, object, embed").css({
-                  visibility: "hidden"
-                }), this.sizeOverlay(), this.album = [];
-                var f, g = 0,
-                  h = b.attr("data-ctf-lightbox");
-                if (h) {
-                  f = a(b.prop("tagName") + '[data-ctf-lightbox="' + h + '"]');
-                  for (var i = 0; i < f.length; i = ++i) c(a(f[i])), f[i] === b[0] && (g = i)
-                } else if ("lightbox" === b.attr("rel")) c(b);
-                else {
-                  f = a(b.prop("tagName") + '[rel="' + b.attr("rel") + '"]');
-                  for (var j = 0; j < f.length; j = ++j) c(a(f[j])), f[j] === b[0] && (g = j)
-                }
-                var k = e.scrollTop() + this.options.positionFromTop,
-                  l = e.scrollLeft();
-                this.$lightbox.css({
-                  top: k + "px",
-                  left: l + "px"
-                }).fadeIn(this.options.fadeDuration), this.changeImage(g)
-              }, b.prototype.changeImage = function(b) {
-                var c = this;
-                this.disableKeyboardNav();
-                var d = this.$lightbox.find(".ctf_lb-image");
-                this.$overlay.fadeIn(this.options.fadeDuration), a(".ctf_lb-loader").fadeIn("slow"), this.$lightbox.find(".ctf_lb-image, iframe, .ctf_video, .ctf_lb-nav, .ctf_lb-prev, .ctf_lb-next, .ctf_lb-dataContainer, .ctf_lb-numbers, .ctf_lb-caption").hide(), this.$outerContainer.addClass("animating");
-                var e = new Image;
-                e.onload = function() {
-                  var f, g, h, i, j, k, l;
-                  var ctfArrowWidth = 0,
-                    ctfCommentsWidth = 0;
-                  if (window.innerWidth > 640) {
-                    ctfArrowWidth = 100;
-                    ctfCommentsWidth = 300;
+                    return b.end(), !1
+                  })
+                }, b.prototype.start = function(b) {
+                  function c(a) {
+                    d.album.push(lbBuilder.getData(a));
                   }
-                  d.attr("src", c.album[b].link), f = a(e), d.width(e.width), d.height(e.height), c.options.fitImagesInViewport && (l = a(window).width(), k = a(window).height(), j = l - c.containerLeftPadding - c.containerRightPadding - 20 - ctfCommentsWidth - ctfArrowWidth, i = k - c.containerTopPadding - c.containerBottomPadding - 150, (e.width > j || e.height > i) && (e.width / j > e.height / i ? (h = j, g = parseInt(e.height / (e.width / h), 10), d.width(h), d.height(g)) : (g = i, h = parseInt(e.width / (e.height / g), 10), d.width(h), d.height(g)))), c.sizeContainer(d.width(), d.height())
-                }, e.src = this.album[b].link, this.currentImageIndex = b
-              }, b.prototype.sizeOverlay = function() {
-                this.$overlay.width(a(window).width()).height(a(document).height())
-              }, b.prototype.sizeContainer = function(a, b) {
-                function c() {
-                  d.$lightbox.find(".ctf_lb-dataContainer").width(g), d.$lightbox.find(".ctf_lb-prevLink").height(h), d.$lightbox.find(".ctf_lb-nextLink").height(h), d.showImage()
-                }
-                var d = this,
-                  e = this.$outerContainer.outerWidth(),
-                  f = this.$outerContainer.outerHeight(),
-                  g = a + this.containerLeftPadding + this.containerRightPadding,
-                  h = b + this.containerTopPadding + this.containerBottomPadding;
-                e !== g || f !== h ? this.$outerContainer.animate({
-                  width: g,
-                  height: h
-                }, this.options.resizeDuration, "swing", function() {
-                  c()
-                }) : c()
-              }, b.prototype.showImage = function() {
-                this.$lightbox.find(".ctf_lb-loader").hide(), this.$lightbox.find(".ctf_lb-image").fadeIn("slow"), this.updateNav(), this.updateDetails(), this.preloadNeighboringImages(), this.enableKeyboardNav()
-              }, b.prototype.updateNav = function() {
-                var a = !1;
-                try {
-                  document.createEvent("TouchEvent"), a = this.options.alwaysShowNavOnTouchDevices ? !0 : !1
-                } catch (b) {}
-                this.$lightbox.find(".ctf_lb-nav").show(), this.album.length > 1 && (this.options.wrapAround ? (a && this.$lightbox.find(".ctf_lb-prev, .ctf_lb-next").css("opacity", "1"), this.$lightbox.find(".ctf_lb-prev, .ctf_lb-next").show()) : (this.currentImageIndex > 0 && (this.$lightbox.find(".ctf_lb-prev").show(), a && this.$lightbox.find(".ctf_lb-prev").css("opacity", "1")), this.currentImageIndex < this.album.length - 1 && (this.$lightbox.find(".ctf_lb-next").show(), a && this.$lightbox.find(".ctf_lb-next").css("opacity", "1"))))
-              }, b.prototype.updateDetails = function() {
-                var b = this;
-
-                /** NEW PHOTO ACTION **/
-                //Switch video when either a new popup or navigating to new one
-                if( ctf_supports_video() ){
-                  if (jQuery('#ctf_lightbox video.ctf_video').length) {
-                    jQuery('#ctf_lightbox video.ctf_video')[0].pause();
+                  var d = this,
+                      e = a(window);
+                  e.on("resize", a.proxy(this.sizeOverlay, this)), a("select, object, embed").css({
+                    visibility: "hidden"
+                  }), this.sizeOverlay(), this.album = [];
+                  var f, g = 0,
+                      h = b.attr("data-ctf-lightbox");
+                  if (h) {
+                    f = a(b.prop("tagName") + '[data-ctf-lightbox="' + h + '"]');
+                    for (var i = 0; i < f.length; i = ++i) c(a(f[i])), f[i] === b[0] && (g = i)
+                  } else if ("lightbox" === b.attr("rel")) c(b);
+                  else {
+                    f = a(b.prop("tagName") + '[rel="' + b.attr("rel") + '"]');
+                    for (var j = 0; j < f.length; j = ++j) c(a(f[j])), f[j] === b[0] && (g = j)
                   }
-                  jQuery('#ctf_lightbox').removeClass('ctf_video_lightbox');
-                  if (this.album[this.currentImageIndex].video.length
-                    && this.album[this.currentImageIndex].video !== 'link') {
-
-                    jQuery('#ctf_lightbox').find(".ctf_video").fadeIn("slow");
-                    jQuery('#ctf_lightbox').addClass('ctf_video_lightbox');
-                    jQuery('video.ctf_video').attr({
-                      'src' : this.album[this.currentImageIndex].video,
-                      'poster' : this.album[this.currentImageIndex].link,
-                      'autoplay' : 'true'
-                    }).css('width','100%');
+                  var k = e.scrollTop() + this.options.positionFromTop,
+                      l = e.scrollLeft();
+                  this.$lightbox.css({
+                    top: k + "px",
+                    left: l + "px"
+                  }).fadeIn(this.options.fadeDuration), this.changeImage(g)
+                }, b.prototype.changeImage = function(b) {
+                  var c = this;
+                  this.disableKeyboardNav();
+                  var d = this.$lightbox.find(".ctf_lb-image");
+                  this.$overlay.fadeIn(this.options.fadeDuration), a(".ctf_lb-loader").fadeIn("slow"), this.$lightbox.find(".ctf_lb-image, iframe, .ctf_video, .ctf_lb-nav, .ctf_lb-prev, .ctf_lb-next, .ctf_lb-dataContainer, .ctf_lb-numbers, .ctf_lb-caption").hide(), this.$outerContainer.addClass("animating");
+                  var e = new Image;
+                  e.onload = function() {
+                    var f, g, h, i, j, k, l;
+                    var ctfArrowWidth = 0,
+                        ctfCommentsWidth = 0;
+                    if (window.innerWidth > 640) {
+                      ctfArrowWidth = 100;
+                      ctfCommentsWidth = 300;
+                    }
+                    d.attr("src", c.album[b].link), f = a(e), d.width(e.width), d.height(e.height), c.options.fitImagesInViewport && (l = a(window).width(), k = a(window).height(), j = l - c.containerLeftPadding - c.containerRightPadding - 20 - ctfCommentsWidth - ctfArrowWidth, i = k - c.containerTopPadding - c.containerBottomPadding - 150, (e.width > j || e.height > i) && (e.width / j > e.height / i ? (h = j, g = parseInt(e.height / (e.width / h), 10), d.width(h), d.height(g)) : (g = i, h = parseInt(e.width / (e.height / g), 10), d.width(h), d.height(g)))), c.sizeContainer(d.width(), d.height())
+                  }, e.src = this.album[b].link, this.currentImageIndex = b
+                }, b.prototype.sizeOverlay = function() {
+                  this.$overlay.width(a(window).width()).height(a(document).height())
+                }, b.prototype.sizeContainer = function(a, b) {
+                  function c() {
+                    d.$lightbox.find(".ctf_lb-dataContainer").width(g), d.$lightbox.find(".ctf_lb-prevLink").height(h), d.$lightbox.find(".ctf_lb-nextLink").height(h), d.showImage()
                   }
+                  var d = this,
+                      e = this.$outerContainer.outerWidth(),
+                      f = this.$outerContainer.outerHeight(),
+                      g = a + this.containerLeftPadding + this.containerRightPadding,
+                      h = b + this.containerTopPadding + this.containerBottomPadding;
+                  e !== g || f !== h ? this.$outerContainer.animate({
+                    width: g,
+                    height: h
+                  }, this.options.resizeDuration, "swing", function() {
+                    c()
+                  }) : c()
+                }, b.prototype.showImage = function() {
+                  this.$lightbox.find(".ctf_lb-loader").hide(), this.$lightbox.find(".ctf_lb-image").fadeIn("slow"), this.updateNav(), this.updateDetails(), this.preloadNeighboringImages(), this.enableKeyboardNav()
+                }, b.prototype.updateNav = function() {
+                  var a = !1;
+                  try {
+                    document.createEvent("TouchEvent"), a = this.options.alwaysShowNavOnTouchDevices ? !0 : !1
+                  } catch (b) {}
+                  this.$lightbox.find(".ctf_lb-nav").show(), this.album.length > 1 && (this.options.wrapAround ? (a && this.$lightbox.find(".ctf_lb-prev, .ctf_lb-next").css("opacity", "1"), this.$lightbox.find(".ctf_lb-prev, .ctf_lb-next").show()) : (this.currentImageIndex > 0 && (this.$lightbox.find(".ctf_lb-prev").show(), a && this.$lightbox.find(".ctf_lb-prev").css("opacity", "1")), this.currentImageIndex < this.album.length - 1 && (this.$lightbox.find(".ctf_lb-next").show(), a && this.$lightbox.find(".ctf_lb-next").css("opacity", "1"))))
+                }, b.prototype.updateDetails = function() {
+                  var b = this;
 
-                }
-                if (this.album[this.currentImageIndex].video === 'link'
-                  && ! jQuery(".ctf_lb-container .ctf_gdpr_notice").length) {
-                  jQuery(".ctf_lb-container").prepend('<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'/status/'+this.album[this.currentImageIndex].id+'" target="_blank" rel="nofollow noopener" class="ctf_gdpr_notice"><svg style="color: rgba(255,255,255,1)" class="svg-inline--fa fa-play fa-w-14 sbi_playbtn" aria-label="Play" aria-hidden="true" data-fa-processed="" data-prefix="fa" data-icon="play" role="presentation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></a>')
-                } else if (this.album[this.currentImageIndex].video !== 'link') {
-                  jQuery('.ctf_gdpr_notice').remove();
-                }
-                //If it's an Amplify card then add a class so we can reposition it
-                if( typeof this.album[this.currentImageIndex].amplify !== 'undefined' ) $('#ctf_lightbox').addClass('ctf-amplify');
+                  /** NEW PHOTO ACTION **/
+                  //Switch video when either a new popup or navigating to new one
+                  if( ctf_supports_video() ){
+                    if (jQuery('#ctf_lightbox video.ctf_video').length) {
+                      jQuery('#ctf_lightbox video.ctf_video')[0].pause();
+                    }
+                    jQuery('#ctf_lightbox').removeClass('ctf_video_lightbox');
+                    if (this.album[this.currentImageIndex].video.length
+                        && this.album[this.currentImageIndex].video !== 'link') {
 
-                $('#ctf_lightbox').removeClass('ctf-has-iframe');
-                if( this.album[this.currentImageIndex].iframe.length ){
-                  jQuery('#ctf_lightbox').find("iframe").fadeIn("slow");
-                  var videoURL = this.album[this.currentImageIndex].iframe;
-                  $('#ctf_lightbox').removeClass('ctf_video_lightbox').addClass('ctf-has-iframe');
+                      jQuery('#ctf_lightbox').find(".ctf_video").fadeIn("slow");
+                      jQuery('#ctf_lightbox').addClass('ctf_video_lightbox');
+                      jQuery('video.ctf_video').attr({
+                        'src' : this.album[this.currentImageIndex].video,
+                        'poster' : this.album[this.currentImageIndex].link,
+                        'autoplay' : 'true'
+                      }).css('width','100%');
+                    }
 
-                  //If it's a swf then don't add the autoplay parameter. This is only for embedded videos like YouTube or Vimeo.
-                  if( videoURL.indexOf(".swf") > -1 ){
-                    var autoplayParam = '';
+                  }
+                  if (this.album[this.currentImageIndex].video === 'link'
+                      && ! jQuery(".ctf_lb-container .ctf_gdpr_notice").length) {
+                    jQuery(".ctf_lb-container").prepend('<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'/status/'+this.album[this.currentImageIndex].id+'" target="_blank" rel="nofollow noopener" class="ctf_gdpr_notice"><svg style="color: rgba(255,255,255,1)" class="svg-inline--fa fa-play fa-w-14 sbi_playbtn" aria-label="Play" aria-hidden="true" data-fa-processed="" data-prefix="fa" data-icon="play" role="presentation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></a>')
+                  } else if (this.album[this.currentImageIndex].video !== 'link') {
+                    jQuery('.ctf_gdpr_notice').remove();
+                  }
+                  //If it's an Amplify card then add a class so we can reposition it
+                  if( typeof this.album[this.currentImageIndex].amplify !== 'undefined' ) $('#ctf_lightbox').addClass('ctf-amplify');
+
+                  $('#ctf_lightbox').removeClass('ctf-has-iframe');
+                  if( this.album[this.currentImageIndex].iframe.length ){
+                    jQuery('#ctf_lightbox').find("iframe").fadeIn("slow");
+                    var videoURL = this.album[this.currentImageIndex].iframe;
+                    $('#ctf_lightbox').removeClass('ctf_video_lightbox').addClass('ctf-has-iframe');
+
+                    //If it's a swf then don't add the autoplay parameter. This is only for embedded videos like YouTube or Vimeo.
+                    if( videoURL.indexOf(".swf") > -1 ){
+                      var autoplayParam = '';
+                    } else {
+                      var autoplayParam = '?autoplay=1';
+                    }
+
+                    //Add a slight delay before adding the URL else it doesn't autoplay on Firefox
+                    var vInt = setTimeout(function() {
+                      $('#ctf_lightbox iframe').attr({
+                        'src' : videoURL + autoplayParam
+                      });
+                    }, 500);
+                  }
+                  if (parseInt(this.album[this.currentImageIndex].audioiframe) === 1) {
+                    $('#ctf_lightbox').addClass('ctf-audio-iframe');
                   } else {
-                    var autoplayParam = '?autoplay=1';
+                    $('#ctf_lightbox').removeClass('ctf-audio-iframe');
                   }
 
-                  //Add a slight delay before adding the URL else it doesn't autoplay on Firefox
-                  var vInt = setTimeout(function() {
-                    $('#ctf_lightbox iframe').attr({
-                      'src' : videoURL + autoplayParam
-                    });
-                  }, 500);
-                }
-                if (parseInt(this.album[this.currentImageIndex].audioiframe) === 1) {
-                  $('#ctf_lightbox').addClass('ctf-audio-iframe');
-                } else {
-                  $('#ctf_lightbox').removeClass('ctf-audio-iframe');
-                }
+                  jQuery('#ctf_lightbox .ctf_instagram a').attr('href', this.album[this.currentImageIndex].url);
+                  jQuery('#ctf_lightbox .ctf_lightbox_tooltip').hide();
+                  jQuery('#ctf_lightbox #ctf_mod_box').find('#ctf_photo_id').text( this.album[this.currentImageIndex].id );
+                  //Change social media sharing links on the fly
+                  jQuery('#ctf_lightbox #ctf_facebook_icon').attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + this.album[this.currentImageIndex].url+'&t=Text');
+                  jQuery('#ctf_lightbox #ctf_twitter_icon').attr('href', 'https://twitter.com/home?status='+this.album[this.currentImageIndex].url+' ' + this.album[this.currentImageIndex].title);
+                  jQuery('#ctf_lightbox #ctf_linkedin_icon').attr('href', 'https://www.linkedin.com/shareArticle?mini=true&url='+this.album[this.currentImageIndex].url+'&title='+this.album[this.currentImageIndex].title);
+                  jQuery('#ctf_lightbox #ctf_pinterest_icon').attr('href', 'https://pinterest.com/pin/create/button/?url='+this.album[this.currentImageIndex].url+'&media='+this.album[this.currentImageIndex].link+'&description='+this.album[this.currentImageIndex].title);
+                  jQuery('#ctf_lightbox #ctf_email_icon').attr('href', 'mailto:?subject=Twitter&body='+this.album[this.currentImageIndex].title+' '+this.album[this.currentImageIndex].url);
 
-                jQuery('#ctf_lightbox .ctf_instagram a').attr('href', this.album[this.currentImageIndex].url);
-                jQuery('#ctf_lightbox .ctf_lightbox_tooltip').hide();
-                jQuery('#ctf_lightbox #ctf_mod_box').find('#ctf_photo_id').text( this.album[this.currentImageIndex].id );
-                //Change social media sharing links on the fly
-                jQuery('#ctf_lightbox #ctf_facebook_icon').attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + this.album[this.currentImageIndex].url+'&t=Text');
-                jQuery('#ctf_lightbox #ctf_twitter_icon').attr('href', 'https://twitter.com/home?status='+this.album[this.currentImageIndex].url+' ' + this.album[this.currentImageIndex].title);
-                jQuery('#ctf_lightbox #ctf_linkedin_icon').attr('href', 'https://www.linkedin.com/shareArticle?mini=true&url='+this.album[this.currentImageIndex].url+'&title='+this.album[this.currentImageIndex].title);
-                jQuery('#ctf_lightbox #ctf_pinterest_icon').attr('href', 'https://pinterest.com/pin/create/button/?url='+this.album[this.currentImageIndex].url+'&media='+this.album[this.currentImageIndex].link+'&description='+this.album[this.currentImageIndex].title);
-                jQuery('#ctf_lightbox #ctf_email_icon').attr('href', 'mailto:?subject=Twitter&body='+this.album[this.currentImageIndex].title+' '+this.album[this.currentImageIndex].url);
+                  //Add links to the caption
+                  var ctfLightboxCaption = this.album[this.currentImageIndex].title,
+                      hashRegex = /(^|\s)#(\w[\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC+0-9]+\w)/gi,
+                      tagRegex = /[@]+[A-Za-z0-9-_]+/g;
 
-                //Add links to the caption
-                var ctfLightboxCaption = this.album[this.currentImageIndex].title,
-                  hashRegex = /(^|\s)#(\w[\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC+0-9]+\w)/gi,
-                  tagRegex = /[@]+[A-Za-z0-9-_]+/g;
+                  (ctfLightboxCaption) ? ctfLightboxCaption = ctfLinkify(ctfLightboxCaption) : ctfLightboxCaption = '';
 
-                (ctfLightboxCaption) ? ctfLightboxCaption = ctfLinkify(ctfLightboxCaption) : ctfLightboxCaption = '';
-
-                //Link #hashtags
-                function ctfReplaceHashtags(hash){
-                  //Remove white space at beginning of hash
-                  var replacementString = hash.trim();
-                  //If the hash is a hex code then don't replace it with a link as it's likely in the style attr, eg: "color: #ff0000"
-                  if ( /^#[0-9A-F]{6}$/i.test( replacementString ) ){
-                    return replacementString;
-                  } else {
-                    return ' <a href="https://twitter.com/hashtag/'+ replacementString.substring(1) +'" target="_blank" rel="nofollow noopener">' + replacementString + '</a>';
+                  //Link #hashtags
+                  function ctfReplaceHashtags(hash){
+                    //Remove white space at beginning of hash
+                    var replacementString = hash.trim();
+                    //If the hash is a hex code then don't replace it with a link as it's likely in the style attr, eg: "color: #ff0000"
+                    if ( /^#[0-9A-F]{6}$/i.test( replacementString ) ){
+                      return replacementString;
+                    } else {
+                      return ' <a href="https://twitter.com/hashtag/'+ replacementString.substring(1) +'" target="_blank" rel="nofollow noopener">' + replacementString + '</a>';
+                    }
                   }
-                }
-                ctfLightboxCaption = ctfLightboxCaption.replace( hashRegex , ctfReplaceHashtags );
+                  ctfLightboxCaption = ctfLightboxCaption.replace( hashRegex , ctfReplaceHashtags );
 
-                //Link @tags
-                function ctfReplaceTags(tag){
-                  var replacementString = tag.replace('(','').trim();
-                  return ' <a href="https://twitter.com/'+ replacementString.substring(1) +'" target="_blank" rel="nofollow noopener">' + replacementString + '</a>';
-                }
-                ctfLightboxCaption = ctfLightboxCaption.replace( tagRegex , ctfReplaceTags );
-                var avatarClass = '';
-                if (!window.ctf.feeds[ this.album[this.currentImageIndex].feedIndex ].settings.consentGiven) {
-                  avatarClass = ' ctf-lb-hide-avatar';
-                }
-                //Create author and add caption to bottom of lightbox
-                "undefined" != typeof ctfLightboxCaption && "" !== ctfLightboxCaption && this.$lightbox.find(".ctf_lb-caption")
-                  .html('<div class="ctf-author-box'+avatarClass+'">' +
-                    '<div class="ctf-author-box-link" target="_blank" rel="nofollow noopener">' +
-                    '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" class="ctf-author-avatar" target="_blank" rel="nofollow noopener" style="">' +
-                    '<img src="'+this.album[this.currentImageIndex].avatar+'" width="48" height="48">' +
-                    '</a>' +
-                    '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" target="_blank" rel="nofollow noopener" class="ctf-author-name">'+this.album[this.currentImageIndex].name+'</a>' +
-                    '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" class="ctf-author-screenname" target="_blank" rel="nofollow noopener">@'+this.album[this.currentImageIndex].user+'</a>' +
-                    '<span class="ctf-screename-sep">·</span>' +
-                    '<div class="ctf-tweet-meta">' +
-                    '<a href="https://twitter.com/statuses/'+this.album[this.currentImageIndex].id+'" class="ctf-tweet-date" target="_blank" rel="nofollow noopener">'+this.album[this.currentImageIndex].date+'</a>' +
-                    '</div>' +
-                    '</div> <!-- end .ctf-author-box-link -->' +
-                    '</div><div class="ctf-caption-text'+avatarClass+'">' + ctfLightboxCaption + '</div>')
-                  .fadeIn("fast"), this.$lightbox.find(".ctf_lb-number").text(this.options.albumLabel(this.currentImageIndex + 1, this.album.length)).fadeIn("fast"), this.$outerContainer.removeClass("animating"), this.$lightbox.find(".ctf_lb-dataContainer").fadeIn(this.options.resizeDuration, function() {
-                  return b.sizeOverlay()
-                });
-                ctfSVGify($('#ctf_lightbox'));
-                if (typeof window.ctfLightboxAction === 'function') {
-                  setTimeout(function() {
-                    window.ctfLightboxAction();
-                  },100);
-                }
-
-                lbBuilder.afterPlayerSetup(this.$lightbox,this.album[this.currentImageIndex],this.currentImageIndex,this.album);
-              }, b.prototype.preloadNeighboringImages = function() {
-                if (this.album.length > this.currentImageIndex + 1) {
-                  var a = new Image;
-                  a.src = this.album[this.currentImageIndex + 1].link
-                }
-                if (this.currentImageIndex > 0) {
-                  var b = new Image;
-                  b.src = this.album[this.currentImageIndex - 1].link
-                }
-              }, b.prototype.enableKeyboardNav = function() {
-                a(document).on("keyup.keyboard", a.proxy(this.keyboardAction, this))
-              }, b.prototype.disableKeyboardNav = function() {
-                a(document).off(".keyboard")
-              }, b.prototype.keyboardAction = function(a) {
-
-                var KEYCODE_ESC        = 27;
-                var KEYCODE_LEFTARROW  = 37;
-                var KEYCODE_RIGHTARROW = 39;
-
-                var keycode = event.keyCode;
-                var key     = String.fromCharCode(keycode).toLowerCase();
-                if (keycode === KEYCODE_ESC || key.match(/x|o|c/)) {
-                  if( ctf_supports_video() ) $('#ctf_lightbox video.ctf_video')[0].pause();
-                  $('#ctf_lightbox iframe').attr('src', '');
-                  this.end();
-                } else if (key === 'p' || keycode === KEYCODE_LEFTARROW) {
-                  if (this.currentImageIndex !== 0) {
-                    this.changeImage(this.currentImageIndex - 1);
-                  } else if (this.options.wrapAround && this.album.length > 1) {
-                    this.changeImage(this.album.length - 1);
+                  //Link @tags
+                  function ctfReplaceTags(tag){
+                    var replacementString = tag.replace('(','').trim();
+                    return ' <a href="https://twitter.com/'+ replacementString.substring(1) +'" target="_blank" rel="nofollow noopener">' + replacementString + '</a>';
+                  }
+                  ctfLightboxCaption = ctfLightboxCaption.replace( tagRegex , ctfReplaceTags );
+                  var avatarClass = '';
+                  if (!window.ctf.feeds[ this.album[this.currentImageIndex].feedIndex ].settings.consentGiven) {
+                    avatarClass = ' ctf-lb-hide-avatar';
+                  }
+                  //Create author and add caption to bottom of lightbox
+                  "undefined" != typeof ctfLightboxCaption && "" !== ctfLightboxCaption && this.$lightbox.find(".ctf_lb-caption")
+                      .html('<div class="ctf-author-box'+avatarClass+'">' +
+                          '<div class="ctf-author-box-link" target="_blank" rel="nofollow noopener">' +
+                          '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" class="ctf-author-avatar" target="_blank" rel="nofollow noopener" style="">' +
+                          '<img src="'+this.album[this.currentImageIndex].avatar+'" width="48" height="48">' +
+                          '</a>' +
+                          '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" target="_blank" rel="nofollow noopener" class="ctf-author-name">'+this.album[this.currentImageIndex].name+'</a>' +
+                          '<a href="https://twitter.com/'+this.album[this.currentImageIndex].user+'" class="ctf-author-screenname" target="_blank" rel="nofollow noopener">@'+this.album[this.currentImageIndex].user+'</a>' +
+                          '<span class="ctf-screename-sep">·</span>' +
+                          '<div class="ctf-tweet-meta">' +
+                          '<a href="https://twitter.com/statuses/'+this.album[this.currentImageIndex].id+'" class="ctf-tweet-date" target="_blank" rel="nofollow noopener">'+this.album[this.currentImageIndex].date+'</a>' +
+                          '</div>' +
+                          '</div> <!-- end .ctf-author-box-link -->' +
+                          '</div><div class="ctf-caption-text'+avatarClass+'">' + ctfLightboxCaption + '</div>')
+                      .fadeIn("fast"), this.$lightbox.find(".ctf_lb-number").text(this.options.albumLabel(this.currentImageIndex + 1, this.album.length)).fadeIn("fast"), this.$outerContainer.removeClass("animating"), this.$lightbox.find(".ctf_lb-dataContainer").fadeIn(this.options.resizeDuration, function() {
+                    return b.sizeOverlay()
+                  });
+                  ctfSVGify($('#ctf_lightbox'));
+                  if (typeof window.ctfLightboxAction === 'function') {
+                    setTimeout(function() {
+                      window.ctfLightboxAction();
+                    },100);
                   }
 
-                  if( ctf_supports_video() ) $('#ctf_lightbox video.ctf_lb-video')[0].pause();
-                  $('#ctf_lightbox iframe').attr('src', '');
-
-                } else if (key === 'n' || keycode === KEYCODE_RIGHTARROW) {
-                  if (this.currentImageIndex !== this.album.length - 1) {
-                    this.changeImage(this.currentImageIndex + 1);
-                  } else if (this.options.wrapAround && this.album.length > 1) {
-                    this.changeImage(0);
+                  lbBuilder.afterPlayerSetup(this.$lightbox,this.album[this.currentImageIndex],this.currentImageIndex,this.album);
+                }, b.prototype.preloadNeighboringImages = function() {
+                  if (this.album.length > this.currentImageIndex + 1) {
+                    var a = new Image;
+                    a.src = this.album[this.currentImageIndex + 1].link
                   }
-                  lbBuilder.afterSlideChange();
-                }
+                  if (this.currentImageIndex > 0) {
+                    var b = new Image;
+                    b.src = this.album[this.currentImageIndex - 1].link
+                  }
+                }, b.prototype.enableKeyboardNav = function() {
+                  a(document).on("keyup.keyboard", a.proxy(this.keyboardAction, this))
+                }, b.prototype.disableKeyboardNav = function() {
+                  a(document).off(".keyboard")
+                }, b.prototype.keyboardAction = function(a) {
 
-              }, b.prototype.end = function() {
-                this.disableKeyboardNav(), a(window).off("resize", this.sizeOverlay), this.$lightbox.fadeOut(this.options.fadeDuration), this.$overlay.fadeOut(this.options.fadeDuration), a("select, object, embed").css({
-                  visibility: "visible"
-                })
-              }, b
-            }();
+                  var KEYCODE_ESC        = 27;
+                  var KEYCODE_LEFTARROW  = 37;
+                  var KEYCODE_RIGHTARROW = 39;
+
+                  var keycode = event.keyCode;
+                  var key     = String.fromCharCode(keycode).toLowerCase();
+                  if (keycode === KEYCODE_ESC || key.match(/x|o|c/)) {
+                    if( ctf_supports_video() ) $('#ctf_lightbox video.ctf_video')[0].pause();
+                    $('#ctf_lightbox iframe').attr('src', '');
+                    this.end();
+                  } else if (key === 'p' || keycode === KEYCODE_LEFTARROW) {
+                    if (this.currentImageIndex !== 0) {
+                      this.changeImage(this.currentImageIndex - 1);
+                    } else if (this.options.wrapAround && this.album.length > 1) {
+                      this.changeImage(this.album.length - 1);
+                    }
+
+                    if( ctf_supports_video() ) $('#ctf_lightbox video.ctf_lb-video')[0].pause();
+                    $('#ctf_lightbox iframe').attr('src', '');
+
+                  } else if (key === 'n' || keycode === KEYCODE_RIGHTARROW) {
+                    if (this.currentImageIndex !== this.album.length - 1) {
+                      this.changeImage(this.currentImageIndex + 1);
+                    } else if (this.options.wrapAround && this.album.length > 1) {
+                      this.changeImage(0);
+                    }
+                    lbBuilder.afterSlideChange();
+                  }
+
+                }, b.prototype.end = function() {
+                  this.disableKeyboardNav(), a(window).off("resize", this.sizeOverlay), this.$lightbox.fadeOut(this.options.fadeDuration), this.$overlay.fadeOut(this.options.fadeDuration), a("select, object, embed").css({
+                    visibility: "visible"
+                  })
+                }, b
+              }();
           a(function() {
             {
               var a = new b;
@@ -3929,57 +3931,57 @@ if(!ctf_js_exists) {
         }).call(this);
       },
       createFeeds: function (args) {
-        if(!$("#ctf-builder-app").length){
+        if(!$("#ctf-builder-app").length && !jQuery('body').hasClass('et_pb_pagebuilder_layout')){
           window.ctf.createLightbox();
         }
         args.whenFeedsCreated(
-          $('.ctf').each(function (index) {
-            $(this).attr('data-ctf-index', index + 1);
-            var $self = $(this),
-              flags = typeof $self.attr('data-ctf-flags') !== 'undefined' ? $self.attr('data-ctf-flags').split(',') : [],
-              general = typeof $self.attr('data-options') !== 'undefined' ? JSON.parse($self.attr('data-options')) : {};
-            if ($self.hasClass('ctf-masonry')) {
-              general.masonry = true;
-            } else if ($self.hasClass('ctf-carousel')) {
-              var carouselAuto = typeof $self.attr('data-ctf-interval') !== 'undefined' ? $self.attr('data-ctf-interval') : false;
-              general.carousel = [
-                $self.attr('data-ctf-arrows'),
-                $self.attr('data-ctf-pag') !== 'false',
-                carouselAuto !== false,
-                carouselAuto,
-                $self.attr('data-ctf-loop'),
-                $self.attr('data-ctf-rows')
-              ];
-            }
-            var feedOptions = {
-              cols : typeof $self.attr('data-ctf-cols') !== 'undefined' ? $self.attr('data-ctf-cols') : 3,
-              colstablet : typeof $self.attr('data-ctf-tabletcols') !== 'undefined' ? $self.attr('data-ctf-tabletcols') : 2,
-              colsmobile : typeof $self.attr('data-ctf-mobilecols') !== 'undefined' ? $self.attr('data-ctf-mobilecols') : 1,
-              imageCols : $self.attr('data-ctfimagecols'),
-              maxMedia : parseInt($self.attr('data-ctfmaxmedia')),
-              feedID : $self.attr('data-feedid'),
-              v2feed : typeof $self.attr( 'data-feed' ) !== 'undefind' ? $self.attr( 'data-feed' ) : '',
-              postID : typeof $self.attr( 'data-postid' ) !== 'undefind' ? $self.attr( 'data-postid' ) : 'unknown',
-              shortCodeAtts : $self.attr('data-ctfshortcode'),
-              backgroundCheck : (flags.indexOf('background') > -1),
-              gdpr : (flags.indexOf('gdpr') > -1),
-              overrideBlockCDN : (flags.indexOf('overrideBlockCDN') > -1),
-              consentGiven : false,
-              lightboxEnabled : true,
-              locator : (flags.indexOf('locator') > -1),
-              autoMinRes : 1,
-              general : general
-            };
+            $('.ctf').each(function (index) {
+              $(this).attr('data-ctf-index', index + 1);
+              var $self = $(this),
+                  flags = typeof $self.attr('data-ctf-flags') !== 'undefined' ? $self.attr('data-ctf-flags').split(',') : [],
+                  general = typeof $self.attr('data-options') !== 'undefined' ? JSON.parse($self.attr('data-options')) : {};
+              if ($self.hasClass('ctf-masonry')) {
+                general.masonry = true;
+              } else if ($self.hasClass('ctf-carousel')) {
+                var carouselAuto = typeof $self.attr('data-ctf-interval') !== 'undefined' ? $self.attr('data-ctf-interval') : false;
+                general.carousel = [
+                  $self.attr('data-ctf-arrows'),
+                  $self.attr('data-ctf-pag') !== 'false',
+                  carouselAuto !== false,
+                  carouselAuto,
+                  $self.attr('data-ctf-loop'),
+                  $self.attr('data-ctf-rows')
+                ];
+              }
+              var feedOptions = {
+                cols : typeof $self.attr('data-ctf-cols') !== 'undefined' ? $self.attr('data-ctf-cols') : 3,
+                colstablet : typeof $self.attr('data-ctf-tabletcols') !== 'undefined' ? $self.attr('data-ctf-tabletcols') : 2,
+                colsmobile : typeof $self.attr('data-ctf-mobilecols') !== 'undefined' ? $self.attr('data-ctf-mobilecols') : 1,
+                imageCols : $self.attr('data-ctfimagecols'),
+                maxMedia : parseInt($self.attr('data-ctfmaxmedia')),
+                feedID : $self.attr('data-feedid'),
+                v2feed : typeof $self.attr( 'data-feed' ) !== 'undefind' ? $self.attr( 'data-feed' ) : '',
+                postID : typeof $self.attr( 'data-postid' ) !== 'undefind' ? $self.attr( 'data-postid' ) : 'unknown',
+                shortCodeAtts : $self.attr('data-ctfshortcode'),
+                backgroundCheck : (flags.indexOf('background') > -1),
+                gdpr : (flags.indexOf('gdpr') > -1),
+                overrideBlockCDN : (flags.indexOf('overrideBlockCDN') > -1),
+                consentGiven : false,
+                lightboxEnabled : true,
+                locator : (flags.indexOf('locator') > -1),
+                autoMinRes : 1,
+                general : general
+              };
 
-            window.ctf.feeds[index] = ctfGetNewFeed(this, index, feedOptions);
-            window.ctf.feeds[index].twitterCardHandler = new SbTwitterCardHandler('ctf',$self);
-            window.ctf.feeds[index].init();
+              window.ctf.feeds[index] = ctfGetNewFeed(this, index, feedOptions);
+              window.ctf.feeds[index].twitterCardHandler = new SbTwitterCardHandler('ctf',$self);
+              window.ctf.feeds[index].init();
 
-            var evt = jQuery.Event('ctfafterfeedcreate');
-            evt.feed = window.ctf.feeds[index];
-            jQuery(window).trigger(evt);
+              var evt = jQuery.Event('ctfafterfeedcreate');
+              evt.feed = window.ctf.feeds[index];
+              jQuery(window).trigger(evt);
 
-          })
+            })
         );
       },
       afterFeedsCreated: function () {
@@ -3996,7 +3998,7 @@ if(!ctf_js_exists) {
         }
         // replace greater than and less than symbols with html entity to disallow html in comments
         var encoded = raw.replace(/(>)/g,'&gt;'),
-          encoded = encoded.replace(/(<)/g,'&lt;');
+            encoded = encoded.replace(/(<)/g,'&lt;');
         encoded = encoded.replace(/(&lt;br\/&gt;)/g,'<br>');
         encoded = encoded.replace(/(&lt;br&gt;)/g,'<br>');
 
@@ -4019,7 +4021,7 @@ if(!ctf_js_exists) {
       this.minImageWidth = 0;
       this.resizedImages = {};
       this.resizingDisabled = !$(this.el).find('.ctf-resized-image-data').length,
-        this.itemsToCheck = {cards:[],resize:[]};
+          this.itemsToCheck = {cards:[],resize:[]};
       this.outOfPages = false;
       this.isInitialized = false;
       this.page = 1;
@@ -4029,7 +4031,7 @@ if(!ctf_js_exists) {
     ctfFeed.prototype = {
       init: function() {
         var feed = this,
-          $self = $(this.el);
+            $self = $(this.el);
         feed.settings.consentGiven = feed.checkConsent();
         if ($(this.el).find('#ctf_mod_error').length) {
           $(this.el).prepend($(this.el).find('#ctf_mod_error'));
@@ -4064,13 +4066,48 @@ if(!ctf_js_exists) {
               break;
           }
         });
+
+        // Toggle tweet threads
+        jQuery('.ctf-btn-show-threads').on('click', function() {
+          let ctfThreadBtn = $(this);
+          let showThreadText = ctfThreadBtn.data('show-thread-text');
+          let hideThreadText = ctfThreadBtn.data('hide-thread-text');
+          let tweetId = ctfThreadBtn.closest('.ctf-item').attr('id').replace('ctf_', '');
+          let threadsWrapper = jQuery('.ctf-tweet-items .ctf-threads-wrapper[data-tweet-id="'+tweetId+'"]');
+          ctfThreadBtn.closest('.ctf-item').toggleClass('ctf-threads-expanded');
+          let isMasonry = jQuery('#ctf').hasClass('ctf-masonry');
+
+          if ( threadsWrapper.hasClass('ctf-threads-expanded') ) {
+            threadsWrapper.removeClass('ctf-threads-expanded');
+            ctfThreadBtn.html(showThreadText);
+            if (isMasonry) {
+              threadsWrapper.hide();
+              ctf_delay(function () {
+                feed.afterResize();
+              }, 200);
+            } else {
+              threadsWrapper.slideUp();
+            }
+          } else {
+            threadsWrapper.addClass('ctf-threads-expanded');
+            ctfThreadBtn.html(hideThreadText);
+            if (isMasonry) {
+              threadsWrapper.show();
+              ctf_delay(function () {
+                feed.afterResize();
+              }, 200);
+            } else {
+              threadsWrapper.slideDown();
+            }
+          }
+        });
       },
       initLayout: function() {
         var $self = $(this.el),
-          feed = this,
-          cols = feed.settings.general.cols,
-          colstablet = feed.settings.general.colstablet,
-          colsmobile = feed.settings.general.colsmobile;
+            feed = this,
+            cols = feed.settings.general.cols,
+            colstablet = feed.settings.colstablet,
+            colsmobile = feed.settings.colsmobile;
 
         var layout = 'list';
         feed.isInitialized = true;
@@ -4104,7 +4141,7 @@ if(!ctf_js_exists) {
           }
         } else if (layout === 'carousel') {
           var cols = this.settings.cols,
-            colsmobile = this.settings.colsmobile;
+              colsmobile = this.settings.colsmobile;
           $self.find('.ctf-tweet-items').append($self.find('.ctf-more'));
           var lastID = $self.find('.ctf-item').last().attr('id');
           $self.find('.ctf-more').attr('data-ctf-last', lastID);
@@ -4124,11 +4161,11 @@ if(!ctf_js_exists) {
           });
 
           var arrows = feed.settings.general.carousel[0],
-            pagination = feed.settings.general.carousel[1],
-            autoplay = feed.settings.general.carousel[2],
-            time = feed.settings.general.carousel[3],
-            loopSetting = feed.settings.general.carousel[4],
-            rows = feed.settings.general.carousel[5];
+              pagination = feed.settings.general.carousel[1],
+              autoplay = feed.settings.general.carousel[2],
+              time = feed.settings.general.carousel[3],
+              loopSetting = feed.settings.general.carousel[4],
+              rows = feed.settings.general.carousel[5];
           rewind = false;
           if (loopSetting !== 'none') {
             loop = true;
@@ -4148,58 +4185,58 @@ if(!ctf_js_exists) {
 
           //Set defaults for responsive breakpoints
           var itemsTabletSmall = cols,
-            itemsMobile = cols,
-            autoplay = time !== false,
-            has2rows = (rows == 2),
-            loop = loop,
-            onChange = function() {
-              if (height === 'clickexpand' && ! $self.find('.ctf-carousel-height-change').length) {
-                ctfInitClickExpand($self, feed);
-              }
-            },
-            afterInit = function() {
-
-              var $self = jQuery(feed.el);
-              $self.find('.ctf-tweet-items.ctf-carousel').fadeIn(10,function() {
-                if (height === 'clickexpand') {
+              itemsMobile = cols,
+              autoplay = time !== false,
+              has2rows = (rows == 2),
+              loop = loop,
+              onChange = function() {
+                if (height === 'clickexpand' && ! $self.find('.ctf-carousel-height-change').length) {
                   ctfInitClickExpand($self, feed);
                 }
-              });
-              setTimeout(function(){
-                $self.find('.ctf-tweet-items.ctf-carousel .ctf-info, .ctf-owl2row-item,.ctf-tweet-items.ctf-carousel').fadeIn();
+              },
+              afterInit = function() {
 
-              }, 10);
-              setTimeout(function(){
-                var $navElementsWrapper = $self.find('.ctf-owl-nav');
-                if (arrows === 'onhover') {
-                  $navElementsWrapper.addClass('onhover').hide();
-                  $self.on({
-                    mouseenter: function () {
-                      $navElementsWrapper.fadeIn();
-                    },
-                    mouseleave: function () {
-                      $navElementsWrapper.fadeOut();
-                    }
-                  });
-                } else if (arrows === 'below') {
-                  var $dots = $self.find('.ctf-owl-dots'),
-                    $prev = $self.find('.ctf-owl-prev'),
-                    $next = $self.find('.ctf-owl-next'),
-                    $nav = $self.find('.ctf-owl-nav'),
-                    $dot = $self.find('.ctf-owl-dot'),
-                    widthDots = $dot.length * $dot.innerWidth(),
-                    maxWidth = $self.innerWidth();
+                var $self = jQuery(feed.el);
+                $self.find('.ctf-tweet-items.ctf-carousel').fadeIn(10,function() {
+                  if (height === 'clickexpand') {
+                    ctfInitClickExpand($self, feed);
+                  }
+                });
+                setTimeout(function(){
+                  $self.find('.ctf-tweet-items.ctf-carousel .ctf-info, .ctf-owl2row-item,.ctf-tweet-items.ctf-carousel').fadeIn();
 
-                  $prev.after($dots);
+                }, 10);
+                setTimeout(function(){
+                  var $navElementsWrapper = $self.find('.ctf-owl-nav');
+                  if (arrows === 'onhover') {
+                    $navElementsWrapper.addClass('onhover').hide();
+                    $self.on({
+                      mouseenter: function () {
+                        $navElementsWrapper.fadeIn();
+                      },
+                      mouseleave: function () {
+                        $navElementsWrapper.fadeOut();
+                      }
+                    });
+                  } else if (arrows === 'below') {
+                    var $dots = $self.find('.ctf-owl-dots'),
+                        $prev = $self.find('.ctf-owl-prev'),
+                        $next = $self.find('.ctf-owl-next'),
+                        $nav = $self.find('.ctf-owl-nav'),
+                        $dot = $self.find('.ctf-owl-dot'),
+                        widthDots = $dot.length * $dot.innerWidth(),
+                        maxWidth = $self.innerWidth();
 
-                  $nav.css('position', 'relative');
-                  $next.css('position', 'absolute').css('top', '-6px').css('right', Math.max((.5 * $nav.innerWidth() - .5 * (widthDots) - $next.innerWidth() - 6), 0));
-                  $prev.css('position', 'absolute').css('top', '-6px').css('left', Math.max((.5 * $nav.innerWidth() - .5 * (widthDots) - $prev.innerWidth() - 6), 0));
-                } else if (arrows === 'hide') {
-                  $navElementsWrapper.addClass('hide').hide();
-                }
-              }, 10);
-            };
+                    $prev.after($dots);
+
+                    $nav.css('position', 'relative');
+                    $next.css('position', 'absolute').css('top', '-6px').css('right', Math.max((.5 * $nav.innerWidth() - .5 * (widthDots) - $next.innerWidth() - 6), 0));
+                    $prev.css('position', 'absolute').css('top', '-6px').css('left', Math.max((.5 * $nav.innerWidth() - .5 * (widthDots) - $prev.innerWidth() - 6), 0));
+                  } else if (arrows === 'hide') {
+                    $navElementsWrapper.addClass('hide').hide();
+                  }
+                }, 10);
+              };
           //Disable mobile layout
           if( $self.hasClass('ctf-mob-col-auto') ) {
             itemsTabletSmall = 2;
@@ -4207,6 +4244,7 @@ if(!ctf_js_exists) {
             if( parseInt(cols) == 2 ) itemsMobile = 2; //If the cols are set to 2 then don't change to 1 col on mobile
           } else {
             itemsMobile = colsmobile;
+            itemsTabletSmall = colstablet;
           }
 
 
@@ -4278,10 +4316,10 @@ if(!ctf_js_exists) {
       setResizedImages: function() {
         var feed = this;
         if ($(this.el).find('.ctf-resized-image-data').length
-          && typeof $(this.el).find('.ctf-resized-image-data').attr('data-resized') !== 'undefined'
-          && ($(this.el).find('.ctf-resized-image-data').attr('data-resized').indexOf('{"') === 0 || $(this.el).find('.ctf-resized-image-data').attr('data-resized').indexOf('[') === 0)) {
+            && typeof $(this.el).find('.ctf-resized-image-data').attr('data-resized') !== 'undefined'
+            && ($(this.el).find('.ctf-resized-image-data').attr('data-resized').indexOf('{"') === 0 || $(this.el).find('.ctf-resized-image-data').attr('data-resized').indexOf('[') === 0)) {
           var rawResized = JSON.parse($(this.el).find('.ctf-resized-image-data').attr('data-resized')),
-            organizedResized = {};
+              organizedResized = {};
 
           $.each(rawResized,function(index,value) {
             feed.resizedImages[value.twitter_id] = {
@@ -4344,7 +4382,7 @@ if(!ctf_js_exists) {
       },
       afterNewImagesLoaded: function() {
         var $self = $(this.el),
-          feed = this;
+            feed = this;
         this.setResizedImages();
         this.beforeNewImagesRevealed();
         this.sizeItems();
@@ -4382,7 +4420,7 @@ if(!ctf_js_exists) {
       afterFeedSet: function() {
         if (typeof this.carouselArgs !== 'undefined' ) {
           var feed = this,
-            height = $(feed.el).attr('data-ctf-height').replace("'",'');
+              height = $(feed.el).attr('data-ctf-height').replace("'",'');
           feed.isInitialized = true;
           this.initCarousel();
           if (height === 'clickexpand') {
@@ -4394,7 +4432,7 @@ if(!ctf_js_exists) {
       },
       initCarousel: function() {
         var $this = this,
-          $self = $($this.el);
+            $self = $($this.el);
         $self.find('.ctf-more').attr('data-ctf-last', $self.find('.ctf-item').last().attr('id'));
         $self.find('.ctf-carousel-height-change').remove();
         $($this.el).find('.ctf-carousel').ctfOwlCarousel($this.carouselArgs);
@@ -4442,11 +4480,11 @@ if(!ctf_js_exists) {
       },
       sizeItems: function() {
         var $self = $(this.el),
-          feed = this,
-          imageCols = feed.settings.imageCols,
-          useTweetMediaMasonry = imageCols !== 'auto' && !$self.hasClass('ctf-narrow') ? false : true,
-          $masonryEl = $self.find('.ctf-tweet-media-masonry'),
-          mediaSelector = '.ctf-tweet-media-masonry a';
+            feed = this,
+            imageCols = feed.settings.imageCols,
+            useTweetMediaMasonry = imageCols !== 'auto' && !$self.hasClass('ctf-narrow') ? false : true,
+            $masonryEl = $self.find('.ctf-tweet-media-masonry'),
+            mediaSelector = '.ctf-tweet-media-masonry a';
 
         if (!useTweetMediaMasonry) {
           $masonryEl = $self.find('.ctf-tweet-media');
@@ -4458,9 +4496,9 @@ if(!ctf_js_exists) {
         }
 
         var mediaWidth = parseInt($masonryEl.innerWidth()),
-          maxMedia = feed.settings.maxMedia,
-          columnWidth = 50,
-          autoColumnWidth = false;
+            maxMedia = feed.settings.maxMedia,
+            columnWidth = 50,
+            autoColumnWidth = false;
 
         if (imageCols === 'auto') {
           autoColumnWidth = true;
@@ -4470,8 +4508,8 @@ if(!ctf_js_exists) {
 
         $masonryEl.each(function(index) {
           var $this = $(this),
-            numMedia = $this.find('a').length,
-            visibleMedia = Math.min(numMedia,maxMedia);
+              numMedia = $this.find('a').length,
+              visibleMedia = Math.min(numMedia,maxMedia);
 
           $this.find('a').slice(maxMedia).hide();
 
@@ -4498,7 +4536,7 @@ if(!ctf_js_exists) {
                 });
                 var sizes = [700];
                 if ($this.find('img').length
-                  && typeof $this.find('img').first().attr('data-ctfsizes') !== 'undefined') {
+                    && typeof $this.find('img').first().attr('data-ctfsizes') !== 'undefined') {
                   sizes = $this.find('img').first().attr('data-ctfsizes').split(',');
                 }
                 if (sizes[sizes.length-1] < $this.find('a').first().width()){
@@ -4556,7 +4594,7 @@ if(!ctf_js_exists) {
       },
       revealNewImages: function() {
         var $self = $(this.el),
-          feed = this;
+            feed = this;
 
         this.applyImageLiquid();
         // Call Custom JS if it exists
@@ -4566,17 +4604,17 @@ if(!ctf_js_exists) {
           var $ctf = $self;
 
           var $ctfItem = $(this),
-            $ctfText = $ctfItem.find('.ctf-tweet-text'),
-            ctfTextStr = ' ' + $ctfText.html(),
-            ctfLinkColor = $ctf.attr('data-ctflinktextcolor'),
-            ctfLinkColorHex = '',
-            numMedia = $(this).find('.ctf-tweet-media a').length,
-            maxMedia = feed.settings.maxMedia,
-            visibleMedia = Math.min(numMedia, maxMedia);
+              $ctfText = $ctfItem.find('.ctf-tweet-text'),
+              ctfTextStr = ' ' + $ctfText.html(),
+              ctfLinkColor = $ctf.attr('data-ctflinktextcolor'),
+              ctfLinkColorHex = '',
+              numMedia = $(this).find('.ctf-tweet-media a').length,
+              maxMedia = feed.settings.maxMedia,
+              visibleMedia = Math.min(numMedia, maxMedia);
 
           if ($ctfItem.find('.ctf-twitter-card-placeholder').length) {
             var id = $ctfItem.find('.ctf-twitter-card-placeholder').attr('data-tweet-id'),
-              url = $ctfItem.find('.ctf-twitter-card-placeholder').attr('data-tc-url');
+                url = $ctfItem.find('.ctf-twitter-card-placeholder').attr('data-tc-url');
             if ($ctfItem.find('iframe').length) {
               $ctfItem.find('.ctf-twitter-card-placeholder').remove();
               $ctfItem.find('.ctf-tweet-text').find('a[href^="'+url+'"]').remove();
@@ -4643,12 +4681,12 @@ if(!ctf_js_exists) {
 
           //Change colors of some items to match tweet text
           $ctf.find('.ctf-author-name, ' +
-            '.ctf-tweet-date, ' +
-            '.ctf-author-screenname, ' +
-            '.ctf-twitterlink, ' +
-            '.ctf-author-box-link, ' +
-            '.ctf-quoted-tweet, ' +
-            '.ctf-context a').css('color', $ctf.find('.ctf-tweet-text').css('color'));
+              '.ctf-tweet-date, ' +
+              '.ctf-author-screenname, ' +
+              '.ctf-twitterlink, ' +
+              '.ctf-author-box-link, ' +
+              '.ctf-quoted-tweet, ' +
+              '.ctf-context a').css('color', $ctf.find('.ctf-tweet-text').css('color'));
 
           //Set the line height of the twitter link to match the icons so that it's centered vertically
           feed.alignTweetActions($self);
@@ -4715,7 +4753,7 @@ if(!ctf_js_exists) {
           }
           //Loop through items and remove class to reveal them
           var time = 10,
-            num = $self.find('.ctf-transition').length;
+              num = $self.find('.ctf-transition').length;
           $self.find('.ctf-transition').each(function(index) {
             var $ctf_item_transition_el = jQuery(this);
 
@@ -4743,7 +4781,7 @@ if(!ctf_js_exists) {
       },
       getMaxResImage: function(imgSrcSet) {
         var largest = 0,
-          largestImage = false;
+            largestImage = false;
         $.each(imgSrcSet, function (index, value) {
           if (index > largest) {
             largest = index;
@@ -4755,7 +4793,7 @@ if(!ctf_js_exists) {
       },
       lazyLoadCheck: function($item){
         var feed = this,
-          imgSrcSet = feed.getImageUrls($item);
+            imgSrcSet = feed.getImageUrls($item);
 
         if ($item.find('.ctf-tweet-media img').length && !$item.closest('.ctf').hasClass('ctf-no-ll-check')) {
           $item.find('.ctf-tweet-media img').each(function(index) {
@@ -4788,7 +4826,7 @@ if(!ctf_js_exists) {
                 return;
               }
               if (!$(this).hasClass('ctf-replaced')
-                && $(this).attr('src').indexOf('placeholder') > -1) {
+                  && $(this).attr('src').indexOf('placeholder') > -1) {
                 $(this).closest('.ctf-tweet-media').attr('data-current',1000);
                 $(this).addClass('ctf-replaced');
                 if (maxResImage) {
@@ -4843,7 +4881,7 @@ if(!ctf_js_exists) {
         var feed = this;
 
         if (feed.itemsToCheck.cards.length > 0
-          || feed.itemsToCheck.resize.length > 0) {
+            || feed.itemsToCheck.resize.length > 0) {
           var feedID = typeof feed.settings.feedID !== 'undefined' ? feed.settings.feedID : 'ctf_single';
           var submitData = {
             action: 'ctf_background_processing',
@@ -4885,15 +4923,15 @@ if(!ctf_js_exists) {
       },
       afterBackgroundProcessing: function(response) {
         var feed = this,
-          $feedEl = $(this.el);
+            $feedEl = $(this.el);
 
         $feedEl.find('.ctf-item').each(function() {
           var $self = $(this),
-            $placeholder = $self.find('.ctf-twitter-card-placeholder'),
-            id = $placeholder.attr('data-tweet-id'),
-            url = $placeholder.attr('data-tc-url');
+              $placeholder = $self.find('.ctf-twitter-card-placeholder'),
+              id = $placeholder.attr('data-tweet-id'),
+              url = $placeholder.attr('data-tc-url');
           if (typeof response[id] !== 'undefined'
-            && typeof response[id] !== 'undefined') {
+              && typeof response[id] !== 'undefined') {
             if (response[id].html !== '') {
               //
               feed.twitterCardHandler.addNewCard($self,response[id],feed);
@@ -4909,17 +4947,18 @@ if(!ctf_js_exists) {
       },
       loadMoreButtonInit: function () {
         var $ctf = $(this.el),
-          feed = this,
-          numNeeded = parseInt($ctf.attr('data-ctfneeded'));
+            feed = this,
+            numNeeded = parseInt($ctf.attr('data-ctfneeded'));
 
         setTimeout(function(){
           if(numNeeded > 0){
             var $ctfMore = $ctf.find('.ctf-more'),
-              lastIDAttr = $ctf.find('.ctf-item').last().attr('id'),
-              lastIDData = lastIDAttr.replace('ctf_', ''),
-              shortcodeData = $ctf.attr('data-ctfshortcode');
+                lastIDAttr = $ctf.find('.ctf-item').last().attr('id'),
+                lastIDData = lastIDAttr.replace('ctf_', ''),
+                persistentIndex = $ctf.find('.ctf-item').length,
+                shortcodeData = $ctf.attr('data-ctfshortcode');
 
-            feed.ctfLoadTweets(lastIDData, shortcodeData , $ctf, $ctfMore, numNeeded, '', true);
+            feed.ctfLoadTweets(lastIDData, shortcodeData , $ctf, $ctfMore, numNeeded, persistentIndex, true);
           }
         },50);
 
@@ -4927,10 +4966,10 @@ if(!ctf_js_exists) {
 
           // read the json that is in the ctf-shortcode-data that contains all of the shortcode arguments
           var $ctfMore = $(this),
-            lastIDAttr = $ctf.find('.ctf-item').last().attr('id'),
-            lastIDData = lastIDAttr.replace('ctf_', ''),
-            persistentIndex = $ctf.find('.ctf-item').length,
-            shortcodeData = $ctf.attr('data-ctfshortcode');
+              lastIDAttr = $ctf.find('.ctf-item').last().attr('id'),
+              lastIDData = lastIDAttr.replace('ctf_', ''),
+              persistentIndex = $ctf.find('.ctf-item').length,
+              shortcodeData = $ctf.attr('data-ctfshortcode');
 
           if($ctf.hasClass('ctf-carousel')) {
             lastIDData = $ctf.find('.ctf-more').attr('data-ctf-last').replace('ctf_', '');
@@ -4941,53 +4980,77 @@ if(!ctf_js_exists) {
       },
       ctfLoadTweets: function(lastIDData, shortcodeData, $ctf, $ctfMore, numNeeded, persistentIndex, isInitial) {
         var feed = this,
-          $self = $(this.el);
+            $self = $(this.el);
         //Display loader
         $ctfMore.addClass('ctf-loading').append('<div class="ctf-loader"></div>');
         $ctfMore.find('.ctf-loader').css('background-color', $ctfMore.css('color'));
 
         var submitData = {
-            action: 'ctf_get_more_posts',
-            last_id_data: lastIDData,
-            shortcode_data: shortcodeData,
-            feed_id: feed.settings.feedID,
-            v2feed: feed.settings.v2feed,
-            location: feed.locationGuess(),
-            post_id: feed.settings.postID,
-            num_needed: numNeeded,
-            persistent_index: persistentIndex
-          },
-          onSuccess = function(data) {
-            if (lastIDData !== '') {
+              action: 'ctf_get_more_posts',
+              last_id_data: lastIDData,
+              shortcode_data: shortcodeData,
+              feed_id: feed.settings.feedID,
+              v2feed: feed.settings.v2feed,
+              location: feed.locationGuess(),
+              post_id: feed.settings.postID,
+              num_needed: numNeeded,
+              persistent_index: persistentIndex
+            },
+            onSuccess = function(data) {
+              if (lastIDData !== '') {
 
-              // destroys the carousel and removes extra elements, then reapplies carousel
-              if ($ctf.hasClass('ctf-carousel')) {
-                var carouselLoopType = $ctf.attr('data-ctf-loop'),
-                  carouselCols = parseInt($ctf.attr('data-ctf-cols')),
-                  carouselPos = 0 - carouselCols;
+                // destroys the carousel and removes extra elements, then reapplies carousel
+                if ($ctf.hasClass('ctf-carousel')) {
+                  var carouselLoopType = $ctf.attr('data-ctf-loop'),
+                      carouselCols = parseInt($ctf.attr('data-ctf-cols')),
+                      carouselPos = 0 - carouselCols;
 
 
-                if (carouselLoopType === 'none'|| carouselLoopType === 'rewind' ) {
-                  carouselPos = $ctf.find('.ctf-owl-item').index($ctf.find('.ctf-owl-item.active').last()) - carouselCols + 1;
-                } else if (carouselLoopType === 'infinite') {
+                  if (carouselLoopType === 'none'|| carouselLoopType === 'rewind' ) {
+                    carouselPos = $ctf.find('.ctf-owl-item').index($ctf.find('.ctf-owl-item.active').last()) - carouselCols + 1;
+                  } else if (carouselLoopType === 'infinite') {
 
-                  carouselPos = ($ctf.find('.ctf-owl-item').index($ctf.find('.ctf-owl-item.cloned').last())-carouselCols + 1) / 2;
-                  //If there's 2 cols then stay on the current Tweet, otherwise move to the next Tweet loaded
-                  if( carouselCols === 1 ){
-                    carouselPos = carouselPos - 1;
-                  } else if( carouselCols === 2 ) {
-                    carouselPos = carouselPos - 2;
+                    carouselPos = ($ctf.find('.ctf-owl-item').index($ctf.find('.ctf-owl-item.cloned').last())-carouselCols + 1) / 2;
+                    //If there's 2 cols then stay on the current Tweet, otherwise move to the next Tweet loaded
+                    if( carouselCols === 1 ){
+                      carouselPos = carouselPos - 1;
+                    } else if( carouselCols === 2 ) {
+                      carouselPos = carouselPos - 2;
+                    }
+                    carouselPos = Math.ceil(carouselPos);
                   }
-                  carouselPos = Math.ceil(carouselPos);
+                  $ctf.find('.ctf-tweet-items').ctfOwlCarousel('destroy');
+                  $ctf.find('.ctf-carousel-more').remove();
+                  if (isInitial) {
+                    carouselPos = 0;
+                  }
                 }
-                $ctf.find('.ctf-tweet-items').ctfOwlCarousel('destroy');
-                $ctf.find('.ctf-carousel-more').remove();
-                if (isInitial) {
-                  carouselPos = 0;
+                // appends the html echoed out in ctf_get_new_posts() to the last post element
+                if(data.indexOf('<meta charset') == -1) {
+                  feed.appendNewPosts(data,'all');
+                  if (feed.settings.ajaxPostLoad) {
+                    feed.settings.ajaxPostLoad = false;
+                    feed.afterInitialImagesLoaded();
+                  } else {
+                    feed.afterNewImagesLoaded();
+                  }
                 }
-              }
-              // appends the html echoed out in ctf_get_new_posts() to the last post element
-              if(data.indexOf('<meta charset') == -1) {
+
+                if ($ctf.find('.ctf-out-of-tweets').length) {
+                  $ctfMore.hide();
+
+                  //Fade in the no more tweets message
+                  $ctf.find('.ctf-out-of-tweets p').eq(0).fadeIn().end().eq(1).delay(500).fadeIn();
+
+                  $ctf.find('.ctf-tweet-items').after($ctf.find('.ctf-out-of-tweets'));
+
+                  //If carousel then move out of tweets message into last item of carousel
+                  if ($ctf.hasClass('ctf-carousel')) {
+                    $ctf.find('.ctf-more').after( $ctf.find('.ctf-out-of-tweets') );
+                    $ctfMore.remove();
+                  }
+                }
+              } else {
                 feed.appendNewPosts(data,'all');
                 if (feed.settings.ajaxPostLoad) {
                   feed.settings.ajaxPostLoad = false;
@@ -4997,50 +5060,26 @@ if(!ctf_js_exists) {
                 }
               }
 
-              if ($ctf.find('.ctf-out-of-tweets').length) {
-                $ctfMore.hide();
+              //Remove loader
+              $ctfMore.removeClass('ctf-loading').find('.ctf-loader').remove();
 
-                //Fade in the no more tweets message
-                $ctf.find('.ctf-out-of-tweets p').eq(0).fadeIn().end().eq(1).delay(500).fadeIn();
+              //Re-run JS code
 
-                $ctf.find('.ctf-tweet-items').after($ctf.find('.ctf-out-of-tweets'));
-
-                //If carousel then move out of tweets message into last item of carousel
-                if ($ctf.hasClass('ctf-carousel')) {
-                  $ctf.find('.ctf-more').after( $ctf.find('.ctf-out-of-tweets') );
-                  $ctfMore.remove();
+              if ($ctf.hasClass('ctf-carousel')) {
+                if (carouselPos > 0) {
+                  feed.carouselArgs.startPosition = carouselPos;
                 }
+
+                feed.initCarousel();
+
+                // ctfNarrowClass($ctf);
+              } else if ($ctf.hasClass('ctf-autoscroll')) {
+                setTimeout(function () {
+                  feed.bindAutoScroll($ctf);
+                  scrolled = 0;
+                }, 1500);
               }
-            } else {
-              feed.appendNewPosts(data,'all');
-              if (feed.settings.ajaxPostLoad) {
-                feed.settings.ajaxPostLoad = false;
-                feed.afterInitialImagesLoaded();
-              } else {
-                feed.afterNewImagesLoaded();
-              }
-            }
-
-            //Remove loader
-            $ctfMore.removeClass('ctf-loading').find('.ctf-loader').remove();
-
-            //Re-run JS code
-
-            if ($ctf.hasClass('ctf-carousel')) {
-              if (carouselPos > 0) {
-                feed.carouselArgs.startPosition = carouselPos;
-              }
-
-              feed.initCarousel();
-
-              // ctfNarrowClass($ctf);
-            } else if ($ctf.hasClass('ctf-autoscroll')) {
-              setTimeout(function () {
-                feed.bindAutoScroll($ctf);
-                scrolled = 0;
-              }, 1500);
-            }
-          };
+            };
         ctfAjax(submitData,onSuccess);
       },
       getNewPostSet: function () {
@@ -5048,7 +5087,7 @@ if(!ctf_js_exists) {
       },
       appendNewPosts: function (newPostsHtml,plugin) {
         var $self = $(this.el),
-          feed = this;
+            feed = this;
         if ($self.find('.ctf-tweet-items .ctf-item').length) {
           $self.find('.ctf-tweet-items .ctf-item').last().after(newPostsHtml);
         } else {
@@ -5073,8 +5112,8 @@ if(!ctf_js_exists) {
       },
       maybeRaiseSingleImageResolution: function ($item, index) {
         var feed = this,
-          $mediaItem = $item.find('.ctf-tweet-media a').length ? $item.find('.ctf-tweet-media a') : $item.find('.ctf-quoted-media-wrap a'),
-          id = $item.attr('id').replace('ctf_','');
+            $mediaItem = $item.find('.ctf-tweet-media a').length ? $item.find('.ctf-tweet-media a') : $item.find('.ctf-quoted-media-wrap a'),
+            id = $item.attr('id').replace('ctf_','');
         if (!$mediaItem.length) {
           if ($item.find('.ctf-quoted-media-wrap img').length) {
             if ($item.find('.ctf-quoted-media-wrap .ctf-tc-image').length) {
@@ -5095,18 +5134,18 @@ if(!ctf_js_exists) {
         $mediaItem.each(function(i) {
 
           var $thisItem = $(this),
-            $img = $(this).find('img'),
-            baseUrl = typeof $img.attr('data-full-image') !== 'undefined' ? $img.attr('data-full-image') : $img.closest('a').attr('href');
+              $img = $(this).find('img'),
+              baseUrl = typeof $img.attr('data-full-image') !== 'undefined' ? $img.attr('data-full-image') : $img.closest('a').attr('href');
           sizesArr = typeof $img.attr('data-ctfsizes') !== 'undefined' ? $img.attr('data-ctfsizes').split(',') : 'default',
-            currentUrl = $img.attr('src'),
-            currentRes = typeof $img.attr('data-current') === 'undefined' ? 0 : parseInt( $img.attr('data-current') ),
-            neededRes = feed.getNeededRes($thisItem,i,$mediaItem.length),
-            forceChange = typeof forceChange !== 'undefined' ? forceChange : false,
-            changeToRes = 0;
+              currentUrl = $img.attr('src'),
+              currentRes = typeof $img.attr('data-current') === 'undefined' ? 0 : parseInt( $img.attr('data-current') ),
+              neededRes = feed.getNeededRes($thisItem,i,$mediaItem.length),
+              forceChange = typeof forceChange !== 'undefined' ? forceChange : false,
+              changeToRes = 0;
 
           if (typeof feed.resizedImages[id] === 'undefined'
-            && !feed.settings.consentGiven
-            && !feed.settings.overrideBlockCDN) {
+              && !feed.settings.consentGiven
+              && !feed.settings.overrideBlockCDN) {
             $thisItem.attr('href',feed.placeholderURL)
             return;
           }
@@ -5114,11 +5153,11 @@ if(!ctf_js_exists) {
           if (sizesArr[0] !== 'full') {
 
             var workingSizes = [],
-              largestVal = 0;
+                largestVal = 0;
 
             if (currentRes < neededRes) {
               var foundBestRes = false,
-                newUrl = baseUrl;
+                  newUrl = baseUrl;
 
               $.each(imageUrls[i], function (ii, value) {
                 var thisImageRes = parseInt(ii);
@@ -5137,20 +5176,29 @@ if(!ctf_js_exists) {
                     $item.find('.ctf-lightbox-link[data-bg-image]').css('background-image', 'url("' + value + '")');
                   }
                   $thisItem.attr('href',value)
+                } else if (feed.settings.consentGiven && feed.settings.gdpr) {
+                  if ($item.find('.ctf-lightbox-link[data-bg-image]').length === 1) {
+                    $item.find('.ctf-lightbox-link[data-bg-image]').css('background-image', 'url("' + value + '")');
+                  }
                 }
               });
             }
 
 
-            if (newUrl !== currentUrl) {
+            if (typeof newUrl !== 'undefined' && newUrl !== currentUrl) {
               if (feed.settings.debugEnabled) {
                 var reason = currentUrl === feed.placeholderURL ? 'was placeholder' : 'too small';
                 console.log('rais res for ' + currentUrl, reason);
               }
               $img.attr('data-current',currentRes);
 
-              if (newUrl !== currentUrl) {
+              if (typeof newUrl !== 'undefined' && newUrl !== currentUrl) {
                 $img.attr('src', newUrl);
+                if (feed.settings.consentGiven) {
+                  if ($img.closest('.ctf-lightbox-link[data-bg-image]').length) {
+                    $img.closest('.ctf-lightbox-link[data-bg-image]').css('background-image', 'url("' + newUrl + '")');
+                  }
+                }
                 //if ($mediaItem.hasClass('ctf_imgLiquid_ready')) {
                 //$mediaItem.css('background-image', 'url("' + newUrl + '")');
                 //}
@@ -5162,8 +5210,8 @@ if(!ctf_js_exists) {
                     if (!$(this).hasClass('ctf-secondary-checked')) {
                       $(this).addClass('ctf-secondary-checked');
                       var imagEl = $img.get(0),
-                        height = imagEl.naturalHeight,
-                        aspectRatio = imagEl.naturalWidth/imagEl.naturalHeight;
+                          height = imagEl.naturalHeight,
+                          aspectRatio = imagEl.naturalWidth/imagEl.naturalHeight;
 
                       if ($img.innerWidth() > height) {
                         neededRes = neededRes * aspectRatio;
@@ -5217,13 +5265,13 @@ if(!ctf_js_exists) {
       },
       maybeRaiseImageResolution: function (justNew) {
         var feed = this,
-          itemsSelector = typeof justNew !== 'undefined' && justNew === true ? '.ctf-item.ctf-new' : '.ctf-item';
+            itemsSelector = typeof justNew !== 'undefined' && justNew === true ? '.ctf-item.ctf-new' : '.ctf-item';
         if (!feed.isInitialized) { return; }
 
         $(feed.el).find(itemsSelector).each(function (index) {
 
           if (!$(this).hasClass('ctf-num-diff-hide')
-            && ($(this).find('.ctf-tweet-media').length || $(this).find('.ctf-quoted-media-wrap').length)) {
+              && ($(this).find('.ctf-tweet-media').length || $(this).find('.ctf-quoted-media-wrap').length)) {
             feed.maybeRaiseSingleImageResolution($(this),index);
           }
         });
@@ -5236,9 +5284,9 @@ if(!ctf_js_exists) {
         }
 
         var feed = this,
-          apiSourceSet = JSON.parse($mediaItem.attr('data-available-images').replace(/\\\//g, '/')),
-          srcSet = typeof apiSourceSet[0] !== 'undefined' ? apiSourceSet : apiSourceSet,
-          id = $item.attr('id').replace('ctf_','');
+            apiSourceSet = JSON.parse($mediaItem.attr('data-available-images').replace(/\\\//g, '/')),
+            srcSet = typeof apiSourceSet[0] !== 'undefined' ? apiSourceSet : apiSourceSet,
+            id = $item.attr('id').replace('ctf_','');
 
         if (!this.settings.consentGiven && !feed.settings.overrideBlockCDN) {
           jQuery.each(srcSet,function(index,value) {
@@ -5247,8 +5295,8 @@ if(!ctf_js_exists) {
         }
         var returnSrcSet = srcSet;
         if (typeof feed.resizedImages[id] !== 'undefined'
-          && feed.resizedImages[id].id !== 'pending'
-          && feed.resizedImages[id].id !== 'error') {
+            && feed.resizedImages[id].id !== 'pending'
+            && feed.resizedImages[id].id !== 'error') {
           jQuery.each(srcSet,function(index,value) {
             returnSrcSet[index] = {};
             var apiSourceSet = JSON.parse($mediaItem.attr('data-available-images').replace(/\\\//g, '/'));
@@ -5256,7 +5304,7 @@ if(!ctf_js_exists) {
             if (feed.settings.consentGiven && !feed.settings.overrideBlockCDN) {
               jQuery.each(apiSourceSet[index],function(index2,value2) {
                 if (index2 > 700
-                  || index2 < 220) {
+                    || index2 < 220) {
                   returnSrcSet[index][index2] = value2;
                 }
               });
@@ -5268,7 +5316,7 @@ if(!ctf_js_exists) {
 
           });
         } else if (typeof this.resizedImages[id] === 'undefined'
-          || (typeof this.resizedImages[id]['id'] !== 'undefined' && this.resizedImages[id]['id'] !== 'pending' && this.resizedImages[id]['id'] !== 'error')) {
+            || (typeof this.resizedImages[id]['id'] !== 'undefined' && this.resizedImages[id]['id'] !== 'pending' && this.resizedImages[id]['id'] !== 'error')) {
           feed.addToNeedsResizing(id);
         }
 
@@ -5299,7 +5347,7 @@ if(!ctf_js_exists) {
       },
       applyImageLiquid: function () {
         var $self = $(this.el),
-          feed = this;
+            feed = this;
         ctfAddImgLiquid();
         if (typeof $self.find(".ctf-tc-image").ctf_imgLiquid == 'function') {
           if ($self.find('.ctf-tc-image').length) {
@@ -5322,11 +5370,11 @@ if(!ctf_js_exists) {
       },
       getColumnCount: function() {
         var $self = $(this.el),
-          cols = this.settings.cols,
-          colstablet = this.settings.colstablet,
-          colsmobile = this.settings.colsmobile,
-          returnCols = cols,
-          screenWidth = window.innerWidth;
+            cols = this.settings.cols,
+            colstablet = this.settings.colstablet,
+            colsmobile = this.settings.colsmobile,
+            returnCols = cols,
+            screenWidth = window.innerWidth;
 
         if ($self.hasClass('ctf-mobcol-auto')) {
           if (screenWidth < 640 && screenWidth > 480) {
@@ -5351,8 +5399,8 @@ if(!ctf_js_exists) {
       },
       smashotopeInit: function() {
         var $self = $(this.el),
-          $container = $self.find('.ctf-items-wrap-current').length ? $self.find('.ctf-items-wrap-current') : $self.find('.ctf-tweet-items'),
-          columnWidth = '.ctf-item';
+            $container = $self.find('.ctf-items-wrap-current').length ? $self.find('.ctf-items-wrap-current') : $self.find('.ctf-tweet-items'),
+            columnWidth = '.ctf-item';
 
         this.isotopeArgs.masonry = {
           columnWidth: columnWidth
@@ -5361,14 +5409,14 @@ if(!ctf_js_exists) {
       },
       setMasonry: function() {
         var $self = $(this.el),
-          feedWidth = $self.innerWidth(),
-          photoPadding = parseInt(($self.find('.ctf-tweet-items').outerWidth() - $self.find('.ctf-tweet-items').width())) / 2,
-          cols = this.getColumnCount(),
-          feedWidthSansPadding = feedWidth - (photoPadding * (cols+2)),
-          colWidth = (feedWidthSansPadding / cols),
-          widthAdjustForPercentPadding = $self.find('.ctf-tweet-items').css('padding').indexOf('.') > -1 ? 1 : 0,
-          margin = 10,
-          scrollbarwidth = $self.hasClass('ctf-fixed-height') ? Math.floor( 20/cols) : 0;
+            feedWidth = $self.innerWidth(),
+            photoPadding = parseInt(($self.find('.ctf-tweet-items').outerWidth() - $self.find('.ctf-tweet-items').width())) / 2,
+            cols = this.getColumnCount(),
+            feedWidthSansPadding = feedWidth - (photoPadding * (cols+2)),
+            colWidth = (feedWidthSansPadding / cols),
+            widthAdjustForPercentPadding = $self.find('.ctf-tweet-items').css('padding').indexOf('.') > -1 ? 1 : 0,
+            margin = 10,
+            scrollbarwidth = $self.hasClass('ctf-fixed-height') ? Math.floor( 20/cols) : 0;
 
         $self.find('.ctf-item').each(function(index) {
           $(this).css({
@@ -5387,7 +5435,11 @@ if(!ctf_js_exists) {
         if (this.settings.consentGiven || !this.settings.gdpr) {
           return true;
         }
-        if (typeof CLI_Cookie !== "undefined") { // GDPR Cookie Consent by WebToffee
+        if (typeof window.cookieyes !== "undefined") { // CookieYes | GDPR Cookie Consent by CookieYes
+          if (typeof window.cookieyes._ckyConsentStore.get !== 'undefined') {
+            this.settings.consentGiven = window.cookieyes._ckyConsentStore.get('functional') === 'yes';
+          }
+        } else if (typeof CLI_Cookie !== "undefined") { // GDPR Cookie Consent by WebToffee
           if (CLI_Cookie.read(CLI_ACCEPT_COOKIE_NAME) !== null)  {
 
             // WebToffee no longer uses this cookie but being left here to maintain backwards compatibility
@@ -5402,19 +5454,24 @@ if(!ctf_js_exists) {
 
         } else if (typeof window.cnArgs !== "undefined") { // Cookie Notice by dFactory
           var value = "; " + document.cookie,
-            parts = value.split( '; cookie_notice_accepted=' );
+              parts = value.split( '; cookie_notice_accepted=' );
 
           if ( parts.length === 2 ) {
             var val = parts.pop().split( ';' ).shift();
 
             this.settings.consentGiven = (val === 'true');
           }
+        } else if (typeof window.complianz !== 'undefined') { // Complianz by Really Simple Plugins
+          this.settings.consentGiven = ctfCmplzGetCookie('cmplz_marketing') === 'allow';
         } else if (typeof window.cookieconsent !== 'undefined') { // Complianz by Really Simple Plugins
           this.settings.consentGiven = ( ctfCmplzGetCookie('cmplz_consent_status') === 'allow' || jQuery('body').hasClass('cmplz-status-marketing') );
         } else if (typeof window.Cookiebot !== "undefined") { // Cookiebot by Cybot A/S
           this.settings.consentGiven = Cookiebot.consented;
         } else if (typeof window.BorlabsCookie !== 'undefined') { // Borlabs Cookie by Borlabs
           this.settings.consentGiven = window.BorlabsCookie.checkCookieConsent('twitter');
+        } else if (ctfCmplzGetCookie('moove_gdpr_popup')) { // Moove GDPR Popup
+          var moove_gdpr_popup = JSON.parse(decodeURIComponent(ctfCmplzGetCookie('moove_gdpr_popup')));
+          this.settings.consentGiven = typeof moove_gdpr_popup.thirdparty !== "undefined" && moove_gdpr_popup.thirdparty === "1";
         }
 
         var evt = jQuery.Event('ctfcheckconsent');
@@ -5454,7 +5511,26 @@ if(!ctf_js_exists) {
             $(this).replaceWith('<video '+$(this).attr('data-video-atts')+' src="'+$(this).attr('data-video-src')+'" type="video/mp4" poster="'+$(this).attr('data-video-poster')+'">');
           }
         });
+
+        $(feed.el).find('.ctf-tc-image').each(function() {
+          if ($(this).find('img').attr('src') !== $(this).attr('data-bg')) {
+            $(this).find('img').attr('src',$(this).attr('data-bg'));
+          }
+        })
+
+        $(feed.el).find('.ctf-tweet-media').each(function() {
+          if ($(this).find('img').length && $(this).find('img').attr('src').indexOf('img/placeholder.png') > -1 && typeof $(this).find('img').first().attr('data-full-image') !== 'undefined') {
+            var newUrl = $(this).find('img').first().attr('data-full-image');
+            $(this).find('img').first().attr('src',newUrl);
+            $(this).find('a').first().css('background-image', 'url("' + newUrl + '")').attr('data-bg',newUrl);
+          }
+
+          if ($(this).find('video').length && $(this).find('video').attr('src') === '' && typeof $(this).find('video').attr('data-src') !== 'undefined') {
+            $(this).find('video').attr('src',$(this).find('video').attr('data-src'));
+          }
+        });
         $(feed.el).find('.ctf-no-consent').removeClass('ctf-no-consent');
+
 
         this.afterResize();
       },
@@ -5466,9 +5542,9 @@ if(!ctf_js_exists) {
           $ctf.on('scroll.ctf', function () {
 
             var yScrollPos = $ctf.scrollTop(),
-              windowSize = $ctf.innerHeight(),
-              bodyHeight = $ctf[0].scrollHeight,
-              triggerDistance = bodyHeight - scrollPosOffset - windowSize;
+                windowSize = $ctf.innerHeight(),
+                bodyHeight = $ctf[0].scrollHeight,
+                triggerDistance = bodyHeight - scrollPosOffset - windowSize;
 
             if (yScrollPos > triggerDistance) {
               $ctf.off('scroll.ctf');
@@ -5486,9 +5562,9 @@ if(!ctf_js_exists) {
         } else {
           $(window).on('scroll.ctf', function () {
             var yScrollPos = window.pageYOffset,
-              windowSize = window.innerHeight,
-              bodyHeight = document.body.offsetHeight,
-              triggerDistance = bodyHeight - scrollPosOffset - windowSize;
+                windowSize = window.innerHeight,
+                bodyHeight = document.body.offsetHeight,
+                triggerDistance = bodyHeight - scrollPosOffset - windowSize;
 
             if (yScrollPos > triggerDistance) {
               $(window).off('scroll.ctf');
@@ -5505,15 +5581,15 @@ if(!ctf_js_exists) {
       },
       locationGuess: function() {
         var $feed = $(this.el),
-          location = 'content';
+            location = 'content';
 
         if ($feed.closest('footer').length) {
           location = 'footer';
         } else if ($feed.closest('.header').length
-          || $feed.closest('header').length) {
+            || $feed.closest('header').length) {
           location = 'header';
         } else if ($feed.closest('.sidebar').length
-          || $feed.closest('aside').length) {
+            || $feed.closest('aside').length) {
           location = 'sidebar';
         }
 
@@ -5528,9 +5604,9 @@ if(!ctf_js_exists) {
         var closestFeedIndex = parseInt(a.closest('.ctf').attr('data-ctf-index')-1);
         if (typeof a.attr("data-id") !== 'undefined') {
           var video = a.attr("data-video"),
-            avatar = a.attr("data-avatar"),
-            iframe = a.attr('data-iframe'),
-            link = a.attr("href");
+              avatar = a.attr("data-avatar"),
+              iframe = a.attr('data-iframe'),
+              link = a.attr("href");
           if (!window.ctf.feeds[closestFeedIndex].settings.consentGiven) {
             avatar = window.ctf.options.placeholder;
             if (iframe !== '') {
@@ -5576,40 +5652,40 @@ if(!ctf_js_exists) {
       },
       template: function () {
         return ""+
-          "<div id='ctf_lightboxOverlay' class='ctf_lightboxOverlay'></div>"+
-          "<div id='ctf_lightbox' class='ctf_lightbox'>"+
-          "<div class='ctf_lb-outerContainer'>"+
-          "<div class='ctf_lb-container'>"+
-          "<video class='ctf_video' src='' poster='' controls autoplay></video>"+
-          "<iframe title='Placeholder for videos in the lightbox' type='text/html' src='' allowfullscreen webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"+
-          "<img class='ctf_lb-image' alt='Lightbox image placeholder' src='' />"+
-          "<div class='ctf_lb-nav'><a class='ctf_lb-prev' href='#' ><p class='ctf-screenreader'>Previous Slide</p></a><a class='ctf_lb-next' href='#' ><p class='ctf-screenreader'>Next Slide</p></a></div>"+
-          "<div class='ctf_lb-loader'><a class='ctf_lb-cancel'></a></div>"+
-          "</div>"+
-          "</div>"+
-          "<div class='ctf_lb-dataContainer'>"+
-          "<div class='ctf_lb-data'>"+
-          "<div class='ctf_lb-details'>"+
-          "<div class='ctf_lb-caption'></div>"+
-          "<div class='ctf_lb-info'>"+
-          "<div class='ctf_lb-number'></div>"+
-          "<div class='ctf_lightbox_action ctf_share'>"+
-          "<a href='JavaScript:void(0);'><span class='fa fa-share' aria-hidden='true'></span>Share</a>"+
-          "<p class='ctf_lightbox_tooltip ctf_tooltip_social'>"+
-          "<a href='' target='_blank' id='ctf_facebook_icon'><span class='ctf-screenreader'>Facebook Share</span><span class='fa fa-facebook-square' aria-hidden='true'></span></a><a href='' target='_blank' id='ctf_twitter_icon'><span class='ctf-screenreader'>Twitter Share</span><span class='fa fa-twitter'></span></a><a href='' target='_blank' id='ctf_linkedin_icon'><span class='ctf-screenreader'>Linkedin Share</span><span class='fa fa-linkedin'></span></a><a href='' id='ctf_pinterest_icon' target='_blank'><span class='ctf-screenreader'>Pinterest Share</span><span class='fa fa-pinterest'></span></a><a href='' id='ctf_email_icon' target='_blank'><span class='ctf-screenreader'>Email Share</span><span class='fa fa-envelope'></span></a><span class='fa fa-play fa-rotate-90'></span>"+
-          "</p>"+
-          "</div>"+
-          "<div class='ctf_lightbox_action ctf_instagram'><a href='http://instagram.com/' target='_blank'><span class='ctf-screenreader'>Twitter</span><span class='fa fa-twitter' aria-hidden='true'></span>Twitter</a></div>"+
-          "<div id='ctf_mod_link' class='ctf_lightbox_action'>"+
-          "<a href='JavaScript:void(0);'><span class='fa fa-times' aria-hidden='true'></span>Hide Tweet (admin)</a>"+
-          "<p id='ctf_mod_box' class='ctf_lightbox_tooltip'>Add this ID to the plugin's <strong>Hide Specific Tweets</strong> setting: <span id='ctf_photo_id'></span><span class='fa fa-play fa-rotate-90' aria-hidden='true'></span></p>"+
-          "</div>"+
-          "</div>"+
-          "</div>"+
-          "<div class='ctf_lb-closeContainer'><a class='ctf_lb-close'></a></div>"+
-          "</div>"+
-          "</div>"+
-          "</div>";
+            "<div id='ctf_lightboxOverlay' class='ctf_lightboxOverlay'></div>"+
+            "<div id='ctf_lightbox' class='ctf_lightbox'>"+
+            "<div class='ctf_lb-outerContainer'>"+
+            "<div class='ctf_lb-container'>"+
+            "<video class='ctf_video' src='' poster='' controls autoplay></video>"+
+            "<iframe title='Placeholder for videos in the lightbox' type='text/html' src='' allowfullscreen webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"+
+            "<img class='ctf_lb-image' alt='Lightbox image placeholder' src='' />"+
+            "<div class='ctf_lb-nav'><a class='ctf_lb-prev' href='#' ><p class='ctf-screenreader'>Previous Slide</p></a><a class='ctf_lb-next' href='#' ><p class='ctf-screenreader'>Next Slide</p></a></div>"+
+            "<div class='ctf_lb-loader'><a class='ctf_lb-cancel'></a></div>"+
+            "</div>"+
+            "</div>"+
+            "<div class='ctf_lb-dataContainer'>"+
+            "<div class='ctf_lb-data'>"+
+            "<div class='ctf_lb-details'>"+
+            "<div class='ctf_lb-caption'></div>"+
+            "<div class='ctf_lb-info'>"+
+            "<div class='ctf_lb-number'></div>"+
+            "<div class='ctf_lightbox_action ctf_share'>"+
+            "<a href='JavaScript:void(0);'><span class='fa fa-share' aria-hidden='true'></span>Share</a>"+
+            "<p class='ctf_lightbox_tooltip ctf_tooltip_social'>"+
+            "<a href='' target='_blank' id='ctf_facebook_icon'><span class='ctf-screenreader'>Facebook Share</span><span class='fa fa-facebook-square' aria-hidden='true'></span></a><a href='' target='_blank' id='ctf_twitter_icon'><span class='ctf-screenreader'>Twitter Share</span><span class='fa fa-twitter'></span></a><a href='' target='_blank' id='ctf_linkedin_icon'><span class='ctf-screenreader'>Linkedin Share</span><span class='fa fa-linkedin'></span></a><a href='' id='ctf_pinterest_icon' target='_blank'><span class='ctf-screenreader'>Pinterest Share</span><span class='fa fa-pinterest'></span></a><a href='' id='ctf_email_icon' target='_blank'><span class='ctf-screenreader'>Email Share</span><span class='fa fa-envelope'></span></a><span class='fa fa-play fa-rotate-90'></span>"+
+            "</p>"+
+            "</div>"+
+            "<div class='ctf_lightbox_action ctf_instagram'><a href='http://instagram.com/' target='_blank'><span class='ctf-screenreader'>Twitter</span><span class='fa fa-twitter' aria-hidden='true'></span>Twitter</a></div>"+
+            "<div id='ctf_mod_link' class='ctf_lightbox_action'>"+
+            "<a href='JavaScript:void(0);'><span class='fa fa-times' aria-hidden='true'></span>Hide Tweet (admin)</a>"+
+            "<p id='ctf_mod_box' class='ctf_lightbox_tooltip'>Add this ID to the plugin's <strong>Hide Specific Tweets</strong> setting: <span id='ctf_photo_id'></span><span class='fa fa-play fa-rotate-90' aria-hidden='true'></span></p>"+
+            "</div>"+
+            "</div>"+
+            "</div>"+
+            "<div class='ctf_lb-closeContainer'><a class='ctf_lb-close'></a></div>"+
+            "</div>"+
+            "</div>"+
+            "</div>";
       },
       beforePlayerSetup: function($lightbox,data,index,album,feed){
       },
@@ -5657,9 +5733,9 @@ if(!ctf_js_exists) {
       },
       addNewCard: function($item,cardData,feed) {
         var $placeholder = $item.find('.ctf-twitter-card-placeholder'),
-          id = $placeholder.attr('data-tweet-id'),
-          url = $placeholder.attr('data-tc-url'),
-          shortUrl = $placeholder.attr('data-tc-short-url');
+            id = $placeholder.attr('data-tweet-id'),
+            url = $placeholder.attr('data-tc-url'),
+            shortUrl = $placeholder.attr('data-tc-short-url');
 
         cardData.url = url;
         cardData.shortUrl = shortUrl;
@@ -5686,7 +5762,7 @@ if(!ctf_js_exists) {
       },
       maybeRaiseResolution: function(){
         var cardHandler = this,
-          $cards = this.$context.find('.'+this.prefix+'-twitter-card');
+            $cards = this.$context.find('.'+this.prefix+'-twitter-card');
 
         $cards.each(function (index) {
           if (!$(this).closest('.ctf-item').hasClass('ctf-num-diff-hide')) {
@@ -5696,7 +5772,7 @@ if(!ctf_js_exists) {
       },
       maybeRaiseSingleResolution: function($item){
         var $img = $item.find('img').length ? $item.find('img') : false,
-          feed = this;
+            feed = this;
 
         if (!$img) {
           return;
@@ -5706,14 +5782,14 @@ if(!ctf_js_exists) {
         }
 
         var imageUrls = JSON.parse($img.attr('data-available-images').replace(/\\\//g, '/')),
-          currentUrl = $img.attr('src'),
-          currentRes = typeof $img.attr('data-current') === 'undefined' ? 0 : parseInt($img.attr('data-current')),
-          neededRes = $img.closest('.ctf-tc-image').innerWidth();
+            currentUrl = $img.attr('src'),
+            currentRes = typeof $img.attr('data-current') === 'undefined' ? 0 : parseInt($img.attr('data-current')),
+            neededRes = $img.closest('.ctf-tc-image').innerWidth();
         changeToRes = 0;
 
         if (currentRes < neededRes) {
           var foundBestRes = false,
-            newUrl = currentUrl;
+              newUrl = currentUrl;
           $.each(imageUrls, function (ii, value) {
 
             if (! foundBestRes && ii >= neededRes) {
@@ -5810,7 +5886,7 @@ if(!ctf_js_exists) {
         return;
       }
       var $owlStageOuter = $self.find('.ctf-owl-stage-outer'),
-        moreHtml = '<a href="#" class="ctf-carousel-more ctf-carousel-height-change"><span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-plus fa-w-14 fa-2x"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" class=""></path></svg></span></a>';
+          moreHtml = '<a href="#" class="ctf-carousel-more ctf-carousel-height-change"><span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-plus fa-w-14 fa-2x"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" class=""></path></svg></span></a>';
 
       $owlStageOuter.after(moreHtml);
 
@@ -5828,18 +5904,18 @@ if(!ctf_js_exists) {
           $thisMoreButton.addClass('ctf-carousel-less').removeClass('ctf-carousel-more').find('span').html('<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-minus fa-w-14 fa-2x"><path fill="currentColor" d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" class=""></path></svg>');
           feed.settings.expanded = true;
           var elementHeights = $self.find('.ctf-owl-item').map(function () {
-              return $(this).height();
-            }).get(),
-            // record the greatest height of the loaded posts
-            minHeight = Math.max.apply(null, elementHeights);
+                return $(this).height();
+              }).get(),
+              // record the greatest height of the loaded posts
+              minHeight = Math.max.apply(null, elementHeights);
           ctfFeedHeightToggle(minHeight, $owlStageOuter);
         } else {
           // record the heights of all of the loaded posts
           var elementHeights = $self.find('.ctf-owl-item').map(function () {
-              return $(this).height();
-            }).get(),
-            // record the greatest height of the loaded posts
-            minHeight = Math.min.apply(null, elementHeights);
+                return $(this).height();
+              }).get(),
+              // record the greatest height of the loaded posts
+              minHeight = Math.min.apply(null, elementHeights);
           ctfFeedHeightToggle(minHeight, $owlStageOuter);
           $thisMoreButton.removeClass('ctf-carousel-less').addClass('ctf-carousel-more').find('span').html('<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-plus fa-w-14 fa-2x"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" class=""></path></svg>');
           feed.settings.expanded = false;
@@ -5894,10 +5970,10 @@ if(!ctf_js_exists) {
     });
 
     // GDPR Cookie Consent by WebToffee
-    $('.cli-user-preference-checkbox').on('click',function(){
+    $('.cli-user-preference-checkbox, .cky-notice button').on('click',function(){
       setTimeout(function() {
         $.each(window.ctf.feeds,function(index){
-          window.ctf.feeds[ index ].settings.consentGiven = false;
+          window.ctf.feeds[ index ].checkConsent();
           window.ctf.feeds[ index ].afterConsentToggled();
         });
       },1000);
@@ -5912,32 +5988,77 @@ if(!ctf_js_exists) {
     });
 
     // Complianz by Really Simple Plugins
-    $(document).on('cmplzEnableScripts', function (event) {
-      if ( event.detail === 'marketing' ) {
-        $.each(window.ctf.feeds,function(index){
-          window.ctf.feeds[ index ].settings.consentGiven = true;
-          window.ctf.feeds[ index ].afterConsentToggled();
-        });
+    $('.cmplz-btn').on('click', function() {
+      if ( typeof cmplz_accepted_categories === 'function' ) {
+        setTimeout(function() {
+          var accepted = cmplz_accepted_categories();
+          if ( accepted.indexOf('marketing') > -1 ) {
+            $.each(window.ctf.feeds,function(index){
+              window.ctf.feeds[ index ].settings.consentGiven = true;
+              window.ctf.feeds[ index ].afterConsentToggled();
+            });
+          }
+        },1000);
       }
     });
 
-    // Complianz by Really Simple Plugins
-    $(document).on('cmplzFireCategories', function (event) {
-
-      if ( event.detail.category==='marketing' ) {
-        $.each(window.ctf.feeds,function(index){
-          window.ctf.feeds[ index ].settings.consentGiven = true;
-          window.ctf.feeds[ index ].afterConsentToggled();
-        });
-      }
-    });
-
-    // Borlabs Cookie by Borlabs
-    $(document).on('borlabs-cookie-consent-saved', function (event) {
+    $(document).on('cmplzAcceptAll', function (event) {
       $.each(window.ctf.feeds,function(index){
         window.ctf.feeds[ index ].settings.consentGiven = true;
         window.ctf.feeds[ index ].afterConsentToggled();
       });
+    });
+
+
+    // hide notice on click and send ajax request to backend
+    $('#ctf-frce-hide-license-error').on('click',function() {
+      $('#ctf-fr-ce-license-error').slideUp();
+      jQuery.ajax({
+        url: ctfOptions.ajax_url,
+        type: 'post',
+        data: {
+          action: 'ctf_hide_frontend_license_error',
+          nonce: ctfOptions.nonce
+        },
+        success: function(msg){
+          console.log(msg);
+        }
+      });
+    });
+
+    // Borlabs Cookie by Borlabs
+    $(document).on('borlabs-cookie-consent-saved', function (event) {
+      var consentGiven = false;
+      if (typeof window.BorlabsCookie !== 'undefined') { // Borlabs Cookie by Borlabs
+        consentGiven = window.BorlabsCookie.checkCookieConsent('twitter');
+      }
+      $.each(window.ctf.feeds,function(index){
+        window.ctf.feeds[ index ].settings.consentGiven = consentGiven;
+        window.ctf.feeds[ index ].afterConsentToggled();
+      });
+    });
+
+    if (typeof window.consentApi !== 'undefined') {
+      window.consentApi?.consent("custom-twitter-feed").then(() => {
+        try {
+          // applies full features to feed
+          $.each(window.ctf.feeds,function(index){
+            window.ctf.feeds[ index ].settings.consentGiven = true;
+            window.ctf.feeds[ index ].afterConsentToggled();
+          });
+        }
+        catch (error) {
+          // do nothing
+        }
+      });
+    }
+
+    $('.moove-gdpr-infobar-allow-all').on('click',function() {
+      setTimeout(function() {
+        $.each(window.ctf.feeds,function(index){
+          window.ctf.feeds[ index ].afterConsentToggled();
+        });
+      },1000);
     });
   });
 

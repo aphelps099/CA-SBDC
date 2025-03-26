@@ -7,6 +7,7 @@
  */
 namespace Smashballoon\Customizer;
 
+/** @internal */
 class Feed_Saver
 {
     /**
@@ -200,11 +201,11 @@ class Feed_Saver
         $settings_array = self::format_settings($this->sanitized_and_sorted_data['feed_settings']);
         if ($this->is_legacy) {
             $to_save_json = \json_encode($settings_array);
-            update_option('sbi_legacy_feed_settings', $to_save_json, \false);
+            \update_option('sbi_legacy_feed_settings', $to_save_json, \false);
             return \true;
         }
         $this->sanitized_and_sorted_data['feeds'][] = array('key' => 'settings', 'values' => array(\json_encode($settings_array)));
-        $this->sanitized_and_sorted_data['feeds'][] = array('key' => 'feed_name', 'values' => array(sanitize_text_field($this->feed_name)));
+        $this->sanitized_and_sorted_data['feeds'][] = array('key' => 'feed_name', 'values' => array(\sanitize_text_field($this->feed_name)));
         $success = $this->db->feeds_update($this->sanitized_and_sorted_data['feeds'], $args);
         return $success;
     }
@@ -245,7 +246,7 @@ class Feed_Saver
             $feed_settings->set_feed_type_and_terms();
             $feed_settings->set_transient_name();
             $return = $feed_settings->get_legacy_feed_settings();
-            $this->feed_db_data = array('id' => 'legacy', 'feed_name' => __('Legacy Feeds', 'feeds-for-youtube'), 'feed_title' => __('Legacy Feeds', 'feeds-for-youtube'), 'status' => 'publish', 'last_modified' => \date('Y-m-d H:i:s'));
+            $this->feed_db_data = array('id' => 'legacy', 'feed_name' => \__('Legacy Feeds', 'feeds-for-youtube'), 'feed_title' => \__('Legacy Feeds', 'feeds-for-youtube'), 'status' => 'publish', 'last_modified' => \date('Y-m-d H:i:s'));
         } elseif (empty($this->insert_id)) {
             return \false;
         } else {
@@ -258,7 +259,7 @@ class Feed_Saver
             $return = \json_decode($settings_db_data[0]['settings'], \true);
             $return['feed_name'] = $settings_db_data[0]['feed_name'];
         }
-        $return = wp_parse_args($return, $this->proxy_provider->get_db_settings());
+        $return = \wp_parse_args($return, $this->proxy_provider->get_db_settings());
         if (empty($return['id'])) {
             return $return;
         }
@@ -328,7 +329,7 @@ class Feed_Saver
             return \false;
         }
         $return = $settings_db_data;
-        $return = wp_parse_args($return, self::settings_defaults());
+        $return = \wp_parse_args($return, self::settings_defaults());
         if (empty($return['sources'])) {
             return $return;
         }
@@ -391,8 +392,8 @@ class Feed_Saver
             'headersize' => 'small',
             'headeroutside' => \false,
             'showsubscribe' => \true,
-            'buttontext' => __('Load More...', 'feeds-for-youtube'),
-            'subscribetext' => __('Subscribe', 'feeds-for-youtube'),
+            'buttontext' => \__('Load More...', 'feeds-for-youtube'),
+            'subscribetext' => \__('Subscribe', 'feeds-for-youtube'),
             'caching_type' => 'page',
             'cache_time' => 1,
             'cache_time_unit' => 'hours',
@@ -437,20 +438,20 @@ class Feed_Saver
             'dateformat' => '0',
             'customdate' => '',
             'showsubscribers' => \true,
-            'subscriberstext' => __('subscribers', 'feeds-for-youtube'),
-            'viewstext' => __('views', 'feeds-for-youtube'),
-            'agotext' => __('ago', 'feeds-for-youtube'),
-            'beforedatetext' => __('Streaming live', 'feeds-for-youtube'),
-            'beforestreamtimetext' => __('Streaming live in', 'feeds-for-youtube'),
-            'minutetext' => __('minute', 'feeds-for-youtube'),
-            'minutestext' => __('minutes', 'feeds-for-youtube'),
-            'hourstext' => __('hours', 'feeds-for-youtube'),
-            'thousandstext' => __('K', 'feeds-for-youtube'),
-            'millionstext' => __('M', 'feeds-for-youtube'),
-            'watchnowtext' => __('Watch Now', 'feeds-for-youtube'),
+            'subscriberstext' => \__('subscribers', 'feeds-for-youtube'),
+            'viewstext' => \__('views', 'feeds-for-youtube'),
+            'agotext' => \__('ago', 'feeds-for-youtube'),
+            'beforedatetext' => \__('Streaming live', 'feeds-for-youtube'),
+            'beforestreamtimetext' => \__('Streaming live in', 'feeds-for-youtube'),
+            'minutetext' => \__('minute', 'feeds-for-youtube'),
+            'minutestext' => \__('minutes', 'feeds-for-youtube'),
+            'hourstext' => \__('hours', 'feeds-for-youtube'),
+            'thousandstext' => \__('K', 'feeds-for-youtube'),
+            'millionstext' => \__('M', 'feeds-for-youtube'),
+            'watchnowtext' => \__('Watch Now', 'feeds-for-youtube'),
             'cta' => 'related',
             'colorpalette' => 'inherit',
-            'linktext' => __('Learn More', 'feeds-for-youtube'),
+            'linktext' => \__('Learn More', 'feeds-for-youtube'),
             'linkurl' => '',
             'linkopentype' => 'same',
             'linkcolor' => '',
@@ -584,7 +585,7 @@ class Feed_Saver
                 $return = $this->cast_boolean($value);
                 break;
             default:
-                $return = sanitize_text_field($value);
+                $return = \sanitize_text_field($value);
                 break;
         }
         return $return;

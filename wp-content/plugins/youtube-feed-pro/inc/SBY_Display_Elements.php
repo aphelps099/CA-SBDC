@@ -157,7 +157,7 @@ class SBY_Display_Elements
 		}
 		if( ( isset( $args['php_condition'] ) && $args['php_condition'] ) || !isset( $args['php_condition'] ) ){
 			if ( isset( $args['php_content'] ) && !empty( $args['php_content'] ) ) {
-				return ' ' . $args['attr'] . '="' . $args['php_content'] . '"';
+				return ' ' . $args['attr'] . '="' . esc_attr($args['php_content']) . '"';
 			}
 		}
 	}
@@ -295,12 +295,12 @@ class SBY_Display_Elements
 		}
 	}
 
-	public static function escaped_formatted_count_string( $count, $type ) {
+	public static function escaped_formatted_count_string( $count, $type, $no_spinner = false ) {
 		global $sby_settings;
 
-		$type_text = isset( $sby_settings[ $type . 'text' ] ) ? ' ' . $sby_settings[ $type . 'text' ] : '';
+		$type_text = isset( $sby_settings[ $type . 'text' ] ) ? ' ' . esc_attr($sby_settings[ $type . 'text' ]) : '';
 
-		if ( $count === '' ) {
+		if ( '' === $count && false === $no_spinner ) { 
 			return SBY_Display_Elements::spinner() . $type_text;
 		}
 
@@ -622,7 +622,7 @@ class SBY_Display_Elements
 		if ( ! empty( $style_settings ) ) {
 			$style_att = ' style="';
 			foreach ( $style_settings as $prop => $val ) {
-				$style_att .= $prop . ': '. $val . ';';
+				$style_att .= esc_attr( $prop . ': '. $val . ';' );
 			}
 			$style_att .= '"';
 		}

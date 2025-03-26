@@ -5,7 +5,7 @@
  * Adds GDPR related workarounds for third-party plugins:
  * https://wordpress.org/plugins/cookie-law-info/
  *
- * @since 2.6/5.9
+ * @since 1.7/1.12
  */
 namespace TwitterFeed;
 
@@ -18,40 +18,59 @@ class CTF_GDPR_Integrations {
 	/**
 	 * Undoing of Cookie Notice's Twitter Feed related code
 	 * needs to be done late.
+	 *
+	 * @since 1.7/1.12
 	 */
 	public static function init() {
-		add_filter( 'wt_cli_third_party_scripts', array( 'CTF_GDPR_Integrations', 'undo_script_blocking' ), 11 );
+		add_filter( 'wt_cli_third_party_scripts', array( 'TwitterFeed\CTF_GDPR_Integrations', 'undo_script_blocking' ), 11 );
+		add_filter( 'cmplz_known_script_tags', array( 'TwitterFeed\CTF_GDPR_Integrations', 'undo_script_blocking' ), 11 );
 	}
 
 	/**
 	 * Prevents changes made to how JavaScript file is added to
 	 * pages.
 	 *
-	 * @param array $blocking
+	 * @param array $return
 	 *
 	 * @return array
+	 *
+	 * @since 1.7/1.12
 	 */
-    public static function undo_script_blocking( $blocking ) {
-        $settings = ctf_get_database_settings();
-        if ( ! CTF_GDPR_Integrations::doing_gdpr( $settings ) ) {
-            return $blocking;
-        }
-        unset( $blocking['twitter-feed'] );
-        return $blocking;
-    }
+	public static function undo_script_blocking( $return ) {
+		$settings = ctf_get_database_settings();
+		if ( ! self::doing_gdpr( $settings ) ) {
+			return $return;
+		} unset( $return['twitter-feed'] );
+
+		remove_filter( 'wt_cli_third_party_scripts', 'wt_cli_twitter_feed_script' );
+		remove_filter( 'cmplz_known_script_tags', 'cmplz_twitter_feed_script' );
+
+		return $return;
+	}
 
 	/**
 	 * Whether or not consent plugins that Twitter Feed
 	 * is compatible with are active.
 	 *
 	 * @return bool|string
+	 *
+	 * @since 1.7/1.12
 	 */
 	public static function gdpr_plugins_active() {
+		if ( defined( 'RCB_ROOT_SLUG' ) ) {
+			return 'Real Cookie Banner by devowl.io';
+		}
+		if ( function_exists( 'gdpr_cookie_is_accepted' ) ) {
+			return 'GDPR Cookie Compliance by Moove Agency';
+		}
 		if ( class_exists( 'Cookie_Notice' ) ) {
 			return 'Cookie Notice by dFactory';
 		}
 		if ( function_exists( 'run_cookie_law_info' ) || class_exists( 'Cookie_Law_Info' ) ) {
 			return 'GDPR Cookie Consent by WebToffee';
+		}
+		if ( defined( 'CKY_APP_ASSETS_URL' ) ) {
+			return 'CookieYes | GDPR Cookie Consent by CookieYes';
 		}
 		if ( class_exists( 'Cookiebot_WP' ) ) {
 			return 'Cookiebot by Cybot A/S';
@@ -59,7 +78,7 @@ class CTF_GDPR_Integrations {
 		if ( class_exists( 'COMPLIANZ' ) ) {
 			return 'Complianz by Really Simple Plugins';
 		}
-		if ( function_exists('BorlabsCookieHelper') ) {
+		if ( function_exists( 'BorlabsCookieHelper' ) ) {
 			return 'Borlabs Cookie by Borlabs';
 		}
 
@@ -73,6 +92,8 @@ class CTF_GDPR_Integrations {
 	 * @param $settings
 	 *
 	 * @return bool
+	 *
+	 * @since 1.7/1.12
 	 */
 	public static function doing_gdpr( $settings ) {
 		$gdpr = isset( $settings['gdpr'] ) ? $settings['gdpr'] : 'auto';
@@ -82,7 +103,7 @@ class CTF_GDPR_Integrations {
 		if ( $gdpr === 'yes' ) {
 			return true;
 		}
-		return (CTF_GDPR_Integrations::gdpr_plugins_active() !== false);
+		return ( self::gdpr_plugins_active() !== false );
 	}
 
 	public static function blocking_cdn( $settings ) {
@@ -95,7 +116,7 @@ class CTF_GDPR_Integrations {
 		}
 		$ctf_statuses_option = get_option( 'ctf_statuses', array() );
 
-		if ( $ctf_statuses_option['gdpr']['from_update_success'] ) {
+		if ( ! empty( $ctf_statuses_option['gdpr'] ) && $ctf_statuses_option['gdpr']['from_update_success'] ) {
 			return (CTF_GDPR_Integrations::gdpr_plugins_active() !== false);
 		}
 		return false;
@@ -153,8 +174,8 @@ class CTF_GDPR_Integrations {
 		}
 
 		if ( ! $ctf_statuses_option['gdpr']['upload_dir']
-			|| ! $ctf_statuses_option['gdpr']['tables']
-			|| ! $ctf_statuses_option['gdpr']['image_editor'] ) {
+		     || ! $ctf_statuses_option['gdpr']['tables']
+		     || ! $ctf_statuses_option['gdpr']['image_editor'] ) {
 			return false;
 		}
 

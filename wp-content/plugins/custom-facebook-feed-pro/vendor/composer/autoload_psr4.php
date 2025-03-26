@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'FacebookFeed\\Vendor\\Smashballoon\\Framework\\' => array($vendorDir . '/smashballoon/framework'),
     'CustomFacebookFeed\\' => array($baseDir . '/inc'),
 );

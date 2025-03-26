@@ -7,6 +7,8 @@
 
 namespace InstagramFeed\Builder;
 
+use InstagramFeed\SB_Instagram_Data_Encryption;
+
 class SBI_Feed_Saver {
 
 	/**
@@ -333,6 +335,10 @@ class SBI_Feed_Saver {
 			$return['feed_name'] = $settings_db_data[0]['feed_name'];
 		}
 
+		// backwards compatibility workaround
+		if ( ! isset( $return['reelsposts'] ) && isset( $return['videosposts'] ) ) {
+			$return['reelsposts'] = $return['videosposts'];
+		}
 		$return = wp_parse_args( $return, self::settings_defaults() );
 
 		if ( empty( $return['id'] ) ) {
@@ -351,6 +357,30 @@ class SBI_Feed_Saver {
 		$args = array( 'id' => $return['id'] );
 
 		$source_query = SBI_Db::source_query( $args );
+
+		//fallback to source details [username] if source not found.
+		$source_details = isset( $return['source_details'] ) ? $return['source_details'] : array();
+		$type_change = empty( $source_query ) || ( count( $source_query ) != count( $return['id'] ) );
+		if( $type_change && ! empty( $source_details ) ) {
+			if (is_array($source_details) && isset($source_details['id']) && isset($source_details['username'])) {
+				$source_details = array($source_details);
+			}
+
+			$usernames = array();
+			foreach ($source_details as $source) {
+				if (is_array($source) && isset($source['username'])) {
+					$usernames[] = $source['username'];
+				}
+			}
+			$args = array( 'username' => $usernames);
+			$source_query = SBI_Db::source_query( $args );
+			if( ! empty( $source_query ) ) {
+				$return['id'] = array();
+				foreach( $source_query as $source ) {
+					$return['id'][] = $source['account_id'];
+				}
+			}
+		}
 
 		$return['sources'] = array();
 
@@ -395,7 +425,7 @@ class SBI_Feed_Saver {
 	}
 
 	public static function get_processed_source_data( $source ) {
-		$encryption = new \SB_Instagram_Data_Encryption();
+		$encryption = new SB_Instagram_Data_Encryption();
 		$user_id    = $source['account_id'];
 		$info       = ! empty( $source['info'] ) ? json_decode( $encryption->decrypt( $source['info'] ), true ) : array();
 
@@ -414,6 +444,7 @@ class SBI_Feed_Saver {
 			'expires'          => stripslashes( $source['expires'] ),
 			'profile_picture'  => $cdn_avatar_url,
 			'local_avatar_url' => \SB_Instagram_Connected_Account::maybe_local_avatar( $source['username'], $cdn_avatar_url ),
+			'connect_type'     => isset($source['connect_type']) ? stripslashes( $source['connect_type'] ) : '',
 		);
 
 		return $processed;
@@ -473,50 +504,52 @@ class SBI_Feed_Saver {
 	public static function settings_defaults( $return_array = true ) {
 		{
 			$defaults = array(
-				//V6
+				// V6
 				'customizer'                => false,
 
-				//Feed general
-				'type' => 'user', //user - hashtag -
-				'order' => 'recent',
-				'id' => [],
-				'hashtag' => [],
-				'tagged' => [],
-				'width' => '',
-				'widthunit' => '',
-				'widthresp' => true,
-				'height' => '',
-				'heightunit' => '',
-				'sortby' => 'none',
-				'disablelightbox' => false,
-				'captionlinks' => false,
-				'offset' => 0,
-				'num' => 20,
-				'apinum'           => '',
-				'nummobile' => 20,
-				'cols' => 4,
-				'colstablet' => 2,
-				'colsmobile' => 1,
-				'disablemobile' => false,
-				'imagepadding' => '5',
-				'imagepaddingunit' => 'px',
-				'layout' => 'grid',
+				// Feed general
+				'type'                      => 'user', // user - hashtag -
+				'order'                     => 'recent',
+				'id'                        => array(),
+				'hashtag'                   => array(),
+				'tagged'                    => array(),
+				'width'                     => '',
+				'widthunit'                 => '',
+				'widthresp'                 => true,
+				'height'                    => '',
+				'heightunit'                => '',
+				'imageaspectratio'          => '1:1',
+				'sortby'                    => 'none',
+				'disablelightbox'           => false,
+				'captionlinks'              => false,
+				'offset'                    => 0,
+				'num'                       => 20,
+				'apinum'                    => '',
+				'nummobile'                 => 20,
+				'cols'                      => 4,
+				'colstablet'                => 2,
+				'colsmobile'                => 1,
+				'disablemobile'             => false,
+				'imagepadding'              => '5',
+				'imagepaddingunit'          => 'px',
+				'layout'                    => 'grid',
 
-				//Lightbox comments
+				// Lightbox comments
 				'lightboxcomments'          => true,
 				'numcomments'               => 20,
 
-				//Photo hover styles
+				// Photo hover styles
 				'hovereffect'               => '',
 				'hovercolor'                => '#0000007D',
 				'hovertextcolor'            => '',
 				'hoverdisplay'              => 'username,date,instagram',
+				'hovercaptionlength' 	    => '',
 
-				//Item misc
+				// Item misc
 				'background'                => '',
 				'imageres'                  => 'auto',
 				'media'                     => 'all',
-				'videotypes'                => 'regular,igtv',
+				'videotypes'                => 'regular,igtv,reels',
 				'showcaption'               => true,
 				'captionlength'             => '',
 				'captioncolor'              => '',
@@ -525,8 +558,12 @@ class SBI_Feed_Saver {
 				'likescolor'                => '',
 				'likessize'                 => '13',
 				'hidephotos'                => '',
+				'poststyle'                 => 'regular',
+				'postbgcolor'               => '#FFFFFF',
+				'postcorners'               => '4',
+				'boxshadow'                 => '',
 
-				//Footer
+				// Footer
 				'showbutton'                => true,
 				'buttoncolor'               => '',
 				'buttonhovercolor'          => '', // to be tested
@@ -538,9 +575,8 @@ class SBI_Feed_Saver {
 				'followtextcolor'           => '',
 				'followtext'                => 'Follow on Instagram',
 
-				//Header
+				// Header
 				'showheader'                => true,
-				'headertextsize'            => '', //to be tested
 				'headercolor'               => '',
 				'headerstyle'               => 'standard',
 				'showfollowers'             => true,
@@ -553,6 +589,9 @@ class SBI_Feed_Saver {
 				'stories'                   => true,
 				'storiestime'               => '',
 				'headeroutside'             => false,
+				'headertext'                => __( 'We are on Instagram', 'instagram-feed' ),
+				'headertextsize'            => 'medium',
+				'headertextcolor'           => '#',
 
 				'class'                     => '',
 				'ajaxtheme'                 => '',
@@ -560,7 +599,7 @@ class SBI_Feed_Saver {
 				'includewords'              => '',
 				'maxrequests'               => 5,
 
-				//Carousel
+				// Carousel
 				'carouselrows'              => 1,
 				'carouselloop'              => 'rewind',
 				'carouselarrows'            => false,
@@ -568,26 +607,26 @@ class SBI_Feed_Saver {
 				'carouselautoplay'          => false,
 				'carouseltime'              => 5000,
 
-				//Highlight
+				// Highlight
 				'highlighttype'             => 'pattern',
 				'highlightoffset'           => 0,
 				'highlightpattern'          => '',
 				'highlighthashtag'          => '',
 				'highlightids'              => '',
 
-				//WhiteList
+				// WhiteList
 				'whitelist'                 => '',
 
-				//Load More on Scroll
+				// Load More on Scroll
 				'autoscroll'                => false,
 				'autoscrolldistance'        => '',
 
-				//Permanent
+				// Permanent
 				'permanent'                 => false,
 				'accesstoken'               => '',
 				'user'                      => '',
 
-				//Misc
+				// Misc
 				'feedid'                    => false,
 
 				'resizeprocess'             => 'background',
@@ -596,8 +635,8 @@ class SBI_Feed_Saver {
 				'gdpr'                      => 'auto',
 				'moderationmode'            => false,
 
-				//NEWLY ADDED
-				//TO BE CHECKED
+				// NEWLY ADDED
+				// TO BE CHECKED
 				'colstablet'                => 2,
 				'colorpalette'              => 'inherit',
 				'custombgcolor1'            => '',
@@ -609,6 +648,7 @@ class SBI_Feed_Saver {
 
 				'photosposts'               => true,
 				'videosposts'               => true,
+				'reelsposts'                => true,
 
 				'shoppablefeed'             => false,
 				'shoppablelist'             => '{}',

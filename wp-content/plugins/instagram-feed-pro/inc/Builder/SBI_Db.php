@@ -7,6 +7,8 @@
 
 namespace InstagramFeed\Builder;
 
+use InstagramFeed\SB_Instagram_Data_Encryption;
+
 class SBI_Db {
 
 	const RESULTS_PER_PAGE = 20;
@@ -33,14 +35,20 @@ class SBI_Db {
 			unset( $args['page'] );
 		}
 
-		$offset = max( 0, $page * self::RESULTS_PER_PAGE );
+		$offset = max( 0, $page * SBI_MAX_SOURCES_LIMIT );
 
 		if ( empty( $args ) ) {
+			$cache_key = 'sbi_sources_query_' . $offset;
+			$results   = wp_cache_get($cache_key);
 
-			$limit = (int) self::RESULTS_PER_PAGE;
-			$sql   = "SELECT s.id, s.account_id, s.account_type, s.privilege, s.access_token, s.username, s.info, s.error, s.expires, count(f.id) as used_in
+			if (false !== $results) {
+				return $results;
+			}
+
+			$limit = SBI_MAX_SOURCES_LIMIT;
+			$sql   = "SELECT s.id, s.account_id, s.account_type, s.privilege, s.access_token, s.username, s.info, s.error, s.expires, s.connect_type, count(f.id) as used_in
 				FROM $sources_table_name s
-				LEFT JOIN $feeds_table_name f ON f.settings LIKE CONCAT('%', s.account_id, '%')
+				LEFT JOIN $feeds_table_name f ON f.settings LIKE CONCAT('%', s.account_id, '%') OR f.settings LIKE CONCAT('%', s.username, '%')
 				GROUP BY s.id, s.account_id
 				LIMIT $limit
 				OFFSET $offset;
@@ -55,50 +63,65 @@ class SBI_Db {
 			$i = 0;
 			foreach ( $results as $result ) {
 				if ( (int) $result['used_in'] > 0 ) {
-					$account_id = sanitize_key( $result['account_id'] );
-					$sql        = "SELECT *
+					$results[ $i ]['instances'] = $wpdb->get_results( $wpdb->prepare(
+						"SELECT *
 						FROM $feeds_table_name
-						WHERE settings LIKE CONCAT('%', $account_id, '%')
+						WHERE settings LIKE CONCAT('%', %s, '%') OR settings LIKE CONCAT('%', %s, '%')
 						GROUP BY id
 						LIMIT 100;
-						";
-
-					$results[ $i ]['instances'] = $wpdb->get_results( $sql, ARRAY_A );
+						", $result['account_id'], $result['username'] ), ARRAY_A );
 				}
 				$i++;
 			}
-
+			wp_cache_set($cache_key, $results, '', HOUR_IN_SECONDS);
 			return $results;
 		}
 
-		if ( ! empty( $args['expiring'] ) ) {
+		if (! empty($args['expiring'])) {
 			$sql = $wpdb->prepare(
-				"
-			SELECT * FROM $sources_table_name
-			WHERE account_type = 'personal'
-			AND expires < %s
-			AND last_updated < %s
-			ORDER BY expires ASC
-			LIMIT 5;
-		 ",
-				gmdate( 'Y-m-d H:i:s', time() + SBI_REFRESH_THRESHOLD_OFFSET ),
-				gmdate( 'Y-m-d H:i:s', time() - SBI_MINIMUM_INTERVAL )
+				"SELECT * FROM $sources_table_name
+				WHERE account_type IN ('personal', 'basic')
+				AND expires < %s
+				AND last_updated < %s
+				ORDER BY expires ASC
+				LIMIT 5;",
+				gmdate('Y-m-d H:i:s', time() + SBI_REFRESH_THRESHOLD_OFFSET),
+				gmdate('Y-m-d H:i:s', time() - SBI_MINIMUM_INTERVAL)
 			);
+
+			return $wpdb->get_results($sql, ARRAY_A);
+		}
+
+		if ( ! empty( $args['username'] ) ) {
+			if(is_array($args['username'])){
+				// Sanitize each username and prepare placeholders for the query.
+				$placeholders = array_fill(0, count($args['username']), '%s');
+				$placeholders_string = implode(', ', $placeholders);
+
+				// Prepare the SQL query with placeholders.
+				$sql = $wpdb->prepare(
+					"SELECT * FROM $sources_table_name WHERE username IN ($placeholders_string)",
+					$args['username']
+				);
+			} else {
+				$sql = $wpdb->prepare("SELECT * FROM $sources_table_name
+					WHERE username = %s;",
+					$args['username']
+				);
+			}
 
 			return $wpdb->get_results( $sql, ARRAY_A );
 		}
 
-		if ( ! empty( $args['username'] ) ) {
-			return $wpdb->get_results(
-				$wpdb->prepare(
-					"
-			SELECT * FROM $sources_table_name
-			WHERE username = %s;
-		 ",
-					$args['username']
-				),
-				ARRAY_A
+		if (! empty($args['type']) && $args['type'] === 'basic') {
+			$sql = $wpdb->prepare(
+				"SELECT * FROM $sources_table_name WHERE account_type IN (%s, %s) AND connect_type = %s",
+				'basic',
+				'personal',
+				'personal'
 			);
+
+			return $wpdb->get_results($sql, ARRAY_A);
 		}
 
 		if ( isset( $args['access_token'] ) && ! isset( $args['id'] ) ) {
@@ -198,8 +221,10 @@ class SBI_Db {
 	 */
 	public static function source_update( $to_update, $where_data ) {
 		global $wpdb;
+		global $sb_instagram_posts_manager;
+
 		$sources_table_name = $wpdb->prefix . 'sbi_sources';
-		$encryption         = new \SB_Instagram_Data_Encryption();
+		$encryption         = new SB_Instagram_Data_Encryption();
 
 		$data         = array();
 		$where        = array();
@@ -212,6 +237,14 @@ class SBI_Db {
 		if ( isset( $to_update['privilege'] ) ) {
 			$data['privilege'] = $to_update['privilege'];
 			$format[]          = '%s';
+		}
+		if ( isset( $to_update['id'] ) ) {
+			$data['account_id'] = $to_update['id'];
+			$format[]      = '%s';
+		}
+		if ( isset( $where_data['id'] ) ) {
+			$data['account_id'] = $where_data['id'];
+			$format[]      = '%s';
 		}
 		if ( isset( $to_update['id'] ) ) {
 			$where['account_id'] = $to_update['id'];
@@ -245,6 +278,10 @@ class SBI_Db {
 			$data['author'] = $to_update['author'];
 			$format[]       = '%d';
 		}
+		if (isset($to_update['connect_type'])) {
+			$data['connect_type'] = $to_update['connect_type'];
+			$format[]             = '%s';
+		}
 
 		if ( isset( $where_data['type'] ) ) {
 			$where['account_type'] = $where_data['type'];
@@ -266,7 +303,21 @@ class SBI_Db {
 			$where['id']    = $where_data['record_id'];
 			$where_format[] = '%d';
 		}
+		if (isset($where_data['connect_type'])) {
+			$where['connect_type'] = $where_data['connect_type'];
+			$where_format[]        = '%s';
+		}
 		$affected = $wpdb->update( $sources_table_name, $data, $where, $format, $where_format );
+
+		if ($affected === false) {
+			$sb_instagram_posts_manager->add_error(
+				'database_error',
+				'<strong>' . __('There was an error when trying to update the part of the database that stores connected accounts:', 'instagram-feed') . '</strong><br><br><code>' . $wpdb->last_error . '</code><br>'
+			);
+		} else{
+			// Clear cache.
+			self::clear_sources_cache();
+		}
 
 		return $affected;
 	}
@@ -283,11 +334,15 @@ class SBI_Db {
 	 */
 	public static function source_insert( $to_insert ) {
 		global $wpdb;
+		global $sb_instagram_posts_manager;
+
 		$sources_table_name = $wpdb->prefix . 'sbi_sources';
-		$encryption         = new \SB_Instagram_Data_Encryption();
+		$encryption         = new SB_Instagram_Data_Encryption();
 
 		$data   = array();
 		$format = array();
+		$where  = array();
+		$where_format = array();
 		if ( isset( $to_insert['id'] ) ) {
 			$data['account_id'] = $to_insert['id'];
 			$format[]           = '%s';
@@ -323,7 +378,7 @@ class SBI_Db {
 			$data['expires'] = $to_insert['expires'];
 			$format[]        = '%s';
 		} else {
-			$data['expires'] = '2100-12-30 00:00:00';
+			$data['expires'] = '2037-12-30 00:00:00';
 			$format[]        = '%s';
 		}
 		$data['last_updated'] = gmdate( 'Y-m-d H:i:s' );
@@ -335,18 +390,71 @@ class SBI_Db {
 			$data['author'] = get_current_user_id();
 			$format[]       = '%d';
 		}
+		if (isset($to_insert['connect_type'])) {
+			$data['connect_type'] = $to_insert['connect_type'];
+			$format[]        = '%s';
+		}
+		$affected = $wpdb->insert($sources_table_name, $data, $format);
 
-		return $wpdb->insert( $sources_table_name, $data, $format );
+		if ($affected === false) {
+			$sb_instagram_posts_manager->add_error(
+				'database_error',
+				'<strong>' . __('There was an error when trying to update the part of the database that stores connected accounts:', 'instagram-feed') . '</strong><br><br><code>' . $wpdb->last_error . '</code><br>'
+			);
+		} else {
+			// Clear cache.
+			self::clear_sources_cache();
+		}
+
+		return $affected;
+	}
+
+	/**
+	 * Sources count
+	 *
+	 * @return int
+	 *
+	 * @since 6.4
+	 */
+	public static function sources_count()
+	{
+		global $wpdb;
+		$sources_table_name = $wpdb->prefix . 'sbi_sources';
+		$results            = $wpdb->get_results(
+			"
+			SELECT COUNT(*) AS num_entries FROM $sources_table_name;
+			",
+			ARRAY_A
+		);
+		return isset($results[0]['num_entries']) ? (int) $results[0]['num_entries'] : 0;
+	}
+
+	/**
+	 * Clear sources caches
+	 *
+	 * @since 6.4
+	 *
+	 * @return void
+	 */
+	public static function clear_sources_cache()
+	{
+		// get number of sources.
+		$sources_count = self::sources_count();
+		$pages = ceil($sources_count / SBI_MAX_SOURCES_LIMIT);
+		for ($i = 0; $i < $pages; $i++) {
+			wp_cache_delete('sbi_sources_query_' . $i);
+		}
 	}
 
 	/**
 	 * Query the to get feeds list for Elementor
 	 *
+	 * @param bool $custom - if true, add a custom option
 	 * @return array
 	 *
 	 * @since 6.0
 	 */
-	public static function elementor_feeds_query() {
+	public static function elementor_feeds_query($custom = false) {
 		global $wpdb;
 		$feeds_elementor  = array();
 		$feeds_table_name = $wpdb->prefix . 'sbi_feeds';
@@ -360,6 +468,11 @@ class SBI_Db {
 				$feeds_elementor[ $feed->id ] = $feed->feed_name;
 			}
 		}
+
+		if ($custom) {
+			$feeds_elementor[0] = esc_html__('Choose a Feed', 'instagram-feed');
+		}
+
 		return $feeds_elementor;
 	}
 
@@ -408,7 +521,11 @@ class SBI_Db {
 			unset( $args['page'] );
 		}
 
-		$offset = max( 0, $page * self::RESULTS_PER_PAGE );
+		$offset = max( 0, $page * self::get_results_per_page() );
+		$limit = self::get_results_per_page();
+		if( isset( $args['all_feeds'] ) && $args['all_feeds'] ) {
+			$limit = self::feeds_count();
+		}
 
 		if ( isset( $args['id'] ) ) {
 			$sql = $wpdb->prepare(
@@ -424,7 +541,7 @@ class SBI_Db {
 			SELECT * FROM $feeds_table_name
 			LIMIT %d
 			OFFSET %d;",
-				self::RESULTS_PER_PAGE,
+				$limit,
 				$offset
 			);
 		}
@@ -565,6 +682,25 @@ class SBI_Db {
 	 *
 	 * @since 6.0
 	 */
+	public static function delete_source( $source_id ) {
+		global $wpdb;
+		$sources_table_name = $wpdb->prefix . 'sbi_sources';
+		return $wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM $sources_table_name WHERE id = %d; ",
+				$source_id
+			)
+		);
+
+	}
+
+	/**
+	 * Query to Remove Source from Database
+	 *
+	 * @param array $source_id
+	 *
+	 * @since 6.0
+	 */
 	public static function delete_source_query( $source_id ) {
 		global $wpdb;
 		$sources_table_name = $wpdb->prefix . 'sbi_sources';
@@ -574,6 +710,9 @@ class SBI_Db {
 				$source_id
 			)
 		);
+
+		// Clear cache.
+		self::clear_sources_cache();
 
 		echo sbi_json_encode( SBI_Feed_Builder::get_source_list() );
 		wp_die();
@@ -754,6 +893,7 @@ class SBI_Db {
                 expires datetime NOT NULL,
                 last_updated datetime NOT NULL,
                 author bigint(20) unsigned NOT NULL default '1',
+				connect_type VARCHAR(100) NOT NULL default '',
                 PRIMARY KEY  (id),
                 KEY account_type (account_type($max_index_length)),
                 KEY author (author)
@@ -924,6 +1064,7 @@ class SBI_Db {
 			        "
 		);
 		delete_option( 'sbi_hashtag_ids' );
+		delete_option( 'sbi_hashtag_ids_with_connected_accounts' );
 		delete_option( 'sb_instagram_errors' );
 		delete_option( 'sbi_usage_tracking_config' );
 		delete_option( 'sbi_usage_tracking' );
@@ -940,4 +1081,61 @@ class SBI_Db {
 		wp_clear_scheduled_hook( 'sbi_feed_update' );
 		wp_clear_scheduled_hook( 'sbi_usage_tracking_cron' );
 	}
+
+
+	/**
+	 * Query to Get Single source
+	 *
+	 * @param array $source_id
+	 *
+	 * @since 6.1
+	 */
+	public static function get_source_by_account_id( $source_id ) {
+		global $wpdb;
+		$sources_table_name = $wpdb->prefix . 'sbi_sources';
+		$sql = $wpdb->prepare(
+				"SELECT * FROM $sources_table_name WHERE account_id = %s; ",
+				$source_id
+			);
+		return $wpdb->get_row( $sql, ARRAY_A );
+	}
+
+	/**
+	 * Get the number of results per page
+	 *
+	 * @return int
+	 * 
+	 * @since 6.3
+	 */
+	public static function get_results_per_page() {
+		return apply_filters( 'sbi_results_per_page', self::RESULTS_PER_PAGE );
+	}
+
+	/**
+	 * Retrieve Instagram posts by their IDs.
+	 *
+	 * This function queries the database to fetch Instagram posts that match the given IDs.
+	 *
+	 * @param array $post_ids An array of Instagram post IDs to retrieve.
+	 * @return array An array of associative arrays representing the Instagram posts.
+	 */
+	public static function get_posts_by_ids($post_ids)
+	{
+		global $wpdb;
+		$posts_table = $wpdb->prefix . 'sbi_instagram_posts';
+
+		if (empty($post_ids)) {
+			return [];
+		}
+
+		$post_ids = esc_sql($post_ids);
+		$sql_ids = "'" . implode('\', \'', $post_ids) . "'";
+
+		return $wpdb->get_results(
+			"SELECT * FROM $posts_table
+			WHERE instagram_id IN ($sql_ids)",
+			ARRAY_A
+		);
+	}
+
 }

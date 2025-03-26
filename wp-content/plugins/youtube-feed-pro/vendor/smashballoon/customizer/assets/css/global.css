@@ -1369,6 +1369,10 @@
 .sbc-feedtemplate-el .sbc-feedtemplate-el-img {
     background-color: #f3f4f5;
 }
+
+.sbc-feedtemplates-pp-ctn .sbc-feedtypes-list .sbc-feedtemplate-el:not([data-feed-type="channel"]) .sbc-feedtemplate-el-img {
+    background-color: #e2f5ff;
+}
 .sb-control-feedtype-ctn.sbc-feedtemplate-social_wall .sbc-feedtemplate-el .sbc-feedtemplate-el-img {
     background-color: #fef4ef;
     border-color: #fef4ef;

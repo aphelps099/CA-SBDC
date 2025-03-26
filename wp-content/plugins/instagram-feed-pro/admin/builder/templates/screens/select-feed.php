@@ -13,6 +13,8 @@
 		<?php
 		include_once SBI_BUILDER_DIR . 'templates/sections/feeds-type.php';
 		include_once SBI_BUILDER_DIR . 'templates/sections/select-source.php';
+		include_once SBI_BUILDER_DIR . 'templates/sections/select-theme.php';
+		include_once SBI_BUILDER_DIR . 'templates/sections/select-template.php';
 		?>
 	</div>
 	<div class="sbi-fb-ft-action sbi-fb-slctfd-action sbi-fb-fs">

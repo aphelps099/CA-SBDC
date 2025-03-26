@@ -1,5 +1,6 @@
 var sbioembeds_data = {
     nonce: sbi_oembeds.nonce,
+    ajax_handler: sbi_oembeds.ajax_handler,
     genericText: sbi_oembeds.genericText,
     images: sbi_oembeds.images,
     modal: sbi_oembeds.modal,
@@ -16,9 +17,22 @@ var sbioembeds_data = {
     fboEmbedLoader: false,
     instaoEmbedLoader: false,
     openFacebookInstaller: false,
-    loaderSVG: sbi_oembeds.loaderSVG,
-    checkmarkSVG: sbi_oembeds.checkmarkSVG,
-    installerStatus: null
+    installerStatus: null,
+    sbiLicenseNoticeActive: (sbi_oembeds.sbiLicenseNoticeActive === '1'),
+    sbiLicenseInactiveState: (sbi_oembeds.sbiLicenseInactiveState === '1'),
+    licenseBtnClicked : false,
+    svgIcons: sbi_svgs,
+    recheckLicenseStatus: null,
+    licenseKey : sbi_oembeds.licenseKey,
+    viewsActive : {
+        whyRenewLicense : false,
+        licenseLearnMore : false,
+    },
+    notificationElement : {
+        type : 'success', // success, error, warning, message
+        text : '',
+        shown : null
+    },
 }
 
 var sbioEmbeds = new Vue({
@@ -29,6 +43,54 @@ var sbioEmbeds = new Vue({
     },
     data: sbioembeds_data,
     methods: {
+		recheckLicense: function( optionName = null ) {
+			var self = this;
+			var licenseNoticeWrapper = document.querySelector('.sb-license-notice');
+            self.recheckLicenseStatus = 'loading';
+			let data = new FormData();
+            data.append( 'action', 'sbi_recheck_connection' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'option_name', optionName );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if ( data.success == true ) {
+                    if ( data.data.license == 'valid' ) {
+                        this.recheckLicenseStatus = 'success';
+                    }
+                    if ( data.data.license != 'valid' ) {
+                        this.recheckLicenseStatus = 'error';
+                    }
+
+                    setTimeout(function() {
+                        this.recheckLicenseStatus = null;
+						if ( data.data.license == 'valid' ) {
+							licenseNoticeWrapper.remove();
+						}
+                    }.bind(this), 3000);
+                }
+                return;
+            });
+        },
+        recheckBtnText: function( btnName ) {
+			var self = this;
+            if ( self.recheckLicenseStatus == null ) {
+                return self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'loading' ) {
+                return self.svgIcons.loaderSVG + ' ' + self.genericText.recheckLicense;
+            } else if ( self.recheckLicenseStatus == 'success' ) {
+                return self.svgIcons.checkmarkSVG + ' ' + self.genericText.licenseValid;
+            } else if ( self.recheckLicenseStatus == 'error' ) {
+                return self.svgIcons.times2SVG + ' ' + self.genericText.licenseExpired;
+            }
+        },
+
         openFacebookllModal: function() {
             this.openFacebookInstaller = true
         },
@@ -60,6 +122,8 @@ var sbioEmbeds = new Vue({
             data.append( 'nonce', sbi_oembeds.nonce );
             data.append( 'plugin', sbi_oembeds.facebook.installer.plugin );
             data.append( 'type', 'plugin' );
+            data.append( 'referrer', sbi_oembeds.facebook.installer.referrer );
+
             fetch(sbi_oembeds.ajax_handler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -74,22 +138,67 @@ var sbioEmbeds = new Vue({
                         this.isFacebookActivated = true;
                         this.installerStatus = 'success'
                     }
+                  if ( typeof data.data === 'object') {
                     this.facebookInstallBtnText = data.data.msg;
+                  } else {
+                    this.facebookInstallBtnText = data.data;
+                  }
                     setTimeout(function() {
                         this.installerStatus = null;
                     }.bind(this), 3000);
                     return;
                 });
         },
-        enableFboEmbed: function() {
-            this.fboEmbedLoader = true;
-            window.location = this.connectionURL;
-            return;
+        enableInstaoEmbed: function() {
+            this.instaoEmbedLoader = true;
+
+            let oembedConnectUrl = this.connectionURL.connect,
+            appendURL = this.connectionURL.stateURL;
+
+            const urlParams = {
+                'sbi_con' : this.connectionURL.sbi_con,
+                'state': "{'{url=" + appendURL + "}'}"
+            }
+
+            let form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', oembedConnectUrl);
+
+            for (const key in urlParams) {
+                let hiddenField = document.createElement('input');
+                hiddenField.setAttribute('type', 'hidden');
+                hiddenField.setAttribute('name', key);
+                hiddenField.setAttribute('value', urlParams[key]);
+                form.appendChild(hiddenField);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
         },
         enableFacebookOembed: function() {
-            this.facebookoEmbedLoader = true;
-            window.location = this.connectionURL;
-            return;
+            this.fboEmbedLoader = true;
+            let oembedConnectUrl = this.connectionURL.connect,
+                appendURL = this.connectionURL.stateURL;
+
+            const urlParams = {
+                'sbi_con': this.connectionURL.sbi_con,
+                'state': "{'{url=" + appendURL + "}'}"
+            }
+
+            let form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', oembedConnectUrl);
+
+            for (const key in urlParams) {
+                let hiddenField = document.createElement('input');
+                hiddenField.setAttribute('type', 'hidden');
+                hiddenField.setAttribute('name', key);
+                hiddenField.setAttribute('value', urlParams[key]);
+                form.appendChild(hiddenField);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
         },
         disableFboEmbed: function() {
             this.fboEmbedLoader = true;
@@ -149,14 +258,55 @@ var sbioEmbeds = new Vue({
             if( this.installerStatus == null ) {
                 return this.modal.plusIcon;
             } else if( this.installerStatus == 'loading' ) {
-                return this.loaderSVG;
+                return this.svgIcons['loaderSVG'];
             } else if( this.installerStatus == 'success' ) {
-                return this.checkmarkSVG;
+                return this.svgIcons['checkmarkSVG'];
             } else if( this.installerStatus == 'error' ) {
-                return `<i class="fa fa-times-circle"></i>`;
+                return this.svgIcons['timesSVG'];
             }
         },
 
+		/**
+		 * Activate license key from license error post grace period header notice 
+		 * 
+		 * @since 6.2.0
+		 */
+		 activateLicense: function() {
+			var self = this;
+			if ( self.licenseKey == null ) {
+                return;
+			}
+            self.licenseBtnClicked = true;
+            let data = new FormData();
+            data.append( 'action', 'sbi_license_activation' );
+            data.append( 'nonce', sbi_admin.nonce );
+            data.append( 'license_key', self.licenseKey );
+            fetch(sbi_oembeds.ajax_handler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.licenseBtnClicked = false;
+				if(data && data.success == false) {
+					self.processNotification("licenseError");
+					return;
+				}
+				if( data.success != false ){
+					self.processNotification("licenseActivated");
+				}
+            });
+		},
+        /**
+         * Activate View
+         *
+         * @since 6.2.0
+        */
+         activateView : function(viewName, sourcePopupType = 'creation', ajaxAction = false){
+            var self = this;
+            self.viewsActive[viewName] = (self.viewsActive[viewName] == false ) ? true : false;
+        },
         /**
          * Toggle Sticky Widget view
          *
@@ -165,6 +315,24 @@ var sbioEmbeds = new Vue({
         toggleStickyWidget: function() {
             this.stickyWidget = !this.stickyWidget;
         },
+		/**
+		 * Loading Bar & Notification
+		 *
+		 * @since 6.2.0
+		 */
+		processNotification : function( notificationType ){
+			var self = this,
+				notification = self.genericText.notification[ notificationType ];
+			self.loadingBar = false;
+			self.notificationElement =  {
+				type : notification.type,
+				text : notification.text,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 5000);
+		},
     },
     created() {
         // Display the "Install" button text on modal depending on condition

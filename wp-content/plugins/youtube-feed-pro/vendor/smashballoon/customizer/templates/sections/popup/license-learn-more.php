@@ -44,7 +44,7 @@
                     </div>
                     <div class="sb-right">
                         <div class="sb-modal-license-key-form">
-                            <input type="text" placeholder="Paste license key here" class="sb-input" v-model="licenseKey">
+                            <input type="password" placeholder="<?php esc_attr_e('Paste license key here', 'feeds-for-youtube') ?>" class="sb-input" v-model="licenseKey">
                             <button @click="activateLicense()" class="sb-btn-default sb-btn-blue sb-btn-license-activate">
                                 <span v-html="svgIcons.loader" v-if="licenseBtnClicked"></span>
                                 Activate

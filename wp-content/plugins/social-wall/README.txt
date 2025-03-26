@@ -1,13 +1,12 @@
 === Social Wall ===
 Author: Smash Balloon
 Contributors: smashballoon
-Support Website: http://smashballoon/social-wall/
+Support Website: https://smashballoon/social-wall/
 Tags: Social Media, Instagram, Twitter, Facebook, YouTube
-Requires at least: 3.4
-Tested up to: 5.9
-Stable tag: 1.0.6
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires at least: 5.1
+Tested up to: 6.7
+Stable tag: 2.3.0
+License: Non-distributable, Not for resale
 
 Social Wall allows you to display completely customizable social media feeds.
 
@@ -78,11 +77,70 @@ You can embed your social wall feed directly into a template file by using the W
 
 = Will Social Wall work with W3 Total Cache or other caching plugins? =
 
-The Social Wall plugin should work in compatibility with most, if not all, caching plugins, but you may need to tweak the settings in order to allow the social media feeds to update successfully and display your latest posts.  If you are experiencing problems with your social media feeds not updating then try disabling either 'Page Caching' or 'Object Caching' in W3 Total Cache (or any other similar caching plugin) to see whether that fixes the problem.
+The Social WAll plugin should work in compatibility with most, if not all, caching plugins, but you may need to tweak the settings in order to allow the social media feeds to update successfully and display your latest posts.  If you are experiencing problems with your social media feeds not updating then try disabling either 'Page Caching' or 'Object Caching' in W3 Total Cache (or any other similar caching plugin) to see whether that fixes the problem.
 
 == Screenshots ==
 
 == Changelog ==
+= 2.3.0 =
+* New: TikTok videos now play in a standard video player instead of an iframe.
+* Fix: Improved our integration with TikTok feeds to better handle preview images and cache updates.
+* Fix: Fixed an issue preventing Social Wall from showing YouTube stats.
+
+= 2.2.2 =
+* Fix: Fixed an issue with Facebook posts and loading more posts.
+* Fix: Fixed an issue with Facebook multi-feeds not working correctly.
+
+= 2.2.1 =
+* Fix: Tweets in your feed will now inherit the branding set in Custom Twitter Feeds Pro (X vs Twitter logos and color).
+* Fix: Fixed a PHP error occurring in PHP 8.0+ "Creation of dynamic property SW_Feed::$atts".
+* Fix: Fixed Instagram post .webp local images not working in feeds.
+* Fix: Fixed MYSQL error related to a missing table when TikTok Feeds was not installed.
+* Fix: Fixed TikTok posts not using local images.
+* Fix: Fixed TikTok filter not working in the related tool that can be added above a feed.
+
+= 2.2 =
+* New: Added compatibility with TikTok Feeds Pro! Display your latest TikTok videos in your social wall feeds.
+
+= 2.1 =
+* New: Added support for GDPR features. This is enabled by default if you are using a supported GDPR plugin. Configure on the settings page, "Feeds" tab.
+* Fix: Fixed an issue with post filtering that would hide Facebook posts unless the Facebook feed was saved.
+* Fix: Fixed the thumbnail for Twitter Cards that contained YouTube links not displaying.
+* Fix: Fixed YouTube's JavaScript code being included on the page even when YouTube was not a part of the feed.
+* Fix: Fixed an issue causing Instagram hashtag posts to not appear in the feed when an Instagram hashtag was included.
+* Fix: Fixed a fatal PHP error that would occur with PHP 8.0+ under certain circumstances.
+
+= 2.0.2 =
+* Fix: Tablet columns and number settings were not working.
+* Fix: Fixed only 20 feeds showing up as available for selection when creating a new feed.
+* Fix: Fixed an issue with some date format settings.
+
+= 2.0.1 =
+* Fix: Fixed undefined constant "GLOB_BRACE" causing errors on some servers.
+* Fix: Free Smash Balloon plugin settings menus were not available when Social Wall was active.
+* Fix: Fixed caching conflicts that would cause the wrong posts to be loaded when using the load more button under certain circumstances.
+* Fix: Fixed missing support articles when visiting the "Support" page.
+
+= 2.0 =
+* Important: Minimum supported PHP version has been raised from 5.6 to 7.1.
+* New: Our biggest update ever! We've completely redesigned the plugin settings from head to toe to make it easier to create, manage, and customize your Social Wall feeds.
+* New: All your feeds are now displayed in one place on the "All Feeds" page. This is where you'll find the ability to edit existing feeds and any new ones that you create.
+* New: Easily edit individual feed settings for new feeds instead of cumbersome shortcode options.
+* New: It's now much easier to create feeds. Just click "Add New", select a feed created with the supported plugins, and you're done!
+* New: Brand new feed customizer. We've completely redesigned feed customization from the ground up, reorganizing the settings to make them easier to find.
+* New: Live Feed Preview. You can now see changes you make to your feeds in real time, right in the settings page. Easily preview them on desktop, tablet, and mobile sizes.
+* New: We've added a new Feed Templates feature. You can now select a feed template when creating a feed to make it much quicker and easier to get started with the type of feed you want to display. Selecting a template preconfigures the feed customization settings to match that template, saving you time and effort.
+* New: Color Scheme option. It's now easier than ever to change colors across your feed without needing to adjust individual color settings. Just set a color scheme to effortlessly change colors across your entire feed.
+* New: You can now change the number of columns in your feed across desktop, tablet, and mobile.
+* New: Easily import and export feed settings to make it simple to move feeds across sites.
+
+= 1.0.8 =
+* Fix: Updated the shortcode generator on the "Configure" tab to work with feeds created in version 2.0 of Custom Twitter Feeds.
+* Fix: New Twitter cards were not being created after updating Custom Twitter Feeds Pro.
+
+= 1.0.7 =
+* Fix: Added compatibility with version 2.0 of the Custom Twitter Feeds plugin.
+
 = 1.0.6 =
 * Fix: Updated the shortcode generator on the "Configure" tab to work with feeds created in version 6.0 of Instagram Feed.
 
@@ -112,3 +170,4 @@ The Social Wall plugin should work in compatibility with most, if not all, cachi
 
 = 1.0 =
 * Launched the Social Wall plugin!
+

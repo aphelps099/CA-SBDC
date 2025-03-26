@@ -166,6 +166,26 @@ Buttons
     fill: #141B38;
 }
 
+.sbi-btn-green{
+    background: #4A9F36!important;
+    color: #fff!important;
+    border: 1px solid #4A9F36!important;
+    position: relative;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 22.4px;
+    padding: 8px 20px 8px 20px;
+    border-radius: 4px;
+    gap: 8px;
+}
+.sbi-btn-green:hover{
+    background: #367D26!important;
+}
+.sbi-btn-green:focus{
+    background: #26631D!important;
+}
+
 /*disabled*/
 .sbi-btn-orange[data-active="false"],
 .sbi-btn-blue[data-active="false"],
@@ -200,11 +220,11 @@ Buttons
     font-weight: 600;
     font-size: 24px;
     line-height: 120%;
-    margin: 0 0 4px 0;
+    margin: 0;
     letter-spacing: 0;
 }
 
-#sbi-builder-app h4:not(#sb_instagram h5) {
+#sbi-builder-app h4 {
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
@@ -500,7 +520,21 @@ body.jetpack-masterbar .sbi-csz-header-insider {
     width: calc(100% - 36px);
   }
 }
-
+.sb-breadcrumb-pro-label {
+    color: #fff !important;
+    display: inline-block;
+    background: var(--cl-orange);
+    padding: 5px 8px;
+    font-size: 11px;
+    line-height: 1em !important;
+    border-radius: 4px;
+    -webkit-transform: translateX(5px) translateY(-4px);
+    transform: translateX(8px) translateY(-1px);
+}
+.sb-customizer-sidebar-sec1 a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
 .sbi-fb-hd-btn{
     cursor: pointer;
     display: flex;
@@ -815,6 +849,10 @@ Welcome Screen Empty State
     margin-bottom: 31px;
 }
 
+.sbi-feed-theme-list .sbi-fb-type-el-img img {
+    max-width: calc(100% - 1px);
+}
+
 /*
 .sbi-fb-adv-types .sbi-fb-types-list{
 	grid-template-columns: 24.25% 24.25% 24.25% 24.25%;
@@ -857,7 +895,7 @@ Welcome Screen Empty State
     border: 1px solid #FFDBBA;
 }
 .sb-control-feedtype-ctn .sbi-fb-type-el{
-    border: 2px solid #E8E8EB;
+    border: 2px solid #E8E8EB!important;
     margin-bottom: 7px;
 }
 .sb-control-feedtype-ctn .sbi-fb-type-el-info{
@@ -880,16 +918,7 @@ Welcome Screen Empty State
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
-.sbi-fb-type-el:before{
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    right: 0px;
-    top: 0px;
-    z-index: 2;
-    background: #DCDDE1;
-}
+
 .sbi-fb-type-el[data-active="true"]:before{
     background: var(--cl-orange)
 }
@@ -903,7 +932,7 @@ Welcome Screen Empty State
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #F1F1F1;
+    background: #F3F4F5;
     border: 2px solid #F1F1F1;
     border-bottom: 1px solid #fff;
     border-top-right-radius: 2px;
@@ -954,6 +983,9 @@ Welcome Screen Empty State
     height: 14px;
     margin-left: 5px;
     vertical-align: middle;
+}
+#sbi-builder-app .sbi-fb-templates-list .sbi-fb-type-el[data-active="true"] .sbi-fb-type-el-info {
+    padding-bottom: inherit;
 }
 /*.sbi-fb-type-el-info strong{
 	font-weight: 600;
@@ -1241,6 +1273,10 @@ Source Screen
 .sbi-fb-sources-empty-btn-ctn{
     margin-left: auto;
 }
+.sbi-fb-sources-empty-btn-ctn .sb-addsources-btn{
+    padding: 9px 38px;
+    height: 40px;
+}
 .sb-addsources-btn{
     color: #fff;
     height: 27px;
@@ -1380,9 +1416,8 @@ Source Screen
     text-align: center;
 }
 .sbi-fb-embed-btns-ctn{
-    display: grid;
-    grid-template-columns: 49% 49%;
-    grid-column-gap: 2%;
+    display: flex;
+    gap: 2%;
     margin-top: 14px;
     margin-bottom: 60px;
 }
@@ -1732,62 +1767,43 @@ Source Screen
 }
 .sbi-bld-ft-content{
     display: flex;
-    align-items: center;
-    max-width: 1200px;
+    align-items: normal;
+    gap: 20px;
 }
-.sbi-bld-ft-img{
-    float: left;
-    width: 15%;
-    margin-right: 5%;
-    /*height: 158px;*/
-}
-.sbi-bld-ft-img svg{
-    margin-bottom: -4px;
+.sbi-bld-ft-img img {
+    height: 100%;
+    width: 100%;
 }
 .sbi-bld-ft-txt{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 59%;
-    margin-right: 5%;
+    flex-direction: column;
+    gap: 8px;
+    width: 60%;
 }
 .sbi-bld-ft-txt strong,
 .sbi-fb-mr-fd-heading span{
     color: var(--cl-orange);
 }
 #sbi-builder-app .sbi-bld-ft-info{
-    width: 44%;
     color: #434960;
 }
-#sb-footer-banner .sbi-bld-ft-title,
-#sbi-builder-app #sb-footer-banner h3.sbi-bld-ft-title:not(#sb_instagram h3){
-    width: 63%;
-    margin-right: 6%;
+.sbi-txt-btn-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
 }
 .sbi-bld-ft-action{
-    width: 17%;
     display: flex;
     justify-content: left;
     align-items: center;
 }
-.sbi-bld-ft-action svg{
-    top: 14px;
-    height: 10px;
-}
 @media all and (max-width: 1130px) {
-    #sb-footer-banner .sbi-bld-ft-img{
-        width: 17%;
-        margin-right: 3%;
-    }
-    #sb-footer-banner .sbi-bld-ft-txt{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 61%;
-        margin-right: 3%;
+    .sbi-bld-ft-txt {
+        width: auto;
     }
     #sbi-builder-app #sb-footer-banner h3 {
-        font-size: 20px;
+        font-size: 20px !important;
     }
     #sbi-builder-app #sb-footer-banner .sb-small-p {
         font-size: 13px;
@@ -1860,6 +1876,9 @@ Source Screen
     display: flex;
     justify-content: center;
 }
+.sbi-fb-extpp-img img{
+    overflow: hidden;
+}
 .sbi-fb-extensions-popup[data-getext-view="featuredpost"] .sbi-fb-extpp-img{
     padding: 50px 0px;
 }
@@ -1900,7 +1919,22 @@ Source Screen
     box-sizing: border-box;
     padding: 7px 11px;
 }
-.sbi-fb-extensions-popup[data-getext-view="socialwall"] .sbi-extension-bullet-list {
+.sbi-fb-extpp-info .sbi-extpp-license-notice {
+    margin-bottom: 7px;
+}
+.sbi-fb-extpp-info .sbi-extpp-license-notice span {
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 160%;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background: #D72C2C;
+    border-radius: 2px;
+    padding: 2px 5px;
+}
+.sbi-fb-extensions-popup[data-getext-view="socialwall"] .sbi-extension-bullet-list,
+[data-disable-pro="true"] .sbi-fb-extensions-popup:not([data-getext-view="user"]) .sbi-extension-bullet-list {
     grid-template-columns: 33% 33% 33%;
 }
 #sbi-builder-app .sbi-fb-extensions-popup[data-getext-view="socialwall"] .sbi-fb-extpp-head{
@@ -1911,9 +1945,6 @@ Source Screen
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.sbi-fb-extpp-head span{
-    color: var(--cl-orange);
 }
 .sbi-fb-extpp-lite-btn{
     font-size: 15px;
@@ -1990,6 +2021,9 @@ Source Screen
     display: grid;
     grid-template-columns: 49.5% 49.5%;
     grid-column-gap: 1%;
+}
+.sbi-fb-extpp-btns.sbi-popup-single-btn {
+    grid-template-columns: 99.5%;
 }
 .sbi-fb-extpp-btns div{
     height: 38px;
@@ -2757,6 +2791,7 @@ body.folded .sb-customizer-sidebar{
     -webkit-transition: background .2s ease-in-out;
     transition: background .2s ease-in-out;
     padding: 0 20px;
+    position: relative;
 }
 .sb-customizer-sidebar-sec-el:hover{
     background: #F3F4F5;
@@ -2828,9 +2863,20 @@ body.folded .sb-customizer-sidebar{
     top: 6px;
 
 }
-.sb-customizer-sidebar-intro{
+.sb-customizer-sidebar-intro {
     display: block;
     padding: 5px 0 10px 0;
+    line-height: 1.7 !important;
+}
+.sb-control-label-pro-toggle {
+    display: inline-block;
+    background: #b9b9b9;
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 8px;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin-left: 2px;
 }
 
 .sb-customizer-sidebar-header strong{
@@ -2846,6 +2892,27 @@ body.folded .sb-customizer-sidebar{
 }
 .sb-customizer-ctrl-link{
     text-decoration: underline!important;
+}
+
+.sb-customizer-sidebar-sec-elinfo {
+    background: #FFFFFF;
+    border: 1px solid #E6E6EB;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 16px 20px 20px 26px;
+    gap: 8px;
+    margin: 32px 20px;
+    width: 90%;
+}
+.sb-customizer-sidebar-sec-el-content .sb-linkText {
+    padding-top: 8px;
+}
+.sb-customizer-sidebar-sec-elinfo.sb-control-likescommentsinfo-element {
+    margin: 0;
+    width: 100%;
 }
 /*
 Controls Style
@@ -2871,7 +2938,7 @@ Controls Style
 	position: absolute!important;
 	left: 0!important;
 	top: 0!important;
-	z-index: 3!important;
+	z-index: 7!important;
     background: rgba(255,255,255,0.4)!important;
 }
 #sbi-builder-app .sb-control-elem-ctn[data-type="heading"] .sb-small-p{
@@ -3312,7 +3379,6 @@ Controls Style
 	z-index: 5!important;
 }
 
-
 .sb-control-checkbox[data-active="true"]{
     background: var(--customizer-blue);
     border-color: var(--customizer-blue);
@@ -3330,7 +3396,10 @@ Controls Style
     -webkit-transform: rotate(-45deg);
     transform: rotate(-45deg);
 }
-
+.sb-control-elem-ctn[data-disabled="true"] .sb-control-checkbox {
+    background: #D0D1D7!important;
+    border-color: #c1c1c1!important;
+}
 
 /*Action Button Control*/
 .sb-control-action-button{
@@ -4150,25 +4219,22 @@ width: calc(100% - 20px);
     }
     .sbi-bld-ft-content {
         flex-wrap: wrap;
-    }
-    #sb-footer-banner .sbi-bld-ft-img {
-        width: 100%;
-        height: 140px;
-    }
-    #sb-footer-banner .sbi-bld-ft-img img {
-        height: 100%;
-        width: auto;
+        gap: 0px;
     }
     #sb-footer-banner .sbi-bld-ft-txt {
         justify-content: center;
         align-items: center;
-        width: 100%;
-        margin-right: 3%;
-        padding: 20px;
+        width: auto;
     }
     .sbi-bld-ft-action {
         width: 100%;
-        padding: 0 20px 20px;
+    }
+    .sbi-bld-ft-img {
+        width: 100%;
+        padding-top: 20px;
+    }
+    .sbi-bld-ft-img svg{
+        width: 100%;
     }
     .sbi-bld-footer > div {
         margin-bottom: 60px;
@@ -4402,7 +4468,7 @@ width: calc(100% - 20px);
     width: 100%!important;
     left: 0!important;
     top: 0!important;
-    background: #f1f1f1!important!important;
+    background: #f1f1f1!important;
     opacity: .35!important;
     cursor: default!important;
 }
@@ -4609,6 +4675,11 @@ width: calc(100% - 20px);
 .sb-control-imginfo-text strong{
     font-size: 18px;
     margin-bottom: 20px;
+    line-height: 1.3;
+}
+.sb-control-imginfo-elem .sbi-btn {
+    border: none;
+    cursor: pointer;
 }
 .sb-control-shoppbale-enbaled-ctn .sb-control-imginfo-text strong{
     font-size: 14px;
@@ -5104,4 +5175,837 @@ body #sbi_lightbox.sbi_lightbox:not(.sbi-lightbox-dummy-ctn){
     background: #fff;
     color: #0068A0;
     font-weight: 600;
+}
+.sbi-fb-templates-list {
+    display: grid;
+    grid-template-columns: 24.2% 24.2% 24.2% 24.2%;
+    grid-column-gap: 1%;
+    margin: 31px 0px;
+}
+.sbi-fb-templates-list .sbi-fb-type-el {
+    margin-bottom: 10px;
+}
+.sbi-fb-templates-list .sbi-fb-type-el-info {
+    padding: 0 10px!important;
+}
+
+.sbi-fb-templates-list .sbi-fb-type-el-img svg {
+    width: auto;
+    height: 100%;
+}
+.sbi-fb-templates-list .sbi-fb-type-el-img {
+    border-width: 0px !important;
+}
+.sbi-fb-feedtemplate-alert {
+    padding: 8px 12px 10px;
+    background: #FFF7E5;
+    border: 1px solid #FFDF99;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 160%;
+    display: flex;
+    align-items: center;
+}
+.sbi-fb-feedtemplate-alert span {
+    line-height: 1;
+}
+.sbi-fb-feedtemplate-alert svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+}
+#sbi-builder-app .sbi-fb-feedtemplates-ctn .sbi-fb-types {
+    margin-top: -10px;
+}
+#sbi-builder-app .sbi-fb-templates-list .sbi-fb-type-el-info p {
+    margin: 8px 0px 7px;
+}
+#sbi-builder-app .sbi-fb-templates-ctn .sbi-fb-types h4 {
+    margin-bottom: 0px;
+}
+#sbi-builder-app .sbi-fb-templates-ctn .sbi-fb-types .sb-caption {
+    font-size: 12px;
+    line-height: 150%;
+    color: #434960;
+    margin-top: 0px;
+}
+#sbi-builder-app .sbi-fb-templates-list .sbi-fb-type-el[data-active="true"] p {
+    margin: 8px 0px 4px;
+}
+#sbi-builder-app .sbi-fb-templates-list .sbi-fb-type-el[data-active="true"] .sbi-fb-type-el-info {
+    padding-bottom: inherit;
+}
+.sb-customizer-sidebar-section-settings_feedtemplate .sb-customizer-sidebar-sec-el-icon svg {
+    width: 24px !important;
+}
+.sb-control-elem-ctn:not([data-type="customview"]) svg{
+    fill: currentColor;
+}
+
+.sbi-header-type-text{
+    margin: 0;
+    padding: 5px 5px 15px 5px;
+    line-height: 1.2;
+    width: 100%;
+    box-sizing: border-box;
+}
+[data-preview-device="desktop"] [data-header-size="large"].sbi-header-type-text{
+    font-size: 48px!important;
+}
+[data-preview-device="desktop"] [data-header-size="medium"].sbi-header-type-text,
+[data-preview-device="tablet"] [data-header-size="large"].sbi-header-type-text{
+    font-size: 42px!important;
+}
+[data-preview-device="desktop"] [data-header-size="small"].sbi-header-type-text,
+[data-preview-device="mobile"] [data-header-size="large"].sbi-header-type-text,
+[data-preview-device="tablet"] [data-header-size="medium"].sbi-header-type-text{
+    font-size: 36px!important;
+}
+[data-preview-device="mobile"] [data-header-size="small"].sbi-header-type-text,
+[data-preview-device="mobile"] [data-header-size="medium"].sbi-header-type-text{
+    font-size: 32px!important;
+}
+[data-preview-device="mobile"] [data-header-size="small"].sbi-header-type-text{
+    font-size: 28px!important;
+}
+.sbi-builder-app-lite-dismiss #sbi-license-expired-agp {
+    position: fixed!important;
+    top: 32px;
+    width: 100%;
+    z-index: 999;
+    left: 0;
+}
+.sbi-builder-app-lite-dismiss .sbi-fb-header {
+    top: 64px;
+}
+.sbi-builder-app-lite-dismiss .sb-customizer-sidebar {
+    top: 128px;
+}
+.sbi-builder-app-lite-dismiss .sb-customizer-preview {
+    margin-top: 100px;
+}
+
+/* Social Wall feed link bar styles */
+.sbi-sw-feed-link-bar {
+    background: #434960;
+    text-align: center;
+    padding: 3px;
+}
+.sbi-sw-feed-link-bar .sbi-sw-feed-link-bar-message {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    color: #FFFFFF;
+}
+.sbi-sw-feed-link-bar  a {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 160%;
+    text-decoration-line: underline;
+    color: #FFFFFF;
+    margin-left: 20px;
+    transition: all .2s ease;
+}
+.sbi-sw-feed-link-bar  a:hover {
+    color: #D0D1D7;
+}
+
+/* Social wall feed link bar styles for the customizer */
+.sw-feed-link-bar-present.sbi-customizer-screen:not(.sbi-builder-app-lite-dismiss) .sbi-sw-feed-link-bar{
+    background: #468737;
+    position: fixed;
+    top: 32px;
+    width: calc(100% - 160px);
+    right: 0;
+    z-index: 99;
+}
+.sw-feed-link-bar-present.sbi-customizer-screen:not(.sbi-builder-app-lite-dismiss) .sbi-fb-header {
+    top: 60px;
+}
+.sw-feed-link-bar-present.sbi-customizer-screen:not(.sbi-builder-app-lite-dismiss) .sb-customizer-sidebar {
+    top: 125px;
+}
+.sw-feed-link-bar-present.sbi-customizer-screen:not(.sbi-builder-app-lite-dismiss) .sb-customizer-preview {
+    margin-top: 92px;
+}
+
+/* Social Wall feed link bar styles for the customizer also when lite app dismiss or upgrade to pro bar present at the same time*/
+.sbi-builder-app-lite-dismiss.sw-feed-link-bar-present.sbi-customizer-screen .sbi-sw-feed-link-bar{
+    background: #468737;
+    position: fixed;
+    top: 64px;
+    width: calc(100% - 160px);
+    right: 0;
+    z-index: 99;
+}
+.sbi-builder-app-lite-dismiss.sw-feed-link-bar-present.sbi-customizer-screen .sbi-fb-header {
+    top: 92px;
+}
+.sbi-builder-app-lite-dismiss.sw-feed-link-bar-present.sbi-customizer-screen .sb-customizer-sidebar {
+    top: 156px;
+}
+.sbi-builder-app-lite-dismiss.sw-feed-link-bar-present.sbi-customizer-screen .sb-customizer-preview {
+    margin-top: 128px;
+}
+
+
+/* feedtheme sidebar */
+.sbi-customizer-theme-preview {
+	position: relative;
+}
+.sbi-customizer-theme-preview .sbi-theme-preview-item {
+	opacity: 0;
+	position: fixed;
+	z-index: 101;
+	left: 510px;
+	top: 100px;
+	transition: opacity .3s;
+}
+.sbi-customizer-theme-preview .sbi-theme-preview-item.sbi-theme-preview-show {
+	opacity: 1;
+}
+
+
+.sb-control-feedtheme-ctn .sb-theme-options {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 14.2952px 41.3222px rgb(0 0 0 / 9%), 0px 8.01379px 23.1649px rgb(0 0 0 / 8%);
+    padding: 10px 1px;
+    margin: 0;
+    border-radius: 4px;
+}
+.sb-control-feedtheme-ctn .sb-theme-options .sb-theme-option {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #141B38;
+    font-size: 14px;
+    margin: 0;
+}
+.sb-control-feedtheme-ctn .sb-theme-options .sb-theme-option:first-child {
+    border-bottom: 1px solid #E8E8EB;
+}
+.sb-control-feedtheme-ctn .sb-theme-options .sb-theme-option:hover {
+    background-color: #F3F4F5;
+}
+
+.sb-control-feedtheme-ctn .sb-theme-options .sb-theme-option .sb-theme-active {
+    color: #0068A0;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+/* feedtheme preview */
+.sbi-theme:not(.sbi-default_theme) .sb_instagram_header {
+	padding: 12px 0;
+	border-bottom: 1px solid #CED0D9;
+}
+.sbi-theme:not(.sbi-default_theme) .sb_instagram_header.sbi_header_style_boxed {
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.051);
+    border-radius: 8px;
+    padding: 10px;
+	background-color: #fff;
+	border-bottom: none;
+	/* margin-bottom: 20px; */
+}
+.sbi-theme:not(.sbi-default_theme, .sbi-overlap) .sb_instagram_header.sbi_header_style_boxed .sbi_header_img {
+	border-radius: 50%;
+}
+.sbi-theme.sbi-overlap .sb_instagram_header .sbi_header_img,
+.sbi-theme.sbi-overlap .sb_instagram_header .sbi_header_img img {
+	border-radius: 20px;
+}
+.sbi-theme:not(.sbi-default_theme) .sb_instagram_header.sbi_header_style_boxed .sbi_bio_info > * {
+	color: #595959;
+}
+
+.sbi-theme:not(.sbi-default_theme) .sbi-user-info {
+    display: flex;
+    align-items: flex-start;
+	margin-bottom: 12px;
+}
+.sbi-theme.sbi-outline .sbi-user-info {
+    align-items: center;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi-user-info .sbi-user-info-inner {
+	display: flex;
+	flex-direction: column;
+    overflow: hidden;
+}
+.sbi-theme:not(.sbi-default_theme, .sbi-outline) #sb_instagram #sbi_images .sbi-user-info img.sbi-feedtheme-avatar {
+    margin-right: 12px!important;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi-user-info img {
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi-user-info strong {
+	line-height: 1;
+	font-size: 13px;
+    word-break: break-all;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi-user-info .sbi-user-info-inner span {
+	font-size: 11px;
+    line-height: 1;
+    margin-top: 3px;
+    color: #434960;
+}
+.sbi-theme.sbi-outline .sbi-user-info .sbi-user-info-inner span {
+    margin-top: 0;
+}
+/* .sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_item[data-template="ft_simple_grid"] .sbi_info_wrapper,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_item[data-template="ft_simple_grid_xl"] .sbi_info_wrapper {
+	margin-top: 10px;
+} */
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_info {
+	text-align: left;
+}
+.sbi-theme.sbi-modern #sb_instagram .sbi_meta {
+	position: relative;
+	padding: 0 0 12px;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi_item p.sbi_caption_wrap {
+	text-align: left;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram p.sbi_caption_wrap {
+	padding: 12px 0;
+}
+
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_item[data-template="ft_simple_grid_xl"] .sbi_info .sbi-instagram-link-btn span,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram.sbi_small .sbi_info .sbi-instagram-link-btn span {
+    display: none;
+}
+
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_likes,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_likes span,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_comments,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_comments span,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta svg  {
+	margin: 0 !important;
+}
+.sbi-theme.sbi-modern #sb_instagram span.sbi-instagram-icon {
+	position: absolute;
+	right: 0;
+	margin: 0 !important;
+}
+.sbi-theme.sbi-modern #sb_instagram svg:not(.fa-instagram) {
+	margin: 0 !important;
+}
+
+.sbi-theme:not(.sbi-default_theme, .sbi-overlap)[data-post-style="boxed"] #sb_instagram .sbi-user-info {
+	padding: 10px 10px 0;
+}
+.sbi-theme:not(.sbi-default_theme)[data-post-style="boxed"] #sb_instagram .sbi_caption_wrap {
+	padding: 12px 10px;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta {
+	display: flex;
+    gap: 24px;
+    font-weight: 500;
+}
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_meta,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_meta {
+    gap: 32px;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_info_wrapper .sbi_meta {
+    padding: 6px 4px;
+    /* margin-top: 0; */
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram .sbi_info_wrapper .sbi_meta {
+    padding: 6px 10px;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_likes,
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta .sbi_comments {
+	display: flex;
+	align-items: center;
+    gap: 4px;
+}
+.sbi-theme:not(.sbi-default_theme)[data-post-style="boxed"] #sb_instagram .sbi_info .sbi_meta {
+	padding: 0 10px 5px;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_meta {
+	padding: 0;
+}
+.sbi-theme.sbi-modern[data-post-style="boxed"] #sb_instagram .sbi_meta .sbi-instagram-icon {
+	right: 10px;
+}
+
+.sbi-theme.sbi-modern #sb_instagram .sbi_hover_top .sbi_username {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+}
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_hover_top .sbi_username,
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_top .sbi_username,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_hover_top .sbi_username {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 10px 0 0 10px;
+}
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_hover_top {
+	text-align: left;
+}
+
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_hover_top .sbi_username a {
+	color: #fff;
+	padding: 0;
+	font-weight: 500;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_hover_top .sbi_username a span {
+	margin-right: -3px;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_hover_top .sbi_username .sbi-separator {
+	display: inline-flex;
+	margin: 0 6px 5px;
+}
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_hover_top .sbi_username .sbi_username-date {
+	font-size: 11px;
+}
+
+.sbi-theme:not(.sbi-default_theme) #sb_instagram .sbi_hover_top .sbi-hover-top-inner {
+	display: flex;
+	align-items: center;
+    flex-shrink: 0;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_item[data-layout="highlight"] .sbi_hover_top {
+	bottom: 60px;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_item[data-layout="highlight"] .sbi_hover_bottom {
+	bottom: 25px;
+}
+
+.sbi-theme.sbi-modern #sb_instagram .sbi_hover_bottom .sbi_meta {
+	justify-content: center;
+}
+
+.sbi-theme.sbi-modern #sb_instagram .sbi_link .sbi_caption,
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_link .sbi_caption,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_link .sbi_caption {
+	font-size: 11px;
+	line-height: 1.5;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_link .sbi_hover_caption_wrap {
+    padding: 0px 10px 0;
+    margin-top: 5px;
+}
+.sbi-theme.sbi-modern #sb_instagram .sbi_link .sbi_hover_caption_wrap {
+    padding: 0;
+    margin: 0;
+}
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_link .sbi_hover_caption_wrap{
+	padding: 0 10px 0;
+    margin-top: 0;
+}
+
+.sbi-theme.sbi-modern #sb_instagram .sbi_hover_bottom .sbi_meta .sbi_likes,
+.sbi-theme.sbi-modern #sb_instagram .sbi_hover_bottom .sbi_meta .sbi_comments {
+	display: inline-flex;
+	flex-direction: column;
+}
+
+.sbi-theme:not(.sbi-default_theme) .sbi_link .svg-inline--fa.fa-play,
+.sbi-theme:not(.sbi-default_theme) .sbi_type_video .sbi_playbtn {
+	left: auto;
+	top: 15px;
+    right: 10px;
+    width: 12px !important;
+}
+
+/* social wall */
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_photo_wrap {
+	border-radius: 12px;
+}
+.sbi-theme:not(.sbi-default_theme)[data-post-style="boxed"] #sb_instagram .sbi_photo_wrap {
+	border-radius: 0;
+}
+
+.sbi-theme.sbi-social_wall #sb_instagram .sbi-user-info {
+	position: relative;
+}
+.sbi-theme.sbi-social_wall #sb_instagram .sbi-user-info .sbi-user-brand {
+	position: absolute;
+	right: 0;
+}
+.sbi-theme.sbi-social_wall[data-post-style="boxed"] #sb_instagram .sbi-user-info .sbi-user-brand {
+	position: absolute;
+	right: 6px;
+}
+
+.sbi-theme.sbi-social_wall #sb_instagram .sbi_hover_bottom .sbi_meta {
+	padding: 0 0 0 10px;
+}
+
+/* outline */
+.sbi-theme.sbi-outline .sbi-user-info {
+	position: relative;
+}
+.sbi-theme.sbi-outline .sbi-date-wrap {
+    position: absolute;
+    right: 0;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] .sbi-user-info-inner.sbi-no-username .sbi-date-wrap {
+    top: 4px;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram.sbi_small .sbi-user-info-inner.sbi-no-username .sbi-date-wrap {
+    top: 0;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram .sbi-date-wrap {
+    right: 10px;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram.sbi_small .sbi-date-wrap {
+    right: 0;
+}
+.sbi-theme.sbi-outline #sb_instagram #sbi_images .sbi-user-info img.sbi-feedtheme-avatar{
+	margin-right: 8px!important;
+}
+.sbi-theme.sbi-outline .sbi-user-info img {
+	width: 24px;
+	height: 24px;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_photo_wrap {
+	border-radius: 4px;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram .sbi_photo_wrap {
+	border-radius: 0;
+}
+/* .sbi-theme.sbi-outline #sb_instagram p.sbi_caption_wrap {
+	padding: 12px 0 0 0;
+} */
+.sbi-theme.sbi-outline #sb_instagram .sbi_meta {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
+    padding: 4px;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_meta span.sbi_comments {
+	margin: 0 5px 0 0 !important;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_link .sbi_instagram_link,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_link .sbi_instagram_link {
+    top: 0;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_top {
+	width: 80%;
+	bottom: 0;
+	text-align: left;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_top .sbi_hover_caption_wrap {
+	padding: 0 10px 0;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_link .sbi_hover_top .sbi_caption {
+	font-size: 11px;
+	line-height: 1.5;
+	margin-top: 5px;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_likes,
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_comments {
+	position: absolute;
+    right: 10px;
+	flex-direction: column;
+	margin: 0 !important;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_likes svg,
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_comments svg {
+	margin: 0 !important;
+}
+
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_likes {
+    bottom: 75px;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_hover_bottom span.sbi_comments {
+    bottom: 20px;
+}
+
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram .sbi-instagram-link-btn{
+    margin: 0 10px 10px;
+}
+.sbi-theme.sbi-outline[data-post-style="boxed"] #sb_instagram.sbi_small .sbi-instagram-link-btn{
+    margin: 0 8px 8px;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram .sbi-instagram-link-btn {
+    padding: 0 10px 10px;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram.sbi_small .sbi-instagram-link-btn {
+    padding: 0 8px 8px;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_info .sbi-instagram-link-btn a,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_info .sbi-instagram-link-btn a {
+    display: flex;
+	align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+	color: #141B38;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_info .sbi-instagram-link-btn{
+    border: 1px solid #000;
+    border-radius: 20px;
+}
+.sbi-theme.sbi-outline #sb_instagram .sbi_info .sbi-instagram-link-btn a span,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_info .sbi-instagram-link-btn a span {
+	margin-left: 8px;
+}
+
+/* overlap */
+.sbi-theme.sbi-overlap #sb_instagram .sbi_inner_wrap,
+.sbi-theme.sbi-overlap #sb_instagram .sbi_inner_wrap .sbi_photo_wrap {
+	border-radius: 12px;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram .sbi_inner_wrap .sbi_photo_wrap {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.sbi-theme.sbi-overlap .sbi-user-info {
+	margin-bottom: 0;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_item[data-template="ft_single_post"] .sbi-user-info {
+    margin-bottom: 5px;
+}
+.sbi-theme.sbi-overlap #sb_instagram #sbi_images .sbi-user-info img.sbi-feedtheme-avatar {
+	margin: -20px 0 0 10px !important;
+    border-radius: 12px;
+    z-index: 1;
+    width: 45px;
+	height: 45px;
+}
+.sbi-theme.sbi-overlap #sb_instagram.sbi_medium #sbi_images .sbi-user-info img.sbi-feedtheme-avatar {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 8px !important;
+}
+.sbi-theme.sbi-overlap #sb_instagram.sbi_highlight #sbi_images .sbi-user-info img.sbi-feedtheme-avatar {
+    margin: -50px 0 0 10px !important;
+}
+.sbi-theme.sbi-overlap #sb_instagram.sbi_small #sbi_images .sbi_item[data-template="ft_simple_grid_xl"] .sbi-user-info img,
+.sbi-theme.sbi-overlap #sb_instagram.sbi_small #sbi_images .sbi-user-info img {
+	width: 36px;
+	height: 36px;
+    position: absolute;
+    border-radius: 8px;
+}
+
+.sbi-theme.sbi-overlap #sb_instagram.sbi_small #sbi_images .sbi-user-info .sbi-user-info-inner {
+	flex-direction: column;
+    margin-left: 0;
+    margin-top: 28px;
+    flex: 1;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram.sbi_small #sbi_images .sbi-user-info .sbi-user-info-inner {
+    padding: 0 8px 5px;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] #sb_instagram.sbi_small #sbi_images .sbi-user-info img.sbi-feedtheme-avatar {
+    margin-left: 8px !important;
+}
+
+.sbi-theme.sbi-overlap .sbi-user-info .sbi-user-info-inner {
+	margin-top: 12px;
+    margin-left: 6px;
+    flex-direction: row;
+}
+.sbi-theme.sbi-overlap #sb_instagram.sbi_medium .sbi-user-info .sbi-user-info-inner {
+	margin-top: 8px;
+}
+.sbi-theme.sbi-overlap .sbi-user-info .sbi-user-info-inner.sbi-no-feed-avatar {
+	margin-top: 6px !important;
+}
+.sbi-theme.sbi-overlap .sbi-user-info-inner span:last-child {
+	margin-left: 5px;
+    padding: 2px 4px;
+    background-color: #E6E6EB;
+    margin-top: 0;
+    border-radius: 4px;
+}
+.sbi-theme.sbi-overlap[data-post-style="boxed"] .sbi-user-info-inner span:last-child {
+    margin-right: 8px;
+}
+.sbi-theme.sbi-overlap #sb_instagram.sbi_small .sbi-user-info-inner span:last-child {
+	margin-left: 0;
+    background-color: transparent;
+    padding: 2px 0;
+}
+
+.sbi-theme.sbi-overlap #sb_instagram .sbi_meta span {
+	margin: 0 0 0 5px !important;
+}
+
+.sbi-theme.sbi-overlap #sb_instagram .sbi_info .sbi-instagram-link-btn a {
+	background-color: #E2F5FF;
+	color: #0068A0;
+	border-radius: 4px;
+	outline: none;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_info .sbi-instagram-link-btn a svg path {
+	fill: #0068A0;
+}
+
+.sbi-theme.sbi-overlap #sb_instagram .sbi_hover_top {
+	width: 80%;
+	text-align: left;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_hover_top .sbi-separator {
+	display: none !important;
+}
+.sbi-theme.sbi-overlap #sb_instagram .sbi_hover_top .sbi_username-date {
+	padding: 2px 4px;
+	margin-left: 4px;
+    background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 6px;
+}
+
+.sbi-theme.sbi-overlap #sb_instagram .sbi_link .sbi_caption {
+	margin-top: 0;
+}
+
+/* feedtheme loadmore */
+.sbi-theme:not(.sbi-default_theme) #sb_instagram #sbi_load .sbi_load_btn {
+	display: inline-flex;
+}
+.sbi-theme:not(.sbi-default_theme) .sbi_load_btn .sbi-loadmore-icon {
+	display: inline-flex;
+    align-items: center;
+	margin-right: 5px;
+}
+
+.sbi-theme:not(.sbi-default_theme) #sb_instagram #sbi_load .sbi_follow_btn a {
+	background: #2C324C;
+}
+
+.sbi-theme:not(.sbi-default_theme, .sbi-overlap)[data-post-style="boxed"] #sb_instagram.sbi_small .sbi-user-info {
+    padding: 8px 8px 0;
+}
+.sbi-theme:not(.sbi-default_theme)[data-post-style="boxed"] #sb_instagram.sbi_small .sbi_caption_wrap {
+    padding: 12px 8px;
+}
+.sbi-theme:not(.sbi-default_theme)[data-post-style="boxed"] #sb_instagram.sbi_small .sbi_info .sbi_meta {
+    padding: 0 8px 5px;
+}
+
+/*Mobile header*/
+.sbi-theme:not(.sbi-social_wall, .sbi-outline, .sbi-overlap) .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_header_text {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.sb_instagram_header.sbi-mobile-preview .sbi_header_img,
+.sb_instagram_header.sbi-mobile-preview .sbi_header_img img{
+    width: 56px;
+    height: 56px;
+}
+
+.sb_instagram_header.sbi_large.sbi-mobile-preview .sbi_header_img,
+.sb_instagram_header.sbi_large.sbi-mobile-preview .sbi_header_img img {
+    width: 72px;
+    height: 72px;
+}
+
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_header_img,
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_header_img img {
+    width: 64px;
+    height: 64px;
+}
+
+.sb_instagram_header.sbi-mobile-preview .sbi_header_text h3 {
+    font-size: 14px;
+}
+.sb_instagram_header.sbi-mobile-preview .sbi_header_text .sbi_bio_info,
+.sb_instagram_header.sbi-mobile-preview .sbi_header_text .sbi_bio,
+.sb_instagram_header.sbi-mobile-preview .sbi_bio_info.sbi_feedtheme_bio {
+    font-size: 11px !important;
+}
+
+.sbi_header_style_boxed.sbi-mobile-preview .sbi_bio_info,
+.sb_instagram_header.sbi_header_style_boxed.sbi-mobile-preview .sbi_header_follow_btn {
+    font-size: 11px;
+}
+
+.sb_instagram_header.sbi_large .sbi_header_text h3 {
+    font-size: 16px;
+}
+.sb_instagram_header.sbi_large.sbi-mobile-preview .sbi_header_text .sbi_bio_info,
+.sb_instagram_header.sbi_large.sbi-mobile-preview .sbi_header_text .sbi_bio,
+.sb_instagram_header.sbi_large.sbi-mobile-preview .sbi_bio_info.sbi_feedtheme_bio {
+    font-size: 12px !important;
+}
+
+.sbi_header_style_boxed.sbi_large.sbi-mobile-preview .sbi_bio_info,
+.sb_instagram_header.sbi_header_style_boxed.sbi_large.sbi-mobile-preview .sbi_header_follow_btn {
+    font-size: 12px;
+}
+
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_header_text h3 {
+    font-size: 16px;
+}
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_header_text .sbi_bio_info,
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_header_text .sbi_bio,
+.sb_instagram_header.sbi_medium.sbi-mobile-preview .sbi_bio_info.sbi_feedtheme_bio {
+    font-size: 12px !important;
+}
+
+.sbi_header_style_boxed.sbi_medium.sbi-mobile-preview .sbi_bio_info,
+.sb_instagram_header.sbi_header_style_boxed.sbi_medium.sbi-mobile-preview .sbi_header_follow_btn {
+    font-size: 12px;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_header_text,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_header_text  {
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_feedtheme_bio,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_feedtheme_bio {
+    margin-left: calc(56px + 12px);
+    margin-top: 12px;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi_large.sbi-mobile-preview .sbi_feedtheme_bio,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi_large.sbi-mobile-preview .sbi_feedtheme_bio {
+    margin-left: calc(72px + 12px);
+    margin-top: 12px;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi_medium.sbi-mobile-preview .sbi_feedtheme_bio,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi_medium.sbi-mobile-preview .sbi_feedtheme_bio {
+    margin-left: calc(64px + 12px);
+    margin-top: 12px;
+}
+
+.sbi-theme.sbi-social_wall .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_feedtheme_bio.sbi_no_bio,
+.sbi-theme.sbi-outline .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_feedtheme_bio.sbi_no_bio {
+    top: 30%;
+    position: absolute;
+}
+
+.sbi-theme.sbi-outline .sbi-mobile-preview .sbi_bio_info.sbi_feedtheme_bio .sbi_posts_count,
+.sbi-theme.sbi-outline .sbi-mobile-preview .sbi_bio_info.sbi_feedtheme_bio .sbi_followers {
+    flex-direction: row;
+    gap: 4px;
+}
+
+.sbi-theme.sbi-overlap .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_feedtheme_header_text {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.sbi-theme.sbi-overlap .sb_instagram_header:not(.sbi_centered).sbi-mobile-preview .sbi_header_text {
+    align-items: flex-start;
+    gap: 20px;
 }

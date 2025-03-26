@@ -176,7 +176,23 @@
             </div>
         </div>
     </div>
+    <div class="sb-propro-box clearfix"  v-if="isLicenseUpgraded">
+        <div class="sb-protopro-upgrade-ctn">
+            <div class="sb-protopro-upgrade-text">
+                <strong>
+                    <?php echo __('Congratulations! You have upgraded to Custom Twitter Feeds', 'custom-twitter-feeds') ?>
+                    <span class="sb-protopro-upgrade-type" v-if="licenseUpgradedInfoTierName !== null" v-html="licenseUpgradedInfoTierName"></span>
+                </strong>
+                <span><?php echo __('Please update the plugin by clicking the button on the right for changes to take effect', 'custom-twitter-feeds') ?></span>
+            </div>
+            <button type="button" class="ctf-btn sb-btn-blue" v-on:click="upgradeProProLicense" v-if="isLicenseUpgraded && upgradeNewVersion === false">
+                <svg v-if="!loading || pressedBtnName !== 'ctf-upgrade'" width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.6666 5.83332L9.99996 8.49999H12C12 9.56086 11.5785 10.5783 10.8284 11.3284C10.0782 12.0786 9.06082 12.5 7.99996 12.5C7.33329 12.5 6.68663 12.3333 6.13329 12.0333L5.15996 13.0067C6.00869 13.5468 6.99392 13.8336 7.99996 13.8333C9.41445 13.8333 10.771 13.2714 11.7712 12.2712C12.7714 11.271 13.3333 9.91448 13.3333 8.49999H15.3333L12.6666 5.83332ZM3.99996 8.49999C3.99996 7.43912 4.42139 6.42171 5.17153 5.67156C5.92168 4.92142 6.93909 4.49999 7.99996 4.49999C8.66663 4.49999 9.31329 4.66666 9.86663 4.96666L10.84 3.99332C9.99123 3.45316 9.006 3.16638 7.99996 3.16666C6.58547 3.16666 5.22892 3.72856 4.22872 4.72875C3.22853 5.72895 2.66663 7.0855 2.66663 8.49999H0.666626L3.33329 11.1667L5.99996 8.49999" fill="white"/></svg>
+                <span v-if="loading && pressedBtnName === 'ctf-upgrade'" v-html="loaderSVG"></span>
+                <?php echo __('Update Plugin', 'custom-twitter-feeds') ?>
+            </button>
 
+        </div>
+    </div>
     <!--Manage Sources-->
     <div class="sb-tab-box sb-manage-acount-box clearfix">
         <div class="tab-label">
@@ -210,15 +226,9 @@
                     {{generalTab.manageAccount.button}}
                 </button>
             </div>
-            <div class="d-flex ctf-manage-account-inputs" v-else>
-                 <button type="button" class="ctf-newaccount-btn ctf-btn sb-btn-lg sb-btn-blue export-btn" @click.prevent.default="activateView('connectAccountPopup')">
-                    <span class="icon" v-html="svgIcons['twitter']"></span>
-                    {{generalTab.manageAccount.buttonConnect}}
-                </button>
-            </div>
         </div>
         <div class="ctf-add-account ctf-fs">
-            <div class="ctf-add-account-btn ctf-fs"  v-if="!checkAppData()" @click.prevent.default="activateView('connectAccountPopup');switchScreen('connectAccountStep','step_2');">
+            <div class="ctf-add-account-btn ctf-fs" v-if="!checkAppData()" @click.prevent.default="activateView('connectAccountPopup');switchScreen('connectAccountStep','step_2');">
                 <div v-html="svgIcons['linkIcon']"></div>
                 {{generalTab.manageAccount.buttonConnectOwnApp}}
             </div>
@@ -332,6 +342,22 @@
                     {{generalTab.exportBox.description}}
                 </span>
             </div>
+        </div>
+    </div>
+</div>
+<div class="sb-fs-boss sb-pro-newversion-popup-ctn" v-if="upgradeNewVersion === true && upgradeNewVersionUrl !== false">
+    <div class="sb-pro-newversion-popup">
+        <div class="sb-pro-newversion-popup-txt">
+            <strong><?php echo __('The plugin will be updated to a newer version', 'custom-twitter-feeds'); ?> <span style="color:blue">{{upgradeRemoteVersion}}</span></strong>
+            <span><?php echo __('You might want to backup your website before updating the plugin', 'custom-twitter-feeds'); ?></span>
+        </div>
+        <div class="sb-pro-newversion-popup-btns">
+            <button type="button" class="ctf-btn sb-btn-gery" @click.prevent.default="cancelUpgrade()">
+                <?php echo __('Cancel', 'custom-twitter-feeds'); ?>
+            </button>
+            <button type="button" class="ctf-btn sb-btn-blue" @click.prevent.default="window.location.href = upgradeNewVersionUrl">
+                <?php echo __('Update Anyway', 'custom-twitter-feeds'); ?>
+            </button>
         </div>
     </div>
 </div>

@@ -2,6 +2,7 @@
 
 namespace Smashballoon\Customizer;
 
+/** @internal */
 class Feed_Locator
 {
     /**
@@ -20,7 +21,7 @@ class Feed_Locator
         $feed_locator_table_name = $wpdb->prefix . $this->table;
         $group_by = '';
         if (isset($args['group_by'])) {
-            $group_by = 'GROUP BY ' . esc_sql($args['group_by']);
+            $group_by = 'GROUP BY ' . \esc_sql($args['group_by']);
         }
         $location_string = 'content';
         $by_feed_id = '';
@@ -42,7 +43,7 @@ class Feed_Locator
         }
         $offset = \max(0, $page * \Smashballoon\Customizer\DB::RESULTS_PER_PAGE);
         $limit = \Smashballoon\Customizer\DB::RESULTS_PER_PAGE;
-        $results = $wpdb->get_results("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE feed_id NOT LIKE '*%'\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$by_feed_id}\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT {$limit}\r\n\t\t\tOFFSET {$offset};", ARRAY_A);
+        $results = $wpdb->get_results("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE feed_id NOT LIKE '*%'\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$by_feed_id}\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT {$limit}\r\n\t\t\tOFFSET {$offset};", \ARRAY_A);
         return $results;
     }
     public function count($args)
@@ -50,9 +51,9 @@ class Feed_Locator
         global $wpdb;
         $feed_locator_table_name = $wpdb->prefix . $this->table;
         if (isset($args['shortcode_atts'])) {
-            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT COUNT(*) AS num_entries\r\n            FROM {$feed_locator_table_name}\r\n            WHERE shortcode_atts = %s\r\n            ", $args['shortcode_atts']), ARRAY_A);
+            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT COUNT(*) AS num_entries\r\n            FROM {$feed_locator_table_name}\r\n            WHERE shortcode_atts = %s\r\n            ", $args['shortcode_atts']), \ARRAY_A);
         } else {
-            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT COUNT(*) AS num_entries\r\n            FROM {$feed_locator_table_name}\r\n            WHERE feed_id = %s\r\n            ", $args['feed_id']), ARRAY_A);
+            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT COUNT(*) AS num_entries\r\n            FROM {$feed_locator_table_name}\r\n            WHERE feed_id = %s\r\n            ", $args['feed_id']), \ARRAY_A);
         }
         if (isset($results[0]['num_entries'])) {
             return (int) $results[0]['num_entries'];
@@ -65,7 +66,7 @@ class Feed_Locator
         $feed_locator_table_name = $wpdb->prefix . $this->table;
         $group_by = '';
         if (isset($args['group_by'])) {
-            $group_by = 'GROUP BY ' . esc_sql($args['group_by']);
+            $group_by = 'GROUP BY ' . \esc_sql($args['group_by']);
         }
         $location_string = 'content';
         if (isset($args['html_location'])) {
@@ -79,9 +80,9 @@ class Feed_Locator
         }
         $offset = \max(0, $page * \Smashballoon\Customizer\DB::RESULTS_PER_PAGE);
         if (isset($args['shortcode_atts'])) {
-            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE shortcode_atts = %s\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT %d\r\n\t\t\tOFFSET %d;", $args['shortcode_atts'], \Smashballoon\Customizer\DB::RESULTS_PER_PAGE, $offset), ARRAY_A);
+            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE shortcode_atts = %s\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT %d\r\n\t\t\tOFFSET %d;", $args['shortcode_atts'], \Smashballoon\Customizer\DB::RESULTS_PER_PAGE, $offset), \ARRAY_A);
         } else {
-            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE feed_id = %s\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT %d\r\n\t\t\tOFFSET %d;", $args['feed_id'], \Smashballoon\Customizer\DB::RESULTS_PER_PAGE, $offset), ARRAY_A);
+            $results = $wpdb->get_results($wpdb->prepare("\r\n\t\t\tSELECT *\r\n\t\t\tFROM {$feed_locator_table_name}\r\n\t\t\tWHERE feed_id = %s\r\n\t\t  \tAND html_location IN ( '{$location_string}' )\r\n\t\t  \t{$group_by}\r\n\t\t  \tLIMIT %d\r\n\t\t\tOFFSET %d;", $args['feed_id'], \Smashballoon\Customizer\DB::RESULTS_PER_PAGE, $offset), \ARRAY_A);
         }
         return $results;
     }

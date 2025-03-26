@@ -9,9 +9,13 @@
         <div>
             <div class="sbi-fb-extpp-top sbi-fb-fs">
                 <div class="sbi-fb-extpp-info">
+                    <div class="sbi-extpp-license-notice sbi-fb-fs" v-if="sbiLicenseNoticeActive">
+                        <span v-html="genericText.licenseInactive" v-if="sbiLicenseInactiveState"></span>
+                        <span v-html="genericText.licenseExpired"  v-if="!sbiLicenseInactiveState"></span>
+                    </div>
                     <div class="sbi-fb-extpp-head sbi-fb-fs"><h2 v-html="extensionsPopup[viewsActive.extensionsPopupElement].heading"></h2></div>
                     <div class="sbi-fb-extpp-desc sbi-fb-fs sb-caption" v-html="extensionsPopup[viewsActive.extensionsPopupElement].description"></div>
-                    <div v-if="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn" v-html="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn"></div>
+                    <div v-if="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn && !sbiLicenseNoticeActive" v-html="extensionsPopup[viewsActive.extensionsPopupElement].popupContentBtn" class="sbi-fb-fs"></div>
                 </div>
                 <div class="sbi-fb-extpp-img" v-html="extensionsPopup[viewsActive.extensionsPopupElement].img">
                 </div>
@@ -28,9 +32,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="sbi-fb-extpp-btns sbi-fb-fs">
-                    <a class="sbi-fb-extpp-get-btn sbi-btn-orange" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank" class="sbi-fb-fs-link">{{genericText.upgrade}}</a>
-                    <a class="sbi-fb-extpp-get-btn sbi-btn-grey" :href="extensionsPopup[viewsActive.extensionsPopupElement].demoUrl" target="_blank" class="sbi-fb-fs-link">{{genericText.viewDemo}}</a>
+                <div class="sbi-fb-extpp-btns sbi-fb-fs" :class="{'sbi-popup-single-btn' : !extensionsPopup[viewsActive.extensionsPopupElement].demoUrl}">
+                    <a class="sbi-fb-extpp-get-btn sbi-btn-orange" :href="extensionsPopup[viewsActive.extensionsPopupElement].buyUrl" target="_blank" class="sbi-fb-fs-link">
+                        {{ sbiLicenseInactiveState ? genericText.activateLicense : sbiLicenseNoticeActive ? genericText.renew : genericText.upgrade}}
+                    </a>
+                    <a class="sbi-fb-extpp-get-btn sbi-btn-grey" :href="extensionsPopup[viewsActive.extensionsPopupElement].demoUrl" v-if="extensionsPopup[viewsActive.extensionsPopupElement].demoUrl" target="_blank" class="sbi-fb-fs-link">{{genericText.viewDemo}}</a>
                 </div>
             </div>
         </div>

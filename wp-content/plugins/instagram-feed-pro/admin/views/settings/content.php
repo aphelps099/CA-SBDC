@@ -31,6 +31,7 @@
                         InstagramFeed\SBI_View::render( 'settings.tab.general' );
                         InstagramFeed\SBI_View::render( 'settings.tab.feeds' );
                         InstagramFeed\SBI_View::render( 'settings.tab.advanced' );
+                        InstagramFeed\SBI_View::render( 'settings.tab.code-snippets' );
                     ?>
                 </div>
             </transition>
@@ -45,6 +46,7 @@
 </div>
 <?php
     include_once SBI_BUILDER_DIR . 'templates/sections/popup/add-source-popup.php';
+    include_once SBI_BUILDER_DIR . 'templates/sections/popup/personal-account-popup.php';
     include_once SBI_BUILDER_DIR . 'templates/sections/popup/confirm-dialog-popup.php';
     include_once SBI_BUILDER_DIR . 'templates/sections/popup/source-instances.php';
 ?>
@@ -72,3 +74,10 @@ ref="addSourceRef"
 :parent-type="'settings'"
 :generic-text="genericText"
 ></sb-confirm-dialog-component>
+
+<sb-personal-account-component
+:generic-text="genericText"
+:svg-icons="svgIcons"
+ref="personalAccountRef"
+>
+</sb-personal-account-component>

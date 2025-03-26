@@ -58,16 +58,19 @@ class CTF_Support {
     function register_menu() {
         $cap = current_user_can( 'manage_twitter_feed_options' ) ? 'manage_twitter_feed_options' : 'manage_options';
         $cap = apply_filters( 'ctf_settings_pages_capability', $cap );
-       $support_page = add_submenu_page(
-           'custom-twitter-feeds',
-           __( 'Support', 'custom-twitter-feeds' ),
-           __( 'Support', 'custom-twitter-feeds' ),
-           $cap,
-           self::SLUG,
-           [$this, 'support_page'],
-           4
-       );
-       add_action( 'load-' . $support_page, [$this,'support_page_enqueue_assets']);
+
+		if ( ctf_activation_page_dismissed() ) {
+            $support_page = add_submenu_page(
+                'custom-twitter-feeds',
+                __( 'Support', 'custom-twitter-feeds' ),
+                __( 'Support', 'custom-twitter-feeds' ),
+                $cap,
+                self::SLUG,
+                [$this, 'support_page'],
+                4
+            );
+            add_action( 'load-' . $support_page, [$this,'support_page_enqueue_assets']);
+        }
    }
 
     /**
@@ -143,6 +146,11 @@ class CTF_Support {
             );
         }
 
+        $license_key = null;
+		if ( ctf_license_handler()->get_license_key ) {
+			$license_key = ctf_license_handler()->get_license_key;
+		}
+
         $return = array(
             'admin_url'         => admin_url(),
             'ajax_handler'      => admin_url( 'admin-ajax.php' ),
@@ -157,6 +165,9 @@ class CTF_Support {
             'svgIcons'          => CTF_Feed_Builder::builder_svg_icons(),
             'socialWallLinks'   => \TwitterFeed\Builder\CTF_Feed_Builder::get_social_wall_links(),
             'socialWallActivated' => is_plugin_active( 'social-wall/social-wall.php' ),
+			'licenseKey'		=> $license_key,
+			'ctfLicenseInactiveState' => ctf_license_inactive_state() ? true : false,
+			'ctfLicenseNoticeActive' =>  ctf_license_notice_active() ? true : false,
             'genericText'       => array(
                 'help' => __( 'Help', 'custom-twitter-feeds' ),
                 'title' => __( 'Support', 'custom-twitter-feeds' ),
@@ -172,6 +183,23 @@ class CTF_Support {
                 'exportSettings' => __( 'Export Settings', 'custom-twitter-feeds' ),
                 'shareYour' => __( 'Share your plugin settings easily with Support', 'custom-twitter-feeds' ),
                 'copiedToClipboard' => __( 'Copied to clipboard', 'custom-twitter-feeds' ),
+				'recheckLicense' => __( 'Recheck license', 'custom-twitter-feeds' ),
+				'licenseValid' => __( 'License valid', 'custom-twitter-feeds' ),
+				'licenseExpired' => __( 'License expired', 'custom-twitter-feeds' ),
+                'notification' => array(
+                    'licenseActivated'   => array(
+                        'type' => 'success',
+                        'text' => __( 'License Successfully Activated', 'custom-twitter-feeds' ),
+                    ),
+                    'licenseError'   => array(
+                        'type' => 'error',
+                        'text' => __( 'Couldn\'t Activate License', 'custom-twitter-feeds' ),
+                    ),
+                    'licenseKeyEmpty'   => array(
+                        'type' => 'error',
+                        'text' => __( 'Please enter a license key', 'custom-twitter-feeds' ),
+                    ),
+                )
             ),
             'buttons'          => array(
                 'searchDoc' => __( 'Search Documentation', 'custom-twitter-feeds' ),
@@ -391,6 +419,9 @@ class CTF_Support {
         $output .= 'Custom JS: ';
         $output .= isset( $ctf_settings['custom_js'] ) && ! empty( $ctf_settings['custom_js'] ) ? $ctf_settings['custom_js'] : 'Empty';
         $output .= "</br>";
+        $output .= 'Change Twitter to X: ';
+        $output .= isset( $ctf_settings[ 'rebranding' ] ) && $ctf_settings[ 'rebranding' ] ? 'Enabled' : 'Disabled';
+        $output .= "</br>";
         $output .= 'Optimize Images: ';
         $output .= isset( $ctf_settings[ 'resizing' ] ) && $ctf_settings[ 'resizing' ] ? 'Enabled' : 'Disabled';
         $output .= "</br>";
@@ -457,42 +488,72 @@ class CTF_Support {
 		$options = get_option( 'ctf_options' );
 		$consumer_key = ! empty( $options['consumer_key'] ) && ! empty( $options['have_own_tokens'] ) ? $options['consumer_key'] : 'FPYSYWIdyUIQ76Yz5hdYo5r7y';
 		$consumer_secret = ! empty( $options['consumer_secret'] ) && ! empty( $options['have_own_tokens'] ) ? $options['consumer_secret'] : 'GqPj9BPgJXjRKIGXCULJljocGPC62wN2eeMSnmZpVelWreFk9z';
+        $access_token = isset( $options['access_token'] ) ? $options['access_token'] : '';
+        $access_token_secret = isset( $options['access_token_secret'] ) ? $options['access_token_secret'] : '';
+
 		$request_settings = array(
 			'consumer_key' => $consumer_key,
 			'consumer_secret' => $consumer_secret,
-			'access_token' => $options['access_token'],
-			'access_token_secret' => $options['access_token_secret']
+			'access_token' => $access_token,
+			'access_token_secret' => $access_token_secret
 		);
 		$output = '';
-		if ( isset( $options['request_method'] ) ) {
-			$request_method = isset( $options['request_method'] ) ? $options['request_method'] : 'auto';
+		if (isset($options['request_method']) && ! empty($access_token)) {
+			$request_method = isset($options['request_method']) ? $options['request_method'] : 'auto';
 
-			$twitter_api = new \TwitterFeed\CtfOauthConnect( $request_settings, 'usertimeline' );
+			$twitter_api = new \TwitterFeed\V2\CtfOauthConnect($request_settings, 'usertimeline');
 			$twitter_api->setUrlBase();
-			$get_fields = array( 'count' => '1' );
-			$twitter_api->setGetFields( $get_fields );
-			$twitter_api->setRequestMethod( $request_method );
+			$get_fields = array('count' => '1');
+			$twitter_api->setGetFields($get_fields);
+			$twitter_api->setRequestMethod($request_method);
 
 			$twitter_api->performRequest();
-			$response    = json_decode( $twitter_api->json, $assoc = true );
-			$screen_name = isset( $response[0] ) ? $response[0]['user']['screen_name'] : 'error';
-			if ( $screen_name === 'error' ) {
-				if ( isset( $response['errors'][0] ) ) {
+			$response    = json_decode($twitter_api->json, $assoc = true);
+			$screen_name = isset($response[0]) ? $response[0]['user']['screen_name'] : 'error';
+			if ($screen_name === 'error') {
+				if (isset($response['errors'][0])) {
 					$twitter_api->api_error_no      = $response['errors'][0]['code'];
 					$twitter_api->api_error_message = $response['errors'][0]['message'];
 				}
 			}
 
 			$output .= '## Twitter API RESPONSE: ## <br>';
-			if ( ! empty( $twitter_api->api_error_no ) ) {
-				$output .= 'Error No:   ' . esc_html( $twitter_api->api_error_no ) . '<br>';
-				$output .= 'Error Message:   ' . esc_html( $twitter_api->api_error_message ) . '<br>';
+			if (! empty($twitter_api->api_error_no)) {
+				$output .= 'Error No:   ' . esc_html($twitter_api->api_error_no) . '<br>';
+				$output .= 'Error Message:   ' . esc_html($twitter_api->api_error_message) . '<br>';
 			} else {
 				$output .= 'Connection was successful! <br>';
-				$output .= 'Account Screen Name:   ' . esc_html( $screen_name ) . '<br>';
+				$output .= 'Account Screen Name:   ' . esc_html($screen_name) . '<br>';
 			}
+		}
 
-		} //End isset check
+		$api_call_log = array_reverse( get_option( 'ctf_api_call_log', array() ) );
+		$output .= '## API CALL LOG: ## </br>';
+		$api_call_log = array_slice( $api_call_log, 0, 25 );
+		foreach ( $api_call_log as $api_call ) {
+			foreach ( $api_call as $key => $value ) {
+				if ( is_bool( $value ) ) {
+					$value = $value === false ? 'false' : 'true';
+				}
+				$value = $key === 'time' ? date( 'Y-m-d H:i:s', $value ) : $value;
+
+				$output .= $key . ': ' . $value . "</br>";
+			}
+			$output .= '</br></br>';
+		}
+		$output .= '</br>';
+
+		$output .= '## UPDATE NOTES: ## </br>';
+
+
+		$ctf_statuses_option = get_option( 'ctf_statuses', array() );
+		if ( ! empty( $ctf_statuses_option['first_cron_update'] ) ) {
+			$output .= 'First Cron Update: '. date( 'Y-m-d H:i:s', $ctf_statuses_option['first_cron_update'] ) .' ' . ($ctf_statuses_option['first_cron_update'] - time()) / HOUR_IN_SECONDS . ' hours<\br>';
+		}
+		if ( ! empty($ctf_statuses_option['smash_twitter_cron']['last_update_process_time']) ) {
+			$output .= 'Last Update: '. date( 'Y-m-d H:i:s', $ctf_statuses_option['smash_twitter_cron']['last_update_process_time'] ) . '<\br>';
+		}
+
 
 		$output .= "</br>";
 
@@ -645,13 +706,24 @@ class CTF_Support {
     public static function get_errors_info() {
 	    $errors = get_option( 'ctf_errors', array() );
 	    $output = "## ERRORS: ##" . "</br>";
-		if ( ! empty( $errors ) ) {
-			foreach ( $errors as $error ) {
-				$output .=  esc_html( $error )  . "</br>";
-			}
-		} else {
-			$output .=  "No Error Information Stored</br>";
-		}
+	    if ( ! CTF_DOING_SMASH_TWITTER ) {
+		    if ( ! empty( $errors ) ) {
+			    foreach ( $errors as $error ) {
+				    $output .=  esc_html( $error )  . "</br>";
+			    }
+		    } else {
+			    $output .=  "No Error Information Stored</br>";
+		    }
+	    } else {
+		    $ctf_statuses_option = get_option( 'ctf_statuses', array() );
+		    if ( ! empty( $ctf_statuses_option['smash_twitter']['error_log'] ) ) {
+				$reversed = array_reverse( $ctf_statuses_option['smash_twitter']['error_log'] );
+			    foreach ( $reversed as $error ) :
+				    $output .= $error . "</br>";
+			    endforeach;
+		    }
+	    }
+
 
         return $output;
     }

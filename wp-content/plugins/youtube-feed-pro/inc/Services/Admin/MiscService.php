@@ -69,9 +69,9 @@ class MiscService extends ServiceProvider {
 			$text_domain = SBY_TEXT_DOMAIN;
 			$slug = SBY_SLUG;
 			ob_start();
-			include trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/single-connected-account.php';
+			include_once trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/single-connected-account.php';
 			if ( sby_notice_not_dismissed() ) {
-				include trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/modal.php';
+				include_once trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/modal.php';
 				echo '<span class="sby_account_just_added"></span>';
 			}
 

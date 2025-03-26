@@ -115,6 +115,12 @@ class SB_Instagram_Settings {
 				'resizeprocess'    => isset( $db['sb_instagram_resizeprocess'] ) ? $db['sb_instagram_resizeprocess'] : 'background',
 				'customtemplates'  => isset( $db['custom_template'] ) ? $db['custom_template'] : '',
 				'gdpr'             => isset( $db['gdpr'] ) ? $db['gdpr'] : 'auto',
+
+				//Post Style
+				'poststyle'        => isset( $db['sb_post_style'] ) ? $db['sb_post_style'] : '',
+				'postbgcolor'      => isset( $db['sb_post_bg_color'] ) ? $db['sb_post_bg_color'] : '',
+				'postcorners'      => isset( $db['sb_post_rounded'] ) ? $db['sb_post_rounded'] : '',
+				'boxshadow'        => isset( $db['sb_box_shadow'] ) ? $db['sb_box_shadow'] : '',
 			),
 			$atts
 		);
@@ -681,8 +687,6 @@ class SB_Instagram_Settings {
 			'sb_instagram_autoscrolldistance'     => 200,
 
 			//Misc
-			'sb_instagram_custom_css'             => '',
-			'sb_instagram_custom_js'              => '',
 			'sb_instagram_requests_max'           => '5',
 			'sb_instagram_minnum'                 => '0',
 			'sb_instagram_cron'                   => 'unset',

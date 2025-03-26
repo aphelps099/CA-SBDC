@@ -28,7 +28,8 @@
     -webkit-font-smoothing: antialiased;
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
 }
-#wpcontent {
+#wpcontent,
+.twitter-feed_page_ctf-settings #wpcontent{
     padding-left: 0px;
 }
 .clearfix:after {
@@ -290,6 +291,9 @@
 /*** 2.1 - SBI Utility CSS ***/
 .mr-3 {
     margin-right: 3px;
+}
+.mr-6 {
+    margin-right: 6px;
 }
 .mr-4 {
     margin-right: 4px;
@@ -697,6 +701,7 @@
 }
 .sb-tab-content .sb-tab-box .ctf-tab-form-field .ctf-btn:not(.ctf-no-transform-btn){
     transform: translate(10px, 0px);
+    border: 1px solid #e0e0e0
 }
 .sb-tab-content .sb-tab-box.sb-caching-box .ctf-tab-form-field .ctf-btn,
 .sb-tab-content .sb-tab-box.sb-import-box .ctf-tab-form-field .ctf-btn{
@@ -1734,10 +1739,15 @@ Sources Instance Popup
     .caching-form-fields-group select {
         margin-bottom: 5px;
     }
+    .ctf-api-stats-info {
+        margin-left: 0px !important;
+        margin-top: 10px;
+    }
 }
 @media (min-width: 1429px) {
     .caching-form-fields-group {
         display: flex;
+        align-items: center;
     }
 }
 @media (max-width: 1023px) {
@@ -1994,4 +2004,242 @@ Sources Instance Popup
 }
 [data-active="true"] .ctf-acc-info-item{
     display: flex;
+}
+
+
+/* Learn More Modal for License DRM */
+.ctf-license-learn-more {
+    backdrop-filter: blur(2px);
+}
+.ctf-license-learn-more .ctf-license-popup {
+	border-top: 5px solid #D72C2C;
+	width: 1166px;
+	padding: 55px 50px;
+	box-sizing: border-box;
+	background-color: #fff;
+	position: relative;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-header h2 {
+	font-weight: 600;
+	font-size: 36px;
+	line-height: 125%;
+	margin: 2px 0px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-header p {
+	font-weight: 400;
+    font-size: 16px;
+    line-height: 160%;
+    margin-top: 8px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits {
+	display: flex;
+	gap: 10px;
+	margin-top: 22px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block {
+	padding: 16px 24px 20px 70px;
+	border: 1px solid #E8E8EB;
+	border-radius: 8px;
+	position: relative;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block h4 {
+	font-size: 14px !important;
+	line-height: 160% !important;
+	margin: 4px 0 !important;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block .sb-icon {
+	position: absolute;
+	left: 19px;
+}
+.ctf-license-learn-more .ctf-license-popup .sb-llm-upgrade-benefits .sb-benefits-block p {
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 160%;
+    color: #434960;
+    margin-top: 0px;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form {
+	background: #F9F9FA;
+	border-bottom: 1px solid #DCDDE1;
+	border-radius: 6px;
+	padding: 33px 32px;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form h3 {
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 120%;
+	margin: 0px;
+}
+.ctf-license-learn-more .sb-llm-license-key-block .sb-license-checker-form p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin-top: 0;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-input {
+	padding: 9px 16px;
+	width: 483px;
+	height: 50px;
+	background: #FFFFFF;
+	border: 1px solid #D0D1D7;
+	border-radius: 1px;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 160%;
+	color: #8C8F9A;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-modal-license-key-form{
+	display: flex;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-input::placeholder {
+	color: #8C8F9A;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-btn-license-activate {
+    background: #0068A0;
+    border-radius: 2px;
+    padding: 11px 24px;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+}
+.ctf-license-learn-more .sb-license-checker-form .sb-btn-license-activate span {
+	margin-right: 4px;
+	height: 20px;
+	display: inline;
+}
+.ctf-license-learn-more .sb-llm-license-key-block {
+	background: #FFFFFF;
+	border: 1px solid #DCDDE1;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	border-radius: 6px;
+	margin-top: 15px;
+}
+.ctf-license-learn-more .sb-llm-lk-footer {
+	text-align: center;
+}
+.ctf-license-learn-more .sb-llm-lk-footer p {
+	margin: 0px;
+	font-size: 14px;
+	line-height: 160%;
+	color: #141B38;
+	padding: 6px 0;
+}
+.ctf-license-learn-more .sb-llm-lk-footer a {
+	font-weight: 600;
+	color: #0068A0;
+	margin-left: 12px;
+	text-decoration: none;
+}
+.ctf-license-learn-more .sb-llm-lk-footer a:focus {
+	outline: none;
+}
+/* End Learn More Modal for License DRM */
+
+[data-ctf-smash-twitter='yes'] #ctf-caching-cron-time,
+[data-ctf-smash-twitter='yes'] #ctf-caching-type,
+[data-ctf-smash-twitter='yes'] #ctf-caching-cron-am-pm {
+    display: none;
+}
+[data-ctf-smash-twitter='no'] .ctf-api-stats-info {
+    display: none;
+}
+
+.ctf-api-stats-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    margin-left: 15px;
+}
+.ctf-api-stats-info .ctf-api-stats-credits {
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #2C324C;
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    user-select: none;
+}
+.ctf-api-stats-info .ctf-api-stats-credits .ctf-api-stats-popup {
+    position: absolute;
+    width: 325px;
+    top: -127px;
+    left: -60px;
+    background: #FFFFFF;
+    padding: 13px 20px 13px 13px;
+    box-shadow: 0px 1px 2px 0px #00000030, 0px 2px 8px 0px #00000014, 0px 2px 18px 0px #0000000D;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+.ctf-api-stats-info .ctf-api-stats-credits .ctf-api-stats-popup:after {
+    position: absolute;
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    transform: rotate(45deg);
+    left: 147px;
+    bottom: -9px;
+    box-shadow: 0px 1px 2px -1px #00000030, 1px 0px 2px -1px #00000030;
+}
+.ctf-api-stats-info .ctf-api-stats-credits .ctf-api-stats-popup h4 {
+    margin-top: 0px;
+    margin-bottom: 6px;
+}
+.ctf-api-stats-info .ctf-api-stats-credits .ctf-api-stats-popup p {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 21px;
+    letter-spacing: 0em;
+    color: #141B38;
+}
+.ctf-api-stats-info .ctf-api-stats-credits:hover .ctf-api-stats-popup {
+    top: -132px;
+    opacity: 1;
+    visibility: visible;
+}
+.ctf-api-stats-info .ctf-api-reset-time {
+    position: relative;
+}
+.ctf-api-stats-info .ctf-api-reset-time::after {
+    position: absolute;
+    content: '';
+    left: -10px;
+    top: 9px;
+    width: 2px;
+    height: 2px;
+    background-color: #434960;
+}
+.ctf-api-stats-info .ctf-api-stats-credits span {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 21px;
+    letter-spacing: 0em;
+}
+
+.caching-form-fields-group .ctf-select, 
+.sb-form-field .ctf-select.ctf-caching-interval-select {
+    height: 38px;
+    font-size: 14px;
+    padding: 4px 16px;
+    box-shadow: 0px 1px 1px 0px #0000000A;
+}
+
+.ctf-btn.ctf-caching-btn {
+    box-shadow: 0px 1px 1px 0px #0000000D, 0px 2px 5px 0px #3C42570D, 0px -1px 1px 0px #0000001F inset;
+    border: 1px solid #eeeeee;
+    border-radius: 3px;
+    min-width: 182px;
 }

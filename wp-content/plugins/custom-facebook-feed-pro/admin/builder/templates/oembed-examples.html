@@ -21,25 +21,7 @@ Tool to help understand how sending and retrieving feed related info from the da
             };
 
             $.post( cff_builder.ajax_handler, data, function( res ) {
-
-                if ( res.success ) {
-                    if ( 'cff_install_addon' === data.action ) {
-                        console.log(res);
-                    } else {
-                        console.log(res);
-                    }
-
-                } else {
-                    if ( 'download_failed' === res.data[0].code ) {
-                        if ( data.type === 'addon' ) {
-                            console.log(res);
-                        } else {
-                            console.log(res);
-                        }
-                    } else {
-                        console.log(res);
-                    }
-                }
+                console.log(res);
             }).fail( function( xhr ) {
                 console.log( xhr.responseText );
             });

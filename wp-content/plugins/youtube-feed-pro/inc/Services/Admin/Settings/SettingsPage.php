@@ -54,6 +54,12 @@ class SettingsPage extends BaseSettingPage {
 		];
 
 		unset( $_POST['nonce'] );
+
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			unset($_POST['custom_css']);
+			unset($_POST['custom_js']);
+		}
+
 		$update_array = $_POST;
 
 		$this->handle_single_video_settings( $update_array );
@@ -100,14 +106,17 @@ class SettingsPage extends BaseSettingPage {
 
 	private function get_next_cron_schedule() {
 		$timestamp = wp_next_scheduled('sby_feed_update');
-		$date_string = date('h:i', $timestamp);
+		$date = new \DateTime();
+		$date->setTimestamp($timestamp);
+		$date->setTimezone(wp_timezone());
+		$date_string = $date->format('h:i');
 		$settings = $this->settings->get_settings();
 		$interval = !empty($settings['cache_cron_interval']) ? $settings['cache_cron_interval'] : '1hour';
 		$am_pm = !empty($settings['cache_cron_am_pm']) ? $settings['cache_cron_am_pm'] : 'AM';
 
 		switch($interval) {
 			case '30mins':
-				$interval_string = __('every 30 minutes');
+				$interval_string = __('every 30 minutes', 'feeds-for-youtube');
 				break;
 			case '12hours':
 				$interval_string = 'every 12 hours';
@@ -116,7 +125,7 @@ class SettingsPage extends BaseSettingPage {
 				$interval_string = 'every 24 hours';
 				break;
 			default:
-				$interval_string = __('every hour');
+				$interval_string = __('every hour', 'feeds-for-youtube');
 		}
 
 		return sprintf(__('<strong>Next check: %s %s (%s)</strong> - Note: Clicking "Clear All Caches" will reset this schedule.', 'feeds-for-youtube'), $date_string, strtoupper($am_pm), $interval_string);
@@ -126,6 +135,7 @@ class SettingsPage extends BaseSettingPage {
 		$settings['settings'] = $this->settings->get_settings();
 		$settings['sources']  = $this->feed_saver->get_source_list();
 		$settings['sbyIsPro'] = \sby_is_pro() ? true : false;
+		$settings['user_can_unfiltered_html'] = \current_user_can( 'unfiltered_html' ) ? true : false;
 		$settings['feeds']  = Container::getInstance()->get(Feed_Builder::class)->get_feed_list();
 		$settings['next_cron'] = $this->get_next_cron_schedule();
 		$settings['connect_site_parameters'] = sby_builder_pro()->oauth_connet_parameters();

@@ -26,7 +26,7 @@ class CTF_Cache_Handler {
 	 *
 	 * @since 2.0
 	 */
-	public function clear_db_caches() {
+	public function clear_db_caches( $customizer_clear = false ) {
 		global $wpdb;
 
 		$cache_table_name = $wpdb->prefix . 'ctf_feed_caches';
@@ -37,12 +37,31 @@ class CTF_Cache_Handler {
 
 		$wpdb->query( $sql );
 
-		$sql = "DELETE FROM $cache_table_name
-				WHERE feed_id LIKE '%_CUSTOMIZER';";
+		$sql = "UPDATE $cache_table_name
+				SET last_updated = '2000-04-04 00:00:00'
+				WHERE cache_key NOT LIKE 'ctf_!_%';";
 
 		$wpdb->query( $sql );
 
+		if ($customizer_clear) {
+			$sql = "DELETE FROM $cache_table_name
+					WHERE feed_id LIKE '%_CUSTOMIZER';";
+
+			$wpdb->query( $sql );
+		}
+
 		$this->clear_legacy_caches();
+
+		$ctf_statuses_option = get_option( 'ctf_statuses', array() );
+		if ( empty( $ctf_statuses_option['smash_twitter'] ) ) {
+			$ctf_statuses_option['smash_twitter'] = array();
+		}
+		$ctf_statuses_option['smash_twitter']['last_cache_clear'] = time();
+
+		update_option( 'ctf_statuses', $ctf_statuses_option, false );
+
+		// clear object caches
+		wp_cache_flush();
 	}
 
 	public function clear_single_feed_cache( $feed_id ) {
@@ -59,15 +78,22 @@ class CTF_Cache_Handler {
 
 		$wpdb->query( $wpdb->prepare(
 			"UPDATE $cache_table_name
-				SET last_updated = '2000-04-04 00:00:00'
-				WHERE cache_key LIKE 'ctf_!_%'
+				SET cache_value = ''
+				WHERE cache_key NOT LIKE 'ctf_!_%'
 				AND feed_id = %s;", $feed_id . '_CUSTOMIZER'
 		) );
 
 		$wpdb->query( $wpdb->prepare(
 			"UPDATE $cache_table_name
 				SET last_updated = '2000-04-04 00:00:00'
-				WHERE cache_key LIKE 'ctf_!_%'
+				WHERE cache_key NOT LIKE 'ctf_!_%'
+				AND feed_id = %s;", $feed_id . '_CUSTOMIZER'
+		) );
+
+		$wpdb->query( $wpdb->prepare(
+			"UPDATE $cache_table_name
+				SET last_updated = '2000-04-04 00:00:00'
+				WHERE cache_key NOT LIKE 'ctf_!_%'
 				AND feed_id = %s;", $feed_id
 		) );
 	}
@@ -117,6 +143,8 @@ class CTF_Cache_Handler {
                     FROM $table_name
                     WHERE `option_name` LIKE ('%\_transient\_timeout\_\$ctf\_%')
                     " );
+
+		wp_cache_flush();
 	}
 
 	/**
@@ -165,7 +193,7 @@ class CTF_Cache_Handler {
 
 		// Clear Autoptimize Cache.
 		if ( class_exists( 'autoptimizeCache' ) ) {
-			autoptimizeCache::clearall();
+			\autoptimizeCache::clearall();
 		}
 
 		// Litespeed Cache.
@@ -187,6 +215,8 @@ class CTF_Cache_Handler {
 		$sql = "UPDATE $cache_table_name
 				SET cache_value = ''";
 		$wpdb->query( $sql );
+
+		wp_cache_flush();
 	}
 
 	/**
@@ -198,5 +228,7 @@ class CTF_Cache_Handler {
 		CTF_Twitter_Card_Manager::clear_all_local();
 		delete_option( 'ctf_twitter_cards' );
 		$this->clear_db_caches();
+
+		wp_cache_flush();
 	}
 }

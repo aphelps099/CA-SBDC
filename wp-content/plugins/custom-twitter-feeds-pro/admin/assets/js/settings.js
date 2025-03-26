@@ -12,6 +12,10 @@ var settings_data = {
     sourcesList : ctf_settings.sources,
     dialogBoxPopupScreen   : ctf_settings.dialogBoxPopupScreen,
     selectSourceScreen      : ctf_settings.selectSourceScreen,
+    ctf_doing_smash_twitter : ctf_settings.ctf_doing_smash_twitter,
+    remainingApiCounts : ctf_settings.remainingApiCounts,
+    apiNextResetTime : ctf_settings.apiNextResetTime,
+    userLicenseRequestLimit : ctf_settings.userLicenseRequestLimit,
 
     socialWallActivated: ctf_settings.socialWallActivated,
     socialWallLinks: ctf_settings.socialWallLinks,
@@ -98,7 +102,12 @@ var settings_data = {
         connectAccountStep : 'step_1',
         accountDetailsActive : false,
         appDetailsActive : false,
+        whyRenewLicense : false,
+        licenseLearnMore : false,
     },
+    ctfLicenseNoticeActive: (ctf_settings.ctfLicenseNoticeActive === '1'),
+    ctfLicenseInactiveState: (ctf_settings.ctfLicenseInactiveState === '1'),
+    licenseBtnClicked : false,
     //Add New Source
     newSourceData        : ctf_settings.newSourceData ? ctf_settings.newSourceData : null,
     sourceConnectionURLs : ctf_settings.sourceConnectionURLs,
@@ -124,11 +133,13 @@ var settings_data = {
     loadingBar : true,
     loadingAjax : false,
 
-    notificationElement : {
-        type : 'success', // success, error, warning, message
-        text : '',
-        shown : null
-    }
+
+    upgradeNewVersion : false,
+    upgradeNewVersionUrl : false,
+    upgradeRemoteVersion : '',
+    isLicenseUpgraded : ctf_settings.isLicenseUpgraded,
+    licenseUpgradedInfo : ctf_settings.licenseUpgradedInfo,
+    licenseUpgradedInfoTierName : null
 };
 
 // The tab component
@@ -187,6 +198,10 @@ var ctfSettings = new Vue({
         setTimeout(function(){
             settings_data.appLoaded = true;
         },350);
+
+        if (this.licenseUpgradedInfo){
+            this.getUpgradedProTier()
+        }
     },
     mounted: function(){
         var self = this;
@@ -229,6 +244,15 @@ var ctfSettings = new Vue({
             this.hasError = false;
             this.loading = true;
             this.pressedBtnName = 'ctf';
+            this.licenseBtnClicked = true;
+
+            if ( !this.licenseKey ) {
+                this.licenseBtnClicked = false;
+                this.processNotification("licenseKeyEmpty");
+                this.loading = false;
+                this.hasError = false;
+                return;
+            }
 
             let data = new FormData();
             data.append( 'action', 'ctf_activate_license' );
@@ -241,13 +265,16 @@ var ctfSettings = new Vue({
             })
             .then(response => response.json())
             .then(data => {
+                this.licenseBtnClicked = false;
                 if ( data.success == false ) {
+					this.processNotification("licenseError");
                     this.licenseStatus = 'inactive';
                     this.hasError = true;
                     this.loading = false;
                     return;
                 }
                 if ( data.success == true ) {
+					this.processNotification("licenseActivated");
                     let licenseData = data.data.licenseData;
                     this.licenseStatus = data.data.licenseStatus;
                     this.loading = false;
@@ -268,12 +295,13 @@ var ctfSettings = new Vue({
             });
         },
         deactivateLicense: function() {
-            this.loading = true;
-            this.pressedBtnName = 'ctf';
+            var self = this;
+            self.loading = true;
+            self.pressedBtnName = 'ctf';
             let data = new FormData();
             data.append( 'action', 'ctf_deactivate_license' );
-            data.append( 'nonce', this.nonce );
-            fetch(this.ajaxHandler, {
+            data.append( 'nonce', self.nonce );
+            fetch(self.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
@@ -281,9 +309,9 @@ var ctfSettings = new Vue({
             .then(response => response.json())
             .then(data => {
                 if ( data.success == true ) {
-                    this.licenseStatus = data.data.licenseStatus ;
-                    this.loading = false;
-                    this.pressedBtnName = null;
+                    self.licenseStatus = data.data.licenseStatus ;
+                    self.loading = false;
+                    self.pressedBtnName = null;
                 }
                 return;
             });
@@ -443,6 +471,13 @@ var ctfSettings = new Vue({
                         this.recheckLicenseStatus = 'error';
                     }
 
+                    if (data.data.isLicenseUpgraded !== undefined && data.data.isLicenseUpgraded !== false) {
+                        this.isLicenseUpgraded = true;
+                        this.licenseUpgradedInfo = data.data.licenseUpgradedInfo;
+                        this.getUpgradedProTier()
+                    }
+
+
                     // if the api license status has changed from old stored license status
                     // then reload the page to show proper error message and notices
                     // or hide error messages and notices
@@ -585,6 +620,12 @@ var ctfSettings = new Vue({
                 }
                 this.cronNextCheck = data.data.cronNextCheck;
                 this.clearCacheStatus = 'success';
+                if (data.data.remaining_api_counts) {
+                    this.remainingApiCounts = data.data.remaining_api_counts;
+                }
+                if (data.data.next_reset_time) {
+                    this.apiNextResetTime = data.data.next_reset_time;
+                }
                 setTimeout(function() {
                     this.clearCacheStatus = null;
                 }.bind(this), 3000);
@@ -1155,6 +1196,104 @@ var ctfSettings = new Vue({
                 });
             }
         },
+
+
+		/**
+		 * Loading Bar & Notification
+		 *
+		 * @since 4.0
+		 */
+         processNotification : function( notificationType ){
+			var self = this,
+				notification = self.genericText.notification[ notificationType ];
+			self.loadingBar = false;
+			self.notificationElement =  {
+				type : notification.type,
+				text : notification.text,
+				shown : "shown"
+			};
+			setTimeout(function(){
+				self.notificationElement.shown =  "hidden";
+			}, 5000);
+		},
+
+         /**
+		 * Upgrade Pro/Pro License
+		 *
+		 * @since 6.2.0
+		 */
+        upgradeProProLicense : function(){
+            var self = this;
+
+            self.hasError = false;
+            self.loading = true;
+            self.pressedBtnName = 'ctf-upgrade';
+            self.licenseBtnClicked = true;
+            self.upgradeNewVersion = false;
+            self.upgradeNewVersionUrl = false;
+
+            let data = new FormData();
+            data.append( 'action', 'ctf_maybe_upgrade_redirect' );
+            data.append( 'license_key', self.licenseKey );
+            data.append( 'nonce', self.nonce );
+            fetch(self.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                self.pressedBtnName = '';
+                self.loading = false;
+                self.licenseBtnClicked = false;
+
+                if (data.success === false) {
+                    self.licenseStatus = 'invalid';
+                    self.hasError = true;
+
+                    if (typeof data.data !== 'undefined') {
+                        this.licenseErrorMsg = data.data.message
+                    }
+                    return;
+                }
+                if (data.success === true) {
+                    if (data.data.same_version === true) {
+                        window.location.href = data.data.url
+                    } else {
+                        self.upgradeNewVersion = true;
+                        self.upgradeNewVersionUrl = data.data.url;
+                        self.upgradeRemoteVersion  = data.data.remote_version;
+                    }
+                }
+                return;
+            });
+
+        },
+
+        cancelUpgrade : function(){
+            this.upgradeNewVersion = false;
+        },
+
+        getUpgradedProTier : function(){
+            if (this.licenseUpgradedInfo === undefined || this.licenseUpgradedInfo['item_name'] === undefined) {
+                return false;
+            }
+            let licenseType = this.licenseUpgradedInfo['item_name'].toLowerCase(),
+                removeString = [
+                    'custom',
+                    'twitter',
+                    'plugin',
+                    'wordpress',
+                    'feeds',
+                    'feed',
+                    'pro',
+                    ' '
+                ];
+                removeString.forEach(str => {
+                    licenseType = licenseType.replace(str, '')
+                });
+            this.licenseUpgradedInfoTierName = licenseType;
+        }
 
     }
 });

@@ -40,6 +40,11 @@
     margin-bottom: 18px;
     padding: 0 9px;
 }
+@media (max-width: 480px ) {
+    [id^=sb-wall].sb-wall .sbsw-item.sbsw_num_diff_hide {
+        display: none;
+    }
+}
 [id^=sb-wall].sb-wall.sbsw-masonry .sbsw-item{
     float: none;
 }
@@ -254,6 +259,7 @@
     border: none !important;
     font-size: 0;
     border-radius: 40px;
+    width: 100%;
 }
 [id^=sb-wall].sb-wall .sbsw-item-header.sbsw-no-avatar .sbsw-identity .sbsw-author {
     padding-left: 6px;
@@ -319,7 +325,7 @@
 [id^=sb-wall].sb-wall .sbsw-icon svg {
     margin: 0;
     width: 100%;
-    height: 23px;
+    height: 20px;
 }
 
 /* Media */
@@ -1658,6 +1664,9 @@
 [id^=sb-wall].sb-wall .sbsw-twitter-item:hover .sbsw-icon a{
     color: #41a9e8;
 }
+[id^=sb-wall].sb-wall .sbsw-twitter-item.sbsw-x-branding:hover .sbsw-icon a{
+    color: #000;
+}
 [id^=sb-wall].sb-wall .sbsw-follow {
     opacity: 0;
     position: absolute;
@@ -1684,6 +1693,17 @@
 .sbsw-twitter-item .sbsw-follow,
 [id^=sb-wall].sb-wall .sbsw-twitter-item p.sbsw-share-popup{
     background: #1a92dc;
+}
+.sbsw-twitter-item.sbsw-x-branding .sbsw-follow,
+[id^=sb-wall].sb-wall .sbsw-twitter-item.sbsw-x-branding p.sbsw-share-popup{
+    background: rgb(15, 20, 25);
+}
+.sbsw-tiktok-item .sbsw-follow,
+[id^=sb-wall].sb-wall .sbsw-tiktok-item p.sbsw-share-popup {
+    background-color: #000;
+}
+.sbsw-tiktok-item .sbsw-follow svg path {
+    fill: white;
 }
 .sbsw-item:hover .sbsw-follow{
     opacity: 1;
@@ -1739,8 +1759,15 @@
 .sbsw-twitter-item .sbsw-follow:focus{
     background: #1384ca;
 }
+.sbsw-twitter-item.sbsw-x-branding .sbsw-follow:hover,
+.sbsw-twitter-item.sbsw-x-branding .sbsw-follow:focus{
+    background: #000;
+}
 [id^=sb-wall].sb-wall .sbsw-twitter-item .sbsw-icon:hover a{
     color: #1384ca;
+}
+[id^=sb-wall].sb-wall .sbsw-twitter-item.sbsw-x-branding .sbsw-icon:hover a{
+    color: #000;
 }
 /* Mod errors */
 #sbsw-mod-error{
@@ -1862,6 +1889,14 @@
     float: left;
     margin-right: 5px;
 }
+.sbsw-filter-bar .sbsw-single-filter.sbsw-single-filter-tiktok svg path {
+    fill: #111;
+}
+.sbsw-filter-bar .sbsw-single-filter.sbsw-single-filter-tiktok:hover svg path,
+.sbsw-filter-bar .sbsw-single-filter.sbsw-single-filter-tiktok:focus svg path,
+.sbsw-filter-bar .sbsw-single-filter.sbsw-single-filter-tiktok:active svg path {
+    fill: currentColor;
+}
 .sb-wall-items-wrap {
     display: none;
     opacity: 1;
@@ -1911,6 +1946,10 @@
 [id^=sb-wall].sb-wall.sbsw-dark .sbsw-single-filter-twitter a{
     color: #41a9e8;
 }
+[id^=sb-wall].sb-wall .sbsw-single-filter-twitter.sbsw-single-filter-x-branding a,
+[id^=sb-wall].sb-wall.sbsw-dark .sbsw-single-filter-twitter.sbsw-single-filter-x-branding a{
+    color: rgba(0,0,0,0.6);
+}
 [id^=sb-wall].sb-wall .sbsw-single-filter-youtube a,
 [id^=sb-wall].sb-wall.sbsw-dark .sbsw-single-filter-youtube a{
     color: #f5413d;
@@ -1941,6 +1980,11 @@
 [id^=sb-wall].sb-wall .sbsw-single-filter-twitter a:hover,
 [id^=sb-wall].sb-wall .sbsw-single-filter-twitter a:focus{
     background: #41a9e8;
+}
+[id^=sb-wall].sb-wall .sbsw-single-filter-twitter.sbsw-single-filter-x-branding a:active,
+[id^=sb-wall].sb-wall .sbsw-single-filter-twitter.sbsw-single-filter-x-branding a:hover,
+[id^=sb-wall].sb-wall .sbsw-single-filter-twitter.sbsw-single-filter-x-branding a:focus{
+    background: #333;
 }
 [id^=sb-wall].sb-wall .sbsw-single-filter-youtube a:active,
 [id^=sb-wall].sb-wall .sbsw-single-filter-youtube a:hover,
@@ -2080,4 +2124,47 @@
 }
 .sbsw-custom-bg .sbsw-item-media {
     background: rgba(0,0,0,0.3);
+}
+
+.sbsw-lightbox .sbsw_gdpr_notice {
+    display: block;
+    left: 50%;
+    margin-left: -44px;
+    margin-top: -44px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    z-index: 1
+}
+
+.sbsw-lightbox .sbsw_gdpr_notice svg:not(:root).svg-inline--fa {
+    display: block!important;
+    height: 48px;
+    opacity: .8;
+    position: relative;
+    width: 48px
+}
+
+.sbsw-lightbox .sbsw_gdpr_notice:hover svg:not(:root).svg-inline--fa {
+    opacity: 1
+}
+/* Lightbox styles specific to TikTok feed item */
+.sbsw-lb-container .sbsw-lb-media-wrap .tiktok-embed {
+    margin: 0;
+}
+.sbsw-lb-container .sbsw-lb-media-wrap .tiktok-embed iframe {
+    width: 360px !important;
+    height: 760px !important;
+    position: initial;
+    margin: auto;
+}
+.sbsw-lb-outerContainer.tiktok-feed-lightbox .sbsw-lb-container-wrapper {
+    background-color: #000;
+}
+
+@media(min-width: 924px) {
+    .sbsw-lb-outerContainer.tiktok-feed-lightbox {
+        width: 500px !important;
+        height: 739px !important;
+    }
 }

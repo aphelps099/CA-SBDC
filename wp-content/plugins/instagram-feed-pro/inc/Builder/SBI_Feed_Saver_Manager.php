@@ -3,11 +3,16 @@
  * Instagram Feed Saver Manager
  *
  * @since 6.0
+ * @since INSTA_FEED_PRO_SINCE Added Feed template.
  */
 
 namespace InstagramFeed\Builder;
 
+use InstagramFeed\Traits\SBI_Feed_Template_Settings;
+
 class SBI_Feed_Saver_Manager {
+
+	use SBI_Feed_Template_Settings;
 
 	/**
 	 * AJAX hooks for various feed data related functionality
@@ -27,6 +32,9 @@ class SBI_Feed_Saver_Manager {
 		add_action( 'wp_ajax_sbi_feed_saver_manager_retrieve_comments', array( 'InstagramFeed\Builder\SBI_Feed_Saver_Manager', 'retrieve_comments' ) );
 		add_action( 'wp_ajax_sbi_feed_saver_manager_clear_comments_cache', array( 'InstagramFeed\Builder\SBI_Feed_Saver_Manager', 'clear_comments_cache' ) );
 		add_action( 'wp_ajax_sbi_feed_saver_manager_delete_source', array( 'InstagramFeed\Builder\SBI_Feed_Saver_Manager', 'delete_source' ) );
+		add_action( 'wp_ajax_sbi_update_personal_account', array( 'InstagramFeed\Builder\SBI_Feed_Saver_Manager', 'sbi_update_personal_account' ) );
+
+
 
 		//Detect Leaving the Page
 		add_action( 'wp_ajax_sbi_feed_saver_manager_recache_feed', array( 'InstagramFeed\Builder\SBI_Feed_Saver_Manager', 'recache_feed' ) );
@@ -74,6 +82,9 @@ class SBI_Feed_Saver_Manager {
 			} else {
 				$settings_data['feed_name'] = SBI_Db::feeds_query_name( $settings_data['sourcename'] );
 			}
+
+			// Add feed settings depending on feed templates.
+			$settings_data = self::get_feed_settings_by_feed_templates( $settings_data );
 		}
 		unset( $settings_data['new_insert'] );
 		unset( $settings_data['sourcename'] );
@@ -83,16 +94,21 @@ class SBI_Feed_Saver_Manager {
 			$feed_name                            = $settings_data['feed_name'];
 			$settings_data                        = $settings_data['settings'];
 			$settings_data['shoppablelist']       = isset( $_POST['shoppablelist'] ) ? sbi_json_encode( $_POST['shoppablelist'] ) : array();
-			$settings_data['moderationlist']      = isset( $_POST['moderationlist'] ) ? sbi_json_encode( $_POST['moderationlist'] ) : array();
+			$settings_data['moderationlist']      = isset( $_POST['moderationlist'] ) ? json_encode( $_POST['moderationlist'], true ) : array();
 		}
 
 		$source_ids   = $_POST['sources'];
 		$args         = array( 'id' => $source_ids );
 		$source_query = SBI_Db::source_query( $args );
 		$sources      = array();
+		$source_details = array();
 		if ( ! empty( $source_query ) ) {
 			foreach ( $source_query as $source ) {
 				$sources[] = $source['account_id'];
+				$source_details[] = array(
+					'id' => $source['account_id'],
+					'username' => $source['username']
+				);
 			}
 		}
 
@@ -100,6 +116,7 @@ class SBI_Feed_Saver_Manager {
 		$settings_data['user']    = '';
 		unset( $settings_data['sources'] );
 		$settings_data['id'] = $sources;
+		$settings_data['source_details'] = $source_details;
 
 		$feed_saver = new SBI_Feed_Saver( $feed_id );
 		$feed_saver->set_feed_name( $feed_name );
@@ -109,7 +126,6 @@ class SBI_Feed_Saver_Manager {
 			'success' => false,
 			'feed_id' => false,
 		);
-
 		if ( $feed_saver->update_or_insert() ) {
 			$return = array(
 				'success' => true,
@@ -192,15 +208,28 @@ class SBI_Feed_Saver_Manager {
 	 * @since 6.0
 	 */
 	public static function delete_source() {
-		check_ajax_referer( 'sbi_admin_nonce' , 'nonce');
+		check_ajax_referer( 'sbi-admin' , 'nonce');
 
 		if ( ! sbi_current_user_can( 'manage_instagram_feed_options' ) ) {
 			wp_send_json_error();
 		}
 
 		if ( ! empty( $_POST['source_id'] ) ) {
-			SBI_Db::delete_source_query( $_POST['source_id'] );
+			if ( isset( $_POST['username'] ) && ! empty( $_POST['username'] ) ) {
+				$username = sanitize_text_field( $_POST['username'] );
+				$args = array( 'username' => $username );
+
+				$source_query = SBI_Db::source_query( $args );
+
+				if (!empty($source_query) && isset($source_query[0]['username'])) {
+					$source_username = sanitize_text_field($source_query[0]['username']);
+					\SB_Instagram_Connected_Account::delete_local_avatar( $source_username );
+				}
+			}
+			$source_id = absint( $_POST['source_id'] );
+			SBI_Db::delete_source_query( $source_id );
 		}
+
 	}
 
 	public static function recache_feed() {
@@ -388,7 +417,9 @@ class SBI_Feed_Saver_Manager {
 				}
 				$return['posts'] = $instagram_feed->get_post_data();
 
-				$header_data = array();
+				$header_data = array(
+					'local_avatar' => false,
+				);
 
 				$instagram_feed->set_remote_header_data( $settings, $feed_type_and_terms, $instagram_feed_settings->get_connected_accounts_in_feed() );
 				$header_data = $instagram_feed->get_header_data();
@@ -399,10 +430,7 @@ class SBI_Feed_Saver_Manager {
 				if ( ! empty( $header_data ) && \SB_Instagram_Connected_Account::local_avatar_exists( $header_data['username'] ) ) {
 					$header_data['local_avatar_url'] = \SB_Instagram_Connected_Account::get_local_avatar_url( $header_data['username'] );
 					$header_data['local_avatar']     = \SB_Instagram_Connected_Account::get_local_avatar_url( $header_data['username'] );
-				} else {
-					$header_data['local_avatar'] = false;
 				}
-				$header_data['local_avatar'] = false;
 				$return['header']            = $header_data;
 				$return['headerData']        = $header_data;
 
@@ -430,7 +458,7 @@ class SBI_Feed_Saver_Manager {
 		}
 
 		if ( isset( $_POST['feedID'] ) && isset( $_POST['previewSettings'] ) ) {
-			$feed_id          = $_POST['feedID'];
+			$feed_id          = absint( wp_unslash( $_POST['feedID'] ) );
 			$preview_settings = $_POST['previewSettings'];
 			$feed_name        = $_POST['feedName'];
 
@@ -447,6 +475,12 @@ class SBI_Feed_Saver_Manager {
 				$preview_settings['layout']    = 'grid';
 				$preview_settings['cols']      = 4;
 				$preview_settings['offset']    = $offset * $preview_settings['num'];
+
+				$opt = [
+					'feed_id' => $feed_id,
+					'offset'  => $preview_settings['offset'],
+					'page'  => $offset
+				];
 
 				$preview_settings['enablemoderationmode'] = false;
 				$preview_settings['shoppablelist']        = isset( $preview_settings['shoppablelist'] ) ? sbi_json_encode( $preview_settings['shoppablelist'] ) : array();
@@ -473,24 +507,24 @@ class SBI_Feed_Saver_Manager {
 
 
 				if ( $offset > 0 ) {
-					$page               = $offset + 1;
-					$size_of_allow_list = 0;
-					if ( ! $show_selected ) {
-						$result = sbi_mod_mode_post_set( $feed_id, $atts, $preview_settings, $page );
-					} else {
-						$size_of_allow_list = ! empty( $preview_settings['show_selected_list'] ) && is_array( $preview_settings['show_selected_list'] ) ? count( $preview_settings['show_selected_list'] ) : 0;
-						$result             = array(
-							'html'       => display_instagram( $atts, $preview_settings ),
-							'feedStatus' => array( 'shouldPaginate' => $size_of_allow_list > $preview_settings['offset'] - $preview_settings['num']  )
-						);
-					}
+					$size_of_allow_list = ! empty( $preview_settings['show_selected_list'] ) && is_array( $preview_settings['show_selected_list'] ) ? count( $preview_settings['show_selected_list'] ) : 0;
+					$result             = array(
+						'html'       => self::moderation_pagination_feed( $opt , $preview_settings),
+						'feedStatus' => array( 'shouldPaginate' => true  )
+					);
 					$return['feed_html']  = $result['html'];
 					$return['feedStatus'] = $result['feedStatus'];
 					$return['sizeAllow']  = $size_of_allow_list;
 
+
+
 					echo wp_json_encode( $return );
 					die();
 				}
+
+				$feed_cache = new \SB_Instagram_Cache( $feed_id );
+				$feed_cache->clear( 'all' );
+				$feed_cache->clear( 'posts' );
 
 				$feed_saver = new SBI_Feed_Saver( $feed_id );
 				$feed_saver->set_feed_name( $feed_name );
@@ -499,10 +533,10 @@ class SBI_Feed_Saver_Manager {
 				$return['feed_html'] = display_instagram( $atts, $preview_settings );
 
 				echo $return['feed_html'];
-
 				die();
 			}
-			$preview_settings['moderationlist'] = isset( $preview_settings['moderationlist'] ) ? sbi_json_encode( $preview_settings['moderationlist'] ) : array();
+			$preview_settings['moderationlist'] = isset( $preview_settings['moderationlist'] ) ? json_encode( $preview_settings['moderationlist'], true ) : array();
+
 
 			$feed_cache = new \SB_Instagram_Cache( $feed_id );
 			$feed_cache->clear( 'all' );
@@ -511,6 +545,12 @@ class SBI_Feed_Saver_Manager {
 			$feed_saver = new SBI_Feed_Saver( $feed_id );
 			$feed_saver->set_feed_name( $feed_name );
 			$feed_saver->set_data( $preview_settings );
+
+			// Update feed settings depending on feed templates
+			if ( isset( $_POST['isFeedTemplatesPopup'] ) ) {
+				$preview_settings = self::get_feed_settings_by_feed_templates( $preview_settings );
+				$return['customizerData'] = $preview_settings;
+			}
 
 			$atts = SBI_Feed_Builder::add_customizer_att(
 				array(
@@ -521,10 +561,19 @@ class SBI_Feed_Saver_Manager {
 
 			$return['feed_html'] = display_instagram( $atts, $preview_settings );
 
-			echo $return['feed_html'];
+			if ( $moderation_shoppable && strpos( $return['feed_html'], 'id="sbi_mod_error"' ) && $preview_settings['offset'] > 0 ) {
+				$return['feed_html'] = '<div id="sbi_mod_error" style="display: block;"><strong>' . esc_html__("That's it!. No more posts to load.", 'instagram-feed' ) . '</strong></div>';
+			}
+			if ( ! empty( $_POST['isFeedTemplatesPopup'] ) ) {
+				echo sbi_json_encode( $return );
+			} else {
+				echo $return['feed_html'];
+			}
 		}
 		wp_die();
 	}
+
+
 
 	/**
 	 * Used in AJAX call to return settings for an existing feed.
@@ -555,12 +604,12 @@ class SBI_Feed_Saver_Manager {
 		if ( isset( $_POST['include_post_set'] ) &&
 			! empty( $_POST['include_post_set'] ) ) {
 			$atts                = SBI_Feed_Builder::add_customizer_att( array( 'feed' => $return['feed_id'] ) );
-			$return['feed_html'] = display_instagram( $atts );
-		}
-
-		echo sbi_json_encode( $return );
-		wp_die();
+		$return['feed_html'] = display_instagram( $atts );
 	}
+
+	echo sbi_json_encode( $return );
+	wp_die();
+}
 
 	/**
 	 * Get a list of feeds with a limit and offset like a page
@@ -602,7 +651,7 @@ class SBI_Feed_Saver_Manager {
 		}
 		$feeds_data = \SB_Instagram_Feed_Locator::instagram_feed_locator_query( $args );
 
-		if ( count( $feeds_data ) < SBI_Db::RESULTS_PER_PAGE ) {
+		if ( count( $feeds_data ) < SBI_Db::get_results_per_page() ) {
 			$args['html_location'] = array( 'footer', 'sidebar', 'header' );
 			$args['group_by']      = 'html_location';
 			$args['page']          = 1;
@@ -629,6 +678,40 @@ class SBI_Feed_Saver_Manager {
 		$feed_saver = new SBI_Feed_Saver( $feed_id );
 		$settings   = $feed_saver->get_feed_settings();
 
+		// For Hashtag and Tagged Feeds, 'sources' are not set which causes an import failure.
+		// So, setting the 'sources' to connected accounts.
+		if ( isset( $settings['type'] ) && ( 'hashtag' === $settings['type'] || 'tagged' === $settings['type'] )
+		&& ! isset( $settings['sources'] ) ) {
+
+			$settings['sources'] = array();
+			if( 'tagged' === $settings['type'] && isset( $settings['tagged'] ) && is_array( $settings['tagged'] ) ) {
+				$source_ids   = array_filter( $settings['tagged'] );
+				$args         = array( 'id' => $source_ids );
+				$source_query = SBI_Db::source_query( $args );
+				if ( ! empty( $source_query ) ) {
+					foreach ( $source_query as $source ) {
+						// if business account, then add it to the sources.
+						if ( isset( $source['account_type'] ) && isset( $source['account_id'] )
+						&& 'business' === $source['account_type'] ) {
+							$settings['sources'][] = $source['account_id'];
+						}
+					}
+				}
+			} else {
+
+				$instagram_feed_settings = new \SB_Instagram_Settings_Pro( array( 'feed' => $feed_id ), $settings );
+				$connected_accounts = $instagram_feed_settings->get_connected_accounts_from_settings();
+				if ( ! empty( $connected_accounts ) ) {
+					foreach ( $connected_accounts as $account ) {
+						// if business account, then add it to the sources.
+						if ( isset( $account['account_type'] ) && isset( $account['user_id'] )
+						&& 'business' === $account['account_type'] ) {
+							$settings['sources'][] = $account['user_id'];
+						}
+					}
+				}
+			}
+		}
 		return sbi_json_encode( $settings );
 	}
 
@@ -726,41 +809,47 @@ class SBI_Feed_Saver_Manager {
 	public static function get_data_type( $key ) {
 		switch ( $key ) {
 			case 'sources':
-				$return = array(
-					'table'        => 'feed_settings',
-					'sanitization' => 'sanitize_text_field',
-				);
-				break;
+			$return = array(
+				'table'        => 'feed_settings',
+				'sanitization' => 'sanitize_text_field',
+			);
+			break;
 			case 'feed_title':
-				$return = array(
-					'table'        => 'feeds',
-					'sanitization' => 'sanitize_text_field',
-				);
-				break;
+			$return = array(
+				'table'        => 'feeds',
+				'sanitization' => 'sanitize_text_field',
+			);
+			break;
 			case 'feed_name':
-				$return = array(
-					'table'        => 'feeds',
-					'sanitization' => 'sanitize_text_field',
-				);
-				break;
+			$return = array(
+				'table'        => 'feeds',
+				'sanitization' => 'sanitize_text_field',
+			);
+			break;
 			case 'status':
-				$return = array(
-					'table'        => 'feeds',
-					'sanitization' => 'sanitize_text_field',
-				);
-				break;
+			$return = array(
+				'table'        => 'feeds',
+				'sanitization' => 'sanitize_text_field',
+			);
+			break;
 			case 'author':
-				$return = array(
-					'table'        => 'feeds',
-					'sanitization' => 'int',
-				);
-				break;
+			$return = array(
+				'table'        => 'feeds',
+				'sanitization' => 'int',
+			);
+			break;
+			case 'source_details':
+			$return = array(
+				'table'        => 'feed_settings',
+				'sanitization' => 'array',
+			);
+			break;
 			default:
-				$return = array(
-					'table'        => 'feed_settings',
-					'sanitization' => 'sanitize_text_field',
-				);
-				break;
+			$return = array(
+				'table'        => 'feed_settings',
+				'sanitization' => 'sanitize_text_field',
+			);
+			break;
 		}
 
 		return $return;
@@ -771,22 +860,37 @@ class SBI_Feed_Saver_Manager {
 	 * for a value
 	 *
 	 * @param string $type
-	 * @param int|string $value
+	 * @param int|string|array $value
 	 *
 	 * @return int|string
 	 *
 	 * @since 6.0
 	 */
 	public static function sanitize( $type, $value ) {
+		if ( is_string( $value ) && $type === 'array' ) {
+			$type = 'string';
+		}
+
 		switch ( $type ) {
 			case 'int':
 				$return = intval( $value );
 				break;
+			
 			case 'boolean':
 				$return = self::cast_boolean( $value );
 				break;
+			
+			case 'array':
+				$keys = array_keys( $value );
+				$keys = array_map( 'sanitize_key', $keys );
+				$values = array_values( $value );
+				$values = array_map( 'sanitize_text_field', $values );
+				$return = array_combine( $keys, $values );
+				break;
+			
+			case 'string':
 			default:
-				$return = sanitize_text_field( $value );
+				$return = sanitize_text_field( stripslashes($value) );
 				break;
 		}
 
@@ -815,4 +919,175 @@ class SBI_Feed_Saver_Manager {
 		return false;
 	}
 
+
+	/**
+	 * Update Personal Account Info
+	 * Setting Avatar + Bio
+	 *
+	 * @return json
+	 *
+	 * @since 6.1
+	 */
+	public static function sbi_update_personal_account(){
+
+		check_ajax_referer( 'sbi-admin' , 'nonce');
+		if ( ! sbi_current_user_can( 'manage_instagram_feed_options' ) ) {
+			wp_send_json_error();
+		}
+
+		if( isset( $_FILES['avatar'] ) ){
+			$account_avatar = $_FILES['avatar']['tmp_name'];
+			$created = \SB_Instagram_Connected_Account::create_local_avatar( $_POST['username'], $account_avatar );
+			\SB_Instagram_Connected_Account::update_local_avatar_status( $_POST['username'], $created );
+		}
+
+		if( isset( $_POST['bio'] ) ){
+			#SBI_Source::update_personal_account_bio( $_POST['id'], $_POST['bio'] );
+			SBI_Source::update_personal_account_bio( $_POST['id'], stripslashes($_POST['bio']) );
+		}
+		$response = array(
+			'success' => true,
+			'sourcesList' => SBI_Feed_Builder::get_source_list()
+		);
+		echo sbi_json_encode( $response );
+		wp_die();
+	}
+
+
+
+	/**
+	 * Used for moderation Pagination
+	 *
+	 * @param array $opt
+	 * @param array $preview_settings
+	 *
+	 * @return HTML
+	 *
+	 * @since 6.1
+	 */
+	public static function moderation_pagination_feed( $opt, $preview_settings ) {
+		$feed_id = sanitize_text_field( $opt['feed_id'] );
+
+		$atts = [
+			'feed' => $feed_id
+		];
+		$database_settings = sbi_get_database_settings();
+		$instagram_feed_settings = new \SB_Instagram_Settings_Pro( $atts, $database_settings, $preview_settings );
+
+		$instagram_feed_settings->set_feed_type_and_terms();
+		$instagram_feed_settings->set_transient_name();
+		$transient_name = $instagram_feed_settings->get_transient_name();
+
+		$settings =  $instagram_feed_settings->get_settings();
+		$offset = isset( $opt['offset'] ) ? (int)$opt['offset'] : 0;
+		$page = isset( $opt['page'] ) ? (int)$opt['page'] : 1;
+
+		$settings['customizer']     = true;
+		$settings['ajax_post_load'] = false; // prevents pagination and checkboxes from breaking
+
+		$feed_type_and_terms = $instagram_feed_settings->get_feed_type_and_terms();
+
+		$instagram_feed = new \SB_Instagram_Feed_Pro( $transient_name );
+		$instagram_feed->set_cache( $instagram_feed_settings->get_cache_time_in_seconds(), $settings );
+
+		if ( $settings['caching_type'] === 'permanent' && empty( $settings['doingModerationMode'] ) ) {
+			$instagram_feed->add_report( 'trying to use permanent cache' );
+			$instagram_feed->maybe_set_post_data_from_backup();
+		} elseif ( $settings['caching_type'] === 'background' ) {
+			$instagram_feed->add_report( 'background caching used' );
+			if ( $instagram_feed->regular_cache_exists() ) {
+				$instagram_feed->add_report( 'setting posts from cache' );
+				$instagram_feed->set_post_data_from_cache();
+			}
+
+			if ( $instagram_feed->need_posts( $settings['minnum'] + $settings['offset'], $offset, $page ) && $instagram_feed->can_get_more_posts() ) {
+				while ( $instagram_feed->need_posts( $settings['minnum'] + $settings['offset'], $offset, $page ) && $instagram_feed->can_get_more_posts() ) {
+					$instagram_feed->add_remote_posts( $settings, $feed_type_and_terms, $instagram_feed_settings->get_connected_accounts_in_feed() );
+				}
+
+				$normal_method = true;
+				if ( $instagram_feed->need_to_start_cron_job() ) {
+					$instagram_feed->add_report( 'needed to start cron job' );
+					$to_cache = array(
+						'atts' => $atts,
+						'last_requested' => time(),
+					);
+
+
+					$normal_method = false;
+
+				} else {
+					$instagram_feed->add_report( 'updating last requested and adding to cache' );
+					$to_cache = array(
+						'last_requested' => time(),
+					);
+				}
+
+				if ( $instagram_feed->out_of_next_pages() && $instagram_feed->should_look_for_db_only_posts( $settings, $feed_type_and_terms ) ) {
+					$instagram_feed->add_report( 'Adding Db only posts' );
+					$instagram_feed->add_db_only_posts( $transient_name, $settings, $feed_type_and_terms );
+				}
+
+				if ( $normal_method ) {
+					$instagram_feed->set_cron_cache( $to_cache, $instagram_feed_settings->get_cache_time_in_seconds(), $settings['backup_cache_enabled'] );
+				} else {
+					$instagram_feed->set_cron_cache( $to_cache, $instagram_feed_settings->get_cache_time_in_seconds() );
+				}
+			}
+
+		} elseif ( $instagram_feed->regular_cache_exists() ) {
+			$instagram_feed->add_report( 'regular cache exists' );
+			$instagram_feed->set_post_data_from_cache();
+
+			if ( $instagram_feed->need_posts( (int)$settings['minnum'] + (int)$settings['offset'], $offset, $page ) && $instagram_feed->can_get_more_posts() ) {
+				while ( $instagram_feed->need_posts( $settings['minnum'] + $settings['offset'], $offset, $page ) && $instagram_feed->can_get_more_posts() ) {
+					$instagram_feed->add_remote_posts( $settings, $feed_type_and_terms, $instagram_feed_settings->get_connected_accounts_in_feed() );
+				}
+
+				if ( $instagram_feed->out_of_next_pages() || $instagram_feed->should_look_for_db_only_posts( $settings, $feed_type_and_terms ) ) {
+					$instagram_feed->add_report( 'Adding Db only posts' );
+					$instagram_feed->add_db_only_posts( $transient_name, $settings, $feed_type_and_terms );
+				}
+
+				$instagram_feed->add_report( 'adding to cache' );
+				$instagram_feed->cache_feed_data( $instagram_feed_settings->get_cache_time_in_seconds(), $settings['backup_cache_enabled'] );
+			}
+
+			if ( $instagram_feed->using_an_allow_list( $settings ) ) {
+				$instagram_feed->add_report( 'Adding allow list only posts' );
+				$instagram_feed->add_db_only_allow_list_posts( $settings );
+			}
+
+
+		} else {
+			$instagram_feed->add_report( 'no feed cache found' );
+
+			while ( $instagram_feed->need_posts( $settings['minnum'] + $settings['offset'], $offset, $page ) && $instagram_feed->can_get_more_posts() ) {
+				$instagram_feed->add_remote_posts( $settings, $feed_type_and_terms, $instagram_feed_settings->get_connected_accounts_in_feed() );
+			}
+
+			if ( $instagram_feed->should_use_backup() ) {
+				$instagram_feed->add_report( 'trying to use a backup cache' );
+				$instagram_feed->maybe_set_post_data_from_backup();
+			} else {
+				$instagram_feed->add_report( 'transient gone, adding to cache' );
+				$instagram_feed->cache_feed_data( $instagram_feed_settings->get_cache_time_in_seconds(), $settings['backup_cache_enabled'] );
+			}
+		}
+
+		$settings['feed_avatars'] = array();
+		if ( $instagram_feed->need_avatars( $settings ) ) {
+			$instagram_feed->set_up_feed_avatars( $instagram_feed_settings->get_connected_accounts_in_feed(), $feed_type_and_terms );
+			$settings['feed_avatars'] = $instagram_feed->get_username_avatars();
+		}
+
+		$should_paginate_offset = (int)$offset + (int)$settings['offset'];
+		$feed_status = array( 'shouldPaginate' => $instagram_feed->should_use_pagination( $settings, $should_paginate_offset ) );
+
+
+
+		$moderation_posts = array_slice( $instagram_feed->get_post_data(), $offset, $settings['minnum'] );
+
+		return $instagram_feed->get_the_feed_html( $settings, $atts, $instagram_feed_settings->get_feed_type_and_terms(), $instagram_feed_settings->get_connected_accounts_in_feed(), $moderation_posts );
+	}
 }

@@ -36,7 +36,7 @@ class GUIService extends ServiceProvider {
 	public function sby_access_token_warning_modal() {
 		if ( isset( $_GET['page'] ) && $_GET['page'] === SBY_SLUG && isset( $_GET['sby_access_token'] ) && sby_notice_not_dismissed() ) {
 			$text_domain = SBY_TEXT_DOMAIN;
-			include trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/modal.php';
+			include_once trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/modal.php';
 			echo '<span class="sby_account_just_added"></span>';
 		}
 

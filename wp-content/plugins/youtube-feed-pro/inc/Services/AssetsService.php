@@ -22,14 +22,14 @@ class AssetsService extends ServiceProvider {
 
 		$js = isset( $sby_settings['custom_js'] ) ? trim( $sby_settings['custom_js'] ) : '';
 
-		echo '<!-- YouTube Feed JS -->';
+		echo '<!-- YouTube Feeds JS -->';
 		echo "\r\n";
 		echo '<script type="text/javascript">';
 		echo "\r\n";
 
 		if ( ! empty( $js ) ) {
 			echo "\r\n";
-			echo "jQuery( document ).ready(function($) {";
+			echo "if (typeof jQuery !== 'undefined') {  jQuery( document ).ready(function($) {";
 			echo "\r\n";
 			echo "window.sbyCustomJS = function(){";
 			echo "\r\n";
@@ -37,7 +37,7 @@ class AssetsService extends ServiceProvider {
 			echo "\r\n";
 			echo "}";
 			echo "\r\n";
-			echo "});";
+			echo "})};";
 		}
 
 		echo "\r\n";
@@ -48,12 +48,14 @@ class AssetsService extends ServiceProvider {
 	public function sby_custom_css() {
 		global $sby_settings;
 
+		$css = '';
+
 		$css = isset( $sby_settings['custom_css'] ) ? trim( $sby_settings['custom_css'] ) : '';
 
 		//Show CSS if an Admin (so can see Hide Photos link), if including Custom CSS or if hiding some photos
 		if ( current_user_can( 'manage_youtube_feed_options' ) || current_user_can( 'manage_options' ) ||  ! empty( $css ) ) {
 
-			echo '<!-- YouTube Feed CSS -->';
+			echo '<!-- YouTube Feeds CSS -->';
 			echo "\r\n";
 			echo '<style type="text/css">';
 
@@ -94,7 +96,7 @@ class AssetsService extends ServiceProvider {
 		$js_file = $assets_url . 'js/sb-youtube.min.js';
 
 		if ( isset( $_GET['sb_debug'] ) ) {
-			$js_file = $assets_url . 'js/sb-youtube.js';
+			$js_file = $assets_url . 'js/sb-youtube-debug.js';
 		}
 
 		if(!Util::isProduction()) {
@@ -104,10 +106,15 @@ class AssetsService extends ServiceProvider {
 		$enqueue_in_head = isset($global_settings['enqueue_js_in_head']) ? $global_settings['enqueue_js_in_head'] : false;
 		wp_register_script( 'sby_scripts', $js_file, array('jquery'), SBYVER, !$enqueue_in_head );
 
+		$css_free_file_name = 'sb-youtube-free.min.css';
+		$css_pro_file_name = 'sb-youtube.min.css';
+		$css_file_name = sby_is_pro() ? $css_pro_file_name : $css_free_file_name;
+
+
 		if ( !empty( $sby_settings['enqueue_css_in_shortcode'] ) ) {
-			wp_register_style( 'sby_styles', trailingslashit( SBY_PLUGIN_URL ) . 'css/sb-youtube.min.css', array(), SBYVER );
+			wp_register_style( 'sby_styles', trailingslashit( SBY_PLUGIN_URL ) . 'css/' . $css_file_name, array(), SBYVER );
 		} else {
-			wp_enqueue_style( 'sby_styles', trailingslashit( SBY_PLUGIN_URL ) . 'css/sb-youtube.min.css', array(), SBYVER );
+			wp_enqueue_style( 'sby_styles', trailingslashit( SBY_PLUGIN_URL ) . 'css/' . $css_file_name, array(), SBYVER );
 		}
 
 		$data = array(
@@ -122,6 +129,7 @@ class AssetsService extends ServiceProvider {
 			'eagerload' => false,
 			'nonce'	=> wp_create_nonce( 'sby_nonce' ),
 			'isPro'	=> sby_is_pro(),
+			'isCustomizer' => \sby_doing_customizer( $sby_settings )
 		);
 		//Pass option to JS file
 		wp_localize_script('sby_scripts', 'sbyOptions', $data );

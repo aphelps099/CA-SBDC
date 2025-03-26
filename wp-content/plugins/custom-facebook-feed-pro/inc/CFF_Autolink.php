@@ -1,20 +1,26 @@
 <?php
+
 namespace CustomFacebookFeed;
-class CFF_Autolink{
 
+if (!defined('ABSPATH')) {
+	exit; // Exit if accessed directly
+}
 
-	static function cff_autolink($text, $link_color='', $span_tag = false, $limit=100, $tagfill='class="cff-break-word"', $auto_title = true){
-
+class CFF_Autolink
+{
+	public static function cff_autolink($text, $link_color = '', $span_tag = false, $limit = 100, $tagfill = 'class="cff-break-word"', $auto_title = true)
+	{
 		$text = self::cff_autolink_do($text, $link_color, '![a-z][a-z-]+://!i',	$limit, $tagfill, $auto_title, $span_tag);
 		$text = self::cff_autolink_do($text, $link_color, '!(mailto|skype):!i',	$limit, $tagfill, $auto_title, $span_tag);
-		$text = self::cff_autolink_do($text, $link_color, '!www\\.!i',			$limit, $tagfill, $auto_title, '', $span_tag);
+		$text = self::cff_autolink_do($text, $link_color, '!www\\.!i', $limit, $tagfill, $auto_title, '', $span_tag);
 
 		return $text;
 	}
 
 
 
-	static function cff_autolink_do($text, $link_color, $sub, $limit, $tagfill, $auto_title, $span_tag, $force_prefix=null){
+	public static function cff_autolink_do($text, $link_color, $sub, $limit, $tagfill, $auto_title, $span_tag, $force_prefix = null)
+	{
 
 		$text_l = StrToLower($text);
 		$cursor = 0;
@@ -22,177 +28,172 @@ class CFF_Autolink{
 		$buffer = '';
 
 		 $autolink_options = [
-	        # Should http:// be visibly stripped from the front
-	        # of URLs?
-	        'strip_protocols' => true,
-	    ];
+			// Should http:// be visibly stripped from the front
+			// of URLs?
+			'strip_protocols' => true,
+		 ];
 
-		while (($cursor < strlen($text)) && $loop){
+		 while (($cursor < strlen($text)) && $loop) {
+			 $ok = 1;
+			 $matched = preg_match($sub, $text_l, $m, PREG_OFFSET_CAPTURE, $cursor);
 
-			$ok = 1;
-			$matched = preg_match($sub, $text_l, $m, PREG_OFFSET_CAPTURE, $cursor);
+			 if (!$matched) {
+				 $loop = 0;
+				 $ok = 0;
+			 } else {
+				 $pos = $m[0][1];
+				 $sub_len = strlen($m[0][0]);
 
-			if (!$matched){
+				 $pre_hit = substr($text, $cursor, $pos - $cursor);
+				 $hit = substr($text, $pos, $sub_len);
+				 $pre = substr($text, 0, $pos);
+				 $post = substr($text, $pos + $sub_len);
 
-				$loop = 0;
-				$ok = 0;
+				 $fail_text = $pre_hit . $hit;
+				 $fail_len = strlen($fail_text);
 
-			}else{
+				 //
+				 // substring found - first check to see if we're inside a link tag already...
+				 //
 
-				$pos = $m[0][1];
-				$sub_len = strlen($m[0][0]);
+				 $bits = preg_split("!</a>!i", $pre);
+				 $last_bit = array_pop($bits);
+				 if (preg_match("!<a\s!i", $last_bit)) {
+					 // echo "fail 1 at $cursor<br />\n";
 
-				$pre_hit = substr($text, $cursor, $pos-$cursor);
-				$hit = substr($text, $pos, $sub_len);
-				$pre = substr($text, 0, $pos);
-				$post = substr($text, $pos + $sub_len);
+					 $ok = 0;
+					 $cursor += $fail_len;
+					 $buffer .= $fail_text;
+				 }
+			 }
 
-				$fail_text = $pre_hit.$hit;
-				$fail_len = strlen($fail_text);
+			 //
+			 // looks like a nice spot to autolink from - check the pre
+			 // to see if there was whitespace before this match
+			 //
 
-				#
-				# substring found - first check to see if we're inside a link tag already...
-				#
+			 if ($ok) {
+				 if ($pre) {
+					 if (!preg_match('![\s\(\[\{>]$!s', $pre)) {
+						 // echo "fail 2 at $cursor ($pre)<br />\n";
 
-				$bits = preg_split("!</a>!i", $pre);
-				$last_bit = array_pop($bits);
-				if (preg_match("!<a\s!i", $last_bit)){
+						 $ok = 0;
+						 $cursor += $fail_len;
+						 $buffer .= $fail_text;
+					 }
+				 }
+			 }
 
-					#echo "fail 1 at $cursor<br />\n";
+			 //
+			 // we want to autolink here - find the extent of the url
+			 //
 
-					$ok = 0;
-					$cursor += $fail_len;
-					$buffer .= $fail_text;
-				}
-			}
+			 if ($ok) {
+				 if (preg_match('/^([a-z0-9\-\.\/\-_%~!?=,:;&+*#@\(\)\$]+)/i', $post, $matches)) {
+					 $url = $hit . $matches[1];
 
-			#
-			# looks like a nice spot to autolink from - check the pre
-			# to see if there was whitespace before this match
-			#
+					 $cursor += strlen($url) + strlen($pre_hit);
+					 $buffer .= $pre_hit;
 
-			if ($ok){
-
-				if ($pre){
-					if (!preg_match('![\s\(\[\{>]$!s', $pre)){
-
-						#echo "fail 2 at $cursor ($pre)<br />\n";
-
-						$ok = 0;
-						$cursor += $fail_len;
-						$buffer .= $fail_text;
-					}
-				}
-			}
-
-			#
-			# we want to autolink here - find the extent of the url
-			#
-
-			if ($ok){
-				if (preg_match('/^([a-z0-9\-\.\/\-_%~!?=,:;&+*#@\(\)\$]+)/i', $post, $matches)){
-
-					$url = $hit.$matches[1];
-
-					$cursor += strlen($url) + strlen($pre_hit);
-					$buffer .= $pre_hit;
-
-					$url = html_entity_decode($url);
+					 $url = html_entity_decode($url);
 
 
-					#
-					# remove trailing punctuation from url
-					#
+					 //
+					 // remove trailing punctuation from url
+					 //
 
-					while (preg_match('|[.,!;:?]$|', $url)){
-						$url = substr($url, 0, strlen($url)-1);
-						$cursor--;
-					}
-					foreach (array('()', '[]', '{}') as $pair){
-						$o = substr($pair, 0, 1);
-						$c = substr($pair, 1, 1);
-						if (preg_match("!^(\\$c|^)[^\\$o]+\\$c$!", $url)){
-							$url = substr($url, 0, strlen($url)-1);
-							$cursor--;
-						}
-					}
-
-
-					#
-					# nice-i-fy url here
-					#
-
-					$link_url = $url;
-					$display_url = $url;
-
-					if ($force_prefix) $link_url = $force_prefix.$link_url;
-
-					if ($autolink_options['strip_protocols']){
-						if (preg_match('!^(http|https)://!i', $display_url, $m)){
-
-							$display_url = substr($display_url, strlen($m[1])+3);
-						}
-					}
-
-					$display_url = self::cff_autolink_label($display_url, $limit);
+					 while (preg_match('|[.,!;:?]$|', $url)) {
+						 $url = substr($url, 0, strlen($url) - 1);
+						 $cursor--;
+					 }
+					 foreach (array('()', '[]', '{}') as $pair) {
+						 $o = substr($pair, 0, 1);
+						 $c = substr($pair, 1, 1);
+						 if (preg_match("!^(\\$c|^)[^\\$o]+\\$c$!", $url)) {
+							 $url = substr($url, 0, strlen($url) - 1);
+							 $cursor--;
+						 }
+					 }
 
 
-					#
-					# add the url
-					#
+					 //
+					 // nice-i-fy url here
+					 //
 
-					if ($display_url != $link_url && !preg_match('@title=@msi',$tagfill) && $auto_title) {
+					 $link_url = $url;
+					 $display_url = $url;
 
-						$display_quoted = preg_quote($display_url, '!');
+					 if ($force_prefix) {
+						 $link_url = $force_prefix . $link_url;
+					 }
 
-						if (!preg_match("!^(http|https)://{$display_quoted}$!i", $link_url)){
+					 if ($autolink_options['strip_protocols']) {
+						 if (preg_match('!^(http|https)://!i', $display_url, $m)) {
+							 $display_url = substr($display_url, strlen($m[1]) + 3);
+						 }
+					 }
 
-							$tagfill .= ' title="'.$link_url.'"';
-						}
-					}
-
-					$link_url_enc = HtmlSpecialChars($link_url);
-					$display_url_enc = HtmlSpecialChars($display_url);
-
-					if($span_tag == true){
-						$buffer .= "<span $tagfill>{$display_url_enc}</span>";
-					} else {
-						//Add http:// to the beginning of links which start with www.
-    					if( substr( $link_url_enc, 0, 4 ) !== "http" ) $link_url_enc = 'http://' . $link_url_enc;
-						$buffer .= "<a href=\"{$link_url_enc}\"";
-						if( $link_color !== '' ) $buffer .= " style='color: #".$link_color.";' ";
-						$buffer .= ">{$display_url_enc}</a>";
-					}
+					 $display_url = self::cff_autolink_label($display_url, $limit);
 
 
-				}else{
-					#echo "fail 3 at $cursor<br />\n";
+					 //
+					 // add the url
+					 //
 
-					$ok = 0;
-					$cursor += $fail_len;
-					$buffer .= $fail_text;
-				}
-			}
+					 if ($display_url != $link_url && !preg_match('@title=@msi', $tagfill) && $auto_title) {
+						 $display_quoted = preg_quote($display_url, '!');
 
-		}
+						 if (!preg_match("!^(http|https)://{$display_quoted}$!i", $link_url)) {
+							 $tagfill .= ' title="' . $link_url . '"';
+						 }
+					 }
 
-		#
-		# add everything from the cursor to the end onto the buffer.
-		#
+					 $link_url_enc = HtmlSpecialChars($link_url);
+					 $display_url_enc = HtmlSpecialChars($display_url);
 
-		$buffer .= substr($text, $cursor);
+					 if ($span_tag == true) {
+						 $buffer .= "<span $tagfill>{$display_url_enc}</span>";
+					 } else {
+						 // Add http:// to the beginning of links which start with www.
+						 if (substr($link_url_enc, 0, 4) !== "http") {
+							 $link_url_enc = 'https://' . $link_url_enc;
+						 }
+						 $buffer .= "<a href=\"{$link_url_enc}\"";
+						 if ($link_color !== '') {
+							 $buffer .= " style='color: #" . $link_color . ";' ";
+						 }
+						 $buffer .= ">{$display_url_enc}</a>";
+					 }
+				 } else {
+					 // echo "fail 3 at $cursor<br />\n";
 
-		return $buffer;
+					 $ok = 0;
+					 $cursor += $fail_len;
+					 $buffer .= $fail_text;
+				 }
+			 }
+		 }
+
+		//
+		// add everything from the cursor to the end onto the buffer.
+		//
+
+		 $buffer .= substr($text, $cursor);
+
+		 return $buffer;
 	}
 
 
 
-	static function cff_autolink_label($text, $limit){
+	public static function cff_autolink_label($text, $limit)
+	{
 
-		if (!$limit){ return $text; }
+		if (!$limit) {
+			return $text;
+		}
 
-		if (strlen($text) > $limit){
-			return substr($text, 0, $limit-3).'...';
+		if (strlen($text) > $limit) {
+			return substr($text, 0, $limit - 3) . '...';
 		}
 
 		return $text;
@@ -200,51 +201,47 @@ class CFF_Autolink{
 
 
 
-	static function cff_autolink_email($text, $tagfill=''){
+	public static function cff_autolink_email($text, $tagfill = '')
+	{
 
-		$atom = '[^()<>@,;:\\\\".\\[\\]\\x00-\\x20\\x7f]+'; # from RFC822
+		$atom = '[^()<>@,;:\\\\".\\[\\]\\x00-\\x20\\x7f]+'; // from RFC822
 
-		#die($atom);
+		// die($atom);
 
 		$text_l = StrToLower($text);
 		$cursor = 0;
 		$loop = 1;
 		$buffer = '';
 
-		while(($cursor < strlen($text)) && $loop){
-
-			#
-			# find an '@' symbol
-			#
+		while (($cursor < strlen($text)) && $loop) {
+			//
+			// find an '@' symbol
+			//
 
 			$ok = 1;
 			$pos = strpos($text_l, '@', $cursor);
 
-			if ($pos === false){
-
+			if ($pos === false) {
 				$loop = 0;
 				$ok = 0;
-
-			}else{
-
-				$pre = substr($text, $cursor, $pos-$cursor);
+			} else {
+				$pre = substr($text, $cursor, $pos - $cursor);
 				$hit = substr($text, $pos, 1);
 				$post = substr($text, $pos + 1);
 
-				$fail_text = $pre.$hit;
+				$fail_text = $pre . $hit;
 				$fail_len = strlen($fail_text);
 
-				#die("$pre::$hit::$post::$fail_text");
+				// die("$pre::$hit::$post::$fail_text");
 
-				#
-				# substring found - first check to see if we're inside a link tag already...
-				#
+				//
+				// substring found - first check to see if we're inside a link tag already...
+				//
 
 				$bits = preg_split("!</a>!i", $pre);
 				$last_bit = array_pop($bits);
-				if (preg_match("!<a\s!i", $last_bit)){
-
-					#echo "fail 1 at $cursor<br />\n";
+				if (preg_match("!<a\s!i", $last_bit)) {
+					// echo "fail 1 at $cursor<br />\n";
 
 					$ok = 0;
 					$cursor += $fail_len;
@@ -252,24 +249,21 @@ class CFF_Autolink{
 				}
 			}
 
-			#
-			# check backwards
-			#
+			//
+			// check backwards
+			//
 
-			if ($ok){
-				if (preg_match("!($atom(\.$atom)*)\$!", $pre, $matches)){
-
-					# move matched part of address into $hit
+			if ($ok) {
+				if (preg_match("!($atom(\.$atom)*)\$!", $pre, $matches)) {
+					// move matched part of address into $hit
 
 					$len = strlen($matches[1]);
 					$plen = strlen($pre);
 
-					$hit = substr($pre, $plen-$len).$hit;
-					$pre = substr($pre, 0, $plen-$len);
-
-				}else{
-
-					#echo "fail 2 at $cursor ($pre)<br />\n";
+					$hit = substr($pre, $plen - $len) . $hit;
+					$pre = substr($pre, 0, $plen - $len);
+				} else {
+					// echo "fail 2 at $cursor ($pre)<br />\n";
 
 					$ok = 0;
 					$cursor += $fail_len;
@@ -277,22 +271,20 @@ class CFF_Autolink{
 				}
 			}
 
-			#
-			# check forwards
-			#
+			//
+			// check forwards
+			//
 
-			if ($ok){
-				if (preg_match("!^($atom(\.$atom)*)!", $post, $matches)){
-
-					# move matched part of address into $hit
+			if ($ok) {
+				if (preg_match("!^($atom(\.$atom)*)!", $post, $matches)) {
+					// move matched part of address into $hit
 
 					$len = strlen($matches[1]);
 
 					$hit .= substr($post, 0, $len);
 					$post = substr($post, $len);
-
-				}else{
-					#echo "fail 3 at $cursor ($post)<br />\n";
+				} else {
+					// echo "fail 3 at $cursor ($post)<br />\n";
 
 					$ok = 0;
 					$cursor += $fail_len;
@@ -300,30 +292,23 @@ class CFF_Autolink{
 				}
 			}
 
-			#
-			# commit
-			#
+			//
+			// commit
+			//
 
 			if ($ok) {
-
 				$cursor += strlen($pre) + strlen($hit);
 				$buffer .= $pre;
 				$buffer .= "<a href=\"mailto:$hit\"$tagfill>$hit</a>";
-
 			}
-
 		}
 
-		#
-		# add everything from the cursor to the end onto the buffer.
-		#
+		//
+		// add everything from the cursor to the end onto the buffer.
+		//
 
 		$buffer .= substr($text, $cursor);
 
 		return $buffer;
 	}
-
-
 }
-
-?>

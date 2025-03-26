@@ -13,6 +13,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+use InstagramFeed\SB_Instagram_Data_Encryption;
 
 class SB_Instagram_Post
 {
@@ -207,6 +208,14 @@ class SB_Instagram_Post
 	 */
 	public function resize_and_save_image( $image_sizes, $upload_dir, $upload_url ) {
 		$sbi_statuses_option = get_option( 'sbi_statuses', array() );
+		$options             = sbi_get_database_settings();
+		$image_format        = isset( $options['image_format'] ) ? $options['image_format'] : 'webp';
+
+		$webp_supported = false;
+		if ( $image_format == 'webp' ) {
+			$webp_supported = wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) );
+		}
+		$extension 	    = $webp_supported ? '.webp' : '.jpg';
 
 		if ( isset( $this->instagram_api_data['id'] ) ) {
 			$image_source_set    = SB_Instagram_Parse::get_media_src_set( $this->instagram_api_data );
@@ -220,6 +229,7 @@ class SB_Instagram_Post
 				} else {
 					$new_file_name       = $this->instagram_api_data['id'];
 				}
+				$new_file_name = str_replace( '.webp', '', $new_file_name );
 			} else {
 				$new_file_name       = $this->instagram_api_data['id'];
 			}
@@ -246,7 +256,7 @@ class SB_Instagram_Post
 
 					$suffix = $res_setting;
 
-					$this_image_file_name = $new_file_name . $suffix . '.jpg';
+					$this_image_file_name = $new_file_name . $suffix . $extension;
 
 					$image_editor = wp_get_image_editor( $file_name );
 
@@ -277,10 +287,11 @@ class SB_Instagram_Post
 						$image_editor->resize( $image_size, null );
 
 						$full_file_name = trailingslashit( $upload_dir ) . $this_image_file_name;
+						$mime_type 	    = $webp_supported ? 'image/webp' : 'image/jpeg';
 
-						$saved_image = $image_editor->save( $full_file_name );
+						$saved_image = $image_editor->save( $full_file_name, $mime_type );
 
-						if ( ! $saved_image ) {
+						if (is_wp_error($saved_image)) {
 							global $sb_instagram_posts_manager;
 							$details =  __( 'Error saving edited image.', 'instagram-feed' ) . ' ' . $full_file_name;
 							$sb_instagram_posts_manager->add_error( 'image_editor', $details );
@@ -319,7 +330,8 @@ class SB_Instagram_Post
 					'media_id'     => $new_file_name,
 					'sizes'        => maybe_serialize( $image_sizes_to_make ),
 					'aspect_ratio' => $aspect_ratio,
-					'images_done'  => 1
+					'images_done'  => 1,
+					'mime_type'    => $saved_image['mime-type']
 				) );
 
 				$this->add_resized_image_to_obj_array( 'id', $new_file_name );
@@ -333,6 +345,17 @@ class SB_Instagram_Post
 				) );
 			}
 
+		}
+	}
+
+	/**
+	 * Update the post_json in the database
+	 */
+	public function update_post_json_db() {
+		if ( isset( $this->instagram_api_data['id'] ) ) {
+			$this->update_sbi_instagram_posts( array(
+				'json_data'     => $this->encryption->encrypt( sbi_json_encode( $this->instagram_api_data ) )
+			) );
 		}
 	}
 

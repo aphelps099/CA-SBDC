@@ -30,6 +30,10 @@ class SBY_Feed_Pro extends SBY_Feed
 	}
 
 	public function get_first_user( $feed_types_and_terms, $settings = array() ) {
+		if ( ! is_array( $settings ) ) {
+			return '';
+		}
+
 		if ( ! empty( $settings['headerchannel'] ) ) {
 			return $settings['headerchannel'];
 		} elseif ( isset( $feed_types_and_terms['channels'][0] ) ) {
@@ -133,10 +137,10 @@ class SBY_Feed_Pro extends SBY_Feed
 		if ( empty( $this->channels_data[ $term ] ) ) {
 			if ( $connected_account_for_term['expires'] < time() + 5 ) {
 				$error_message = '<p><b>' . __( 'Reconnect to YouTube to show this feed.', 'feeds-for-youtube' ) . '</b></p>';
-				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', SBY_TEXT_DOMAIN ) . '</p>';
+				$error_message .= '<p>' . __( 'To create a new feed, first connect to YouTube using the "Connect to YouTube to Create a Feed" button on the settings page and connect any account.', 'feeds-for-youtube' ) . '</p>';
 
 				if ( current_user_can( 'manage_youtube_feed_options' ) ) {
-					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feed Settings Area' ) . '</a>';
+					$error_message .= '<a href="' . admin_url( 'admin.php?page=youtube-feed-settings' ) . '" target="blank" rel="noopener nofollow">' . __( 'Reconnect in the YouTube Feeds Settings Area', 'feeds-for-youtube' ) . '</a>';
 				}
 				global $sby_posts_manager;
 
@@ -486,9 +490,9 @@ class SBY_Feed_Pro extends SBY_Feed
 		return $type === 'live';
 	}
 
-	public function make_workaround_connection( $connected_account_for_term, $type, $params ) {
+	public function make_workaround_connection( $connected_account_for_term, $type, $params, $feed_id = '' ) {
 
-		$live_streams = new SBY_Live_Streams( $params['channelId'] );
+		$live_streams = new SBY_Live_Streams( $params['channelId'], $feed_id );
 
 		$new_live_streams = $live_streams->add_remote_posts();
 		$live_streams->sort();

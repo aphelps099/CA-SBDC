@@ -251,23 +251,53 @@ var sbiStorage = window.localStorage;
          *
          * @since 4.0
          */
-         processIFConnect : function(){
+        processIFConnect : function(){
             var self = this,
-            ifConnectURL = self.addNewSource.typeSelected === 'personal' ? self.sourceConnectionURLs.personal : self.sourceConnectionURLs.business,
+            accountType = self.addNewSource.typeSelected,
+            params = accountType === 'personal' ? self.sourceConnectionURLs.personal : self.sourceConnectionURLs.business,
+            ifConnectURL = params.connect,
+            
             screenType = (self.$parent.customizerFeedData != undefined) ? 'customizer'  : 'creationProcess',
             appendURL = ( screenType == 'customizer' ) ? self.sourceConnectionURLs.stateURL + ',feed_id='+ self.$parent.customizerFeedData.feed_info.id : self.sourceConnectionURLs.stateURL;
-            if(screenType != 'customizer'){
+            
+            // if(screenType != 'customizer'){
                 self.createLocalStorage(screenType);
+            // }
+
+            const urlParams = {
+                'wordpress_user' : params.wordpress_user,
+                'v' : params.v,
+                'vn' : params.vn,
+                'sbi_con' : params.sbi_con,
+                'state' : "{'{url=" + appendURL + "}'}"
+            };
+
+            if(params.sw_feed) {
+                urlParams['sw-feed'] = 'true';
             }
 
             if(screenType === 'creationProcess'){
                 if(self.$parent.selectedFeed.length === 1 && (self.$parent.selectedFeed[0] === 'hashtag' || self.$parent.selectedFeed[0] === 'tagged')){
-                    ifConnectURL += '&noper=true';
+                    urlParams['noper'] = 'true';
                 }
             }
 
-            var finalUrl = ifConnectURL + "&state={'{url=" + appendURL + "}'}";
-            window.location = finalUrl;
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = ifConnectURL;
+
+            for (const param in urlParams) {
+                if (urlParams.hasOwnProperty(param)) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = param;
+                    input.value = urlParams[param];
+                    form.appendChild(input);
+                }
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
         },
 
         /**

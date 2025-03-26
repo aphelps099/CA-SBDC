@@ -9,6 +9,9 @@ namespace TwitterFeed;
 use TwitterFeed\Pro\CTF_Settings_Pro;
 use TwitterFeed\Pro\CTF_Parse_Pro;
 use TwitterFeed\Builder\CTF_Feed_Builder;
+use TwitterFeed\SmashTwitter\SettingsFilter;
+use TwitterFeed\SmashTwitter\TweetSetModifier;
+use TwitterFeed\V2\CtfOauthConnect;
 
 // Don't load directly
 if (!defined('ABSPATH')) {
@@ -95,6 +98,10 @@ class CtfFeed {
      */
     public $is_legacy;
 
+	/**
+	 * @var SettingsFilter
+	 */
+	public $settings_filter;
 
     /**
      * retrieves and sets options that apply to the feed
@@ -106,6 +113,9 @@ class CtfFeed {
     public function __construct($atts, $last_id_data, $num_needed_input, $preview_settings = false) {
         $this->atts = CTF_Settings_Pro::filter_atts_for_legacy($atts);
         $this->raw_shortcode_atts = CTF_Settings_Pro::filter_atts_for_legacy($atts);
+		if ( ! is_array( $this->raw_shortcode_atts ) ) {
+			$this->raw_shortcode_atts = array();
+		}
 
         $this->last_id_data = $last_id_data;
         $this->num_needed_input = $num_needed_input;
@@ -168,7 +178,8 @@ class CtfFeed {
      * creates all of the feed options with shortcode settings having the highest priority
      */
     public function setFeedOptions() {
-        $this->feed_options['num'] = isset($this->feed_options['num']) && !empty($this->feed_options['num']) ? $this->feed_options['num'] : 1;
+		$this->settings_filter = new SettingsFilter();
+	    $this->feed_options['num'] = isset($this->feed_options['num']) && !empty($this->feed_options['num']) ? $this->feed_options['num'] : 1;
         $this->setFeedTypeAndTermOptions();
 
         $this->setAccessTokenAndSecretOptions();
@@ -183,42 +194,67 @@ class CtfFeed {
         //$this->setDimensionOptions();
         $this->setCacheTimeOptions();
         $this->setIncludeExcludeOptions();
+
+	    if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter()) {
+		    $this->settings_filter->set_settings( $this->feed_options );
+			if ( empty( $this->feed_options['feed_types_and_terms'] ) ) {
+				$this->feed_options['feed_types_and_terms'] = array();
+			}
+		    $this->settings_filter->set_feed_type_and_terms( $this->feed_options['feed_types_and_terms'] );
+		    $this->settings_filter->filter_feed_type_and_terms();
+		    $this->settings_filter->maybe_add_hashtag_includewords();
+		    $this->feed_options = $this->settings_filter->get_settings();
+		    $this->feed_options['feed_types_and_terms'] = $this->settings_filter->get_feed_type_and_terms();
+	    }
     }
 
     /**
      * uses the feed options to set the the tweets in the feed by using
      * an existing set in a cache or by retrieving them from Twitter
      */
-    protected function setTweetSet() {
-        $this->setTransientName();
-        if ( ! empty( $this->feed_options['feed'] ) ) {
-         $feed_id = $this->feed_options['feed'];
-     } else {
-         $feed_id = 'legacy';
-     }
-     if ( ! empty( $this->last_id_data ) ) {
-      $page = $this->last_id_data;
-  } else {
-      $page = '';
-  }
-  $this->cache = new CtfCache( $feed_id, $this->feed_options['cache_time'], $page );
+	protected function setTweetSet() {
+		$this->setTransientName();
+		if ( ! empty( $this->feed_options['feed'] ) ) {
+			$feed_id = $this->feed_options['feed'];
+		} else {
+			$feed_id = 'legacy';
+		}
+		if ( ! empty( $this->last_id_data ) ) {
+			$page = $this->last_id_data;
+		} else {
+			$page = '';
+		}
+		if ( empty( $this->feed_options['feed_term'] ) ) {
+			$this->feed_options['feed_term'] = '';
+		}
+		$this->cache = new CtfCache( $feed_id, $this->feed_options['cache_time'], $page );
 
-  $success = $this->maybeSetTweetsFromCache();
+		if (! empty($this->raw_shortcode_atts['doingcronupdate']) || ! empty($this->raw_shortcode_atts['cachetime']) ) {
+			$this->maybeSetTweetsFromTwitter();
+		} else {
+			$success = $this->maybeSetTweetsFromCache();
+			if (!$success || ! empty($this->raw_shortcode_atts['doingcronupdate'])) {
+				$this->maybeSetTweetsFromTwitter();
+			}
+		}
 
-  if (!$success) {
-    $this->maybeSetTweetsFromTwitter();
-}
-
-$this->num_tweets_needed = $this->numTweetsNeeded();
-}
+		$this->num_tweets_needed = $this->numTweetsNeeded();
+	}
 
     /**
      * the access token and secret must be set in order for the feed to work
      * this function processes the user input and sets a flag if none are entered
      */
     public function setAccessTokenAndSecretOptions() {
-        $this->feed_options['access_token'] = isset($this->db_options['access_token']) && strlen($this->db_options['access_token']) > 30 ? $this->db_options['access_token'] : 'missing';
-        $this->feed_options['access_token_secret'] = isset($this->db_options['access_token_secret']) && strlen($this->db_options['access_token_secret']) > 30 ? $this->db_options['access_token_secret'] : 'missing';
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$this->feed_options['access_token'] = 'missing';
+			$this->feed_options['access_token_secret'] = 'missing';
+
+		} else {
+			$this->feed_options['access_token'] = isset($this->db_options['access_token']) && strlen($this->db_options['access_token']) > 30 ? $this->db_options['access_token'] : 'missing';
+			$this->feed_options['access_token_secret'] = isset($this->db_options['access_token_secret']) && strlen($this->db_options['access_token_secret']) > 30 ? $this->db_options['access_token_secret'] : 'missing';
+
+		}
 
         // verify that access token and secret have been entered
         $this->setMissingCredentials();
@@ -240,14 +276,13 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
      * processes the consumer key and secret options
      */
     protected function setConsumerKeyAndSecretOptions() {
-        if (isset($this->feed_options['have_own_tokens']) && $this->feed_options['have_own_tokens']) {
-            $this->feed_options['consumer_key'] = isset($this->db_options['consumer_key']) && strlen($this->db_options['consumer_key']) > 15 ? $this->db_options['consumer_key'] : 'FPYSYWIdyUIQ76Yz5hdYo5r7y';
-            $this->feed_options['consumer_secret'] = isset($this->db_options['consumer_secret']) && strlen($this->db_options['consumer_secret']) > 30 ? $this->db_options['consumer_secret'] : 'GqPj9BPgJXjRKIGXCULJljocGPC62wN2eeMSnmZpVelWreFk9z';
-        }
-        else {
-            $this->feed_options['consumer_key'] = 'FPYSYWIdyUIQ76Yz5hdYo5r7y';
-            $this->feed_options['consumer_secret'] = 'GqPj9BPgJXjRKIGXCULJljocGPC62wN2eeMSnmZpVelWreFk9z';
-        }
+	    if (! empty( $this->db_options['consumer_key'] ) && ! empty($this->db_options['consumer_secret'] )) {
+		    $this->feed_options['consumer_key']    = isset($this->db_options['consumer_key']) && strlen($this->db_options['consumer_key']) > 15 ? $this->db_options['consumer_key'] : 'FPYSYWIdyUIQ76Yz5hdYo5r7y';
+		    $this->feed_options['consumer_secret'] = isset($this->db_options['consumer_secret']) && strlen($this->db_options['consumer_secret']) > 30 ? $this->db_options['consumer_secret'] : 'GqPj9BPgJXjRKIGXCULJljocGPC62wN2eeMSnmZpVelWreFk9z';
+	    } else {
+		    $this->feed_options['consumer_key']    = 'FPYSYWIdyUIQ76Yz5hdYo5r7y';
+		    $this->feed_options['consumer_secret'] = 'GqPj9BPgJXjRKIGXCULJljocGPC62wN2eeMSnmZpVelWreFk9z';
+	    }
     }
 
     /**
@@ -470,6 +505,10 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
      * sets the transient name for the caching system
      */
     public function setTransientName() {
+	    if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+		    $this->transient_name = $this->feed_id;
+		    return;
+	    }
         $last_id_data = $this->last_id_data;
         $num = isset($this->feed_options['num']) ? $this->feed_options['num'] : '';
         $feedID = (!empty($this->atts['feedid'])) ? $this->atts['feedid'] . '_' : '';
@@ -489,19 +528,22 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
         }
     }
 
-    /**
-     * checks the data available in the cache to make sure it seems to be valid
-     *
-     * @return bool|string  false if the cache is valid, error otherwise
-     */
-    protected function validateCache() {
-     if (isset($this->transient_data[0]) || isset($this->transient_data['errors']) ) {
-        return false;
-    }
-    else {
-        return 'invalid cache';
-    }
-}
+	/**
+	 * checks the data available in the cache to make sure it seems to be valid
+	 *
+	 * @return bool|string  false if the cache is valid, error otherwise
+	 */
+	protected function validateCache() {
+		if ( isset( $this->transient_data[0] ) && ( $this->transient_data[0] === 'error' ) ) {
+			return 'invalid cache';
+		}
+
+		if ( isset( $this->transient_data[0] ) || isset( $this->transient_data['errors'] ) ) {
+			return false;
+		} else {
+			return 'invalid cache';
+		}
+	}
 
     /**
      * will use the cached data in the feed if data seems to be valid and user
@@ -516,6 +558,10 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
         }
         // validate the transient data
         if ($this->transient_data) {
+	        if ( is_array( $this->transient_data ) && ! empty( $this->transient_data[0] ) && $this->transient_data[0] === 'error' ) {
+		        $this->tweet_set = array();
+		        return true;
+	        }
             $this->errors['cache_status'] = $this->validateCache();
             if ($this->errors['cache_status'] === false) {
                 return $this->tweet_set = $this->transient_data;
@@ -535,9 +581,21 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
      */
     public function maybeSetTweetsFromTwitter() {
         $this->setTweetsToRetrieve();
-        $this->api_obj = $this->apiConnect($this->feed_options['type'], $this->feed_options['feed_term']);
-        $this->tweet_set = json_decode($this
-            ->api_obj->json, $assoc = true);
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			$feed_id =  ! empty( $this->raw_shortcode_atts['feed'] ) ? $this->raw_shortcode_atts['feed'] : 1;
+			$cache_time = DAY_IN_SECONDS;
+			$page = 1;
+			$endpoint = $this->feed_options['feed_types_and_terms'][0][0];
+			$term = $this->feed_options['feed_types_and_terms'][0][1];
+			$repository = new \TwitterFeed\SmashTwitter\TweetRepository( $endpoint, $term, new \TwitterFeed\SmashTwitter\TweetAggregator(), new \TwitterFeed\CtfCache( $feed_id, $cache_time, $page ), new TweetSetModifier() );
+			$repository->get_set_cache();
+			$this->tweet_set = $repository->get_tweets();
+		} else {
+			$this->api_obj = $this->apiConnect($this->feed_options['type'], $this->feed_options['feed_term']);
+			$json_array = json_decode($this->api_obj->json, $assoc = true);
+			$this->tweet_set = isset($json_array['data']) && is_array($json_array['data']) ? $json_array['data'] : $json_array;
+		}
+
 
         // check for errors/tweets present
         if (isset($this->tweet_set['errors'][0])) {
@@ -608,6 +666,7 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
             $trimmed_tweets[0]['user']['description'] = $tweets[0]['user']['description'];
             $trimmed_tweets[0]['user']['statuses_count'] = $tweets[0]['user']['statuses_count'];
             $trimmed_tweets[0]['user']['followers_count'] = $tweets[0]['user']['followers_count'];
+            $trimmed_tweets[0]['user']['rest_id'] = $tweets[0]['user']['rest_id'];
         }
 
         for ($i = 0;$i < $len;$i++) {
@@ -710,11 +769,35 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
     /**
      * will create a transient with the tweet cache if one doesn't exist, the data seems valid, and caching is active
      */
-    public function maybeCacheTweets() {
-        if ((!$this->transient_data || $this->errors['cache_status']) && $this->feed_options['cache_time'] > 0) {
-            $cache = json_encode($this->tweet_set);
-            $this->cache->set_transient($this->transient_name, $cache, $this->feed_options['cache_time']);
-        }
+    public function maybeCacheTweets( $error = false ) {
+		if ( CTF_DOING_SMASH_TWITTER || ctf_should_switch_to_smash_twitter() ) {
+			if ( empty( $this->last_id_data ) ) {
+				if ( $error ) {
+					$cache = json_encode(array('error'));
+                    if ($this->cache) {
+                        $this->cache->set_transient($this->transient_name, $cache, $this->feed_options['cache_time']);
+                    }
+				} else {
+					if ((!$this->transient_data || $this->errors['cache_status']) && $this->feed_options['cache_time'] > 0) {
+						$cache = json_encode($this->tweet_set);
+                        if ($this->cache) {
+                            $this->cache->set_transient($this->transient_name, $cache, $this->feed_options['cache_time']);
+                        }
+					}
+				}
+			}
+			return;
+		}
+	    if ( $error ) {
+		    $cache = json_encode(array('error'));
+		    $this->cache->set_transient($this->transient_name, $cache, $this->feed_options['cache_time']);
+	    } else {
+		    if ((!$this->transient_data || $this->errors['cache_status']) && $this->feed_options['cache_time'] > 0) {
+			    $cache = json_encode($this->tweet_set);
+			    $this->cache->set_transient($this->transient_name, $cache, $this->feed_options['cache_time']);
+		    }
+	    }
+
     }
 
     /**
@@ -786,7 +869,7 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
         }
 
         // actual connection
-        $twitter_connect = new TwitterFeed\CtfOauthConnect($request_settings, $end_point);
+        $twitter_connect = new CtfOauthConnect($request_settings, $end_point);
         $twitter_connect->setUrlBase();
         $twitter_connect->setGetFields($get_fields);
         $twitter_connect->setRequestMethod($this->feed_options['request_method']);
@@ -806,6 +889,10 @@ $this->num_tweets_needed = $this->numTweetsNeeded();
 
         $html .= '<div class="ctf-out-of-tweets">';
         $html .= '<p>' . __('That\'s all! No more Tweets to load', 'custom-twitter-feeds') . '</p>';
+	    if ( ctf_current_user_can( 'manage_twitter_feed_options' ) ) {
+		    $html .= '<p><strong>' . __( 'Visible to admin users only:', 'custom-twitter-feeds' ) . '</strong> ' . __( 'Due to API limitations only 1 to 30 tweets will be available initially. More will accumulate over time.', 'custom-twitter-feeds' ) . '</p>';
+	    }
+		//
         $html .= '<p>';
         $html .= '<a class="twitter-share-button" href="https://twitter.com/share" target="_blank" data-size="large" data-url="<?php echo get_home_url(); ?>">' . __('Share', 'custom-twitter-feeds') . '</a>';
         if (isset($feed_options['screenname'])) {

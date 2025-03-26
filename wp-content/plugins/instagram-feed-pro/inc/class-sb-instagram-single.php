@@ -10,6 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+use InstagramFeed\SB_Instagram_Data_Encryption;
 
 class SB_Instagram_Single {
 
@@ -146,7 +147,7 @@ class SB_Instagram_Single {
 			$url
 		);
 
-		$result = wp_remote_get( esc_url_raw( $fetch_url ) );
+		$result = wp_safe_remote_get( esc_url_raw( $fetch_url ) );
 
 		$data = false;
 		if ( ! is_wp_error( $result ) ) {
@@ -212,9 +213,9 @@ class SB_Instagram_Single {
 			$stored_option = json_decode( $this->encryption->decrypt( $stored_option ), true );
 		}
 		$new           = array( $this->permalink_id => $this->post );
-		$stored_option = array_merge( $new, $stored_option );
+		$stored_option = array_merge( $new, (array) $stored_option );
 		// only latest 400 posts
-		$stored_option = array_slice( $stored_option, 0, 400 );
+		$stored_option = array_slice( (array) $stored_option, 0, 400 );
 
 		update_option( 'sbi_single_cache', $this->encryption->encrypt( sbi_json_encode( $stored_option ) ), false );
 	}

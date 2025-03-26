@@ -2,7 +2,7 @@
 $post_thumbnail          = SBY_Parse::get_media_url( $api_data, 'high' );
 $title = get_the_title( $youtube_post->ID );
 $permalink = get_the_permalink( $youtube_post->ID );
-$img_alt                 = sby_maybe_shorten_text( SBY_Parse::get_caption( $api_data, __( 'Image for post' ) . ' ' . $youtube_post->ID ), array() );
+$img_alt                 = sby_maybe_shorten_text( SBY_Parse::get_caption( $api_data, __( 'Image for post', 'feeds-for-youtube' ) . ' ' . $youtube_post->ID ), array() );
 $caption             = sby_maybe_shorten_text( SBY_Parse_Pro::get_caption( $api_data, '' ), array() );
 
 $timestamp = SBY_Parse::get_timestamp( $api_data );

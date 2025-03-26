@@ -45,7 +45,10 @@
 				</td>
 				<td>
 					<a :href="builderUrl+'&feed_id='+feed.id" class="ctf-fd-lst-name sb-small-p sb-bold">{{feed.feed_name}}</a>
-					<span class="ctf-fd-lst-type sb-caption sb-lighter">{{ checkNotEmpty(feed.settings.type) ? feed.settings.type : 'Mixed' }}</span>
+					<span class="ctf-fd-lst-type sb-caption sb-lighter">
+						<span class="ctf-lst-type-name">{{ checkNotEmpty(feed.settings.type) ? feed.settings.type : 'Mixed' }}</span>
+						<span class="ctf-feed-last-updated" v-if="getFeedLastUpdatedDate(feed.last_api_updated)">{{getFeedLastUpdatedDate(feed.last_api_updated)}}</span>
+					</span>
 				</td>
 				<td>
                     <div class="sb-flex-center">

@@ -13,7 +13,7 @@ $media_url                    = SBY_Display_Elements::get_optimum_media_url( $pl
 $media_full_res               = SBY_Parse::get_media_url( $placeholder_post );
 $media_all_sizes_json         = SBY_Parse::get_media_src_set( $placeholder_post );
 $permalink                    = SBY_Parse::get_permalink( $placeholder_post );
-$img_alt                      = SBY_Parse::get_caption( $placeholder_post, __( 'Image for post' ) . ' ' . $post_id );
+$img_alt                      = SBY_Parse::get_caption( $placeholder_post, __( 'Image for post', 'feeds-for-youtube' ) . ' ' . $post_id );
 $player_outer_wrap_style_attr = SBY_Display_Elements::get_style_att( 'player_outer_wrap', $settings );
 $title                        = SBY_Parse::get_video_title( $placeholder_post );
 $media_url                    = SBY_Display_Elements::get_media_url( $settings, $media_url, $media_full_res );
@@ -62,22 +62,7 @@ $sby_meta_size_color_styles = SBY_Display_Elements::get_sby_meta_size_color_styl
     </div>
 
     <?php
-        
 	    $context = 'player';
 	    include sby_get_feed_template_part( 'player-info', $settings ); 
     ?>
-
-    <?php if ( false ) : ?>
-
-	    <?php
-	    $context = 'player';
-	    include sby_get_feed_template_part( 'info', $settings ); ?>
-
-	    <?php if ( SBY_Display_Elements_Pro::should_show_element( 'description', $context, $settings ) ) : ?>
-            <p class="sby_caption_wrap sby_item_caption_wrap">
-                <span class="sby_caption" <?php echo $sby_info_styles; ?>><?php echo sby_esc_html_with_br( $caption ); ?></span><span class="sby_expand"> <a href="#"><span class="sby_more">...</span></a></span>
-            </p>
-	    <?php endif; ?>
-    <?php endif; ?>
-
 </div>

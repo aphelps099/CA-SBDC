@@ -7,6 +7,8 @@
 
 namespace TwitterFeed\Builder;
 
+use TwitterFeed\Pro\CTF_Parse_Pro;
+
 class CTF_Db {
 
 	const RESULTS_PER_PAGE = 20;
@@ -204,16 +206,17 @@ class CTF_Db {
 		global $wpdb;
 		$feeds_table_name = $wpdb->prefix . 'ctf_feeds';
 		$feed_caches_table_name = $wpdb->prefix . 'ctf_feed_caches';
-		$feed_ids_array = implode(',', $feed_ids_array);
+		// sanitize $feeds_id_array
+		$sanitized_feed_ids_array = array();
+		foreach ($feed_ids_array as $id) {
+			$sanitized_feed_ids_array[] = absint($id);
+		}
+		$feed_ids_array = implode(',', $sanitized_feed_ids_array);
 		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $feeds_table_name WHERE id IN ($feed_ids_array)"
-			)
+			"DELETE FROM $feeds_table_name WHERE id IN ($feed_ids_array)"
 		);
 		$wpdb->query(
-			$wpdb->prepare(
-				"DELETE FROM $feed_caches_table_name WHERE feed_id IN ($feed_ids_array)"
-			)
+			"DELETE FROM $feed_caches_table_name WHERE feed_id IN ($feed_ids_array)"
 		);
 
 		echo ctf_json_encode(CTF_Feed_Builder::get_feed_list());
@@ -509,5 +512,142 @@ class CTF_Db {
 		$wp_roles->remove_cap( 'administrator', 'manage_twitter_feed_options' );
 		wp_clear_scheduled_hook( 'ctf_feed_update' );
 		wp_clear_scheduled_hook( 'ctf_usage_tracking_cron' );
+	}
+
+	/**
+	 * Query the cff_feeds table
+	 *
+	 * @param array $args
+	 *
+	 * @return array|bool
+	 *
+	 * @since 4.0
+	 */
+	public static function all_feeds_query()
+	{
+		global $wpdb;
+		$feeds_table_name = $wpdb->prefix . 'ctf_feeds';
+		$sql = "SELECT * FROM $feeds_table_name";
+		return $wpdb->get_results($sql, ARRAY_A);
+	}
+
+		/**
+	 * Summary of get_posts_by_ids
+	 *
+	 * @param mixed $post_ids
+	 *
+	 * @return array
+	 */
+	public static function get_posts_by_ids($post_ids)
+	{
+		global $wpdb;
+		$posts_table 	= $wpdb->prefix . 'ctf_posts';
+
+		if (empty($post_ids)) {
+			return [];
+		}
+
+		$post_ids			= esc_sql($post_ids);
+		$sql_ids 			= "'" . implode('\', \'', $post_ids) . "'";
+
+		$posts = $wpdb->get_results("SELECT * FROM $posts_table
+			WHERE twitter_id IN ($sql_ids)",
+			ARRAY_A
+		);
+		$results = [];
+
+		foreach ($posts as $post) {
+			$transformed = self::transform_single_post_schema($post);
+			if (!empty($transformed)) {
+				array_push($results, $transformed);
+			}
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Summary of transform_single_post_schema
+	 *
+	 * @param mixed $post
+	 *
+	 * @return array
+	 */
+	public static function transform_single_post_schema($post)
+	{
+		$data = parse_json_data($post['json_data']);
+
+		if (empty($data) || empty($data['id_str'])) {
+			return [];
+		}
+
+		$image_url = '';
+		$media_data = CTF_Parse_Pro::get_media($data, 1);
+		if (!empty($media_data[0])) {
+			$image_url = $media_data[0]['type'] === 'video' ? $media_data[0]['poster'] : $media_data[0]['url'];
+		}
+
+		return [
+			'plugin'           => [
+				'slug' => 'twitter',
+			],
+			'feed_post_id' 	   => $data['id_str'],
+			'text'             => !empty($data['text']) ? $data['text'] : '',
+			'imageSrc'         => $image_url,
+			'updated_time_ago' => !empty($data['created_at']) ? $data['created_at'] : '',
+			'profile' => [
+				'label' => !empty($data['user']['name']) ? $data['user']['name'] : '',
+				'url'   => !empty($data['user']['screen_name']) ? 'https://x.com/' . $data['user']['screen_name'] : '',
+				'id'    => !empty($data['user']['screen_name']) ? sprintf("@%s", strtolower($data['user']['screen_name'])) : '',
+			]
+		];
+	}
+
+		/**
+	 * Summary of get_feed_source_info
+	 *
+	 * @param mixed $feed_id
+	 *
+	 * @return array
+	 */
+	public static function get_feed_source_info($feed_id)
+	{
+		global $wpdb;
+		$feeds_table 	= $wpdb->prefix . 'ctf_feeds';
+		$feed = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM $feeds_table WHERE id = %d",
+				$feed_id
+			),
+			ARRAY_A
+		);
+
+		if (empty($feed['settings'])) {
+			return [];
+		}
+
+		$settings = json_decode($feed['settings'], true);
+		$name = 'Twitter Feed ' . $feed_id;
+		$image = '';
+
+		if ($settings['type'] === 'usertimeline') {
+			$name = !empty($settings['screenname'])
+				? $settings['screenname']
+				: $settings['usertimeline_text'];
+
+			$image = 'https://unavatar.io/x/' . str_replace("@", "", $name);
+		}
+
+		if ($settings['type'] === 'search') {
+			$name = !empty($settings['feed_term'])
+				? $settings['feed_term']
+				: $name;
+		}
+
+
+		return [
+			'name' 		=> $name,
+			'picture' 	=> $image
+		];
 	}
 }

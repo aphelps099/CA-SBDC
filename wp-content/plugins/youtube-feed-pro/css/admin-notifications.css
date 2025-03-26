@@ -267,6 +267,11 @@ body .sby_review_step1_notice .sby-btn-link:not(:last-child) {
 
 #sby-notifications .messages .message.current {
     display: block;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    background: transparent;
+    border-radius: 0px;
 }
 
 #sby-notifications .messages .message .title,
@@ -389,7 +394,6 @@ body .sby_review_step1_notice .sby-btn-link:not(:last-child) {
 }
 
 #sby-notifications .navigation a {
-    display: block;
     width: 32px;
     height: 32px;
     border: 1px solid #DCDDE1;

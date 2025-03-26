@@ -6,12 +6,12 @@
 					<div class="cff-fb-fs" v-if="(customizerFeedData.settings.videoaction == 'post' && customizerFeedData.settings.disablelightbox == 'off') || customizerFeedData.settings.videoaction == 'facebook'">
 						<img  class="cff-fb-fs" v-if="customizerFeedData.settings.feedlayout != 'grid'" :src="$parent.processVideosFeedImage(singlePost)">
 						<div class="cff-play-video-icon"></div>
-						<a class="cff-fullsize-link" :href="'https://www.facebook.com/'+singlePost.id" target="_blank" v-if="customizerFeedData.settings.videoaction == 'facebook'"></a>
+						<a class="cff-fullsize-link" :href="'https://www.facebook.com/'+singlePost.id" target="_blank" rel="nofollow noopener" v-if="customizerFeedData.settings.videoaction == 'facebook'"></a>
 						<cff-post-overlay-component v-if="customizerFeedData.settings.videoaction == 'post'" :single-post="singlePost" :customizer-feed-data="customizerFeedData" :parent="$parent"></cff-post-overlay-component>
 					</div>
 					<div class="cff-videos-item-source cff-fb-fs" v-html="singlePost.embed_html" v-if="customizerFeedData.settings.videoaction == 'post' && customizerFeedData.settings.disablelightbox != 'off'"></div>
 				</div>
-				<div class="cff-videos-item-info cff-singlemedia-item-info cff-fb-fs">
+				<div class="cff-videos-item-info cff-singlemedia-item-info cff-fb-fs" v-if="$parent.checkNotEmpty(singlePost.title)">
 					<h4 v-if="$parent.valueIsEnabled(customizerFeedData.settings.showvideoname)">
 						<a :href="'https://www.facebook.com/'+singlePost.id" target="_blank" v-html="singlePost.title"></a>
 					</h4>

@@ -32,7 +32,7 @@
 		</div>
         <div class="cff-legacy-table-wrap" v-bind:class="{ 'sb-onboarding-highlight' : viewsActive.onboardingStep === 3 && allFeedsScreen.onboarding.type === 'multiple' }">
 
-		<table class="cff-fd-legacy-feed-ctn" v-if="viewsActive.legacyFeedsShown || feedsList === null || feedsList.length === 0">
+		<table aria-hidden="true" class="cff-fd-legacy-feed-ctn" v-if="viewsActive.legacyFeedsShown || feedsList === null || feedsList.length === 0">
 			<thead class="cff-fd-lst-thtf cff-fd-lst-thead">
 				<tr>
 					<th>

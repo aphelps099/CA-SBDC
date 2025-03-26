@@ -3,6 +3,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+use SmashBalloon\YouTubeFeed\Pro\SBY_Feed_Pro;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Parse_Pro;
+use SmashBalloon\YouTubeFeed\SBY_Parse;
+use SmashBalloon\YouTubeFeed\Services\AdminAjaxService;
+use TwitterFeed\Pro\CTF_Settings_Pro;
+use TwitterFeed\Pro\CTF_Parse_Pro;
+use TwitterFeed\Pro\CTF_Feed_Pro;
+use SmashBalloon\TikTokFeeds\Common\FeedSettings as TikTok_Settings_Pro;
+use SmashBalloon\TikTokFeeds\Common\Feed as TikTok_Feed_Pro;
+use SmashBalloon\TikTokFeeds\Common\FeedCache as TikTok_FeedCache;
+
 class SW_Cron_Updater
 {
 	public static function do_feed_updates() {
@@ -88,12 +99,14 @@ class SW_Cron_Updater
 
 		if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
 			$fb_atts = $plugins_with_atts['custom-facebook-feed'];
+			$fb_feed_id = $fb_atts["feed"];
 			if ( isset( $fb_atts['accesstoken'] ) ) {
 				$fb_atts['ownaccesstoken'] = 'on';
 			}
-			$fb_atts = cff_get_processed_options( $fb_atts );
-			$facebook_feed_settings = new CustomFacebookFeed\CFF_Settings_Pro( $fb_atts );
+			$fb_shortcode = new CustomFacebookFeed\CFF_Shortcode();
+			$fb_atts = $fb_shortcode->cff_get_processed_options( $fb_atts );
 
+			$facebook_feed_settings = new CustomFacebookFeed\CFF_Settings_Pro( $fb_atts );
 			$facebook_feed_settings->set_feed_type_and_terms();
 			$fb_settings = $facebook_feed_settings->get_settings();
 			$fb_feed_type_and_terms = $facebook_feed_settings->get_feed_type_and_terms();
@@ -106,7 +119,7 @@ class SW_Cron_Updater
 			$yt_atts              = $plugins_with_atts['youtube-feed'];
 			$yt_database_settings = sby_get_database_settings();
 
-			$youtube_feed_settings = new SBY_Settings_Pro( $yt_atts, $yt_database_settings );
+			$youtube_feed_settings = new \SmashBalloon\YouTubeFeed\Pro\SBY_Settings_Pro( $yt_atts, $yt_database_settings );
 			$youtube_feed_settings->set_feed_type_and_terms();
 			$yt_settings                           = $youtube_feed_settings->get_settings();
 			$yt_feed_type_and_terms                = $youtube_feed_settings->get_feed_type_and_terms();
@@ -123,6 +136,21 @@ class SW_Cron_Updater
 			$tw_feed_type_and_terms                = $twitter_feed_settings->get_feed_type_and_terms();
 
 			$plugins_types_and_terms['twitter'] = $tw_feed_type_and_terms;
+		}
+
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			$tt_atts = $plugins_with_atts['tiktok-feeds'];
+			$tt_feed_id = isset($tt_atts['feed']) ? $tt_atts['feed'] : '';
+			$tiktok_feed_settings = new TikTok_Settings_Pro($tt_feed_id);
+			$tt_settings = $tiktok_feed_settings->get_feed_settings();
+
+			if (isset($plugins_with_atts['tiktok-feeds']['includewords'])) {
+				$tt_settings['includeWords'] = $plugins_with_atts['tiktok-feeds']['includewords'];
+			}
+			if (isset($plugins_with_atts['tiktok-feeds']['excludewords'])) {
+				$tt_settings['excludeWords'] = $plugins_with_atts['tiktok-feeds']['excludewords'];
+			}
+			$plugin_settings['tiktok'] = $tt_settings;
 		}
 
 		$highest_num_api_connections = 0;
@@ -186,11 +214,7 @@ class SW_Cron_Updater
 		}
 
 		if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
-			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( $transient_name );
-
-			$fb_settings['num'] = $settings['num'];
-			$fb_settings['minnum'] = $settings['num'];
-			$fb_settings['apinum'] = $settings['num'] * $highest_num_api_connections;
+			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( "*" . $fb_feed_id , true );
 
 			$fb_settings['showheader'] = true;
 
@@ -198,7 +222,7 @@ class SW_Cron_Updater
 
 			if ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
 				while ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
-					$facebook_feed->add_remote_posts( $fb_settings );
+					$facebook_feed->add_remote_posts( $fb_settings, $fb_feed_id );
 				}
 			}
 
@@ -261,7 +285,7 @@ class SW_Cron_Updater
 				foreach ( $post_data as $post ) {
 					$vid_ids[] = SBY_Parse::get_video_id( $post );
 				}
-				sby_process_post_set_caching( $vid_ids, $youtube_feed_settings->get_transient_name() );
+        AdminAjaxService::sby_process_post_set_caching( $vid_ids, $youtube_feed_settings->get_transient_name() );
 			}
 			$wall_posts[] = $post_data;
 			$wall_next_pages[] = $youtube_feed->get_next_pages();
@@ -305,6 +329,27 @@ class SW_Cron_Updater
 			$wall_misc_data['twitter'] = array();
 
 			$plugins_index[] = 'twitter-feed';
+		}
+
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			$tt_settings['numPostDesktop'] = $settings['num'];
+			$tt_settings['showHeader'] = true;
+
+			$tiktok_feed = new TikTok_Feed_Pro(
+				$tt_settings,
+				$tt_feed_id,
+				new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+			);
+			$tiktok_feed->init();
+			$tiktok_feed->get_set_cache();
+
+			$tt_posts     = $tiktok_feed->get_post_set_page();
+			$tt_next_page = $tiktok_feed->has_next_page();
+
+			$wall_posts[] = $tt_posts;
+			$wall_next_pages[] = $tt_next_page;
+			$wall_misc_data['tiktok'] = array();
+			$plugins_index[] = 'tiktok-feeds';
 		}
 
 		if ( $one_post_retrieved ) {
@@ -399,6 +444,24 @@ class SW_Cron_Updater
 				$wall_account_data['twitter'] = array();
 			}
 		}
+
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			if (!isset($tiktok_feed)) {
+				$tiktok_feed = new TikTok_Feed_Pro(
+					$tt_settings,
+					$tt_feed_id,
+					new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+				);
+				$tiktok_feed->init();
+				$tiktok_feed->get_set_cache();
+			}
+			$tt_header_data = $tiktok_feed->get_header_data();
+
+			if (!$tt_header_data) {
+				$tt_header_data = array();
+			}
+			$wall_account_data['tiktok'] = $tt_header_data;
+		}
 		$social_wall_feed->set_header_data( $wall_account_data );
 		$social_wall_feed->cache_header_data( 60*60*24*60, $wall_account_data );
 
@@ -427,7 +490,7 @@ class SW_Cron_Updater
 		return $feed_caches;
 	}
 
-	public static function start_cron_job( $sbi_cache_cron_interval, $sbi_cache_cron_time, $sbi_cache_cron_am_pm ) {
+	public static function start_cron_job( $sbi_cache_cron_interval, $sbi_cache_cron_time = 0, $sbi_cache_cron_am_pm = 'am' ) {
 		wp_clear_scheduled_hook( 'sbsw_feed_update' );
 
 		if ( $sbi_cache_cron_interval === '12hours' || $sbi_cache_cron_interval === '24hours' ) {

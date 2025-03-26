@@ -96,7 +96,7 @@ class V2Routine extends UpgradeRoutine {
 
 			$options_set = get_option( 'sby_settings', false );
 
-			if ( $options_set !== 'false' ) {
+			if ( $options_set ) {
 				$sby_statuses_option['first_install'] = 'from_update';
 			} else {
 				$sby_statuses_option['first_install'] = time();

@@ -22,22 +22,22 @@ class CtfOauthConnect
     /**
      * @var string
      */
-    private $get_fields;
+    protected $get_fields;
 
     /**
      * @var string
      */
-    private $request_method;
+    protected $request_method;
 
     /**
      * @var array
      */
-    private $oauth;
+    protected $oauth;
 
     /**
      * @var string
      */
-    private $header;
+    protected $header;
 
     /**
      * @var bool
@@ -202,7 +202,7 @@ class CtfOauthConnect
      * @param $url      string the complete api endpoint url
      * @return mixed    json string retrieved in the request
      */
-    private function curlRequest( $url )
+    protected function curlRequest( $url )
     {
         $br = curl_init( $url );
 
@@ -249,9 +249,10 @@ class CtfOauthConnect
      * Attempts to connect to the Twitter api using WP_HTTP class
      *
      * @param $url      string the complete api endpoint url
+     *
      * @return mixed    json string retrieved in the request
      */
-	private function wpHttpRequest( $url )
+	protected function wpHttpRequest( $url )
 	{
 		$args = array(
 			'headers' => $this->header,

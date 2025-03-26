@@ -3,7 +3,7 @@
 /**
  * Plugin Name:       Zapier for WordPress
  * Description:       Zapier enables you to automatically share your posts to social media, create WordPress posts from Mailchimp newsletters, and much more. Visit https://zapier.com/apps/wordpress/integrations for more details.
- * Version:           1.5.1
+ * Version:           1.5.2
  * Author:            Zapier
  * Author URI:        https://zapier.com
  * License:           Expat (MIT License)
@@ -284,14 +284,19 @@ class Zapier_Auth
 
     public function updated_user($user_id) {
         $option_key = "zapier_hooks_wp_update_user";
-
         $hooks = get_option($option_key, []);
-
-        foreach($hooks as $hook) {
-            $response = wp_remote_post($hook, array(
-                'body' => json_encode(array('user_id' => $user_id)),
-                'headers' => array('Content-Type' => 'application/json'),
-            ));
+    
+        foreach ($hooks as $hook) {
+            // Validate the URL
+            if (!$this->is_safe_url($hook)) {
+                continue; // Skip unsafe URLs
+            }
+    
+            // Use wp_safe_remote_post to ensure secure requests
+            $response = wp_safe_remote_post($hook, [
+                'body'    => json_encode(['user_id' => $user_id]),
+                'headers' => ['Content-Type' => 'application/json'],
+            ]);
         }
     }
 
@@ -405,6 +410,45 @@ class Zapier_Auth
         }
 
         return $changed_properties;
+    }
+
+    // Helper function to ensure only safe URLs are used
+    private function is_safe_url($url) {
+        // Validate URL format
+        if (!wp_http_validate_url($url)) {
+            return false;
+        }
+
+        // Ensure the URL is not internal (localhost, private IPs)
+        if ($this->is_internal_url($url)) {
+            return false;
+        }
+
+        // Allow only sanctioned domains (modify this list as needed)
+        $allowed_domains = ['zapier.com', 'hooks.zapier.com'];
+        $parsed_url = parse_url($url);
+        if (!isset($parsed_url['host'])) {
+            return false;
+        }
+
+        foreach ($allowed_domains as $allowed_domain) {
+            if (str_ends_with($parsed_url['host'], $allowed_domain)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Helper function to block internal/private addresses
+    private function is_internal_url($url) {
+        $parsed = parse_url($url);
+        if (!$parsed || empty($parsed['host'])) {
+            return true;
+        }
+
+        $ip = gethostbyname($parsed['host']);
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
     }
 }
 

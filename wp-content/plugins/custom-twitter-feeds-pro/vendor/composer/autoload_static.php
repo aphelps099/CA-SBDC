@@ -4,12 +4,20 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit5d646a9a388e88da355a1686fe353822
+class ComposerStaticInit181147c85b56ca6d566f313b9f61a21f
 {
+    public static $files = array (
+        'sb_ctf_b1eb330aa001ae4915f07005b4e993c2' => __DIR__ . '/..' . '/smashballoon/framework/Utilities/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
             'TwitterFeed\\' => 12,
+        ),
+        'S' => 
+        array (
+            'Smashballoon\\TwitterFeed\\Vendor\\Smashballoon\\Framework\\' => 55,
         ),
     );
 
@@ -18,13 +26,22 @@ class ComposerStaticInit5d646a9a388e88da355a1686fe353822
         array (
             0 => __DIR__ . '/../..' . '/inc',
         ),
+        'Smashballoon\\TwitterFeed\\Vendor\\Smashballoon\\Framework\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/smashballoon/framework',
+        ),
+    );
+
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit5d646a9a388e88da355a1686fe353822::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit5d646a9a388e88da355a1686fe353822::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit181147c85b56ca6d566f313b9f61a21f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit181147c85b56ca6d566f313b9f61a21f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit181147c85b56ca6d566f313b9f61a21f::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -55,7 +55,7 @@ class SBY_Settings_Pro extends SBY_Settings {
 			global $sby_posts_manager;
 
 			$message = '<p><b>' . __( 'Important: No API Key Entered.', 'feeds-for-youtube' ). '</b>';
-			$message .= '<p>'. __( 'Many features are not available without adding an API Key. Please go to the YouTube Feed settings page to add an API key after following <a href="https://smashballoon.com/youtube-api-key/" target="_blank" rel="noopener">these instructions.</a>', 'feeds-for-youtube' ). '</p>';
+			$message .= '<p>'. __( 'Many features are not available without adding an API Key. Please go to the YouTube Feeds settings page to add an API key after following <a href="https://smashballoon.com/youtube-api-key/" target="_blank" rel="noopener">these instructions.</a>', 'feeds-for-youtube' ). '</p>';
 
 			$sby_posts_manager->add_frontend_error( 'no_api_key', $message );
 		}

@@ -1,3 +1,16 @@
+<?php
+    /**
+     * Instagram Admin Header Notices
+     *
+     * @since 6.2
+     */
+    do_action('sbi_admin_header_notices');
+?>
+<div id="sbi-sw-feed-link-bar" class="sbi-sw-feed-link-bar sbi-le-flow-1 sbi-license-inactive-state" v-if="sw_feed">
+  <span class="sbi-sw-feed-link-bar-message" v-if="iscustomizerScreen">{{genericText.igFeedCreated}}</span>
+  <span class="sbi-sw-feed-link-bar-message" v-if="!iscustomizerScreen">{{genericText.onceDoneSWFeed}}</span>
+  <a :href="swfeedReturnUrl()" title="Go to Social Wall">{{genericText.goToSocialWall}}</a>
+</div>
 <div class="sbi-fb-header sbi-fb-fs" v-if="!iscustomizerScreen">
     <div class="sbi-fb-header-left">
         <div class="sbi-fb-hd-logo">

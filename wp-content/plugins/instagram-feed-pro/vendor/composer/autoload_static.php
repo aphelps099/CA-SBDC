@@ -4,16 +4,30 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4e34082fb013bad63334b182d1cf5455
+class ComposerStaticInitdbb68ff74e4a6c461e441f534eb40a30
 {
+    public static $files = array (
+        'sb_ig_b1eb330aa001ae4915f07005b4e993c2' => __DIR__ . '/..' . '/smashballoon/framework/Utilities/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'I' => 
         array (
+            'InstagramFeed\\Vendor\\Smashballoon\\Framework\\' => 44,
+            'InstagramFeed\\Vendor\\Brumann\\Polyfill\\' => 38,
             'InstagramFeed\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'InstagramFeed\\Vendor\\Smashballoon\\Framework\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/smashballoon/framework',
+        ),
+        'InstagramFeed\\Vendor\\Brumann\\Polyfill\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/brumann/polyfill-unserialize/src',
+        ),
         'InstagramFeed\\' => 
         array (
             0 => __DIR__ . '/../..' . '/inc',
@@ -27,9 +41,9 @@ class ComposerStaticInit4e34082fb013bad63334b182d1cf5455
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4e34082fb013bad63334b182d1cf5455::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4e34082fb013bad63334b182d1cf5455::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4e34082fb013bad63334b182d1cf5455::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitdbb68ff74e4a6c461e441f534eb40a30::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitdbb68ff74e4a6c461e441f534eb40a30::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitdbb68ff74e4a6c461e441f534eb40a30::$classMap;
 
         }, null, ClassLoader::class);
     }

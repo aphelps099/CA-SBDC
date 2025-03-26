@@ -9,7 +9,7 @@
 			<div class="cff-fb-fdinst-type sb-small">{{viewsActive.instanceSourceActive.account_type}}</div>
 		</div>
 		<div class="cff-fb-inst-tbl-ctn cff-fb-fs">
-			<table>
+			<table aria-hidden="true">
 				<thead class="cff-fd-lst-thtf cff-fd-lst-thead">
 				<tr>
 					<th>

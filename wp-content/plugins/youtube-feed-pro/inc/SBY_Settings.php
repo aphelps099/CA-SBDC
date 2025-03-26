@@ -162,7 +162,7 @@ class SBY_Settings {
 			$legacy_settings = json_decode( $legacy_settings, true );
 		}
 
-		if ( $atts && count( $atts ) >= 0 ) {
+		if ( $atts && count( $atts ) > 0 ) {
 			$legacy_settings = wp_parse_args( $atts, $legacy_settings );
 			$legacy_settings = self::filter_legacy_shortcode_atts( $atts, $legacy_settings );
 		}

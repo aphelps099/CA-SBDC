@@ -14,21 +14,21 @@ use TwitterFeed\Pro\CTF_Parse_Pro;
 use TwitterFeed\Pro\CTF_Display_Elements_Pro;
 
 $header_no_bio = ( !$feed_options['showbio'] || empty( $header_info['description'] ) ) ? $header_no_bio = ' ctf-no-bio' : $header_no_bio = "";
-$header_info = CTF_Parse_Pro::get_user_header_json( $feed_options );
+$header_info = CTF_Parse_Pro::get_user_header_json( $feed_options, $tweet_set );
 
 $header_text = CTF_Parse_Pro::get_header_text( $header_info, $feed_options );
 $header_description = CTF_Parse_Pro::get_header_description( $header_info );
 $header_attr = CTF_Display_Elements_Pro::get_element_attribute( 'header', $feed_options );
 $avatar = CTF_Parse_Pro::get_header_avatar( $header_info, $feed_options );
 $username = CTF_Parse_Pro::get_user_name( $header_info );
-$verified_account = ( $header_info['verified'] == 1 ) ? ctf_get_fa_el( 'fa-check-circle' ) : "";
+$verified_account = ( !empty($header_info['verified']) ) ? ctf_get_fa_el( 'fa-check-circle' ) : "";
 $tweet_count = CTF_Parse_Pro::get_header_tweet_count( $header_info );
 $follower_count = CTF_Parse_Pro::get_follower_count( $header_info );
 $header_styles = $feed_options['headerbgcolor'] . $feed_options['headertextcolor'];
 $follow_button_text = __( 'Follow', 'custom-twitter-feeds' );
 
 $bio_attr = CTF_Display_Elements_Pro::get_element_attribute( 'headerbio', $feed_options );
-
+$title_text = ctf_should_rebrand_to_x() ? __('Posts', 'custom-twitter-feeds') : __('Tweets', 'custom-twitter-feeds');
 ?>
 
 <div class="ctf-header<?php echo esc_attr( $header_no_bio ); ?>" style="<?php echo $header_styles ?>" <?php echo $header_attr ?>>
@@ -39,7 +39,11 @@ $bio_attr = CTF_Display_Elements_Pro::get_element_attribute( 'headerbio', $feed_
                 <span class="ctf-verified"><?php echo $verified_account; ?></span>
                 <span class="ctf-header-follow"><?php echo $follow_button_text; ?></span>
                 <span class="ctf-header-counts">
-                    <span class="ctf-header-tweets-count" title="<?php echo $tweet_count; ?> Tweets"><?php echo ctf_get_fa_el( 'fa-twitter' ) . $tweet_count ?></span>
+                    <span class="ctf-header-tweets-count" title="<?php echo esc_attr($tweet_count); ?> <?php echo esc_html($title_text); ?>">
+						<?php
+							echo ctf_should_rebrand_to_x() ? ctf_get_fa_el('fa-x') . esc_attr($tweet_count) : ctf_get_fa_el('fa-twitter') . esc_attr($tweet_count);
+						?>
+					</span>
                     <span class="ctf-header-followers"  title="<?php echo $follower_count . ' ' . __( 'Followers', 'registrations-for-the-events-calendar' ); ?>"><?php echo ctf_get_fa_el( 'fa-user' ) . $follower_count ?></span>
                 </span>
             </p>
@@ -50,7 +54,15 @@ $bio_attr = CTF_Display_Elements_Pro::get_element_attribute( 'headerbio', $feed_
             <?php endif; ?>
         </div>
         <div class="ctf-header-img">
-            <div class="ctf-header-img-hover"><?php echo ctf_get_fa_el( 'fa-twitter' ); ?></div>
+            <div class="ctf-header-img-hover <?php echo ( ctf_should_rebrand_to_x() ) ? 'ctf-rebranded' : ''; ?> ">
+                <?php 
+                    if ( ctf_should_rebrand_to_x() ) {
+                        echo ctf_get_fa_el( 'fa-x' ); 
+                    } else {
+                        echo ctf_get_fa_el( 'fa-twitter' ); 
+                    }
+                ?>
+            </div>
             <img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo esc_attr( $username ); ?>" width="48" height="48">
         </div>
     </a>

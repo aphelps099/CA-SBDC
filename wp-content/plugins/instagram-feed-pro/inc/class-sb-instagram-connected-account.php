@@ -11,6 +11,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
+use InstagramFeed\SB_Instagram_Data_Encryption;
 
 class SB_Instagram_Connected_Account {
 
@@ -87,8 +88,7 @@ class SB_Instagram_Connected_Account {
 				$access_tokens_found = array();
 				foreach ( $connected_accounts as $connected_account ) {
 					if ( isset( $connected_account['type'] )
-						 && $connected_account['type'] === 'business'
-						 && ! in_array( $connected_account['access_token'], $access_tokens_found, true ) ) {
+						 && $connected_account['type'] === 'business' ) {
 						$business_accounts[]   = $connected_account;
 						$access_tokens_found[] = $connected_account['access_token'];
 					}
@@ -99,8 +99,7 @@ class SB_Instagram_Connected_Account {
 				$connected_accounts = self::get_all_connected_accounts();
 
 				foreach ( $connected_accounts as $connected_account ) {
-					if ( isset( $connected_account['type'] )
-						 && $connected_account['type'] === 'business' ) {
+					if ( isset( $connected_account['type'] ) && $connected_account['type'] === 'business' && $search_term === $connected_account['user_id'] ) {
 						return $connected_account;
 					}
 				}
@@ -144,9 +143,17 @@ class SB_Instagram_Connected_Account {
 		}
 		$options = sbi_get_database_settings();
 		if ( ! $options['sb_instagram_disable_resize'] ) {
+			$image_format   = isset( $options['image_format'] ) ? $options['image_format'] : 'webp';
 			$image_editor   = wp_get_image_editor( $file_name );
 			$upload         = wp_upload_dir();
-			$full_file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . '.jpg';
+			$webp_supported = false;
+			if ( $image_format == 'webp' ) {
+				$webp_supported = wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) );
+			}
+			$webp_supported = apply_filters( 'sbi_webp_supported', $webp_supported );
+			$extension 	    = $webp_supported ? '.webp' : '.jpg';
+			$full_file_name = trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . $extension;
+			$mime_type      = $webp_supported ? 'image/webp' : 'image/jpeg';
 
 			if ( ! is_wp_error( $image_editor ) ) {
 
@@ -154,13 +161,21 @@ class SB_Instagram_Connected_Account {
 
 				$image_editor->resize( 150, null );
 
-				$saved_image = $image_editor->save( $full_file_name );
+				$saved_image = $image_editor->save( $full_file_name, $mime_type );
 
-				if ( ! $saved_image ) {
+				if (is_wp_error($saved_image)) {
 					global $sb_instagram_posts_manager;
 
 					$sb_instagram_posts_manager->add_error( 'image_editor', __( 'Error saving edited image.', 'instagram-feed' ) . ' ' . $full_file_name );
 				} else {
+					$local_avatar = array(
+						'file_name' => $saved_image['file'],
+						'mime_type' => $saved_image['mime-type'],
+					);
+
+					$avatars_info = get_option( 'sbi_local_avatars_info', array() );
+					$avatars_info[ $username ] = $local_avatar;
+					update_option( 'sbi_local_avatars_info', $avatars_info );
 					return true;
 				}
 			} else {
@@ -189,7 +204,7 @@ class SB_Instagram_Connected_Account {
 
 					$saved_image = $image_editor->save( $full_file_name );
 
-					if ( ! $saved_image ) {
+					if (is_wp_error($saved_image)) {
 						global $sb_instagram_posts_manager;
 						$details = __( 'Error saving edited image.', 'instagram-feed' ) . ' ' . $full_file_name;
 						$sb_instagram_posts_manager->add_error( 'image_editor', $details );
@@ -249,7 +264,14 @@ class SB_Instagram_Connected_Account {
 	public static function delete_local_avatar( $username ) {
 		$upload = wp_upload_dir();
 
-		$image_files = glob( trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $username . '.jpg' ); // get all matching images
+		$avatars_info = get_option( 'sbi_local_avatars_info', array() );
+		if ( isset( $avatars_info[ $username ]['file_name'] ) && !empty( $avatars_info[ $username ]['file_name'] ) ) {
+			$avatar_url = sanitize_file_name( $avatars_info[ $username ]['file_name'] );
+		} else {
+			$avatar_url = sanitize_file_name( $username . '.jpg' );
+		}
+
+		$image_files = glob( trailingslashit( $upload['basedir'] ) . trailingslashit( SBI_UPLOADS_NAME ) . $avatar_url ); // get all matching images
 		foreach ( $image_files as $file ) { // iterate files
 			if ( is_file( $file ) ) {
 				unlink( $file );
@@ -284,7 +306,12 @@ class SB_Instagram_Connected_Account {
 	 * @since 6.0
 	 */
 	public static function get_local_avatar_url( $username ) {
-		$avatar_url = sbi_get_resized_uploads_url() . $username . '.jpg';
+		$avatars_info = get_option( 'sbi_local_avatars_info', array() );
+		if ( isset( $avatars_info[ $username ]['file_name'] ) && !empty( $avatars_info[ $username ]['file_name'] ) ) {
+			$avatar_url = sbi_get_resized_uploads_url() . $avatars_info[ $username ]['file_name'];
+		} else {
+			$avatar_url = sbi_get_resized_uploads_url() . $username . '.jpg';
+		}
 
 		return $avatar_url;
 	}
@@ -303,6 +330,12 @@ class SB_Instagram_Connected_Account {
 			if ( isset( $avatars[ $username ] ) ) {
 				unset( $avatars[ $username ] );
 			}
+
+			$avatars_info = get_option( 'sbi_local_avatars_info', array() );
+			if ( isset( $avatars_info[ $username ] ) ) {
+				unset( $avatars_info[ $username ] );
+			}
+			update_option( 'sbi_local_avatars_info', $avatars_info );
 		} else {
 			$avatars[ $username ] = $status;
 		}
@@ -453,6 +486,10 @@ class SB_Instagram_Connected_Account {
 				$empty_sources = true;
 			} else {
 				$connected_accounts = array_merge( $connected_accounts, \InstagramFeed\Builder\SBI_Source::convert_sources_to_connected_accounts( $sources ) );
+				// if count of sources is less than SBI_MAX_SOURCES_LIMIT, we've reached the end.
+				if ( count( $sources ) < SBI_MAX_SOURCES_LIMIT ) {
+					$empty_sources = true;
+				}
 			}
 
 			$i++;

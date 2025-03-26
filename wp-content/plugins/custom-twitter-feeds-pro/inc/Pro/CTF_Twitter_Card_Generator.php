@@ -10,6 +10,7 @@
  * @since 2.0/5.0
  */
 namespace TwitterFeed\Pro;
+
 use TwitterFeed\CtfOpenGraph;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -122,9 +123,11 @@ class CTF_Twitter_Card_Generator {
 	public static function encode_helper( $string ) {
 		$encoding_fixes_for_text = str_replace(
 			array( 'â','â', 'â', '“', '”', '’', '‘', 'â', 'Ã¼', 'â', 'â', 'Ã', 'Ã¤', 'Ã¶', 'Ãº', 'Ã¡', 'Ã©', 'Ã³', 'Ã', 'í±', 'Â¡', 'Â', 'Ã¥', 'í¥' ),
-			array( '&#8220;', '&#8221;', '&#8221;', '&#8220;', '&#8221;', '&#8217;', '&#8216;', '&#8216;', '&#252;', '&#8220;', '&#8220;', '&#223;', '&#228;', '&#246;', '&#250;', '&#225;', '&#233;', '&#243;', '&#237;', '&#241;', '&#161;', '', '&#229;' /*å*/, '&#229;' /*å*/ ), $string );
+			array( '&#8220;', '&#8221;', '&#8221;', '&#8220;', '&#8221;', '&#8217;', '&#8216;', '&#8216;', '&#252;', '&#8220;', '&#8220;', '&#223;', '&#228;', '&#246;', '&#250;', '&#225;', '&#233;', '&#243;', '&#237;', '&#241;', '&#161;', '', '&#229;' /*å*/, '&#229;' /*å*/ ),
+			$string
+		);
 
-		$final_text = apply_filters( 'ctf_tc_text', $encoding_fixes_for_text );
+		$final_text = apply_filters( 'ctf_tc_text', $encoded_text );
 
 		return wp_strip_all_tags( $final_text );
 	}
@@ -271,6 +274,42 @@ class CTF_Twitter_Card_Generator {
 		$this->open_graph_data = $values;
 	}
 
+	public static function parse_api_card_data( $data ) {
+		$return = array(
+			'twitter:title' => '',
+			'twitter:description' => '',
+			'twitter:image' => '',
+			'twitter:site' => '',
+			'twitter:card' => '',
+
+		);
+
+		if ( ! empty( $data['name'] ) ) {
+			$return['twitter:card'] = $data['name'];
+		}
+
+		if ( ! empty( $data['url'] ) ) {
+			$return['twitter:site'] = $data['url'];
+		}
+
+		if ( ! empty( $data['binding_values']['title']['string_value'] ) ) {
+			$return['twitter:title'] = $data['binding_values']['title']['string_value'];
+		}
+
+		if ( ! empty( $data['binding_values']['description']['string_value'] ) ) {
+			$return['twitter:description'] = $data['binding_values']['description']['string_value'];
+		}
+		if ( ! empty( $data['binding_values']['thumbnail_image_large']['image_value']['url'] ) ) {
+			$return['twitter:image'] = self::save_cdn_image_to_local($data['binding_values']['thumbnail_image_large']['image_value']['url'], 'thumbnail_image_large');
+		} elseif ( ! empty( $data['binding_values']['thumbnail_image']['image_value']['url'] ) ) {
+			$return['twitter:image'] = self::save_cdn_image_to_local($data['binding_values']['thumbnail_image']['image_value']['url'], 'thumbnail_image');
+		} elseif ( ! empty( $data['binding_values']['thumbnail_image_small']['image_value']['url'] ) ) {
+			$return['twitter:image'] = self::save_cdn_image_to_local($data['binding_values']['thumbnail_image_small']['image_value']['url'], 'thumbnail_image_small');
+		}
+
+		return $return;
+	}
+
 	private function process_twitter_card_data()
 	{
 		$options = get_option( 'ctf_options', array() );
@@ -309,20 +348,51 @@ class CTF_Twitter_Card_Generator {
 		$this->twitter_card_data = $tc_data;
 	}
 
-	public function create_local_image( $url ) {
+	/**
+	 * Save CDN image to local 
+	 * @since 2.4
+	 * 
+	 * @param string $cdn_image_url
+	 * @param string $size_name
+	 * 
+	 * @return string
+	 */
+	public static function save_cdn_image_to_local($cdn_image_url, $size_name)
+	{
+		// save image to local
+		$local_image = self::create_local_image($cdn_image_url, $size_name);
+		// if local image can not be created then return the CDN image
+		if (!$local_image) {
+			return $cdn_image_url;
+		}
+		// get the upload
+		$upload = wp_upload_dir();
+		$upload_url = trailingslashit( $upload['baseurl'] ) . CTF_UPLOADS_NAME;
+		return $upload_url. '/' . $local_image['800'];
+	}
+
+	public static function create_local_image( $url, $size_name = false ) {
 		$img_name = sha1( preg_replace( "/[^a-zA-Z0-9]+/", "", $url ) );
 		$resizer = new CTF_Resizer();
 
-		if ( $resizer->image_resizing_disabled() ) {
+		if ($resizer->image_resizing_disabled()) {
 			return false;
 		}
 
+		// get the upload dir
+		$upload = wp_upload_dir();
+		$upload_dir = trailingslashit($upload['basedir']) . CTF_UPLOADS_NAME;
+
 		$local = array();
+		$generated = false;
 		$sizes = $resizer->get_image_sizes();
 		foreach ( $sizes as $size ) {
-			$this_image_file_name = $img_name. '-' . $size . '.jpg';
-
-			$generated = $resizer->single_resize( $url, $this_image_file_name, $size );
+			$name_parameter = $size_name ? $size_name : $size;
+			$this_image_file_name = $img_name. '-' . $name_parameter . '.jpg';
+			$card_image = $upload_dir . '/' . $this_image_file_name;
+			if (!file_exists($card_image)) {
+				$generated = $resizer->single_resize( $url, $this_image_file_name, $size );
+			}
 
 			if ( $generated ) {
 				$local[ $size ] = $this_image_file_name;

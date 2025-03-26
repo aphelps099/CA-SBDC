@@ -46,7 +46,7 @@ $lightbox_attribute = SW_Display_Elements::get_lightbox_attributes( $account_dat
 $media_type = SW_Parse::get_media_type( $post, $plugin );
 $maybe_play_button_html = SW_Display_Elements::maybe_play_button_html( $media_type );
 $media_html = SW_Display_Elements::get_media_html( $post, $settings, $plugin );
-
+$post_elements = isset( $settings['postElements'] ) ? $settings['postElements'] : array();
 /* Text and bottom content */
 $description = SW_Parse::get_description( $post, $plugin );
 $escaped_post_bottom_content = SW_Display_Elements::get_escaped_bottom_content( $post, $plugin, $settings );
@@ -77,7 +77,7 @@ $escaped_share_html = SW_Display_Elements::get_escaped_share_content( $account_d
                 </div>
                 <?php echo $escaped_before_identity_html; ?>
                 <a href="<?php echo esc_url( $account_link ); ?>" target="_blank" rel="noopener noreferrer nofollow">
-                    <?php if ( ! empty( $avatar ) ) : ?>
+                    <?php if ( ! empty( $avatar ) && in_array('avatar', $post_elements) ) : ?>
                     <div class="sbsw-item-avatar">
                         <img src="<?php echo esc_url( $avatar ); ?>" alt="<?php echo sprintf( __( 'Account avatar for %s', 'social-wall' ), esc_attr( $identity ) ); ?>">
                     </div>
@@ -85,10 +85,12 @@ $escaped_share_html = SW_Display_Elements::get_escaped_share_content( $account_d
 
                     <div class="sbsw-author">
                         <div class="sbsw-author-name">
-                            <p><?php echo $identity; ?></p>
+                            <?php if ( in_array('username', $post_elements ) ) : ?>
+                                <p><?php echo $identity; ?></p>
+                            <?php endif; ?>
                         </div>
                         <?php if ( SW_Parse::get_timestamp( $post, $plugin ) !== 0 &&
-                            ! empty( $formatted_date ) ) : ?>
+                            ! empty( $formatted_date ) && in_array('date', $post_elements) ) : ?>
                         <div class="sbsw-date">
                             <p><?php echo esc_html( $formatted_date ); ?></p>
                         </div>
@@ -98,7 +100,7 @@ $escaped_share_html = SW_Display_Elements::get_escaped_share_content( $account_d
             </div>
         </div>
 
-        <?php if ( ! empty( $media_html ) ) : ?>
+        <?php if ( ! empty( $media_html ) && in_array('media', $post_elements) ) : ?>
         <div class="sbsw-item-media"<?php echo $available_images_attribute; ?>>
             <?php echo $maybe_play_button_html; ?>
             <?php echo $media_html; ?>
@@ -106,22 +108,23 @@ $escaped_share_html = SW_Display_Elements::get_escaped_share_content( $account_d
         </div>
         <?php endif; ?>
 
-	    <?php if ( ! empty( $escaped_post_bottom_content ) ) : ?>
-        <div class="sbsw-item-bottom-content">
-            <?php echo $escaped_post_bottom_content; ?>
-        </div>
-	    <?php endif; ?>
-
+	    <?php if ( ! empty( $escaped_post_bottom_content ) && in_array('text', $post_elements) ) : ?>
+            <div class="sbsw-item-bottom-content">
+                <?php echo $escaped_post_bottom_content; ?>
+            </div>
+        <?php endif; ?>
+        
         <div class="sbsw-item-footer<?php echo esc_attr( $footer_class ); ?>">
             <div class="sbsw-item-bottom">
-                <div class="sbsw-item-stats">
-                    <?php echo $escaped_stats_html; ?>
-                </div>
+                <?php if ( in_array('summary', $post_elements) ) : ?>
+                    <div class="sbsw-item-stats">
+                        <?php echo $escaped_stats_html; ?>
+                    </div>
+                <?php endif; ?>
                 <div class="sbsw-item-share">
                     <?php echo $escaped_share_html; ?>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

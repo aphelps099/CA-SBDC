@@ -4,9 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1
+class ComposerStaticInit54e71b5c01a5f54a37d84cb3f06337a8
 {
+    public static $files = array (
+        'sb_cff_b1eb330aa001ae4915f07005b4e993c2' => __DIR__ . '/..' . '/smashballoon/framework/Utilities/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
+        'F' => 
+        array (
+            'FacebookFeed\\Vendor\\Smashballoon\\Framework\\' => 43,
+        ),
         'C' => 
         array (
             'CustomFacebookFeed\\' => 19,
@@ -14,6 +22,10 @@ class ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1
     );
 
     public static $prefixDirsPsr4 = array (
+        'FacebookFeed\\Vendor\\Smashballoon\\Framework\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/smashballoon/framework',
+        ),
         'CustomFacebookFeed\\' => 
         array (
             0 => __DIR__ . '/../..' . '/inc',
@@ -27,9 +39,9 @@ class ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit9e091f5841710d67fca66267d4d1a2d1::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit54e71b5c01a5f54a37d84cb3f06337a8::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit54e71b5c01a5f54a37d84cb3f06337a8::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit54e71b5c01a5f54a37d84cb3f06337a8::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -64,7 +64,7 @@ class CTF_Settings_Pro {
 			'shorturls'
 		);
 		$feed->setStandardBoolOptions( $bool_false, false );
-		$feed->setStandardBoolOptions( array( 'persistentcache', 'includeretweets', 'autores' ), true );
+		$feed->setStandardBoolOptions( array( 'persistentcache', 'autores' ), true );
 		$feed->setStandardTextOptions( 'carouselarrows', 'onhover' );
 		$feed->setStandardTextOptions( 'carouselheight', 'tallest' );
 		$feed->setStandardTextOptions( 'carouselcols', 1 );
@@ -83,6 +83,7 @@ class CTF_Settings_Pro {
 		$feed->setStandardTextOptions( 'filterandor', 'and' );
 
 		$feed->setDatabaseOnlyOptions( 'remove_by_id' );
+
 
 		$this->settings = $feed->feed_options;
 	}
@@ -260,7 +261,10 @@ class CTF_Settings_Pro {
 		$allowed_legacy_shortcode = array(
 			'feed',
 			'customizer',
-			'doingcronupdate'
+			'doingcronupdate',
+			'make_api_request',
+			'is_legacy',
+			'cachetime'
 		);
 
 		if ( ! empty( $ctf_statuses['support_legacy_shortcode'] )
@@ -305,6 +309,10 @@ class CTF_Settings_Pro {
 	 * @return array
 	 */
 	public static function legacy_shortcode_atts( $atts, $db ) {
+		$customHeaderTextDefault = ctf_should_rebrand_to_x() ?  __('We are on X', 'custom-twitter-feeds') : __('We are on Twitter', 'custom-twitter-feeds');
+		$repostedText = ctf_should_rebrand_to_x() ? __('Reposted', 'custom-twitter-feeds') : __('Retweeted', 'custom-twitter-feeds');
+		$twitter_link_text = ctf_should_rebrand_to_x() ? __('X', 'custom-twitter-feeds') : __('Twitter', 'custom-twitter-feeds');
+
 		$settings = shortcode_atts(
 			array(
 				'ajax_theme' 						=> isset( $db['ajax_theme'] ) ? $db['ajax_theme'] : false,
@@ -407,14 +415,14 @@ class CTF_Settings_Pro {
 				'headerstyle' 						=> isset( $db['headerstyle'] ) ? $db['headerstyle'] : 'standard',
 				'headerbgcolor' 					=> isset( $db['headerbgcolor'] ) ? $db['headerbgcolor'] : '#',
 				'customheadertextcolor' 			=> isset( $db['customheadertextcolor'] ) ? $db['customheadertextcolor'] : '#',
-				'customheadertext' 					=> isset( $db['customheadertext'] ) ? $db['customheadertext'] : __( 'We are on Twitter', 'custom-twitter-feeds' ),
+				'customheadertext' 					=> isset( $db['customheadertext'] ) ? $db['customheadertext'] : $customHeaderTextDefault,
 				'customheadersize' 					=> isset( $db['customheadersize'] ) ? $db['customheadersize'] : 'small',
 				'timezone' 							=> isset( $db['timezone'] ) ? $db['timezone'] : 'default',
 				'dateformat' 						=> isset( $db['dateformat'] ) ? $db['dateformat'] : '1',
 				'datecustom' 						=> isset( $db['datecustom'] ) ? $db['datecustom'] : '',
-				'mtime' 							=> isset( $db['mtime'] ) ? $db['mtime'] : '',
-				'htime' 							=> isset( $db['htime'] ) ? $db['htime'] : '',
-				'nowtime' 							=> isset( $db['nowtime'] ) ? $db['nowtime'] : '',
+				'mtime' 							=> isset( $db['mtime'] ) ? $db['mtime'] : 'm',
+				'htime' 							=> isset( $db['htime'] ) ? $db['htime'] : 'h',
+				'nowtime' 							=> isset( $db['nowtime'] ) ? $db['nowtime'] : 'now',
 				'datetextsize' 						=> isset( $db['datetextsize'] ) ? $db['datetextsize'] : 'inherit',
 				'datetextweight' 					=> isset( $db['datetextweight'] ) ? $db['datetextweight'] : 'inherit',
 				'datetextcolor' 					=> isset( $db['datetextcolor'] ) ? $db['datetextcolor'] : '#',
@@ -427,14 +435,14 @@ class CTF_Settings_Pro {
 				'tweettextweight' 					=> isset( $db['tweettextweight'] ) ? $db['tweettextweight'] : 'inherit',
 				'textcolor' 						=> isset( $db['textcolor'] ) ? $db['textcolor'] : '#',
 				'textlength' 						=> isset( $db['textlength'] ) ? $db['textlength'] : '280',
-				'retweetedtext' 					=> isset( $db['retweetedtext'] ) ? $db['retweetedtext'] : __( 'Retweeted', 'custom-twitter-feeds' ),
+				'retweetedtext' 					=> isset( $db['retweetedtext'] ) ? $db['retweetedtext'] : $repostedText,
 				'linktextcolor' 					=> isset( $db['linktextcolor'] ) ? $db['linktextcolor'] : '#',
 				'quotedauthorsize' 					=> isset( $db['quotedauthorsize'] ) ? $db['quotedauthorsize'] : 'inherit',
 				'quotedauthorweight' 				=> isset( $db['quotedauthorweight'] ) ? $db['quotedauthorweight'] : 'inherit',
 				'iconsize' 							=> isset( $db['iconsize'] ) ? $db['iconsize'] : 12,
 				'iconcolor' 						=> isset( $db['iconcolor'] ) ? $db['iconcolor'] : '#',
 				'viewtwitterlink' 					=> isset( $db['viewtwitterlink'] ) ? $db['viewtwitterlink'] : true,
-				'twitterlinktext'					=> isset( $db['twitterlinktext'] ) ? $db['twitterlinktext'] : 'Twitter',
+				'twitterlinktext'					=> isset( $db['twitterlinktext'] ) ? $db['twitterlinktext'] : $twitter_link_text,
 				'buttoncolor' 						=> isset( $db['buttoncolor'] ) ? $db['buttoncolor'] : '#',
 				'buttonhovercolor' 					=> isset( $db['buttonhovercolor'] ) ? $db['buttonhovercolor'] : '#',
 				'buttontextcolor' 					=> isset( $db['buttontextcolor'] ) ? $db['buttontextcolor'] : '#',
@@ -464,6 +472,9 @@ class CTF_Settings_Pro {
 	}
 
 	public static function get_public_db_settings_keys() {
+		$customHeaderTextDefault = ctf_should_rebrand_to_x() ?  __('We are on X', 'custom-twitter-feeds') : __('We are on Twitter', 'custom-twitter-feeds');
+		$twitter_link_text = ctf_should_rebrand_to_x() ? __('X', 'custom-twitter-feeds') : __('Twitter', 'custom-twitter-feeds');
+
 		$public = array(
 			'ajax_theme' 						=> isset( $db['ajax_theme'] ) ? $db['ajax_theme'] : false,
 			'have_own_tokens' 					=> isset( $db['have_own_tokens'] ) ? $db['have_own_tokens'] : '',
@@ -560,14 +571,14 @@ class CTF_Settings_Pro {
 			'headerstyle' 						=> isset( $db['headerstyle'] ) ? $db['headerstyle'] : 'standard',
 			'headerbgcolor' 					=> isset( $db['headerbgcolor'] ) ? $db['headerbgcolor'] : '#',
 			'customheadertextcolor' 			=> isset( $db['customheadertextcolor'] ) ? $db['customheadertextcolor'] : '#',
-			'customheadertext' 					=> isset( $db['customheadertext'] ) ? $db['customheadertext'] : __( 'We are on Twitter', 'custom-twitter-feeds' ),
+			'customheadertext' 					=> isset( $db['customheadertext'] ) ? $db['customheadertext'] : $customHeaderTextDefault,
 			'customheadersize' 					=> isset( $db['customheadersize'] ) ? $db['customheadersize'] : 'small',
 			'timezone' 							=> isset( $db['timezone'] ) ? $db['timezone'] : 'default',
 			'dateformat' 						=> isset( $db['dateformat'] ) ? $db['dateformat'] : '1',
 			'datecustom' 						=> isset( $db['datecustom'] ) ? $db['datecustom'] : '',
-			'mtime' 							=> isset( $db['mtime'] ) ? $db['mtime'] : '',
-			'htime' 							=> isset( $db['htime'] ) ? $db['htime'] : '',
-			'nowtime' 							=> isset( $db['nowtime'] ) ? $db['nowtime'] : '',
+			'mtime' 							=> isset( $db['mtime'] ) ? $db['mtime'] : 'm',
+			'htime' 							=> isset( $db['htime'] ) ? $db['htime'] : 'h',
+			'nowtime' 							=> isset( $db['nowtime'] ) ? $db['nowtime'] : 'now',
 			'datetextsize' 						=> isset( $db['datetextsize'] ) ? $db['datetextsize'] : 'inherit',
 			'datetextweight' 					=> isset( $db['datetextweight'] ) ? $db['datetextweight'] : 'inherit',
 			'datetextcolor' 					=> isset( $db['datetextcolor'] ) ? $db['datetextcolor'] : '#',
@@ -587,7 +598,7 @@ class CTF_Settings_Pro {
 			'iconsize' 							=> isset( $db['iconsize'] ) ? $db['iconsize'] : 12,
 			'iconcolor' 						=> isset( $db['iconcolor'] ) ? $db['iconcolor'] : '#',
 			'viewtwitterlink' 					=> isset( $db['viewtwitterlink'] ) ? $db['viewtwitterlink'] : true,
-			'twitterlinktext'					=> isset( $db['twitterlinktext'] ) ? $db['twitterlinktext'] : 'Twitter',
+			'twitterlinktext'					=> isset( $db['twitterlinktext'] ) ? $db['twitterlinktext'] : $twitter_link_text,
 			'buttoncolor' 						=> isset( $db['buttoncolor'] ) ? $db['buttoncolor'] : '#',
 			'buttonhovercolor' 					=> isset( $db['buttonhovercolor'] ) ? $db['buttonhovercolor'] : '#',
 			'buttontextcolor' 					=> isset( $db['buttontextcolor'] ) ? $db['buttontextcolor'] : '#',

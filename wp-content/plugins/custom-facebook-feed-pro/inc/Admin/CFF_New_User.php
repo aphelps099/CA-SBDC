@@ -1,19 +1,22 @@
 <?php
+
 /**
  * CFF_New_User.
  *
  * @since 2.18
  */
+
 namespace CustomFacebookFeed\Admin;
+
 // Exit if accessed directly
 use CustomFacebookFeed\CFF_Utils;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
-class CFF_New_User extends CFF_Notifications {
-
+class CFF_New_User extends CFF_Notifications
+{
 	/**
 	 * Source of notifications content.
 	 *
@@ -21,7 +24,7 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @var string
 	 */
-	const SOURCE_URL = 'http://plugin.smashballoon.com/newuser.json';
+	const SOURCE_URL = 'https://plugin.smashballoon.com/newuser.json';
 
 	/**
 	 * @var string
@@ -33,18 +36,21 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function hooks() {
-		add_action( 'admin_notices', array( $this, 'output' ), 8 );
+	public function hooks()
+	{
+		add_action('admin_notices', array($this, 'output'), 8);
 
-		add_action( 'admin_init', array( $this, 'dismiss' ) );
-		add_action( 'wp_ajax_cff_review_notice_consent_update', array( $this, 'review_notice_consent' ) );
+		add_action('admin_init', array($this, 'dismiss'));
+		add_action('wp_ajax_cff_review_notice_consent_update', array($this, 'review_notice_consent'));
 	}
 
-	public function option_name() {
+	public function option_name()
+	{
 		return self::OPTION_NAME;
 	}
 
-	public function source_url() {
+	public function source_url()
+	{
 		return self::SOURCE_URL;
 	}
 
@@ -57,24 +63,24 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function verify( $notifications ) {
+	public function verify($notifications)
+	{
 		$data = array();
 
-		if ( ! is_array( $notifications ) || empty( $notifications ) ) {
+		if (! is_array($notifications) || empty($notifications)) {
 			return $data;
 		}
 
 		$option = $this->get_option();
 
-		foreach ( $notifications as $key => $notification ) {
-
+		foreach ($notifications as $key => $notification) {
 			// The message should never be empty, if they are, ignore.
-			if ( empty( $notification['content'] ) ) {
+			if (empty($notification['content'])) {
 				continue;
 			}
 
 			// Ignore if notification has already been dismissed.
-			if ( ! empty( $option['dismissed'] ) && in_array( $notification['id'], $option['dismissed'] ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			if (! empty($option['dismissed']) && in_array($notification['id'], $option['dismissed'])) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 				continue;
 			}
 
@@ -93,57 +99,60 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @return array
 	 */
-	public function verify_active( $notifications ) {
-		if ( ! is_array( $notifications ) || empty( $notifications ) ) {
+	public function verify_active($notifications)
+	{
+		if (! is_array($notifications) || empty($notifications)) {
 			return array();
 		}
 
-		$cff_statuses_option = get_option( 'cff_statuses', array() );
-		if ( empty( $cff_statuses_option ) ) {
+		$cff_statuses_option = get_option('cff_statuses', array());
+		if (empty($cff_statuses_option)) {
 			return array();
 		}
 
 		$current_time = cff_get_current_time();
 
 		// rating notice logic
-		$cff_rating_notice_option = get_option( 'cff_rating_notice', false );
-		$cff_rating_notice_waiting = get_transient( 'custom_facebook_rating_notice_waiting' );
+		$cff_rating_notice_option = get_option('cff_rating_notice', false);
+		$cff_rating_notice_waiting = get_transient('custom_facebook_rating_notice_waiting');
 		$should_show_rating_notice = ($cff_rating_notice_waiting !== 'waiting' && $cff_rating_notice_option !== 'dismissed');
 
 		// new user discount logic
 		$in_new_user_month_range = true;
 		$should_show_new_user_discount = false;
-		$has_been_one_month_since_rating_dismissal = isset( $cff_statuses_option['rating_notice_dismissed'] ) ? ((int)$cff_statuses_option['rating_notice_dismissed'] + ((int)$notifications['review']['wait'] * DAY_IN_SECONDS)) < $current_time + 1: true;
+		$has_been_one_month_since_rating_dismissal = isset($cff_statuses_option['rating_notice_dismissed']) ? ((int)$cff_statuses_option['rating_notice_dismissed'] + ((int)$notifications['review']['wait'] * DAY_IN_SECONDS)) < $current_time + 1 : true;
 
-		if ( isset( $cff_statuses_option['first_install'] ) && $cff_statuses_option['first_install'] === 'from_update' ) {
+		if (isset($cff_statuses_option['first_install']) && $cff_statuses_option['first_install'] === 'from_update') {
 			global $current_user;
 			$user_id = $current_user->ID;
-			$ignore_new_user_sale_notice_meta = get_user_meta( $user_id, 'cff_ignore_new_user_sale_notice' );
-			$ignore_new_user_sale_notice_meta = isset( $ignore_new_user_sale_notice_meta[0] ) ? $ignore_new_user_sale_notice_meta[0] : '';
-			if ( $ignore_new_user_sale_notice_meta !== 'always' ) {
+			$ignore_new_user_sale_notice_meta = get_user_meta($user_id, 'cff_ignore_new_user_sale_notice');
+			$ignore_new_user_sale_notice_meta = isset($ignore_new_user_sale_notice_meta[0]) ? $ignore_new_user_sale_notice_meta[0] : '';
+			if ($ignore_new_user_sale_notice_meta !== 'always') {
 				$should_show_new_user_discount = true;
 			}
-		} elseif ( $in_new_user_month_range && $has_been_one_month_since_rating_dismissal && $cff_rating_notice_waiting !== 'waiting' ) {
+		} elseif ($in_new_user_month_range && $has_been_one_month_since_rating_dismissal && $cff_rating_notice_waiting !== 'waiting') {
 			global $current_user;
 			$user_id = $current_user->ID;
-			$ignore_new_user_sale_notice_meta = get_user_meta( $user_id, 'cff_ignore_new_user_sale_notice' );
-			$ignore_new_user_sale_notice_meta = isset( $ignore_new_user_sale_notice_meta[0] ) ? $ignore_new_user_sale_notice_meta[0] : '';
+			$ignore_new_user_sale_notice_meta = get_user_meta($user_id, 'cff_ignore_new_user_sale_notice');
+			$ignore_new_user_sale_notice_meta = isset($ignore_new_user_sale_notice_meta[0]) ? $ignore_new_user_sale_notice_meta[0] : '';
 
-			if ( $ignore_new_user_sale_notice_meta !== 'always'
-			     && isset( $cff_statuses_option['first_install'] )
-			     && $current_time > (int)$cff_statuses_option['first_install'] + ((int)$notifications['discount']['wait'] * DAY_IN_SECONDS) ) {
+			if (
+				$ignore_new_user_sale_notice_meta !== 'always'
+				 && isset($cff_statuses_option['first_install'])
+				 && $current_time > (int)$cff_statuses_option['first_install'] + ((int)$notifications['discount']['wait'] * DAY_IN_SECONDS)
+			) {
 				$should_show_new_user_discount = true;
 			}
 		}
 
-		if ( CFF_Utils::cff_is_pro_version() ) {
+		if (CFF_Utils::cff_is_pro_version()) {
 			$should_show_new_user_discount = false;
 		}
 
-		if ( isset( $notifications['review'] ) && $should_show_rating_notice ) {
-			return array( $notifications['review'] );
-		} elseif ( isset( $notifications['discount'] ) && $should_show_new_user_discount ) {
-			return array( $notifications['discount'] );
+		if (isset($notifications['review']) && $should_show_rating_notice) {
+			return array($notifications['review']);
+		} elseif (isset($notifications['discount']) && $should_show_new_user_discount) {
+			return array($notifications['discount']);
 		}
 
 		return array();
@@ -151,27 +160,29 @@ class CFF_New_User extends CFF_Notifications {
 
 	/**
 	 * Get notification data.
-	 *.3.7878
+	 * .3.7878
+	 *
 	 * @since 2.18
 	 *
 	 * @return array
 	 */
-	public function get() {
-		if ( ! $this->has_access() ) {
+	public function get()
+	{
+		if (! $this->has_access()) {
 			return array();
 		}
 
 		$option = $this->get_option();
 
 		// Only update if does not exist.
-		if ( empty( $option['update'] ) ) {
+		if (empty($option['update'])) {
 			$this->update();
 		}
 
-		$events = ! empty( $option['events'] ) ? $this->verify_active( $option['events'] ) : array();
-		$feed   = ! empty( $option['feed'] ) ? $this->verify_active( $option['feed'] ) : array();
+		$events = ! empty($option['events']) ? $this->verify_active($option['events']) : array();
+		$feed   = ! empty($option['feed']) ? $this->verify_active($option['feed']) : array();
 
-		return array_merge( $events, $feed );
+		return array_merge($events, $feed);
 	}
 
 	/**
@@ -181,31 +192,32 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @param array $notification Notification data.
 	 */
-	public function add( $notification ) {
-		if ( empty( $notification['id'] ) ) {
+	public function add($notification)
+	{
+		if (empty($notification['id'])) {
 			return;
 		}
 
 		$option = $this->get_option();
 
-		if ( in_array( $notification['id'], $option['dismissed'] ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+		if (in_array($notification['id'], $option['dismissed'])) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 			return;
 		}
 
-		foreach ( $option['events'] as $item ) {
-			if ( $item['id'] === $notification['id'] ) {
+		foreach ($option['events'] as $item) {
+			if ($item['id'] === $notification['id']) {
 				return;
 			}
 		}
 
-		$notification = $this->verify( array( $notification ) );
+		$notification = $this->verify(array($notification));
 
 		update_option(
 			$this->option_name(),
 			array(
 				'update'    => $option['update'],
 				'feed'      => $option['feed'],
-				'events'    => array_merge( $notification, $option['events'] ),
+				'events'    => array_merge($notification, $option['events']),
 				'dismissed' => $option['dismissed'],
 			)
 		);
@@ -216,7 +228,8 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function update() {
+	public function update()
+	{
 		$feed   = $this->fetch_feed();
 		$option = $this->get_option();
 
@@ -236,8 +249,8 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function enqueues() {
-
+	public function enqueues()
+	{
 	}
 
 	/**
@@ -245,25 +258,26 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 4.0
 	 */
-	public function review_notice_consent() {
-		//Security Checks
-		check_ajax_referer( 'cff_nonce', 'cff_nonce' );
-		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	public function review_notice_consent()
+	{
+		// Security Checks
+		check_ajax_referer('cff_nonce', 'cff_nonce');
+		$cap = current_user_can('manage_custom_facebook_feed_options') ? 'manage_custom_facebook_feed_options' : 'manage_options';
 
-		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
-		if ( ! current_user_can( $cap ) ) {
+		$cap = apply_filters('cff_settings_pages_capability', $cap);
+		if (! current_user_can($cap)) {
 			wp_send_json_error(); // This auto-dies.
 		}
 
-		$consent = isset( $_POST[ 'consent' ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'consent' ] ) ) : '';
+		$consent = isset($_POST[ 'consent' ]) ? sanitize_text_field(wp_unslash($_POST[ 'consent' ])) : '';
 
-		update_option( 'cff_review_consent', $consent );
+		update_option('cff_review_consent', $consent);
 
-		if ( $consent == 'no' ) {
-			$cff_statuses_option = get_option( 'cff_statuses', array() );
-			update_option( 'cff_rating_notice', 'dismissed', false );
+		if ($consent == 'no') {
+			$cff_statuses_option = get_option('cff_statuses', array());
+			update_option('cff_rating_notice', 'dismissed', false);
 			$cff_statuses_option['rating_notice_dismissed'] = cff_get_current_time();
-			update_option( 'cff_statuses', $cff_statuses_option, false );
+			update_option('cff_statuses', $cff_statuses_option, false);
 		}
 		wp_die();
 	}
@@ -273,23 +287,28 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function output() {
+	public function output()
+	{
 		// If the Instagram Feed plugin is active, notices only shown on CFF Settings pages
-		if ( function_exists( 'sb_instagram_activate' )
-		     && ! function_exists( 'sb_instagram_feed_pro_init' ) ) {
+		if (
+			function_exists('sb_instagram_activate')
+			 && ! function_exists('sb_instagram_feed_pro_init')
+		) {
 			return;
 		}
 
 		$notifications = $this->get();
 
-		if ( empty( $notifications ) ) {
+		if (empty($notifications)) {
 			return;
 		}
 
 		// new user notices included in regular settings page notifications so this
 		// checks to see if user is one of those pages
-		if ( ! empty( $_GET['page'] )
-		     && strpos( $_GET['page'], 'cff-' ) !== false ) {
+		if (
+			! empty($_GET['page'])
+			 && strpos($_GET['page'], 'cff-') !== false
+		) {
 			return;
 		}
 
@@ -307,34 +326,34 @@ class CFF_New_User extends CFF_Notifications {
 		);
 		$image_overlay = '';
 
-		foreach ( $notifications as $notification ) {
-			$img_src = CFF_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( wp_unslash( $notification['image'] ) );
-			$type = sanitize_text_field( wp_unslash( $notification['id'] ) );
+		foreach ($notifications as $notification) {
+			$img_src = CFF_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field(wp_unslash($notification['image']));
+			$type = sanitize_text_field(wp_unslash($notification['id']));
 			// check if this is a review notice
-			if( $type == 'review' ) {
-				$review_consent = get_option( 'cff_review_consent' );
+			if ($type == 'review') {
+				$review_consent = get_option('cff_review_consent');
 				$cff_open_feedback_url = 'https://smashballoon.com/feedback/?plugin=facebook-lite';
 				// step #1 for the review notice
-				if ( ! $review_consent ) {
+				if (! $review_consent) {
 					?>
 					<div class="cff_notice cff_review_notice_step_1">
 						<div class="cff_thumb">
-							<img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
+							<img src="<?php echo esc_url($img_src); ?>" alt="notice">
 						</div>
 						<div class="cff-notice-text">
-							<p class="cff-notice-text-p"><?php echo __( 'Are you enjoying the Custom Facebook Feed Plugin?', 'custom-facebook-feed' ); ?></p>
+							<p class="cff-notice-text-p"><?php echo __('Are you enjoying the Custom Facebook Feed Plugin?', 'custom-facebook-feed'); ?></p>
 						</div>
 						<div class="cff-notice-consent-btns">
 							<?php
 							printf(
 								'<button class="cff-btn-link" id="cff_review_consent_yes">%s</button>',
-								__( 'Yes', 'custom-facebook-feed' )
+								__('Yes', 'custom-facebook-feed')
 							);
 
 							printf(
 								'<a href="%s" target="_blank" class="cff-btn-link"  id="cff_review_consent_no">%s</a>',
 								$cff_open_feedback_url,
-								__( 'No', 'custom-facebook-feed' )
+								__('No', 'custom-facebook-feed')
 							);
 							?>
 						</div>
@@ -342,48 +361,48 @@ class CFF_New_User extends CFF_Notifications {
 					<?php
 				}
 			}
-			$close_href = add_query_arg( array( 'cff_dismiss' => $type ) );
+			$close_href = add_query_arg(array('cff_dismiss' => $type));
 
-			$title = $this->get_notice_title( $notification );
-			$content = $this->get_notice_content( $notification, $content_allowed_tags );
+			$title = $this->get_notice_title($notification);
+			$content = $this->get_notice_content($notification, $content_allowed_tags);
 
 			$buttons = array();
-			if ( ! empty( $notification['btns'] ) && is_array( $notification['btns'] ) ) {
-				foreach ( $notification['btns'] as $btn_type => $btn ) {
-					if ( ! is_array( $btn['url'] ) ) {
-						$buttons[ $btn_type ]['url'] = $this->replace_merge_fields( $btn['url'], $notification );
-					} elseif ( is_array( $btn['url'] ) ) {
-						$buttons[ $btn_type ]['url'] = add_query_arg( $btn['url'] );
+			if (! empty($notification['btns']) && is_array($notification['btns'])) {
+				foreach ($notification['btns'] as $btn_type => $btn) {
+					if (! is_array($btn['url'])) {
+						$buttons[ $btn_type ]['url'] = $this->replace_merge_fields($btn['url'], $notification);
+					} elseif (is_array($btn['url'])) {
+						$buttons[ $btn_type ]['url'] = add_query_arg($btn['url']);
 					}
 
 					$buttons[ $btn_type ]['attr'] = '';
-					if ( ! empty( $btn['attr'] ) ) {
+					if (! empty($btn['attr'])) {
 						$buttons[ $btn_type ]['attr'] = ' target="_blank" rel="noopener noreferrer"';
 					}
 
 					$buttons[ $btn_type ]['class'] = '';
-					if ( ! empty( $btn['class'] ) ) {
+					if (! empty($btn['class'])) {
 						$buttons[ $btn_type ]['class'] = ' ' . $btn['class'];
 					}
 
 					$buttons[ $btn_type ]['text'] = '';
-					if ( ! empty( $btn['text'] ) ) {
-						$buttons[ $btn_type ]['text'] = wp_kses( $btn['text'], $content_allowed_tags );
+					if (! empty($btn['text'])) {
+						$buttons[ $btn_type ]['text'] = wp_kses($btn['text'], $content_allowed_tags);
 					}
 				}
 			}
 		}
 
-		$review_consent = get_option( 'cff_review_consent' );
+		$review_consent = get_option('cff_review_consent');
 		$review_step2_style = '';
-		if ( $type == 'review' && ! $review_consent ) {
+		if ($type == 'review' && ! $review_consent) {
 			$review_step2_style = 'style="display: none;"';
 		}
 		?>
 
-		<div class="cff_notice_op cff_notice cff_<?php echo esc_attr( $type ); ?>_notice" <?php echo !empty( $review_step2_style ) ? $review_step2_style : ''; ?>>
+		<div class="cff_notice_op cff_notice cff_<?php echo esc_attr($type); ?>_notice" <?php echo !empty($review_step2_style) ? $review_step2_style : ''; ?>>
 			<div class="cff_thumb">
-				<img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
+				<img src="<?php echo esc_url($img_src); ?>" alt="notice">
 				<?php echo $image_overlay; ?>
 			</div>
 			<div class="cff-notice-text">
@@ -394,22 +413,22 @@ class CFF_New_User extends CFF_Notifications {
 				<div class="cff-notice-btns-wrap">
 					<p class="cff-notice-links">
 						<?php
-						foreach ( $buttons as $type => $button ) :
+						foreach ($buttons as $type => $button) :
 							$btn_classes = array('cff-btn');
-							$btn_classes[] = esc_attr( $button['class'] );
-							if ( $type == 'primary' ) {
+							$btn_classes[] = esc_attr($button['class']);
+							if ($type == 'primary') {
 								$btn_classes[] = 'cff-btn-blue';
 							} else {
 								$btn_classes[] = 'cff-btn-grey';
 							}
 							?>
-							<a class="<?php echo implode(' ', $btn_classes); ?>" href="<?php echo esc_attr( $button['url'] ); ?>"<?php echo $button['attr']; ?>><?php echo $button['text']; ?></a>
+							<a class="<?php echo implode(' ', $btn_classes); ?>" href="<?php echo esc_attr($button['url']); ?>"<?php echo $button['attr']; ?>><?php echo $button['text']; ?></a>
 						<?php endforeach; ?>
 					</p>
 				</div>
 			</div>
 			<div class="cff-notice-dismiss">
-				<a href="<?php echo esc_url( $close_href ); ?>">
+				<a href="<?php echo esc_url($close_href); ?>">
 					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z" fill="#141B38"></path>
 					</svg>
@@ -428,17 +447,18 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @return string $title
 	 */
-	public function get_notice_title( $notification ) {
+	public function get_notice_title($notification)
+	{
 		$type = $notification['id'];
 		$title = '';
 
 		// Notice title depending on notice type
-		if ( $type == 'review' ) {
-			$title = __( 'Glad to hear you are enjoying it. Would you consider leaving a positive review?', 'custom-facebook-feed' );
-		} else if ( $type == 'discount' ) {
-			$title =  __( 'Exclusive Offer! 60% OFF', 'custom-facebook-feed' );
+		if ($type == 'review') {
+			$title = __('Glad to hear you are enjoying it. Would you consider leaving a positive review?', 'custom-facebook-feed');
+		} elseif ($type == 'discount') {
+			$title =  __('Exclusive Offer! 60% OFF', 'custom-facebook-feed');
 		} else {
-			$title = $this->replace_merge_fields( $notification['title'], $notification );
+			$title = $this->replace_merge_fields($notification['title'], $notification);
 		}
 
 		return $title;
@@ -454,18 +474,19 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @return string $content
 	 */
-	public function get_notice_content( $notification, $content_allowed_tags ) {
+	public function get_notice_content($notification, $content_allowed_tags)
+	{
 		$type = $notification['id'];
 		$content = '';
 
 		// Notice content depending on notice type
-		if ( $type == 'review' ) {
-			$content = __( 'It really helps to support the plugin and help others to discover it too!', 'custom-facebook-feed' );
-		} else if ( $type == 'discount' ) {
-			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free Facebook Feed.', 'custom-facebook-feed' );
+		if ($type == 'review') {
+			$content = __('It really helps to support the plugin and help others to discover it too!', 'custom-facebook-feed');
+		} elseif ($type == 'discount') {
+			$content =  __('We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free Facebook Feed.', 'custom-facebook-feed');
 		} else {
-			if ( ! empty( $notification['content'] ) ) {
-				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );
+			if (! empty($notification['content'])) {
+				$content = wp_kses($this->replace_merge_fields($notification['content'], $notification), $content_allowed_tags);
 			}
 		}
 		return $content;
@@ -476,64 +497,86 @@ class CFF_New_User extends CFF_Notifications {
 	 *
 	 * @since 2.18
 	 */
-	public function dismiss() {
+	public function dismiss()
+	{
 		global $current_user;
+		$cap = current_user_can('manage_custom_facebook_feed_options') ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters('cff_settings_pages_capability', $cap);
+		if (!current_user_can($cap)) {
+			return;
+		}
 		$user_id = $current_user->ID;
-		$cff_statuses_option = get_option( 'cff_statuses', array() );
+		$cff_statuses_option = get_option('cff_statuses', array());
+		if (isset($_GET['cff_ignore_rating_notice_nag'])) {
+			$rating_ignore = false;
+			if (isset($_GET['cff_nonce']) && wp_verify_nonce($_GET['cff_nonce'], 'cff-review')) {
+				$rating_ignore = isset($_GET['cff_ignore_rating_notice_nag']) ? sanitize_text_field($_GET['cff_ignore_rating_notice_nag']) : false;
+			}
 
-		if ( isset( $_GET['cff_ignore_rating_notice_nag'] ) ) {
-			if ( (int)$_GET['cff_ignore_rating_notice_nag'] === 1 ) {
-				update_option( 'cff_rating_notice', 'dismissed', false );
+			if (1 === (int)$rating_ignore) {
+				update_option('cff_rating_notice', 'dismissed', false);
 				$cff_statuses_option['rating_notice_dismissed'] = cff_get_current_time();
-				update_option( 'cff_statuses', $cff_statuses_option, false );
-
-			} elseif ( $_GET['cff_ignore_rating_notice_nag'] === 'later' ) {
-				set_transient( 'custom_facebook_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
-				update_option( 'cff_rating_notice', 'pending', false );
+				update_option('cff_statuses', $cff_statuses_option, false);
+			} elseif ('later' === $rating_ignore) {
+				set_transient('custom_facebook_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS);
+				update_option('cff_rating_notice', 'pending', false);
 			}
 		}
 
-		if ( isset( $_GET['cff_ignore_new_user_sale_notice'] ) ) {
-			$response = sanitize_text_field( wp_unslash( $_GET['cff_ignore_new_user_sale_notice'] ) );
-			if ( $response === 'always' ) {
-				update_user_meta( $user_id, 'cff_ignore_new_user_sale_notice', 'always' );
+		if (isset($_GET['cff_ignore_new_user_sale_notice'])) {
+			$new_user_ignore = false;
+			if (isset($_GET['cff_nonce']) && wp_verify_nonce($_GET['cff_nonce'], 'cff-discount')) {
+				$new_user_ignore = isset($_GET['cff_ignore_new_user_sale_notice']) ? sanitize_text_field($_GET['cff_ignore_new_user_sale_notice']) : false;
+			}
 
-				$current_month_number = (int)date('n', cff_get_current_time() );
+			if ('always' === $new_user_ignore) {
+				update_user_meta($user_id, 'cff_ignore_new_user_sale_notice', 'always');
+
+				$current_month_number = (int)date('n', cff_get_current_time());
 				$not_early_in_the_year = ($current_month_number > 5);
 
-				if ( $not_early_in_the_year ) {
-					update_user_meta( $user_id, 'cff_ignore_bfcm_sale_notice', date( 'Y', cff_get_current_time() ) );
+				if ($not_early_in_the_year) {
+					update_user_meta($user_id, 'cff_ignore_bfcm_sale_notice', date('Y', cff_get_current_time()));
 				}
 
 			}
 		}
 
-		if ( isset( $_GET['cff_ignore_bfcm_sale_notice'] ) ) {
-			$response = sanitize_text_field( wp_unslash(  $_GET['cff_ignore_bfcm_sale_notice'] ));
-			if ( $response === 'always' ) {
-				update_user_meta( $user_id, 'cff_ignore_bfcm_sale_notice', 'always' );
-			} elseif ( $response === date( 'Y', cff_get_current_time() ) ) {
-				update_user_meta( $user_id, 'cff_ignore_bfcm_sale_notice', date( 'Y', cff_get_current_time() ) );
+		if (isset($_GET['cff_ignore_bfcm_sale_notice'])) {
+			$bfcm_ignore = false;
+			if (isset($_GET['cff_nonce']) && wp_verify_nonce($_GET['cff_nonce'], 'cff-bfcm')) {
+				$bfcm_ignore = isset($_GET['cff_ignore_bfcm_sale_notice']) ? sanitize_text_field($_GET['cff_ignore_bfcm_sale_notice']) : false;
 			}
-			update_user_meta( $user_id, 'cff_ignore_new_user_sale_notice', 'always' );
+
+			if ('always' === $bfcm_ignore) {
+				update_user_meta($user_id, 'cff_ignore_bfcm_sale_notice', 'always');
+			} elseif (date('Y', cff_get_current_time()) === $bfcm_ignore) {
+				update_user_meta($user_id, 'cff_ignore_bfcm_sale_notice', date('Y', cff_get_current_time()));
+			}
+			update_user_meta($user_id, 'cff_ignore_new_user_sale_notice', 'always');
 		}
 
-		if ( isset( $_GET['cff_dismiss'] ) ) {
-			if ( $_GET['cff_dismiss'] === 'review' ) {
-				update_option( 'cff_rating_notice', 'dismissed', false );
-				$cff_statuses_option['rating_notice_dismissed'] = cff_get_current_time();
-				update_option( 'cff_statuses', $cff_statuses_option, false );
-			} elseif ( $_GET['cff_dismiss'] === 'discount' ) {
-				update_user_meta( $user_id, 'cff_ignore_new_user_sale_notice', 'always' );
+		if (isset($_GET['cff_dismiss'])) {
+			$notice_dismiss = false;
+			if (isset($_GET['cff_nonce']) && wp_verify_nonce($_GET['cff_nonce'], 'cff-review')) {
+				$notice_dismiss = sanitize_text_field($_GET['cff_dismiss']);
+			}
 
-				$current_month_number = (int)date('n', cff_get_current_time() );
+			if ('review' === $notice_dismiss) {
+				update_option('cff_rating_notice', 'dismissed', false);
+				$cff_statuses_option['rating_notice_dismissed'] = cff_get_current_time();
+				update_option('cff_statuses', $cff_statuses_option, false);
+			} elseif ('discount' === $notice_dismiss) {
+				update_user_meta($user_id, 'cff_ignore_new_user_sale_notice', 'always');
+
+				$current_month_number = (int)date('n', cff_get_current_time());
 				$not_early_in_the_year = ($current_month_number > 5);
 
-				if ( $not_early_in_the_year ) {
-					update_user_meta( $user_id, 'cff_ignore_bfcm_sale_notice', date( 'Y', cff_get_current_time() ) );
+				if ($not_early_in_the_year) {
+					update_user_meta($user_id, 'cff_ignore_bfcm_sale_notice', date('Y', cff_get_current_time()));
 				}
 			}
-			update_user_meta( $user_id, 'cff_ignore_new_user_sale_notice', 'always' );
+			update_user_meta($user_id, 'cff_ignore_new_user_sale_notice', 'always');
 		}
 	}
 }

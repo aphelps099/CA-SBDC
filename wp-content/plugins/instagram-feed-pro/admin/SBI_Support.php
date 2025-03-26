@@ -57,6 +57,7 @@ class SBI_Support {
 	public function register_menu() {
 		$cap          = current_user_can( 'manage_instagram_feed_options' ) ? 'manage_instagram_feed_options' : 'manage_options';
 		$cap          = apply_filters( 'sbi_settings_pages_capability', $cap );
+
 		$support_page = add_submenu_page(
 			'sb-instagram-feed',
 			__( 'Support', 'instagram-feed' ),
@@ -94,6 +95,13 @@ class SBI_Support {
 		);
 
 		wp_enqueue_style(
+			'global-style',
+			SBI_PLUGIN_URL . 'admin/builder/assets/css/global.css',
+			false,
+			SBIVER
+		);
+
+		wp_enqueue_style(
 			'support-style',
 			SBI_PLUGIN_URL . 'admin/assets/css/support.css',
 			false,
@@ -101,17 +109,19 @@ class SBI_Support {
 		);
 
 		wp_enqueue_script(
-			'vue-main',
-			'https://cdn.jsdelivr.net/npm/vue@2.6.12',
+			'sb-vue',
+			SBI_PLUGIN_URL . 'js/vue.min.js',
 			null,
 			'2.6.12',
 			true
 		);
 
+		wp_register_script('feed-builder-svgs', SBI_PLUGIN_URL . 'assets/svgs/svgs.js');
+
 		wp_enqueue_script(
 			'support-app',
 			SBI_PLUGIN_URL . 'admin/assets/js/support.js',
-			null,
+			array( 'feed-builder-svgs' ),
 			SBIVER,
 			true
 		);
@@ -135,16 +145,21 @@ class SBI_Support {
 	public function page_data() {
 		$exported_feeds = SBI_Db::feeds_query();
 		$feeds          = array();
+
+		$license_key = null;
+		if ( get_option( 'sbi_license_key' ) ) {
+			$license_key = get_option( 'sbi_license_key' );
+		}
 		foreach ( $exported_feeds as $feed_id => $feed ) {
 			$feeds[] = array(
 				'id'   => $feed['id'],
 				'name' => $feed['feed_name'],
 			);
 		}
-
 		$return = array(
 			'admin_url'           => admin_url(),
 			'ajax_handler'        => admin_url( 'admin-ajax.php' ),
+			'licenseKey'		=> $license_key,
 			'nonce'               => wp_create_nonce( 'sbi-admin' ),
 			'links'               => \InstagramFeed\Builder\SBI_Feed_Builder::get_links_with_utm(),
 			'supportPageUrl'      => admin_url( 'admin.php?page=sbi-support' ),
@@ -153,11 +168,21 @@ class SBI_Support {
 			'system_info_n'       => str_replace( '</br>', "\n", $this->get_system_info() ),
 			'feeds'               => $feeds,
 			'supportUrl'          => $this->get_support_url(),
-			'svgIcons'            => SBI_Feed_Builder::builder_svg_icons(),
 			'socialWallLinks'     => \InstagramFeed\Builder\SBI_Feed_Builder::get_social_wall_links(),
 			'socialWallActivated' => is_plugin_active( 'social-wall/social-wall.php' ),
+			'sbiLicenseNoticeActive' => sbi_license_notices_active() ? true : false,
+			'sbiLicenseInactiveState' => sbi_license_inactive_state() ? true : false,
+			'tempUser' => \InstagramFeed\Admin\SBI_Support_Tool::check_temporary_user_exists(),
 			'genericText'         => array(
+				'recheckLicense'					=> __( 'Recheck License', 'instagram-feed' ),
+				'licenseValid'						=> __( 'License Valid', 'instagram-feed' ),
+				'licenseExpired'					=> __( 'License Expired', 'instagram-feed' ),
+				'learnMore'              => __( 'Learn More', 'instagram-feed' ),
 				'help'              => __( 'Help', 'instagram-feed' ),
+				'delete'              => __( 'delete', 'instagram-feed' ),
+				'copyLink'              => __( 'Copy Link', 'instagram-feed' ),
+				'link'              => __( 'Link', 'instagram-feed' ),
+				'expires'              => __( 'Expires in', 'instagram-feed' ),
 				'title'             => __( 'Support', 'instagram-feed' ),
 				'gettingStarted'    => __( 'Getting Started', 'instagram-feed' ),
 				'someHelpful'       => __( 'Some helpful resources to get you started', 'instagram-feed' ),
@@ -170,7 +195,28 @@ class SBI_Support {
 				'systemInfo'        => __( 'System Info', 'instagram-feed' ),
 				'exportSettings'    => __( 'Export Settings', 'instagram-feed' ),
 				'shareYour'         => __( 'Share your plugin settings easily with Support', 'instagram-feed' ),
+				'days'              => __( 'Days', 'instagram-feed' ),
+				'day'              => __( 'Day', 'instagram-feed' ),
+
+				'newTempHeading'    => __( 'Temporary Login', 'instagram-feed' ),
+				'newTempDesc'         => __( 'Our team might ask for a temporary login link with limited access to only our plugin to help troubleshoot account related issues.', 'instagram-feed' ),
+				'newTempButton'    => __( 'Create Temporary Login Link', 'instagram-feed' ),
+
+				'tempLoginHeading'    => __( 'Temporary Login', 'instagram-feed' ),
+				'tempLoginDesc'    => __( 'Temporary login link for support access created by you. This is auto-destructed 14 days after creation. To create a new link, please delete the old one.', 'instagram-feed' ),
+
+
 				'copiedToClipboard' => __( 'Copied to clipboard', 'instagram-feed' ),
+				'notification'                      => array(
+					'licenseActivated'   => array(
+						'type' => 'success',
+						'text' => __( 'License Successfully Activated', 'instagram-feed' ),
+					),
+					'licenseError'   => array(
+						'type' => 'error',
+						'text' => __( 'Couldn\'t Activate License', 'instagram-feed' ),
+					),
+				),
 			),
 			'buttons'             => array(
 				'searchDoc'    => __( 'Search Documentation', 'instagram-feed' ),
@@ -284,6 +330,8 @@ class SBI_Support {
 	 * @return string
 	 */
 	public static function get_site_n_server_info() {
+		$sbi_statuses = get_option('sbi_statuses', []);
+
 		$allow_url_fopen = ini_get( 'allow_url_fopen' ) ? 'Yes' : 'No';
 		$php_curl        = is_callable( 'curl_init' ) ? 'Yes' : 'No';
 		$php_json_decode = function_exists( 'json_decode' ) ? 'Yes' : 'No';
@@ -300,6 +348,7 @@ class SBI_Support {
 		$output .= 'PHP cURL:' . self::get_whitespace( 17 ) . esc_html( $php_curl ) . '</br>';
 		$output .= 'JSON:' . self::get_whitespace( 21 ) . esc_html( $php_json_decode ) . '</br>';
 		$output .= 'SSL Stream:' . self::get_whitespace( 15 ) . esc_html( $php_ssl ) . '</br>';
+		$output .= 'Auto-Encryption Keys:' . self::get_whitespace( 5 ) . (isset($sbi_statuses['added_encryption_keys']) && true === $sbi_statuses['added_encryption_keys'] ? 'Yes' : 'No')  . '</br>';
 		$output .= '</br>';
 
 		return $output;
@@ -397,7 +446,7 @@ class SBI_Support {
 		$output .= isset( $sbi_settings['gdpr'] ) ? $sbi_settings['gdpr'] : ' Not setup';
 		$output .= '</br>';
 		$output .= 'Custom CSS: ';
-		$output .= isset( $sbi_settings['sb_instagram_custom_css'] ) && ! empty( $sbi_settings['sb_instagram_custom_css'] ) ? $sbi_settings['sb_instagram_custom_css'] : 'Empty';
+		$output .= isset( $sbi_settings['sb_instagram_custom_css'] ) && ! empty( $sbi_settings['sb_instagram_custom_css'] ) ? wp_strip_all_tags( $sbi_settings['sb_instagram_custom_css'] ) : 'Empty';
 		$output .= '</br>';
 		$output .= 'Custom JS: ';
 		$output .= isset( $sbi_settings['sb_instagram_custom_js'] ) && ! empty( $sbi_settings['sb_instagram_custom_js'] ) ? $sbi_settings['sb_instagram_custom_js'] : 'Empty';
@@ -468,8 +517,6 @@ class SBI_Support {
 					foreach ( $feed['settings']['sources'] as $id => $source ) {
 						$output .= esc_html( $source['username'] );
 						$output .= ' (' . esc_html( $id ) . ')';
-						$output .= '</br>';
-						$output .= esc_html( $manager->remote_encrypt( $source['access_token'] ) );
 					}
 				}
 			}
@@ -500,16 +547,27 @@ class SBI_Support {
 	 * @return string
 	 */
 	public static function get_sources_info() {
-		$output = '## Sources: ## </br>';
+		$output = '## SOURCES TABLE: ## </br>';
+		global $wpdb;
+		$sources_table_name = $wpdb->prefix . 'sbi_sources';
+
+		if ( $wpdb->get_var( "show tables like '$sources_table_name'" ) !== $sources_table_name ) {
+			$output .= 'no sources table</br></br>';
+		} else {
+			$output .= 'sources table exists</br></br>';
+		}
+
+		$output .= '## Sources: ## </br>';
 
 		$source_list = SBI_Feed_Builder::get_source_list();
 		$manager     = new \SB_Instagram_Data_Manager();
 
 		foreach ( $source_list as $source ) {
+			$account_type = isset($source['header_data']['account_type']) ? $source['header_data']['account_type'] : 'Business Advanced';
 
 			$output .= $source['account_id'];
 			$output .= '</br>';
-			$output .= 'Type: ' . esc_html( $source['account_type'] );
+			$output .= 'Type: ' . esc_html($account_type);
 			$output .= '</br>';
 			$output .= 'Username: ' . esc_html( $source['username'] );
 			if ( $source['account_type'] === 'business' ) {
@@ -521,8 +579,6 @@ class SBI_Support {
 			}
 			$output .= '</br>';
 			$output .= 'Error: ' . esc_html( $source['error'] );
-			$output .= '</br>';
-			$output .= esc_html( $manager->remote_encrypt( $source['access_token'] ) );
 			$output .= '</br>';
 			$output .= '</br>';
 
@@ -651,6 +707,14 @@ class SBI_Support {
 		} else {
 			$last_result = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY id DESC LIMIT 1;" );
 			if ( is_array( $last_result ) && isset( $last_result[0] ) ) {
+				// exclude the json_data column.
+				$last_result = array_map(
+					function ( $row ) {
+						unset( $row->json_data );
+						return $row;
+					},
+					$last_result
+				);
 				$output .= '## POSTS TABLE ##';
 				$output .= '</br>';
 				foreach ( $last_result as $column ) {
@@ -741,9 +805,7 @@ class SBI_Support {
 		$oembed_token_settings = get_option( 'sbi_oembed_token', array() );
 		foreach ( $oembed_token_settings as $key => $value ) {
 			if ( $key === 'access_token' ) {
-				$manager = new \SB_Instagram_Data_Manager();
-
-				$output .= esc_html( $key ) . ': ' . esc_html( $manager->remote_encrypt( $value ) ) . '</br>';
+				// do nothing we don't want to show the AT
 			} else {
 				$output .= esc_html( $key ) . ': ' . esc_html( $value ) . '</br>';
 			}
@@ -795,6 +857,6 @@ class SBI_Support {
 	 * @since 6.0
 	 */
 	public function support_page() {
-		SBI_View::render( 'support.index' );
+		SBI_View::render( 'support.page' );
 	}
 }

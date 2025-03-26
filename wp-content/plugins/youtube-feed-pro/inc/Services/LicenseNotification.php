@@ -93,7 +93,7 @@ class LicenseNotification extends ServiceProvider {
                         <p>
                             <?php 
                                 printf( 
-                                    __( 'Your YouTube Feed Pro license key %s', 'feeds-for-youtube' ), 
+                                    __( 'Your YouTube Feeds Pro license key %s', 'feeds-for-youtube' ), 
                                     $license_state == 'expired' ? 'has ' . $license_state : 'is ' . $license_state
                                 ); 
                             ?>

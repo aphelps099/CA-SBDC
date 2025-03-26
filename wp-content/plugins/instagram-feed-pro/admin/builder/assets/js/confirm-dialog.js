@@ -89,6 +89,7 @@ Vue.component('sb-confirm-dialog-component', {
     		}
     		if(self.dialogBoxElement.type == 'unsavedFeedSources'){
     			self.$parent.viewsActive.feedtypesCustomizerPopup = false;
+    			self.$parent.viewsActive.feedtypesPopup = false;
     		}
     		if(self.dialogBoxElement.type == 'backAllToFeed'){
 				window.location.href = self.$parent.builderUrl;

@@ -11,6 +11,28 @@ jQuery(document).ready(function($) {
 		jQuery('.cff-access-token-hidden').fadeToggle();
 	});
 
+	// Focus the license section on click license expired notice button
+	jQuery('#sbFocusLicenseSection').on('click', function() {
+		jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
+
+		setTimeout(function() {
+			jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+		}, 2000);
+	});
+
+	// Get the URL parameters
+	const urlSearchParams = new URLSearchParams(window.location.search);
+	const params = Object.fromEntries(urlSearchParams.entries());
+
+	// Check if the URL has license section to focus
+	if ( params.focus === "license" ) {
+		jQuery('.sb-tab-box.sb-license-box').addClass('sb-focus-box-section');
+
+		setTimeout(function() {
+		jQuery('.sb-tab-box.sb-license-box').removeClass('sb-focus-box-section');
+		}, 2000);
+	}
+
 	//Check Access Token length
 	jQuery("#cff_access_token").on('change', function() {
 		var cff_token_string = jQuery('#cff_access_token').val(),
@@ -1165,12 +1187,105 @@ jQuery(document).ready(function($) {
 		}
 	}
 	cffCheckGdprSetting(jQuery('#cff_gdpr_setting').val());
-	// Locator
-    jQuery('.cff-locator-more').on('click', function(e) {
+
+    //Add class to Pro menu item
+    $('.cff_get_pro').parent().attr({'class':'cff_get_pro_highlight', 'target':'_blank'});
+
+
+	//Click event for other plugins in menu
+    $('.cff_get_sbr, .cff_get_sbi, .cff_get_cff, .cff_get_ctf, .cff_get_yt').parent().on('click', function(e){
         e.preventDefault();
-        jQuery(this).closest('td').find('.cff-full-wrap').show();
-        jQuery(this).closest('td').find('.cff-condensed-wrap').hide();
-        jQuery(this).remove();
+
+		// remove the already opened modal
+        jQuery('#cff-op-modals').remove();
+
+		// prepend the modal wrapper
+        $('#wpbody-content').prepend('<div class="cff-fb-source-ctn sb-fs-boss cff-fb-center-boss" id="cff-op-modals"><i class="fa fa-spinner fa-spin cff-loader" aria-hidden="true"></i></div>');
+
+		// determine the plugin name
+        var $self = $(this).find('span'),
+            sb_get_plugin = 'twitter';
+
+        if( $self.hasClass('cff_get_cff') ){
+            sb_get_plugin = 'facebook';
+        } else if( $self.hasClass('cff_get_sbi') ){
+            sb_get_plugin = 'instagram';
+        } else if( $self.hasClass('cff_get_yt') ){
+            sb_get_plugin = 'youtube';
+        } else if( $self.hasClass('cff_get_sbr') ){
+            sb_get_plugin = 'reviews';
+        }
+
+		// send the ajax request to load plugin name and others data
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'sb_other_plugins_modal',
+				plugin : sb_get_plugin,
+				cff_nonce : cffA.cff_nonce,
+
+			},
+			success : function(data) {
+				if ( data.success == true ) {
+					$('#cff-op-modals').html(data.data.output);
+				}
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+    });
+
+	/**
+	 * Install other plugin on modal
+	 *
+	 * @since 4.0
+	 */
+	$(document).on('click', '#cff_install_op_btn', function() {
+		let self = $(this);
+		let pluginAtts = self.data('plugin-atts');
+		if ( pluginAtts.step == 'install' ) {
+			pluginAtts.plugin = pluginAtts.download_plugin
+		}
+		let loader = '<span class="cff-btn-spinner"><svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve"><path fill="#fff" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"><animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform></path></svg></span>';
+		self.prepend(loader);
+
+		// send the ajax request to install or activate the plugin
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : pluginAtts.action,
+				nonce : pluginAtts.nonce,
+				plugin : pluginAtts.plugin,
+				download_plugin : pluginAtts.download_plugin,
+				type : 'plugin',
+			},
+			success : function(data) {
+				if ( data.success == true ) {
+					self.find('.cff-btn-spinner').remove();
+					self.attr('disabled', 'disabled');
+
+					if ( pluginAtts.step == 'install' ) {
+						self.html( data.data.msg );
+					} else {
+						self.html( data.data );
+					}
+				}
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+	});
+
+	jQuery('body').on('click', '#cff-op-modals', function(e){
+        if (e.target !== this) return;
+        jQuery('#cff-op-modals').remove();
+    });
+    jQuery('body').on('click', '.cff-fb-popup-cls', function(e){
+        jQuery('#cff-op-modals').remove();
     });
 
 	$(document).on('click', '#renew-modal-btn', function() {
@@ -1283,6 +1398,63 @@ jQuery(document).ready(function($) {
 		}); // ajax call
 
 	});
+
+	jQuery( '.cff-retry-db' ).on( 'click', function( event ) {
+		event.preventDefault();
+
+		const $btn = $( this );
+
+		$btn.prop( 'disabled', true ).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'sbi_cff_retry_db_creation',
+				cff_nonce: cffA.cff_nonce
+			},
+			success : function( data ) {
+				if ( typeof data.data.message !== 'undefined' ) {
+					$btn.closest( 'p' ).after( data.data.message );
+					$btn.remove();
+				}
+			},
+			error : function( data )  {
+			}
+		}); // ajax call
+	});
+	// oEmbed Reconnect
+  $(document).on('click', '.sb-reconnect-oembed', function() {
+    let oembedConnectUrl = cff_admin.oembed_connectionURL.connect,
+      appendURL = cff_admin.oembed_connectionURL.stateURL;
+
+    const urlParams = {
+      'cff_con': cff_admin.oembed_connectionURL.cff_con,
+      'state': "{'{url=" + appendURL + "}'}"
+    }
+
+    let form = document.createElement('form');
+    form.setAttribute('method', 'post');
+    form.setAttribute('action', oembedConnectUrl);
+
+    for (const key in urlParams) {
+      if (urlParams.hasOwnProperty(key)) {
+        let hiddenField = document.createElement('input');
+        hiddenField.setAttribute('type', 'hidden');
+        hiddenField.setAttribute('name', key);
+        hiddenField.setAttribute('value', urlParams[key]);
+        form.appendChild(hiddenField);
+      }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  });
+
+  $(document).on('click', '#oembed_api_change_reconnect .cff-notice-dismiss', function(e) {
+    e.preventDefault();
+    $('#oembed_api_change_reconnect').remove();
+  });
 
 });
 

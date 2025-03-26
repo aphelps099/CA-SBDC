@@ -68,6 +68,19 @@ class Settings_Tab extends Tab {
 			[
 				'type' 				=> 'customview',
 				'viewId'			=> 'feedtype'
+			],
+			[
+				'type'                => 'switcher',
+				'id'                  => 'showpast',
+				'label'               => __( 'Show Past Live Streams', 'feeds-for-youtube' ),
+				'strongHeading'       => 'true',
+				'labelStrong'         => 'true',
+				'condition'     	  => array( 'type' => array( 'live' ) ),
+				'conditionHide'       => true,
+				'options'             => array(
+					'enabled'  => true,
+					'disabled' => false,
+				),
 			]
 		];
 	}
@@ -84,7 +97,7 @@ class Settings_Tab extends Tab {
 				'type'      => 'textarea',
 				'id'        => 'includewords',
 				'heading'   => __( 'Allowed Words or Hashtags', 'feeds-for-youtube' ),
-				'tooltip' 			=> __( 'Allowed Words or Hashtags', 'custom-facebook-feed' ),
+				'tooltip' 			=> __( 'Allowed Words or Hashtags', 'feeds-for-youtube' ),
 				'checkExtensionPopup' => sby_is_pro() && !sby_license_notices_active() && in_array('video_filtering', $this->license_tier_features) ? null : 'advancedFilters',
 				'placeholder' => __( 'Show videos containing these words or hashtags. Separate multiple words with comma, and include “#” for hashtags.', 'feeds-for-youtube' ),
 				'ajaxAction'    => 'filtersAndModeration'
@@ -94,7 +107,7 @@ class Settings_Tab extends Tab {
 				'id'        => 'excludewords',
 				'heading'   => __( 'Blocked Words or Hashtags', 'feeds-for-youtube' ),
 				'placeholder' => __( 'Hide videos containing these words or hashtags. Separate multiple words with comma, and include “#” for hashtags.', 'feeds-for-youtube' ),
-				'tooltip' 			=> __( 'Blocked Words or Hashtags', 'custom-facebook-feed' ),
+				'tooltip' 			=> __( 'Blocked Words or Hashtags', 'feeds-for-youtube' ),
 				'checkExtensionPopup' => sby_is_pro() && !sby_license_notices_active() && in_array('video_filtering', $this->license_tier_features) ? null : 'advancedFilters',
 				'separator' => 'bottom',
 				'ajaxAction'    => 'filtersAndModeration',
@@ -103,7 +116,7 @@ class Settings_Tab extends Tab {
 				'type'      => 'textarea',
 				'id'        => 'hidevideos',
 				'heading'   => __( 'Hide specific Videos', 'feeds-for-youtube' ),
-				'tooltip' 			=> __( 'Hide specific Videos', 'custom-facebook-feed' ),
+				'tooltip' 			=> __( 'Hide specific Videos', 'feeds-for-youtube' ),
 				'placeholder' => __( 'Enter video IDs. Separate multiple IDs with comma', 'feeds-for-youtube' ),
 				'checkExtensionPopup' => sby_is_pro() && !sby_license_notices_active() && in_array('video_filtering', $this->license_tier_features) ? null : 'advancedFilters',
 				'ajaxAction'    => 'feedRefresh',

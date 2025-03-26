@@ -24,6 +24,11 @@ class SBY_Live_Streams {
 	private $channel;
 
 	/**
+	 * @var int
+	 */
+	private $feed_id;
+
+	/**
 	 * @var string
 	 */
 	private $cache_name;
@@ -40,8 +45,9 @@ class SBY_Live_Streams {
 	 *
 	 * @since 1.3
 	 */
-	public function __construct( $channel ) {
+	public function __construct( $channel, $feed_id ) {
 		$this->channel = $channel;
+		$this->feed_id = $feed_id;
 		$this->cache_name = 'sby_livestreams_' . $channel;
 		$this->video_cache = get_option( $this->cache_name, array() );
 	}
@@ -68,10 +74,15 @@ class SBY_Live_Streams {
 	 * @since 1.3
 	 */
 	public function add_remote_posts() {
-		$rss_videos = $this->fetch_rss();
-		$live_streams = $this->fetch_singles( $rss_videos );
-		$this->update_or_add( $live_streams );
 
+		$api_videos = $this->fetch_via_api();
+
+		if(empty($api_videos)) {
+			$api_videos = $this->fetch_rss();
+		}
+
+		$live_streams = $this->fetch_singles( $api_videos );
+		$this->update_or_add( $live_streams );
 		return $live_streams;
 	}
 
@@ -133,6 +144,128 @@ class SBY_Live_Streams {
 	}
 
 	/**
+	 * Retrieves the video IDs of live stream feeds for a specific event type.
+	 *
+	 * @param string $event_type The type of event for which to fetch live stream video IDs.
+	 *                           This parameter determines the category or type of live streams to query.
+	 * @param string $page_token (Optional) The token to retrieve the next page of results, if available.
+	 *                           Default is an empty string, which fetches the first page.
+	 *
+	 * @return array An associative array containing the video IDs of the live streams and any
+	 *  
+	 * @since 1.3
+	 * 
+	 */
+	public function get_live_stream_feed_video_ids($event_type, $page_token = '') {
+		$ids = [];
+		$page_token = '';
+
+		$params = array(
+				'channel_id' => $this->channel,
+				'event_type' => $event_type,
+			);
+			
+		if( !empty($page_token) ) {
+		    $params['page_token'] = $page_token;
+		}
+
+
+		$connection = new SBY_API_Connect_Pro(sby_get_first_connected_account(), 'livestream', $params);
+		$connection->connect();
+		if ( ! $connection->is_youtube_error() ) {
+			$items = !empty( $connection->get_data()['items'] ) ? $connection->get_data()['items'] : '';
+			$page_token = !empty( $connection->get_data()['nextPageToken'] ) ? $connection->get_data()['nextPageToken'] : '';
+
+
+			if( !empty($items)) {
+				foreach ( $items as $single ) {
+					$videoId = isset($single['id']['videoId']) ? $single['id']['videoId'] : '';
+					$ids[] = $videoId;
+				}
+			}
+		}
+
+		return [
+			'ids' => $ids,
+			'page_token' => $page_token
+		];
+	}
+
+	/**
+	 * Get livestream feed using api.
+	 *
+	 * @return array
+	 *
+	 * @since 1.3
+	 */
+	public function fetch_via_api() {
+		$atts = ['feed' => (int)$this->feed_id];
+
+		$database_settings = sby_get_database_settings();
+		$youtube_feed_settings = new SBY_Settings_Pro($atts, $database_settings);
+
+		if (empty($database_settings['connected_accounts']) && empty($database_settings['api_key'])) {
+			wp_send_json_error('Error: No connected account');
+		}
+
+		$settings = $youtube_feed_settings->get_settings();
+
+		$data = [];
+		$event_types = ['upcoming','live'];
+		$page_token = '';
+		$archive_page_count = !empty($settings['showpast'] )? apply_filters( 'sby_past_live_stream_num_pages', 1 ) : 0;
+		
+		// For adding more past live streams in the future.
+		if ($archive_page_count > 0) {
+			$event_types[] = 'completed';
+		}
+
+		foreach ($event_types as $single) {
+			$page_token = ''; // Initialize the page token for each event type.
+			$current_page = 0; // Track the current page for "completed" events.
+			do {
+				// Fetch data with or without a page token.
+				if ('completed' === $single && !empty($page_token)) {
+					$response = self::get_live_stream_feed_video_ids($single, $page_token);
+				} else {
+					$response = self::get_live_stream_feed_video_ids($single);
+				}
+	
+				if (!empty($response)) {
+					// Add video IDs to the data array.
+					$ids = !empty($response['ids']) ? $response['ids'] : [];
+					array_push($data, ...$ids);
+	
+					// Update the page token for the next loop iteration.
+					$page_token = !empty($response['page_token']) ? $response['page_token'] : '';
+	
+					// Increment the page counter for "completed" events.
+					if ('completed' === $single) {
+						$current_page++;
+					}
+				} else {
+					// Exit the loop if no response or no more pages.
+					$page_token = '';
+				}
+	
+			} while (!empty($page_token) && $current_page < $archive_page_count); // Limit pages based on $archive_page_count.
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Divides an array of items into smaller batches of a specified size.
+	 *
+	 * @param array $items The array of items to be divided into batches.
+	 * @param int $batchSize The maximum number of items per batch.
+	 * @return array An array of batches, with each batch being a sub-array of items.
+	 */
+	public function slice_into_batches($items, $batchSize) {
+		return array_chunk($items, $batchSize);
+	}
+
+	/**
 	 * Uses the "single" API endpoint to get video details and
 	 * returns only those that appear to be live streams.
 	 *
@@ -143,21 +276,32 @@ class SBY_Live_Streams {
 	 * @since 1.3
 	 */
 	public function fetch_singles( $vid_ids ) {
-		$params['video_ids'] = $vid_ids;
 
-		$connected_account = sby_get_first_connected_account();
-		$video_connection =  new SBY_API_Connect_Pro( $connected_account, 'single', $params );
+		if( empty($vid_ids) ) {
+			return [];
+		}
 
-		$video_connection->connect();
-		$potential_live_streams = $video_connection->get_data();
+		$batches = self::slice_into_batches($vid_ids, SBY_MAX_SINGLE_PAGE);
 		$live_streamed_videos = array();
-		if ( is_array( $potential_live_streams['items'] ) ) {
-			foreach ( $potential_live_streams['items'] as $post ) {
-				if ( ! empty( $post['liveStreamingDetails']['scheduledStartTime'] )
-					|| ! empty( $post['liveStreamingDetails']['actualStartTime'] ) ) {
-					$vid_id = SBY_Parse::get_video_id( $post );
 
-					$live_streamed_videos[ $vid_id ] = $post;
+		foreach ($batches as $batch) {
+
+			$params['video_ids'] = $batch;
+
+			$connected_account = sby_get_first_connected_account();
+			$video_connection =  new SBY_API_Connect_Pro( $connected_account, 'single', $params );
+	
+			$video_connection->connect();
+			$potential_live_streams = $video_connection->get_data();
+
+			if ( is_array( $potential_live_streams['items'] ) ) {
+				foreach ( $potential_live_streams['items'] as $post ) {
+					if ( ! empty( $post['liveStreamingDetails']['scheduledStartTime'] )
+						|| ! empty( $post['liveStreamingDetails']['actualStartTime'] ) ) {
+						$vid_id = SBY_Parse::get_video_id( $post );
+	
+						$live_streamed_videos[ $vid_id ] = $post;
+					}
 				}
 			}
 		}

@@ -7,7 +7,7 @@
 
 		<div class="sb-customizer-sidebar-sec-ctn sbi-fb-fs" v-if="customizerScreens.activeSection == null">
 			<div v-for="(section, sectionId) in customizerSidebarBuilder[customizerScreens.activeTab].sections">
-				<div class="sb-customizer-sidebar-sec-el sbi-fb-fs" v-if="!section.isHeader" @click.prevent.default="switchCustomizerSection(sectionId, section)">
+                <div :class="'sb-customizer-sidebar-sec-el cff-fb-fs sb-customizer-sidebar-section-' + sectionId" v-if="!section.isHeader && !section.isInfo" @click.prevent.default="switchCustomizerSection(sectionId, section)">
 					<div class="sb-customizer-sidebar-sec-el-icon" v-html="svgIcons[section.icon]"></div>
 					<span class="sb-small-p sb-bold sb-dark-text">{{section.heading}}</span>
                     <div class="sb-customizer-chevron">
@@ -18,6 +18,14 @@
 				</div>
 				<div class="sb-customizer-sidebar-sec-elhead sbi-fb-fs" v-if="section.isHeader">
 					{{section.heading}}
+				</div>
+				<div class="sb-customizer-sidebar-sec-elinfo sbi-fb-fs" v-if="section.isInfo && checkPersonalAccount()">
+					<div class="sb-customizer-sidebar-sec-el-content">
+						<div class="sb-small-p sb-bold sb-dark-text">{{section.heading}}</div>
+						<div class="sb-small-p">{{section.info}}</div>
+						<div class="sb-small-p sb-bold sb-linkText" v-html="section.linkText"></div>
+					</div>
+					<div class="sb-customizer-icon" v-html="svgIcons[section.icon]"></div>
 				</div>
 			</div>
 			<div  class="sb-customizer-sidebar-cache-wrapper sbi-fb-fs">
@@ -52,13 +60,15 @@
                         </svg>{{genericText.filtersAndModeration}}
                     </a>
 				</div>
-				<h3>{{customizerScreens.activeSectionData.heading}}</h3>
-				<span class="sb-customizer-sidebar-intro" v-html="customizerScreens.activeSectionData.description"></span>
+				<h3>
+					{{customizerScreens.activeSectionData.heading}}
+					<span v-if="customizerScreens.activeSectionData.proLabel != undefined && customizerScreens.activeSectionData.proLabel" class="sb-breadcrumb-pro-label">PRO</span>
+				</h3>
+				<span class="sb-customizer-sidebar-intro">
+					<span v-html="customizerScreens.activeSectionData.description "></span> <a v-if="customizerScreens.activeSectionData.checkExtensionPopup != undefined" @click.prevent.default="viewsActive.extensionsPopupElement = customizerScreens.activeSectionData.checkExtensionPopup">{{genericText.learnMore}}</a>
+				</span>
 			</div>
 			<div class="sb-customizer-sidebar-controls-ctn sbi-fb-fs">
-				<div class="sb-control-ctn sbi-fb-fs" v-for="(control, ctlIndex) in customizerScreens.activeSectionData.controls">
-					<?php InstagramFeed\Builder\SB_Builder_Customizer::get_controls_templates('settings'); ?>
-				</div>
 				<div class="sb-customizer-sidebar-sec-el sbi-fb-fs" v-if="customizerScreens.activeSectionData.nested_sections && ((nesetdSection.condition != undefined ? checkControlCondition(nesetdSection.condition) : false) || (nesetdSection.condition == undefined ))" v-for="(nesetdSection, nesetdSectionId) in customizerScreens.activeSectionData.nested_sections" @click.prevent.default="switchCustomizerSection(nesetdSectionId, nesetdSection, true)">
 					<div class="sb-customizer-sidebar-sec-el-icon" v-html="svgIcons[nesetdSection.icon]"></div>
 					<strong>{{nesetdSection.heading}}</strong>
@@ -68,6 +78,9 @@
                         </svg>
                     </div>
                 </div>
+				<div class="sb-control-ctn sbi-fb-fs" v-for="(control, ctlIndex) in customizerScreens.activeSectionData.controls">
+					<?php InstagramFeed\Builder\SB_Builder_Customizer::get_controls_templates('settings'); ?>
+				</div>
 			</div>
 		</div>
 

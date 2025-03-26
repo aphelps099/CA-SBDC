@@ -1,6 +1,6 @@
 <?php
 /**
- * YouTube Feed Database
+ * YouTube Feeds Database
  *
  * @since 2.0
  */

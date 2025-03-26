@@ -1,14 +1,38 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+use SB\SocialWall\Feed_Locator;
+use TwitterFeed\Pro\CTF_Feed_Pro;
+use TwitterFeed\Pro\CTF_Parse_Pro;
+use SB\SocialWall\Admin\Feed_Saver;
+use TwitterFeed\Pro\CTF_Settings_Pro;
+use SmashBalloon\YouTubeFeed\SBY_Parse;
+use SB\SocialWall\Admin\SW_Feed_Builder;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Feed_Pro;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Parse_Pro;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Settings_Pro;
+use SmashBalloon\YouTubeFeed\Services\AdminAjaxService;
+use SmashBalloon\TikTokFeeds\Common\FeedSettings as TikTok_Settings_Pro;
+use SmashBalloon\TikTokFeeds\Common\Feed as TikTok_Feed_Pro;
+use SmashBalloon\TikTokFeeds\Common\FeedCache as TikTok_FeedCache;
 
 add_shortcode( 'social-wall', 'sbsw_feed_init' );
-function sbsw_feed_init( $atts, $content = null ) {
+function sbsw_feed_init( $atts, $content = null, $customizer_data = false, $preview_settings = false ) {
 	do_action( 'sbi_before_display_instagram' );
 
-	wp_enqueue_script( 'sbsw_scripts' );
+	wp_enqueue_script('sbsw_scripts');
+	wp_enqueue_style('sbsw_styles');
+
+	if ( isset( $atts['feed'] ) ) {
+        $feed_saver = new Feed_Saver( $atts['feed'] );
+        $database_settings = $preview_settings ? $preview_settings : $feed_saver->get_feed_settings();
+        $feed_plugins = $feed_saver->get_feed_plugins();
+		$content = SW_Feed_Builder::build_sw_plugins_shortcode($feed_plugins);
+	} else {
+		$database_settings = $preview_settings ? $preview_settings : sbsw_get_database_settings();
+	}
+
 	$plugins_with_atts = sbsw_parse_shortcodes( $content );
-	$database_settings = sbsw_get_database_settings();
 
 	$atts = is_array( $atts ) ? $atts : array();
     if ( empty( $atts['includewords'] ) && ! empty( $database_settings['includewords'] ) ) {
@@ -29,7 +53,6 @@ function sbsw_feed_init( $atts, $content = null ) {
 	if ( isset( $plugins_with_atts['instagram-feed'] ) ) {
 		$if_atts = $plugins_with_atts['instagram-feed'];
 		$if_database_settings = sbi_get_database_settings();
-
 		$instagram_feed_settings = new SB_Instagram_Settings_Pro( $if_atts, $if_database_settings );
 
 		$instagram_feed_settings->set_feed_type_and_terms();
@@ -37,14 +60,22 @@ function sbsw_feed_init( $atts, $content = null ) {
 		$if_feed_type_and_terms = $instagram_feed_settings->get_feed_type_and_terms();
 
 		$plugins_types_and_terms['instagram'] = $if_feed_type_and_terms;
+		if ( isset( $plugins_with_atts['instagram-feed']['includewords'] ) ) {
+			$if_settings['includewords'] = $plugins_with_atts['instagram-feed']['includewords'];
+		}
+		if ( isset( $plugins_with_atts['instagram-feed']['excludewords'] ) ) {
+			$if_settings['excludewords'] = $plugins_with_atts['instagram-feed']['excludewords'];
+		}
 		$plugin_settings['instagram'] = $if_settings;
 	}
 	if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
 		$fb_atts = $plugins_with_atts['custom-facebook-feed'];
+		$fb_feed_id = $fb_atts["feed"];
 		if ( isset( $fb_atts['accesstoken'] ) ) {
 			$fb_atts['ownaccesstoken'] = 'on';
 		}
-		$fb_atts = cff_get_processed_options( $fb_atts );
+		$fb_shortcode = new CustomFacebookFeed\CFF_Shortcode();
+		$fb_atts = $fb_shortcode->cff_get_processed_options( $fb_atts );
 		$facebook_feed_settings = new CustomFacebookFeed\CFF_Settings_Pro( $fb_atts );
 
 		$facebook_feed_settings->set_feed_type_and_terms();
@@ -76,6 +107,20 @@ function sbsw_feed_init( $atts, $content = null ) {
 
 		$plugins_types_and_terms['twitter'] = $tw_feed_type_and_terms;
 		$plugin_settings['twitter'] = $tw_settings;
+	}
+	if (isset($plugins_with_atts['tiktok-feeds'])) {
+		$tt_atts = $plugins_with_atts['tiktok-feeds'];
+		$tt_feed_id = isset($tt_atts['feed']) ? $tt_atts['feed'] : '';
+		$tiktok_feed_settings = new TikTok_Settings_Pro($tt_feed_id);
+		$tt_settings = $tiktok_feed_settings->get_feed_settings();
+
+		if (isset($plugins_with_atts['tiktok-feeds']['includewords'])) {
+			$tt_settings['includeWords'] = $plugins_with_atts['tiktok-feeds']['includewords'];
+		}
+		if (isset($plugins_with_atts['tiktok-feeds']['excludewords'])) {
+			$tt_settings['excludeWords'] = $plugins_with_atts['tiktok-feeds']['excludewords'];
+		}
+		$plugin_settings['tiktok'] = $tt_settings;
 	}
 
 	$social_wall_settings = new SW_Settings( $atts, $database_settings, $plugins_types_and_terms, $plugin_settings );
@@ -114,6 +159,7 @@ function sbsw_feed_init( $atts, $content = null ) {
 
 		if ( isset( $plugins_with_atts['instagram-feed'] ) ) {
 			$instagram_feed = new SB_Instagram_Feed_Pro( $transient_name );
+	        $instagram_feed->set_cache( SBSW_CRON_UPDATE_CACHE_TIME, $settings );
 
 			$if_settings['num'] = $settings['num'];
 			$if_settings['minnum'] = $settings['num'];
@@ -125,6 +171,10 @@ function sbsw_feed_init( $atts, $content = null ) {
 					$instagram_feed->add_remote_posts( $if_settings, $if_feed_type_and_terms, $instagram_feed_settings->get_connected_accounts_in_feed() );
 				}
 			}
+
+            if ( $instagram_feed->out_of_next_pages() || $instagram_feed->should_look_for_db_only_posts( $settings, $if_feed_type_and_terms ) ) {
+                $instagram_feed->add_db_only_posts( $transient_name, $settings, $if_feed_type_and_terms );
+            }
 			$post_data = $instagram_feed->get_post_data();
 			if ( ! empty( $post_data ) ) {
 				$one_post_retrieved = true;
@@ -137,19 +187,22 @@ function sbsw_feed_init( $atts, $content = null ) {
 		}
 
 		if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
+			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( "*" . $fb_feed_id, true );
 
-			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( $transient_name );
-
-			$fb_settings['num'] = $settings['num'];
-			$fb_settings['minnum'] = $settings['num'];
-			$fb_settings['apinum'] = $settings['num'] * $highest_num_api_connections;
 			$fb_settings['showheader'] = true;
-
+            // Prevents the need to save settings in Facebook before posts display.
+            if (is_array($fb_settings['filter']) && empty($fb_settings['filter'][0])) {
+                $fb_settings['filter'] = array();
+            }
+            if (is_array($fb_settings['exfilter']) && empty($fb_settings['exfilter'][0])) {
+                $fb_settings['exfilter'] = array();
+            }
 			if ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
 				while ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
-					$facebook_feed->add_remote_posts( $fb_settings );
+					$facebook_feed->add_remote_posts( $fb_settings, $fb_feed_id );
 				}
 			}
+
 			$post_data = $facebook_feed->get_post_data();
 			if ( ! empty( $post_data ) ) {
 				$one_post_retrieved = true;
@@ -247,6 +300,27 @@ function sbsw_feed_init( $atts, $content = null ) {
 			$plugins_index[] = 'twitter-feed';
 		}
 
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			$tt_settings['numPostDesktop'] = $settings['num'];
+			$tt_settings['showHeader'] = true;
+
+			$tiktok_feed = new TikTok_Feed_Pro(
+				$tt_settings,
+				$tt_feed_id,
+				new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+			);
+			$tiktok_feed->init();
+			$tiktok_feed->get_set_cache();
+
+			$tt_posts     = $tiktok_feed->get_post_set_page();
+			$tt_next_page = $tiktok_feed->has_next_page();
+
+			$wall_posts[] = $tt_posts;
+			$wall_next_pages[] = $tt_next_page;
+			$wall_misc_data['tiktok'] = array();
+			$plugins_index[] = 'tiktok-feeds';
+		}
+
 		if ( $one_post_retrieved ) {
 			$social_wall_feed->set_background_processes_flag( true );
 		}
@@ -320,11 +394,16 @@ function sbsw_feed_init( $atts, $content = null ) {
 
 			if ( $youtube_feed->need_header( $yt_settings, $yt_feed_type_and_terms ) ) {
 				$youtube_feed->set_remote_header_data( $yt_settings, $yt_feed_type_and_terms, $youtube_feed_settings->get_connected_accounts_in_feed() );
-				$first_user_header_data = $youtube_feed->get_header_data();
-				$first_user = SBY_Parse_Pro::get_channel_id( $first_user_header_data );
-				$wall_account_data['youtube'] = array(
-					$first_user => $first_user_header_data
-				);
+				$header_data = $youtube_feed->get_header_data();
+				if ( ! isset( $header_data['items'] ) ) {
+					// it has multi channel account data
+					$wall_account_data['youtube'] = $header_data;
+				} else {
+					$first_user = SBY_Parse_Pro::get_channel_id( $header_data );
+					$wall_account_data['youtube'] = array(
+						$first_user => $header_data
+					);
+				}
 			} else {
 				$wall_account_data['youtube'] = array();
 			}
@@ -351,6 +430,25 @@ function sbsw_feed_init( $atts, $content = null ) {
 				$wall_account_data['twitter'] = array();
 			}
 		}
+
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			if (!isset($tiktok_feed)) {
+				$tiktok_feed = new TikTok_Feed_Pro(
+					$tt_settings,
+					$tt_feed_id,
+					new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+				);
+				$tiktok_feed->init();
+				$tiktok_feed->get_set_cache();
+			}
+			$tt_header_data = $tiktok_feed->get_header_data();
+
+			if (!$tt_header_data) {
+				$tt_header_data = array();
+			}
+			$wall_account_data['tiktok'] = $tt_header_data;
+		}
+
 		$wall_account_data = isset( $wall_account_data ) ? $wall_account_data : array();
 		$social_wall_feed->set_header_data( $wall_account_data );
 		$social_wall_feed->cache_header_data( SBSW_CRON_UPDATE_CACHE_TIME, $wall_account_data );
@@ -364,8 +462,52 @@ function sbsw_feed_init( $atts, $content = null ) {
 		$html .= sbsw_debug_report( $social_wall_feed, $social_wall_settings );
 	}
 
+	if ( $customizer_data == 'return' ) {
+		$posts_data = sw_prepare_posts_data_for_preview(
+			$social_wall_feed->get_post_data(),
+			$social_wall_feed->get_header_data(),
+			$social_wall_feed->misc_data,
+			$settings
+		);
+
+		return array(
+			'posts' => $posts_data,
+			'headerData' => $social_wall_feed->get_header_data()
+		);
+	}
 	$html .= $social_wall_feed->get_the_feed_html( $social_wall_feed->get_post_data(), $social_wall_feed->get_header_data(), $settings, $plugins_with_atts );
 	return $html;
+}
+
+/**
+ * Prepare post data for the react preview
+ */
+function sw_prepare_posts_data_for_preview( $posts, $account_data, $misc_data, $settings ) {
+	$posts_with_stats = array();
+	foreach( $posts as $post ) {
+		$plugin = SW_Parse::get_plugin( $post );
+		$stats_data = SW_Display_Elements::get_escaped_stats_data( $account_data, $post, $misc_data, $plugin, $settings );
+		$identity_text = SW_Display_Elements::get_identity_text( $account_data, $post, $plugin );
+		$avatar = SW_Parse::get_avatar( $account_data, $post, $plugin );
+		$account_link = SW_Parse::get_account_link( $account_data, $post, $plugin );
+		$media = SW_Parse::get_media_thumbnail($post, $settings, $plugin );
+		if ( gettype($post) == 'object' ) {
+			$post->stats_data = $stats_data;
+			$post->identity_text = $identity_text;
+			$post->avatar = $avatar;
+			$post->account_link = $account_link;
+			$post->media = $media;
+			$posts_with_stats[] = $post;
+		} elseif (is_array($post)) {
+			$post['stats_data'] = $stats_data;
+			$post['identity_text'] = $identity_text;
+			$post['avatar'] = $avatar;
+			$post['account_link'] = $account_link;
+			$post['media'] = $media;
+			$posts_with_stats[] = $post;
+		}
+	}
+	return $posts_with_stats;
 }
 
 function sbsw_get_next_post_set() {
@@ -374,6 +516,7 @@ function sbsw_get_next_post_set() {
 	}
 
 	$feed_id = sanitize_text_field( $_POST['feed_id'] );
+	$builder_feed_id = ! empty( $_POST['builder_feed_id'] ) ? sanitize_text_field( $_POST['builder_feed_id'] ) : 'legacy';
 	$atts_raw = isset( $_POST['atts'] ) ? json_decode( stripslashes( $_POST['atts'] ), true ) : array();
 	$sanitized_atts = array();
 	if ( is_array( $atts_raw ) ) {
@@ -412,10 +555,13 @@ function sbsw_get_next_post_set() {
 
 	if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
 		$fb_atts = $plugins_with_atts['custom-facebook-feed'];
+		$fb_feed_id = $fb_atts["feed"];
 		if ( isset( $fb_atts['accesstoken'] ) ) {
 			$fb_atts['ownaccesstoken'] = 'on';
 		}
-		$fb_atts = cff_get_processed_options( $fb_atts );
+		$fb_shortcode = new CustomFacebookFeed\CFF_Shortcode();
+		$fb_atts = $fb_shortcode->cff_get_processed_options( $fb_atts );
+
 		$facebook_feed_settings = new CustomFacebookFeed\CFF_Settings_Pro( $fb_atts );
 		$facebook_feed_settings->set_feed_type_and_terms();
 		$fb_settings = $facebook_feed_settings->get_settings();
@@ -452,6 +598,22 @@ function sbsw_get_next_post_set() {
 		$plugins_types_and_terms['twitter'] = $tw_feed_type_and_terms;
 		$plugin_settings['twitter'] = $tw_settings;
 	}
+
+	if (isset($plugins_with_atts['tiktok-feeds'])) {
+		$tt_atts = $plugins_with_atts['tiktok-feeds'];
+		$tt_feed_id = isset($tt_atts['feed']) ? $tt_atts['feed'] : '';
+		$tiktok_feed_settings = new TikTok_Settings_Pro($tt_feed_id);
+		$tt_settings = $tiktok_feed_settings->get_feed_settings();
+
+		if (isset($plugins_with_atts['tiktok-feeds']['includewords'])) {
+			$tt_settings['includeWords'] = $plugins_with_atts['tiktok-feeds']['includewords'];
+		}
+		if (isset($plugins_with_atts['tiktok-feeds']['excludewords'])) {
+			$tt_settings['excludeWords'] = $plugins_with_atts['tiktok-feeds']['excludewords'];
+		}
+		$plugin_settings['tiktok'] = $tt_settings;
+	}
+
     $highest_num_api_connections = 0;
 	$plugin_num_api_connections = array();
 	foreach ( $plugins_types_and_terms as $plugin => $plugins_types_and_term ) {
@@ -466,14 +628,26 @@ function sbsw_get_next_post_set() {
 	    }
 	}
 
-	$database_settings = sbsw_get_database_settings();
+	$feed_saver = new Feed_Saver( $builder_feed_id );
+    $database_settings = $feed_saver->get_feed_settings();
 
 	$social_wall_settings = new SW_Settings( $atts, $database_settings, $plugins_types_and_terms, $plugin_settings );
-	$social_wall_settings->set_transient_name();
+	$social_wall_settings->set_transient_name( $feed_id );
 	$transient_name = $social_wall_settings->get_transient_name();
 	$settings = $social_wall_settings->get_settings();
 	$offset = $settings['minnum'] * $page;
+	$location = isset( $_POST['location'] ) && in_array( $_POST['location'], array( 'header', 'footer', 'sidebar', 'content' ), true ) ? sanitize_text_field( $_POST['location'] ) : 'unknown';
+	$post_id = isset( $_POST['post_id'] ) && $_POST['post_id'] !== 'unknown' ? (int)$_POST['post_id'] : 'unknown';
+	$feed_details = array(
+		'feed_id' => $builder_feed_id,
+		'atts' => $atts,
+		'location' => array(
+			'post_id' => $post_id,
+			'html' => $location
+		)
+	);
 
+	sbsw_do_background_tasks( $feed_details );
 	$social_wall_feed = new SW_Feed( $transient_name );
 
 	$next_pages = array();
@@ -532,16 +706,13 @@ function sbsw_get_next_post_set() {
 		}
 
 		if ( isset( $plugins_with_atts['custom-facebook-feed'] ) ) {
-			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( $transient_name );
+			$facebook_feed = new CustomFacebookFeed\CFF_Feed_Pro( "*" . $fb_feed_id , true );
 
 			if ( isset( $next_pages[ $next_page_index ] ) ) {
 				$facebook_feed->set_next_pages( $next_pages[ $next_page_index ] );
 			}
 			$next_page_index++;
 
-			$fb_settings['num'] = $settings['num'];
-			$fb_settings['minnum'] = $settings['num'];
-			$fb_settings['apinum'] = $settings['num'];
 
 			$fb_settings['showheader'] = true;
 
@@ -549,7 +720,7 @@ function sbsw_get_next_post_set() {
 
 			if ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
 				while ( $facebook_feed->need_posts( $num_needed ) && $facebook_feed->can_get_more_posts() ) {
-					$facebook_feed->add_remote_posts( $fb_settings );
+					$facebook_feed->add_remote_posts( $fb_settings, $fb_feed_id );
 				}
 			}
 			$wall_posts[] = $facebook_feed->get_post_data();
@@ -590,7 +761,7 @@ function sbsw_get_next_post_set() {
                     $removed = array();
 
                     foreach ( $posts as $post ) {
-                        $post_id = SBY_Parse::get_video_id( $post );
+						$post_id = SBY_Parse::get_video_id( $post );
                         if ( ! in_array( $post_id, $ids_in_feed, true ) ) {
                             $ids_in_feed[] = $post_id;
                             $non_duplicate_posts[] = $post;
@@ -610,7 +781,7 @@ function sbsw_get_next_post_set() {
 				foreach ( $post_data as $post ) {
 					$vid_ids[] = SBY_Parse::get_video_id( $post );
 				}
-				sby_process_post_set_caching( $vid_ids, $youtube_feed_settings->get_transient_name() );
+        		AdminAjaxService::sby_process_post_set_caching($vid_ids, $youtube_feed_settings->get_transient_name());
 			}
 			$wall_next_pages[] = $youtube_feed->get_next_pages();
 			$wall_misc_data['youtube'] = $youtube_feed->get_misc_data( '', $post_data );
@@ -648,6 +819,26 @@ function sbsw_get_next_post_set() {
 			$wall_posts[]      = $twitter_feed->get_post_data();
 			$wall_next_pages[] = $twitter_feed->get_next_pages();
 			$plugins_index[]   = 'twitter-feed';
+		}
+
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			$tt_settings['numPostDesktop'] = $settings['num'];
+			$tt_settings['showHeader'] = true;
+
+			$tiktok_feed = new TikTok_Feed_Pro(
+				$tt_settings,
+				$tt_feed_id,
+				new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+			);
+			$tiktok_feed->init();
+			$tiktok_feed->get_set_cache();
+
+			$tt_posts     = $tiktok_feed->get_post_set_page($page+1);
+			$tt_next_page = $tiktok_feed->has_next_page($page+1);
+			$wall_posts[] = $tt_posts;
+			$wall_next_pages[] = $tt_next_page;
+			$wall_misc_data['tiktok'] = array();
+			$plugins_index[] = 'tiktok-feeds';
 		}
 
 		$social_wall_feed->append_misc_data( $wall_misc_data );
@@ -713,6 +904,25 @@ function sbsw_get_next_post_set() {
 			}
 		}
 
+		if (isset($plugins_with_atts['tiktok-feeds'])) {
+			if (!isset($tiktok_feed)) {
+				$tiktok_feed = new TikTok_Feed_Pro(
+					$tt_settings,
+					$tt_feed_id,
+					new TikTok_FeedCache($tt_feed_id, 2 * DAY_IN_SECONDS)
+				);
+				$tiktok_feed->init();
+				$tiktok_feed->get_set_cache();
+			}
+
+			$tt_header_data = $tiktok_feed->get_header_data();
+
+			if (!$tt_header_data) {
+				$tt_header_data = array();
+			}
+			$wall_account_data['tiktok'] = $tt_header_data;
+		}
+
 		$social_wall_feed->set_header_data( $wall_account_data );
 		$social_wall_feed->cache_header_data( 180, $wall_account_data );
 
@@ -770,6 +980,14 @@ function sbsw_get_next_post_set() {
 add_action( 'wp_ajax_sbsw_load_more_clicked', 'sbsw_get_next_post_set' );
 add_action( 'wp_ajax_nopriv_sbsw_load_more_clicked', 'sbsw_get_next_post_set' );
 
+function sbsw_do_background_tasks( $feed_details ) {
+	$locator = new Feed_Locator( $feed_details );
+	$locator->add_or_update_entry();
+	if ( $locator::should_clear_old_locations() ) {
+		$locator::delete_old_locations();
+	}
+}
+
 //sbsw_background_processing
 function sbsw_background_processing() {
 
@@ -796,15 +1014,15 @@ function sbsw_background_processing() {
 	$atts = $sanitized_atts; // now sanitized
 
 	$return = array();
-	if ( isset( $_POST['posts']['youtube'] ) && function_exists( 'sby_process_post_set_caching' ) ) {
+	if ( isset( $_POST['posts']['youtube'] ) && method_exists( AdminAjaxService::class, 'sby_process_post_set_caching' ) ) {
 	    $social_wall_feed = new SW_Feed( $feed_id );
         $social_wall_feed->set_post_data_from_cache();
 	    $posts = $social_wall_feed->get_post_data();
 	    $youtube_posts = SW_Feed::filter_for_plugin( $posts, 'youtube' );
 
-		$info = sby_process_post_set_caching( $youtube_posts, $feed_id );
-		$return['youtube'] = $info;
-		$wall_misc_data = array();
+    	$info = AdminAjaxService::sby_process_post_set_caching( $youtube_posts, $feed_id );
+  		$return['youtube'] = $info;
+	  	$wall_misc_data = array();
 
 		$final_info = array();
 
@@ -825,7 +1043,7 @@ function sbsw_background_processing() {
         $social_wall_feed->cache_feed_data( SBSW_CRON_UPDATE_CACHE_TIME, $wall_next_pages );
 	}
 
-	if ( isset( $_POST['posts']['twitter'] ) && class_exists( 'CTF_Twitter_Card_Manager' ) ) {
+	if ( isset( $_POST['posts']['twitter'] ) && class_exists( 'TwitterFeed\Pro\CTF_Twitter_Card_Manager' ) ) {
 		$url_item_batch = array();
 		if ( isset( $_POST['posts']['twitter']['cards'] ) ) {
             foreach ( $_POST['posts']['twitter']['cards'] as $tc_item ) {
@@ -836,7 +1054,7 @@ function sbsw_background_processing() {
             }
 		}
 
-		$twitter_card_batch = CTF_Twitter_Card_Manager::process_url_batch( $url_item_batch );
+		$twitter_card_batch = TwitterFeed\Pro\CTF_Twitter_Card_Manager::process_url_batch( $url_item_batch );
 
 		$twitter_return = array();
 		foreach ( $twitter_card_batch as $twitter_card_array ) {
@@ -844,10 +1062,10 @@ function sbsw_background_processing() {
 
 			$twitter_card = $twitter_card_array['twitter_card'];
 
-			$image = CTF_Display_Elements_Pro::get_twitter_card_media_html( $twitter_card );
-			$title = CTF_Parse_Pro::get_twitter_card_title( $twitter_card );
-			$description = CTF_Parse_Pro::get_twitter_card_description( $twitter_card );
-			$link_html = CTF_Display_Elements_Pro::get_icon( 'link' ) . CTF_Display_Elements_Pro::get_twitter_card_link_text( $url );
+			$image = TwitterFeed\Pro\CTF_Display_Elements_Pro::get_twitter_card_media_html( $twitter_card );
+			$title = TwitterFeed\Pro\CTF_Parse_Pro::get_twitter_card_title( $twitter_card );
+			$description = TwitterFeed\Pro\CTF_Parse_Pro::get_twitter_card_description( $twitter_card );
+			$link_html = TwitterFeed\Pro\CTF_Display_Elements_Pro::get_icon( 'link' ) . TwitterFeed\Pro\CTF_Display_Elements_Pro::get_twitter_card_link_text( $url );
 
 			$content = '';
 			if ( ! empty( $title )
@@ -944,7 +1162,8 @@ function sbsw_parse_shortcodes( $content ) {
 		'custom-twitter-feed' => 'twitter',
 		'custom-twitter-feeds' => 'twitter',
 		'youtube-feed' => 'youtube',
-		'custom-facebook-feed' => 'facebook'
+		'custom-facebook-feed' => 'facebook',
+		'tiktok-feeds' => 'tiktok'
 	);
 
 	// Find all registered tag names in $content.
@@ -1020,6 +1239,23 @@ function sbsw_social_wall_is_minimum_version_for_twitter_feed() {
 	return true;
 }
 
+/**
+ * Get social wall minimum version for TikTok Feeds
+ * @since 2.2
+ *
+ * @return bool
+ */
+function sbsw_social_wall_is_minimum_version_for_tiktok_feeds()
+{
+	if (!defined('SBTT_MINIMUM_WALL_VERSION')) {
+		return false;
+	}
+	if (version_compare(SWVER, SBTT_MINIMUM_WALL_VERSION) < 0) {
+		return false;
+	}
+	return true;
+}
+
 function sbsw_twitter_feed_is_minimum_version() {
 	if ( ! defined( 'CTF_VERSION' ) ) {
 		return false;
@@ -1030,11 +1266,28 @@ function sbsw_twitter_feed_is_minimum_version() {
 	return true;
 }
 
-function sbsw_social_wall_is_minimum_version_for_youtube_feed() {
-	if ( ! defined( 'SBY_MINIMUM_WALL_VERSION' ) ) {
+/**
+ * Check required minimum version of TikTok Feed
+ * @since 2.2
+ *
+ * @return bool
+ */
+function sbsw_tiktok_feeds_is_minimum_version()
+{
+	if (!defined('SBTTVER')) {
 		return false;
 	}
-	if ( version_compare( SWVER, SBY_MINIMUM_WALL_VERSION  ) < 0 ) {
+	if (version_compare(SBTTVER, SBSW_MIN_TT_VERSION) < 0 ) {
+		return false;
+	}
+	return true;
+}
+
+function sbsw_social_wall_is_minimum_version_for_youtube_feed() {
+	if (!defined('SBY_MINIMUM_WALL_VERSION')) {
+		return false;
+	}
+	if (version_compare(SWVER, SBY_MINIMUM_WALL_VERSION) < 0 ) {
 		return false;
 	}
 	return true;
@@ -1121,6 +1374,13 @@ function sbsw_get_not_available_in_shortcode( $plugins_with_atts ) {
 		     || ! sbsw_social_wall_is_minimum_version_for_twitter_feed() ) {
 			$not_available[] = 'custom-twitter-feed';
 			$not_available[] = 'custom-twitter-feeds';
+		}
+	}
+
+	if (isset($plugins_with_atts['tiktok-feeds'])) {
+		if (!sbsw_tiktok_feeds_is_minimum_version() ||
+			! sbsw_social_wall_is_minimum_version_for_tiktok_feeds()) {
+			$not_available[] = 'tiktok-feeds';
 		}
 	}
 
@@ -1265,11 +1525,14 @@ function sbsw_json_encode( $thing ) {
 function sbsw_settings_defaults() {
 	$defaults = array(
 		'num' => 9,
+		'numdesktop' => 9,
+		'numtablet' => 9,
 		'nummobile' => 9,
 		'minnum' => 9,
 		'cols' => 3,
 		'colsmobile' => 'auto',
 		'masonrycols' => 3,
+		'masonrycolstablet' => 1,
 		'masonrycolsmobile' => 1,
         'masonryshowfilter' => false,
 		'widthresp' => true,
@@ -1278,12 +1541,13 @@ function sbsw_settings_defaults() {
 		'height' => '',
 		'heightunit' => '%',
 		'disablemobile' => false,
-		'itemspacing' => 9,
+		'itemspacing' => 20,
 		'itemspacingunit' => 'px',
 		'background' => '',
 		'layout' => 'masonry',
 		'theme' => 'light',
 		'carouselcols' => 3,
+		'carouselcolstablet' => 2,
 		'carouselcolsmobile' => 2,
 		'carouselarrows' => true,
 		'carouselpag' => true,
@@ -1311,6 +1575,22 @@ function sbsw_settings_defaults() {
 		'doingModerationMode' => false,
 		'addModerationModeLink' => false,
 		'disable_js_image_loading' => false,
+
+		// builder settings
+		'itemspacingvertical' => 20,
+		'cardborder' => '#dddddd',
+		'text1' => '#dddddd',
+		'text2' => '#dddddd',
+		'postElements' => ['avatar', 'username', 'text', 'media', 'date', 'summary'],
+		'loadButtonColor' => '#141B38',
+		'loadButtonBg' => '#ffffff',
+		'loadButtonHoverColor' => '#141B38',
+		'loadButtonHoverBg' => '#ffffff',
+		'paragraphFont' => '',
+		'dateFont' => '',
+		'customdate' => '',
+		'dateBeforeText' => '',
+		'dateAfterText' => '',
 	);
 
 	return $defaults;
@@ -1331,7 +1611,7 @@ function sbsw_get_active_plugins() {
 		$active[] = 'instagram';
 	}
 
-	if ( class_exists( 'SBY_Parse_Pro' ) ) {
+	if ( class_exists( 'SmashBalloon\YouTubeFeed\Pro\SBY_Parse_Pro' ) ) {
 		$active[] = 'youtube';
 	}
 
@@ -1339,11 +1619,12 @@ function sbsw_get_active_plugins() {
 }
 
 function sbsw_get_database_settings() {
-	$settings = get_option( 'sbsw_settings', array() );
+	$settings = get_option( 'sbsw_settings' );
+	$settings = $settings;
 
-	$defaults = sbsw_settings_defaults();
+	$settings = wp_parse_args( $settings, sbsw_settings_defaults() );
 
-	return array_merge( $defaults, $settings );
+	return $settings;
 }
 
 function sbsw_clear_cache() {
@@ -1384,6 +1665,7 @@ function sbsw_clear_cache() {
 	sbsw_clear_page_caches();
 }
 add_action( 'sbsw_settings_after_customize_save', 'sbsw_clear_cache' );
+add_action('sbtt_cache_update_after_resize', 'sbsw_clear_cache');
 
 function sbsw_clear_page_caches() {
 	if ( isset( $GLOBALS['wp_fastest_cache'] ) && method_exists( $GLOBALS['wp_fastest_cache'], 'deleteCache' ) ){
@@ -1422,7 +1704,7 @@ function sbsw_date_sort( $a, $b ) {
 	$time_stamp_b = SW_Parse::get_timestamp( $b );
 
 	if ( isset( $time_stamp_a ) ) {
-		return $time_stamp_b - $time_stamp_a;
+		return (int)$time_stamp_b - (int)$time_stamp_a;
 	} else {
 		return rand ( -1, 1 );
 	}
@@ -1504,7 +1786,7 @@ function sbsw_maybe_shorten_text( $string, $max_characters, $with_show_more = fa
 	if ( strlen( $string ) <= $max_characters ) {
 		return $string;
 	}
-	$parts = preg_split( '/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE );
+	$parts = preg_split( '/([\s\n\r]+)/', $string, 0, PREG_SPLIT_DELIM_CAPTURE );
 	$parts_count = count( $parts );
 
 	if ( ! $with_show_more ) {
@@ -1745,9 +2027,9 @@ function sbsw_scripts_enqueue( $enqueue = false ) {
 	}
 
 	if ( isset( $sbsw_settings['enqueue_css_in_shortcode'] ) && $sbsw_settings['enqueue_css_in_shortcode'] ) {
-		wp_register_style( 'sbsw_styles', trailingslashit( SBSW_PLUGIN_URL ) . 'css/social-wall.min.css', array(), SWVER );
-	} else {
 		wp_enqueue_style( 'sbsw_styles', trailingslashit( SBSW_PLUGIN_URL ) . 'css/social-wall.min.css', array(), SWVER );
+	} else {
+		wp_register_style( 'sbsw_styles', trailingslashit( SBSW_PLUGIN_URL ) . 'css/social-wall.min.css', array(), SWVER );
 	}
 
 	$data = array(
@@ -1774,3 +2056,78 @@ function sbsw_scripts_enqueue( $enqueue = false ) {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'sbsw_scripts_enqueue', 3 );
+
+/**
+ * Apply custom styles from the customizer to the feed frontend
+ *
+ * @since 2.0
+ */
+function sbsw_customizer_styles( $posts, $settings ) {
+	$custom_styles = '';
+	if ( isset( $settings['theme'] ) && $settings['theme'] == 'custom' ) {
+		$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-item-footer, [id^=sb-wall].sb-wall .sbsw-item-bottom-content, [id^=sb-wall].sb-wall .sbsw-item-media, [id^=sb-wall].sb-wall .sbsw-item-header{ background-color: '. $settings['background'] .' }';
+
+		if ( isset( $settings['cardborder'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-item-inner { box-shadow:0 0 0 1px '. $settings['cardborder'] .'; }';
+		}
+		if ( isset( $settings['text1'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-identity .sbsw-author .sbsw-author-name, [id^=sb-wall].sb-wall .sbsw-item p.sbsw-content-text { color: '. $settings['text1'] .'; }';
+		}
+		if ( isset( $settings['text2'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-identity .sbsw-date p, [id^=sb-wall].sb-wall .sbsw-item-stats .sbsw-count { color: '. $settings['text2'] .'; }';
+		}
+	}
+
+	if ( isset( $settings['layout'] ) && $settings['layout'] == 'masonry' && isset( $settings['itemspacingvertical'] ) ) {
+		$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-item {margin-bottom: '. $settings['itemspacingvertical'] .'px !important} ';
+	}
+
+	if ( isset( $settings['layout'] ) && $settings['layout'] == 'masonry' && isset( $settings['itemspacing'] ) ) {
+		$custom_styles .= '[id^=sb-wall].sb-wall .sbsw-item {padding: 0 '. $settings['itemspacing']/2 .'px!important} ';
+	}
+
+	if ( isset( $settings['loadButtonColor'] ) && $settings['loadButtonColor'] == true ) {
+		if( isset( $settings['loadButtonColor'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sb-wall-load-btn {color: '. $settings['loadButtonColor'] .'} ';
+		}
+		if( isset( $settings['loadButtonBg'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sb-wall-load-btn {background-color: '. $settings['loadButtonBg'] .'} ';
+		}
+		if( isset( $settings['loadButtonHoverColor'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sb-wall-load-btn:hover {color: '. $settings['loadButtonHoverColor'] .'} ';
+		}
+		if( isset( $settings['loadButtonHoverBg'] ) ) {
+			$custom_styles .= '[id^=sb-wall].sb-wall .sb-wall-load-btn:hover {background-color: '. $settings['loadButtonHoverBg'] .'} ';
+		}
+	}
+
+	echo '<style type="text/css">'. $custom_styles .'</style>';
+}
+
+add_action( 'sbsw_after_feed', 'sbsw_customizer_styles', 10, 2 );
+
+/**
+ * Convert plugin name to plugin path
+ *
+ * @since 2.0
+ */
+function sw_convert_plugin_name_to_path( $plugin ) {
+	$plugin_path = '';
+	if ( strpos( $plugin, 'Facebook' ) !== false ) {
+		$plugin_path = 'custom-facebook-feed-pro/custom-facebook-feed.php';
+	}
+	if ( strpos( $plugin, 'Instagram' ) !== false ) {
+		$plugin_path = 'instagram-feed-pro/instagram-feed.php';
+	}
+	if ( strpos( $plugin, 'Twitter' ) !== false ) {
+		$plugin_path = 'custom-twitter-feeds-pro/custom-twitter-feed.php';
+	}
+	if ( strpos( $plugin, 'YouTube' ) !== false ) {
+		$plugin_path = 'youtube-feed-pro/youtube-feed.php';
+	}
+	if (strpos($plugin, 'TikTok') !== false) {
+		$plugin_path = 'tiktok-feeds/tiktok-feeds-pro.php';
+	}
+
+	return $plugin_path;
+}

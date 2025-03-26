@@ -1,3 +1,11 @@
+<?php
+    /**
+     * Instagram Admin Header Notices
+     *
+     * @since 6.2
+     */
+    do_action('sbi_admin_header_notices');
+?>
 <div class="sbi-fb-header sbi-fb-fs">
     <div class="sbi-fb-header-left">
         <div class="sbi-fb-hd-logo">

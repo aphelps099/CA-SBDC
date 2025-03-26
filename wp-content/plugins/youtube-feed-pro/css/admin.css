@@ -241,10 +241,9 @@
 #sbspf_admin .sbspf_radio_label {
     padding-top: 4px;
     display: -moz-inline-stack;
-    display: inline-block;
     vertical-align: top;
     zoom: 1;
-    *display: inline;
+    display: inline;
 }
 
 /* Log In Get Access Token Button */
@@ -725,7 +724,6 @@
 }
 .sbspf_layout_cell,
 .sbspf_sub_option_cell{
-    padding: 0;
     display: inline-block;
     float: left;
     width: 155px;
@@ -1400,3 +1398,165 @@
     text-align: center;
     z-index: 26;
 }
+
+/* Singe Videos Upsell Modal */
+.sbc-center-boss {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sbc-popup-inside {
+    left: 80px;
+    width: 880px;
+    max-width: calc(100% - 200px);
+    background: #fff;
+    color: #141B38;
+    position: relative;
+    box-shadow: 0px 26.7377px 77.2886px rgba(0, 0, 0, 0.107828), 0px 14.2952px 41.3222px rgba(0, 0, 0, 0.0894161), 0px 8.01379px 23.1649px rgba(0, 0, 0, 0.075), 0px 4.25607px 12.3027px rgba(0, 0, 0, 0.0605839), 0px 1.77104px 5.11942px rgba(0, 0, 0, 0.0421718);
+    border-radius: 2px;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+.sbc-popup-cls {
+    height: 14px;
+    width: 14px;
+    position: absolute;
+    cursor: pointer;
+    right: 17px;
+    top: 17px;
+    z-index: 3;
+}
+.sbc-extpp-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 264px;
+    background: #F3F4F5;
+}
+.sbc-extpp-info {
+    width: 50%;
+    float: left;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 40px;
+}
+.sbc-extpp-img {
+    width: 50%;
+    float: left;
+    display: flex;
+    justify-content: center;
+}
+.sbc-extpp-bottom {
+    padding: 20px 40px;
+    background: #fff;
+}
+.ctf-extension-bullet-list {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-column-gap: 2%;
+    margin-top: 12px;
+    margin-bottom: 40px;
+}
+.ctf-extension-single-bullet {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 4px 0;
+}
+.ctf-extension-single-bullet svg {
+    margin-right: 12px;
+}
+
+.sbc-extpp-btns {
+    display: grid;
+    grid-template-columns: 80% 20%;
+    grid-column-gap: 12px;
+}
+.sbc-extpp-btns a {
+    height: 50px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 3px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+.sbc-btn-orange {
+    background: #FE544F!important;
+    color: #fff!important;
+    cursor: pointer;
+}
+.sbc-btn-green {
+    background: #4A9F36!important;
+    color: #fff!important;
+    cursor: pointer;
+    box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.12) inset, 0px 2px 5px 0px rgba(60, 66, 87, 0.05), 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+.sbc-btn-grey {
+    border-radius: 4px;
+    border: 1px solid #E6E6EB;
+    background: #F9F9FA;
+    box-shadow: 0px -1px 1px 0px rgba(0, 0, 0, 0.12) inset, 0px 2px 5px 0px rgba(60, 66, 87, 0.05), 0px 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+#sby-single-videos-upsell-modal .sbc-extpp-head h2 {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 125%;
+    margin: 0;
+    letter-spacing: 0;
+}
+#sby-single-videos-upsell-modal .sbc-extpp-desc {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 150%;
+    color: #141B38;
+    margin-top: 12px;
+}
+#sby-single-videos-upsell-modal .sbc-extpp-bottom h4 {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 140%;
+    margin: 0 0 4px 0;
+    letter-spacing: 0;
+}
+#sby-single-videos-upsell-modal .ctf-extension-single-bullet span.sb-small-p {
+    font-size: 14px;
+    line-height: 160%;
+    color: #434960;
+}
+#sby-single-videos-upsell-modal .sbc-extpp-btns a {
+    text-decoration: none;
+}
+@media all and (max-width: 960px) {
+    body.sticky-menu .sbc-popup-inside {
+        left: 0px;
+    }
+}
+@media all and (max-width: 768px) {
+    body .sbc-popup-inside {
+        left: 0px;
+    }
+    #sby-single-videos-upsell-modal .sbc-extpp-head h2 {
+        font-size: 26px;
+    }
+}
+@media all and (max-width: 640px) {
+    .sbc-extpp-img {
+        display: none;
+    }
+    .sbc-extpp-info {
+        width: 75%;
+        padding-left: 0;
+    }
+}
+/* End Singe Videos Upsell Modal */

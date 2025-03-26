@@ -25,6 +25,7 @@ SB_Customizer.initPromise = new Promise((resolve) => {
 		dismissLite: sbc_builder.youtube_feed_dismiss_lite,
 		shouldShowFeedAPIForm : false,
 		shouldShowManualConnect : false,
+		showShowYTAccountWarning : false,
 
 		sw_feed: false,
 		sw_feed_id: false
@@ -335,12 +336,6 @@ SB_Customizer.initPromise = new Promise((resolve) => {
 			return this.customizerFeedData.settings.showsubscribe == true ? "shown" : '';
 		},
 
-		shouldShowIndividualElements: function( param ) {
-			console.log(param);
-			return false;
-			$parent.customizerFeedData.settings.include.includes('icon')
-		},
-
 		/**
 		 * Check if Data Setting is Enabled
 		 *
@@ -455,25 +450,6 @@ SB_Customizer.initPromise = new Promise((resolve) => {
             }
             return true;
         },
-		/**
-		 * Should show the standard header
-		 *
-		 * @since 2.0
-		 */
-		shouldShowStandardHeader: function() {
-			let self = this;
-			return self.customizerFeedData.settings.showheader && self.customizerFeedData.settings.headerstyle === 'standard';
-		},
-
-		/**
-		 * Should show the text style header
-		 *
-		 * @since 2.0
-		 */
-		shouldShowTextHeader: function() {
-			let self = this;
-			return self.customizerFeedData.settings.showheader && self.customizerFeedData.settings.headerstyle === 'text';
-		},
 
 		/**
 		 * Switch to Videos sections
@@ -541,19 +517,6 @@ SB_Customizer.initPromise = new Promise((resolve) => {
 		},
 
 		/**
-		 * Should show gallery layout player
-		 *
-		 * @since 2.0
-		 */
-		shouldShowPlayer : function() {
-			var self = this;
-			if ( self.customizerFeedData.settings.layout != 'gallery' ) {
-				return;
-			}
-			return true;
-		},
-
-		/**
 		 * Should Show Manual Connect
 		 * 
 		 * @since 2.0
@@ -582,6 +545,23 @@ SB_Customizer.initPromise = new Promise((resolve) => {
 			var self = this;
 			self.shouldShowFeedAPIForm = true;
 			self.shouldShowFeedAPIBackBtn = true;
+		},
+	
+		/**
+		 * Show the limitations of connecting with YouTube Account
+		 * @since 2.3
+		 */
+		showYTAccountLimitations : function() {
+			var self = this;
+			self.showShowYTAccountWarning = true;
+		},
+
+		backToApiPopup : function() {
+			var self = this;
+			self.showShowYTAccountWarning = false;
+			self.shouldShowManualConnect = false;
+			self.shouldShowFeedAPIForm = false;
+			self.shouldShowFeedAPIBackBtn = false;
 		},
 
 		/**
@@ -670,6 +650,41 @@ SB_Customizer.initPromise = new Promise((resolve) => {
 				var data = _ref.data;
 				if(data.feed_id && data.success){
 					window.location = self.builderUrl + '&feed_id=' + data.feed_id + self.sw_feed_params();
+				}
+			});
+		},
+
+		/**
+		 * Custom field click action
+		 * Action
+		 * @since 2.3.3
+		 */
+		fieldCustomClickAction : function( clickAction ){
+			var self = this;
+			switch (clickAction) {
+				case 'clearCommentCache':
+					self.clearCommentCache();
+				break;
+			}
+		},
+
+		/**
+		 * Clear comment cache action
+		 *
+		 * @since 2.3.3
+		 */
+		clearCommentCache : function(){
+			var self = this;
+			self.loadingBar = true;
+			var clearCommentCacheData = {
+				action : 'sby_feed_saver_clear_comments_cache',
+			};
+			self.ajaxPost(clearCommentCacheData, function(_ref){
+				var data = _ref.data;
+				if( data === 'success' ){
+					self.processNotification("commentCacheCleared");
+				}else{
+					self.processNotification("unkownError");
 				}
 			});
 		},

@@ -6,18 +6,14 @@
  */
 namespace TwitterFeed\Builder;
 use TwitterFeed\Admin\CTF_Cache_Handler;
-use TwitterFeed\CtfOauthConnect;
-use TwitterFeed\CtfOauthConnectPro;
+use TwitterFeed\V2\CtfOauthConnect;
+use TwitterFeed\V2\CtfOauthConnectPro;
 use TwitterFeed\Admin\CTF_HTTP_Request;
 use TwitterFeed\Pro\CTF_Settings_Pro;
 use TwitterFeed\Pro\CTF_Parse_Pro;
-
-use TwitterFeed\Admin\Traits\CTF_Feed_Templates_Settings;
-
+use TwitterFeed\Admin\CTF_Feed_Templates_Settings;
 
 class CTF_Feed_Saver_Manager {
-
-	use CTF_Feed_Templates_Settings;
 
 	/**
 	 * AJAX hooks for various feed data related functionality
@@ -44,6 +40,7 @@ class CTF_Feed_Saver_Manager {
 
 		//Detect Leaving the Page
 		add_action( 'wp_ajax_ctf_feed_saver_manager_recache_feed', array( 'TwitterFeed\Builder\CTF_Feed_Saver_Manager', 'recache_feed' ) );
+		add_action( 'wp_ajax_ctf_activate_social_wall', array( 'TwitterFeed\Builder\CTF_Feed_Saver_Manager', 'activate_social_wall' ) );
 
 	}
 
@@ -58,7 +55,7 @@ class CTF_Feed_Saver_Manager {
 		foreach ($selected_feeds as $feed_type) {
 			switch ($feed_type) {
 				case 'usertimeline':
-					$feeds_types['screenname'] = isset( $selected_feed_models['usertimeline'] ) ? $selected_feed_models['usertimeline'] : '';
+					$feeds_types['screenname'] = isset( $selected_feed_models['usertimeline'] ) ? self::get_clean_twitter_handle_from_string($selected_feed_models['usertimeline']) : '';
 					break;
 				case 'hashtag':
 					$feeds_types['hashtag'] = isset( $selected_feed_models['hashtag'] ) ? $selected_feed_models['hashtag'] : '';
@@ -90,8 +87,8 @@ class CTF_Feed_Saver_Manager {
 		$feed_data = [];
 		switch ($selected_feed) {
 			case 'usertimeline':
-				$feed_data['usertimeline_text'] = isset( $selected_feed_model['usertimeline'] ) ? $selected_feed_model['usertimeline'] : '';
-				$feed_data['screenname'] = isset( $selected_feed_model['usertimeline'] ) ? $selected_feed_model['usertimeline'] : '';
+				$feed_data['usertimeline_text'] = isset( $selected_feed_model['usertimeline'] ) ? self::get_clean_twitter_handle_from_string($selected_feed_model['usertimeline']) : '';
+				$feed_data['screenname'] = isset( $selected_feed_model['usertimeline'] ) ? self::get_clean_twitter_handle_from_string($selected_feed_model['usertimeline']) : '';
 			break;
 			case 'hashtag':
 				$feed_data['hashtag_text'] = isset( $selected_feed_model['hashtag'] ) ? $selected_feed_model['hashtag'] : '';
@@ -115,6 +112,34 @@ class CTF_Feed_Saver_Manager {
 		return $feed_data;
 	}
 
+	/**
+	 * Get clean twitter handle URL from user provided string
+	 * 
+	 * @since 2.5
+	 * @params string $string
+	 * @return string	 
+	 */
+	public static function get_clean_twitter_handle_from_string($usertimeline_urls)
+	{
+		$handles = [];
+		$usertimeline_urls = explode(',', $usertimeline_urls);
+		foreach ($usertimeline_urls as $string) {
+			if (strpos($string, "twitter.com") !== false) {
+				$regex = '/twitter\.com\/([^\/?]+)/';
+				if (preg_match($regex, $string, $matches)) {
+					$desiredString = $matches[1];
+					if ($desiredString) {
+						$handles[] = "@" . $desiredString;
+						continue;
+					}
+				}
+			} else if (strpos($string, "@") === false) {
+				$string = "@" . $string;
+			}
+			$handles[] = $string;
+		}
+		return implode(',', $handles);
+	}
 
 	/**
 	 * Get Max Feed Name
@@ -148,10 +173,11 @@ class CTF_Feed_Saver_Manager {
 	 */
 	public static function create_feed_name( $selected_feeds, $selected_feed_models ){
 		$feed_name = 'Twitter Feed';
+		$clean_twitter_handle = isset($selected_feed_models['usertimeline']) ? self::get_clean_twitter_handle_from_string($selected_feed_models['usertimeline']) : '';
 		if(is_array($selected_feeds) && isset($selected_feeds[0])){
 			switch ($selected_feeds[0]) {
 				case 'usertimeline':
-					$feed_name = isset( $selected_feed_models['usertimeline'] ) ? CTF_Feed_Saver_Manager::get_max_feed_name($selected_feed_models['usertimeline']) : $feed_name;
+					$feed_name = isset( $selected_feed_models['usertimeline'] ) ? CTF_Feed_Saver_Manager::get_max_feed_name($clean_twitter_handle) : $feed_name;
 					break;
 				case 'hashtag':
 					$feed_name = isset( $selected_feed_models['hashtag'] ) ? CTF_Feed_Saver_Manager::get_max_feed_name($selected_feed_models['hashtag']) : $feed_name;
@@ -246,6 +272,9 @@ class CTF_Feed_Saver_Manager {
 		unset( $settings_data['selectedFeedModel'] );
 		unset( $settings_data['customizer'] );
 
+		// Set default date format
+		$settings_data['dateformat'] = '1';
+
 
 		/*
 		*/
@@ -274,9 +303,11 @@ class CTF_Feed_Saver_Manager {
 				$feed_cache->clear( 'posts' );
 				*/
 				echo wp_json_encode( $return );
-				wp_die();
+
 			}
 		}
+
+		wp_die();
 	}
 
 	/**
@@ -518,11 +549,8 @@ class CTF_Feed_Saver_Manager {
 			$return['feed_html'] = ctf_init( $atts, $previewSettings );
 			$return['customizerDataSettings'] = $previewSettings;
 
-
-
-			echo wp_json_encode( $return );
+			echo wp_json_encode($return);
 			#echo $return['feed_html'];
-
 		}
 		wp_die();
 		return false;
@@ -716,7 +744,7 @@ class CTF_Feed_Saver_Manager {
 	 * @since 2.0
 	*/
 	public static function delete_account(){
-		if ( ! check_ajax_referer( 'ctf_admin_nonce', 'nonce', false ) && ! check_ajax_referer( 'ctf-admin', 'nonce', false ) ) {
+		if ( ! check_ajax_referer( 'ctf-admin', 'nonce', false ) && ! check_ajax_referer( 'ctf-admin', 'nonce', false ) ) {
 			wp_send_json_error();
 		}
 		$cap = current_user_can( 'manage_twitter_feed_options' ) ? 'manage_twitter_feed_options' : 'manage_options';
@@ -756,7 +784,7 @@ class CTF_Feed_Saver_Manager {
 	 * @since 2.0
 	*/
 	public static function connect_manual_account() {
-		if ( ! check_ajax_referer( 'ctf_admin_nonce', 'nonce', false ) && ! check_ajax_referer( 'ctf-admin', 'nonce', false ) ) {
+		if ( ! check_ajax_referer( 'ctf-admin', 'nonce', false ) && ! check_ajax_referer( 'ctf-admin', 'nonce', false ) ) {
 			wp_send_json_error();
 		}
 
@@ -781,10 +809,14 @@ class CTF_Feed_Saver_Manager {
 	        $twitter_api->setRequestMethod( $request_method );
 	        $twitter_api->performRequest();
 	        $response = json_decode( $twitter_api->json , $assoc = true );
-	        if( isset( $response['errors'] ) ){
+			// get ctf_options data
+			$options = get_option('ctf_options', array());
+	        if (isset( $response['errors'])) {
             	echo '{"error" : "noAccount"}';
-	        }else{
-	        	$options = get_option( 'ctf_options', array() );
+				// Update API use method to use Smash Balloon Twitter API
+				$options['ctf_use_smash_twitter_api'] = 'yes';
+				update_option('ctf_options', $options);
+	        } else {
 		        $options['app_name'] 			= ! empty( $_POST['app_name'] ) ? sanitize_text_field($_POST['app_name']) : '';
 		        $options['consumer_key'] 		= ! empty( $_POST['consumer_key'] ) ? sanitize_text_field($_POST['consumer_key']) : '';
 		        $options['consumer_secret'] 	= ! empty( $_POST['consumer_secret'] ) ? sanitize_text_field($_POST['consumer_secret']) : '';
@@ -792,6 +824,11 @@ class CTF_Feed_Saver_Manager {
 		        $options['access_token_secret'] = sanitize_text_field($_POST['access_token_secret']);
 		        $options['account_handle'] 		= isset( $response['screen_name'] ) ? sanitize_text_field($response['screen_name']) : '';
 		        $options['account_avatar'] 		= isset( $response['profile_image_url'] ) ? sanitize_text_field($response['profile_image_url']) : '';
+
+				// If the API returns a screen_name, then we know it's a valid account and we can switch off using the Smash Balloon Twitter API and use the Official Twitter V2 API instead
+				if (isset($response['screen_name'])) {
+					$options['ctf_use_smash_twitter_api'] = 'no';
+				}
 		        update_option( 'ctf_options', $options );
 		        $return = [
 					'app_name' => $options['app_name'],
@@ -993,4 +1030,35 @@ class CTF_Feed_Saver_Manager {
 		return 'false';
 	}
 
+
+	/**
+	 * Activate Social Wall Plugin
+	 *
+	 * @since 2.0
+	*/
+	public static function activate_social_wall() {
+		if ( ! check_ajax_referer( 'ctf-admin', 'nonce', false ) && ! check_ajax_referer( 'ctf-admin', 'nonce', false ) ) {
+			wp_send_json_error();
+		}
+
+		$cap = current_user_can( 'manage_twitter_feed_options' ) ? 'manage_twitter_feed_options' : 'manage_options';
+		$cap = apply_filters( 'ctf_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+		$activated = activate_plugin( 'social-wall/social-wall.php' );
+		$installed_plugins = get_plugins();
+
+		$response = [
+			'is_activated' => ! is_wp_error( $activated ),
+			'social_wall' => [
+				'installed' => isset( $installed_plugins['social-wall/social-wall.php'] ) ? true : false,
+				'activated' => is_plugin_active( 'social-wall/social-wall.php' ),
+				'settingsPage' => admin_url( 'admin.php?page=sbsw' ),
+			]
+		];
+		wp_send_json_success( $response );
+		wp_die();
+
+	}
 }

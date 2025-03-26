@@ -2,6 +2,7 @@
 require_once CTF_URL . '/inc/widget.php';
 require_once CTF_URL . '/inc/admin-pro-hooks.php';
 
+use TwitterFeed\Builder\CTF_Feed_Builder;
 use TwitterFeed\CtfAdmin;
 use TwitterFeed\CtfFeedPro;
 use TwitterFeed\CTF_Tracking;
@@ -25,15 +26,77 @@ use TwitterFeed\Admin\CTF_New_User;
 use TwitterFeed\Blocks\CTF_Blocks;
 use TwitterFeed\CtfDateTime;
 use TwitterFeed\Builder\CTF_Feed_Saver;
-
-
-
+use TwitterFeed\Blocks\Divi\CTF_Divi_Handler;
+use TwitterFeed\Blocks\Elementor\CTF_Elementor_Base;
 
 /**
 * include the admin files only if in the admin area
 */
 if ( is_admin() ) {
 	$admin = new CtfAdmin();
+}
+
+function ctf_should_disable_pro() {
+    return ctf_license_handler()->should_disable_pro_features;
+}
+
+function ctf_license_inactive_state() {
+    return empty( ctf_license_handler()->get_license_key );
+}
+
+function ctf_license_notice_active() {
+    return empty( ctf_license_handler()->get_license_key ) || ctf_license_handler()->expiredLicenseWithGracePeriodEnded;
+}
+
+function ctf_is_license_active() {
+    return ! empty( ctf_license_handler()->get_license_key ) && ctf_license_handler()->is_license_active;
+}
+
+/**
+ * Check if the connection should use Smash Twitter API or Official Twitter V2 API
+ * @since 2.5
+ * @return bool
+ */
+function ctf_should_switch_to_smash_twitter()
+{
+	$ctf_options = get_option('ctf_options', array());
+	return isset($ctf_options['ctf_use_smash_twitter_api']) && $ctf_options['ctf_use_smash_twitter_api'] === 'yes';
+}
+
+/**
+ * Whether or not the activation page should be dismissed.
+ *
+ * @return bool
+ *
+ * @since 2.3
+ */
+function ctf_activation_page_dismissed()
+{
+	if (ctf_is_license_active()) {
+		return true;
+	}
+
+	$ctf_statuses_option = get_option('ctf_statuses', array());
+
+	return is_array($ctf_statuses_option) && ! empty($ctf_statuses_option['activation_page_dismiss']);
+}
+
+function ctf_should_rebrand_to_x() {
+	$ctf_settings = wp_parse_args(get_option('ctf_options'), (new CTF_Global_Settings)->default_settings_options());
+	return isset( $ctf_settings['rebranding'] ) && $ctf_settings['rebranding'] === true;
+}
+
+/**
+ * Check the user access permission capability
+ *
+ * @since 2.0.3
+ *
+ * @return $cap string
+ */
+function ctf_capablity_check() {
+	$cap = current_user_can( 'manage_twitter_feed_options' ) ? 'manage_twitter_feed_options' : 'manage_options';
+	$cap = apply_filters( 'ctf_settings_pages_capability', $cap );
+	return $cap;
 }
 
 /**
@@ -153,15 +216,18 @@ function ctf_init( $atts, $preview_settings = false ) {
 			return "<span id='ctf-no-id'>" . sprintf( __( 'No feed found with the ID %1$s. Go to the %2$sAll Feeds page%3$s and select an ID from an existing feed.', 'custom-twitter-feeds' ), esc_html( $twitter_feed->feed_options['feed'] ), '<a href="' . esc_url( admin_url( 'admin.php?page=ctf-feed-builder' ) ) . '">', '</a>' ) . '</span><br /><br />';
 	} else {
 		// if there is an error, display the error html, otherwise the feed
-		if ( ! $twitter_feed->tweet_set || $twitter_feed->missing_credentials || ! isset( $twitter_feed->tweet_set[0]['created_at'] ) ) {
+		if ( ! $twitter_feed->tweet_set || ($twitter_feed->missing_credentials && ! CTF_DOING_SMASH_TWITTER) || ! isset( $twitter_feed->tweet_set[0]['created_at'] ) ) {
 			if ( ! empty( $twitter_feed->tweet_set['errors'] ) ) {
 				$twitter_feed->maybeCacheTweets();
+			} else {
+				$twitter_feed->maybeCacheTweets(true);
 			}
-			return $twitter_feed->getErrorHtml();
+			$feed_html  = '';
+			$feed_html .= $twitter_feed->getTweetSetHtml();
+
+			return $feed_html;
 		} else {
-			if ( ! $twitter_feed->feed_options['persistentcache'] ) {
-				$twitter_feed->maybeCacheTweets();
-			}
+			$twitter_feed->maybeCacheTweets();
 			$feed_html  = '';
 			$feed_html .= $twitter_feed->getTweetSetHtml();
 
@@ -191,14 +257,14 @@ function ctf_get_more_posts() {
 
 	$twitter_feed = CtfFeedPro::init( $shortcode_data, $last_id_data, $num_needed, $ids_to_remove, $persistent_index );
 
-	if ( ! $twitter_feed->feed_options['persistentcache'] ) {
+	if ( ! CTF_DOING_SMASH_TWITTER && ! $twitter_feed->feed_options['persistentcache'] ) {
 		$twitter_feed->maybeCacheTweets();
 	}
 
 	echo $twitter_feed->getItemSetHtml( $is_pagination );
 
 	$resizer = new CTF_Resizer( $twitter_feed->ids_in_set_w_media, $twitter_feed->feedID(), $twitter_feed->tweet_set, $twitter_feed->feed_options );
-	if ( ! $resizer->image_resizing_disabled() ) {
+	if ( ! $resizer->image_resizing_disabled() && $twitter_feed->tweet_set ) {
 		$resizer->do_resizing();
 	}
 	$atts = $shortcode_data;
@@ -389,6 +455,11 @@ function ctf_get_fa_el( $icon ) {
 			'icon' => '<span class="fa fab fa-twitter"></span>',
 			'svg'  => '<svg class="svg-inline--fa fa-twitter fa-w-16" aria-hidden="true" aria-label="twitter logo" data-fa-processed="" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>',
 		),
+		'fa-x'      => array(
+			'icon' => '<span class="fa fab fa-twitter"></span>',
+			'svg'  => '<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.1161 6.27344H24.2289L17.4284 14.0459L25.4286 24.6225H19.1645L14.2583 18.2079L8.6444 24.6225H5.52976L12.8035 16.309L5.12891 6.27344H11.552L15.9868 12.1367L21.1161 6.27344ZM20.0236 22.7594H21.7484L10.6148 8.03871H8.7639L20.0236 22.7594Z" fill="black"/>
+			</svg>',
+		),
 		'fa-user'         => array(
 			'icon' => '<span class="fa fa-user"></span>',
 			'svg'  => '<svg class="svg-inline--fa fa-user fa-w-16" aria-hidden="true" aria-label="followers" data-fa-processed="" data-prefix="fa" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M96 160C96 71.634 167.635 0 256 0s160 71.634 160 160-71.635 160-160 160S96 248.366 96 160zm304 192h-28.556c-71.006 42.713-159.912 42.695-230.888 0H112C50.144 352 0 402.144 0 464v24c0 13.255 10.745 24 24 24h464c13.255 0 24-10.745 24-24v-24c0-61.856-50.144-112-112-112z"></path></svg>',
@@ -403,6 +474,35 @@ function ctf_get_fa_el( $icon ) {
 }
 
 /**
+ * Return last updated time for specific feed
+ * @since 2.4
+ * @param string $date
+ * @param array $settings
+ *
+ * @return string $date
+ */
+function ctf_feed_last_updated_date($date, $settings)
+{
+	$settings['dateformat'] = 1;
+	$settings['afterTextAgo'] = true;
+	$date = ctf_get_formatted_date($date, $settings, '');
+	return $date;
+}
+
+function ctf_api_next_reset_time($date)
+{
+	if (!$date){
+		return;
+	}
+	$date = date('m/d/Y H:i:s', $date);
+	$settings = array(
+		'dateformat' => 16,
+		'feed' => 1,
+	);
+	$date = ctf_get_formatted_date($date, $settings, '');
+	return $date;
+}
+/**
  * this function returns the properly formatted date string based on user input
  *
  * @param $raw_date string      the date from the Twitter api
@@ -413,22 +513,26 @@ function ctf_get_fa_el( $icon ) {
 function ctf_get_formatted_date( $raw_date, $feed_options, $utc_offset ) {
 	$options  = get_option( 'ctf_options' );
 	$timezone = isset( $options['timezone'] ) ? $options['timezone'] : 'default';
-	// use php DateTimeZone class to handle the date formatting and offsets
-	$date_obj = new CtfDateTime( $raw_date, new DateTimeZone( 'UTC' ) );
+	// use php \DateTimeZone class to handle the date formatting and offsets
+	$date_obj = new \DateTime( $raw_date, new \DateTimeZone( 'UTC' ) );
 
 	if ( $timezone != 'default' ) {
-		$date_obj->setTimeZone( new DateTimeZone( $timezone ) );
+		$date_obj->setTimeZone( new \DateTimeZone( $timezone ) );
 		$utc_offset = $date_obj->getOffset();
 	}
-
-	$tz_offset_timestamp = $date_obj->getTimestamp() + $utc_offset;
+	$tz_offset_timestamp = $utc_offset ? $date_obj->getTimestamp() + $utc_offset : $date_obj->getTimestamp();
+	$use_custom = ! empty( $feed_options['datecustom'] );
+	if ( ! empty( $feed_options['feed'] ) && intval( $feed_options['feed'] ) > 0 ) {
+		$use_custom = ! empty( $feed_options['datecustom'] ) && $feed_options['dateformat'] === 'custom';
+	}
 
 	// use the custom date format if set, otherwise use from the selected defaults
-	if ( ! empty( $feed_options['datecustom'] ) ) {
+	if ( $use_custom ) {
 		$date_str = date_i18n( $feed_options['datecustom'], $tz_offset_timestamp );
 	} else {
+		$date_format = isset($feed_options['dateformat']) ? $feed_options['dateformat'] : 1;
 
-		switch ( $feed_options['dateformat'] ) {
+		switch ($date_format) {
 			case '2':
 				$date_str = date_i18n( 'F j', $tz_offset_timestamp );
 				break;
@@ -487,37 +591,40 @@ function ctf_get_formatted_date( $raw_date, $feed_options, $utc_offset ) {
 				$date_str = date_i18n( 'Y-m-d', $tz_offset_timestamp );
 				break;
 			default:
-				// default format is similar to Twitter
-				$ctf_minute  = ! empty( $feed_options['mtime'] ) ? $feed_options['mtime'] : 'm';
-				$ctf_hour    = ! empty( $feed_options['htime'] ) ? $feed_options['htime'] : 'h';
-				$ctf_now_str = ! empty( $feed_options['nowtime'] ) ? $feed_options['nowtime'] : 'now';
+			// default format is similar to Twitter
+                $ctf_minute = ! empty( $options['mtime'] ) ? $options['mtime'] : 'm';
+                $ctf_hour = ! empty( $options['htime'] ) ? $options['htime'] : 'h';
+                $ctf_now_str = ! empty( $options['nowtime'] ) ? $options['nowtime'] : 'now';
+				/* translators: this 'ago' text use to display after last updated feed time on the feeds builder page under each feed name */
+                $ctf_ago_text = isset($feed_options['afterTextAgo']) ? __(' ago', 'custom-twitter-feeds') : '';
 
-				$now = time() + $utc_offset;
+                $now = $utc_offset ? time() + $utc_offset : time();
 
-				$difference = $now - $tz_offset_timestamp;
+                $difference = $now - $tz_offset_timestamp;
+                if ( $difference < 60 ) {
+                    $date_str = $ctf_now_str;
+                } elseif ( $difference < 60*60 ) {
+                    $date_str = round( $difference/60 ) . $ctf_minute . $ctf_ago_text;
+                } elseif ( $difference < 60*60*24 ) {
+                    $date_str = round( $difference/3600 ) . $ctf_hour . $ctf_ago_text;
+                } else  {
+                    $one_year_from_date = new \DateTime( $raw_date, new \DateTimeZone( "UTC" ) );
+                    $one_year_from_date->modify('+1 year');
+                    $one_year_from_date_timestamp = $one_year_from_date->getTimestamp();
+                    if ( $now > $one_year_from_date_timestamp ) {
+                        $date_str = date_i18n( 'j M Y', $tz_offset_timestamp );
+                    } else {
+                        $date_str = date_i18n( 'j M', $tz_offset_timestamp );
+                    }
+                }
 
-				if ( $difference < 60 ) {
-					$date_str = $ctf_now_str;
-				} elseif ( $difference < 60 * 60 ) {
-					$date_str = round( $difference / 60 ) . $ctf_minute;
-				} elseif ( $difference < 60 * 60 * 24 ) {
-					$date_str = round( $difference / 3600 ) . $ctf_hour;
-				} else {
-					$one_year_from_date = new CtfDateTime( $raw_date, new DateTimeZone( 'UTC' ) );
-					$one_year_from_date->modify( '+1 year' );
-					$one_year_from_date_timestamp = $one_year_from_date->getTimestamp();
-					if ( $now > $one_year_from_date_timestamp ) {
-						$date_str = date_i18n( 'j M Y', $tz_offset_timestamp );
-					} else {
-						$date_str = date_i18n( 'j M', $tz_offset_timestamp );
-					}
-				}
-				break;
+			break;
 		}
 	}
 
 	return $date_str;
 }
+
 
 function ctf_maybe_shorten_text( $string, $feed_settings ) {
 	#if( !ctf_doing_customizer($feed_settings) ){
@@ -528,7 +635,7 @@ function ctf_maybe_shorten_text( $string, $feed_settings ) {
 		return $string;
 	}
 
-	$parts       = preg_split( '/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE );
+	$parts       = preg_split( '/([\s\n\r]+)/', $string, -1, PREG_SPLIT_DELIM_CAPTURE );
 	$parts_count = count( $parts );
 
 	$length      = 0;
@@ -757,7 +864,6 @@ function ctf_do_background_tasks( $feed_details ) {
 	}
 }
 
-//ctf_add_resized_image_data( $this->transient_name, $ids_in_set_w_media, $feed_options )
 function ctf_add_resized_image_data( $feed_id, $ids, $settings, $page = 1 ) {
 	$settings = get_option( 'ctf_options' );
 
@@ -797,72 +903,45 @@ function ctf_clear_resize_cache( $feed_id ) {
 	delete_transient( $transient_name );
 }
 
-function ctf_get_local_avatar( $screenname, $feed_options, $maybe_url = false ) {
+/**
+ * Returns the URL of a local avatar if it exists.
+ *
+ * @param array       $data Account data.
+ * @param array       $feed_options Options for the feed.
+ * @param bool|string $maybe_url Maybe a URL for the avatar.
+ *
+ * @return bool|string|null
+ */
+function ctf_get_local_avatar($data, $feed_options, $maybe_url = false)
+{
 
-	$local_avatars = get_option( 'ctf_local_avatars', array() );
+	$local_avatars = get_option('ctf_local_avatars', array());
 
-	if ( isset( $local_avatars[ $screenname ] ) ) {
-		if ( $local_avatars[ $screenname ] ) {
+	$screenname = ! empty($feed_options['screenname']) ? $feed_options['screenname'] : '';
+
+	if (! empty($screenname) && isset($local_avatars[$screenname])) {
+		if ($local_avatars[$screenname]) {
 			return ctf_get_resized_uploads_url() . $screenname . '.jpg';
 		}
 	}
 
-	if ( ! $maybe_url ) {
-		$transient = $feed_options['type'] === 'usertimeline' ? 'ctf_header_' . $feed_options['screenname'] : 'ctf_hometimeline_header';
-
-		$header_json = get_transient( $transient );
-
-		if ( ! $header_json ) {
-			$endpoint = 'accountlookup';
-			if ( $feed_options['type'] === 'usertimeline' ) {
-				$endpoint = 'userslookup';
-			}
-
-			// Only can be set in the options page
-			$request_settings = array(
-				'consumer_key'        => $feed_options['consumer_key'],
-				'consumer_secret'     => $feed_options['consumer_secret'],
-				'access_token'        => $feed_options['access_token'],
-				'access_token_secret' => $feed_options['access_token_secret'],
-			);
-
-			$get_fields = $this->setGetFieldsArray( $endpoint, $screenname );
-
-			// actual connection
-			$twitter_connect = new TwitterFeed\CtfOauthConnectPro( $request_settings, $endpoint );
-			$twitter_connect->setUrlBase();
-			$twitter_connect->setGetFields( $get_fields );
-			$twitter_connect->setRequestMethod( $feed_options['request_method'] );
-
-			$request_results = $twitter_connect->performRequest();
-
-			$header_json = isset( $request_results->json ) ? $request_results->json : false;
-
-			if ( $endpoint === 'accountlookup' ) {
-				set_transient( 'ctf_hometimeline_header', $header_json, 60 * 60 );
-			} else {
-				set_transient( 'ctf_header_' . $screenname, $header_json, 60 * 60 );
-			}
-		}
-		$header_info = isset( $header_json ) ? json_decode( $header_json, true ) : array();
-
-		$avatar_url = CTF_Parse_Pro::get_avatar( $header_info[0] );
-
+	if (! $maybe_url) {
+		$avatar_url = CTF_Parse_Pro::get_avatar($data);
 	} else {
 		$avatar_url = $maybe_url;
 	}
 
-	if ( $avatar_url ) {
-		$local_avatar = ctf_create_local_avatar( $screenname, $avatar_url );
-		if ( $local_avatar ) {
+	if ($avatar_url) {
+		$local_avatar = ctf_create_local_avatar($screenname, $avatar_url);
+		if ($local_avatar) {
 			return ctf_get_resized_uploads_url() . $screenname . '.jpg';
 		}
 
 		return $local_avatar;
 	}
 	return false;
-
 }
+
 function ctf_create_local_avatar( $screenname, $file_name ) {
 	$image_editor = wp_get_image_editor( $file_name );
 
@@ -891,26 +970,6 @@ function ctf_store_local_avatar( $screenname ) {
 	//return true;
 	return update_option( 'ctf_local_avatars', $local_avatars, false );
 }
-
-/**
- * Called via ajax to automatically save access token and access token secret
- * retrieved with the big blue button
- */
-function ctf_auto_save_tokens() {
-	if ( current_user_can( 'edit_posts' ) ) {
-		wp_cache_delete( 'alloptions', 'options' );
-
-		$options = get_option( 'ctf_options', array() );
-
-		$options['access_token']        = sanitize_text_field( $_POST['access_token'] );
-		$options['access_token_secret'] = sanitize_text_field( $_POST['access_token_secret'] );
-
-		update_option( 'ctf_options', $options );
-		die();
-	}
-	die();
-}
-add_action( 'wp_ajax_ctf_auto_save_tokens', 'ctf_auto_save_tokens' );
 
 /**
 * manually clears the cached tweets in case of error or user preference
@@ -944,6 +1003,9 @@ function ctf_clear_cache_sql() {
 		WHERE `option_name` LIKE ('%\_transient\_timeout\_ctf\_%')
 		"
 	);
+
+	// work around object caches
+	wp_cache_flush();
 }
 add_action( 'ctf_cron_job', 'ctf_clear_cache_sql' );
 
@@ -1033,7 +1095,7 @@ function ctf_retrieve_lists_by_owner() {
 
 		$request_method = 'auto';
 
-		$twitter_api = new TwitterFeed\CtfOauthConnectPro( $request_settings, 'listsmeta' );
+		$twitter_api = new TwitterFeed\V2\CtfOauthConnectPro( $request_settings, 'listsmeta' );
 		$twitter_api->setUrlBase();
 		$get_fields = array( 'screen_name' => sanitize_text_field( $_POST['screen_name'] ) );
 		$twitter_api->setGetFields( $get_fields );
@@ -1336,6 +1398,37 @@ function ctf_check_for_db_updates() {
 		}
 	}
 
+	// For Smash Twitter
+	if ( version_compare( $db_ver, '1.5', '<' ) ) {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . CTF_FEEDS_POSTS_TABLE;
+
+		$wpdb->query( "ALTER TABLE $table_name ADD COLUMN type VARCHAR(1000) DEFAULT '' NOT NULL" );
+		$wpdb->query( "ALTER TABLE $table_name ADD COLUMN term VARCHAR(1000) DEFAULT '' NOT NULL" );
+		$wpdb->query( "ALTER TABLE $table_name ADD INDEX type_term (term(140),type(51))" );
+
+		\TwitterFeed\SmashTwitter\CronUpdaterManager::schedule_cron_job();
+
+		$ctf_statuses_option = get_option( 'ctf_statuses', array() );
+        // to space out the API requests, we have the initial cron update scheduled a day + random number of hours.
+		$ctf_statuses_option['first_cron_update'] = mt_rand(0,23) * 3600 + time() + DAY_IN_SECONDS;
+		update_option( 'ctf_statuses', $ctf_statuses_option, false );
+
+		update_option('ctf_db_version', CTF_DBVERSION);
+	}
+
+	// Add last_api_updated column to the feeds table
+	if (version_compare($db_ver, '1.6', '<')) {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'ctf_feeds';
+		$wpdb->query("ALTER TABLE $table_name ADD COLUMN last_api_updated datetime DEFAULT '0000-00-00 00:00:00' NOT NULL");
+
+		update_option('ctf_db_version', CTF_DBVERSION);
+
+		// Update API statistics data
+		CTF_Feed_Pro::update_api_statistics();
+	}
 }
 add_action( 'wp_loaded', 'ctf_check_for_db_updates' );
 
@@ -1442,6 +1535,14 @@ function ctf_plugin_init() {
 		$ctf_blocks->load();
 	}
 
+	// Divi Module
+	$ctf_divi_module = new CTF_Divi_Handler();
+	$ctf_divi_module->init();
+
+	// Elementor Widget
+	$ctf_elementor_widget = new CTF_Elementor_Base();
+	$ctf_elementor_widget->init();
+
 	#include_once trailingslashit( CTF_PLUGIN_DIR ) . 'admin/CTF_Global_Settings.php';
 	#include_once trailingslashit( CTF_PLUGIN_DIR ) . 'admin/CTF_Support.php';
 	#include_once trailingslashit( CTF_PLUGIN_DIR ) . 'admin/CTF_About_Us.php';
@@ -1472,6 +1573,18 @@ function ctf_plugin_init() {
 	$ctf_about_us        = new TwitterFeed\Admin\CTF_About_Us();
 	$ctf_admin_notices   = new TwitterFeed\Admin\CTF_Admin_Notices();
 	$ctf_tooltip_wizard  = new TwitterFeed\Builder\CTF_Tooltip_Wizard();
+
+    $cron_update_manager = new \TwitterFeed\SmashTwitter\CronUpdaterManager();
+    $cron_update_manager->hooks();
+
+    $error_reporter = new \TwitterFeed\SmashTwitter\Services\ErrorReporterService();
+    $error_reporter->init_hooks();
+
+	$feed_notice = new \TwitterFeed\SmashTwitter\Services\FeedNoticeService();
+	$feed_notice->init_hooks();
+
+	$upgrader_pro = new \TwitterFeed\Admin\CTF_Upgrader_Pro();
+	$upgrader_pro->hooks();
 }
 
 add_action( 'plugins_loaded', 'ctf_plugin_init' );
@@ -1500,7 +1613,7 @@ function ctf_cron_updater() {
 	if ( ! empty( $settings['ctf_caching_type'] ) && $settings['ctf_caching_type'] === 'page' ) {
 		return;
 	}
-
+	CTF_Feed_Pro::should_update_stats();
 	$cron_updater = new TwitterFeed\SB_Twitter_Cron_Updater_Pro();
 	$cron_updater->do_feed_updates();
 	ctf_do_background_tasks( array() );
@@ -1537,3 +1650,76 @@ function ctf_current_user_can( $cap ) {
 	return current_user_can( $cap );
 }
 
+/**
+ * Get the current site cache limit based on license
+ * @since 2.4
+ * @return int
+ */
+function ctf_get_site_cache_limit()
+{
+	$cache_limit = 12;
+	$default_limits = ctf_default_site_cache_limits();
+	$current_product_name = ctf_get_current_product_name();
+	$cache_limit = isset($default_limits[$current_product_name]) ? $default_limits[$current_product_name] : $cache_limit;
+
+	$cache_limit = apply_filters('ctf_site_cache_limit', $cache_limit);
+
+	return $cache_limit;
+}
+
+/**
+ * Get default site cache limits
+ * @since 2.4
+ * @return array
+ */
+function ctf_default_site_cache_limits()
+{
+	return array(
+		'basic' => 12,
+		'personal' => 12,
+		'business' => 12,
+		'developer' => 12,
+		'plus' => 18,
+		'elite' => 24,
+		'all_access' => 24,
+	);
+}
+
+/**
+ * Get current product base name
+ * @since 2.4
+ * @return string
+ */
+function ctf_get_current_product_name()
+{
+	$product_name = 'basic';
+	if (strpos(CTF_PRODUCT_NAME, 'Personal') !== false) {
+		$product_name = 'personal';
+	} elseif (strpos(CTF_PRODUCT_NAME, 'Business') !== false) {
+		$product_name = 'business';
+	} elseif (strpos(CTF_PRODUCT_NAME, 'Developer') !== false) {
+		$product_name = 'developer';
+	} elseif (strpos(CTF_PRODUCT_NAME, 'Plus') !== false) {
+		$product_name = 'plus';
+	} elseif (strpos(CTF_PRODUCT_NAME, 'Elite') !== false) {
+		$product_name = 'elite';
+	}
+
+	return $product_name;
+}
+
+/**
+ * Summary of parse_json_data
+ *
+ * @param mixed $data
+ *
+ * @return array
+ */
+function parse_json_data($data)
+{
+	$json = json_decode($data, true);
+	if (is_string($json)) {
+		$json = json_decode($json, true);
+	}
+	return is_array($json) ? $json : [];
+}

@@ -123,6 +123,20 @@ SB_Customizer.initPromise.then((customizer) => {
 
 			Builder.$forceUpdate();
 		},
+				/**
+		 * Triggers plugin install lightbox.
+		 *
+		 * @since 4.0
+		 */
+		TriggerInstallLightbox: function (plugin) {
+			if (plugin.installed && plugin.activated) {
+				window.location = plugin.dashboard_permalink;
+				return;
+			}
+			if( plugin?.class ) {
+				jQuery(plugin.class).parent('a').trigger('click');
+			}
+		},
 		/**
 		 * Switch Customizer Tab
 		 *
@@ -218,6 +232,11 @@ SB_Customizer.initPromise.then((customizer) => {
 				}
 				if( data !== false ){
 					self.processNotification("licenseActivated");
+					// remove license notices
+					self.viewsActive.licenseLearnMore = false;
+					jQuery('#sby-license-expired-agp').slideUp();
+					jQuery('#sbc-builder-app').removeClass('sbc-builder-app-lite-dismiss');
+					jQuery('.sby_get_pro_highlight, .sby_get_cff, .sby_get_sbi, .sby_get_ctf').closest('li').remove();
 				}
 			})
 		},
@@ -516,7 +535,7 @@ SB_Customizer.initPromise.then((customizer) => {
 			var self = this;
 			self.selectedFeedTemplate = feedTemplate.type;
 			if ( iscustomizerPopup ) {
-				if ( !self.sbyIsPro || self.sbyLicenseNoticeActive || self.sbyLicenseInactiveState ) {
+				if ( !self.sbyIsPro || self.sbyLicenseNoticeActive || self.sbyLicenseInactiveState || !self.hasFeature('feeds_templates') ) {
 					self.activateView('feedtemplatesPopup');
 					self.viewsActive.extensionsPopupElement = 'feedTemplate';
 				} else {
@@ -854,6 +873,7 @@ SB_Customizer.initPromise.then((customizer) => {
 			var self = this;
 			self.customizerScreens.previewScreen = previewScreen;
 			self.loadingBar = true;
+			self.customizerControlAjaxAction('feedFlyPreview', '', true);
 			setTimeout(function(){
 				self.setShortcodeGlobalSettings(true);
 				self.loadingBar = false;
@@ -1067,6 +1087,7 @@ SB_Customizer.initPromise.then((customizer) => {
 
 			self.viewsActive.onboardingPopup = false;
 			self.viewsActive.onboardingCustomizerPopup = false;
+			self.customizerScreens.activeTab = 'customize';
 
 			self.viewsActive.onboardingStep = 0;
 			var postData = {
@@ -1190,7 +1211,7 @@ SB_Customizer.initPromise.then((customizer) => {
 		 *
 		 * @since 2.0
 		 */
-		customizerControlAjaxAction : function( actionType, settingID = false ){
+		customizerControlAjaxAction : function( actionType, settingID = false, hidePreviewNotification = false ){
 			var self = this;
 			switch (actionType) {
 				case 'feedFlyPreview':
@@ -1200,6 +1221,7 @@ SB_Customizer.initPromise.then((customizer) => {
 						action : 'sby_feed_saver_manager_fly_preview',
 						feedID : self.customizerFeedData.feed_info.id,
 						previewSettings : self.customizerFeedData.settings,
+						previewScreen : self.customizerScreens.previewScreen,
 						feedName : self.customizerFeedData.feed_info.feed_name,
 					};
 					self.ajaxPost(previewFeedData, function(_ref){
@@ -1209,7 +1231,11 @@ SB_Customizer.initPromise.then((customizer) => {
 							self.template = String("<div>"+data.feed_html+"</div>");
 							// document.querySelector('body').classList.toggle('overflow-hidden');
 							self.setShortcodeGlobalSettings(true);
-							self.processNotification("previewUpdated");
+							if(!hidePreviewNotification) {
+								self.processNotification("previewUpdated");
+							} else {
+								self.loadingBar = false;
+							}
 						}else{
 							self.processNotification("unkownError");
 						}
@@ -1430,6 +1456,8 @@ SB_Customizer.initPromise.then((customizer) => {
 		builderUrl 	: sbc_builder.builderUrl,
 		pluginType	: sbc_builder.pluginType,
 		genericText	: sbc_builder.genericText,
+		genericLink	: sbc_builder.genericLink,
+		plugins: sbc_builder.installPluginsPopup,
 		sourcesScreenText	: sbc_builder.sourcesScreenText,
 		apiKeyPopupScreen	: sbc_builder.apiKeyPopupScreen,
 		selectTemplate	: sbc_builder.selectTemplate,

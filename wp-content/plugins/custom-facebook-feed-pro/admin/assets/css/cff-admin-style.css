@@ -9,7 +9,6 @@
 	padding: 6px 12px;
 	color: #141B38;
 	font-weight: 600;
-	padding: 6px 12px;
 	font-size: 12px;
 	line-height: 19px;
     cursor: pointer;
@@ -136,13 +135,11 @@
 #cff-admin .cff-warning {
 	position: relative;
 	display: inline-block;
-	border: 1px solid #ccc;
 	font-size: 12px;
 	padding: 4px 4px 4px 8px;
 	vertical-align: top;
 	margin: 4px 5px 0 0;
 	border-radius: 4px;
-
 	background: #fdf4e5;
 	border: 1px solid #e6bc88;
 	color: #94570c;
@@ -340,17 +337,12 @@
     overflow: hidden;
 }
 #cff-admin .cff-layout{
-    padding: 0;
     float: left;
     width: 222px;
     padding: 15px 15px 10px 15px;
     margin-right: 15px;
-
     background: rgba(255,255,255,0.4);
     border: 1px solid #ddd;
-
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     border-radius: 5px;
 }
 #cff-admin .cff-layout:hover,
@@ -555,6 +547,9 @@
 /* Add Facebook dashicon to CFF admin menu */
 #toplevel_page_cff-top .toplevel_page_cff-top .wp-menu-image:before{
 	content: "\f305";
+}
+.wp-submenu [href="admin.php?page=cff-top"] {
+	display: none!important
 }
 
 /* License page */
@@ -767,7 +762,6 @@
 
 /* Settings page save changes btn */
 #cff-admin .cff-save-settings-btn{
-	padding-bottom: 1.5em;
 	margin: 30px 0 5px 0;
 	display: inline-block;
 	background: #eee;
@@ -3120,42 +3114,6 @@
 
 .cff_feeds_account_ctn{width: 100%; float: left;}
 .cff_feeds_account_ctn #cff_export_accounts{float: right;}
-/* Locator Summary */
-.cff-feed-locator-summary-wrap {
-	max-width: 1100px;
-	margin-bottom: 40px;
-}
-.cff-full-wrap {
-	display: none;
-}
-.cff-locator-more {
-	display: inline-block;
-	margin: 0 0 0 1px;
-	padding: 0 5px;
-	border: 1px solid rgba(0,0,0,0.1);
-	border-radius: 3px;
-	line-height: 1.6;
-}
-
-.cff_shortcode_visible .cff_locations_link {
-	display: none;
-}
-.cff_locations_link{
-	float: left;
-}
-.cff_locations_link a {
-	font-weight: normal;
-	text-decoration: none;
-}
-.cff_locations_link svg {
-	width: 11px;
-    position: relative;
-    top: 1px;
-}
-#adminmenu a[href="admin.php?page=cff-support"],
-#adminmenu a[href="admin.php?page=cff-top"]{
-    display: none;
-}
 
 
 /*** CFF Admin Notices ***/
@@ -3265,7 +3223,6 @@
     box-sizing: border-box;
     border-radius: 2px;
     display: inline-block;
-    padding: 6px 12px;
     color: #141B38;
     font-weight: 600;
     padding: 6px 12px;
@@ -3462,11 +3419,7 @@ body.index-php .cff-sb-modal {
 .cff_notice .cff_thumb{
 	position: absolute;
 	display: inline-block;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
 	border-radius: 4px;
-	left: 0;
-	top: 0;
 	margin: 0;
 	top: 20px;
 	left: 24px;
@@ -3662,3 +3615,827 @@ body .cff_review_step1_notice .cff-btn-link:not(:last-child) {
 	}
 }
 
+.cff-notice-alert {
+  display: inline-block;
+  position: absolute;
+  vertical-align: top;
+  box-sizing: border-box;
+  margin: 1px 0 0 4px;
+  padding: 0 5px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: #d63638;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+  z-index: 26;
+}
+
+
+/* License Notice Alert */
+.sbc-popup-blur-background {
+    backdrop-filter: blur(2px);
+}
+.sb-license-notice {
+	background: #FFFFFF;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	padding: 16px 20px 20px 60px;
+	position: relative;
+}
+.sb-license-notice .sb-notice-icon {
+    position: absolute;
+    left: 20px;
+    top: 18px;
+}
+.sb-license-notice h4 {
+	color: #D72C2C;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 140%;
+	margin: 0px !important;
+}
+.sb-license-notice p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	max-width: 630px;
+	margin: 0px;
+}
+.sb-license-notice b,
+.sb-license-notice strong {
+	font-weight: 600;
+}
+.sb-license-notice .sb-notice-buttons {
+	margin-top: 15px;
+	display: flex;
+	gap: 8px;
+}
+.sb-license-notice .sb-notice-buttons .sb-btn {
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 160%;
+	color: #141B38;
+}
+.sb-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 12px;
+    gap: 8px;
+    background: #F3F4F5;
+    border: 1px solid #DCDDE1;
+    border-radius: 2px;
+    box-sizing: border-box;
+    transition: all .2s ease-in;
+	text-decoration: none;
+}
+.sb-btn:hover {
+    background-color: #fdfdfd;
+    cursor: pointer;
+}
+.sb-license-notice .sb-notice-buttons .sb-btn.loading path {
+	fill: #141B38;
+}
+.sb-license-notice .sb-notice-buttons .sb-btn.success svg {
+	width: 14px;
+}
+.sb-license-notice .sb-notice-buttons .sb-btn.success path {
+	fill: #59AB46;
+}
+.sb-license-notice .sb-notice-buttons .sb-btn.error path {
+	fill: #BC120E;
+}
+/* End License Notice Alert */
+
+/* Why Renew License Popup */
+.cff-license-why-renew .sbc-extensions-popup {
+	width: 1166px;
+	padding: 40px;
+	box-sizing: border-box;
+}
+
+.cff-license-why-renew .sbc-extensions-popup .sb-llm-header p {
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 160%;
+	color: #434960;
+	margin-top: 0;
+}
+.cff-license-why-renew .sbc-extensions-popup .sb-why-renew-list-parent {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+.cff-license-why-renew .sbc-extensions-popup .sb-why-renew-list {
+    width: calc((100% / 2) - 0px);
+    box-sizing: border-box;
+    padding-left: 50px;
+    position: relative;
+    margin-bottom: 49px;
+    padding-right: 40px;
+}
+.cff-license-why-renew .sb-why-renew-list .sb-icon {
+    position: absolute;
+    left: 0px;
+}
+.cff-license-why-renew .sb-why-renew-list .sb-list-item h4,
+#sbi-builder-app .cff-license-why-renew .sb-why-renew-list .sb-list-item h4 {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 26px;
+    color: #141B38;
+    margin: 0px;
+    text-align: left;
+}
+.cff-license-why-renew .sb-why-renew-list .sb-list-item p,
+#sbi-builder-app .cff-license-why-renew .sb-why-renew-list .sb-list-item p {
+    font-size: 14px;
+    line-height: 22px;
+    margin: 3px 0 0;
+    text-align: left;
+    color: #676c80;
+}
+/* End Why Renew License Popup */
+/* License Expired After Grace Period */
+.cff-license-expired-agp {
+	padding: 2px 52px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	position: relative;
+	overflow: hidden;
+}
+[data-app-customizer=true] .cff-license-expired-agp {
+	padding: 2px 52px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    left: 0;
+    z-index: 99;
+}
+.cff-license-expired-agp.sbi-le-flow-1 {
+	background: #BA3737;
+}
+.cff-license-expired-agp.sbi-le-flow-1.cff-license-inactive-state {
+	background: #0068A0;
+}
+.cff-license-expired-agp.sbi-le-flow-2 {
+	background: #0068A0;
+}
+.cff-license-expired-agp .cff-license-expired-agp-message {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #FFFFFF;
+}
+.cff-license-expired-agp .cff-license-expired-agp-message span {
+	font-weight: 700;
+	font-size: 14px;
+	line-height: 160%;
+	text-decoration-line: underline;
+	color: #FFFFFF;
+	margin-left: 12px;
+	cursor: pointer;
+}
+.cff-license-expired-agp button {
+	position: absolute;
+    right: 50px;
+    background-color: transparent;
+    border: none;
+	cursor: pointer;
+}
+.cff-license-expired-agp button svg{
+	width: 16px;
+	height: 16px;
+}
+.cff-license-expired-agp button svg path{
+	fill: #fff;
+}
+.cff-license-expired-agp.sbi-le-flow-1.cff-license-inactive-state {
+	background: #0068A0;
+}
+.cff-license-expired-agp.sbi-le-flow-2 {
+	background: #0068A0;
+}
+.sbc-popup-blur-background {
+	backdrop-filter: blur(2px);
+}
+/* End License Expired After Grace Period */
+
+/* Learn More Modal for License DRM */
+.cff-license-learn-more .sbi-fb-popup-inside {
+	border-top: 5px solid #D72C2C;
+	width: 1166px;
+	padding: 55px 50px;
+	box-sizing: border-box;
+	background-color: #fff;
+	position: relative;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-header h2 {
+	font-weight: 600;
+	font-size: 36px;
+	line-height: 125%;
+	margin: 2px 0px;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-header p {
+	font-weight: 400;
+    font-size: 16px;
+    line-height: 160%;
+    margin-top: 8px;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-upgrade-benefits {
+	display: flex;
+	gap: 10px;
+	margin-top: 22px;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-upgrade-benefits .sb-benefits-block {
+	padding: 16px 24px 20px 70px;
+	border: 1px solid #E8E8EB;
+	border-radius: 8px;
+	position: relative;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-upgrade-benefits .sb-benefits-block h4 {
+	font-size: 14px !important;
+	line-height: 160% !important;
+	margin: 4px 0 !important;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-upgrade-benefits .sb-benefits-block .sb-icon {
+	position: absolute;
+	left: 19px;
+}
+.cff-license-learn-more .sbi-fb-popup-inside .sb-llm-upgrade-benefits .sb-benefits-block p {
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 160%;
+    color: #434960;
+    margin-top: 0px;
+}
+.cff-license-learn-more .sb-llm-license-key-block .sb-license-checker-form {
+	background: #F9F9FA;
+	border-bottom: 1px solid #DCDDE1;
+	border-radius: 6px;
+	padding: 33px 32px;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+}
+.cff-license-learn-more .sb-llm-license-key-block .sb-license-checker-form h3 {
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 120%;
+	margin: 0px;
+}
+.cff-license-learn-more .sb-llm-license-key-block .sb-license-checker-form p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin-top: 0;
+}
+.cff-license-learn-more .sb-license-checker-form .sb-input {
+	padding: 9px 16px;
+	width: 483px;
+	height: 50px;
+	background: #FFFFFF;
+	border: 1px solid #D0D1D7;
+	border-radius: 1px;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 160%;
+	color: #8C8F9A;
+}
+.cff-license-learn-more .sb-license-checker-form .sb-modal-license-key-form{
+	display: flex;
+}
+.cff-license-learn-more .sb-license-checker-form .sb-input::placeholder {
+	color: #8C8F9A;
+}
+.cff-license-learn-more .sb-license-checker-form .sb-btn-license-activate {
+    background: #0068A0;
+    border-radius: 2px;
+    padding: 11px 24px;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+}
+.cff-license-learn-more .sb-license-checker-form .sb-btn-license-activate span {
+	margin-right: 4px;
+	height: 20px;
+	display: inline;
+}
+.cff-license-learn-more .sb-llm-license-key-block {
+	background: #FFFFFF;
+	border: 1px solid #DCDDE1;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	border-radius: 6px;
+	margin-top: 15px;
+}
+.cff-license-learn-more .sb-llm-lk-footer {
+	text-align: center;
+}
+.cff-license-learn-more .sb-llm-lk-footer p {
+	margin: 0px;
+	font-size: 14px;
+	line-height: 160%;
+	color: #141B38;
+	padding: 6px 0;
+}
+.cff-license-learn-more .sb-llm-lk-footer a {
+	font-weight: 600;
+	color: #0068A0;
+	margin-left: 12px;
+	text-decoration: none;
+}
+.cff-license-learn-more .sb-llm-lk-footer a:focus {
+	outline: none;
+}
+/* End Learn More Modal for License DRM */
+
+/*** SB NOTIFICATION ELEMENT ***/
+.sb-notification-ctn{
+    position: fixed;
+    bottom: -100px;
+    left: 200px;
+    z-index: 99999;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 3px solid #fff;
+    line-height: 1em;
+    padding: 10px 20px;
+    padding-left: 0px;
+    border-radius: 4px;
+    box-shadow: 0px 26.7377px 77.2886px rgba(0, 0, 0, 0.107828), 0px 14.2952px 41.3222px rgba(0, 0, 0, 0.0894161), 0px 8.01379px 23.1649px rgba(0, 0, 0, 0.075), 0px 4.25607px 12.3027px rgba(0, 0, 0, 0.0605839), 0px 1.77104px 5.11942px rgba(0, 0, 0, 0.0421718);
+
+}
+.sb-notification-ctn[data-active="hidden"]{
+    -webkit-animation: sbi-notification-hide .5s forwards linear;
+    animation: sbi-notification-hide .5s forwards linear;
+}
+.sb-notification-ctn[data-active="shown"]{
+    -webkit-animation: sbi-notification-show .5s forwards linear;
+    animation: sbi-notification-show .5s forwards linear;
+}
+@-webkit-keyframes sbi-notification-show { 0%{bottom: -100px;} 50%{bottom: 70px;} 70%{bottom: 60px;} 85%{bottom: 65px;} 100%{bottom: 50px;}}
+@keyframes sbi-notification-show { 0%{bottom: -100px;} 50%{bottom: 70px;} 70%{bottom: 60px;} 85%{bottom: 65px;} 100%{bottom: 50px;}}
+
+@-webkit-keyframes sbi-notification-hide {0%{bottom: 50px;}55%{bottom: 65px;}70%{bottom: 60px;}85%{bottom: 70px;}100%{bottom: -100px;}}
+@keyframes sbi-notification-hide {0%{bottom: 50px;}55%{bottom: 65px;}70%{bottom: 60px;}85%{bottom: 70px;}100%{bottom: -100px;}}
+
+.sb-notification-ctn[data-type="success"]{
+    border-color: #59AB46;
+}
+.sb-notification-ctn[data-type="error"]{
+    border-color: #D72C2C;
+}
+.sb-notification-ctn[data-type="message"]{
+    border-color: #141B38;
+}
+.sb-notification-icon{
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    margin-right: 15px;
+}
+.sb-notification-icon svg{
+    width: 22px;
+    height: 22px;
+    float: left;
+    fill: currentColor;
+}
+
+.sb-notification-ctn[data-type="success"] .sb-notification-icon{
+    color: #59AB46;
+}
+.sb-notification-ctn[data-type="error"] .sb-notification-icon{
+    color: #D72C2C;
+}
+.sb-notification-ctn[data-type="message"] .sb-notification-icon{
+    color: #141B38;
+}
+
+.sb-notification-ctn span{
+    font-size: 14px;
+    color: #141B38;
+    font-weight:500;
+}
+
+/* Block Editor - License Editor Block Not Embedded */
+.cff-license-expired-plain-block-wrapper {
+    border: 1px solid #1E1E1E;
+    border-radius: 2px;
+}
+.cff-license-expired-plain-block-wrapper p {
+    margin: 0;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header {
+    background: #FCEDED;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 20px;
+    box-sizing: border-box;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header {
+    background: #F9F9FA;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left {
+    display: flex;
+    align-items: center;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left svg {
+	width: 14px;
+	height: 14px;
+    margin-right: 8px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left svg path {
+    fill: #841919;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left p {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #841919;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #841919;
+    text-decoration: none;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a svg {
+    transform: translate(6px, 0px);
+    transition: all .2s ease-in;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a:hover svg {
+    transform: translate(3px, 0px);
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a svg path {
+    fill: #841919;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-left p {
+    color: #2C324C;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-right a {
+    color: #0068A0;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-left svg path {
+    fill: #2C324C;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-right a svg path {
+    fill: #0068A0;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 305px;
+    box-sizing: border-box;
+    padding: 40px 8px 45px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body .cff-block-body-title {
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 140%;
+    text-align: center;
+    color: #1E1E1E;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a {
+    padding: 8px 12px 8px 20px;
+    width: 226px;
+    height: 38px;
+    background: #0068A0;
+    border-radius: 2px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #FFFFFF;
+    box-sizing: border-box;
+    margin-top: 29px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a svg {
+    transform: translate(10px, 0px);
+    transition: all .2s ease-in;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a:hover svg {
+    transform: translate(6px, 0px);
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a svg path {
+    fill: #FFFFFF;
+}
+
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer {
+    border-top: 1px solid #E6E6EB;
+    background: #F9F9FA;
+    padding: 12px 20px 16px;
+    text-align: center;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer .cff-lepd-footer-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+    color: #141B38;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    color: #434960;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer p a {
+    color: #434960;
+    text-underline-offset: 2px;
+}
+
+/* Block Editor - License Editor Block Embedded */
+.cff-block-license-expired-notice-ctn {
+    background: #FFFFFF;
+    border: 1px solid #E8E8EB;
+    margin-bottom: 20px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+}
+
+.cff-block-license-expired-notice-ctn .cff-blen-header {
+    padding: 4px 12px;
+    height: 27px;
+    background: #FCEDED;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-header svg path {
+    fill: #841919;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-header span {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 160%;
+    color: #841919;
+    margin-left: 8px;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve {
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #591111;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve span {
+    margin-left: 8px;
+}
+.cff-block-license-expired-notice-ctn.cff-bln-license-state-inactive .cff-blen-resolve span {
+    color: #141B38;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve a {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #D72C2C;
+    text-decoration: none;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve .cff-left svg {
+	width: 14px;
+	height: 14px;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve .cff-right svg {
+    margin-left: 6px;
+    transition: all .2s ease-in;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve .cff-right:hover svg {
+    margin-left: 3px;
+}
+.cff-block-license-expired-notice-ctn .cff-blen-resolve .cff-right svg path{
+    fill: #D72C2C;
+}
+
+.cff-block-license-expired-notice-ctn.cff-bln-license-state-inactive .cff-blen-resolve a {
+    color: #0068A0;
+}
+.cff-block-license-expired-notice-ctn.cff-bln-license-state-inactive .cff-blen-resolve .cff-right svg path {
+    fill: #0068A0;
+}
+#adminmenu .wp-submenu .sbi_get_pro_highlight {
+    color: #FE544F;
+    font-weight: 600;
+}
+.sby-notice-alert {
+    display: inline-block;
+    position: absolute;
+    vertical-align: top;
+    box-sizing: border-box;
+    margin: 1px 0 0 4px;
+    padding: 0 5px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 9px;
+    background-color: #d63638;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+    z-index: 26;
+	transform: translate(-2px, 0px);
+}
+
+
+/* Block Editor - License Editor Block Not Embedded */
+.cff-license-expired-plain-block-wrapper {
+    border: 1px solid #1E1E1E;
+    border-radius: 2px;
+}
+.cff-license-expired-plain-block-wrapper p {
+    margin: 0;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header {
+    background: #FCEDED;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 20px;
+    box-sizing: border-box;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header {
+    background: #F9F9FA;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left {
+    display: flex;
+    align-items: center;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left svg {
+    margin-right: 8px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left svg path {
+    fill: #841919;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-left p {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #841919;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #841919;
+    text-decoration: none;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a svg {
+    transform: translate(6px, 0px);
+    transition: all .2s ease-in;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a:hover svg {
+    transform: translate(3px, 0px);
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-header .sb-right a svg path {
+    fill: #841919;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-left p {
+    color: #2C324C;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-right a {
+    color: #0068A0;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-left svg path {
+    fill: #2C324C;
+}
+.cff-license-expired-plain-block-wrapper.inactive .cff-lepb-header .sb-right a svg path {
+    fill: #0068A0;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 305px;
+    box-sizing: border-box;
+    padding: 40px 8px 45px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body .cff-block-body-title {
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 140%;
+    text-align: center;
+    color: #1E1E1E;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a {
+    padding: 8px 12px 8px 20px;
+    width: 226px;
+    height: 38px;
+    background: #0068A0;
+    border-radius: 2px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 160%;
+    color: #FFFFFF;
+    box-sizing: border-box;
+    margin-top: 29px;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a svg {
+    transform: translate(10px, 0px);
+    transition: all .2s ease-in;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a:hover svg {
+    transform: translate(6px, 0px);
+}
+.cff-license-expired-plain-block-wrapper .cff-lepb-body a svg path {
+    fill: #FFFFFF;
+}
+
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer {
+    border-top: 1px solid #E6E6EB;
+    background: #F9F9FA;
+    padding: 12px 20px 16px;
+    text-align: center;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer .cff-lepd-footer-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 160%;
+    color: #141B38;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 160%;
+    color: #434960;
+}
+.cff-license-expired-plain-block-wrapper .cff-lepd-footer p a {
+    color: #434960;
+    text-underline-offset: 2px;
+}
+
+#adminmenu .wp-submenu .cff_get_pro_highlight {
+    color: #fff;
+    font-weight: 600;
+	background-color: #1da867;
+}
+#adminmenu .wp-submenu .cff_get_sbr .cff-notice-alert{
+	background-color: #1da867;
+
+}
+
+.cff-license-expired-agp .cff-fix-btn {
+    display: inline-block;
+    background-color: #8D1313;
+    border-radius: 4px;
+    color: #fff;
+    padding: 0px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.sb-notice-title.sb-noticegroup-title{
+	padding-bottom: 10px;
+}
+
+
+#oembed_api_change.cff-admin-notices {
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+	border: 1px solid rgb(255, 239, 204);
+	background: rgb(255, 247, 229);
+}
+
+.sb-btn.sb-reconnect-oembed {
+	font-weight: bold;
+	border-radius: 4px;
+	border: 1px solid #E6E6EB;
+	box-shadow: 0px -1px 1px 0px #0000001F inset;
+	background: #F9F9FA;
+	color: #141B38;
+}
+
+#oembed_api_change_reconnect.cff-admin-notices {
+	border-radius: 3px;
+	border: 1px solid #D6ECD1;
+	box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05), 0px 4px 5px 0px rgba(0, 0, 0, 0.05);
+	background: #E6F4E3;
+	color: #203E1A;
+}

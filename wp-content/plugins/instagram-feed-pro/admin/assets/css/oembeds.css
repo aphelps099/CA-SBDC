@@ -17,6 +17,9 @@
 /* start commented backslash hack \*/
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
+body #wpcontent {
+	padding-left: 0px;
+}
 .checkmark {
     width: 21px;
     height: 22px;
@@ -69,6 +72,22 @@
 .sb-btn-orange:focus,
 .sb-btn-orange:active{
 	background: #BC120E!important;
+	color: #fff!important;
+}
+/*blue*/
+.sb-btn-blue{
+	background: #0068A0!important;
+	color: #fff!important;
+}
+.sb-btn-blue:hover{
+	background: #0096CC!important;
+	border-color: #0096CC!important;
+	color: #fff!important;
+}
+.sb-btn-blue:focus,
+.sb-btn-blue:active{
+	background: #004D77!important;
+	border-color: #004D77!important;
 	color: #fff!important;
 }
 /*** 2.0 - HEADER ***/
@@ -185,6 +204,9 @@
 }
 
 /*** 3.1 - SECTION HEADER ***/
+.sbi-section-header {
+    margin-top: 33px;
+}
 .sbi-section-header h3 {
     font-weight: 600;
     font-size: 32px;
@@ -790,3 +812,59 @@
   top: 10px;
   bottom: auto;
 }
+
+
+/* Settings page license inactive notice */
+.sby-license-inactive-agp {
+	padding: 16px 20px 20px 60px;
+	background: #FFFFFF;
+	box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05), 0px 4px 5px rgba(0, 0, 0, 0.05);
+	display: flex;
+	justify-content: space-between;
+	border-top: 2px solid #D72C2C;
+	position: relative;
+  }
+  .sby-license-inactive-agp .sb-left-content svg,
+  .sby-license-inactive-agp .sb-left-content .sb-notice-icon {
+	position: absolute;
+	left:22px;
+	top: 19px;
+  }
+  .sby-license-inactive-agp .sb-left-content h4{
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 140%;
+	margin: 0px;
+  }
+  .sby-license-inactive-agp .sb-left-content p {
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 160%;
+	color: #434960;
+	margin: 0px;
+  }
+  .sby-license-inactive-agp .sb-right .sby-buttons{
+	display: flex;
+	gap: 8px;
+  }
+  .sby-license-inactive-agp .sb-right .sby-buttons a {
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 160%;
+    color: #141B38;
+  }
+  .sb-focus-box-section {
+	animation-duration: 2s;
+	animation-name: slidein;
+  }
+  
+  @keyframes slidein {
+	from {
+	  background-color: #efb7b5;
+	}
+	to {
+	  background-color: #fff;
+	}
+  }
+  /* end Settings page license inactive notice */

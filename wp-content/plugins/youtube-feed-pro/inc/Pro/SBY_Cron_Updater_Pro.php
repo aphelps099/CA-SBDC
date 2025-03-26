@@ -160,6 +160,34 @@ class SBY_Cron_Updater_Pro extends SBY_Cron_Updater
 	}
 
 	/**
+	 * Deletes comment transient on feed schedule.
+	 *
+	 * @return void
+	 * 
+	 * @since 2.3.3
+	 */
+	public static function do_comment_delete() {
+		global $wpdb;
+
+		$database_settings = sby_get_database_settings();
+
+		if ( empty( $database_settings['connected_accounts'] ) && empty( $database_settings['api_key'] ) ) {
+
+			// Define the prefix for the transients you want to delete
+			$transient_prefix = 'sby_comment_';
+
+			// Prepare the SQL query to delete transients with the specified prefix
+			$sql = $wpdb->prepare(
+				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+				$wpdb->esc_like($transient_prefix) . '%'
+			);
+
+			// Execute the query
+			$wpdb->query($sql);
+		}
+	}
+
+	/**
 	 * Start cron jobs based on user's settings for cron cache update frequency.
 	 * This is triggered when settings are saved on the "Configure" tab.
 	 *

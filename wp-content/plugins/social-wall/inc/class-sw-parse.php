@@ -9,6 +9,9 @@
  *
  * @since 2.0/5.0
  */
+use TwitterFeed\Pro\CTF_Parse_Pro;
+use SmashBalloon\YouTubeFeed\Pro\SBY_Parse_Pro;
+use SmashBalloon\TikTokFeeds\Common\FeedParse as SBTT_Parse_Pro;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
@@ -16,6 +19,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class SW_Parse
 {
+	/**
+	 * Used to append data to a post before it's displayed.
+	 *
+	 * @param array $post The data for the individual social media post.
+	 *
+	 * @return array
+	 */
+	public static function filter_post($post)
+	{
+		$type = self::get_plugin($post);
+
+		if ($type === 'twitter') {
+			$maybe_youtube = self::maybe_parse_youtube($post);
+
+			if (! empty($maybe_youtube)) {
+				if ($post['twitter_card']) {
+					$post['twitter_card']['twitter:image'] = $maybe_youtube['video_thumb'];
+				}
+			}
+		}
+		return $post;
+	}
+
+	/**
+	 * Parses a Twitter post for YouTube related data
+	 *
+	 * @param array $post The data for the individual social media post.
+	 *
+	 * @return array
+	 */
+	public static function maybe_parse_youtube($post)
+	{
+		$iframe_data = array();
+		if (! empty($post['entities']['urls'][0]['expanded_url'])) {
+			$iframe_data = CTF_Parse_Pro::iframe_data($post['entities']['urls'][0]['expanded_url']);
+			$maybe_id = false;
+			if (strpos($post['entities']['urls'][0]['expanded_url'], 'youtube.com/shorts/') !== false) {
+				$end_url = str_replace('https://youtube.com/shorts/', '', $post['entities']['urls'][0]['expanded_url']);
+				$maybe_id = explode('?', $end_url)[0];
+			} elseif (
+				! empty($iframe_data)
+				&& strpos($iframe_data['url'], 'https://www.youtube.com/embed/') !== false
+			) {
+				$maybe_id = str_replace('https://www.youtube.com/embed/', '', $iframe_data['url']);
+			}
+
+			if ($maybe_id) {
+				$iframe_data['video_id']    = $maybe_id;
+				$iframe_data['video_thumb'] = 'https://img.youtube.com/vi/' . $maybe_id . '/mqdefault.jpg';
+			}
+		}
+
+		return $iframe_data;
+	}
+
 	public static function get_plugin( $post ) {
 
 		if ( is_object( $post )
@@ -25,7 +83,7 @@ class SW_Parse
 			 || isset( $post['cover'] )
 		     || isset( $post['owner'] )
 		     || isset( $post['picture'] )
-		     || isset( $post['embed_html'] )
+			 || (isset($post['embed_html']) && !isset($post['open_id']))
 		     || isset( $post['cover_photo'] ) ) {
 			return 'facebook';
 		} else if ( isset( $post['snippet'] ) ) {
@@ -34,6 +92,8 @@ class SW_Parse
 			return 'instagram';
 		} elseif ( isset( $post['id_str'] ) ) {
 			return 'twitter';
+		} elseif (isset($post['embed_link']) && isset($post['open_id'])) {
+			return 'tiktok';
 		} else {
 			return 'facebook';
 		}
@@ -81,6 +141,8 @@ class SW_Parse
 			return 'image';
 		} elseif ( $plugin === 'twitter' ) {
 			return CTF_Parse_Pro::get_media_type( $post );
+		} elseif ($plugin === 'tiktok') {
+			return 'video';
 		}
 		return '';
 	}
@@ -99,6 +161,8 @@ class SW_Parse
 			$thumbnail_url = CustomFacebookFeed\CFF_Parse_Pro::get_media_url( $post, 'lightbox' );
 		} elseif ( $plugin === 'twitter' ) {
 			$thumbnail_url = CTF_Parse_Pro::get_media_url( $post, 'lightbox' );
+		} elseif ($plugin === 'tiktok') {
+			$thumbnail_url = SBTT_Parse_Pro::get_cover_image_url($post);
 		}
 
 		return $thumbnail_url;
@@ -123,6 +187,10 @@ class SW_Parse
 
 		} elseif ( $plugin === 'twitter' ) {
 			$video_url = CTF_Parse_Pro::get_video_url( $post );
+		} elseif ($plugin === 'tiktok') {
+			if (method_exists(SBTT_Parse_Pro::class, 'get_post_video_url')) {
+				$video_url = SBTT_Parse_Pro::get_post_video_url($post);
+			}
 		}
 
 		return $video_url;
@@ -146,9 +214,9 @@ class SW_Parse
 				$iframe_html = CustomFacebookFeed\CFF_Parse_Pro::get_iframe_html( $post );
 
 				if ( ! empty( $iframe_html ) ) {
-					$exploded = explode( '"', $iframe_html );
-
-					return $exploded[1];
+					$iframeSrcMatches = [];
+					preg_match('/(?<=src=").*(?=")/', $iframe_html, $iframeSrcMatches);
+					return $iframeSrcMatches[0];
 				}
 			}
 			return '';
@@ -199,6 +267,11 @@ class SW_Parse
 			$name = CustomFacebookFeed\CFF_Parse_Pro::get_name( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$name = CTF_Parse_Pro::get_name( $post );
+		} elseif ($plugin === 'tiktok') {
+			if (isset($data['tiktok'])) {
+				$source = self::get_matching_source($data['tiktok'], $post);
+				$name = SBTT_Parse_Pro::get_username($source);
+			}
 		}
 
 		return $name;
@@ -223,6 +296,11 @@ class SW_Parse
 			$avatar = CustomFacebookFeed\CFF_Parse_Pro::get_avatar( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$avatar = CTF_Parse_Pro::get_avatar( $post );
+		} elseif ($plugin === 'tiktok') {
+			if (isset($data['tiktok'])) {
+				$source = self::get_matching_source($data['tiktok'], $post);
+				$avatar = SBTT_Parse_Pro::get_avatar_url($source);
+			}
 		}
 
 		return $avatar;
@@ -242,6 +320,8 @@ class SW_Parse
 			$caption = CustomFacebookFeed\CFF_Parse_Pro::get_message( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$caption = CTF_Parse_Pro::get_tweet_content( $post, $default = '' );
+		} elseif ($plugin === 'tiktok') {
+			$caption = SBTT_Parse_Pro::get_video_description($post);
 		}
 
 		return $caption;
@@ -280,6 +360,8 @@ class SW_Parse
 			$permalink = CustomFacebookFeed\CFF_Parse_Pro::get_permalink( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$permalink = CTF_Parse_Pro::get_permalink( $post );
+		} elseif ($plugin === 'tiktok') {
+			$permalink = SBTT_Parse_Pro::get_post_url($post);
 		}
 
 		return $permalink;
@@ -310,6 +392,11 @@ class SW_Parse
 			}
 		} elseif ( $plugin === 'twitter' ) {
 			$permalink = CTF_Parse_Pro::get_account_link( $post );
+		} elseif ($plugin === 'tiktok') {
+			if (isset($account_data['tiktok'])) {
+				$source = self::get_matching_source($account_data['tiktok'], $post);
+				$permalink = SBTT_Parse_Pro::get_profile_url($source);
+			}
 		}
 
 		return $permalink;
@@ -334,6 +421,8 @@ class SW_Parse
 			return CustomFacebookFeed\CFF_Parse_Pro::get_post_id( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			return CTF_Parse_Pro::get_tweet_id( $post );
+		} elseif ($plugin === 'tiktok') {
+			return SBTT_Parse_Pro::get_post_id($post);
 		}
 
 		return 'missing';
@@ -360,8 +449,29 @@ class SW_Parse
 			$timestamp = CustomFacebookFeed\CFF_Parse_Pro::get_timestamp( $post );
 		} elseif ( $plugin === 'twitter' ) {
 			$timestamp = CTF_Parse_Pro::get_timestamp( $post );
+		} elseif ($plugin === 'tiktok') {
+			$timestamp = SBTT_Parse_Pro::get_post_create_time($post);
 		}
 
 		return $timestamp;
+	}
+
+	/**
+	 * Function to get the source of the post
+	 * 
+	 * @param $source array Source data
+	 * @param $post array Post data
+	 * 
+	 * @return array
+	 */
+	public static function get_matching_source($source, $post)
+	{
+		if (!empty($source[0]) && is_array($source[0])) {
+			$matching_source = array_filter($source, function ($source) use ($post) {
+				return $source['open_id'] === $post['open_id'];
+			});
+			return array_shift($matching_source);
+		}
+		return $source;
 	}
 }

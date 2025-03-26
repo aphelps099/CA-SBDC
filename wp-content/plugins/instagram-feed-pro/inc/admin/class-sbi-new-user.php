@@ -32,7 +32,7 @@ class SBI_New_User extends SBI_Notifications {
 	 * @since 2.6
 	 */
 	public function hooks() {
-		add_action( 'admin_notices', array( $this, 'output' ), 8 );
+		add_action( 'admin_init', array( $this, 'output' ) );
 
 		add_action( 'admin_init', array( $this, 'dismiss' ) );
 		add_action( 'wp_ajax_sbi_review_notice_consent_update', array( $this, 'review_notice_consent' ) );
@@ -97,21 +97,21 @@ class SBI_New_User extends SBI_Notifications {
 		}
 
 		$sbi_statuses_option = get_option( 'sbi_statuses', array() );
-		$current_time = sbi_get_current_time();
+		$current_time        = sbi_get_current_time();
 
 		// rating notice logic
-		$sbi_rating_notice_option = get_option( 'sbi_rating_notice', false );
+		$sbi_rating_notice_option  = get_option( 'sbi_rating_notice', false );
 		$sbi_rating_notice_waiting = get_transient( 'instagram_feed_rating_notice_waiting' );
-		$should_show_rating_notice = ($sbi_rating_notice_waiting !== 'waiting' && $sbi_rating_notice_option !== 'dismissed');
+		$should_show_rating_notice = ( $sbi_rating_notice_waiting !== 'waiting' && $sbi_rating_notice_option !== 'dismissed' );
 
 		// new user discount logic
-		$in_new_user_month_range = true;
-		$should_show_new_user_discount = false;
-		$has_been_one_month_since_rating_dismissal = isset( $sbi_statuses_option['rating_notice_dismissed'] ) ? ((int)$sbi_statuses_option['rating_notice_dismissed'] + ((int)$notifications['review']['wait'] * DAY_IN_SECONDS)) < $current_time + 1: true;
+		$in_new_user_month_range                   = true;
+		$should_show_new_user_discount             = false;
+		$has_been_one_month_since_rating_dismissal = isset( $sbi_statuses_option['rating_notice_dismissed'] ) ? ( (int) $sbi_statuses_option['rating_notice_dismissed'] + ( (int) $notifications['review']['wait'] * DAY_IN_SECONDS ) ) < $current_time + 1 : true;
 
 		if ( isset( $sbi_statuses_option['first_install'] ) && $sbi_statuses_option['first_install'] === 'from_update' ) {
 			global $current_user;
-			$user_id = $current_user->ID;
+			$user_id                          = $current_user->ID;
 			$ignore_new_user_sale_notice_meta = get_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice' );
 			$ignore_new_user_sale_notice_meta = isset( $ignore_new_user_sale_notice_meta[0] ) ? $ignore_new_user_sale_notice_meta[0] : '';
 			if ( $ignore_new_user_sale_notice_meta !== 'always' ) {
@@ -119,13 +119,13 @@ class SBI_New_User extends SBI_Notifications {
 			}
 		} elseif ( $in_new_user_month_range && $has_been_one_month_since_rating_dismissal && $sbi_rating_notice_waiting !== 'waiting' ) {
 			global $current_user;
-			$user_id = $current_user->ID;
+			$user_id                          = $current_user->ID;
 			$ignore_new_user_sale_notice_meta = get_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice' );
 			$ignore_new_user_sale_notice_meta = isset( $ignore_new_user_sale_notice_meta[0] ) ? $ignore_new_user_sale_notice_meta[0] : '';
 
 			if ( $ignore_new_user_sale_notice_meta !== 'always'
 				 && isset( $sbi_statuses_option['first_install'] )
-				 && $current_time > (int)$sbi_statuses_option['first_install'] + ((int)$notifications['discount']['wait'] * DAY_IN_SECONDS) ) {
+				 && $current_time > (int) $sbi_statuses_option['first_install'] + ( (int) $notifications['discount']['wait'] * DAY_IN_SECONDS ) ) {
 				$should_show_new_user_discount = true;
 			}
 		}
@@ -235,7 +235,7 @@ class SBI_New_User extends SBI_Notifications {
 	}
 
 	public function review_notice_consent() {
-		//Security Checks
+		// Security Checks
 		check_ajax_referer( 'sbi_nonce', 'sbi_nonce' );
 		$cap = current_user_can( 'manage_instagram_feed_options' ) ? 'manage_instagram_feed_options' : 'manage_options';
 
@@ -244,7 +244,7 @@ class SBI_New_User extends SBI_Notifications {
 			wp_send_json_error(); // This auto-dies.
 		}
 
-		$consent = isset( $_POST[ 'consent' ] ) ? sanitize_text_field( $_POST[ 'consent' ] ) : '';
+		$consent = isset( $_POST['consent'] ) ? sanitize_text_field( $_POST['consent'] ) : '';
 
 		update_option( 'sbi_review_consent', $consent );
 
@@ -253,6 +253,17 @@ class SBI_New_User extends SBI_Notifications {
 			update_option( 'sbi_rating_notice', 'dismissed', false );
 			$sbi_statuses_option['rating_notice_dismissed'] = sbi_get_current_time();
 			update_option( 'sbi_statuses', $sbi_statuses_option, false );
+			
+			// remove the rating notice step 1 and step 2 from global notices.
+			global $sbi_notices;
+			$sbi_notices->remove_notice( 'review_step_1' );
+			$sbi_notices->remove_notice( 'review_step_2' );
+			$sbi_notices->remove_notice( 'review_step_1_all_pages' );
+			$sbi_notices->remove_notice( 'review_step_2_all_pages' );
+		} elseif ( $consent == 'yes' ) {
+			global $sbi_notices;
+			$sbi_notices->remove_notice( 'review_step_1' );
+			$sbi_notices->remove_notice( 'review_step_1_all_pages' );
 		}
 		wp_die();
 	}
@@ -272,7 +283,7 @@ class SBI_New_User extends SBI_Notifications {
 		// new user notices included in regular settings page notifications so this
 		// checks to see if user is one of those pages
 		if ( ! empty( $_GET['page'] )
-			 && strpos( $_GET['page'], 'sbi' ) !== false ) {
+			&& strpos( $_GET['page'], 'sbi' ) !== false ) {
 			return;
 		}
 
@@ -288,118 +299,175 @@ class SBI_New_User extends SBI_Notifications {
 				'rel'    => array(),
 			),
 		);
-		$image_overlay = '';
+		$review_consent       = get_option( 'sbi_review_consent' );
+
+		global $sbi_notices;
+		$notice_args = array(
+			'page_exclude' => array(
+				'sbi-feed-builder',
+				'sbi-settings',
+				'sbi-oembeds-manager',
+				'sbi-extensions-manager',
+				'sbi-about-us',
+				'sbi-support',
+			),
+			'capability'   => array( 'manage_instagram_feed_options', 'manage_options' ),
+		);
 
 		foreach ( $notifications as $notification ) {
-			$img_src = SBI_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( $notification['image'] );
-			$type = sanitize_text_field( $notification['id'] );
-			// check if this is a review notice
-			if( $type == 'review' ) {
-				$review_consent = get_option( 'sbi_review_consent' );
-				$sbi_open_feedback_url = 'https://smashballoon.com/feedback/?plugin=instagram-pro';
-				// step #1 for the review notice
-				if ( ! $review_consent ) {
-					?>
-					<div class="sbi_notice sbi_review_notice_step_1">
-						<div class="sbi_thumb">
-							<img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
-						</div>
-						<div class="sbi-notice-text">
-							<p class="sbi-notice-text-p"><?php echo __( 'Are you enjoying the Instagram Feed Plugin?', 'instagram-feed' ); ?></p>
-						</div>
-						<div class="sbi-notice-consent-btns">
-							<?php
-							printf(
-								'<button class="sbi-btn-link" id="sbi_review_consent_yes">%s</button>',
-								__( 'Yes', 'instagram-feed' )
-							);
+			$img_src    = SBI_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( $notification['image'] );
+			$type       = sanitize_text_field( $notification['id'] );
+			$title      = $this->get_notice_title( $notification );
+			$content    = $this->get_notice_content( $notification, $content_allowed_tags );
+			$buttons    = array();
 
-							printf(
-								'<a href="%s" target="_blank" class="sbi-btn-link"  id="sbi_review_consent_no">%s</a>',
-								$sbi_open_feedback_url,
-								__( 'No', 'instagram-feed' )
-							);
-							?>
-						</div>
-					</div>
-					<?php
-				}
-			}
-			$close_href = add_query_arg( array( 'sbi_dismiss' => $type ) );
-
-			$title = $this->get_notice_title( $notification );
-			$content = $this->get_notice_content( $notification, $content_allowed_tags );
-
-			$buttons = array();
 			if ( ! empty( $notification['btns'] ) && is_array( $notification['btns'] ) ) {
 				foreach ( $notification['btns'] as $btn_type => $btn ) {
-					if ( ! is_array( $btn['url'] ) ) {
-						$buttons[ $btn_type ]['url'] = $this->replace_merge_fields( $btn['url'], $notification );
-					} elseif ( is_array( $btn['url'] ) ) {
-						$buttons[ $btn_type ]['url'] = add_query_arg( $btn['url'] );
+					$class  = $btn_type === 'primary' ? 'sbi-btn-blue' : 'sbi-btn-grey';
+					$class .= isset( $btn['class'] ) ? ' ' . $btn['class'] : '';
+					if ( is_array( $btn['url'] ) ) {
+						$btn['url'] = array(
+							'args' => $btn['url'],
+							'action' => 'sbi-' . $type
+						);
+					} elseif ( ! is_array( $btn['url'] ) ) {
+						$btn['url'] = $this->replace_merge_fields( $btn['url'], $notification );
 					}
-
-					$buttons[ $btn_type ]['attr'] = '';
 					if ( ! empty( $btn['attr'] ) ) {
-						$buttons[ $btn_type ]['attr'] = ' target="_blank" rel="noopener noreferrer"';
+						$btn['target'] = '_blank';
 					}
 
-					$buttons[ $btn_type ]['class'] = '';
-					if ( ! empty( $btn['class'] ) ) {
-						$buttons[ $btn_type ]['class'] = ' ' . $btn['class'];
-					}
-
-					$buttons[ $btn_type ]['text'] = '';
-					if ( ! empty( $btn['text'] ) ) {
-						$buttons[ $btn_type ]['text'] = wp_kses( $btn['text'], $content_allowed_tags );
-					}
+					$buttons[] = array(
+						'class'  => 'sbi-btn ' . $class,
+						'url'    => ! empty( $btn['url'] ) ? $btn['url'] : '',
+						'target' => ! empty( $btn['target'] ) && $btn['target'] === '_blank' ? '_blank' : '',
+						'rel'    => ! empty( $btn['target'] ) && $btn['target'] === '_blank' ? 'noopener' : '',
+						'text'   => ! empty( $btn['text'] ) ? wp_kses( $btn['text'], $content_allowed_tags ) : '',
+						'tag'    => ! empty( $btn['tag'] ) ? $btn['tag'] : 'a',
+					);
 				}
 			}
-		}
 
-		$review_consent = get_option( 'sbi_review_consent' );
-		$review_step2_style = '';
-		if ( $type == 'review' && ! $review_consent ) {
-			$review_step2_style = 'style="display: none;"';
+			switch ( $type ) {
+				case 'review':
+					$sbi_open_feedback_url = 'https://smashballoon.com/feedback/?plugin=instagram-pro';
+					// step 1 for the review notice.
+					if ( ! $review_consent ) {
+						$error_args = array(
+							'class'              => 'sbi_notice sbi_review_notice_step_1',
+							'image'              => array(
+								'src'  => $img_src,
+								'alt'  => 'notice',
+								'wrap' => '<div class="sbi_thumb"><img {src} {alt}></div>',
+							),
+							'message'            => __( 'Are you enjoying the Instagram Feed Plugin?', 'instagram-feed' ),
+							'buttons'            => array(
+								array(
+									'text'  => __( 'Yes', 'instagram-feed' ),
+									'class' => 'sbi-btn-link',
+									'id'    => 'sbi_review_consent_yes',
+									'tag'   => 'button',
+								),
+								array(
+									'text'   => __( 'No', 'instagram-feed' ),
+									'class'  => 'sbi-btn-link',
+									'id'     => 'sbi_review_consent_no',
+									'target' => '_blank',
+									'url'    => $sbi_open_feedback_url,
+									'tag'    => 'a',
+								),
+							),
+							'buttons_wrap_start' => '<div class="sbi-notice-consent-btns">',
+							'buttons_wrap_end'   => '</div>',
+							'priority'           => 50,
+							'wrap_schema'        => '<div {class}>{image}<div class="sbi-notice-text"><p class="sbi-notice-text-p">{message}</p></div>{buttons}</div>',
+						);
+						$error_args = wp_parse_args( $error_args, $notice_args );
+						$sbi_notices->add_notice( 'review_step_1_all_pages', 'information', $error_args );
+					}
+					$error_args = array(
+						'class'              => 'sbi_notice_op sbi_notice sbi_review_notice',
+						'title'              => array(
+							'text'  => $title,
+							'class' => 'sbi-notice-text-header',
+						),
+						'message'            => $content,
+						'image'              => array(
+							'src'  => $img_src,
+							'alt'  => 'notice',
+							'wrap' => '<div class="sbi_thumb"><img {src} {alt}></div>',
+						),
+						'buttons'            => $buttons,
+						'buttons_wrap_start' => '<div class="sbi-notice-btns-wrap"><p class="sbi-notice-links">',
+						'buttons_wrap_end'   => '</p></div>',
+						'styles'             => array(
+							'display' => array(
+								'condition' => array(
+									'key'     => 'option',
+									'name'    => 'sbi_review_consent',
+									'compare' => '===',
+									'value'   => 'yes',
+									'default' => 'no'
+								),
+								'true'      => '',
+								'false'     => 'none',
+							),
+						),
+						'priority'           => 51,
+						'dismissible'        => true,
+						'dismiss'            => array(
+							'class' => 'sbi-notice-dismiss',
+							'icon'  => SBI_PLUGIN_URL . 'admin/assets/img/sbi-dismiss-icon.svg',
+							'tag'   => 'a',
+							'href' => array(
+								'args' => array(
+									'sbi_dismiss' => $type
+								),
+								'action' => 'sbi-' . $type
+							)
+						),
+						'wrap_schema'        => '<div {class} {styles}>{image}<div class="sbi-notice-text">
+						<div class="sbi-notice-text-inner">{title}<p class="sbi-notice-text-p">{message}</p></div>{buttons}</div>{dismiss}</div>',
+					);
+					$error_args = wp_parse_args( $error_args, $notice_args );
+					$sbi_notices->add_notice( 'review_step_2_all_pages', 'information', $error_args );
+					break;
+				default:
+					$error_args = array(
+						'class'              => 'sbi_notice_op sbi_notice sbi_' . $type . '_notice',
+						'title'              => array(
+							'text'  => $title,
+							'class' => 'sbi-notice-text-header',
+						),
+						'message'            => $content,
+						'image'              => array(
+							'src'  => $img_src,
+							'alt'  => 'notice',
+							'wrap' => '<div class="sbi_thumb"><img {src} {alt}></div>',
+						),
+						'buttons'            => $buttons,
+						'buttons_wrap_start' => '<div class="sbi-notice-btns-wrap"><p class="sbi-notice-links">',
+						'buttons_wrap_end'   => '</p></div>',
+						'dismissible'        => true,
+						'dismiss'            => array(
+							'class' => 'sbi-notice-dismiss',
+							'icon'  => SBI_PLUGIN_URL . 'admin/assets/img/sbi-dismiss-icon.svg',
+							'tag'   => 'a',
+							'href' => array(
+								'args' => array(
+									'sbi_dismiss' => $type
+								),
+								'action' => 'sbi-' . $type
+							)
+						),
+						'wrap_schema'        => '<div {class} {styles}>{image}<div class="sbi-notice-text">
+						<div class="sbi-notice-text-inner">{title}<p class="sbi-notice-text-p">{message}</p></div>{buttons}</div>{dismiss}</div>',
+					);
+					$error_args = wp_parse_args( $error_args, $notice_args );
+					$sbi_notices->add_notice( $notification['id'], 'information', $error_args );
+					break;
+			}
 		}
-		?>
-
-		<div class="sbi_notice_op sbi_notice sbi_<?php echo esc_attr( $type ); ?>_notice" <?php echo !empty( $review_step2_style ) ? $review_step2_style : ''; ?>>
-			<div class="sbi_thumb">
-				<img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
-				<?php echo $image_overlay; ?>
-			</div>
-			<div class="sbi-notice-text">
-				<div class="sbi-notice-text-inner">
-					<h3 class="sbi-notice-text-header"><?php echo $title; ?></h3>
-					<p class="sbi-notice-text-p"><?php echo $content; ?></p>
-				</div>
-				<div class="sbi-notice-btns-wrap">
-					<p class="sbi-notice-links">
-						<?php
-						foreach ( $buttons as $type => $button ) :
-							$btn_classes = array('sbi-btn');
-							$btn_classes[] = esc_attr( $button['class'] );
-							if ( $type == 'primary' ) {
-								$btn_classes[] = 'sbi-btn-blue';
-							} else {
-								$btn_classes[] = 'sbi-btn-grey';
-							}
-							?>
-							<a class="<?php echo implode(' ', $btn_classes); ?>" href="<?php echo esc_attr( $button['url'] ); ?>"<?php echo $button['attr']; ?>><?php echo $button['text']; ?></a>
-						<?php endforeach; ?>
-					</p>
-				</div>
-			</div>
-			<div class="sbi-notice-dismiss">
-				<a href="<?php echo esc_url( $close_href ); ?>">
-					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z" fill="#141B38"></path>
-					</svg>
-				</a>
-			</div>
-		</div>
-		<?php
 	}
 
 	/**
@@ -412,14 +480,14 @@ class SBI_New_User extends SBI_Notifications {
 	 * @return string $title
 	 */
 	public function get_notice_title( $notification ) {
-		$type = $notification['id'];
+		$type  = $notification['id'];
 		$title = '';
 
 		// Notice title depending on notice type
 		if ( $type == 'review' ) {
 			$title = __( 'Glad to hear you are enjoying it. Would you consider leaving a positive review?', 'instagram-feed' );
-		} else if ( $type == 'discount' ) {
-			$title =  __( 'Exclusive Offer! 60% OFF', 'instagram-feed' );
+		} elseif ( $type == 'discount' ) {
+			$title = __( 'Exclusive Offer! 60% OFF', 'instagram-feed' );
 		} else {
 			$title = $this->replace_merge_fields( $notification['title'], $notification );
 		}
@@ -438,14 +506,14 @@ class SBI_New_User extends SBI_Notifications {
 	 * @return string $content
 	 */
 	public function get_notice_content( $notification, $content_allowed_tags ) {
-		$type = $notification['id'];
+		$type    = $notification['id'];
 		$content = '';
 
 		// Notice content depending on notice type
 		if ( $type == 'review' ) {
 			$content = __( 'It really helps to support the plugin and help others to discover it too!', 'instagram-feed' );
-		} else if ( $type == 'discount' ) {
-			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free Instagram Feed.', 'instagram-feed' );
+		} elseif ( $type == 'discount' ) {
+			$content = __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free Instagram Feed.', 'instagram-feed' );
 		} else {
 			if ( ! empty( $notification['content'] ) ) {
 				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );
@@ -461,62 +529,90 @@ class SBI_New_User extends SBI_Notifications {
 	 */
 	public function dismiss() {
 		global $current_user;
-		$user_id = $current_user->ID;
+		$user_id             = $current_user->ID;
 		$sbi_statuses_option = get_option( 'sbi_statuses', array() );
 
 		if ( isset( $_GET['sbi_ignore_rating_notice_nag'] ) ) {
-			if ( (int)$_GET['sbi_ignore_rating_notice_nag'] === 1 ) {
+			$rating_ignore = false;
+			if ( isset( $_GET['sbi_nonce'] ) && wp_verify_nonce( $_GET['sbi_nonce'], 'sbi-review' ) ) {
+				$rating_ignore = isset( $_GET['sbi_ignore_rating_notice_nag'] ) ? sanitize_text_field( $_GET['sbi_ignore_rating_notice_nag'] ) : false;
+			}
+			if ( 1 === (int) $rating_ignore ) {
 				update_option( 'sbi_rating_notice', 'dismissed', false );
 				$sbi_statuses_option['rating_notice_dismissed'] = sbi_get_current_time();
 				update_option( 'sbi_statuses', $sbi_statuses_option, false );
 
-			} elseif ( $_GET['sbi_ignore_rating_notice_nag'] === 'later' ) {
+				global $sbi_notices;
+				$sbi_notices->remove_notice( 'review_step_2' );
+				$sbi_notices->remove_notice( 'review_step_2_all_pages' );
+			} elseif ( 'later' === $rating_ignore ) {
 				set_transient( 'instagram_feed_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
+				delete_option( 'sbi_review_consent' );
 				update_option( 'sbi_rating_notice', 'pending', false );
+
+				global $sbi_notices;
+				$sbi_notices->remove_notice( 'review_step_2' );
+				$sbi_notices->remove_notice( 'review_step_2_all_pages' );
 			}
 		}
 
 		if ( isset( $_GET['sbi_ignore_new_user_sale_notice'] ) ) {
-			$response = sanitize_text_field( $_GET['sbi_ignore_new_user_sale_notice'] );
-			if ( $response === 'always' ) {
+			$new_user_ignore = false;
+			if ( isset( $_GET['sbi_nonce'] ) && wp_verify_nonce( $_GET['sbi_nonce'], 'sbi-discount' ) ) {
+				$new_user_ignore = isset( $_GET['sbi_ignore_new_user_sale_notice'] ) ? sanitize_text_field( $_GET['sbi_ignore_new_user_sale_notice'] ) : false;
+			}
+			if ( 'always' === $new_user_ignore ) {
 				update_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice', 'always' );
 
-				$current_month_number = (int)date('n', sbi_get_current_time() );
-				$not_early_in_the_year = ($current_month_number > 5);
+				$current_month_number  = (int) date( 'n', sbi_get_current_time() );
+				$not_early_in_the_year = ( $current_month_number > 5 );
 
 				if ( $not_early_in_the_year ) {
 					update_user_meta( $user_id, 'sbi_ignore_bfcm_sale_notice', date( 'Y', sbi_get_current_time() ) );
 				}
-
 			}
 		}
 
 		if ( isset( $_GET['sbi_ignore_bfcm_sale_notice'] ) ) {
-			$response = sanitize_text_field( $_GET['sbi_ignore_bfcm_sale_notice'] );
-			if ( $response === 'always' ) {
+			$bfcm_ignore = false;
+			if ( isset( $_GET['sbi_nonce'] ) && wp_verify_nonce( $_GET['sbi_nonce'], 'sbi-bfcm' ) ) {
+				$bfcm_ignore = isset( $_GET['sbi_ignore_bfcm_sale_notice'] ) ? sanitize_text_field( $_GET['sbi_ignore_bfcm_sale_notice'] ) : false;
+			}
+			if ( 'always' === $bfcm_ignore ) {
 				update_user_meta( $user_id, 'sbi_ignore_bfcm_sale_notice', 'always' );
-			} elseif ( $response === date( 'Y', sbi_get_current_time() ) ) {
+			} elseif ( date( 'Y', sbi_get_current_time() ) === $bfcm_ignore ) {
 				update_user_meta( $user_id, 'sbi_ignore_bfcm_sale_notice', date( 'Y', sbi_get_current_time() ) );
 			}
 			update_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice', 'always' );
 		}
 
 		if ( isset( $_GET['sbi_dismiss'] ) ) {
-			if ( $_GET['sbi_dismiss'] === 'review' ) {
+			$notice_dismiss = false;
+			if ( isset( $_GET['sbi_nonce'] ) && wp_verify_nonce( $_GET['sbi_nonce'], 'sbi-review' ) ) {
+				$notice_dismiss = sanitize_text_field( $_GET['sbi_dismiss'] );
+			}
+			if ( 'review' === $notice_dismiss ) {
 				update_option( 'sbi_rating_notice', 'dismissed', false );
 				$sbi_statuses_option['rating_notice_dismissed'] = sbi_get_current_time();
 				update_option( 'sbi_statuses', $sbi_statuses_option, false );
-			} elseif ( $_GET['sbi_dismiss'] === 'discount' ) {
+
 				update_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice', 'always' );
 
-				$current_month_number = (int)date('n', sbi_get_current_time() );
-				$not_early_in_the_year = ($current_month_number > 5);
+				global $sbi_notices;
+				$sbi_notices->remove_notice( 'review_step_1' );
+				$sbi_notices->remove_notice( 'review_step_1_all_pages' );
+				$sbi_notices->remove_notice( 'review_step_2' );
+				$sbi_notices->remove_notice( 'review_step_2_all_pages' );
+			} elseif ( 'discount' === $notice_dismiss ) {
+				$current_month_number  = (int) date( 'n', sbi_get_current_time() );
+				$not_early_in_the_year = ( $current_month_number > 5 );
 
 				if ( $not_early_in_the_year ) {
 					update_user_meta( $user_id, 'sbi_ignore_bfcm_sale_notice', date( 'Y', sbi_get_current_time() ) );
 				}
+
+				update_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice', 'always' );
 			}
-			update_user_meta( $user_id, 'sbi_ignore_new_user_sale_notice', 'always' );
 		}
 	}
 }

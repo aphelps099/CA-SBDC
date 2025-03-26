@@ -1,5 +1,16 @@
+let xss = require("xss");
 var sby_js_exists = (typeof sby_js_exists !== 'undefined') ? true : false;
+
 if(!sby_js_exists) {
+
+    /**
+     * Sanitize string by escaping HTML entities
+     * @param input
+     * @returns {string}
+     */
+    function sbyEncodeInput(input)  {
+        return xss(input);
+    }
 
     function sbyAddImgLiquid() {
         /*! imgLiquid v0.9.944 / 03-05-2013 https://github.com/karacas/imgLiquid */
@@ -1220,36 +1231,40 @@ if(!sby_js_exists) {
                                   if (!jQuery(event.target).closest('.sby_lb-outerContainer').length) {
                                       if (!jQuery(event.target).closest('.sby_lb-dataContainer').length) {
                                           //Fade out lightbox
+                                          lightboxOnClose();
                                           lbBuilder.pausePlayer();
-
                                           jQuery('#sby_lightboxOverlay, #sby_lightbox').fadeOut();
                                       }
                                   }
                               }), this.$lightbox.hide(),
                                 jQuery('#sby_lightboxOverlay').on("click", function(c) {
                                     lbBuilder.pausePlayer();
-
+                                    jQuery('.sby_gdpr_notice').remove();
                                     return "sby_lightbox" === a(c.target).attr("id") && b.end(), !1
                                 }), this.$lightbox.find(".sby_lb-prev").on("click", function() {
                                   lbBuilder.pausePlayer();
+                                  jQuery('.sby_gdpr_notice').remove();
 
                                   return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
                               }), this.$lightbox.find(".sby_lb-container").on("swiperight", function() {
                                   lbBuilder.pausePlayer();
+                                  jQuery('.sby_gdpr_notice').remove();
 
                                   return b.changeImage(0 === b.currentImageIndex ? b.album.length - 1 : b.currentImageIndex - 1), !1
                               }), this.$lightbox.find(".sby_lb-next").on("click", function() {
                                   lbBuilder.pausePlayer();
+                                  jQuery('.sby_gdpr_notice').remove();
 
                                   return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
                               }), this.$lightbox.find(".sby_lb-container").on("swipeleft", function() {
                                   lbBuilder.pausePlayer();
+                                  jQuery('.sby_gdpr_notice').remove();
 
                                   return b.changeImage(b.currentImageIndex === b.album.length - 1 ? 0 : b.currentImageIndex + 1), !1
-                              }), this.$lightbox.find(".sby_lb-loader, .sby_lb-close").on("click", function() {
-
-                                  lbBuilder.pausePlayer();
-
+                              }), 
+                              this.$lightbox.find(".sby_lb-loader, .sby_lb-close").on("click", function() {
+                                    lightboxOnClose();
+                                    lbBuilder.pausePlayer();
                                   return b.end(), !1
                               })
                           }, b.prototype.start = function(b) {
@@ -1271,7 +1286,7 @@ if(!sby_js_exists) {
                                   f = a(b.prop("tagName") + '[rel="' + b.attr("rel") + '"]');
                                   for (var j = 0; j < f.length; j = ++j) c(a(f[j])), f[j] === b[0] && (g = j)
                               }
-                              var k = e.scrollTop() + this.options.positionFromTop,
+                              var k = e.scrollTop() + this.options.positionFromTop - 50,
                                 l = e.scrollLeft();
                               this.$lightbox.css({
                                   top: k + "px",
@@ -1450,8 +1465,7 @@ if(!sby_js_exists) {
                     a(function() {
                         {
                             var a = new b;
-                            new c(a)
-
+                            new c(a);
                             //Lightbox hide photo function
                             $('.sby_lightbox_action a').off().on('click', function(){
                                 $(this).parent().find('.sby_lightbox_tooltip').toggle();
@@ -1488,7 +1502,7 @@ if(!sby_js_exists) {
                           num : $self.attr('data-num'),
                           imgRes : $self.attr('data-res'),
                           feedID : $self.attr('data-feedid'),
-                          postID : typeof $self.attr( 'data-postid' ) !== 'undefind' ? $self.attr( 'data-postid' ) : 'unknown',
+                          postID : typeof $self.attr( 'data-postid' ) !== 'undefined' ? $self.attr( 'data-postid' ) : 'unknown',
                           shortCodeAtts : $self.attr('data-shortcode-atts'),
                           resizingEnabled : (flags.indexOf('resizeDisable') === -1),
                           imageLoadEnabled : (flags.indexOf('imageLoadDisable') === -1),
@@ -1680,7 +1694,7 @@ if(!sby_js_exists) {
                     $self.find('.sby_player_outer_wrap .sby_video_thumbnail').off().on('click',function (event) {
                         if ((!feed.settings.lightboxEnabled || (feed.settings.lightboxEnabled && feed.settings.noCDN))
                           && (feed.settings.noCDN || !feed.settings.consentGiven)) {
-                            if (typeof $(this).closest('.sby_item').length
+                            if ($(this).closest('.sby_item').length
                               && typeof $(this).closest('.sby_item').attr('data-video-id') !== 'undefined') {
                                 $(this).attr('href','https://www.youtube.com/watch?v='+$(this).closest('.sby_item').attr('data-video-id'));
                             }
@@ -1724,6 +1738,11 @@ if(!sby_js_exists) {
                 videoID = typeof videoID !== 'undefined' ? videoID : this.getVideoID($self.find('.sby_item').first());
                 autoplay = typeof autoplay !== 'undefined' ? autoplay : 0;
 
+                // do not create player in customizer preview
+                if ( sbyOptions.isCustomizer !== undefined && sbyOptions.isCustomizer ) {
+                    return;
+                }
+
                 if (typeof args === 'undefined') {
                     args = {
                         host: window.location.protocol + feed.embedURL,
@@ -1754,7 +1773,26 @@ if(!sby_js_exists) {
                         'onStateChange': function(data) {
                             $self.find('.sby_player_outer_wrap').removeClass('sby_player_loading').find('.sby_video_thumbnail').css('z-index', -1).find('.sby_loader').hide().addClass('sby_hidden');
                             feed.afterStateChange(playerID,videoID,data,$('#' + playerID).closest('.sby_video_thumbnail_wrap'));
+
+
                             if (data.data !== 1) return;
+
+                            let feedID;
+
+                            if(feed.el) {
+                                const shortcodeAttr = feed.el.getAttribute('data-shortcode-atts');
+                                if(shortcodeAttr) {
+                                    feedID = JSON.parse(shortcodeAttr)?.feed;
+                                }
+                            }
+
+                            document.dispatchEvent(new CustomEvent('sby-video-interaction', {
+                                detail: {
+                                    videoID: videoID,
+                                    feedID: feedID
+                                }
+                            }));
+
                             if (typeof feed.players !== 'undefined') {
                                 $self.find('.sby_item').each(function() {
                                     var itemVidID = feed.getVideoID($(this));
@@ -1917,6 +1955,9 @@ if(!sby_js_exists) {
                                 'onStateChange': function(data) {
                                     var videoID = data.target.getVideoData()['video_id'];
                                     if (data.data !== 1) return;
+                                    document.dispatchEvent(videoInteractionEvent, {
+                                        videoID: videoID,
+                                    })
                                     $self.find('.sby_item').each(function() {
                                         var itemVidID = jQuery(this).attr('data-video-id');
 
@@ -1939,7 +1980,7 @@ if(!sby_js_exists) {
                     $self.find('.sby_video_thumbnail').on('click',function(event) {
                         if ((!feed.settings.lightboxEnabled || (feed.settings.lightboxEnabled && feed.settings.noCDN))
                           && (feed.settings.noCDN || !feed.settings.consentGiven)) {
-                            if (typeof $(this).closest('.sby_item').length
+                            if ($(this).closest('.sby_item').length
                               && typeof $(this).closest('.sby_item').attr('data-video-id') !== 'undefined') {
                                 $(this).attr('href','https://www.youtube.com/watch?v='+$(this).closest('.sby_item').attr('data-video-id'));
                             }
@@ -2120,6 +2161,7 @@ if(!sby_js_exists) {
                         }
 
                         $('.sby_no_js').removeClass('sby_no_js');
+                        openComments();
                     }
 
                 };
@@ -2560,7 +2602,13 @@ if(!sby_js_exists) {
                 if ($(this.el).find('#sby_blank').length) {
                     return false;
                 }
-                return this.playerEagerLoaded() || (this.playerAPIReady && this.settings.consentGiven) || (window.sbyAPIReady && this.settings.consentGiven);
+
+                const concentGiven = this.settings.consentGiven
+
+                // Fix for elementor builder for list view. Where video would not load on hocer.
+                const elementorCheck = window.sby.feeds[this.index].playerAPIReady && concentGiven;
+
+                return this.playerEagerLoaded() || (this.playerAPIReady && concentGiven) || (window.sbyAPIReady && concentGiven) || elementorCheck;
             },
             playVideoInPlayer: function(videoID,playerID) {
                 if (typeof this.player !== 'undefined' && typeof this.player.loadVideoById !== 'undefined') {
@@ -2580,11 +2628,9 @@ if(!sby_js_exists) {
                     $(this.el).find('.sby_player_outer_wrap').removeClass('sby_player_loading');
                     $(this.el).find('.sby_player_outer_wrap .sby_video_thumbnail').find('.sby_loader').hide().addClass('sby_hidden');
 
-                    if ($(window).width() < 480) {
-                        $('html, body').animate({
-                            scrollTop: $(this.el).find('.sby_player_outer_wrap').offset().top
-                        }, 300);
-                    }
+                    $('html, body').animate({
+                        scrollTop: $(this.el).find('.sby_player_outer_wrap').offset().top
+                    }, 300);
 
                 }
             },
@@ -2605,7 +2651,9 @@ if(!sby_js_exists) {
                     this.settings.noCDN = false;
                     return true;
                 }
-                if (typeof CLI_Cookie !== "undefined") { // GDPR Cookie Consent by WebToffee
+                if (typeof window.WPConsent !== 'undefined') {
+                    this.settings.consentGiven = window.WPConsent.hasConsent('marketing');
+                } else if (typeof CLI_Cookie !== "undefined") { // GDPR Cookie Consent by WebToffee
                     if (CLI_Cookie.read(CLI_ACCEPT_COOKIE_NAME) !== null)  {
 
                         // WebToffee no longer uses this cookie but being left here to maintain backwards compatibility
@@ -2632,7 +2680,10 @@ if(!sby_js_exists) {
                 } else if (typeof window.Cookiebot !== "undefined") { // Cookiebot by Cybot A/S
                     this.settings.consentGiven = Cookiebot.consented;
                 } else if (typeof window.BorlabsCookie !== 'undefined') { // Borlabs Cookie by Borlabs
-                    this.settings.consentGiven = window.BorlabsCookie.checkCookieConsent('youtube');
+                    this.settings.consentGiven = typeof window.BorlabsCookie.Consents !== 'undefined' ? window.BorlabsCookie.Consents.hasConsent('youtube') : window.BorlabsCookie.checkCookieConsent('youtube');
+                } else if (sbyCmplzGetCookie('moove_gdpr_popup')) { // Moove GDPR Popup
+                    var moove_gdpr_popup = JSON.parse(decodeURIComponent(sbyCmplzGetCookie('moove_gdpr_popup')));
+                    this.settings.consentGiven = typeof moove_gdpr_popup.thirdparty !== "undefined" && moove_gdpr_popup.thirdparty === "1";
                 }
 
                 var evt = jQuery.Event('sbycheckconsent');
@@ -2720,6 +2771,7 @@ if(!sby_js_exists) {
                 var evt = jQuery.Event('sbyafterlayoutinit');
                 evt.feed = this;
                 jQuery(window).trigger(evt);
+                openComments(); 
             };
 
             this.initGrid = function() {
@@ -2942,7 +2994,7 @@ if(!sby_js_exists) {
                         e.preventDefault();
                         var $expand = jQuery(this);
                         $caption = typeof $caption !== 'undefined' ? $caption : $item.find('.sby_info .sby_caption');
-                        captionText = typeof captiontext !== 'undefined' ? captionText : $item.find('.sby_item_video_thumbnail').attr('data-title');
+                        captionText = typeof captiontext !== 'undefined' ? captionText : sbyEncodeInput($item.find('.sby_item_video_thumbnail').attr('data-title'));
                         if ($item.hasClass('sby_caption_full') && typeof short_text !== 'undefined') {
                             $caption.html(short_text);
                             $item.removeClass('sby_caption_full');
@@ -3027,7 +3079,7 @@ if(!sby_js_exists) {
                 //window.sby.ctas
 
                 var videoID = typeof videoID !== 'undefined' ? videoID : $item.find('.sby_item_video_thumbnail').attr('data-video-id'),
-                  text = typeof $item.find('.sby_item_video_thumbnail').attr('data-title') !== 'undefined' ? $item.find('.sby_item_video_thumbnail').attr('data-title') : '',
+                  text = sbyEncodeInput(typeof $item.find('.sby_item_video_thumbnail').attr('data-title') !== 'undefined' ? $item.find('.sby_item_video_thumbnail').attr('data-title') : ''),
                   ctaInCaption = window.sby.ctaDetect(text);
 
                 if (ctaInCaption) {
@@ -3084,6 +3136,11 @@ if(!sby_js_exists) {
                         $(this).find('.sby_view_count').text(data.sby_view_count);
                         $(this).find('.sby_comment_count').text(data.sby_comment_count);
                         $(this).find('.sby_like_count').text(data.sby_like_count);
+
+                        //Set for attributes too.
+                        $(this).find('.sby_video_thumbnail').attr('data-views',data.sby_view_count);
+                        $(this).find('.sby_video_thumbnail').attr('data-comment-count', data.sby_comment_count);
+
                         if (data.sby_live_broadcast.broadcast_type !== 'none') {
                             $(this).find('.sby_ls_message').text(data.sby_live_broadcast.live_streaming_string);
                             $(this).find('.sby_date').html(data.sby_live_broadcast.live_streaming_date);
@@ -3092,7 +3149,7 @@ if(!sby_js_exists) {
                             $(this).attr('data-live-date',data.sby_live_broadcast.live_streaming_timestamp);
                         }
                         if (typeof data.sby_description !== 'undefined') {
-                            $(this).find('.sby_item_video_thumbnail').attr('data-title',data.sby_description );
+                            $(this).find('.sby_item_video_thumbnail').attr('data-title', sbyEncodeInput(data.sby_description) );
                         }
                     }
                 });
@@ -3129,7 +3186,15 @@ if(!sby_js_exists) {
                 $self.find('.sby_player_item').find('.sby_info').replaceWith(
                   $newItem.find('.sby_info').clone(true,true)
                 );
-                //sby_info
+ 
+                const videoTitle = checkValue($newItem.attr('data-video-title'));
+                const videoPublishData = checkValue($newItem.find('.sby_video_thumbnail').attr('data-formatted-published-date')) ;
+
+                $self.find('.sby-player-info .sby-video-header-info .sby-video-info-header h5').text( videoTitle );
+                $self.find('.sby-player-info .sby-video-header-meta .sby-video-date').text( videoPublishData );
+
+                resetComments($self);
+                openComments();
             };
 
             this.maybeAddCTA = function(playerID,$el) {
@@ -3149,7 +3214,7 @@ if(!sby_js_exists) {
                 return {
                     feedIndex : closestFeedIndex,
                     link: a.attr("href"),
-                    videoTitle: typeof a.attr("data-video-title") !== 'undefined' ? a.attr("data-video-title") : 'YouTube Video',
+                    videoTitle: typeof a.attr("data-video-title") !== 'undefined' ? sbyEncodeInput(a.attr("data-video-title")) : 'YouTube Video',
                     video: a.attr("data-video-id"),
                     channelID: a.attr("data-channel-id")
                 }
@@ -3214,60 +3279,87 @@ if(!sby_js_exists) {
         function SbyLightboxBuilderPro() {
             SbyLightboxBuilder.call(this);
 
-            var feedContainer = $('.sb_youtube'),
-                channelSubscribers = feedContainer.attr('data-channel-subscribers'),
-                subscribeBtnText = feedContainer.attr('data-subscribe-btn-text'),
-                subscribeBtn = feedContainer.attr('data-subscribe-btn');
+               
 
             this.getData = function(a){
-                var closestFeedIndex = parseInt(a.closest('.sb_youtube').attr('data-sby-index')-1);
+                const feedParent = a.closest('.sb_youtube');
+                var closestFeedIndex = parseInt(feedParent.attr('data-sby-index')-1);
+                const subscribeBtnText = feedParent.attr('data-subscribe-btn-text');
+                const subscribeBtn = feedParent.attr('data-subscribe-btn');
+                const colorScheme = feedParent.hasClass('sby_palette_dark') ? 'dark' : 'light';
+                const atts = feedParent.attr('data-shortcode-atts');
+                const liveDataAttr = a.closest('.sby_item').attr('data-live-date');
+                const channelHeaderColorsAttr = feedParent.attr('data_channel_header_colors') ?  JSON.parse(feedParent.attr('data_channel_header_colors')) : '';
+
                 return {
                     feedIndex : closestFeedIndex,
                     link: a.attr("href"),
                     video: a.attr("data-video-id"),
-                    title: a.attr("data-title"),
-                    videoTitle: typeof a.attr("data-video-title") !== 'undefined' ? a.attr("data-video-title") : 'YouTube Video',
+                    title: sbyEncodeInput(a.attr("data-title")),
+                    videoTitle: typeof a.attr("data-video-title") !== 'undefined' ? sbyEncodeInput(a.attr("data-video-title")) : 'YouTube Video',
                     avatar: a.attr("data-avatar"),
-                    user: a.attr("data-user"),
+                    user: sbyEncodeInput(a.attr("data-user")),
                     channelURL: a.attr("data-url"),
                     channelID: a.attr("data-channel-id"),
-                    channelSubscribers: channelSubscribers,
+                    channelSubscribers: a.closest('.sb_youtube').attr('data-channel-subscribers'),
                     subscribeBtn: subscribeBtn,
                     subscribeBtnText: subscribeBtnText,
+                    colorScheme: colorScheme,
+                    publishedDate: a.attr("data-published-date"),
+                    commentCount: a.attr("data-comment-count"),
+                    views: a.attr("data-views"),
+                    liveData: liveDataAttr,
+                    channelHeaderColors : channelHeaderColorsAttr,
+                    atts: atts
                 }
             };
 
             this.template = function() {
-                return "<div id='sby_lightboxOverlay' class='sby_lightboxOverlay'></div>"+
-                  "<div id='sby_lightbox' class='sby_lightbox'>"+
-                  "<div class='sby_lb-outerContainer'>"+
-                  "<div class='sby_lb-container'>"+
-                  "<div class='sby_lb_video_thumbnail_wrap'>"+
-                  "<span class='sby_lb_video_thumbnail'>" +
-                  "<img class='sby_lb-image' alt='Lightbox image placeholder' src='' />"+
-                  "<div class='sby_lb-player' id='sby_lb-player'></div>" +
-                  "</span>" +
-                  "</div>" +
-
-                  "<div class='sby_lb-nav'><a class='sby_lb-prev' href='#' ><p class='sby-screenreader'>Previous Slide</p><span></span></a><a class='sby_lb-next' href='#' ><p class='sby-screenreader'>Next Slide</p><span></span></a></div>"+
-                  "<div class='sby_lb-loader'><a class='sby_lb-cancel'></a></div>"+
-                  "</div>"+
-                  "</div>"+
-                  "<div class='sby_lb-dataContainer'>"+
-                  "<div class='sby_lb-data'>"+
-                  "<div class='sby_lb-details'>"+
-                  "<div class='sby_lb-caption'></div>"+
-                  "<div class='sby_lb-info'>"+
-                  "<div class='sby_lb-number'></div>"+
-                  "</div>"+
-                  "</div>"+
-                  "<div class='sby_lb-closeContainer'><a class='sby_lb-close'></a></div>"+
-                  "</div>"+
-                  "</div>"+
-                  "</div>";
+                return `
+                <div id='sby_lightboxOverlay' class='sby_lightboxOverlay'></div>
+                <div id='sby_lightbox' class='sby_lightbox'>
+                 <div class='sby_lb-header'></div>
+                  <div class='sby_lb-outerContainer'>
+                    <a class='sby_lb-close'></a>
+                    <div class='sby_lb-container'>
+                      <div class='sby_lb_video_thumbnail_wrap'>
+                        <span class='sby_lb_video_thumbnail'>
+                          <img class='sby_lb-image' alt='Lightbox image placeholder' src='' />
+                          <div class='sby_lb-player' id='sby_lb-player'></div>
+                        </span>
+                      </div>
+                      <div class='sby_lb-nav'>
+                        <a class='sby_lb-prev' href='#'>
+                          <p class='sby-screenreader'>Previous Slide</p>
+                          <span></span>
+                        </a>
+                        <a class='sby_lb-next' href='#'>
+                          <p class='sby-screenreader'>Next Slide</p>
+                          <span></span>
+                        </a>
+                      </div>
+                      <div class='sby_lb-loader'>
+                        <a class='sby_lb-cancel'></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class='sby_lb-dataContainer'>
+                    <div class='sby_lb-data'>
+                      <div class='sby_lb-details'>
+                        <div class='sby_lb-caption'>
+                        </div>
+                        <div class='sby_lb-info'>
+                          <div class='sby_lb-number'></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>`;
             };
 
             this.beforePlayerSetup = function($lightbox,data,index,album,feed){
+                
+                $('body').css('overflow', 'hidden');
                 if (!$lightbox.find('.sby_cta_items_wraps').length) {
                     $lightbox.find('.sby_lb_video_thumbnail_wrap').append($(feed.el).find('.sby_cta_items_wraps').clone());
                 } else {
@@ -3276,43 +3368,89 @@ if(!sby_js_exists) {
             };
 
             this.afterPlayerSetup = function($lightbox,data,index,album) {
+
                 this.availableAvatarUrls = {};
-                //Add links to the caption
-                var sbyLightboxCaption = data.title,
-                  hashRegex = /(^|\s)#(\w[\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0\u08A2-\u08AC\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097F\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C33\u0C35-\u0C39\u0C3D\u0C58\u0C59\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D60\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F4\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191C\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19C1-\u19C7\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FCC\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA697\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA78E\uA790-\uA793\uA7A0-\uA7AA\uA7F8-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA80-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uABC0-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC+0-9_]+)|(#[a-я]+)|(#[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]+)/gi,
-                  tagRegex = /[@]+[A-Za-z0-9-_\."<]+/g;
-                if (typeof sbyLightboxCaption !== 'undefined' && sbyLightboxCaption !== '') {
-                    sbyLightboxCaption = sbyLightboxCaption.replace(/(>#)/g,'> #');
-                }
-                (sbyLightboxCaption) ? sbyLightboxCaption = sbyLinkify(sbyLightboxCaption) : sbyLightboxCaption = '';
+                const subscribeSection = data?.subscribeBtn ? data.subscribeBtn : false;
+                const subscribeBtnText = data?.subscribeBtnText ? data.subscribeBtnText : '';
 
                 if (typeof sbyLightboxAction === 'function') {
                     setTimeout(function() {
                         sbyLightboxAction();
                     },100);
                 }
-                var avatarImageHtml = '',
-                    YouTubeLogo = '<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.66732 10.0634L10.1273 8.0634L6.66732 6.0634V10.0634ZM14.374 4.8434C14.4607 5.15673 14.5207 5.57673 14.5607 6.11006C14.6073 6.6434 14.6273 7.1034 14.6273 7.5034L14.6673 8.0634C14.6673 9.5234 14.5607 10.5967 14.374 11.2834C14.2073 11.8834 13.8207 12.2701 13.2207 12.4367C12.9073 12.5234 12.334 12.5834 11.454 12.6234C10.5873 12.6701 9.79398 12.6901 9.06065 12.6901L8.00065 12.7301C5.20732 12.7301 3.46732 12.6234 2.78065 12.4367C2.18065 12.2701 1.79398 11.8834 1.62732 11.2834C1.54065 10.9701 1.48065 10.5501 1.44065 10.0167C1.39398 9.4834 1.37398 9.0234 1.37398 8.6234L1.33398 8.0634C1.33398 6.6034 1.44065 5.53006 1.62732 4.8434C1.79398 4.2434 2.18065 3.85673 2.78065 3.69006C3.09398 3.6034 3.66732 3.5434 4.54732 3.5034C5.41398 3.45673 6.20732 3.43673 6.94065 3.43673L8.00065 3.39673C10.794 3.39673 12.534 3.5034 13.2207 3.69006C13.8207 3.85673 14.2073 4.2434 14.374 4.8434Z" fill="white"/></svg>',
-                  userHtml = '<div class="sby-lb-channel-header">',
-                  subscribeBtn = data.subscribeBtn ? '<a class="sby-lb-subscribe-btn" href="http://www.youtube.com/channel/'+ data.channelID +'?sub_confirmation=1&feature=subscribe-embed-click" target="_blank" rel="noopener noreferrer">'+ YouTubeLogo +' ' + subscribeBtnText +'</a>' : '';
-                ;
+
+                if(data?.colorScheme && 'dark' === data.colorScheme ) {
+                    LightboxColorScheme(data.colorScheme, true);
+                }
+
+                let avatarImage = '',
+
+                subscribeBtn = subscribeSection ? '<a class="sby-lb-subscribe-btn" href="http://www.youtube.com/channel/'+ data.channelID +'?sub_confirmation=1&feature=subscribe-embed-click" target="_blank" rel="noopener noreferrer">'+ getStaticSVG('youtube') +' <p>' + subscribeBtnText +'</p></a>' : '';
                 if (typeof data.avatar !== 'undefined' && data.avatar !== '' && typeof data.user !== 'undefined') {
-                    avatarImageHtml = (data.avatar !== 'undefined') ? '<img src="'+data.avatar+'" />' : '';
-                    if ( data.subscribeBtn ) {
-                        userHtml += '<a class="sby_lightbox_username" href="'+data.channelURL+'" target="_blank" rel="noopener">'+avatarImageHtml+'<p class="sby-lb-channel-name-with-subs"><span>@'+data.user + '</span><span>' + data.channelSubscribers  +'</span></p></a> ' + subscribeBtn + '</div>';
-                    } else {
-                        userHtml = '';
-                    }
+                    avatarImage = (data.avatar !== 'undefined') ? data.avatar : '';
                 } else if (typeof data.user !== 'undefined') {
                     jQuery.each(window.sby.feeds, function() {
                         if (typeof this.availableAvatarUrls !== 'undefined' && typeof this.availableAvatarUrls[data.user] !== 'undefined' && this.availableAvatarUrls[data.user] !== 'undefined') {
-                            avatarImageHtml = '<img src="'+this.availableAvatarUrls[data.user]+'" />';
+                            avatarImage = this.availableAvatarUrls[data.user];
                         }
                     });
                 }
 
-                $lightbox.find(".sby_lb-caption").html( userHtml + '<span class="sby_caption_text">' + sbyLightboxCaption + '</span>').fadeIn("fast");
+                const channelSubscribers = data?.channelSubscribers ?? '';
+                const avatarImageHtml = avatarImage ? '<img src="'+ avatarImage +'" referrerPolicy="no-referrer"/>' : getStaticSVG('profile-picture');
+                const userHtml = subscribeSection && avatarImage ? '<div class="sby-lb-channel-header"><a class="sby_lightbox_username" href="'+ data.channelURL+'" target="_blank" rel="noopener">'+ avatarImageHtml + '<p class="sby-lb-channel-name-with-subs"><span>@'+data.user + '</span><span>' + channelSubscribers +'</span></p></a> ' + subscribeBtn + '</div>' : '';
+                const subscribeClass = subscribeSection && avatarImage ? 'sby_lb-channel-info' : 'sby_lb-no-channel-info'
 
+                if( window.sbyOptions.isPro ) {
+
+                const description = data?.title ? addLinksTotext(data.title) : '';
+                const publishedDate = data?.publishedDate ? timeAgo(convertUnixToMs(data.publishedDate)) : '';
+                const views = data?.views ? data.views : '';
+
+                const videoHeaderSection  = `
+                    <div class="sby_lb-video-heading">
+                        <h3>${data.videoTitle}</h3>
+                        <div class="sby_lb-video-info">
+                            <span>${views}</span>
+                            <span class="sby_lb-spacer">·</span>
+                            <span>${publishedDate}</span>
+                        </div>
+                    </div>
+                `;
+
+                const videoDescriptionhtml = `
+                    <div class="sby_lb-video-description-wrap">
+                        <div class="sby_lb-description sby-read-more-target">
+                            ${description}
+                        </div>
+                        <button class="sby_lb-more-info-btn sby-read-more-trigger">Description${getStaticSVG('angle-down')}</button>
+                    </div>
+                `;
+
+                const commentSectionHtml = `
+                    <div class="sby-comments-wrap">
+                    </div>
+                `;
+
+                const videoDescription = description ? videoDescriptionhtml : '';
+
+                $lightbox.find(".sby_lb-caption").html( `<div class="sby_lb-caption-inner ${subscribeClass}">` + videoHeaderSection + userHtml + videoDescription + commentSectionHtml + `</div>` ).fadeIn("fast");
+
+                if( data?.liveData && '0' === data.liveData ) {
+                    const videoId = data?.video ? data.video : ''; 
+                    const atts = data?.atts ? data.atts : '';
+                    const currentCommentCount = data?.commentCount ? data.commentCount : ''; 
+                    const target = $lightbox.find(".sby-comments-wrap");
+                    generateCommentSection(videoId, atts, target, currentCommentCount);
+                } else {
+                    toggleReadMore();
+                }
+
+                if( data?.channelHeaderColors ) {
+                    setColorsToChannelHeader(data.channelHeaderColors)
+                }
+                
+            }
             };
         }
 
@@ -3434,7 +3572,7 @@ if(!sby_js_exists) {
                         if (typeof $(this).find('.sby_item_video_thumbnail').attr('data-full-res') !== 'undefined') {
                             var thisVid = {
                                 videoID: $(this).attr('data-video-id'),
-                                title: $(this).attr('data-video-title'),
+                                title: sbyEncodeInput($(this).attr('data-video-title')),
                                 thumbnail: $(this).find('.sby_item_video_thumbnail').attr('data-full-res'),
                             }
                             relatedVids.push(thisVid);
@@ -3533,15 +3671,6 @@ if(!sby_js_exists) {
 
         function sbyGetlightboxBuilder() {
             return new SbyLightboxBuilderPro();
-        }
-
-        function sbyAjax(submitData,onSuccess) {
-            $.ajax({
-                url: sbyOptions.adminAjaxUrl,
-                type: 'post',
-                data: submitData,
-                success: onSuccess
-            });
         }
 
         function sbyIsTouch() {
@@ -3655,6 +3784,46 @@ if(!sby_js_exists) {
                 window.sby.feeds[ index ].settings.consentGiven = false;
                 window.sby.feeds[ index ].afterConsentToggled();
             });
+        });
+
+        if (typeof window.consentApi !== 'undefined') {
+            window.consentApi?.consent("feeds-for-youtube").then(() => {
+                try {
+                    // applies full features to feed
+                    $.each(window.sby.feeds,function(index){
+                        window.sby.feeds[ index ].settings.consentGiven = true;
+                        window.sby.feeds[ index ].afterConsentToggled();
+                    });
+                }
+                catch (error) {
+                    // do nothing
+                }
+            });
+        }
+
+        $('.moove-gdpr-infobar-allow-all').on('click',function() {
+            setTimeout(function() {
+                $.each(window.sby.feeds,function(index){
+                    window.sby.feeds[ index ].afterConsentToggled();
+                });
+            },1000);
+        });
+
+        // WPConsent
+        window.addEventListener('wpconsent_consent_saved', function(event) {
+            setTimeout(function() {
+                $.each(window.sby.feeds,function(index){
+                    window.sby.feeds[ index ].afterConsentToggled();
+                });
+            },1000);
+        });
+
+        window.addEventListener('wpconsent_consent_updated', function(event) {
+            setTimeout(function() {
+                $.each(window.sby.feeds,function(index){
+                    window.sby.feeds[ index ].afterConsentToggled();
+                });
+            },1000);
         });
 
         // hide notice on click and send ajax request to backend
@@ -3863,7 +4032,7 @@ window.onYouTubeIframeAPIReady = function() {
                 width: '100',
                 videoId: jQuery(this).find('.sby_item').first().attr('data-video-id'),
                 playerVars: {
-                    modestbranding: 1,
+                    modestbranding: 1, 
                     rel: 0,
                     autoplay: autoplay
                 }
@@ -3879,3 +4048,592 @@ window.onYouTubeIframeAPIReady = function() {
     }
 
 };
+
+/**
+ * Retrieves a specific attribute value from the given API data object.
+ * 
+ * @param {Object} rootPath
+ * @param {string} attrName
+ * 
+ * @returns {string|boolean}
+ */
+
+function getSingleApiData(rootPath, attrName) {
+    switch(attrName) {
+        case 'authorProfileImageUrl':
+            return rootPath?.snippet?.authorProfileImageUrl ? rootPath.snippet.authorProfileImageUrl : '';
+        case 'authorDisplayName':
+            return rootPath?.snippet?.authorDisplayName ? rootPath.snippet.authorDisplayName : '';
+        case 'authorChannelUrl':
+            return rootPath?.snippet?.authorChannelUrl ? rootPath.snippet.authorChannelUrl : '';
+        case 'textDisplay':
+            return rootPath?.snippet?.textDisplay ? rootPath.snippet.textDisplay : '';
+        case 'likeCount':
+            return rootPath?.snippet?.likeCount ? rootPath.snippet.likeCount : '';
+        case 'publishedAt':
+            return rootPath?.snippet?.publishedAt ? rootPath.snippet.publishedAt : '';
+        case 'totalReplyCount':
+            return rootPath?.totalReplyCount ? rootPath.totalReplyCount : '';
+        default:
+            return false;
+    }
+}
+
+/**
+ * Retrieves a static SVG image based on the provided name.
+ * @param {string} name 
+ * @returns {string|boolean} 
+ */
+function getStaticSVG(name) {
+
+    switch(name) {
+        case 'profile-picture':
+            return '<svg fill="currentColor" width="800px" height="800px" viewBox="0 0 512 512" id="_x30_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M256,0C114.615,0,0,114.615,0,256s114.615,256,256,256s256-114.615,256-256S397.385,0,256,0z M256,90  c37.02,0,67.031,35.468,67.031,79.219S293.02,248.438,256,248.438s-67.031-35.468-67.031-79.219S218.98,90,256,90z M369.46,402  H142.54c-11.378,0-20.602-9.224-20.602-20.602C121.938,328.159,181.959,285,256,285s134.062,43.159,134.062,96.398  C390.062,392.776,380.839,402,369.46,402z"/></svg>';
+        case 'thumbs-up':
+            return '<svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.4159 4.18027C13.761 4.18027 14.0778 4.32177 14.3664 4.60477C14.6549 4.88777 14.7992 5.20738 14.7992 5.5636V6.2706C14.7992 6.36471 14.7902 6.45188 14.7722 6.5321C14.7542 6.61232 14.7272 6.69266 14.6912 6.7731L12.684 11.4908C12.5845 11.7449 12.4181 11.9486 12.1849 12.1019C11.9517 12.2552 11.69 12.3318 11.3999 12.3318H5.15938C4.77282 12.3318 4.44566 12.2006 4.17788 11.9383C3.90999 11.6759 3.77604 11.346 3.77604 10.9484V4.7561C3.77604 4.56277 3.81332 4.38049 3.88788 4.20927C3.96254 4.03804 4.06477 3.88754 4.19454 3.75777L7.28938 0.662932C7.5186 0.431043 7.79427 0.281321 8.11638 0.213765C8.43849 0.146321 8.71416 0.178988 8.94338 0.311765C9.22549 0.46421 9.40932 0.695932 9.49488 1.00693C9.58032 1.31793 9.58999 1.62804 9.52388 1.93727L9.09554 4.18027H13.4159ZM1.34404 12.3318C1.01393 12.3318 0.726767 12.2097 0.482544 11.9654C0.238322 11.7212 0.116211 11.434 0.116211 11.1039V5.40827C0.116211 5.07804 0.236989 4.79082 0.478544 4.5466C0.7201 4.30238 1.00466 4.18027 1.33221 4.18027H1.34804C1.67827 4.18027 1.96549 4.30238 2.20971 4.5466C2.45393 4.79082 2.57604 5.07804 2.57604 5.40827V11.1039C2.57604 11.434 2.45393 11.7212 2.20971 11.9654C1.96549 12.2097 1.67827 12.3318 1.34804 12.3318H1.34404Z" fill="currentColor"/></svg>';
+        case 'angle-down':
+            return '<svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.94 0.726654L4 3.77999L7.06 0.726654L8 1.66665L4 5.66665L0 1.66665L0.94 0.726654Z" fill="currentColor"/></svg>';
+        case 'youtube':
+            return '<svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.66671 7.5L9.12671 5.5L5.66671 3.5V7.5ZM13.3734 2.28C13.46 2.59334 13.52 3.01334 13.56 3.54667C13.6067 4.08 13.6267 4.54 13.6267 4.94L13.6667 5.5C13.6667 6.96 13.56 8.03334 13.3734 8.72C13.2067 9.32 12.82 9.70667 12.22 9.87334C11.9067 9.96 11.3334 10.02 10.4534 10.06C9.58671 10.1067 8.79337 10.1267 8.06004 10.1267L7.00004 10.1667C4.20671 10.1667 2.46671 10.06 1.78004 9.87334C1.18004 9.70667 0.793374 9.32 0.626707 8.72C0.540041 8.40667 0.480041 7.98667 0.440041 7.45334C0.393374 6.92 0.373374 6.46 0.373374 6.06L0.333374 5.5C0.333374 4.04 0.440041 2.96667 0.626707 2.28C0.793374 1.68 1.18004 1.29334 1.78004 1.12667C2.09337 1.04 2.66671 0.980002 3.54671 0.940002C4.41337 0.893336 5.20671 0.873336 5.94004 0.873336L7.00004 0.833336C9.79337 0.833336 11.5334 0.940003 12.22 1.12667C12.82 1.29334 13.2067 1.68 13.3734 2.28Z" fill="currentColor"/></svg>';
+        case 'cross':
+            return '<svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.25 1.41L12.84 0L7.25 5.59L1.66 0L0.25 1.41L5.84 7L0.25 12.59L1.66 14L7.25 8.41L12.84 14L14.25 12.59L8.66 7L14.25 1.41Z" fill="currentColor"/></svg>';
+        case 'message':
+            return '<svg width="28" height="26" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.33341 22C2.60008 22 1.9723 21.7389 1.45008 21.2167C0.927859 20.6944 0.666748 20.0667 0.666748 19.3333V3.33334C0.666748 2.6 0.927859 1.97223 1.45008 1.45001C1.9723 0.927783 2.60008 0.666672 3.33341 0.666672H24.6667C25.4001 0.666672 26.0279 0.927783 26.5501 1.45001C27.0723 1.97223 27.3334 2.6 27.3334 3.33334V24.1C27.3334 24.7 27.0612 25.1167 26.5167 25.35C25.9723 25.5833 25.489 25.4889 25.0667 25.0667L22.0001 22H3.33341ZM23.1334 19.3333L24.6667 20.8333V3.33334H3.33341V19.3333H23.1334Z" fill="currentColor"/></svg>';
+        default:
+          return false;
+      }
+}
+
+
+/**
+ * Generates the HTML template for a single comment.
+ * 
+ * @param {string} authorProfileImageUrl
+ * @param {string} authorDisplayName
+ * @param {string} authorChannelUrl
+ * @param {string} textDisplay
+ * @param {number} likeCount
+ * @param {string} publishedAt
+ * @param {number} totalReplyCount
+ * 
+ * @returns {string}
+ */
+function commentSingleTemplate(authorProfileImageUrl, authorDisplayName, authorChannelUrl, textDisplay, likeCount, publishedAt, totalReplyCount) {
+
+    const dummyProfilePic = authorProfileImageUrl ? `<img src=${authorProfileImageUrl} loading="lazy" referrerPolicy="no-referrer"/>` : getStaticSVG('profile-picture');
+    const replies = totalReplyCount ? `<button class="sby-replies">${totalReplyCount ? totalReplyCount : 0 } Replies ${getStaticSVG('angle-down')}</button>` : '';
+
+    return `
+            <div class="sby-comment-profile-pic">
+                ${dummyProfilePic}
+            </div>
+            <div class="sby-comment-heading">
+                <a href="${authorChannelUrl}" target="_blank" class="sby-comment-user-name">${authorDisplayName}</a>
+                <span>${timeAgo(publishedAt)}</span>
+            </div>
+                <div class="sby-comment-text">
+                <p class="sby-read-more-target">${textDisplay}</p>
+                <div class="sby-read-more-trigger">
+                    <button class="sby-read-more-text">Read More</button>
+                    <button class="sby-read-less-text">Read Less</button>
+                </div>
+             </div>
+            <div class="sby-comment-bottom">
+                <span class="sby-comment-likes">
+                    ${getStaticSVG('thumbs-up')} ${likeCount ? formatLargeNumber(likeCount) : 0 }
+                </span>
+                ${replies}
+            </div>
+    `;
+}
+
+/**
+ * Generates the HTML template when no comments are found.
+ *
+ * @returns {string}
+ */
+
+function noCommentsTemplate() {
+    return `
+        <h4 class="sby-comments-sub-heading">Comments</h4>
+        <div class="sby-no-comments">
+            ${getStaticSVG('message')}
+            <p>There are no comments to display</p>
+        </div>`;
+}
+
+/**
+ * Generates the HTML template when there is an error retriving comments.
+ *
+ * @returns {string}
+ */
+function errorCommentTemplate(error) {
+    return `
+        <h4 class="sby-comments-sub-heading">Comments</h4>
+        <div class="sby-no-comments">
+            <p>${error}</p>
+        </div>`;
+}
+
+/**
+ * Format date and time for ISO 8601
+ * 
+ * @param timestamp
+ * 
+ * @returns {string}
+ */
+function timeAgo(timestamp) {
+    const now = new Date();
+    const past = new Date(timestamp);
+    const diffMs = now - past;
+
+    // Helper functions to get time units
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    // Determine the largest unit of time that applies
+    if (years > 0) {
+        return `${years} year${years > 1 ? 's' : ''} ago`;
+    }
+    if (months > 0) {
+        return `${months} month${months > 1 ? 's' : ''} ago`;
+    }
+    if (days > 0) {
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    }
+    if (hours > 0) {
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    }
+    if (minutes > 0) {
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    }
+    if (seconds > 0) {
+        return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
+    }
+
+    return 'just now';
+}
+
+/**
+ * Converts plain text into HTML with clickable links.
+ * 
+ * @param {string} text
+ * 
+ * @returns {string} 
+ */
+function addLinksTotext(text) {
+    //Add links to the caption
+    if(!text) {
+        return '';
+    }
+
+    text = text.replace(/(>#)/g,'> #');
+
+    return sbyLinkify(text);
+}
+
+/**
+ * Convert Unix timestamp to milliseconds
+ * @param timestamp
+ * @returns {string}
+ */
+
+function convertUnixToMs(timestamp) {
+
+    if( ! timestamp ) {
+        return '';
+    }
+
+    return new Date(parseInt(timestamp) * 1000);
+
+}
+
+/**
+ * Toggles the visibility of accordion sections based on the trigger element.
+ * 
+ * @param {string} className
+ * @param {string} target
+ * @param {string} parent
+ * @param {string} trigger 
+ * 
+ * @returns {void} 
+ */
+function toggleAccordion(className, target, parent ,trigger  ) {
+    jQuery(trigger).css('display', 'none');
+    jQuery(target).unbind('click');
+    jQuery(target).click(function(){
+        jQuery(this).toggleClass(className + '-trigger');
+        jQuery(this).closest(parent).find(trigger).toggle();
+    });
+}
+/**
+ * Toggles the visibility of "Read More" buttons
+ * 
+ * @returns {void}
+ */
+function toggleReadMore() {
+    const target = jQuery('.sby-read-more-target');
+    const triggerClassName = '.sby-read-more-trigger';
+
+    target.each(function(e) {
+        const currentTarget = jQuery(this)[0];
+
+        const paragraphHeight = currentTarget.scrollHeight;
+        const clientHeight = currentTarget.offsetHeight;
+        const hasMoreThanFourLines = paragraphHeight > clientHeight && paragraphHeight > clientHeight + 1; // clientHeight + 1 to fix firefox clientHeight calculate issue.
+
+        if (hasMoreThanFourLines) {
+            const trigger = jQuery(this).parent().find(triggerClassName);
+
+            trigger.unbind('click');
+            trigger.click(function() {
+                jQuery(this).toggleClass('sby-read-more-trigger-active');
+                jQuery(this).parent().find('.sby-read-more-target').toggleClass('sby-read-more-target-active');
+            });
+        } else {
+            jQuery(this).parent().find(triggerClassName).hide();
+        }
+
+    });
+}
+
+/**
+ * Applies a color scheme class to the lightbox based on the flag provided.
+ * 
+ * @param {string} colorScheme 
+ * @param {boolean} flag
+ */
+function LightboxColorScheme(colorScheme, flag) {
+
+    const commentWrap = jQuery('.sby_lb-caption');
+    const colorSchemeClassName = 'sby-lb-dark-scheme';
+
+    if( false === flag) {
+        commentWrap.removeClass(colorSchemeClassName);
+        return false;
+    }
+
+    if( 'dark' === colorScheme && true === flag) {
+        commentWrap.addClass(colorSchemeClassName);
+        return false;
+    }
+}
+
+/**
+ * Resets the body's overflow style and the lightbox color scheme when the lightbox is closed.
+ *
+ * @returns {void}
+ */
+function lightboxOnClose() {
+    jQuery('body').css('overflow', 'auto');
+    LightboxColorScheme('', false);
+    jQuery('.sby_gdpr_notice').remove();
+}
+
+/**
+ * Retrieves the layout type of the closest ancestor element with a specific layout class.
+ *
+ * @param {jQuery|HTMLElement} target
+ * @returns {string|boolean}
+ */
+function getLayout(target) {
+    const currentTarget = target.closest('.sb_youtube');
+
+    if( currentTarget.hasClass('sby_layout_list') ) {
+        return 'list'
+    }
+
+    if( currentTarget.hasClass('sby_layout_grid') ) {
+        return 'grid'
+    }
+
+    if( currentTarget.hasClass('sby_layout_carousel') ) {
+        return 'carousel'
+    }
+
+    if( currentTarget.hasClass('sby_layout_gallery') ) {
+        return 'gallery'
+    }
+
+    return false;
+}
+
+/**
+ * Opens and displays the comments section on the page.
+ * 
+ * @returns {void}
+ */
+function openComments() {
+
+    if( ! window.sbyOptions.isPro ) {
+        return false;
+    }
+    const openCommentTrigger = jQuery('.sby-comments-trigger');
+    openCommentTrigger.unbind('click');
+    openCommentTrigger.click(function() {
+        const commentWrapClass = '.sby-comments-wrap';
+        const commentSecionWrap = jQuery(this).closest('.sby-comment-container');
+        const commentSection =  commentSecionWrap.find(commentWrapClass);
+        const currentLayout =  getLayout(jQuery(this));
+
+        if( commentSection.text().length <= 0) {
+            let commentCount;
+            let videoId;
+            let target;
+
+            if( 'gallery' === currentLayout ) {
+                const targetParent = jQuery(this).closest('.sb_youtube');
+                const currentTarget = targetParent.find('.sby_item.sby_current');
+
+                if( targetParent && currentTarget ) {
+                    videoId = checkValue(currentTarget.attr('data-video-id'));
+                    commentCount = checkValue(currentTarget.find('a').attr('data-comment-count'));
+                    target = targetParent.find(commentWrapClass);
+                }
+            }
+
+            if( 'list' === currentLayout ) {
+                const currentTarget = jQuery(this).closest('.sby_item');
+
+                if( currentTarget ) {
+                    videoId = checkValue(currentTarget.attr('data-video-id'));
+                    commentCount = checkValue(currentTarget.find('a').attr('data-comment-count'));
+                    target = currentTarget.find(commentWrapClass);
+                }
+
+                // Reset all other comments opened 
+                resetComments(jQuery(this).closest('.sb_youtube'));
+            }
+
+            const atts = checkValue(jQuery(this).closest('.sb_youtube').attr('data-shortcode-atts'));
+
+            generateCommentSection(videoId, atts, target, commentCount);
+            commentSection.addClass('sby-comments-active');
+
+        } else {
+            commentSection.toggle();
+            commentSection.toggleClass('sby-comments-active');
+        }
+
+        const currentTextState = commentSecionWrap.find('.sby-comments-trigger p');
+
+        if( currentTextState ) {
+            changeTextOnToggle(currentTextState, 'Show Comments', 'Hide Comments');
+        }
+
+    });
+}
+
+/**
+ * Returns a valid value or an empty string based on the input.
+ * @param {*} element 
+ * @returns {string} 
+ */
+function checkValue(element) {
+    return element ? element : '';
+}
+
+/**
+ * Sends an AJAX request with the specified data and handles the response.
+ * @param {Object} submitData
+ * @param {Function} onSuccess 
+ * 
+ * @returns {void} 
+ */
+function sbyAjax(submitData,onSuccess) {
+    jQuery.ajax({
+        url: sbyOptions.adminAjaxUrl,
+        type: 'post',
+        data: submitData,
+        success: onSuccess
+    });
+}
+
+/**
+ * Fetches and generates a comment section for a given video.
+ * 
+ * @param {string} videoId 
+ * @param {Object} atts
+ * @param {jQuery} target
+ * 
+ * @returns {void}
+ */
+
+function generateCommentSection(videoId, atts, target, commentCount) {
+
+    submitData = {
+        action: 'sby_get_comments',
+        video_id: videoId,
+        atts: atts
+    };
+
+    let onSuccess = function (data) {
+
+        if( ! data ) {
+            return false;
+        }
+
+        if( false === data.success ) {
+            target.html(errorCommentTemplate(data.data));
+            return false;
+        }
+
+        const commentJson = JSON.parse(data);
+
+        if( ! commentJson ) {
+            return false;
+        }
+
+        if( commentJson?.success && false === commentJson.success) {
+            target.html(errorCommentTemplate(commentJson.data));
+            return false;
+        }
+
+        if( commentJson?.error && commentJson?.error?.message) {
+            let errorMessage = commentJson.error.message;
+            if( errorMessage.includes('disabled comments') ) {
+                errorMessage = 'Comments are turned off'
+            }
+            target.html(errorCommentTemplate(errorMessage));
+            return false;
+        }
+
+        const noOfItems = commentJson?.items && commentJson?.items.length ? commentJson.items.length : '';
+        const videoLink = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '';
+
+        if(! noOfItems ) {
+            target.html(noCommentsTemplate());
+            toggleReadMore();
+            return false;
+        }
+
+        currentCommentCount = commentCount ? `( ${commentCount} )` : '';
+
+        let commentHtml = `<h4 class="sby-comments-sub-heading">Comments ${currentCommentCount}</h4><ul class="sby-comments">`;
+        jQuery.each(commentJson.items, function(index, comment) {
+
+            const topLevelCommentPath = comment?.snippet?.topLevelComment;
+            const topLevelCommentSnippet = comment?.snippet;
+
+            // Generate the HTML for each comment
+            commentHtml += `<li class="sby-comment">${commentSingleTemplate( getSingleApiData(topLevelCommentPath, 'authorProfileImageUrl'), getSingleApiData(topLevelCommentPath, 'authorDisplayName'), getSingleApiData(topLevelCommentPath, 'authorChannelUrl'), getSingleApiData(topLevelCommentPath, 'textDisplay'), getSingleApiData(topLevelCommentPath, 'likeCount'), getSingleApiData(topLevelCommentPath, 'publishedAt'), getSingleApiData(topLevelCommentSnippet, 'totalReplyCount'))}
+            <ul class="sby-reply-comments">`;
+
+            if( comment?.replies?.comments ) {
+                // Use $.each to loop through replies
+                jQuery.each(comment.replies.comments, function(replyIndex, reply) {
+
+                    commentHtml += `<li class="sby-reply-comment" >${commentSingleTemplate(getSingleApiData(reply, 'authorProfileImageUrl'), getSingleApiData(reply, 'authorDisplayName'), getSingleApiData(reply, 'authorChannelUrl'), getSingleApiData(reply, 'textDisplay'), getSingleApiData(reply, 'likeCount'), getSingleApiData(reply, 'publishedAt'))}</li>`;
+                });
+            }
+            // Close the comment container
+            commentHtml += `</ul></li>`;
+        });
+        commentHtml += `</ul>`;
+        commentHtml += `<a href="${videoLink}" target="_blank" class="sby-view-all-button ">View all comments on YouTube</a>`;
+
+        target.html(commentHtml).fadeIn("fast"); 
+
+        toggleReadMore();
+        toggleAccordion('sby-active','.sby-replies','.sby-comment','.sby-reply-comments');
+    }
+
+    toggleReadMore();
+    sbyAjax(submitData,onSuccess)
+
+}
+
+/**
+ * Toggles the text of an element based on its current content.
+ *
+ * This function updates the text of an element if the element's current text
+ * matches the specified `currentText`. If it matches, the text is replaced with
+ * the provided `replacementText`. If it does not match, the text remains as `currentText`.
+ *
+ * @param {Object} currentState
+ * @param {string} currentText
+ * @param {string} replacementText
+ * 
+ * @returns {void} 
+ */
+
+function changeTextOnToggle(currentState, currentText, replacementText ) {
+
+    if( currentState && currentText && replacementText ) {
+        const currentStateText = currentText === currentState.text() ? replacementText : currentText;
+        currentState.text(currentStateText);
+    }
+}
+
+/**
+ * Resets the comments of a specified parent element.
+ *
+ * @param {jQuery} parent
+ *
+ * @returns {void} 
+ */
+
+function resetComments(parent) {
+    if( 'gallery' === getLayout(parent) || 'list' === getLayout(parent) ) {
+        const trigger = parent.find('.sby-comments-trigger');
+        trigger.find('p').text('Show Comments');
+        parent.find('.sby-comments-wrap').html('');
+    }
+}
+
+/**
+ * Formats a large number into a more readable string with a suffix.
+ * The function converts large numbers into a string with a suffix to denote the scale of the number.
+ *
+ * @param {number} num
+ * 
+ * @returns {string}
+ */
+
+function formatLargeNumber(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+
+    return num;
+}
+
+/**
+ * Applies a set of colors to the channel header.
+ * 
+ * @param {Object} colorArray - An object containing color properties for the channel header.
+ * @param {string} colorArray.channelName - The text color for the channel name element.
+ * @param {string} colorArray.subscribeCount - The text color for the subscribe count element.
+ * @param {string} colorArray.buttonBackground - The background color for the button element.
+ * @param {string} colorArray.buttonText - The text color for the button element.
+ * 
+ * @returns {void}
+ */
+function setColorsToChannelHeader(colorArray) {
+    const {channelName, subscribeCount, buttonBackground, buttonText} = colorArray;
+    const parent = jQuery('.sby_lb-dataContainer .sby-lb-channel-header');
+    
+    if( ! parent ) {
+        return false;
+    }
+
+    if( channelName ) {
+        parent.find('.sby-lb-channel-name-with-subs span:first-child').css('color', channelName);
+    }
+
+    if( subscribeCount ) {
+        parent.find('.sby-lb-channel-name-with-subs span:nth-child(2)').css('color', subscribeCount);
+    }
+
+    if( buttonBackground ) {
+        parent.find('.sby-lb-subscribe-btn').css('background', buttonBackground);
+    }
+
+    if( buttonText ) {
+        parent.find('.sby-lb-subscribe-btn').css('color', buttonText);
+    }
+}

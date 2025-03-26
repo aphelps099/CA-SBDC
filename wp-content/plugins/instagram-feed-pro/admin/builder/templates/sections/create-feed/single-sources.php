@@ -40,7 +40,7 @@
                     <div class="sbi-fb-left-boss">
                         <div class="sbi-fb-srcs-item-type">
                             <div v-html="source.account_type == 'personal' ? svgIcons['user'] : svgIcons['flag']"></div>
-                            <span class="sb-small sb-lighter">{{source.account_type}}</span>
+                            <span class="sb-small sb-lighter">{{source.header_data.account_type || 'Business Advanced'}}</span>
                         </div>
 						<div v-if="source.error !== '' || source.error_encryption" class="sb-source-error-wrap">
                             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">

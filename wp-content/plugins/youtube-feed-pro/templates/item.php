@@ -26,17 +26,19 @@ $media_url               = SBY_Display_Elements::get_optimum_media_url( $post, $
 $media_full_res          = SBY_Parse::get_media_url( $post );
 $media_all_sizes_json    = SBY_Parse::get_media_src_set( $post );
 $permalink               = SBY_Parse::get_permalink( $post );
-$img_alt                 = SBY_Parse::get_caption( $post, __( 'Image for post' ) . ' ' . $post_id );
+$img_alt                 = SBY_Parse::get_caption( $post, __( 'Image for post', 'feeds-for-youtube' ) . ' ' . $post_id );
 $items_style_attr        = SBY_Display_Elements::get_style_att( 'item', $settings );
 $title                   = SBY_Parse::get_video_title( $post );
 
 // Pro Elements
 $caption             = SBY_Parse::get_pro_caption( $post, '', $misc_data );
-$avatar              = SBY_Parse::get_item_avatar( $post, $settings['feed_avatars'] );
+$avatar              = SBY_Parse::get_avatar( $header_data, $settings  );
 $username            = SBY_Parse::get_channel_title( $post, $misc_data );
 $likes_count         = SBY_Display_Elements::escaped_formatted_count_string( SBY_Parse::get_like_count( $post, $misc_data ), 'likes' );
 $comments_count      = SBY_Display_Elements::escaped_formatted_count_string( SBY_Parse::get_comment_count( $post, $misc_data ), 'comments' );
+$comments_count_attr = SBY_Display_Elements::escaped_formatted_count_string( SBY_Parse::get_comment_count( $post, $misc_data ), 'comments', true );
 $views_count_string  = SBY_Display_Elements::escaped_formatted_count_string( SBY_Parse::get_view_count( $post, $misc_data ), 'views' );
+$views_count_string_attr  = SBY_Display_Elements::escaped_formatted_count_string( SBY_Parse::get_view_count( $post, $misc_data ), 'views', true );
 $duration             = SBY_Parse_Pro::get_video_duration( $post );
 
 $live_broadcast_type = SBY_Parse::get_live_broadcast_content( $post ); // 'none', 'upcoming', 'live', 'completed'
@@ -83,7 +85,7 @@ $hover_video_stats_attr = SBY_Display_Elements::get_element_attribute( 'hover_st
 <div class="sby_item <?php echo esc_attr( $classes ); ?>" id="sby_<?php echo esc_html( $post_id ); ?>" data-date="<?php echo esc_html( $timestamp ); ?>" data-video-id="<?php echo esc_attr( $video_id ); ?>" data-video-title="<?php echo esc_attr( $title ); ?>"<?php echo $items_style_attr; ?> data-live-date="<?php echo esc_attr( $live_streaming_timestamp ); ?>" data-channel-id="<?php echo esc_attr( $channel_id ); ?>" <?php echo $additional_atts_string; ?>>
     <div class="sby_inner_item">
         <div class="sby_video_thumbnail_wrap sby_item_video_thumbnail_wrap">
-            <a class="sby_video_thumbnail sby_item_video_thumbnail" style="background-image:url(<?php echo $media_url ?>)" href="<?php echo esc_url( $permalink ); ?>" target="_blank" rel="noopener" data-full-res="<?php echo esc_url( $media_full_res ); ?>" data-img-src-set="<?php echo esc_attr( wp_json_encode( $media_all_sizes_json ) ); ?>" data-video-id="<?php echo esc_attr( $video_id ); ?>"  data-user="<?php echo esc_attr( $username ); ?>" data-url="<?php echo esc_attr( $permalink ); ?>" data-avatar="<?php echo esc_attr( $avatar ); ?>" data-title="<?php echo sby_esc_attr_with_br( $caption ); ?>" data-video-title="<?php echo sby_esc_attr_with_br( $title ); ?>" data-channel-id="<?php echo esc_attr( $channel_id ); ?>">
+            <a class="sby_video_thumbnail sby_item_video_thumbnail" style="background-image:url(<?php echo esc_url( $media_url ); ?>)" href="<?php echo esc_url( $permalink ); ?>" target="_blank" rel="noopener" data-full-res="<?php echo esc_url( $media_full_res ); ?>" data-img-src-set="<?php echo esc_attr( wp_json_encode( $media_all_sizes_json ) ); ?>" data-video-id="<?php echo esc_attr( $video_id ); ?>"  data-user="<?php echo esc_attr( $username ); ?>" data-url="<?php echo esc_attr( $permalink ); ?>" data-avatar="<?php echo esc_attr( $avatar ); ?>" data-title="<?php echo sby_esc_attr_with_br( $caption ); ?>" data-video-title="<?php echo sby_esc_attr_with_br( $title ); ?>" data-channel-id="<?php echo esc_attr( $channel_id ); ?>" data-views="<?php echo esc_attr($views_count_string_attr); ?>" data-published-date="<?php echo esc_attr($timestamp); ?>" data-formatted-published-date="<?php echo esc_attr($formatted_date_string); ?>" data-comment-count="<?php echo esc_attr($comments_count_attr); ?>">
                 <img src="<?php echo esc_url( $media_url ); ?>" alt="<?php echo esc_attr( $img_alt ); ?>">
                 <?php if ( SBY_Display_Elements_Pro::should_show_element( 'duration', $context, $settings ) ) : ?>
                     <span class="sby_duration_counter" <?php echo $duration_attr; ?>><?php echo esc_html( $duration ); ?></span>

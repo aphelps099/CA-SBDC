@@ -18,7 +18,7 @@
 		</div>
 	</div>
     <div class="cff-table-wrap" v-bind:class="{ 'sb-onboarding-highlight' : viewsActive.onboardingStep === 2 && allFeedsScreen.onboarding.type === 'single' }">
-	<table>
+	<table aria-hidden="true">
 		<thead class="cff-fd-lst-thtf cff-fd-lst-thead">
 			<tr>
 				<th>
@@ -44,7 +44,13 @@
 					<div class="cff-fd-lst-chkbx" @click.prevent.default="selectFeedCheckBox(feed.id)" :data-active="feedsSelected.includes(feed.id)"></div>
 				</td>
 				<td>
-					<a :href="builderUrl+'&feed_id='+feed.id" class="cff-fd-lst-name sb-small-p sb-bold">{{feed.feed_name}}</a>
+					<span>
+						<a :href="builderUrl+'&feed_id='+feed.id" class="cff-fd-lst-name sb-small-p sb-bold">{{feed.feed_name}}</a>
+						<strong  class="cff-fd-lst-issue sb-bold" v-if="checkFeedEventSourceiCalUrl(feed) === false" @click.prevent.default="clickAddFeedEventSourceiCalUrl(feed)">
+							1 {{genericText.issue}}<span></span><a>{{genericText.fix}}</a>
+						</strong>
+					</span>
+
 					<span class="cff-fd-lst-type sb-caption sb-lighter">{{feed.settings.feedtype}}</span>
 				</td>
 				<td>

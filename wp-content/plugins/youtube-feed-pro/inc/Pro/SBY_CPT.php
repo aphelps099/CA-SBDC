@@ -17,8 +17,8 @@ class SBY_CPT {
 	public static function set_up_submenus() {
 		add_submenu_page(
 			SBY_SLUG,
-			__( 'Manage Single Videos', SBY_TEXT_DOMAIN ),
-			__( 'Single Video Settings', SBY_TEXT_DOMAIN ),
+			__( 'Manage Single Videos', 'feeds-for-youtube' ),
+			__( 'Single Video Settings', 'feeds-for-youtube' ),
 			'edit_' . SBY_CPT,
 			'sby_single_settings',
 			array( __CLASS__, 'single_settings_admin_page' )
@@ -26,14 +26,14 @@ class SBY_CPT {
 	}
 
 	public static function single_settings_admin_page() {
-		include trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/single-settings.php';
+		include_once trailingslashit( SBY_PLUGIN_DIR ) . 'inc/Admin/templates/single-settings.php';
 	}
 
 	public static function set_custom_sby_videos_columns( $columns ) {
 
-		$columns['channel_title']        = __( 'Channel', SBY_TEXT_DOMAIN );
-		$columns['video_id']             = __( 'Video ID', SBY_TEXT_DOMAIN );
-		$columns['youtube_publish_date'] = __( 'Publish Date', SBY_TEXT_DOMAIN );
+		$columns['channel_title']        = __( 'Channel', 'feeds-for-youtube' );
+		$columns['video_id']             = __( 'Video ID', 'feeds-for-youtube' );
+		$columns['youtube_publish_date'] = __( 'Publish Date', 'feeds-for-youtube' );
 
 		unset( $columns['author'] );
 
@@ -86,7 +86,7 @@ class SBY_CPT {
 		return $columns;
 	}
 
-	function sby_videos_custom_order( $query ) {
+	public function sby_videos_custom_order( $query ) {
 		if ( ! is_admin() ) {
 			return;
 		}

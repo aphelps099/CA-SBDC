@@ -6,10 +6,10 @@ use Smashballoon\Customizer\Container;
 use Smashballoon\Customizer\Tabs\Manager;
 \define('SBCVER', 2.0);
 if (!\defined('CUSTOMIZER_ABSPATH')) {
-    \define('CUSTOMIZER_ABSPATH', trailingslashit(__DIR__));
+    \define('CUSTOMIZER_ABSPATH', \trailingslashit(__DIR__));
 }
 if (!\defined('CUSTOMIZER_PLUGIN_URL')) {
-    \define('CUSTOMIZER_PLUGIN_URL', plugin_dir_url(__FILE__));
+    \define('CUSTOMIZER_PLUGIN_URL', \plugin_dir_url(__FILE__));
 }
 //initialize container
 $container = Container::getInstance();

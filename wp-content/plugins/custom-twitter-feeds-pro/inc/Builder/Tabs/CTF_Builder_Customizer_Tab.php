@@ -115,7 +115,7 @@ class CTF_Builder_Customizer_Tab{
 	public static function get_date_format_options(){
 		$original = strtotime('2016-07-25T17:30:00+0000');
 		return [
-			'1'			=> __('2 days ago','custom-twitter-feeds'),
+			'1'			=> __('2m','custom-twitter-feeds'),
 			'2'			=> date('F j', $original),
 			'3'			=> date('F j, Y', $original),
 			'4'			=> date('m.d', $original),

@@ -270,6 +270,10 @@ class CTF_New_User extends CTF_Notifications {
 			return;
 		}
 
+		if ( ! ctf_is_license_active() ) {
+			return;
+		}
+
 		if ( function_exists( 'display_instagram' ) ) {
 			return;
 		}

@@ -20,19 +20,28 @@ class SBY_WP_Post
 		// YouTube license tier 
 		$license_tier = new YouTube_License_Tier;
 		$license_tier_features = $license_tier->tier_features();
-		// Do not create posts if feature is not available in the tier
-		if ( !in_array( 'convert_videos_to_cpt', $license_tier_features ) ) {
+
+		// Get global settings
+		$sby_settings = sby_get_database_settings();
+		$wp_posts_disabled = !empty($sby_settings['disable_wp_posts']);
+
+		// Do not create posts if feature is not available in the tier or WP Posts creation disabled
+		if ($wp_posts_disabled) {
 			return;
 		}
+
+		// Add a filter to get the post type
+		$post_type = apply_filters('sby_single_videos_post_type', SBY_CPT);
+		$post_status = apply_filters('sby_single_videos_post_status', $status);
 
 		if ( ! $this->get_wp_post_id() ) {
 			$postarr = array(
 				'post_title' => SBY_Parse::get_video_title( $this->youtube_api_data ),
 				'post_content' => $this->get_post_content(),
-				'post_type' => SBY_CPT,
+				'post_type' => $post_type,
 				'post_date' => date( 'Y-m-d H:i:s', SBY_Parse::get_timestamp( $this->youtube_api_data ) + sby_get_utc_offset() ),
 				'post_date_gmt' => date( 'Y-m-d H:i:s', SBY_Parse::get_timestamp( $this->youtube_api_data ) ),
-				'post_status' => $status
+				'post_status' => $post_status
 			);
 			$wp_post_id = wp_insert_post( $postarr );
 

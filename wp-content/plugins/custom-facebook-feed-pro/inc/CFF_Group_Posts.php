@@ -1,67 +1,72 @@
 <?php
+
 /**
  * Class CFF_Groups_Post
  *
- *
- *
  * @since 3.19.3
  */
+
 namespace CustomFacebookFeed;
+
+use CustomFacebookFeed\Integrations\CFF_Graph_Data;
 use CustomFacebookFeed\SB_Facebook_Data_Encryption;
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if (! defined('ABSPATH')) {
+	exit; // Exit if accessed directly
+}
 
 
-class CFF_Group_Posts{
-
+class CFF_Group_Posts
+{
 	/**
 	 * @var string
-	*/
+	 */
 	private $cache_name;
 
 	/**
 	 * @var string
-	*/
+	 */
 	private $api_call_url;
 
 	/**
 	 * @var string
-	*/
+	 */
 	private $data_att_html;
 
 	/**
 	 * @var array
-	*/
+	 */
 	private $posts_array;
 
 	/**
 	 * @var array
-	*/
+	 */
 	private $json_data;
 
 	/**
 	 * @var array
-	*/
+	 */
 	private $posts_cache_data;
 
 	/**
 	 * @var array
-	*/
+	 */
 	private $feed_options;
 
 	/**
 	 * @var int
-	*/
+	 */
 	private $next_urls_arr_safe;
 
 	/**
 	 * @var bool
-	*/
+	 */
 	private $is_event_page;
 
 
 	/**
 	 * @var class
-	*/
+	 */
 	private $encryption;
 
 
@@ -74,26 +79,24 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-	function __construct($group_id, $feed_options, $api_call_url, $data_att_html,$is_event_page) {
+	public function __construct($group_id, $feed_options, $api_call_url, $data_att_html, $is_event_page)
+	{
 		$this->encryption = new SB_Facebook_Data_Encryption();
 
-		$this->cache_name = '!cff_group_'. $group_id . '_' . str_replace(',', '_', $feed_options['type']);
+		$this->cache_name = '!cff_group_' . $group_id . '_' . str_replace(',', '_', $feed_options['type']);
 		$this->posts_cache_data = get_option($this->cache_name);
 		$this->feed_options = $feed_options;
 		$this->api_call_url = $api_call_url;
-		#$this->api_call_url = $api_call_url . '&limit=100';
 		$this->data_att_html = $data_att_html;
 		$this->is_event_page = $is_event_page;
-		if(!$this->posts_cache_data){
+		if (!$this->posts_cache_data) {
 			$this->posts_cache_data = new \stdClass();
 			$this->posts_cache_data->api_url = $this->api_call_url;
 			$this->posts_cache_data->shortcode_options = $this->data_att_html;
 			$this->posts_cache_data->data = [];
-		}else{
-			$this->posts_cache_data = json_decode( $this->encryption->maybe_decrypt( $this->posts_cache_data ) ) ;
-
+		} else {
+			$this->posts_cache_data = json_decode($this->encryption->maybe_decrypt($this->posts_cache_data)) ;
 		}
-
 	}
 
 
@@ -104,7 +107,8 @@ class CFF_Group_Posts{
 	 *
 	 * @access public
 	 */
-	function init_group_posts($json_data, $load_more_date, $show_posts){
+	public function init_group_posts($json_data, $load_more_date, $show_posts)
+	{
 		$this->json_data = json_decode($json_data);
 		$this->json_data = (isset($this->json_data->data) && $this->json_data->data > 0) ? $this->json_data->data : [];
 		$this->posts_array = isset($this->posts_cache_data->data) ? (array)$this->posts_cache_data->data : [];
@@ -112,15 +116,15 @@ class CFF_Group_Posts{
 		$this->update_cache();
 		$latest_record_date = CFF_Group_Posts::create_next_pagination($this->json_data, $show_posts);
 		$load_from_cache = false;
-		if(sizeof($this->json_data) <= 0 && !$this->is_event_page){
-			if($load_more_date === false){
+		if (sizeof($this->json_data) <= 0 && !$this->is_event_page) {
+			if ($load_more_date === false) {
 				$json_data = $this->get_data_json(false, null);
-			}else{
+			} else {
 				$json_data = $this->get_data_json(true, $load_more_date);
 			}
 			$latest_record_date = CFF_Group_Posts::create_next_pagination($this->posts_cache_data->data, $show_posts);
 			$load_from_cache = true;
-		}else{
+		} else {
 			$json_data_check = json_decode($json_data);
 			$json_data = $this->check_posts_returned($json_data_check, $show_posts);
 			$this->json_data = json_decode($json_data);
@@ -143,8 +147,8 @@ class CFF_Group_Posts{
 	 *
 	 * @access public
 	 */
-	function init_group_posts_events($json_data, $load_more_date, $show_posts){
-
+	public function init_group_posts_events($json_data, $load_more_date, $show_posts)
+	{
 	}
 
 
@@ -154,8 +158,8 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-
-	static function check_duplicated_posts($prev_post, $ac_post){
+	public static function check_duplicated_posts($prev_post, $ac_post)
+	{
 			$ac_message		 = isset($ac_post->message) ? $ac_post->message : '';
 			$ac_link 		= isset($ac_post->link) ? $ac_post->link : '';
 			$ac_description = isset($ac_post->description) ? $ac_post->description : '';
@@ -178,26 +182,29 @@ class CFF_Group_Posts{
 	 *
 	 * @access public
 	 */
-	function check_posts_returned($json_data, $show_posts){
-		if(isset($json_data->data)){
+	public function check_posts_returned($json_data, $show_posts)
+	{
+		if (isset($json_data->data)) {
 			$prev_post = [];
 			$result_array = [];
 			foreach ($json_data->data as $single_post) {
-				#$is_returned = !CFF_Group_Posts::check_duplicated_posts($prev_post, $single_post);
+				// $is_returned = !CFF_Group_Posts::check_duplicated_posts($prev_post, $single_post);
 				$is_returned = true;
 				$prev_post = $single_post;
-				if($is_returned){
+				if ($is_returned) {
 					array_push($result_array, $single_post);
 				}
 			}
 			$json_data->data = array_slice($result_array, 0, $show_posts);
-			if(sizeof($json_data->data) < $show_posts){
+			if (sizeof($json_data->data) < $show_posts) {
 				$remaining_num = $show_posts - sizeof($json_data->data);
 				$remaining_json_data = json_decode($this->get_data_json(true, CFF_Group_Posts::create_next_pagination($json_data->data, sizeof($json_data->data))));
-				$json_data->data = array_merge( $json_data->data, $remaining_json_data->data );
+				$json_data->data = array_merge($json_data->data, $remaining_json_data->data);
 			}
 		}
-		if(sizeof($json_data->data) == 0 ) unset($json_data->paging);
+		if (isset($json_data->data) && is_array($json_data->data) && sizeof($json_data->data) == 0) {
+			unset($json_data->paging);
+		}
 		return json_encode($json_data);
 	}
 
@@ -210,15 +217,16 @@ class CFF_Group_Posts{
 	 * It can add or update
 	 * @access public
 	 */
-	function add_update_posts(){
+	public function add_update_posts()
+	{
 		$new_cached_posts = $this->posts_array;
 		$posts_array_api = $this->json_data;
 		foreach ($posts_array_api as $single_post) {
-			if(isset($single_post->id)){
-				$key = array_search($single_post->id, array_column($this->posts_array , 'id'));
-				if($key !== false){
+			if (isset($single_post->id)) {
+				$key = array_search($single_post->id, array_column($this->posts_array, 'id'));
+				if ($key !== false) {
 					$new_cached_posts[$key] = $single_post;
-				}else{
+				} else {
 					array_push($new_cached_posts, $single_post);
 				}
 			}
@@ -232,24 +240,27 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-	function get_data_json($is_load_more, $next_urls_arr_safe){
-		if($is_load_more && isset($next_urls_arr_safe)){
+	public function get_data_json($is_load_more, $next_urls_arr_safe)
+	{
+		if ($is_load_more && isset($next_urls_arr_safe)) {
 			$this->next_urls_arr_safe = $next_urls_arr_safe;
-			$new_array = array_filter($this->posts_cache_data->data, function($single_post){
+			$new_array = array_filter($this->posts_cache_data->data, function ($single_post) {
 				$the_time = isset($single_post->updated_time) ? $single_post->updated_time : $single_post->created_time;
 				$is_returned = ( (int)strtotime($the_time) < (int)$this->next_urls_arr_safe ) &&
 				( !empty($single_post->message) || isset($single_post->call_to_action->type) );
 				return $is_returned;
 			});
 			$latest_record = end($this->posts_cache_data->data);
-			$new_array = array_slice($new_array , 0, $this->feed_options['num']);
+			$new_array = array_slice($new_array, 0, $this->feed_options['num']);
 			$this->posts_cache_data->data = sizeof($new_array) > 0 ? $new_array : [];
-			if($latest_record == end($this->posts_cache_data->data)){
+			if ($latest_record == end($this->posts_cache_data->data)) {
 				$this->posts_cache_data->no_more = true;
 			}
-		}else{
-			$this->posts_cache_data->data = array_slice($this->posts_cache_data->data,
-				0, $this->feed_options['num']
+		} else {
+			$this->posts_cache_data->data = array_slice(
+				$this->posts_cache_data->data,
+				0,
+				$this->feed_options['num']
 			);
 		}
 
@@ -265,35 +276,38 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-	function update_cache(){
-		usort($this->posts_array , function($post_1, $post_2){
+	public function update_cache()
+	{
+		usort($this->posts_array, function ($post_1, $post_2) {
 			$time_1 = isset($post_1->updated_time) ? $post_1->updated_time : $post_1->created_time;
 			$time_2 = isset($post_2->updated_time) ? $post_2->updated_time : $post_2->created_time;
-		    return strcmp(strtotime($time_2), strtotime($time_1));
+			return strcmp(strtotime($time_2), strtotime($time_1));
 		});
-		$this->posts_cache_data->is_event_page = $this->is_event_page;
-		$this->posts_cache_data->data = array_slice( $this->posts_array, 0, 100 );
-		if(sizeof($this->posts_array) > 0){
-			update_option( $this->cache_name, $this->encryption->maybe_encrypt( json_encode($this->posts_cache_data) ) , false );
+		if (!is_null($this->posts_cache_data)) {
+			$this->posts_cache_data->is_event_page = $this->is_event_page;
+			$this->posts_cache_data->data = array_slice($this->posts_array, 0, 100);
+			if (sizeof($this->posts_array) > 0) {
+				update_option($this->cache_name, $this->encryption->maybe_encrypt(json_encode($this->posts_cache_data)), false);
+			}
 		}
-
 	}
 
 
 
-	static function create_next_pagination( $json_data_arr,$show_posts){
-		if(isset($json_data_arr) && sizeof((array)$json_data_arr) > 0){
+	public static function create_next_pagination($json_data_arr, $show_posts)
+	{
+		if (isset($json_data_arr) && sizeof((array)$json_data_arr) > 0) {
 			$result_array = [];
 			$prev_post = [];
 			foreach ($json_data_arr as $single_post) {
 				$is_returned = true;
-				if($is_returned){
+				if ($is_returned) {
 					array_push($result_array, $single_post);
 				}
 				$prev_post = $single_post;
 			}
-			$json_data_arr = array_slice($result_array,0,$show_posts);
-			if(sizeof($json_data_arr) > 0 && sizeof($result_array) >= $show_posts){
+			$json_data_arr = array_slice($result_array, 0, $show_posts);
+			if (sizeof($json_data_arr) > 0 && sizeof($result_array) >= $show_posts) {
 				$latest_one = end($json_data_arr);
 				return isset($latest_one->updated_time) ? strtotime($latest_one->updated_time) : strtotime($latest_one->created_time);
 			}
@@ -312,19 +326,20 @@ class CFF_Group_Posts{
 	 * Get the latest 100 Posts from groups and Update in
 	 * @access public
 	 */
-	static function cron_update_group_persistent_cache(){
-	    global $wpdb;
-	    $encryption = new SB_Facebook_Data_Encryption();
-	    $table_name = $wpdb->prefix . "options";
-	    $persistent_groups = $wpdb->get_results( "
+	public static function cron_update_group_persistent_cache()
+	{
+		global $wpdb;
+		$encryption = new SB_Facebook_Data_Encryption();
+		$table_name = $wpdb->prefix . "options";
+		$persistent_groups = $wpdb->get_results("
 	        SELECT `option_name` AS `name`, `option_value` AS `value`
 	        FROM  $table_name
 	        WHERE `option_name` LIKE ('%!cff\_group\_%')
-	      " );
-	    foreach ($persistent_groups as $group) {
-			$group_json = json_decode( $encryption->maybe_decrypt( $group->value ), true);
-	    	CFF_Group_Posts::update_or_add_group($group->name, $group_json);
-	    }
+	      ");
+		foreach ($persistent_groups as $group) {
+			$group_json = json_decode($encryption->maybe_decrypt($group->value), true);
+			CFF_Group_Posts::update_or_add_group($group->name, $group_json);
+		}
 	}
 
 	/**
@@ -333,7 +348,8 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-	static function update_or_add_group($cache_name, $group_cache){
+	public static function update_or_add_group($cache_name, $group_cache)
+	{
 		$api_url 			= $group_cache['api_url'];
 		$cached_posts 		= $group_cache['data'];
 		$is_event_page 		= isset($group_cache['is_event_page']) ? $group_cache['is_event_page'] : false;
@@ -343,11 +359,11 @@ class CFF_Group_Posts{
 
 		$posts_array_api = json_decode(CFF_Group_Posts::api_call($api_url, $data_att_html));
 		foreach ($posts_array_api->data as $single_post) {
-			if(isset($single_post->id) && ( $is_event_page || (!empty($single_post->message) || isset($single_post->call_to_action->type) ) ) ){
-				$key = array_search($single_post->id, array_column($cached_posts , 'id'));
-				if($key !== false){
+			if (isset($single_post->id) && ( $is_event_page || (!empty($single_post->message) || isset($single_post->call_to_action->type) ) )) {
+				$key = array_search($single_post->id, array_column($cached_posts, 'id'));
+				if ($key !== false) {
 					$new_cached_posts[$key] = $single_post;
-				}else{
+				} else {
 					array_push($new_cached_posts, $single_post);
 				}
 			}
@@ -355,12 +371,12 @@ class CFF_Group_Posts{
 		$feed_id = CFF_Group_Posts::get_feed_id_from_name($cache_name);
 		$posts = array();
 		$images_need_resizing = array();
-		foreach ( $posts_array_api->data as $new_post ) {
-		   $posts[] = $new_post;
-		   $images_need_resizing[] = $new_post->id;
+		foreach ($posts_array_api->data as $new_post) {
+			$posts[] = $new_post;
+			$images_need_resizing[] = $new_post->id;
 		}
 
-		$resizer = new CFF_Resizer( $images_need_resizing, $feed_id, $posts, $group_cache['shortcode_options']  );
+		$resizer = new CFF_Resizer($images_need_resizing, $feed_id, $posts, $group_cache['shortcode_options']);
 		$resizer->do_resizing_group();
 
 
@@ -369,23 +385,23 @@ class CFF_Group_Posts{
 		$posts_cache_data->shortcode_options = $data_att_html;
 		$posts_cache_data->is_event_page = $is_event_page;
 
-		usort($new_cached_posts , function($post_1, $post_2){
+		usort($new_cached_posts, function ($post_1, $post_2) {
 			$time_1 = isset($post_1->updated_time) ? $post_1->updated_time : (isset($post_1->created_time) ? $post_1->created_time : 0);
 			$time_2 = isset($post_2->updated_time) ? $post_2->updated_time : (isset($post_2->created_time) ? $post_2->created_time : 0);
-		    return strcmp(strtotime($time_2), strtotime($time_1));
+			return strcmp(strtotime($time_2), strtotime($time_1));
 		});
-		$new_cached_posts = array_slice( $new_cached_posts, 0, 100 );
+		$new_cached_posts = array_slice($new_cached_posts, 0, 100);
 		$posts_cache_data->data = $new_cached_posts;
-		if(sizeof($new_cached_posts) > 0){
-			update_option( $cache_name, $encryption->maybe_encrypt( json_encode( $posts_cache_data ) ), false );
+		if (sizeof($new_cached_posts) > 0) {
+			update_option($cache_name, $encryption->maybe_encrypt(json_encode($posts_cache_data)), false);
 		}
-
 	}
 
 
-	static function get_feed_id_from_name($cache_name){
-		$cache_name = str_replace('!cff_group_', '',$cache_name);
-		$cache_name = explode(" ",$cache_name);
+	public static function get_feed_id_from_name($cache_name)
+	{
+		$cache_name = str_replace('!cff_group_', '', $cache_name);
+		$cache_name = explode(" ", $cache_name);
 		return (isset($cache_name[0]) ? $cache_name[0] : 0);
 	}
 
@@ -395,19 +411,24 @@ class CFF_Group_Posts{
 	 * @since 3.19.3
 	 * @access public
 	 */
-	static function api_call($api_url, $data_att_html){
+	public static function api_call($api_url, $data_att_html)
+	{
 		$api_url_100 = $api_url . '&limit=100';
-		$posts_json = CFF_Utils::cff_fetchUrl( $api_url_100 );
+		$posts_json = CFF_Utils::cff_fetchUrl($api_url_100);
 		$FBdata = json_decode($posts_json);
 		$prefix_data = '{"data":';
 		$cff_featured_post =  (substr($posts_json, 0, strlen($prefix_data)) == $prefix_data)  ? false : true;
 		$prefix = '{';
-		if (substr($posts_json, 0, strlen($prefix)) == $prefix) $posts_json = substr($posts_json, strlen($prefix));
-		$posts_json = '{"api_url":"'. $api_url .'", "shortcode_options":"'. $data_att_html .'", ' . $posts_json;
-		( $cff_featured_post ) ? $FBdata = $FBdata : $FBdata = $FBdata->data;
+		if (substr($posts_json, 0, strlen($prefix)) == $prefix) {
+			$posts_json = substr($posts_json, strlen($prefix));
+		}
+		$posts_json = '{"api_url":"' . $api_url . '", "shortcode_options":"' . $data_att_html . '", ' . (is_array($posts_json) ? wp_json_encode($posts_json) : $posts_json);
+		if (! $cff_featured_post) {
+			$FBdata = $FBdata->data;
+		}
 
-		if( !empty($FBdata) ) {
-			if( !isset($FBdata->error) ){
+		if (!empty($FBdata)) {
+			if (!isset($FBdata->error)) {
 				return $posts_json;
 			}
 		}
@@ -415,21 +436,26 @@ class CFF_Group_Posts{
 		return '{"data":[]}';
 	}
 
-	static function group_schedule_event($cff_cache_cron_time_unix, $cff_cron_schedule){
-		if ( ! wp_next_scheduled( 'group_post_scheduler_cron' ) ) {
-			wp_schedule_event( $cff_cache_cron_time_unix, $cff_cron_schedule, 'group_post_scheduler_cron' );
+	public static function group_schedule_event($cff_cache_cron_time_unix, $cff_cron_schedule)
+	{
+		if (CFF_Graph_Data::should_make_group_call()) {
+			if (!wp_next_scheduled('group_post_scheduler_cron')) {
+				wp_schedule_event($cff_cache_cron_time_unix, $cff_cron_schedule, 'group_post_scheduler_cron');
+			}
 		}
 	}
 
-	static function group_reschedule_event($cff_cache_cron_time_unix, $cff_cron_schedule){
-		$timestamp = wp_next_scheduled( 'group_post_scheduler_cron' );
-		if ( $timestamp ) {
-			wp_clear_scheduled_hook( 'group_post_scheduler_cron' );
-			wp_unschedule_event( $timestamp , 'group_post_scheduler_cron' );
-		}
-		if ( ! wp_next_scheduled( 'group_post_scheduler_cron' ) ) {
-			wp_schedule_event( $cff_cache_cron_time_unix, $cff_cron_schedule, 'group_post_scheduler_cron' );
+	public static function group_reschedule_event($cff_cache_cron_time_unix, $cff_cron_schedule)
+	{
+		if (CFF_Graph_Data::should_make_group_call()) {
+			$timestamp = wp_next_scheduled('group_post_scheduler_cron');
+			if ($timestamp) {
+				wp_clear_scheduled_hook('group_post_scheduler_cron');
+				wp_unschedule_event($timestamp, 'group_post_scheduler_cron');
+			}
+			if (!wp_next_scheduled('group_post_scheduler_cron')) {
+				wp_schedule_event($cff_cache_cron_time_unix, $cff_cron_schedule, 'group_post_scheduler_cron');
+			}
 		}
 	}
-
 }

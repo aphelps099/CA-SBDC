@@ -1,13 +1,16 @@
 <div class="sb-customizer-preview" :data-preview-device="customizerScreens.previewScreen">
 	<?php
+
 		/**
 		 * CFF Admin Notices
 		 *
 		 * @since 4.0
 		 */
+
 		do_action('cff_admin_notices');
 	?>
 	<div class="sb-preview-ctn sb-tr-2">
+		<?php include_once CFF_BUILDER_DIR . 'templates/preview/events-notice.php'; ?>
 		<div class="sb-preview-top-chooser cff-fb-fs">
 			<strong>{{genericText.preview}}</strong>
 			<div class="sb-preview-chooser">
@@ -15,7 +18,7 @@
 			</div>
 		</div>
 
-		<div class="cff-preview-ctn cff-fb-fs" :class="( !valueIsEnabled(customizerFeedData.settings.headeroutside) && !valueIsEnabled(customizerFeedData.settings.likeboxoutside) ) ? 'cff-feed-height' : ''" :data-preview-colorscheme="customizerFeedData.settings.colorpalette">
+		<div class="cff-preview-ctn cff-fb-fs" :class="(customizerFeedData.settings.feedtheme ? 'cff-' + customizerFeedData.settings.feedtheme : ' cff-default_theme')" :class="( !valueIsEnabled(customizerFeedData.settings.headeroutside) && !valueIsEnabled(customizerFeedData.settings.likeboxoutside) ) ? 'cff-feed-height' : ''" :data-preview-colorscheme="customizerFeedData.settings.colorpalette">
 			<?php
 			include_once CFF_BUILDER_DIR . 'templates/preview/error.php';
 			include_once CFF_BUILDER_DIR . 'templates/preview/header.php';

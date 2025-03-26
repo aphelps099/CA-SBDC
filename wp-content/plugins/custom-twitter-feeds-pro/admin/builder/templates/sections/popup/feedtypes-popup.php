@@ -21,7 +21,7 @@
 
         <h4>{{selectFeedTypeScreen.anotherFeedTypeHeading}}</h4>
         <div class="ctf-fb-types-list">
-            <div class="ctf-fb-type-el" v-for="(feedTypeEl, feedTypeIn) in feedTypes" :class="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall' ? 'ctf-fb-tltp-parent' : ''" :data-active="selectedFeedPopup.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'"  :data-already-selected="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'"  :data-type="feedTypeEl.type" @click.prevent.default="!selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall' ? selectFeedTypePopup(feedTypeEl) : false">
+            <div class="ctf-fb-type-el" v-for="(feedTypeEl, feedTypeIn) in feedTypes" :class="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall' ? 'ctf-fb-tltp-parent' : ''" :data-active="selectedFeedPopup.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'"  :data-already-selected="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'"  :data-type="feedTypeEl.type" @click.prevent.default="sourceAddPopup(feedTypeEl)">
                <div class="ctf-fb-tltp-elem" v-if="selectedFeed.includes(feedTypeEl.type) && feedTypeEl.type != 'socialwall'"><span>{{feedTypeEl.title.replace(/ /g,"&nbsp;")}}{{genericText.isAlreadyAdded.replace(/ /g,"&nbsp;")}}</span></div>
                 <div class="ctf-fb-type-el-img ctf-fb-fs" v-html="svgIcons[feedTypeEl.icon]"></div>
                 <div class="ctf-fb-type-el-info ctf-fb-fs">

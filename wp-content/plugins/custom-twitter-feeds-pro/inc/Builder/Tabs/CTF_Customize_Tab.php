@@ -6,12 +6,16 @@
  * @since 2.0
  */
 namespace TwitterFeed\Builder\Tabs;
+
 use TwitterFeed\Builder\CTF_Feed_Builder;
+use TwitterFeed\CTF_License_Tier;
+
 if(!defined('ABSPATH'))	exit;
 
 
 class CTF_Customize_Tab{
 
+	public static $should_disable_pro_features = false;
 
 	/**
 	 * Get Customize Tab Sections
@@ -23,6 +27,8 @@ class CTF_Customize_Tab{
 	 * @return array
 	*/
 	static function get_sections(){
+		self::$should_disable_pro_features = ctf_license_handler()->should_disable_pro_features;
+
 		return [
 
 			'customize_template' => [
@@ -54,7 +60,7 @@ class CTF_Customize_Tab{
 			'customize_posts' => [
 				'heading' 			=> __( 'Tweets', 'custom-twitter-feeds' ),
 				'description' 			=> __( 'Hide or Show individual elements of a post or edit their options', 'custom-twitter-feeds' ),
-				'icon' 				=> 'twitter',
+				'icon' 				=> ctf_should_rebrand_to_x () ? 'x' : 'twitter',
 				'controls'			=> self::get_customize_tweets_controls(),
 				'nested_sections' 	=> [
 					'tweet_styles' => [
@@ -85,6 +91,9 @@ class CTF_Customize_Tab{
 				'description' 	=>  '<br/>',
 				'icon' 			=> 'lightbox',
 				'separator'		=> 'none',
+				'proLabel'		=> !self::$should_disable_pro_features ? null : true,
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightboxExtension',
+				'description' 	=> !self::$should_disable_pro_features ? null : __( 'Upgrade to Pro and display tweets with images in a popup.', 'custom-twitter-feeds' ),
 				'controls'		=> self::get_customize_lightbox_controls()
 			]
 
@@ -129,11 +138,13 @@ class CTF_Customize_Tab{
 					[
 						'value' => 'masonry',
 						'icon' => 'masonry',
+						'checkExtension' => !self::$should_disable_pro_features ? null : 'feedLayout',
 						'label' => __( 'Masonry', 'custom-twitter-feeds' )
 					],
 					[
 						'value' => 'carousel',
 						'icon' => 'carousel',
+						'checkExtension' => !self::$should_disable_pro_features ? null : 'feedLayout',
 						'label' => __( 'Carousel', 'custom-twitter-feeds' )
 					]
 				]
@@ -422,6 +433,8 @@ class CTF_Customize_Tab{
 				'strongHeading'		=> 'true',
 				'placeholder' 		=> '20',
 				'heading' 			=> __( 'Number of tweets to display', 'custom-twitter-feeds' ),
+				'description' 		=> __( 'Note: ', 'custom-twitter-feeds' ) . ' ' . __( 'Due to API limitations only 1 to 30 tweets will be available initially. More will accumulate over time.', 'custom-twitter-feeds' ),
+
 			],
 			[
 				'type' 				=> 'separator',
@@ -807,7 +820,7 @@ class CTF_Customize_Tab{
 	 * @return array
 	*/
 	static function get_nested_individual_elements_controls(){
-		return [
+		$controls = [
 			[
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include_author',
@@ -903,9 +916,11 @@ class CTF_Customize_Tab{
 					'description' 		=> __( 'The quoted tweet within a retweet', 'custom-twitter-feeds' ),
 					'controls'			=> CTF_Styling_Tab::post_styling_quote_tweet(),
 				]
-			],
+			]
+		];
 
-			[
+		if ( !self::$should_disable_pro_features ) {
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include_media',
 				'value'		=> 'include_media',
@@ -923,9 +938,8 @@ class CTF_Customize_Tab{
 					'description' 		=> __( 'Images, videos or GIFs in a tweet', 'custom-twitter-feeds' ),
 					'controls'			=> CTF_Styling_Tab::post_styling_media(),
 				]
-			],
-
-			[
+			];
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include_retweeter',
 				'value'		=> 'include_retweeter',
@@ -943,9 +957,8 @@ class CTF_Customize_Tab{
 					'description' 		=> __( 'The small copy that appears over tweets mentioning if they are replies or retweets', 'custom-twitter-feeds' ),
 					'controls'			=> CTF_Styling_Tab::post_styling_retweet(),
 				]
-			],
-
-			[
+			];
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
 				'id'		=> 'include_twittercards',
 				'value'		=> 'include_twittercards',
@@ -963,29 +976,107 @@ class CTF_Customize_Tab{
 					'description' 		=> __( 'Twitter Cards are rich visual previews of the link in your Tweet', 'custom-twitter-feeds' ),
 					'controls'			=> CTF_Styling_Tab::post_styling_twitter_cards(),
 				]
-			],
+			];
+		}
 
-			[
+		$controls[] = [
+			'type' 		=> 'checkboxsection',
+			'id'		=> 'include_logo',
+			'value'		=> 'include_logo',
+			'checkBoxAction' => true,
+			'label' 	=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
+			'separator'			=> 'bottom',
+			'options'			=> [
+				'enabled'	=> true,
+				'disabled'	=> false
+			],
+			'section' 	=> [
+				'id' 				=> 'post_styling_logos',
+				'separator'			=> 'none',
+				'heading' 			=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
+				'description' 		=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
+				'controls'			=> CTF_Styling_Tab::post_styling_twitter_logo(),
+			]
+		];
+
+		if ( self::$should_disable_pro_features ) {
+			$controls[] = [
+				'type' 				=> 'heading',
+				'heading' 			=> __( 'Advanced', 'custom-twitter-feeds' ),
+				'proLabel'		=> true,
+				'checkExtensionPopupLearnMore' 	=> 'mediaExtension',
+				'description' 	=> __( 'These properties are available in the PRO version.', 'custom-twitter-feeds' ),
+			];
+
+			$controls[] = [
 				'type' 		=> 'checkboxsection',
-				'id'		=> 'include_logo',
-				'value'		=> 'include_logo',
+				'id'		=> 'include_media',
+				'value'		=> 'include_media',
 				'checkBoxAction' => true,
-				'label' 	=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
+				'label' 	=> __( 'Media (images, videos, GIFs)', 'custom-twitter-feeds' ),
 				'separator'			=> 'bottom',
+				'checkExtensionDimmed'	=> 'mediaExtension',
+				'checkExtensionPopup' => 'mediaExtension',
+				'disabledInput'		=> true,
 				'options'			=> [
 					'enabled'	=> true,
 					'disabled'	=> false
 				],
 				'section' 	=> [
-					'id' 				=> 'post_styling_logos',
+					'id' 				=> 'post_styling_media',
 					'separator'			=> 'none',
-					'heading' 			=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
-					'description' 		=> __( 'Twitter Logo', 'custom-twitter-feeds' ),
-					'controls'			=> CTF_Styling_Tab::post_styling_twitter_logo(),
+					'heading' 			=> __( 'Media', 'custom-twitter-feeds' ),
+					'description' 		=> __( 'Images, videos or GIFs in a tweet', 'custom-twitter-feeds' ),
+					'controls'			=> CTF_Styling_Tab::post_styling_media(),
 				]
-			],
+			];
+			$controls[] = [
+				'type' 		=> 'checkboxsection',
+				'id'		=> 'include_retweeter',
+				'value'		=> 'include_retweeter',
+				'checkBoxAction' => true,
+				'label' 	=> __( 'Retweet/Reply Subtext', 'custom-twitter-feeds' ),
+				'separator'			=> 'bottom',
+				'checkExtensionDimmed'	=> 'mediaExtension',
+				'checkExtensionPopup' => 'mediaExtension',
+				'disabledInput'		=> true,
+				'options'			=> [
+					'enabled'	=> true,
+					'disabled'	=> false
+				],
+				'section' 	=> [
+					'id' 				=> 'post_styling_retweet',
+					'separator'			=> 'none',
+					'heading' 			=> __( 'Retweet/Reply Subtext', 'custom-twitter-feeds' ),
+					'description' 		=> __( 'The small copy that appears over tweets mentioning if they are replies or retweets', 'custom-twitter-feeds' ),
+					'controls'			=> CTF_Styling_Tab::post_styling_retweet(),
+				]
+			];
+			$controls[] = [
+				'type' 		=> 'checkboxsection',
+				'id'		=> 'include_twittercards',
+				'value'		=> 'include_twittercards',
+				'checkBoxAction' => true,
+				'label' 	=> __( 'Twitter Cards (Link previews)', 'custom-twitter-feeds' ),
+				'separator'			=> 'bottom',
+				'checkExtensionDimmed'	=> 'mediaExtension',
+				'checkExtensionPopup' => 'mediaExtension',
+				'disabledInput'		=> true,
+				'options'			=> [
+					'enabled'	=> true,
+					'disabled'	=> false
+				],
+				'section' 	=> [
+					'id' 				=> 'post_styling_twitter_cards',
+					'separator'			=> 'none',
+					'heading' 			=> __( 'Twitter Cards (Link Previews)', 'custom-twitter-feeds' ),
+					'description' 		=> __( 'Twitter Cards are rich visual previews of the link in your Tweet', 'custom-twitter-feeds' ),
+					'controls'			=> CTF_Styling_Tab::post_styling_twitter_cards(),
+				]
+			];
+		}
 
-		];
+		return $controls;
 	}
 
 
@@ -999,6 +1090,9 @@ class CTF_Customize_Tab{
 	 * @return array
 	*/
 	static function get_customize_loadmorebutton_controls(){
+		$license_tier = new CTF_License_Tier();
+		$tier_features = $license_tier->tier_features();
+
 		return [
 			[
 				'type' 				=> 'switcher',
@@ -1087,6 +1181,10 @@ class CTF_Customize_Tab{
 				'labelStrong'		=> 'true',
 				'layout' 			=> 'half',
 				'reverse'			=> 'true',
+				'proLabel'		=> !self::$should_disable_pro_features ? null : true,
+				'checkExtensionPopupLearnMore' 	=> !self::$should_disable_pro_features ? null : 'autoscrollExtension',
+				'checkExtensionPopup' 	=> !self::$should_disable_pro_features && in_array('autoscroll_loading', $tier_features) ? null : 'autoscrollExtension',
+				'checkExtensionDimmed' 	=> !self::$should_disable_pro_features && in_array('autoscroll_loading', $tier_features) ? null : 'autoscrollExtension',
 				'options'			=> [
 					'enabled'	=> true,
 					'disabled'	=> false
@@ -1135,6 +1233,9 @@ class CTF_Customize_Tab{
 				'label' 			=> __( 'Enable', 'custom-twitter-feeds' ),
 				'reverse'			=> 'true',
 				'stacked'			=> 'true',
+				'checkExtensionDimmed'	=> !self::$should_disable_pro_features ? null : 'lightboxExtension',
+				'checkExtensionPopup' => !self::$should_disable_pro_features ? null : 'lightboxExtension',
+				'disabledInput'		=> !self::$should_disable_pro_features ? null : true,
 				'options'			=> [
 					'enabled'	=> false,
 					'disabled'	=> true

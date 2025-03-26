@@ -7,6 +7,7 @@
  */
 namespace Smashballoon\Customizer;
 
+/** @internal */
 class DB
 {
     const RESULTS_PER_PAGE = 20;
@@ -15,8 +16,8 @@ class DB
     public function __construct()
     {
         global $wpdb;
-        $this->sources_table = apply_filters('sb_customizer_sources_table', $wpdb->prefix . $this->sources_table);
-        $this->feeds_table = apply_filters('sb_customizer_feeds_table', $wpdb->prefix . $this->feeds_table);
+        $this->sources_table = \apply_filters('sb_customizer_sources_table', $wpdb->prefix . $this->sources_table);
+        $this->feeds_table = \apply_filters('sb_customizer_feeds_table', $wpdb->prefix . $this->feeds_table);
     }
     /**
      * Set Feeds Table
@@ -56,16 +57,16 @@ class DB
         if (empty($args)) {
             $limit = (int) self::RESULTS_PER_PAGE;
             $sql = "SELECT s.id, s.account_id, s.account_type, s.privilege, s.access_token, s.username, s.info, s.error, s.expires, count(f.id) as used_in\n\t\t\t\tFROM {$sources_table_name} s\n\t\t\t\tLEFT JOIN {$feeds_table_name} f ON f.settings LIKE CONCAT('%', s.account_id, '%')\n\t\t\t\tGROUP BY s.id, s.account_id\n\t\t\t\tLIMIT {$limit}\n\t\t\t\tOFFSET {$offset};\n\t\t\t\t";
-            $results = $wpdb->get_results($sql, ARRAY_A);
+            $results = $wpdb->get_results($sql, \ARRAY_A);
             if (empty($results)) {
                 return array();
             }
             $i = 0;
             foreach ($results as $result) {
                 if ((int) $result['used_in'] > 0) {
-                    $account_id = sanitize_key($result['account_id']);
+                    $account_id = \sanitize_key($result['account_id']);
                     $sql = "SELECT *\n\t\t\t\t\t\tFROM {$feeds_table_name}\n\t\t\t\t\t\tWHERE settings LIKE CONCAT('%', {$account_id}, '%')\n\t\t\t\t\t\tGROUP BY id\n\t\t\t\t\t\tLIMIT 100;\n\t\t\t\t\t\t";
-                    $results[$i]['instances'] = $wpdb->get_results($sql, ARRAY_A);
+                    $results[$i]['instances'] = $wpdb->get_results($sql, \ARRAY_A);
                 }
                 $i++;
             }
@@ -73,13 +74,13 @@ class DB
         }
         if (!empty($args['expiring'])) {
             $sql = $wpdb->prepare("\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE account_type = 'personal'\n\t\t\tAND expires < %s\n\t\t\tAND last_updated < %s\n\t\t\tORDER BY expires ASC\n\t\t\tLIMIT 5;\n\t\t ", \gmdate('Y-m-d H:i:s', \time() + SBI_REFRESH_THRESHOLD_OFFSET), \gmdate('Y-m-d H:i:s', \time() - SBI_MINIMUM_INTERVAL));
-            return $wpdb->get_results($sql, ARRAY_A);
+            return $wpdb->get_results($sql, \ARRAY_A);
         }
         if (!empty($args['username'])) {
-            return $wpdb->get_results($wpdb->prepare("\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE username = %s;\n\t\t ", $args['username']), ARRAY_A);
+            return $wpdb->get_results($wpdb->prepare("\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE username = %s;\n\t\t ", $args['username']), \ARRAY_A);
         }
         if (isset($args['access_token']) && !isset($args['id'])) {
-            return $wpdb->get_results($wpdb->prepare("\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE access_token = %s;\n\t\t ", $args['access_token']), ARRAY_A);
+            return $wpdb->get_results($wpdb->prepare("\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE access_token = %s;\n\t\t ", $args['access_token']), \ARRAY_A);
         }
         if (!isset($args['id'])) {
             return \false;
@@ -87,10 +88,10 @@ class DB
         if (\is_array($args['id'])) {
             $id_array = array();
             foreach ($args['id'] as $id) {
-                $id_array[] = esc_sql($id);
+                $id_array[] = \esc_sql($id);
             }
         } elseif (\strpos($args['id'], ',') !== \false) {
-            $id_array = \explode(',', \str_replace(' ', '', esc_sql($args['id'])));
+            $id_array = \explode(',', \str_replace(' ', '', \esc_sql($args['id'])));
         }
         if (isset($id_array)) {
             $id_string = "'" . \implode("' , '", \array_map('esc_sql', $id_array)) . "'";
@@ -98,7 +99,7 @@ class DB
         if (!empty($args['all_business'])) {
             $id_string = empty($id_string) ? '0' : $id_string;
             $sql = "\n\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\tWHERE account_id IN ({$id_string})\n\t\t\tOR account_type = 'business'\n\t\t ";
-            return $wpdb->get_results($sql, ARRAY_A);
+            return $wpdb->get_results($sql, \ARRAY_A);
         }
         $privilege = '';
         if (!empty($privilege)) {
@@ -114,7 +115,7 @@ class DB
                 $sql = $wpdb->prepare("\n\t\t\t\tSELECT * FROM {$sources_table_name}\n\t\t\t\tWHERE account_id = %s;\n\t\t\t    ", $args['id']);
             }
         }
-        return $wpdb->get_results($sql, ARRAY_A);
+        return $wpdb->get_results($sql, \ARRAY_A);
     }
     /**
      * Update a source (connected account)
@@ -259,7 +260,7 @@ class DB
             $data['author'] = $to_insert['author'];
             $format[] = '%d';
         } else {
-            $data['author'] = get_current_user_id();
+            $data['author'] = \get_current_user_id();
             $format[] = '%d';
         }
         return $wpdb->insert($sources_table_name, $data, $format);
@@ -275,7 +276,7 @@ class DB
     {
         global $wpdb;
         $feeds_table_name = $this->feeds_table;
-        $results = $wpdb->get_results("SELECT COUNT(*) AS num_entries FROM {$feeds_table_name}", ARRAY_A);
+        $results = $wpdb->get_results("SELECT COUNT(*) AS num_entries FROM {$feeds_table_name}", \ARRAY_A);
         return isset($results[0]['num_entries']) ? (int) $results[0]['num_entries'] : 0;
     }
     /**
@@ -302,7 +303,7 @@ class DB
         } else {
             $sql = $wpdb->prepare("\n\t\t\tSELECT * FROM {$feeds_table_name}\n\t\t\tLIMIT %d\n\t\t\tOFFSET %d;", self::RESULTS_PER_PAGE, $offset);
         }
-        return $wpdb->get_results($sql, ARRAY_A);
+        return $wpdb->get_results($sql, \ARRAY_A);
     }
     /**
      * Update feed data in the sbi_feed table
@@ -365,7 +366,7 @@ class DB
         }
         $data['last_modified'] = \gmdate('Y-m-d H:i:s');
         $format[] = '%s';
-        $data['author'] = get_current_user_id();
+        $data['author'] = \get_current_user_id();
         $format[] = '%d';
         $wpdb->insert($feeds_table_name, $data, $format);
         return $wpdb->insert_id;
@@ -380,8 +381,8 @@ class DB
      */
     public function create_tables($include_charset_collate = \true, $skip_sources = \false)
     {
-        if (!\function_exists('SmashBalloon\\YoutubeFeed\\Vendor\\dbDelta')) {
-            require_once ABSPATH . '/wp-admin/includes/upgrade.php';
+        if (!\function_exists('dbDelta')) {
+            require_once \ABSPATH . '/wp-admin/includes/upgrade.php';
         }
         global $wpdb;
         $max_index_length = 191;
