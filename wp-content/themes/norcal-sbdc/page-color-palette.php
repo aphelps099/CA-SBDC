@@ -1,0 +1,561 @@
+<?php
+/**
+ * Template Name: Color Palette Sample
+ * Description: Demonstrates the NorCal SBDC color palette usage
+ */
+
+get_header(); ?>
+
+<style>
+    /* New NorCal SBDC Color Palette Variables */
+    :root {
+        --navy: #0F1C2E;
+        --pool: #8FC5D9;
+        --wine: #8A2432;
+        --cream: #F5F2EB;
+        --black: #0a0a0f;
+        --white: #ffffff;
+    }
+
+    /* Color Palette Section Styles */
+    .color-palette-page {
+        background-color: var(--cream);
+    }
+
+    .palette-section {
+        padding: 3rem 0;
+    }
+
+    .color-swatch {
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-info {
+        padding: 1rem;
+        background: white;
+        border-radius: 0 0 8px 8px;
+        margin-top: -0.5rem;
+    }
+
+    .color-name {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .color-hex {
+        font-family: monospace;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .color-usage {
+        font-size: 0.85rem;
+        color: #555;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    /* Navy Primary Examples */
+    .navy-bg {
+        background-color: var(--navy);
+        color: var(--white);
+    }
+
+    .navy-text {
+        color: var(--navy);
+    }
+
+    .navy-border {
+        border: 3px solid var(--navy);
+    }
+
+    /* Pool Secondary Examples */
+    .pool-bg {
+        background-color: var(--pool);
+        color: var(--navy);
+    }
+
+    .pool-text {
+        color: var(--pool);
+    }
+
+    .pool-highlight {
+        background-color: var(--pool);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        color: var(--navy);
+    }
+
+    /* Wine Accent Examples */
+    .wine-bg {
+        background-color: var(--wine);
+        color: var(--white);
+    }
+
+    .wine-text {
+        color: var(--wine);
+    }
+
+    .wine-accent-line {
+        border-left: 4px solid var(--wine);
+        padding-left: 1.5rem;
+    }
+
+    /* Cream Supporting Examples */
+    .cream-bg {
+        background-color: var(--cream);
+        color: var(--navy);
+    }
+
+    /* Black Supporting Examples */
+    .black-bg {
+        background-color: var(--black);
+        color: var(--white);
+    }
+
+    /* Example Components */
+    .example-card {
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .example-card-header {
+        padding: 1.5rem;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .example-card-body {
+        padding: 2rem;
+    }
+
+    .btn-custom {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-navy {
+        background-color: var(--navy);
+        color: var(--white);
+    }
+
+    .btn-navy:hover {
+        background-color: #1a2d47;
+        color: var(--white);
+    }
+
+    .btn-pool {
+        background-color: var(--pool);
+        color: var(--navy);
+    }
+
+    .btn-pool:hover {
+        background-color: #7ab5ca;
+        color: var(--navy);
+    }
+
+    .btn-wine {
+        background-color: var(--wine);
+        color: var(--white);
+    }
+
+    .btn-wine:hover {
+        background-color: #a12d3e;
+        color: var(--white);
+    }
+
+    .btn-outline-navy {
+        background-color: transparent;
+        color: var(--navy);
+        border: 3px solid var(--navy);
+    }
+
+    .btn-outline-navy:hover {
+        background-color: var(--navy);
+        color: var(--white);
+    }
+
+    .ratio-visual {
+        display: flex;
+        height: 60px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+
+    .ratio-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .hero-example {
+        position: relative;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        padding: 4rem 2rem;
+    }
+
+    .vignette-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(ellipse at center, transparent 0%, rgba(10, 10, 15, 0.4) 100%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .tag-pool {
+        background-color: var(--pool);
+        color: var(--navy);
+    }
+
+    .callout-box {
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+
+    .stat-display {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+</style>
+
+<main id="main-content" class="color-palette-page">
+    <div class="container">
+
+        <!-- Page Header -->
+        <section class="palette-section" style="padding-top: 4rem;">
+            <div class="text-center">
+                <h1 class="navy-text" style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">
+                    NorCal SBDC Color Palette
+                </h1>
+                <p class="lead" style="font-size: 1.25rem; max-width: 800px; margin: 0 auto; color: #555;">
+                    A comprehensive guide to using the NorCal SBDC brand colors.
+                    <span class="pool-highlight">Navy leads. Wine accents. Everything else supports.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- Primary Colors -->
+        <section class="palette-section">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Primary Colors
+            </h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="color-swatch navy-bg">
+                        <h3 style="margin: 0; font-size: 2rem;">Navy</h3>
+                        <p style="margin-top: 1rem; opacity: 0.9;">Primary brand color - Professional, trustworthy, authoritative</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name navy-text">Navy</div>
+                        <div class="color-hex">#0F1C2E</div>
+                        <div class="color-usage">
+                            <strong>Usage:</strong> Backgrounds, primary text, main logo color<br>
+                            <strong>Proportion:</strong> 4 parts (largest share)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="color-swatch pool-bg">
+                        <h3 style="margin: 0; font-size: 2rem;">Pool</h3>
+                        <p style="margin-top: 1rem; opacity: 0.9;">Secondary color - Approachable, fresh, forward-thinking</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name pool-text">Pool</div>
+                        <div class="color-hex">#8FC5D9</div>
+                        <div class="color-usage">
+                            <strong>Usage:</strong> Accent text, highlighted words, tags, secondary elements<br>
+                            <strong>Proportion:</strong> 2 parts
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accent Color -->
+        <section class="palette-section">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Accent Color
+            </h2>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="color-swatch wine-bg">
+                        <h3 style="margin: 0; font-size: 2rem;">Wine</h3>
+                        <p style="margin-top: 1rem; opacity: 0.9;">Strategic accent - Bold, energetic, memorable</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-name wine-text">Wine</div>
+                        <div class="color-hex">#8A2432</div>
+                        <div class="color-usage">
+                            <strong>Usage:</strong> Accent lines, borders, call-to-action elements (use sparingly)<br>
+                            <strong>Proportion:</strong> 1 part (smallest, most powerful)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Supporting Colors -->
+        <section class="palette-section">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Supporting Colors
+            </h2>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="color-swatch cream-bg" style="border: 1px solid #ddd;">
+                        <h4 style="margin: 0;">Cream</h4>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Warm, inviting</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-hex">#F5F2EB</div>
+                        <div class="color-usage">Light backgrounds, cards</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="color-swatch black-bg">
+                        <h4 style="margin: 0;">Black</h4>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Modern, premium</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-hex">#0a0a0f</div>
+                        <div class="color-usage">Dark backgrounds, depth</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="color-swatch" style="background-color: var(--white); border: 2px solid #ddd;">
+                        <h4 style="margin: 0; color: var(--navy);">White</h4>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--navy);">Clean, clear</p>
+                    </div>
+                    <div class="color-info">
+                        <div class="color-hex">#ffffff</div>
+                        <div class="color-usage">Text on dark, contrast</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color Ratio Visual -->
+        <section class="palette-section">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Color Balance (4:2:1:2 Ratio)
+            </h2>
+            <div class="ratio-visual">
+                <div class="ratio-block navy-bg" style="flex: 4;">Navy (4)</div>
+                <div class="ratio-block pool-bg" style="flex: 2;">Pool (2)</div>
+                <div class="ratio-block wine-bg" style="flex: 1;">Wine (1)</div>
+                <div class="ratio-block cream-bg navy-text" style="flex: 2;">Cream (2)</div>
+            </div>
+            <p style="text-align: center; color: #666; margin-top: 1rem;">
+                This ratio ensures visual balance while maintaining professional appeal
+            </p>
+        </section>
+
+        <!-- Usage Examples -->
+        <section class="palette-section">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Usage Examples
+            </h2>
+
+            <!-- Hero Section Example -->
+            <div class="example-card">
+                <div class="hero-example black-bg">
+                    <div class="vignette-overlay"></div>
+                    <div class="hero-content container">
+                        <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">
+                            Empowering Business Growth for <span class="pool-text">20 Years</span>
+                        </h2>
+                        <p style="font-size: 1.25rem; margin-bottom: 2rem; opacity: 0.9;">
+                            Supporting California's small businesses with expert guidance and resources
+                        </p>
+                        <a href="#" class="btn-custom btn-wine">Get Started</a>
+                        <a href="#" class="btn-custom btn-outline-navy" style="margin-left: 1rem;">Learn More</a>
+                    </div>
+                </div>
+                <div style="background: white; padding: 1rem; border-top: 4px solid var(--wine);">
+                    <strong>Example:</strong> Hero section with black background, vignette overlay, Pool highlight, and Wine CTA button
+                </div>
+            </div>
+
+            <!-- Card with Navy Background -->
+            <div class="example-card">
+                <div class="example-card-header navy-bg">
+                    Our Services
+                </div>
+                <div class="example-card-body cream-bg">
+                    <div class="wine-accent-line">
+                        <h4 class="navy-text" style="margin-top: 0;">Business Consulting</h4>
+                        <p>Expert guidance to help your business <span class="pool-highlight">grow and succeed</span> in today's competitive market.</p>
+                    </div>
+                    <div class="wine-accent-line" style="margin-top: 2rem;">
+                        <h4 class="navy-text" style="margin-top: 0;">Financial Planning</h4>
+                        <p>Strategic financial planning and analysis to ensure <span class="pool-highlight">sustainable growth</span>.</p>
+                    </div>
+                </div>
+                <div style="background: white; padding: 1rem; border-top: 1px solid #ddd;">
+                    <strong>Example:</strong> Card with Navy header, Cream body, Wine accent lines, and Pool highlights
+                </div>
+            </div>
+
+            <!-- Tags and Highlights -->
+            <div class="example-card">
+                <div class="example-card-body" style="background: white;">
+                    <h4 class="navy-text">Program Categories</h4>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag tag-pool">Startup Support</span>
+                        <span class="tag tag-pool">Financial Planning</span>
+                        <span class="tag tag-pool">Marketing Strategy</span>
+                        <span class="tag tag-pool">Technology Integration</span>
+                        <span class="tag tag-pool">Export Assistance</span>
+                    </div>
+                </div>
+                <div style="background: white; padding: 1rem; border-top: 1px solid #ddd;">
+                    <strong>Example:</strong> Pool-colored tags for categorization and emphasis
+                </div>
+            </div>
+
+            <!-- Statistics Display -->
+            <div class="row" style="margin-bottom: 2rem;">
+                <div class="col-md-4">
+                    <div class="stat-display navy-bg">
+                        <div class="stat-number pool-text">20+</div>
+                        <div class="stat-label">Years of Service</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-display wine-bg">
+                        <div class="stat-number">5,000+</div>
+                        <div class="stat-label">Businesses Helped</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-display pool-bg navy-text">
+                        <div class="stat-number">$50M+</div>
+                        <div class="stat-label">Capital Accessed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="callout-box cream-bg navy-border">
+                <strong>Example:</strong> Statistics using different color backgrounds - Navy with Pool text, Wine with white text, Pool with Navy text
+            </div>
+
+            <!-- Callout Box -->
+            <div class="callout-box cream-bg" style="border-left: 6px solid var(--wine);">
+                <h4 class="navy-text" style="margin-top: 0;">Important Notice</h4>
+                <p style="margin: 0;">
+                    This is an example of a callout box using <span class="pool-highlight">Cream background</span>
+                    with a <strong class="wine-text">Wine accent border</strong> for important information that
+                    needs to stand out from regular content.
+                </p>
+            </div>
+
+            <!-- Button Examples -->
+            <div class="example-card">
+                <div class="example-card-body" style="background: white;">
+                    <h4 class="navy-text">Button Variations</h4>
+                    <div style="margin-top: 1.5rem;">
+                        <a href="#" class="btn-custom btn-navy">Navy Primary</a>
+                        <a href="#" class="btn-custom btn-pool" style="margin-left: 1rem;">Pool Secondary</a>
+                        <a href="#" class="btn-custom btn-wine" style="margin-left: 1rem;">Wine Accent</a>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <a href="#" class="btn-custom btn-outline-navy">Navy Outline</a>
+                    </div>
+                </div>
+                <div style="background: white; padding: 1rem; border-top: 1px solid #ddd;">
+                    <strong>Example:</strong> Different button styles for various purposes
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Principles -->
+        <section class="palette-section" style="padding-bottom: 4rem;">
+            <h2 class="navy-text" style="font-size: 2rem; margin-bottom: 2rem; font-weight: 700;">
+                Design Principles
+            </h2>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="wine-accent-line">
+                        <h4 class="navy-text">Navy Leads</h4>
+                        <p>Navy establishes authority and professionalism as the dominant color in the palette.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="wine-accent-line">
+                        <h4 class="navy-text">Wine Accents</h4>
+                        <p>Wine adds strategic moments of energy and draws attention to key elements.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="wine-accent-line">
+                        <h4 class="navy-text">Everything Supports</h4>
+                        <p>Pool provides approachable warmth while Cream, Black, and White create versatile foundations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout-box navy-bg" style="margin-top: 3rem; text-align: center;">
+                <p style="font-size: 1.5rem; margin: 0; font-weight: 600;">
+                    This palette reflects <span class="pool-text">NorCal SBDC's 20-year legacy</span>
+                    of professional, established business development excellence.
+                </p>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<?php get_footer(); ?>
