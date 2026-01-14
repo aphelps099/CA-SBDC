@@ -34282,7 +34282,7 @@ ol.large-numbers li::before {
   display: block;
   width: 2rem;
   height: 0.125rem;
-  background-color: #D11141;
+  background-color: #8FC5D9;
   -webkit-transition: background-color 0.4s;
   transition: background-color 0.4s;
 }
@@ -34293,7 +34293,7 @@ ol.large-numbers li::before {
   height: 100%;
   right: 0;
   position: absolute;
-  background-color: #D11141;
+  background-color: #8FC5D9;
   -webkit-transition: background-color 0.4s;
   transition: background-color 0.4s;
 }
@@ -34316,10 +34316,10 @@ ol.large-numbers li::before {
   color: #032040;
 }
 #header.is-sticky #mobile-menu-toggle .icon {
-  background-color: #D11141;
+  background-color: #8FC5D9;
 }
 #header.is-sticky #mobile-menu-toggle .icon:before, #header.is-sticky #mobile-menu-toggle .icon:after {
-  background-color: #D11141;
+  background-color: #8FC5D9;
 }
 body.header-dropdown-active #header.is-sticky #mobile-menu-toggle .label {
   color: #fff;
