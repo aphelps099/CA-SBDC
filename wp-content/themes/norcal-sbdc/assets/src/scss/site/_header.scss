@@ -227,7 +227,7 @@
 		display: block;
 		width: 2rem;
 		height: 0.125rem;
-		background-color: $red;
+		background-color: #8FC5D9;
 		transition: background-color .4s;
 		&:before,
 		&:after {
@@ -237,7 +237,7 @@
 			height: 100%;
 			right: 0;
 			position: absolute;
-			background-color: $red;
+			background-color: #8FC5D9;
 			transition: background-color .4s;
 		}
 		&:before { top: -0.4375rem; }
@@ -261,10 +261,10 @@
 			color: $body-color;
 		}
 		.icon {
-			background-color: $red;
+			background-color: #8FC5D9;
 			&:before,
 			&:after {
-				background-color: $red;
+				background-color: #8FC5D9;
 			}
 		}
 		body.header-dropdown-active & {
